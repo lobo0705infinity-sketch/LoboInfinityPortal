@@ -3798,5 +3798,385 @@
       "heroLoses": "{{otherPlayer}}’s horticultural team retained the chambers and directed the recovery.",
       "draw": "The curator emerged safely, and both teams stayed to watch the early chrysalis."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A vertical orchard above the city stopped releasing its pollinating drones, leaving blossoms to fall unvisited. {{heroPlayer}}’s technicians came to repair the control room; {{otherPlayer}}’s growers wanted the drones grounded after one returned carrying a torn silk ribbon. The ribbon matched no equipment in the orchard.",
+      "{{hero}} climbed to the control room and found a cracked timing wheel beside the dormant launch rack. The specialist replaced its pin, then traced the ribbon to an upper branch where a maintenance worker had tied it around a damaged limb. Drones rose past the window as the first blossoms opened.",
+      "The worker returned to find the limb supported and the ribbon fluttering between branches. Below, children gathered petals that drifted onto the street. One drone came back with yellow pollen on its legs and settled beside the repaired timing wheel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians retained the control room and restored the orchard’s pollination schedule.",
+      "heroLoses": "{{otherPlayer}}’s growers took charge of the orchard and grounded the drones for inspection.",
+      "draw": "The blossoms were visited, and both teams watched the repaired drones through their first cycle."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A river ferry terminal stood empty while its floodgates trembled under an early thaw. {{heroPlayer}}’s engineers came to redirect the current; {{otherPlayer}}’s market vendors feared the detour would drown their stalls. A painted line on the terminal wall showed a flood level higher than either crew expected.",
+      "{{hero}} crawled into the gatehouse and found a secondary sluice hidden beneath stacked benches. The specialist freed its handle and turned it slowly until the river pulled away from the market steps. A faded note on the handle named the person who had added the sluice after the last great flood.",
+      "The ferry returned to the near bank as the market reopened. One vendor brought the note to an older relative, who remembered helping paint the line as a child. That night the river rose to within a handspan of it, then began to fall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers secured the gatehouse and kept the market above the diverted current.",
+      "heroLoses": "{{otherPlayer}}’s vendors retained the terminal and demanded another plan for the thaw.",
+      "draw": "Both groups kept watch at the gatehouse until the river fell below the market steps."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "On a monastery roof, festival kites served as wind markers for a village airstrip. {{heroPlayer}}’s escorts came to secure the launch platform; {{otherPlayer}}’s residents had heard an aircraft circling blind in low cloud. The largest kite pulled free and caught on the stair tower.",
+      "{{hero}} reached the tower as a stranger tried to barricade its gate. The fighter shoved through, caught the kite line by hand, and kept the gate open while a resident brought down a lamp. Held taut above the roof, the kite pointed toward a break in the cloud.",
+      "The aircraft passed overhead once, then returned with its landing lights aimed at the improvised signal. After it touched down, the pilot said the last clear landmark had been the kite’s bright tail. The residents began restringing the smaller kites before the fog returned."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts held the roof platform and guided the aircraft in.",
+      "heroLoses": "{{otherPlayer}}’s residents kept the monastery roof and managed the airstrip signal.",
+      "draw": "The aircraft landed safely, and both groups helped restring the roof markers."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A border clinic stored temperature-sensitive medicine while a bicycle courier waited for a route through the mountains. {{heroPlayer}}’s inspectors came to certify its cooler; {{otherPlayer}}’s local medics feared the coming blackout would spoil the supply. The only backup battery had been fitted to an empty cabinet.",
+      "{{hero}} opened the cabinet and found the cooler cable deliberately looped behind its hinge. The specialist connected the battery, logged the temperature, and noticed a row of names written beneath the cabinet shelf. Each name belonged to a village the courier had planned to visit.",
+      "The lights went out as the courier fastened the medicine case to the bicycle. The cooler’s small indicator remained green. Before leaving, the courier added one more village to the list, then set off while the clinic staff held lamps along the road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors certified the clinic and kept the medicine cold until departure.",
+      "heroLoses": "{{otherPlayer}}’s medics retained control of the clinic and chose another route for the courier.",
+      "draw": "The medicine remained cold, and both parties signed the courier’s route sheet."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital cargo gallery developed a crack across its observation window during a transfer of medical supplies. {{heroPlayer}}’s watch escorted a repairer to the seal; {{otherPlayer}}’s dock workers held the cargo lift below. Outside the glass, a medicine case drifted past with its tether cut.",
+      "{{hero}} covered the gallery door while the repairer fixed a temporary patch. A figure tried to reach the pressure controls, and the fighter held them back until the patch sealed. Through the clear section of glass, the repairer spotted the loose case hooked beneath a loading arm.",
+      "The lift brought the case inside under the dock workers’ guidance. Its cold indicator still showed a safe temperature, but a child’s drawing had been taped to the latch: a crooked flower with a note asking the medicine to arrive before tomorrow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch held the gallery and recovered the supplies for delivery.",
+      "heroLoses": "{{otherPlayer}}’s workers secured the gallery and took custody of the medicine case.",
+      "draw": "The window was patched and the medicine stayed cold while both crews prepared its delivery."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain settlement kept an underground fire refuge that had never been tested. Smoke from a brushfire reached its upper vent before the first families arrived. {{heroPlayer}}’s rescue workers took the lower entrance; {{otherPlayer}}’s local guides knew a second passage that had collapsed years before.",
+      "{{hero}} opened the vent housing and found its filter fitted backward. The specialist turned it around, cleared ash from the intake, and tested the airflow with a strip of cloth. Fresh air drew through the refuge as families came down the steps carrying blankets and a cage of restless birds.",
+      "Inside, a guide pointed to glow marks on the tunnel wall. They were an old route map, visible only after the lights went out, and led to a third exit beyond the collapsed passage. Children counted the marks while the rescue workers checked every door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s workers secured the refuge and kept clean air flowing for the families.",
+      "heroLoses": "{{otherPlayer}}’s guides controlled the refuge and directed arrivals through their known route.",
+      "draw": "The families sheltered safely, and both groups traced the old map to its third exit."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a riverside paper mill, an apprentice was printing invitations for a neighborhood festival when the waterwheel jammed. {{heroPlayer}}’s escorts came to recover a disputed print drum; {{otherPlayer}}’s mill workers wanted to finish the invitations first. Wet sheets hung like curtains across the shop floor.",
+      "{{hero}} pushed through the hanging paper and found the apprentice pinned against a turning feed arm. A stranger lunged for the release lever, and the fighter kept them back while pulling the apprentice clear. The drum stopped with one sheet halfway through its rollers, revealing a sketch beneath the festival lettering.",
+      "The sketch showed the mill decades earlier, drawn by the apprentice’s grandfather, who had carved the drum. The workers hung the unfinished sheet where everyone could see it. As the wheel was restarted, the river carried the first finished invitation downstream."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the drum after the apprentice finished the invitations.",
+      "heroLoses": "{{otherPlayer}}’s mill workers kept the drum and resumed their printing.",
+      "draw": "The invitations were completed, and both parties agreed to preserve the newly revealed sketch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "An elevated public garden was closing for repairs on the night of its annual lantern walk. {{heroPlayer}}’s maintenance crew came to assess a sagging pond; {{otherPlayer}}’s volunteers hoped to keep the path open. Water seeped across the paving, carrying tiny lantern reflections toward the stair.",
+      "{{hero}} followed the flow under the pond’s edge and found a blocked overflow pipe beneath a carved bench. The specialist cleared it with a narrow tool and watched the pond settle against its stone lip. Inside the pipe was a lacquered wooden token shaped like one of the garden’s missing lanterns.",
+      "The volunteers hung the token at the beginning of the walk. Visitors paused to read a name carved on its reverse, then took the dry path around the pond. Above them, the first lanterns made moving stars among the garden’s leaves."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the pond and reopened the garden path.",
+      "heroLoses": "{{otherPlayer}}’s volunteers retained the garden and limited the walk to its safe side.",
+      "draw": "The lantern walk continued on a shortened route while both groups checked the pond."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A street market lost power just as its cooks began an annual night meal. {{heroPlayer}}’s protection detail accompanied an electrician to the substation; {{otherPlayer}}’s vendors stood beside unlit stalls full of food. A projector inside the substation kept showing recipes on the darkened wall.",
+      "{{hero}} held the gate while the electrician traced a damaged feed. Someone came through the alley toward the open panel, and the fighter kept them clear of its exposed wiring until the breaker was reset. Light returned to the stalls, but the projector lingered on a handwritten recipe for a dish no vendor remembered.",
+      "An older cook read the recipe aloud and recognized her mother’s measurements, including an instruction to feed the first visitor who arrived late. A child stepped into the market as the pots warmed again. The cook filled a bowl before asking why the child had come."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the substation and restored power to the meal.",
+      "heroLoses": "{{otherPlayer}}’s vendors controlled the substation and arranged their own repair crew.",
+      "draw": "The stalls reopened, and both groups shared food beneath the still-running projector."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A library had been built around a living tree, with its catalog carved into smooth panels between the roots. {{heroPlayer}}’s caretakers came to save the tree after its leaves browned overnight; {{otherPlayer}}’s archivists feared repairs would erase the oldest titles. An unmarked panel had swollen shut.",
+      "{{hero}} lifted the panel gently and exposed a dry irrigation channel beneath it. The specialist reopened the channel while the archivists copied the hidden carving on the wood’s underside. Water ran toward the roots, carrying a loose paper label from an unseen pocket deeper inside.",
+      "At dusk, the first leaves uncurling above the reading tables cast moving shadows over the copied titles. The paper label named a book none of the archivists had seen. It was still there, lodged beyond the pocket, waiting for someone with smaller hands."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers restored the water supply and kept the tree library open.",
+      "heroLoses": "{{otherPlayer}}’s archivists retained the library and sealed the panel until the carvings were copied.",
+      "draw": "The roots received water, and both teams preserved the newly uncovered catalog."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood puppet theater had been closed after its revolving stage began turning by itself. {{heroPlayer}}’s restorers entered through the ticket office; {{otherPlayer}}’s performers waited in the square with their costumes. Each rotation stopped at a painted door that did not appear in the stage plan.",
+      "{{hero}} stepped below the stage and found a loose counterweight rubbing against the drive. The specialist secured it, then turned the stage by hand until the painted door aligned with a shallow alcove. Inside stood a tiny puppet with no strings, wrapped in a note about a show canceled long ago.",
+      "The performers carried the puppet into the square before the doors reopened. An elderly neighbor knew the canceled show by heart and supplied its first line. As the stage made one smooth turn, the performers repeated it and let the audience choose the next."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s restorers secured the revolving stage and reopened the theater.",
+      "heroLoses": "{{otherPlayer}}’s performers retained the theater and held rehearsals outside until repairs were approved.",
+      "draw": "The stage turned safely, and both groups stayed for the recovered show."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A freight car full of unassembled school desks stopped beside a shuttered village classroom. {{heroPlayer}}’s escort came to unload it; {{otherPlayer}}’s rail workers warned that the car’s brake could release on the slope. Through the open door, someone was shifting the heavy crates toward the edge.",
+      "{{hero}} climbed into the car and pulled a worker clear as a crate slid across the floor. Another person reached for the brake wheel, and the fighter held them back while the escort chocked the wheels. When the nearest crate broke open, a child’s carefully sharpened pencils rolled between the desk panels.",
+      "The rail workers helped carry the panels into the classroom. A teacher set one unfinished desk by the window and placed the pencils in a cup for whoever arrived first. Outside, the freight car sat still while its brake was repaired."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the freight car and delivered the desks to the school.",
+      "heroLoses": "{{otherPlayer}}’s rail workers retained the car and delayed unloading until the brake was fixed.",
+      "draw": "The car was made safe, and both crews assembled the first desks together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "On a windy plateau, an old parade mast had been repurposed to measure gusts for a rescue flight. {{heroPlayer}}’s escort brought a weather reader to the mast; {{otherPlayer}}’s flight crew needed a reliable signal before landing. A loose canvas sail beat against the upper crossbar.",
+      "{{hero}} covered the narrow base while the reader climbed to free the tangled gauge. A figure tried to cut the mast’s ground cable, and the fighter kept them away until the gauge was secured. The loosened sail opened overhead, showing painted colors from a parade the plateau had once hosted.",
+      "The rescue aircraft approached along the course indicated by the repaired gauge. After it landed, a passenger recognized the colors and asked why the parade had stopped. The oldest crew member answered that the mast had never stopped waiting for it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the mast and guided the rescue flight onto the plateau.",
+      "heroLoses": "{{otherPlayer}}’s flight crew took charge of the mast and chose the landing window.",
+      "draw": "The aircraft landed safely, and both groups lowered the old sail for repair."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "An urban bird observatory went silent on the first day of migration. {{heroPlayer}}’s volunteers climbed to its glass dome; {{otherPlayer}}’s street crew had found a loose pane above a busy crossing. Several birds perched outside wearing colored tags from another continent.",
+      "{{hero}} braced the pane and reset the observatory’s tracking lens while the street crew cleared the pavement below. The specialist read the first returning tag, then noticed its listed destination was an address in the same neighborhood. The bird had crossed an ocean only to land within sight of its intended window.",
+      "A resident at that address appeared with a shallow dish of water and said the bird had visited every year since she was young. When it settled on her sill, the observatory screen finally registered a complete route, a thin line ending exactly there."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s volunteers repaired the dome and recorded the returning birds.",
+      "heroLoses": "{{otherPlayer}}’s street crew secured the pane and kept the observatory closed for inspection.",
+      "draw": "The crossing stayed safe, and both groups watched the tagged bird complete its journey."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A hillside water clock measured the hours for a scattered settlement until its upper basin ran dry. {{heroPlayer}}’s guards accompanied a mason to the tower; {{otherPlayer}}’s water keepers suspected the inlet had been diverted. The clock hand was fixed at the hour when the town’s old spring had disappeared.",
+      "{{hero}} held the exposed stair while the mason checked the basin. A figure at the top reached for the stone gate, and the fighter forced them back from the mason’s ladder. Behind the gate, water pressed against a wall of roots, enough to refill the clock if the roots could be moved gently.",
+      "The mason cleared a channel around the roots, and the hand began to turn again. Residents heard the first chime from houses farther down the hillside. In the wet stone under the basin, someone had carved the spring’s original name."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the tower and brought the water clock back into service.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the tower and managed the inlet repair.",
+      "draw": "The chime sounded again as both teams agreed on a safe channel around the roots."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "objective",
+    "paragraphs": [
+      "Two rescue crews reached a weather cabin at opposite ends of a whiteout, each carrying orders to use its emergency transmitter. {{heroPlayer}}’s crew had a stranded climber’s coordinates; {{otherPlayer}}’s crew had news of a bridge collapse below. Only one channel remained clear through the storm.",
+      "{{hero}} opened the transmitter casing and found a spare crystal taped beneath the battery. The specialist fitted it into the second channel while the two crew leaders held their maps together under one lamp. Both calls went out: one toward the climber, the other toward the bridge.",
+      "An answer came first from the climber, who could see the cabin’s lantern through the snow. Then a road worker reported that the bridge had been closed before anyone crossed. The crews left both maps pinned to the wall for the next storm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew kept the cabin and coordinated the climber’s rescue.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the transmitter and managed both emergency calls.",
+      "draw": "Both crews shared the cabin until the climber reached shelter and the bridge was secured."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A polar aquarium received warm-water larvae for a breeding trial just as its heating loop froze. {{heroPlayer}}’s marine biologists arrived with portable tanks; {{otherPlayer}}’s station crew planned to drain the loop before the pipes burst. Tiny shapes swam toward the last patch of warmth.",
+      "{{hero}} disconnected the frozen return line and passed the larvae into an insulated tank without changing their temperature too quickly. The specialist then found the heater’s fault in a salt-crusted contact. As the line warmed, an older biologist recognized the larvae from a vanished reef recorded in her first field notebook.",
+      "The station crew hung the notebook page beside the tank. In the water, the larvae gathered around a small piece of reef stone carried with them across the ice. Outside the aquarium glass, snow fell over a landscape none of them would ever inhabit."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists kept the larvae warm and took charge of the breeding tanks.",
+      "heroLoses": "{{otherPlayer}}’s station crew retained the aquarium and replaced its damaged heating line.",
+      "draw": "The larvae survived, and both teams agreed on a careful temperature schedule."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a snowbound post house, a mail carrier found a sack of letters frozen behind a service door. {{heroPlayer}}’s escort came to clear the route; {{otherPlayer}}’s mountain wardens wanted the post house closed before the roof shed its ice. One envelope bore a bright stamp from the coming year.",
+      "{{hero}} held the service door while the carrier pulled the sack free. Someone tried to force the door shut from the corridor, and the fighter grappled them away from the hinge as ice broke loose above. The carrier escaped into the yard with the stamped letter dry inside a glove.",
+      "The letter had been addressed to a child expected at the post house next winter. Its writer had planned to send a welcome before leaving for the mountains. The carrier placed it in a new satchel, promising to deliver it when the child finally arrived."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the post house and saved the frozen letters.",
+      "heroLoses": "{{otherPlayer}}’s wardens closed the building and directed the mail recovery.",
+      "draw": "The mail was saved, and both groups waited for the roof to be cleared before leaving."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "A public bath fed by a geothermal spring lost heat during the coldest week of winter. {{heroPlayer}}’s inspectors came to test the water; {{otherPlayer}}’s local caretakers feared a hidden leak beneath the children’s changing room. Paper boats left in the empty pool pointed toward the same drain.",
+      "{{hero}} followed the drain below the floor and found the hot-water valve jammed by a small brass key. The specialist removed it and restored the flow, then carried the key upstairs for the caretakers to identify. It fit a storage cupboard that no one had opened since the bath’s founder died.",
+      "Inside the cupboard were towels stitched with names, ready for families who had never been able to pay. The water warmed while the caretakers laid them along a bench. The children launched their paper boats again when the pool was declared safe."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors reopened the bath and recorded the source of the blockage.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retained the bath and completed the heating repair.",
+      "draw": "The pool warmed, and both groups helped return the founder’s towels to use."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An avalanche beacon began sounding above a mountain shelter that should have been empty. {{heroPlayer}}’s rescue party set out with a heat sled; {{otherPlayer}}’s station crew watched a second slide forming across the only pass. Under the beacon’s signal was a faint voice reading numbers aloud.",
+      "{{hero}} covered the exposed traverse while two rescuers reached the beacon. Movement appeared near a ridge marker, and the fighter held that position until the sled crossed. Beside the beacon, the rescuers found a surveyor counting the shelter’s remaining oxygen tanks so anyone listening would know how long they had.",
+      "The surveyor rode down under a thermal blanket, still counting until a rescuer told them the last tank could wait. In the shelter window, a lamp blinked twice: the station crew had seen the sled reach safe ground before the second slide began."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party held the traverse and brought the surveyor into shelter.",
+      "heroLoses": "{{otherPlayer}}’s station crew controlled the pass and directed the descent from below.",
+      "draw": "The surveyor reached shelter, and both crews stayed clear of the slope until it settled."
+    }
   }
 ]
