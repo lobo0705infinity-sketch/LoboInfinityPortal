@@ -92,6 +92,15 @@ const onyxPayload = source.payloads.find(item => item.url?.endsWith('/units/en/6
 const onyxInput = { ...input, payload: onyxPayload, sectorialId: 604,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(604), mission: 'Crossing Lines', mustInclude: [] }
 const onyxProfiles = availableProfiles(onyxInput)
+const imetron = onyxProfiles.find(item => item.optionName === 'ÍMETRON')
+assert.ok(imetron && !imetron.aroGrade && !imetron.linkedAroGrade,
+  'a weaponless Imetron cannot occupy an ARO slot even if the benchmark assigns a grade')
+const alephPayload = source.payloads.find(item => item.url?.endsWith('/units/en/703'))
+const alephProfiles = availableProfiles({ ...input, payload: alephPayload, sectorialId: 703,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(703) })
+const netrod = alephProfiles.find(item => item.optionName === 'NETROD')
+assert.ok(netrod && !netrod.aroGrade && !netrod.linkedAroGrade,
+  'a weaponless Netrod cannot occupy an ARO slot')
 assert.ok(onyxProfiles.some(item => item.slug === 't-drones' && item.aro),
   'ARO coverage must recognize weapons as well as skills')
 assert.ok(onyxProfiles.some(item => item.slug === 'm-drones' && item.repeater),

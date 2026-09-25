@@ -135,16 +135,16 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const aroCategories: TacticalCategory[] = hasAroBenchmarkRatings
     ? [
-        category('valuableAro', 'Valuable ARO Ratings', 'Profiles costing at least 15 points whose best valid non-linked or submitted-list Fireteam state is Grade B or higher in the current ARO benchmark.', (entry) => entry.points >= 15 && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
-        category('disposableAro', 'Disposable ARO Ratings', 'Profiles costing 14 points or less whose best valid non-linked or submitted-list Fireteam state is Grade B or higher in the current ARO benchmark.', (entry) => entry.points <= 14 && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
+        category('valuableAro', 'Valuable ARO Ratings', 'Profiles costing at least 15 points with an ARO action and a Grade B-or-higher current ARO benchmark state.', (entry) => entry.points >= 15 && hasAroAction(entry) && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
+        category('disposableAro', 'Disposable ARO Ratings', 'Profiles costing 14 points or less with an ARO action and a Grade B-or-higher current ARO benchmark state.', (entry) => entry.points <= 14 && hasAroAction(entry) && hasQualifyingAroRating(aroRating(entry)), 'No exact Grade B-or-better ARO benchmark matches were found in this sample.'),
       ]
     : [
         category('valuableAro', 'Valuable ARO Pieces', 'Profiles costing at least 15 points with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD. Proxy Mk IV is an explicit exception.', (entry) => {
           const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
           const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
-          return isProxyMkIv(entry) || (entry.points >= 15 && hasAroCapability && hasValuableModifier)
+          return isProxyMkIv(entry) || (entry.points >= 15 && hasAroAction(entry) && hasAroCapability && hasValuableModifier)
         }),
-        category('disposableAro', 'Disposable ARO Pieces', 'Profiles costing 14 points or less with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points <= 14 && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
+        category('disposableAro', 'Disposable ARO Pieces', 'Profiles costing 14 points or less with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points <= 14 && hasAroAction(entry) && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
       ]
 
   const categories: TacticalCategory[] = [
@@ -230,6 +230,11 @@ function aroRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['aro'] 
 
 function hasQualifyingAroRating(rating: TacticalProfile['aro']) {
   return Boolean(rating && Object.values(rating).some((state) => ['S', 'A', 'B'].includes(String(state?.grade || '').toUpperCase())))
+}
+
+function hasAroAction(entry: ArmyIntelligenceDecodedEntry) {
+  return canonicalWeapons(entry).some((weapon) => isRangedWeapon(weapon) && normalize(weapon.name))
+    || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
 }
 
 function compareGunfighters(left: TacticalProfile, right: TacticalProfile) {

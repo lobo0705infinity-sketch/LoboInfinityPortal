@@ -88,26 +88,17 @@ assert.deepEqual(analysis.categories.apex.find((item) => item.combinedId === 'ap
 assert.equal(analysis.categories.apex.some((item) => ['ambiguous-burst', 'unavailable-burst'].includes(item.combinedId)), false)
 assert.deepEqual(analysis.networkSummary, { hackers: 1, pitcherCarriers: 1, fastPandaCarriers: 1, deployableRepeaterCarriers: 1, repeaterCarriers: 1 })
 assert.equal(analysis.categories.hacking.length, 1)
-assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pheroware'), true)
-assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'pt'), true)
-assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'sd-rifle'), false)
-assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'aro-pzf'), true, '14-point profiles are included in the Disposable ARO band')
-assert.equal(analysis.categories.disposableAro.some((item) => item.combinedId === 'cheap-sd'), true)
+assert.deepEqual(analysis.categories.valuableAro, [], 'a tactical brief without ARO benchmarks cannot assert a ranked ARO')
+assert.deepEqual(analysis.categories.disposableAro, [], 'cheap troops require a Grade B-or-better matched ARO benchmark')
 assert.equal(analysis.categories.vision.some((item) => item.combinedId === 'vision'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'apex-cc'), true)
 assert.equal(analysis.categories.apexCc.some((item) => item.combinedId === 'cc-near-miss'), false)
 assert.deepEqual(new Set(analysis.categories.competent.map((item) => item.combinedId)), new Set(['bs12', 'same-unit-b', 'sd-rifle', 'maximus', 'hrl-competent', 'tankhunter']))
 assert.equal(analysis.categories.competent.find((item) => item.combinedId === 'maximus')?.qualifyingWeapons[0].burst, 4, 'Maximus weapon-specific +1B must produce a B4 MULTI Rifle')
-assert.equal(analysis.categories.valuableAro.some((item) => item.combinedId === 'proxy-mk-iv'), true, 'Proxy Mk IV is an explicit Valuable ARO exception')
-assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'proxy-mk-iv')?.badges, ['Proxy Mk IV exception'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'hrl-bs-near-miss'), false)
 assert.equal(analysis.categories.apex.find((item) => item.combinedId === 'burst-bonus').qualifyingWeapons[0].burst, 4)
-assert.deepEqual(new Set(analysis.categories.valuableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['MULTI Sniper Rifle', 'Combi Rifle', 'Heavy Rocket Launcher', 'Feuerbach', 'Portable Autocannon']))
-assert.deepEqual(analysis.categories.valuableAro.find((item) => item.combinedId === 'tankhunter')?.badges, ['Portable Autocannon (+1SD)'])
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'tankhunter'), true, 'Portable Autocannon +1SD and Mimetism qualifies')
 assert.equal(analysis.categories.competent.some((item) => item.combinedId === 'pac-near-miss'), false, 'Portable Autocannon +1SD alone is insufficient')
-assert.deepEqual(new Set(analysis.categories.disposableAro.flatMap((item) => item.qualifyingWeapons.map((item) => item.name))), new Set(['Flash Pulse', 'Submachine Gun', 'Panzerfaust', 'Flammenspeer']))
-assert.equal(analysis.categories.valuableAro[0].linkability, 'verified-linkable')
 assert.equal(analysis.categories.alternative.length, 1)
 assert.equal(analysis.categories.alternative[0].badges.length, 4)
 assert.equal(analysis.categories.alternative.some((item) => /netrod|imetron/i.test(item.unitName)), false)
@@ -172,6 +163,26 @@ const belowGradeAnalysis = classifyTacticalBrief([belowGradeFixture], { faction:
 }])
 assert.equal(belowGradeAnalysis.categories.disposableAro.length, 0, 'C, D, and F benchmark profiles must not be classified as ARO pieces')
 
+const unarmedProfiles = [
+  profile('701-595-1-1-1', { unitName: 'NETRODS', points: 6 }),
+  profile('601-527-1-1-1', { unitName: 'ÍMETRON', points: 6 }),
+  profile('101-999-1-1-1', { unitName: 'Repeater carrier', points: 8, equipment: ['Repeater'] }),
+  profile('101-998-1-1-1', { unitName: 'Flash REM', points: 8, weapons: [weapon('Flash Pulse', 1)] }),
+]
+const unarmedRatings = unarmedProfiles.map((item) => ({ status: 'matched',
+  key: item.combinedId.replaceAll('-', ':'),
+  nonLinked: { rating: 8, grade: 'A', percentile: 90, weaponsUsed: [] },
+}))
+const unarmedAnalysis = classifyTacticalBrief(unarmedProfiles, { faction: 'Fixtures' }, [], unarmedRatings)
+assert.deepEqual(unarmedAnalysis.categories.disposableAro.map((item) => item.unitName), ['Flash REM'],
+  'unarmed Netrods, Ímetrons, and repeater carriers cannot enter ARO ratings even with a mistaken A grade')
+const pherowareAnalysis = classifyTacticalBrief([
+  profile('701-997-1-1-1', { unitName: 'Pheroware user', equipment: ['Pheroware Tactics'] }),
+], {}, [], [{ status: 'matched', key: '701:997:1:1:1',
+  nonLinked: { rating: 9, grade: 'B', percentile: 70, weaponsUsed: [] } }])
+assert.equal(pherowareAnalysis.categories.valuableAro[0]?.unitName, 'Pheroware user',
+  'a rated Pheroware ARO remains eligible without a gun')
+
 const aroBandAnalysis = classifyTacticalBrief([
   profile('502-1896-1-9-1', { unitName: 'COYOTE FTO', points: 17, skills: ['BS Attack (+1SD)'], weapons: [weapon('E/Mitter', 1), weapon('Submachine Gun', 3)] }),
   profile('502-209-1-1-1', { unitName: 'CORREGIDOR JAGUARS', points: 13, skills: ['BS Attack (+1SD)'], weapons: [weapon('Panzerfaust', 1), weapon('Chain Rifle', 1)] }),
@@ -193,7 +204,7 @@ const fireteamAnalysis = classifyTacticalBrief([
   profile('myrmidon', { bs: 12, unitName: 'Myrmidon', points: 16, fireteamTeams: ['Myrmidons'], fireteamMemberships: [{ team: 'Myrmidons', minSize: 2, maxSize: 3, memberName: 'Fixture', countsAs: 'fixture composition', requiredNames: [] }], weapons: [weapon('Combi Rifle', 3)] }),
   profile('moran', { unitName: 'Moran', equipment: ['Repeater'], skills: ['Minelayer'] }),
 ], { faction: 'White Company' })
-assert.deepEqual(new Set(fireteamAnalysis.categories.valuableAro.map((item) => item.combinedId)), new Set(['orc', 'hawkwood', 'phoenix']))
+assert.deepEqual(fireteamAnalysis.categories.valuableAro, [], 'a legal Fireteam still needs a matched high-grade ARO result')
 assert.deepEqual(new Set(fireteamAnalysis.categories.competent.map((item) => item.combinedId)), new Set(['hawkwood', 'fusilier', 'myrmidon', 'phoenix']))
 assert.equal(fireteamAnalysis.categories.apex.some((item) => item.combinedId === 'hannibal'), true)
 assert.deepEqual(fireteamAnalysis.categories.hacking.find((item) => item.combinedId === 'moran')?.roles, ['hacking', 'defensive'])
@@ -216,7 +227,8 @@ const beasthunterAnalysis = classifyTacticalBrief([
   profile('caledonian-teammate-1', { fireteamMemberships: [{ ...beasthunterMemberships[0], memberName: 'Teammate' }], fireteamTeams: ['Caledonian Fireteam'] }),
   profile('caledonian-teammate-2', { fireteamMemberships: [{ ...beasthunterMemberships[0], memberName: 'Teammate' }], fireteamTeams: ['Caledonian Fireteam'] }),
 ])
-assert.equal(beasthunterAnalysis.categories.valuableAro.some((item) => item.combinedId === 'beasthunter-fto'), true)
+assert.equal(beasthunterAnalysis.categories.valuableAro.some((item) => item.combinedId === 'beasthunter-fto'), false,
+  'Fireteam eligibility alone cannot stand in for a matched ARO benchmark')
 assert.equal(beasthunterAnalysis.categories.valuableAro.some((item) => item.combinedId === 'beasthunter-non-fto'), false, 'non-FTO Beasthunter must not receive a Fireteam-derived Valuable ARO classification')
 
 const ajaxCode = 'gr4Nc3RlZWwtcGhhbGFueA9CdXJuaW5nIEJyaWRnZXOBLAIBAQAFAIY6AQMAAACCaAECAAAAh0ABAwAAAIJQAQEAAAAyAQEAAAIBAAoAgmIBAgAAAIJRAQEAAACCUQEBAAAAglMBAQAAAIJTAQEAAACCVAEBAAAAglkBAgAAAIJgAQEAAACCZAEDAAAAglsBBgAA'

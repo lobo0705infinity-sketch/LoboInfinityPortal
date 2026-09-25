@@ -140,7 +140,7 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     const visionControl = preferredMatches([...profile.weapons.map(weaponDisplay), ...profile.equipment, ...profile.skills], [smokeGrenadeToken, smokeGrenadeLauncherToken, discoballerToken, pherowareMirrorballToken, eclipseToken])
     if (visionControl.length) result.vision.push({ ...profile, badges: visionControl })
 
-    if (Number.isFinite(profile.points)) {
+    if (Number.isFinite(profile.points) && hasAroAction(profile)) {
       const aroEntry = { ...profile, badges: [], qualifyingWeapons: profile.weapons.filter(isRangedWeapon), qualifyingFireteams }
       if (profile.points >= 15) result.valuableAro.push(aroEntry)
       else if (profile.points <= 14) result.disposableAro.push(aroEntry)
@@ -157,7 +157,7 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
   }
   attachAroRatings(result, aroRatings)
   result.valuableAro = result.valuableAro.filter(entry => hasQualifyingAroRating(entry)).sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b)).slice(0, 3)
-  result.disposableAro = result.disposableAro.filter(entry => Number.isFinite(bestAroRating(entry))).sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b)).slice(0, 3)
+  result.disposableAro = result.disposableAro.filter(entry => hasQualifyingAroRating(entry)).sort((a, b) => bestAroRating(b) - bestAroRating(a) || linkRank(a) - linkRank(b) || profileSort(a, b)).slice(0, 3)
   result.apex.sort((a, b) => b.badges.length - a.badges.length || b.bs - a.bs || profileSort(a, b))
   for (const key of ['competent', 'apexCc', 'hacking', 'vision', 'alternative', 'defensive']) result[key].sort(profileSort)
   if (result.gunfighters.length) {
@@ -383,6 +383,10 @@ function attachAroRatings(result, ratings) {
 function bestAroRating(entry) { return Math.max(Number(entry.nonLinked?.rating ?? -1), Number(entry.fireteamLinked?.rating ?? -1)) }
 function hasQualifyingAroRating(entry) {
   return [entry.nonLinked, entry.fireteamLinked].some((state) => ['S', 'A', 'B'].includes(String(state?.grade || '').toUpperCase()))
+}
+function hasAroAction(profile) {
+  return profile.weapons.some(weapon => isRangedWeapon(weapon) && normalized(weapon.name))
+    || [...profile.skills, ...profile.equipment].some(value => /^(?:pheroware(?:\s+tactics)?|pt)(?:\s|$)/.test(normalized(value)))
 }
 
 function canonicalKeyFromCombinedId(value) {

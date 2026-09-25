@@ -59,6 +59,8 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       .map(ref => weaponNames.get(Number(ref.id)) || '').filter(Boolean)
     const roleText = [...skills, ...equipment.filter(name => /hacking device/i.test(name))].join(' ')
     const toolkit = [...skills, ...equipment, ...weapons].join(' ')
+    const canAro = weapons.some(weapon => !/\bcc weapon\b/i.test(weapon))
+      || [...skills, ...equipment].some(value => /\bpheroware\b/i.test(value))
     const lieutenant = (choice.orders || []).some(order => String(order.type).toUpperCase() === 'LIEUTENANT')
     const orderCount = type => (choice.orders || []).filter(order => String(order.type).toUpperCase() === type)
       .reduce((sum, order) => sum + Number(order.total || 0), 0)
@@ -99,10 +101,10 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       gunfighterGrade: normalShooting?.grade || '',
       linkedGunfighter: Number(linkedShooting?.rating || 0),
       linkedGunfighterGrade: linkedShooting?.grade || '',
-      aroRating: Number(normalAro?.rating || 0),
-      aroGrade: normalAro?.grade || '',
-      linkedAroRating: Number(linkedAro?.rating || 0),
-      linkedAroGrade: linkedAro?.grade || '',
+      aroRating: canAro ? Number(normalAro?.rating || 0) : 0,
+      aroGrade: canAro ? normalAro?.grade || '' : '',
+      linkedAroRating: canAro ? Number(linkedAro?.rating || 0) : 0,
+      linkedAroGrade: canAro ? linkedAro?.grade || '' : '',
       ccRating: Number(ccRatings.get(key)?.rating || 0),
       ccGrade: ccRatings.get(key)?.grade || '',
       mobility: Number(lookupMobility(mobilityCatalog, key)?.score || 0),

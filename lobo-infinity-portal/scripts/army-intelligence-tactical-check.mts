@@ -79,6 +79,14 @@ assert.equal(analysis.categories.find((item) => item.id === 'disposableAro')?.pr
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles.length, 1)
 assert.equal(analysis.categories.find((item) => item.id === 'alternative')?.profiles[0].badges.filter((badge) => /Parachutist|Combat Jump|Hidden Deployment|Impersonation/.test(badge)).length, 4)
 assert.ok(!analysis.categories.find((item) => item.id === 'alternative')?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit)))
+assert.ok(!['valuableAro', 'disposableAro'].some((id) => analysis.categories.find((item) => item.id === id)
+  ?.profiles.some((profile) => /netrod|imetron/i.test(profile.unit))),
+'weaponless Netrods and Imetrons cannot be classified as ARO pieces')
+const unarmedWithSd = buildTacticalAnalysis([decodedList('Unarmed SD', [
+  entry('no-weapon', 'NO WEAPON', 'Order carrier', { points: 6, skills: ['BS Attack (+1SD)'] }),
+])] as never)
+assert.equal(unarmedWithSd.categories.find((item) => item.id === 'disposableAro')?.profiles.length, 0,
+  'a native +SD modifier alone cannot make a weaponless troop an ARO piece')
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.length, 1)
 assert.ok(!analysis.categories.find((item) => item.id === 'defensive')?.profiles.some((profile) => profile.unit === 'NOT CAMO'))
 assert.equal(analysis.categories.find((item) => item.id === 'defensive')?.profiles.filter((profile) => profile.unit === 'SCOUT').length, 1, 'capabilities must not leak into a separate loadout')
