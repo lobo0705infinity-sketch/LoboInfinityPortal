@@ -12158,5 +12158,385 @@
       "heroLoses": "{{otherPlayer}}’s researchers opened the hatch and protected the pavilion’s old ward.",
       "draw": "The chamber stayed sealed, but both teams marked its position before the shadow disappeared."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An ancient aquifer cut through the stone beneath a desert infirmary. Its pump began bringing up tiny metal pieces with the water. {{heroPlayer}}’s search party came to the wellhead; {{otherPlayer}}’s medical workers held the clinic, where every tap had started rattling with the same sound.",
+      "{{hero}} covered a technician lowering a sampler. Fire from the clinic wall struck the well’s stone lip, and the fighter answered while the technician raised a small metal disk. A pattern of holes in it matched the missing spaces on an old filtration screen. Another disk struck the bucket from below.",
+      "The search party could pull the screen to see where the disks came from, but the clinic would lose its clean water during the inspection. The medical workers had sealed containers for a reserve. The fighter watched the sampler sway as a deeper knock sounded along the well’s stone shaft."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party recovered the disks and secured the well without interrupting the clinic supply.",
+      "heroLoses": "{{otherPlayer}}’s workers took the wellhead and protected the water while examining the filter.",
+      "draw": "The clinic kept a reserve, but both teams left the deeper source of the disks unopened."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A clinic’s archive room grew a fine green film over every case file from one winter. The archivist discovered that those files described a remote village now missing from local maps. {{heroPlayer}}’s field observers entered through the records door; {{otherPlayer}}’s medical team secured the patient rooms next to it.",
+      "{{hero}} lifted a film-covered folder and found a pressed leaf inside, still damp. The specialist matched its veins to a vine growing behind the archive wall. Moving the bookshelf exposed a service passage and a fresh footprint pointed toward the village’s old address on a wall plan.",
+      "The team could follow the passage now, but opening it wider might scatter the film onto current records. The medical workers had a sealed case ready for the old files. The specialist kept the pressed leaf under glass as another footprint appeared in dust at the far end of the passage."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers protected the archive and reached the village route through the passage.",
+      "heroLoses": "{{otherPlayer}}’s team secured the files and traced the missing address from the clinic.",
+      "draw": "The old records survived, but the passage was sealed before either group reached the village."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A desert weather observatory recorded an approaching cloud of dust that none of its windows showed. A group of students was scheduled to travel across the open plain at dusk. {{heroPlayer}}’s analysts came to test the model; {{otherPlayer}}’s guides held the school transport while they waited for a route.",
+      "{{hero}} compared the model’s images to its ground sensors and found one sensor buried under a collapsed shade wall. The specialist cleared it and saw a plume rise far to the north. In the restored data, the plume’s path bent toward the school route just as the students began boarding.",
+      "The analysts could send the transport along the longer road immediately, or wait to confirm whether the dust would cross the plain. The guides knew a sheltered stop on the old route. The specialist held the forecast against the window as the first faint line of dust appeared on the horizon."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts confirmed the safe road and guided the students around the dust.",
+      "heroLoses": "{{otherPlayer}}’s guides took charge of the transport and led it to the sheltered stop.",
+      "draw": "The students stayed safe at the observatory while both teams waited for the plume to pass."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A clinical caravan parked beside an old bridge with a case of instruments recovered from a lost survey mission. Before the doctors could inspect it, the case began projecting a route under the river. {{heroPlayer}}’s analysts reached the caravan; {{otherPlayer}}’s medical escort held the bridge and asked that the instruments stay sealed.",
+      "{{hero}} covered a technician climbing into the caravan. Gunfire struck the wheel hub, and the fighter answered while the technician opened the case just far enough to see a moving compass. Its needle pointed to a dry arch beneath the bridge, where someone had left a folded blanket and a lit lantern.",
+      "The analysts could follow the route to the arch, but the caravan’s patients needed its equipment if a storm came. The medical escort had a path to the riverbank. The fighter watched the lantern under the bridge dim as the compass began to spin inside the half-open case."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts reached the arch and secured the missing survey records.",
+      "heroLoses": "{{otherPlayer}}’s escort protected the caravan and investigated the riverbank from the bridge.",
+      "draw": "The equipment stayed with the patients, while the lantern under the arch went out before the route was traced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A food market’s cold room held the last harvest of a medicinal herb, packed for several village clinics. Its loading door jammed while a delivery cart waited outside in the heat. {{heroPlayer}}’s escort came through the market hall; {{otherPlayer}}’s growers held the loading dock and tried the outer latch.",
+      "{{hero}} confronted a defender at the inner handle and fought to keep the cold room from being opened too wide. The fighter pulled the door a hand’s breadth while a porter passed out the first crate. Behind the crates, a second wall of ice had formed around the cooling unit’s drain.",
+      "Removing the ice might free the door but warm the herb before all of it could be moved. The growers had insulated baskets on the dock. The fighter held the door against its frozen frame as the porter called that the delivery cart’s cooling box was ready for one more load."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort freed the cold room and delivered the herb before it spoiled.",
+      "heroLoses": "{{otherPlayer}}’s growers secured the loading dock and moved the harvest into insulated baskets.",
+      "draw": "Most of the herb reached the clinics, but both sides kept the market’s cooling room closed for repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A border tribunal met in a dispensary because the disputed medicine was too fragile to move. Two boxes bore the same trial number, but the doctors said only one held the final approved formula. {{heroPlayer}}’s inspectors took the records table; {{otherPlayer}}’s medical team guarded the cooler beside the patient ward.",
+      "{{hero}} checked the numbered seals and found one impressed with a stamp repaired using a thin wire. The specialist traced the wire to a drawer of discarded trial labels. A patient in the next room called for the medicine, and the cooler’s warning light began flashing while both boxes sat on the table.",
+      "The inspectors could open a box now and risk damaging the other’s evidence, or test both seals while the patient waited. The medical team had an emergency dose, if its label could be trusted. The specialist held the repaired stamp under the light as the ward bell rang again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors identified the approved formula and kept the trial records secure.",
+      "heroLoses": "{{otherPlayer}}’s team took the cooler and treated the patient with the verified dose.",
+      "draw": "The patient received care, but both boxes stayed under seal until an independent test."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A hospital transport hovered over a dry ravine when its landing gear refused to extend. Inside, a patient had to reach the clinic beyond the far rim. {{heroPlayer}}’s flight detail arrived at the signal platform; {{otherPlayer}}’s medical escort held the clinic gate and raised a temporary stretcher net below the craft.",
+      "{{hero}} covered a mechanic crossing the exposed platform. Shots struck the signal mast, and the fighter answered while the mechanic found a cable tangled around the gear housing. Cutting it freed one leg, but a second cable led to a rescue pod still attached beneath the transport.",
+      "The mechanic could release the pod to lower the patient directly to the clinic net, or keep the craft intact and attempt the far rim. The medical escort was signaling that the patient could not wait long. The fighter watched the pod sway over the ravine as the transport’s engines changed pitch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail freed the landing gear and brought the patient to the clinic safely.",
+      "heroLoses": "{{otherPlayer}}’s escort caught the pod and carried the patient through its gate.",
+      "draw": "The patient reached care, but the transport remained above the ravine until its cables could be cleared."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain clinic’s generator began losing power whenever the neighboring workshop lit its furnace. Both buildings were served by a cable beneath an old pedestrian tunnel. {{heroPlayer}}’s engineers entered the tunnel to trace the fault; {{otherPlayer}}’s medics held the clinic while a procedure was under way.",
+      "{{hero}} found the shared cable rubbed bare against a stone support. The specialist wrapped a temporary sleeve around it, restoring the clinic lamps, then heard water dripping into an unseen chamber behind the support. A second fault showed on the meter, deeper beneath the workshop.",
+      "The engineers could shut down the workshop and inspect the cable, but its furnace was heating the waiting room next door. The medics had portable lamps for the procedure. The specialist held the sleeve in place as the meter flashed and the clinic door opened for another patient."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers repaired the shared cable and kept both buildings powered.",
+      "heroLoses": "{{otherPlayer}}’s medics secured the clinic and finished the procedure on backup lamps.",
+      "draw": "The procedure finished, but both teams kept the workshop closed until the deeper fault was found."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A memorial garden held a carved stone naming the first doctors who had worked in the valley. After a storm, another name appeared beneath theirs, belonging to someone still alive. {{heroPlayer}}’s custodians entered from the garden path; {{otherPlayer}}’s medical historians stood at the pavilion with the old roster.",
+      "{{hero}} struggled with a defender at the stone’s narrow enclosure and kept its protective panel from falling. The fighter cleared mud from the newest name, revealing a date and a small arrow toward the garden’s drainage channel. From beneath the panel came the sound of a metal box shifting in running water.",
+      "The custodians could lift the stone to reach the channel, risking the carved record, or follow the arrow from the outside. The historians had a copy of the original inscription in a dry folder. The fighter held the panel steady as water began rising around the stone’s base."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians preserved the names and recovered the box from the channel.",
+      "heroLoses": "{{otherPlayer}}’s historians secured the memorial and opened the drain from the pavilion.",
+      "draw": "The stone was saved, but both teams waited for the water to fall before opening the box."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A desert signal post began relaying the position of a traveling apothecary who had never turned on a beacon. Her family worried someone was following the caravan. {{heroPlayer}}’s searchers reached the signal mast; {{otherPlayer}}’s medical escort held the old road and knew where the caravan intended to camp.",
+      "{{hero}} covered a technician opening the mast’s service box. Fire struck the dusty stair, and the fighter answered while the technician found a second receiver hidden beneath the post. Its display showed the apothecary’s location and a second light moving toward her from the north.",
+      "The searchers could shut down the receiver to hide the caravan, but then lose their view of the approaching light. The escort had a messenger ready for the old camp road. The fighter watched both points draw closer on the display as the apothecary’s signal stopped moving."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers traced the hidden receiver and warned the caravan in time.",
+      "heroLoses": "{{otherPlayer}}’s escort reached the apothecary and kept her camp secure.",
+      "draw": "The caravan was warned, but neither party learned who placed the second receiver."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A desert pharmacy’s tiled courtyard cast an unfamiliar shadow at midday, shaped like a road leading beneath its fountain. The owner said an older storeroom had been sealed there. {{heroPlayer}}’s guides entered from the street; {{otherPlayer}}’s medical staff protected the fountain because it cooled their medicines.",
+      "{{hero}} followed the shadow to a loose tile and found a small key beneath it. The specialist unlocked a hatch under the fountain, revealing steps and a shelf of unopened jars. As the hatch opened, water began escaping from the basin into the hidden room below.",
+      "The guides could descend and recover the jars or close the hatch before the fountain lost enough water to warm the pharmacy. The medical staff had a bucket line ready if the basin had to be drained. The specialist held the key as the shadow’s narrow road shifted across the last dry step."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides recovered the jars and kept the fountain running for the pharmacy.",
+      "heroLoses": "{{otherPlayer}}’s staff secured the courtyard and protected the medicines during the repair.",
+      "draw": "The fountain held, but both groups left the storeroom sealed until its water could be diverted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A hillside garden grew a vine whose leaves showed the veins of plants that had disappeared from the region. The newest leaf resembled a crop being tended in the clinic’s teaching beds. {{heroPlayer}}’s botanists entered the garden; {{otherPlayer}}’s medical growers held the upper greenhouse and asked to see the leaf.",
+      "{{hero}} compared the vine to an old field sketch and found its roots wound around an underground water line. The specialist uncovered a joint with a slow leak, just as the newest leaf began paling at its edges. A grower shouted that the teaching beds had stopped receiving water.",
+      "Repairing the line might save the beds and dry the vine, erasing the only record of lost plants. The growers could bring a temporary hose from the greenhouse. The specialist kept the leaf in shade as a second pale line appeared across it, matching the failing water pipe."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists saved the vine and restored water to the teaching beds.",
+      "heroLoses": "{{otherPlayer}}’s growers secured the greenhouse and repaired the line from above.",
+      "draw": "The beds survived, but the newest leaf faded before either party could copy it fully."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A convoy of temperature-controlled medicine stopped at a desert checkpoint after one case began sounding a proximity alarm. There was no other vehicle in sight. {{heroPlayer}}’s hired guards took the roadway; {{otherPlayer}}’s medical courier held the cooler and would not let it be opened in the heat.",
+      "{{hero}} covered a mechanic checking the convoy underside. Fire struck a concrete marker, and the fighter answered while the mechanic found a small transmitter fixed beneath the cooler. Its second signal came from an empty culvert under the checkpoint, where a pale light appeared behind a grate.",
+      "The guards could remove the transmitter and keep the delivery moving, but the light might be a warning meant for the medical courier. The courier had cold packs if the case needed to wait. The fighter watched the grate as the alarm changed from a slow pulse to a steady tone."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the checkpoint and delivered the medicine with its seals intact.",
+      "heroLoses": "{{otherPlayer}}’s courier took the cooler and investigated the culvert before continuing.",
+      "draw": "The medicine stayed cold, but both parties held the convoy while the hidden signal was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a botanical auction, a jar of amber held a seed claimed to cure a blight spreading through orchards. The buyer never arrived, but a note demanded the jar be taken to a deserted loading bay. {{heroPlayer}}’s security detail guarded the auction room; {{otherPlayer}}’s medical researchers held the sample table and wanted the seed tested first.",
+      "{{hero}} covered an auctioneer moving the jar toward a cooler. Shots broke a gallery lamp, and the fighter answered as the auctioneer found a second seed inside the jar’s lid. One was green, the other black; the note in the loading bay mentioned only the green one.",
+      "The detail could secure both seeds in the auction room or take the green one to the bay to learn who sent the note. The researchers had a test kit ready, but it would consume part of a seed. The fighter watched the cooler close around the jar while footsteps approached outside the bay."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured both seeds and identified the missing buyer.",
+      "heroLoses": "{{otherPlayer}}’s researchers kept the samples and began testing their effect on the blight.",
+      "draw": "The seeds remained untouched while both teams held the auction hall through the night."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hospital’s ambulance garage lost heat during a rare night freeze. Its vehicles were ready to leave, but the entrance shutter had iced into its tracks. {{heroPlayer}}’s hired guards took the garage floor; {{otherPlayer}}’s clinic staff held the boiler room and brought a trolley of heated water.",
+      "{{hero}} wrestled a defender at the shutter crank and forced it to turn a fraction. The fighter held it as a mechanic poured the hot water along the frozen rail. A crack sounded above the garage door; the shutter moved, but a loose support pin began dropping toward the first ambulance’s roof.",
+      "The guards could lift the shutter quickly and move the ambulances, risking the falling pin, or stop to replace it while a call waited outside the clinic. The staff had a spare support in the boiler room. The fighter kept the crank steady as the driver started the first engine."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards freed the garage and sent the ambulance safely to its call.",
+      "heroLoses": "{{otherPlayer}}’s staff secured the shutter and brought the vehicles out under its own direction.",
+      "draw": "The ambulance left, but both parties kept the garage closed until its rail was rebuilt."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A telescope on a clinic roof was meant to guide night couriers across the desert. It started pointing to a distant hill after the route there had been closed. {{heroPlayer}}’s technicians reached the roof controls; {{otherPlayer}}’s medical couriers guarded the stairs while one delivery remained on the road.",
+      "{{hero}} opened the tracking unit and found a small mirror installed behind its lens. The specialist moved it aside, restoring the safe route, then saw a light on the closed hill answering the telescope’s beam. A courier on the road called that someone was signaling from the wrong direction.",
+      "The technicians could keep the telescope on the safe route or turn it briefly to learn who was on the hill. The medical couriers had a ground beacon ready for the delivery. The specialist held the mirror against the roof rail as the distant light blinked a request to wait."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians guided the delivery safely and traced the light on the hill.",
+      "heroLoses": "{{otherPlayer}}’s couriers secured the stairs and marked the road with their beacon.",
+      "draw": "The medicine arrived, but both parties left the hill’s unexpected signal unanswered."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A remote research station’s fence alarm sounded although its gates remained shut. Inside, a botanist had reported a missing tray of test plants. {{heroPlayer}}’s guards took the perimeter road; {{otherPlayer}}’s medical team held the laboratory and checked whether the plants had been carried through a service drain.",
+      "{{hero}} covered a worker inspecting the fence. Fire struck a post beside the gate, and the fighter answered while the worker found a loose panel large enough for a tray. Beyond it lay fresh footprints toward an abandoned watch hut, with a green leaf caught under one boot mark.",
+      "The guards could follow the tracks and leave the fence open, or secure the panel before more trays disappeared. The medical team had a carrier case ready for the plants if found. The fighter watched the watch hut’s window brighten in the fading light as the worker held up the trapped leaf."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the tray and secured the station fence.",
+      "heroLoses": "{{otherPlayer}}’s team held the laboratory and brought the plants back from the watch hut.",
+      "draw": "The fence was repaired, but neither team found the missing tray before nightfall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two investigators followed the same missing courier to an empty music hall. The courier had left one sealed letter on the stage and another beneath the balcony rail. {{heroPlayer}}’s team entered through the orchestra door; {{otherPlayer}}’s party held the upper gallery, each unsure which letter was meant for them.",
+      "{{hero}} met a defender at the steep gallery stairs and fought for room to reach the second letter. The fighter caught it before a draft carried it over the rail. Inside was a ticket for tomorrow’s performance with a seat circled beside the hall’s locked service hatch.",
+      "The investigators could open the hatch tonight and risk losing the courier’s trail outside, or wait for the performance and watch the circled seat. The other team had the stage letter still sealed. The fighter held the ticket as a note sounded from the dark orchestra pit."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team found the courier and secured the hall’s hidden route.",
+      "heroLoses": "{{otherPlayer}}’s party opened the stage letter and reached the courier first.",
+      "draw": "Both letters survived, but the courier stayed missing when the hall lights came back on."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A ferry crossing under quarantine received a passenger manifest with one name written twice. The second entry listed a berth beneath the deck where no cabin existed. {{heroPlayer}}’s port inspectors checked the gangway; {{otherPlayer}}’s investigators guarded the sealed luggage while the ferryman kept everyone aboard.",
+      "{{hero}} traced the duplicate berth to a hatch hidden below the ticket booth. The specialist lifted it and found a small compartment holding a clean change of clothes and a note addressed to the duplicated passenger. Water was seeping through the floorboards as the ferry pulled against its mooring.",
+      "The inspectors could open the compartment fully and look for the passenger, but the ferry might flood if its lower seal broke. The investigators had a rope at the luggage end and asked for the note. The specialist held the hatch as a voice from beneath the deck answered the duplicated name."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors found the passenger and secured the ferry’s hidden compartment.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the gangway and brought the passenger out from below.",
+      "draw": "The ferry stayed afloat, but both teams held the disputed manifest until everyone was counted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A temporary relief bridge crossed a dry riverbed outside a field clinic. In the afternoon heat, its metal joints expanded and the center span bowed over a line of patients waiting to cross. {{heroPlayer}}’s medics reached the near abutment; {{otherPlayer}}’s investigators held the far side where the bridge plans were stored.",
+      "{{hero}} checked the joints and found one brace fitted in reverse. The specialist eased its bolt loose, straightening the span for a moment. A groan came from the opposite abutment as the load shifted toward the waiting patients’ route, and a worker called for the original drawing.",
+      "The medics could clear the queue and close the bridge, delaying care, or brace the far joint while patients crossed one at a time. The investigators had the drawing and a shorter footpath nearby. The specialist held the loose bolt as the first patient stepped onto the cooling metal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics stabilized the span and brought the patients across for care.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the far side and guided the patients by the footpath.",
+      "draw": "The patients reached the clinic, but both teams closed the bridge until its brace was corrected."
+    }
   }
 ]
