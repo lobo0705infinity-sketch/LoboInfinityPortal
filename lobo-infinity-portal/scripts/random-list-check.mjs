@@ -38,6 +38,22 @@ for (const list of drawn) {
   assert.match(message.content, /Open in Infinity Army/)
 }
 assert.equal(drawn[2].swc, 0, 'a zero-SWC request is honored')
+
+// This seeded Ariadna draw used to return the first legal roster at 275/300 points.
+// Subsequent random draws can fill the requested allotment without rating models.
+const ariadna = source.metadata.factions.find(item => item.name === 'Ariadna')
+const ariadnaPayload = source.payloads.find(item => item.url?.endsWith(`/units/en/${ariadna.id}`))
+let randomState = 7
+const seededPickIndex = length => {
+  randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0
+  return Math.floor(randomState / 4294967296 * length)
+}
+const filled = generateRandomArmyList({ payload: ariadnaPayload, metadata: source.metadata,
+  sectorialId: ariadna.id, rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(ariadna.id),
+  points: 300, swc: 5, pickIndex: seededPickIndex })
+assert.equal(filled.points, 300, 'random legal rosters are compared to fill the points limit')
+assert.ok(filled.swc <= 5 && filled.legality.status === 'legal')
+
 assert.throws(() => generateRandomArmyList({ ...input, swc: 6.25 }), ListBuilderError)
 assert.throws(() => generateRandomArmyList({ ...input, swc: 7 }), ListBuilderError)
 assert.throws(() => generateRandomArmyList({ ...input, points: 99 }), ListBuilderError)
@@ -90,4 +106,4 @@ assert.equal((await ensureRandomListCommand({ guilds: { cache: new Map([['guild-
   application: { commands: { fetch: async () => [] } } })).length, 1)
 assert.equal(created, true, 'a new guild receives the slash command')
 
-console.log('PASS - /random-list picks legal random profiles, respects custom SWC, and exposes faction autocomplete.')
+console.log('PASS - /random-list fills points with legal random profiles, respects custom SWC, and exposes faction autocomplete.')
