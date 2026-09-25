@@ -11398,5 +11398,385 @@
       "heroLoses": "{{otherPlayer}}’s patrol held the northern posts and guided the convoy away from the break.",
       "draw": "The families reached shore, but both groups left the broken border crossing closed."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "Two ranger detachments reached a frontier fire lookout with different orders to replace its old warning bell. The keeper said it still rang for smoke no one else could see. {{heroPlayer}}’s crew climbed the outer ladder while {{otherPlayer}}’s team held the water tank below the platform.",
+      "{{hero}} opened the lookout’s signal cabinet and found a second bell hidden beneath it, connected to a temperature gauge in the forest soil. The specialist sounded the lower bell and saw a thin column of steam rise beyond the trees. The keeper pointed out that the next settled village lay directly downwind.",
+      "The detachments could use the old bell to warn the village or the new one to mark the buried heat for a crew to investigate. Ringing both together might send people toward the dangerous woods. The specialist held one bell rope in each hand as the steam thickened at the tree line."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew sent a clear warning and secured the lookout above the threatened forest.",
+      "heroLoses": "{{otherPlayer}}’s team took the platform and guided the village away from the rising heat.",
+      "draw": "The village was warned, but the two crews kept both bells under a shared watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A research garden on the frontier grew a blue flower only where an underground river passed close to the roots. This year it bloomed on the wrong side of the fence. {{heroPlayer}}’s botanists came to trace the water; {{otherPlayer}}’s rangers guarded the irrigation gate on their side.",
+      "{{hero}} tested the soil and found a buried pipe diverting the river beneath a row of abandoned beds. The specialist opened a valve and heard water move, but the newest flowers drooped at once. A gardener uncovered the pipe’s end under a foundation where an old well had been sealed.",
+      "Keeping the valve open might restore the river and drain the flowers before their seeds set. Closing it would leave the old well without water for another season. The rangers were already clearing the well mouth. The specialist held a sample bottle under the pipe as the first roots began to lift from the soil."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists restored the river and preserved the flower’s seeds for both gardens.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the gate and brought water back to the sealed well.",
+      "draw": "The well filled slowly, but both parties left the valve under a shared seasonal watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A camera hidden in a border watchtower recorded a wagon passing twice on a road with only one entrance. The driver was now missing, along with the wagon’s sealed delivery. {{heroPlayer}}’s investigators climbed to the camera room; {{otherPlayer}}’s rangers held the gate where the wagon’s tracks crossed and then stopped.",
+      "{{hero}} struggled with a defender on the narrow landing and held the stair long enough for an ally to recover the camera. In its housing lay a second film reel showing the wagon entering a concealed side tunnel. The film ended with its lantern still burning just inside the darkness.",
+      "The investigators could take the reel and warn the rangers or descend the tower’s maintenance shaft straight toward the tunnel. The rangers were already opening the gate in the fading light. The fighter held the warm camera case as a faint wheel sound came from beneath the road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators found the wagon and secured the hidden road from the tower.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the gate and brought the missing driver out of the tunnel.",
+      "draw": "The driver returned, but the tunnel’s far exit remained under joint observation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A customs dock on a narrow river received barrels of fuel that weighed less than their paperwork claimed. A village needed the shipment to run its mill. {{heroPlayer}}’s inspectors opened a barrel on the quay; {{otherPlayer}}’s rangers controlled the road from the village and kept the carts waiting.",
+      "{{hero}} measured the fuel and found a hollow compartment under the barrel’s base. The specialist loosened it, revealing a spool of wire and a small map of the mill’s water gate. Across the river, a worker shouted that the gate had begun to open without anyone at its controls.",
+      "The inspectors could seize the barrels as evidence, but the carts would leave empty while water rushed through the mill. The rangers could reach the gate from the road if given the map. The specialist held the spool up to the light as the first cart driver asked whether the fuel was still safe."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the wire and delivered the safe fuel to the village mill.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the map, stopped the gate, and held the barrels for inspection.",
+      "draw": "The gate closed, but the barrels stayed at the dock while both teams checked the fuel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile diagnostic unit parked beside a frontier school after several children fell asleep in the middle of lessons. Its air monitor showed nothing unusual, yet birds were avoiding the school roof. {{heroPlayer}}’s medics entered the classroom; {{otherPlayer}}’s rangers searched the roof and its rainwater tanks.",
+      "{{hero}} checked the classroom vents and found fine dust from a damaged solar tile collecting in their filters. The specialist shut the vent, and the first child woke. Above them, a second tile began to shed dust into the open rainwater tank, where the rangers had already drawn samples.",
+      "The medics could seal the tanks, leaving the school without water, or carry the children to the diagnostic unit before the dust reached another room. The rangers had clean containers ready. The specialist held the tile sample as a teacher opened the hallway door and asked which route was safest."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics cleared the school and treated the children while isolating the dust.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the tanks and led the children out through a clean route.",
+      "draw": "The children woke, but both teams kept the school closed until the tiles were replaced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather balloon above a frontier night market projected a storm warning onto every vendor’s canopy. The sky remained clear, but a river gauge began climbing upstream. {{heroPlayer}}’s signal crew came to the balloon’s tether; {{otherPlayer}}’s rangers held the bridge where carts were still crossing.",
+      "{{hero}} covered a technician running toward the tether winch. Fire struck a market sign, and the fighter answered as the technician lowered the balloon enough to read its instruments. The warning came from a second gauge under the bridge, where a cable had been pulled tight across the water.",
+      "The crew could cut the cable and check the river directly, but doing so might take down the balloon before the market was cleared. The rangers were moving toward the bridge’s lower walkway. The fighter watched the upstream water reflect the warning letters as the first cart stopped midspan."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew verified the danger and cleared the market and bridge in time.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the lower walkway and guided the carts to safety.",
+      "draw": "The market emptied, but both groups kept the bridge closed until the false gauge was removed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An open-air science fair displayed a model of a nearby canyon beside a table of hand-built instruments. During a demonstration, the model’s river began rising though its pumps were off. {{heroPlayer}}’s exhibitors checked the display; {{otherPlayer}}’s rangers held the actual canyon path where hikers were expected before dark.",
+      "{{hero}} traced the model’s water to a sensor hidden in the canyon wall, wired back through the fairground. The specialist opened its feed and saw a live rise behind an old flood gate. A child pointed out that the model’s tiny bridge had already disappeared beneath the water.",
+      "The exhibitors could use the fair’s speakers to warn the hikers, but the rangers might hear the warning as a false alarm after the malfunctioning demonstration. The specialist held the sensor trace up to the microphone while the rangers’ lanterns appeared on the canyon path."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s exhibitors sent the warning and kept the canyon path clear of the flood.",
+      "heroLoses": "{{otherPlayer}}’s rangers closed the path and diverted the hikers from the rising river.",
+      "draw": "The hikers turned back, but both teams left the fair’s model and the canyon gate under review."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A new pipeline crossed a frontier orchard on temporary scaffolds. Its workers found that one support had been set over an old irrigation well, now filling with water again. {{heroPlayer}}’s riggers came to move the support; {{otherPlayer}}’s rangers guarded the orchard gate where harvest wagons waited.",
+      "{{hero}} covered a worker crossing the upper scaffold. Shots struck the line’s empty outer casing, and the fighter answered while the worker eased a jack under the support. The well cap turned beneath the load, exposing a hand pump with a fresh seal and a note tied to its handle.",
+      "The support could be shifted if the pipeline was drained, delaying its first delivery. The rangers had a route around the well for the harvest wagons, if the crew kept the scaffold still. The fighter watched the worker reach for the note as the support began to lean again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers moved the support, protected the well, and finished the pipeline crossing.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the orchard and kept the wagons clear of the failing scaffold.",
+      "draw": "The well was safe, but both parties left the pipeline shut while a new route was surveyed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An automated deed registry assigned a border meadow to a person whose name was missing from every census. On the land stood a small locked shed, freshly painted. {{heroPlayer}}’s auditors came with the registry key; {{otherPlayer}}’s rangers held the gate while the two neighboring farmers waited to hear the claim.",
+      "{{hero}} checked the registry’s signature against the shed lock and found the same mark engraved beneath its handle. Inside was a parcel of seed with both farmers’ names on the wrapping. The specialist found a dated receipt tucked beside it, but the paper had begun to dissolve in the shed’s damp air.",
+      "The auditors could carry out the parcel and save the receipt, or keep the shed sealed as proof of its unknown owner. The rangers were asking the farmers whether they recognized the seeds. The specialist held the fragile receipt in a dry folder as its date faded along the crease."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors preserved the receipt and resolved the meadow’s claim with both farmers.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the shed and held the seed parcel for its named recipients.",
+      "draw": "The seeds were saved, but neither farmer accepted the registry’s unexplained owner."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orchard boundary post began radiating heat, bringing its nearest trees into blossom before spring. A tracker found a narrow antenna set beneath it and footprints leading to an empty farmstead. {{heroPlayer}}’s searchers approached the post; {{otherPlayer}}’s rangers held the farmstead door while the orchard owner fetched a shovel.",
+      "{{hero}} covered a technician digging out the antenna. Fire struck a tree trunk behind them, and the fighter answered as the technician exposed a sealed container wired to the post. A low signal sounded from inside, and several blossoms fell despite the warmth around them.",
+      "The container could be opened on the spot, but its heat might damage the remaining trees. The rangers had a cleared patch by the farmstead to move it there. The fighter watched the technician grip the hot handles as the orchard owner reached the first fallen blossoms."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers removed the container and secured the orchard before more trees failed.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the post and moved the hot container away from the blossom.",
+      "draw": "The orchard cooled, but both teams kept the sealed container under watch near the farmstead."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An iron cattle gate across a frontier track closed whenever the herd came near it, trapping the animals between the road and a steep wash. The rancher said its motor had been removed years ago. {{heroPlayer}}’s search party reached the gatehouse; {{otherPlayer}}’s rangers held the wash and tried to turn the cattle back.",
+      "{{hero}} fought a defender at the gate’s manual crank and forced it halfway open. Beneath the iron slats a new cable pulled against the crank, leading into a pipe under the road. A calf passed through the gap just as the cable tightened and the gate began closing again.",
+      "The fighter could hold the gate long enough for the herd to pass, or follow the cable to stop it permanently. The rangers had found the pipe’s other end beneath the wash. The fighter braced both feet against the crank as the rancher called out the number of animals still behind it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party freed the herd and disabled the hidden cable at the gatehouse.",
+      "heroLoses": "{{otherPlayer}}’s rangers controlled the wash and guided every animal around the gate.",
+      "draw": "The herd crossed safely, but both groups left the mysterious gate shut for inspection."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A roadside mirror in the fog showed a schoolhouse where the old map placed only a field. Its image included children waiting outside by a painted gate, although the real road was empty. {{heroPlayer}}’s observers came to the mirror; {{otherPlayer}}’s rangers searched the field beyond it for tracks.",
+      "{{hero}} adjusted the mirror’s bracket and revealed a hidden lamp projecting through the fog from an abandoned well. The specialist found a notebook beside the lamp, its pages listing the names of children who had used a schoolhouse there long ago. Then one name was written anew in wet ink.",
+      "The observers could stop the lamp and keep the notebook, or follow the new name toward the well while the projection still marked its location. The rangers were approaching from the field. The specialist held the notebook open as a small voice called from below the well cover."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers traced the new name and opened the well without losing the notebook.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the field and reached the voice beneath the cover.",
+      "draw": "The voice was heard by both parties, but the projection vanished before the well could be fully searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A dam maintenance light blinked under the reservoir surface long after its service tunnel had been sealed. The water level was falling faster than the gatekeeper expected. {{heroPlayer}}’s searchers reached the upper walkway; {{otherPlayer}}’s rangers held the lower gate and watched for leaks near the village channel.",
+      "{{hero}} covered a diver fastening a line to the submerged light. Shots rang from the lower gate, and the fighter answered while the diver recovered a small emergency beacon. It carried a message cut into its casing: OPEN THE THIRD GATE. The gatekeeper said the dam had only two.",
+      "The searchers could take the beacon to the control room, but the diver had found a hidden seam behind it. The rangers could close the village channel if the water fell again. The fighter watched a bubble rise from the seam as the reservoir surface sank against the walkway’s posts."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers found the concealed gate and stabilized the reservoir level.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the lower works and kept water flowing to the village.",
+      "draw": "The village channel stayed open, but both teams left the hidden seam under joint watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A fire lookout’s cellar filled with soft green growth after a rainstorm, even though its stone floor was dry. The keeper thought it had followed an old evacuation tunnel from the village. {{heroPlayer}}’s field team entered the cellar; {{otherPlayer}}’s rangers guarded the lookout platform and its warning bell.",
+      "{{hero}} traced the growth to a crack beneath the stair and found a passage roofed with roots. The specialist placed a marker at its entrance as a breeze carried a child’s lost scarf out of the tunnel. The keeper recognized it from a family that had left the village that morning.",
+      "The passage could shorten the search for the family, but clearing its roots might weaken the lookout foundation. The rangers had a longer route marked from the platform. The specialist held the scarf as a gust brought a shout through the crack, followed by the sound of running water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team opened the passage and guided the family safely back to the lookout.",
+      "heroLoses": "{{otherPlayer}}’s rangers found the family from the platform route and secured the cellar.",
+      "draw": "The family returned, but both groups sealed the root-lined passage beneath the lookout."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "At a frontier research clinic, the refrigeration system began cooling an empty specimen room while a full one warmed. An incoming courier carried a sample that could not wait. {{heroPlayer}}’s analysts entered the control booth; {{otherPlayer}}’s rangers held the loading door and prepared a cold box outside.",
+      "{{hero}} checked the controller and found the room names swapped in its registry. The specialist corrected the labels, restoring cold air to the full room, then discovered a third room listed only by a number. A faint alarm sounded from behind its blank wall, and the courier arrived at the loading door.",
+      "The analysts could direct all available power to the waiting sample or open the numbered room to learn what its alarm meant. The rangers had ice packs ready if the sample needed to be moved. The specialist held the courier’s temperature readout beside the unknown room’s blinking status light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts preserved the sample and secured the clinic’s hidden room.",
+      "heroLoses": "{{otherPlayer}}’s rangers kept the sample cold and took the clinic loading area.",
+      "draw": "The sample survived, but the numbered room remained closed under joint monitoring."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A solar wildlife camera recorded a nocturnal animal carrying a survey tag from a fenced research site. The tag identified a container that had gone missing months earlier during a long summer storm. {{heroPlayer}}’s analysts reached the camera tower; {{otherPlayer}}’s rangers held the grove where the animal had vanished.",
+      "{{hero}} covered a technician climbing to retrieve the memory card. Shots struck the tower brace, and the fighter answered while the technician replayed the recording. Behind the animal stood a box half hidden by roots, bearing the container’s number. The next frame showed a small light flickering inside it.",
+      "The analysts could follow the camera’s view into the grove or keep recording to see whether the animal returned. The rangers had found a safe path among the roots. The fighter watched the small light blink in the final frame as the technician turned the camera toward the box."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts reached the box and recovered its missing survey contents.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the grove and secured the numbered container.",
+      "draw": "The camera kept its view, but neither party opened the box before the light went out."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At an open-air harvest market, the old ceremonial gate stuck half open with the town’s parade on its way. The gate stood over an irrigation channel that had begun washing out its foundation. {{heroPlayer}}’s custodians approached from the market; {{otherPlayer}}’s rangers held the canal path beneath it.",
+      "{{hero}} met a defender at the gate crank and fought to hold it while vendors cleared their stalls. The fighter forced the crank back a turn, keeping the heavy arch from tipping. Beneath it, a ranger found a carved beam carrying the gate’s weight across the channel, split along an old repair.",
+      "The gate could be closed and braced, canceling the parade, or kept open if a new beam reached the canal in time. The market had a stack of timber nearby, but the water was rising. The fighter held the crank as the first musicians came into sight beyond the square."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians braced the gate and guided the parade safely through the market.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the canal and kept the arch standing until repairs arrived.",
+      "draw": "The crowd was safe, but the parade turned back while both sides rebuilt the gate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A survey dispute brought two communities to the old courthouse on the border. The original boundary ribbon was sealed inside a box that began playing a recorded voice whenever anyone approached. {{heroPlayer}}’s observers entered the records room; {{otherPlayer}}’s rangers watched the courthouse steps as the neighbors gathered.",
+      "{{hero}} found the box’s key beneath an unused witness chair. The specialist opened it to reveal two ribbons, each bearing the same dated seal but different measurements. The recorded voice named a river crossing now buried under a parking lot, and an elderly witness said the river had moved before either seal was made.",
+      "The observers could take both ribbons to the crossing or call the neighbors in to witness the discrepancy first. The rangers had located the old river stones beneath the lot. The specialist held the ribbons side by side while the voice repeated the crossing’s name one last time."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers documented the old crossing and resolved the boundary with both ribbons.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the stones and protected the courthouse evidence.",
+      "draw": "The ribbons remained under seal while the communities considered the river’s older route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cargo glider dropped a sealed package into a forest clearing instead of the nearby airstrip. Its beacon listed parts needed to restore the settlement’s radio. {{heroPlayer}}’s recovery detail came through the trees; {{otherPlayer}}’s rangers held the airstrip gate and wanted the package inspected before it moved.",
+      "{{hero}} covered a mechanic approaching the glider’s torn canopy through the low brush. Shots struck the metal skids, and the fighter answered while the mechanic opened the package. Inside were the radio parts and a second beacon, still active, reporting a different landing site a kilometer away.",
+      "The detail could carry the parts to the settlement now or follow the second beacon in case someone else had come down with the glider. The rangers knew the clearing’s service trail. The fighter watched the torn canopy move in the wind as the second signal began to weaken."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured both beacons and delivered the parts to the settlement radio.",
+      "heroLoses": "{{otherPlayer}}’s rangers held the clearing and traced the second landing site.",
+      "draw": "The radio was repaired, but the glider’s second beacon remained unaccounted for."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A small hydro station on the frontier lost power while its reservoir was full. Without its lamps, carts approaching the dam would mistake a closed service road for the bridge. {{heroPlayer}}’s engineers reached the turbine hall; {{otherPlayer}}’s rangers guarded the upper road as the last cart descended.",
+      "{{hero}} examined the turbine and found its intake blocked by a crate carrying a weatherproof message tube. The specialist freed the intake, bringing one lamp back on, and read a warning in the tube about a crack under the bridge. The upper road’s guide posts were already beginning to lean.",
+      "The engineers could use the restored power to light the bridge or redirect it to the service road, guiding carts away from the crack. The rangers were waving from the upper bend. The specialist held the switch between the two circuits as the first cart’s wheels reached the road fork."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers lit the safe road and kept the dam operating through the night.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the fork and guided the carts around the cracked bridge.",
+      "draw": "The carts turned back safely, but both teams kept the station dark until the bridge was checked."
+    }
   }
 ]
