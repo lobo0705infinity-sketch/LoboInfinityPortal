@@ -758,5 +758,385 @@
       "heroLoses": "{{otherPlayer}}’s quarantine team closed the greenhouse with every plant still inside.",
       "draw": "The child heard one final answer; both parties agreed to leave the sealed case between them."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "objective",
+    "paragraphs": [
+      "A battery farm at the desert’s edge stored a village’s winter power. {{heroPlayer}}’s hired crew came to replace failing cells; {{otherPlayer}}’s inspectors had fenced off the compound after noticing that one row of batteries never discharged. The village lights dimmed each time the inspectors tested the row.",
+      "{{hero}} found a second set of terminals hidden beneath the sand. The specialist followed their wires to a buried pump drawing from an unmarked aquifer. Whenever the pump ran, the batteries charged and the village well dropped. Both systems had been installed by the same contractor, whose name was scratched from every panel.",
+      "The last cell began to swell. {{hero}} disconnected it, then held the pump breaker open while the village’s remaining charge ran through the safe rows. Outside the fence a queue formed at the dry well. The crew had minutes to decide which machine would receive the next turn of the handle."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew stabilized the farm and kept the village’s lights on without draining the well.",
+      "heroLoses": "{{otherPlayer}}’s inspectors closed the compound while the crew left its repairs unfinished.",
+      "draw": "The villagers divided the last charge between light and water, with neither crew claiming the farm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A floating bank vault was being towed through the harbor at low tide. {{heroPlayer}}’s contractors were paid to deliver it to a warehouse; {{otherPlayer}}’s customs launch blocked the channel with a seizure order. Neither side knew why the vault’s owner had insisted it remain above water.",
+      "{{hero}} covered the towing line from the deck of a tug, firing toward the launch when someone tried to cut it. The vault swung against the quay and an old weld split, revealing a dry space filled with letters instead of money. The nearest envelope bore the tug captain’s name in handwriting they recognized.",
+      "The tide turned and the vault began drawing the tug backward. {{hero}} kept the launch away while the captain climbed out to pull the envelope free. Beneath the letters was a ledger wrapped in oilcloth. A customs officer shouted that the owner had died before the vault was built."
+    ],
+    "endings": {
+      "heroWins": "The tug delivered the vault, and {{heroPlayer}}’s crew kept the letters dry for their owners.",
+      "heroLoses": "{{otherPlayer}}’s officers boarded the tug and took the vault into custody.",
+      "draw": "Both crews saved the letters before the empty vault slipped beneath the tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The arena’s armory opened to find every practice weapon replaced with a real one. {{heroPlayer}}’s security crew was contracted to secure the racks; {{otherPlayer}}’s inspectors had already locked the spectator exits. A youth tournament was due to begin, and the first competitors were gathering outside.",
+      "{{hero}} took position in the upper passage and fired at the lock on a shutter that was trapping the armory staff. The shutter rose far enough for them to crawl free. From the empty arena floor came the sound of a starting bell, followed by a voice announcing names absent from the tournament list.",
+      "The crew found a second set of competitors waiting beneath the stands with numbered masks over their faces. {{hero}} kept the passage covered while the staff ushered the young entrants away. One masked figure lifted a weapon toward the exit, and the bell rang a second time."
+    ],
+    "endings": {
+      "heroWins": "The entrants reached safety, and {{heroPlayer}}’s crew held the armory until the masks came off.",
+      "heroLoses": "{{otherPlayer}}’s inspectors took the arena and its unexplained weapons.",
+      "draw": "The tournament was canceled; neither party could identify the masked competitors who vanished below the stands."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A museum ship was scheduled to be dismantled after its insurance lapsed at sunset. {{heroPlayer}}’s restoration crew arrived with an old ownership certificate; {{otherPlayer}}’s agents carried a newer one. The ship’s engine bell sounded once whenever either certificate was placed on the captain’s table.",
+      "{{hero}} checked the hull registry against the old certificate and found its number stamped inside an engine casing that had never been opened. The specialist took an impression while the agents searched the bridge. Beneath the stamp was a second number, registered to a lifeboat missing since the ship’s final voyage.",
+      "The dismantling cranes moved into position. {{hero}} followed a narrow cable from the engine bell to a sealed lifeboat locker and found a handwheel on its far side. Turning it would open the locker, but the certificate and the impression lay unguarded on the table above."
+    ],
+    "endings": {
+      "heroWins": "The locker gave up the missing record, and {{heroPlayer}}’s crew won time to preserve the ship.",
+      "heroLoses": "{{otherPlayer}}’s agents took the certificates as the cranes began their work.",
+      "draw": "The cranes stopped for the night; both claims remained on the captain’s table."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather dome above the alpine highway reported clear skies while an avalanche buried the road beneath it. {{heroPlayer}}’s rescue squad came to reopen the tunnel; {{otherPlayer}}’s station crew kept the dome sealed to protect its instruments. Three drivers were trapped in a vehicle whose horn sounded under the snow.",
+      "{{hero}} covered the tunnel entrance while engineers cut into the drift. When an armed figure moved onto the dome’s observation platform, the fighter fired at the empty railing ahead of them, driving them back from the controls. The vehicle’s horn stopped, then sounded in a pattern the rescuers could follow.",
+      "A second slide struck the tunnel. {{hero}} held the exposed approach as the engineers pulled one driver through the breach. The remaining two were deeper inside, and the weather dome’s warning siren finally began to sound, minutes after the snow had already fallen."
+    ],
+    "endings": {
+      "heroWins": "The squad brought all three drivers out, and {{heroPlayer}}’s people held the tunnel for the rescue vehicles.",
+      "heroLoses": "{{otherPlayer}}’s station crew secured the dome while the rescue squad withdrew to regroup.",
+      "draw": "The drivers escaped, but snow closed the highway again before either team could reopen it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Military Orders"
+    ],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two chapter houses claimed custody of a reliquary brought to the same monastery under separate sealed orders. {{heroPlayer}}’s escort reached the outer court as {{otherPlayer}}’s escort entered by the cloister. The monks refused to break either seal until the missing abbot returned.",
+      "{{hero}} stood at the reliquary stair when a fighter from the other escort tried to pass. Blades met in the narrow turn of the steps. The struggle ended when both heard a bell ringing from the empty abbot’s cell, though its rope had been removed long ago.",
+      "The cell door stood open. Inside was the abbot’s cloak, still damp from rain that had stopped a week earlier, and a note directing the escorts to carry the reliquary together. {{hero}} kept a hand on the stair rail as both parties read the note aloud and questioned its signature."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort kept the reliquary and invited the monks to inspect the order.",
+      "heroLoses": "{{otherPlayer}}’s escort carried the reliquary through the cloister gate.",
+      "draw": "Both escorts stayed with the monks until the abbot could be found and the seals opened."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Kestrel Colonial Force"
+    ],
+    "heroFaction": "Kestrel Colonial Force",
+    "role": "objective",
+    "paragraphs": [
+      "A frontier chapel stood over the colony’s only working transmitter. {{heroPlayer}}’s settlers needed it to call for supplies; {{otherPlayer}}’s wardens had set aside the building as a refuge for people fleeing a brush fire. Smoke reached the windows before anyone finished deciding which use came first.",
+      "{{hero}} found the transmitter’s antenna cable running through the bell tower. The specialist could send one brief call before the fire damaged its power feed. From the nave came the sound of newcomers seeking shelter, their boots tracking ash across the floor beneath the cable.",
+      "The bell rope burned through and the heavy bell began to fall. {{hero}} hauled the antenna cable aside, shielding the transmitter while the settlers guided the arrivals out of its path. The call remained unsent, and the chapel lights flickered as the flames reached the outer wall."
+    ],
+    "endings": {
+      "heroWins": "The supply call went through, and {{heroPlayer}}’s settlers kept the chapel open as a refuge.",
+      "heroLoses": "{{otherPlayer}}’s wardens held the refuge while the settlers sought another transmitter.",
+      "draw": "Everyone found shelter, but the transmitter burned before either group could claim the building."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Neoterra Capitaline Army"
+    ],
+    "heroFaction": "Neoterra Capitaline Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A civic concert hall kept its voting records inside the pipes of a monumental organ. {{heroPlayer}}’s investigators came to remove them before renovation; {{otherPlayer}}’s custodians claimed the instrument could not be disturbed during a memorial service. The organ began playing before anyone sat at the console.",
+      "{{hero}} covered the gallery as a technician reached the pipe housing. A shadow crossed the opposite balcony with a weapon, and the fighter fired to keep it away from the exposed technician. The music changed key. Behind the front rank of pipes, a narrow compartment opened at the sound.",
+      "The compartment held a stack of ballots tied with black ribbon. {{hero}} maintained the gallery line while the technician lowered them by cord to the hall floor. The memorial procession entered below, unaware that a scuffle had begun above their heads and that the organ’s final note was still sounding."
+    ],
+    "endings": {
+      "heroWins": "The ballots reached the investigators, and {{heroPlayer}}’s detail kept the hall open through the service.",
+      "heroLoses": "{{otherPlayer}}’s custodians retained the organ and the ballots it concealed.",
+      "draw": "The service continued; both parties received copies, and the original ballots stayed in the pipes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "objective",
+    "paragraphs": [
+      "A farm settlement’s grain store had been converted into a pilgrimage shelter for the winter. {{heroPlayer}}’s growers came to reclaim its seed bins before planting season; {{otherPlayer}}’s attendants sheltered families who had nowhere else to go. The first seedlings were already sprouting beneath the floorboards.",
+      "{{hero}} tested the bins and found the grain warm enough to spoil. The specialist opened the ventilation shafts one by one, carrying each screen outside for cleaning, while families moved their bedding away from the drafts. Beneath the lowest bin lay a dry pocket of viable seed no one had expected.",
+      "A storm broke over the settlement and water ran under the shelter door. {{hero}} lifted the seed sacks onto the upper racks as the families helped raise the cots. The last sack was too heavy for one person, and the floor near it gave way to an old drainage channel."
+    ],
+    "endings": {
+      "heroWins": "The seed survived, and {{heroPlayer}}’s growers kept the store open for the sheltered families.",
+      "heroLoses": "{{otherPlayer}}’s attendants held the shelter while the growers carried away what little seed they could.",
+      "draw": "The families saved the grain together and agreed to share the store until spring."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The mountain refuge had one working oxygen recycler and room for half the people climbing toward it. {{heroPlayer}}’s rescue patrol reached the outer door with spare filters; {{otherPlayer}}’s wardens kept a second group inside. The recycler’s alarm sounded each time the door opened.",
+      "{{hero}} covered the exposed stair while a technician brought the filters up. Fire from an overlooking ridge drove the climbers against the rock. The fighter answered from behind an icebound railing, creating a few steps of clear passage while the technician crawled toward the recycler hatch.",
+      "A weak voice came through the refuge intercom: someone inside had locked the recycler to protect its remaining air. {{hero}} stayed on the stair as the technician worked the hatch, watching a fresh line of climbers emerge from the whiteout below. The machine’s alarm fell silent before its fans restarted."
+    ],
+    "endings": {
+      "heroWins": "The filters took hold, and {{heroPlayer}}’s patrol opened the refuge to every climber it could reach.",
+      "heroLoses": "{{otherPlayer}}’s wardens kept the doors sealed while the patrol found shelter farther down the mountain.",
+      "draw": "The recycler survived, but both groups divided the refuge and its dwindling air for the night."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A sea chapel was losing its foundations to the tide, and the relic displayed inside belonged to a drowned coastal town. {{heroPlayer}}’s salvage team came to secure it before the next surge; {{otherPlayer}}’s guardians asked them to leave it for a final service. Water already ran between the front pews.",
+      "{{hero}} crossed the flooded nave with a padded case and discovered the relic was a compass fixed to the altar by a chain. Its needle pointed toward an offshore shoal instead of north. The specialist followed the chain to a drain under the altar, where someone had tucked a dry bundle of children’s drawings.",
+      "A wave struck the chapel and moved every pew toward the doors. {{hero}} held the compass above the water while the guardians carried the drawings through the aisle. Outside, boats were gathering on the shoal marked by the needle, their lamps forming a circle around something unseen."
+    ],
+    "endings": {
+      "heroWins": "The drawings and compass reached shore, and {{heroPlayer}}’s team held the chapel until the last guardian left.",
+      "heroLoses": "{{otherPlayer}}’s guardians kept the altar while the salvage team retreated before the surge.",
+      "draw": "Everyone escaped with part of the record; the compass went down with the chapel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A bridge between two districts collected tolls long after the city abolished them. {{heroPlayer}}’s survey party came to reopen it; {{otherPlayer}}’s watch held the gate while a crowd waited with old coins. A child found that each coin bought passage for one person who had disappeared years earlier.",
+      "{{hero}} took cover in a toll booth and fired at the gate mechanism when a defender moved to lock the waiting crowd inside. The chain jammed halfway down. The fighter glimpsed a woman crossing in the opposite direction, carrying a suitcase whose tag matched a name on the child’s coin.",
+      "The crowd surged toward the open gap. {{hero}} kept the crossing clear while the survey party pulled the chain free. The woman reached the booth and offered the fighter the suitcase key, asking them to deliver it to a family that no longer lived in either district."
+    ],
+    "endings": {
+      "heroWins": "The bridge stayed open, and {{heroPlayer}}’s surveyors took the key to its intended family.",
+      "heroLoses": "{{otherPlayer}}’s watch closed the gate before the waiting crowd could cross.",
+      "draw": "The crowd crossed in both directions; neither side found the woman after the last coin was spent."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "A child arrived at a provincial archive with two guardians and two birth certificates. {{heroPlayer}}’s investigators sought the original register; {{otherPlayer}}’s attendants asked that the child remain within the archive until the dispute was settled. The child recognized a portrait on the wall but would not say why.",
+      "{{hero}} opened the register and found a blank page between records from the same day. Held to the window, the paper showed an erased address beside a sketch of the portrait’s frame. The specialist removed the frame and discovered a small parcel tied with the ribbon from one certificate.",
+      "Both guardians reached for the parcel at once. {{hero}} kept it in sight of the child and unwrapped a key, a photograph, and a letter addressed in handwriting the child recognized. Footsteps approached from the front hall, where a third adult had just asked for the child by name."
+    ],
+    "endings": {
+      "heroWins": "The investigators preserved the records, and {{heroPlayer}}’s people kept the child safe until the letter was read.",
+      "heroLoses": "{{otherPlayer}}’s attendants took custody of the archive and its disputed parcel.",
+      "draw": "The child left with the letter; both groups retained copies and agreed to keep looking."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A fortified granary stood between a hungry district and a convoy bound for another city. {{heroPlayer}}’s escort brought grain to the gate; {{otherPlayer}}’s wardens held the walls for the people inside. A damaged scale at the entrance was counting each sack twice.",
+      "{{hero}} held the approach when someone fired from the upper storehouse. The fighter answered from behind a laden cart, stopping the rush toward the convoy without striking the workers still weighing sacks at the gate. One worker pulled the scale apart and found an extra counter wired beneath its dial.",
+      "The district’s ration clerk emerged with a ledger showing exactly the missing amount. {{hero}} kept the gate covered while the workers weighed the final sacks by hand. From inside came a call that the granary’s own bins were empty, and the convoy drivers began turning their vehicles around."
+    ],
+    "endings": {
+      "heroWins": "The grain reached the district, and {{heroPlayer}}’s escort kept the granary supplied through the night.",
+      "heroLoses": "{{otherPlayer}}’s wardens controlled the gate and sent the convoy away.",
+      "draw": "The workers divided the sacks at the gate, leaving both groups with too little and a reason to return."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "objective",
+    "paragraphs": [
+      "A postal station on a high pass held letters from people whose villages had vanished under snow. {{heroPlayer}}’s couriers wanted to recover the mail; {{otherPlayer}}’s sentries guarded the station after fresh tracks appeared around it overnight. The tracks led to the door but never away.",
+      "{{hero}} found a ledger beside a cold stove and counted one delivered parcel for each vanished village. The specialist matched the parcel numbers to carved markers along the pass, where the snow had fallen into shallow hollows. A light moved beneath one hollow as a courier stepped toward it.",
+      "The courier called from under the snow without falling through. {{hero}} braced a rope against the station wall and led the search to the hollow, where a hidden hatch lifted from below. Inside waited an elderly postmaster with the last undelivered bag and no idea that the villages were gone."
+    ],
+    "endings": {
+      "heroWins": "The couriers brought out the postmaster and the mail, and {{heroPlayer}}’s people kept the station open.",
+      "heroLoses": "{{otherPlayer}}’s sentries closed the pass before the couriers could reach the hatch.",
+      "draw": "Both groups helped the postmaster out; the letters still had no homes to receive them."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A forest observation tower recorded a line of lights moving between trees every night at the same hour. {{heroPlayer}}’s scouts came to map their route; {{otherPlayer}}’s watch had sealed the tower after the observer failed to return. His logbook ended halfway through a drawing of a familiar farmhouse.",
+      "{{hero}} covered the tower steps as the scouts searched below. A figure moved between the trunks, and the fighter fired into the ground before it to make it stop. The figure kept walking. Its lantern showed the missing observer’s face, though his hands carried the logbook the scouts had just found upstairs.",
+      "The lights gathered at the base of the tower. {{hero}} held the stair while the scouts compared the two logbooks, page for page. The final drawing in the one upstairs had changed: the farmhouse was gone, and the observer had sketched a door in its place."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts left with both books and a route to the missing farmhouse.",
+      "heroLoses": "{{otherPlayer}}’s watch kept the tower while the scouts withdrew from the lights.",
+      "draw": "The tower stood empty by morning, its logbooks still disagreeing over where the farmhouse had been."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hilltop enclosure was being cleared for a new road while the village prepared its midsummer gathering there. {{heroPlayer}}’s defenders built a gate of timber and rope; {{otherPlayer}}’s patrol arrived with the survey stakes. Someone had tied a white sheep to the central post as a warning.",
+      "{{hero}} met a survey guard at the narrow gate and fought at arm’s length to keep the stakes out of the enclosure. A blade cut through the rope above them. The central post tilted toward the sheep, which had tangled itself in the falling line.",
+      "The fighter broke away to catch the post while another villager freed the animal. {{hero}} planted the timber upright with both hands, seeing the patrol’s stakes scattered across the hill and the first villagers arriving for the gathering. The gate stood open between the two groups."
+    ],
+    "endings": {
+      "heroWins": "The gathering went ahead, and {{heroPlayer}}’s people kept the hill for the village.",
+      "heroLoses": "{{otherPlayer}}’s patrol placed its stakes while the defenders moved the gathering downhill.",
+      "draw": "The sheep wandered through the open gate, and both sides left their markers until morning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "objective",
+    "paragraphs": [
+      "A refrigerated food depot lost power as relief trucks approached from two directions. {{heroPlayer}}’s dispatch team needed the cold room for medicine; {{otherPlayer}}’s stewards had filled it with food for a stranded neighborhood. The depot’s old ledger offered no way to tell which cargo had arrived first.",
+      "{{hero}} found a manual compressor behind stacked crates and began turning it while the others sorted medicine from food. A frost-covered label beneath the lowest crate named a third shipment no one had logged. The specialist followed a thin trail of water to a locked storage door beside the compressor.",
+      "A child knocked from inside the storage room. {{hero}} stopped the compressor long enough to hear a reply, then wedged the handle so it would keep turning while the door came open. Behind it were people sheltering from the heat, holding the missing shipment’s blankets around their shoulders."
+    ],
+    "endings": {
+      "heroWins": "The depot stayed cold, and {{heroPlayer}}’s dispatchers delivered medicine and food together.",
+      "heroLoses": "{{otherPlayer}}’s stewards kept the cold room while the dispatchers took the medicine elsewhere.",
+      "draw": "Both convoys unloaded, but the power failed again before either could take charge of the depot."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A river lock held a recovery capsule that had splashed down far upstream. {{heroPlayer}}’s technicians came to retrieve its flight recorder; {{otherPlayer}}’s guards held the lockhouse after finding an unopened distress message inside. The capsule’s heat shield still felt warm beneath cold river spray.",
+      "{{hero}} opened a maintenance port and found the recorder tangled in reed roots growing through the hull. The specialist freed it as the lock gates began to open on an automatic cycle. Within the recorder’s first seconds was a warning that the capsule had entered the river twice, hours apart.",
+      "The lock water surged. {{hero}} tied the recorder to a floating service ring and reached for a technician stranded on the lower walkway. A guard in the lockhouse shouted that the second landing had yet to happen. Above the river, a new trail of fire crossed the evening sky."
+    ],
+    "endings": {
+      "heroWins": "The technician escaped, and {{heroPlayer}}’s crew kept the recorder for the coming landing.",
+      "heroLoses": "{{otherPlayer}}’s guards took the recorder as the capsule passed through the gates.",
+      "draw": "The recorder floated to shore between the crews while a second capsule fell toward the river."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A factory siren sounded at sunrise although the mill had been closed for decades. {{heroPlayer}}’s inspection squad entered to find the source; {{otherPlayer}}’s caretakers controlled the front gate and insisted the building was safe. In the silent workshop, fresh footprints led toward the boiler room.",
+      "{{hero}} covered the catwalk while a mechanic checked the siren’s power line. A figure moved below with a weapon, and the fighter fired through the mesh to turn it from the boiler controls. The mechanic found the line unplugged. The siren rang anyway, vibrating dust from the rafters.",
+      "A pressure gauge climbed as the workshop lights came on. {{hero}} kept the boiler door in sight while the mechanic opened a relief valve. Through the glass of the factory office, a payroll clock stamped another shift card for a worker whose name had been crossed out years ago."
+    ],
+    "endings": {
+      "heroWins": "The pressure fell, and {{heroPlayer}}’s squad held the factory while the mechanic traced the siren.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retook the boiler room and closed the gate.",
+      "draw": "Both groups left after the pressure eased; the siren sounded again at the next sunrise."
+    }
   }
 ]
