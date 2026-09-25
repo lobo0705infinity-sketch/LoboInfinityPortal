@@ -10258,5 +10258,385 @@
       "heroLoses": "{{otherPlayer}}’s crew held the pad and traced the beacon with its receiver.",
       "draw": "Both crews heard the beacon, but the scorch marks cooled before either could prove what made them."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A pressure dome in a frozen quarry still held a table laid for its last crew. Outside, the wind had uncovered a letter addressed to whoever found the place. {{heroPlayer}}’s winter patrol entered through the service hatch while {{otherPlayer}}’s recovery team came along the observation ramp to claim the abandoned instruments.",
+      "{{hero}} met a defender at the inner seal and fought to hold it while a companion retrieved the letter. The fighter forced the door open to a cold gust; inside, every plate on the table was fixed in place except one. Beneath it lay a logbook describing a second dome buried below the quarry floor.",
+      "Opening the floor hatch might lead to the second dome, but the first was losing pressure through the contested seal. The recovery team had a patch kit on the ramp. The fighter kept the door from swinging shut as a knock sounded from somewhere under the table."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol sealed the dome and followed the logbook to the buried chamber.",
+      "heroLoses": "{{otherPlayer}}’s team secured the instruments and opened the lower hatch from the ramp.",
+      "draw": "The dome was sealed, but the second chamber remained closed under a shared watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A survey drone circled a dry canyon carrying the only new map of a buried water pump. Its battery was failing, and both teams had tracked its shadow to the same landing shelf. {{heroPlayer}}’s rangers came along the creek bed; {{otherPlayer}}’s flight crew set a receiver on the opposite rim.",
+      "{{hero}} covered a climber ascending to the shelf. Shots chipped the stone around the receiver, and the fighter answered while the climber caught the descending drone. Its map showed a pump beneath the canyon wall, but a red mark flashed where the climber’s weight had begun to loosen the shelf.",
+      "The drone could be thrown to the creek bed before the rock gave way, though its fragile memory might shatter. The flight crew was lowering a safety line from the rim. The fighter kept the line of fire clear as the climber held the drone above the first falling stones."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers saved the map and reached the pump from the canyon floor.",
+      "heroLoses": "{{otherPlayer}}’s crew recovered the drone by its line and secured the landing shelf.",
+      "draw": "The climber escaped, but the drone’s map broke into fragments shared by both teams."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "At a desert nursery, a falling fragment burned through the shade canopy and landed among trays of saplings. Its warm dust made one tray flower out of season. {{heroPlayer}}’s botanists entered the nursery to study the change; {{otherPlayer}}’s flight crew guarded the fragment as part of a lost instrument package.",
+      "{{hero}} lifted the blooming tray and found a thin metal filament wound through its roots. The specialist isolated the filament in a clear case, but the other saplings began turning toward the fragment. A gardener discovered that the oldest shade cloth was burning slowly along its seams, too high to reach without a ladder.",
+      "The nursery could be saved if the cloth came down, yet dropping it might scatter the dust across every tray. The flight crew had a sealed container ready for the fragment. The specialist held the blooming tray away from the heat as a bright line crossed the canopy toward the doorway."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists contained the dust and saved the saplings while securing the nursery.",
+      "heroLoses": "{{otherPlayer}}’s crew recovered the fragment and helped the gardeners protect the remaining trays.",
+      "draw": "The fire went out, but the nursery stayed closed until both parties could test the altered roots."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A communications museum built around an old descent capsule began broadcasting landing coordinates to ships that had never visited. A technician traced the signal to a hand-cranked exhibit behind a locked screen. {{heroPlayer}}’s investigators entered by the back gallery; {{otherPlayer}}’s recovery crew guarded the capsule at its center.",
+      "{{hero}} reached the exhibit as a defender pulled the screen shut. The fighter wrestled it open and stopped the crank, but the coordinate tape kept advancing beneath a glass cover. One strip named a meadow beyond the museum, where children were flying kites beneath the descending flight path.",
+      "The investigator could tear out the tape and halt the broadcast or follow it to discover who had set the crank. The recovery crew had a direct radio to warn the meadow. The fighter held the tape under the glass while the museum speaker began counting down to a landing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators stopped the signal and reached the meadow before anything descended.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the exhibit and warned the meadow through its own radio.",
+      "draw": "The meadow cleared, but the tape ended without revealing who programmed the false coordinates."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "An orbital freight terminal received a sealed spacesuit without an owner or a delivery note. Its helmet camera was still recording a loading bay no one could locate. {{heroPlayer}}’s customs officers opened an inspection desk; {{otherPlayer}}’s flight crew claimed the suit belonged to a missing cargo manifest.",
+      "{{hero}} connected the camera to the terminal monitor and recognized a crate passing behind its wearer. The specialist matched its number to a container due to leave on the next lift. Inside the suit, a small alarm sounded each time the lift doors cycled, though its air tank was empty.",
+      "The officers could open the crate and delay the lift, or send the suit with it to preserve the camera’s view of its last route. The flight crew was moving toward the container bay. The specialist watched the monitor as a figure entered the same frame from yesterday’s recording."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s officers secured the crate and traced the spacesuit’s missing manifest.",
+      "heroLoses": "{{otherPlayer}}’s crew held the lift and recovered the suit’s recorded route.",
+      "draw": "The lift was delayed, but both teams kept the suit sealed until its owner could be identified."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile operating theater arrived at a remote landing field with its cooling fans silent. Inside lay a patient who had survived a crash but could not be moved until a procedure was finished. {{heroPlayer}}’s medics brought spare cells; {{otherPlayer}}’s recovery team held the landing field and its only working power outlet.",
+      "{{hero}} tested the theater’s circuits and found a fan motor blocked by a strip of parachute cloth. The specialist freed it, restoring cool air to the patient. Then the external power cable began heating at its connector, and a technician reported that the recovery team had another battery arriving by ground transport.",
+      "The medics could disconnect the cable and trust the theater’s short reserve, or wait for the battery while the connector grew hotter. The recovery team was bringing a heat shield across the field. The specialist held a hand near the plug as the surgeon inside asked for five uninterrupted minutes."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics kept the theater cool and finished the procedure with power to spare.",
+      "heroLoses": "{{otherPlayer}}’s team secured the field and supplied the battery that kept the patient safe.",
+      "draw": "The procedure finished, but both teams kept the theater at the field for further repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cluster of metal sculptures above a city roof began blocking a satellite relay during an emergency broadcast. The artist claimed they had been aligned to receive a private message, not transmit one. {{heroPlayer}}’s signal crew reached the roof; {{otherPlayer}}’s flight technicians held the relay cabinet below.",
+      "{{hero}} covered a rigger climbing the sculpture frame. Shots struck the roof tiles, and the fighter answered while the rigger tilted one metal wing away from the antenna. The broadcast returned for a moment, revealing an evacuation route, then broke into the artist’s private message: a request to look behind the relay cabinet.",
+      "The rigger could dismantle the frame and restore the broadcast, but the message might explain why it had turned toward the relay. The flight technicians were opening the cabinet from below. The fighter watched the emergency text flicker back as the artist reached for a sketch hidden under the nearest sculpture."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the relay and found the message’s source on the roof.",
+      "heroLoses": "{{otherPlayer}}’s technicians secured the cabinet and kept the evacuation broadcast running.",
+      "draw": "The broadcast went through, but both teams left the sculpture in place until its private message could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "In a public planetarium, a child noticed that the stars in the lesson had begun marking a supply ship’s real descent. The projected route ended behind the school next door. {{heroPlayer}}’s educators went to the console; {{otherPlayer}}’s flight crew secured the rear courtyard as families came to collect their children.",
+      "{{hero}} found a live telemetry feed plugged into the planetarium projector. The specialist moved the star field aside to show a corrected landing zone beyond the river, then discovered that the school’s outdoor speakers were repeating the wrong coordinates. An instructor began guiding the children away from the rear wall.",
+      "Disconnecting the feed would stop the bad instructions but also take away the only image of the approaching ship. The flight crew had a radio to its pilot, if the educators could give them the corrected route. The specialist held the projector on the river bend as the sky outside began to brighten."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s educators sent the corrected route and kept the school clear of the descent.",
+      "heroLoses": "{{otherPlayer}}’s crew guided the ship across the river and secured the courtyard.",
+      "draw": "The ship landed safely, but both teams kept the planetarium feed open to investigate its altered coordinates."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A half-built radar dish stood over a workers’ camp, its outer ring suspended on a crane that had lost its brakes. The dish was needed to track the next supply shuttle. {{heroPlayer}}’s riggers came up the steel scaffold; {{otherPlayer}}’s flight crew held the control room and feared a premature lift would bring the ring down.",
+      "{{hero}} covered a welder crossing the exposed scaffold. Fire struck a crossbeam, and the fighter answered while the welder fixed a temporary stop to the moving ring. Beneath the dish, the camp’s warning siren sounded once and fell silent. The shuttle’s arrival time appeared on a display with no one at the controls.",
+      "The ring could be lowered to safety or locked in place long enough to use the dish for one sweep. The flight crew had an alternate antenna, but not a clear view past the ridge. The fighter watched the welder’s stop bend as a distant engine sounded beyond the clouds."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers held the ring and tracked the shuttle into the camp’s safe approach.",
+      "heroLoses": "{{otherPlayer}}’s flight crew took the controls and directed the shuttle with its alternate antenna.",
+      "draw": "The shuttle arrived, but the dish stayed unfinished while both crews repaired the crane."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A small claims office received a bill for a salvage job that no crew remembered completing. The bill named a capsule now sitting in a sealed hangar across the field. {{heroPlayer}}’s auditors opened the ledger; {{otherPlayer}}’s recovery team guarded the hangar, where the capsule’s identification plate had been scratched clean.",
+      "{{hero}} compared the bill’s seal with older claims and found an unclaimed deposit in the same hand. The specialist matched its weight to a memory cartridge still lodged behind the capsule’s plate. When the cartridge was pulled free, the office printer began issuing a receipt for a second, larger object.",
+      "The auditors could read the cartridge in the office, but that would leave the hangar unguarded while the unknown object’s claim matured. The recovery team was bringing a portable reader to the capsule. The specialist held the new receipt beneath the light and saw its delivery address change from the hangar to the office."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors traced both claims and secured the capsule’s recovered records.",
+      "heroLoses": "{{otherPlayer}}’s team kept the hangar and identified the capsule from its cartridge.",
+      "draw": "The first claim was settled, but the second object remained missing under a shared investigation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A landing crater appeared in a farmer’s field without a sound. At its center stood a chair strapped to a frame, still warm, with a set of seeds on the seat. {{heroPlayer}}’s investigators entered from the south hedge; {{otherPlayer}}’s recovery crew approached through the gate and warned the farmer away.",
+      "{{hero}} held the hedge as a researcher stepped into the crater. Fire struck the empty frame, and the fighter answered while the researcher found a timer beneath the chair. It was counting down to a second landing, and the seeds had begun sprouting in the warm soil around the frame.",
+      "Moving the chair might reveal what would arrive next, but could scatter the sprouting seeds through the field. The recovery crew had a shield that could cover the crater if it reached the frame. The fighter saw the farmer hold up an old photograph of the field with the same chair in it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators secured the crater and recorded the second landing without harming the field.",
+      "heroLoses": "{{otherPlayer}}’s crew contained the frame and took charge of the farmer’s field.",
+      "draw": "The timer stopped, but both teams remained to watch the seeds that grew around the chair."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An asteroid laboratory’s demonstration shaft opened beneath a visiting class during a tour of the sealed exhibit hall. Its lift remained suspended halfway down with a teacher and two students inside. {{heroPlayer}}’s search party took the lower machine room; {{otherPlayer}}’s flight technicians reached the upper gantry to secure the lifting cables.",
+      "{{hero}} confronted a defender at the manual brake and wrestled for its lever before the lift could slide. The fighter braced the lever with a tool while a mechanic examined the drive. Deep in the shaft, the students saw a second platform rising toward them with no one aboard.",
+      "Stopping the lower platform would hold both cars in place, but the teacher’s lift needed to move to a door. The upper technicians could catch it from the gantry if the brake was released carefully. The fighter kept pressure on the lever as the unseen platform rang the shaft’s arrival bell."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party steadied the lift and brought the class out through the lower door.",
+      "heroLoses": "{{otherPlayer}}’s technicians secured the upper gantry and drew the class to safety.",
+      "draw": "The class escaped, but the unexplained platform kept the laboratory shaft closed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A chronometer at a remote test range began counting down to a launch that had already happened. Each minute it projected a different shadow of a rocket on the empty pad. {{heroPlayer}}’s observers took the timing hut; {{otherPlayer}}’s flight crew held the pad and feared a hidden engine remained live beneath it.",
+      "{{hero}} compared the shadows and found each one cast from a different position in the hut. The specialist moved the chronometer’s lamp and revealed a service hatch beneath its floor. Inside lay a second timer, counting up from the moment the rocket had vanished from tracking screens.",
+      "Stopping either timer might reveal the hatch’s purpose, or erase the only record of what occurred after launch. The flight crew had begun checking the pad for residual fuel. The specialist held the lamp at the angle that showed the last shadow as its outline shifted away from the rocket’s old path."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers secured both timers and traced the rocket’s final course from their shadows.",
+      "heroLoses": "{{otherPlayer}}’s crew held the range and recovered the launch record from the pad.",
+      "draw": "The timers stopped together, leaving both teams with a partial route and no claim to the pad."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An old communications monument began blinking in the pattern of a distant ship’s call sign. Its buried relay had no power connection, and the flight crew said the ship was weeks away. {{heroPlayer}}’s searchers came across the plaza; {{otherPlayer}}’s technicians held the maintenance stair beneath the monument.",
+      "{{hero}} covered a searcher opening the monument’s base. Shots chipped the carved stone, and the fighter answered while the searcher lifted a small relay core into the light. It held a live recording of the ship’s bridge, where an empty chair turned slowly toward the camera.",
+      "Removing the core would preserve the recording but silence the call sign. The flight technicians could plug it into a portable transmitter if they reached the base. The fighter watched the chair in the live image stop turning as a hand appeared on the edge of the bridge display."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers kept the core transmitting and secured the monument for the ship’s reply.",
+      "heroLoses": "{{otherPlayer}}’s technicians took the core and contacted the distant ship from the plaza.",
+      "draw": "The bridge image vanished, but both teams retained the call sign and remained at the monument."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "Beneath a polar greenhouse, a cellar of translucent roots grew around a sealed life-support canister. The gardener had never planted them, and a label on the canister named a missing expedition. {{heroPlayer}}’s field observers entered through the cellar; {{otherPlayer}}’s flight team stood at the greenhouse doors, waiting to recover its equipment.",
+      "{{hero}} followed the roots to a valve feeding warm water from the greenhouse heaters. The specialist closed it a fraction, exposing the canister’s latch without breaking the growth. A narrow window showed something moving inside, and the canister’s own indicator changed from empty to occupied.",
+      "Opening the canister might save whatever was inside, but the roots could be its only source of warmth. The flight team had a heater it could carry down the stairs. The specialist held the valve at its new position as a light flashed once behind the small window."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers kept the canister warm and opened it safely beneath the greenhouse.",
+      "heroLoses": "{{otherPlayer}}’s team recovered its equipment and protected the canister with a portable heater.",
+      "draw": "The canister stayed sealed under joint guard while both parties studied the roots."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A harbor navigation system began directing every boat to the same empty slip. Its screen showed a vessel approaching from above the water, with no name and no wake. {{heroPlayer}}’s harbor engineers sought the guidance console; {{otherPlayer}}’s flight crew held the slip, where an old descent marker stood beneath a tarp.",
+      "{{hero}} opened the console and found its route table overwritten by coordinates from the descent marker. The specialist restored a safe channel for the fishing boats, then saw a new craft appear on the display with a landing time only minutes away. The slip’s tarp lifted in a sudden wind.",
+      "The engineers could shut off the marker and protect the harbor traffic, but the approaching craft might lose its guide. The flight crew could turn the marker toward an empty quay if given the right coordinates. The specialist held the table open as the first fishing boat passed the crowded slip."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers cleared the boats and guided the craft to the empty quay.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the descent marker and directed the landing away from the harbor.",
+      "draw": "The boats passed safely, but both teams kept the empty slip clear until the craft’s signal faded."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a hilltop film archive, one reel showed a launch from a clearing that had never held a pad. The picture included a line of people waving as the rocket rose. {{heroPlayer}}’s analysts arrived to inspect the reel; {{otherPlayer}}’s flight crew stood near the projector, asking who had filmed its missing mission.",
+      "{{hero}} guarded the projection room while an archivist rewound the film. Fire from the upper balcony tore the screen, and the fighter answered as the archivist found a second strip spliced beneath the first. On it, the line of people turned away from the rocket and ran toward a door at the clearing’s edge.",
+      "The archivist could preserve the splice or keep projecting it to identify the door in the moving image. The flight crew had an old chart of the clearing and was unfolding it below the damaged screen. The fighter watched the door sharpen for one frame as the reel reached the end."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts kept the reel intact and located the door shown beside the launch.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the archive and matched the film to its lost mission.",
+      "draw": "The splice was saved, but the door’s position remained disputed between the film and the chart."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A monument at a landing field held a sealed capsule of letters for the crew of the first ship to return. This morning its hatch opened without a ship in sight. {{heroPlayer}}’s custodians came through the memorial garden; {{otherPlayer}}’s flight team reached the monument from the control building.",
+      "{{hero}} grappled with a defender at the hatch and kept it from closing on a custodian’s hand. The fighter lifted a letter that had slid beneath the hinge. It was addressed to someone in the control building, where a warning lamp had just come on for a landing request.",
+      "The custodian could read the letter to find who opened the hatch, or close the capsule before wind scattered the remaining messages. The flight team was calling for the field to be cleared. The fighter held the heavy hatch as the letter’s named recipient appeared at the garden gate."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians secured the letters and held the monument for the returning crew.",
+      "heroLoses": "{{otherPlayer}}’s team took the capsule and prepared the field for the requested landing.",
+      "draw": "The letters stayed sealed, but both parties waited at the monument for a ship that did not arrive."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A salvage hearing was convened in a hangar after two crews claimed the same recovered navigation sphere. The sphere projected two flight paths, each ending with the ship in a different place. {{heroPlayer}}’s inspectors examined the record stand; {{otherPlayer}}’s recovery team kept the hangar doors open for its witnesses.",
+      "{{hero}} found a loose pin in the stand and rotated the sphere without moving either path. A third, hidden course appeared between them, ending at a small island near the coast. The specialist marked its coordinates as a witness recognized the island’s lighthouse, which had stopped transmitting on the day of the recovery.",
+      "The hearing could adjourn to search the island, leaving the sphere in dispute, or award custody now using the hidden course. The recovery team had a craft ready to launch. The specialist held the pin in place while the two original routes faded and the lighthouse mark began to blink."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the sphere and verified the island course before the hearing resumed.",
+      "heroLoses": "{{otherPlayer}}’s crew kept the sphere and reached the island with its witnesses.",
+      "draw": "Both claims were set aside while the search for the missing lighthouse began."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A tracking buoy surfaced in the harbor with a rescue aircraft’s beacon attached to it. The aircraft had vanished inland the night before. {{heroPlayer}}’s search detail came to the floating dock; {{otherPlayer}}’s flight crew held the shore receiver, whose display showed the buoy still moving below the water.",
+      "{{hero}} covered a diver reaching the buoy as shots struck the dock floats. The fighter answered from behind a mooring post while the diver recovered the beacon. Beneath it lay a cable leading toward a narrow inlet, and the beacon’s casing held a scrap of fabric matching the missing aircraft’s rescue canopy.",
+      "The diver could follow the cable through the inlet, but the tide was turning and the air supply was short. The flight crew had a shallow boat ready on the shore. The fighter watched the buoy drift against its tether as the diver tugged twice, signaling something had moved at the cable’s far end."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail followed the cable and found the missing aircraft’s crew beyond the inlet.",
+      "heroLoses": "{{otherPlayer}}’s crew took the buoy and launched its boat toward the beacon’s source.",
+      "draw": "The beacon was saved, but the tide hid the cable’s end until both teams could return."
+    }
   }
 ]
