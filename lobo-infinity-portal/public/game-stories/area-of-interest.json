@@ -6838,5 +6838,385 @@
       "heroLoses": "{{otherPlayer}}’s librarians retained the room and closed it for repair.",
       "draw": "The air cleared, and both groups kept the recovered catalog page with the garden records."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The last train had left the municipal depot, but its departure board kept printing a platform that no longer existed. {{heroPlayer}}’s people came for the route plans locked behind the board; {{otherPlayer}}’s inspectors were sealing the depot from the street. Beneath the tracks, a second train could be heard moving in darkness.",
+      "{{hero}} pushed through the service corridor as an opponent tried to close its steel gate. The fighter caught the gate, drove the opponent back, and reached the old signal room. There was no hidden train: a freight car had broken loose and was rolling toward the sealed underground platform.",
+      "The route plans lay within reach, but the signal lever would only stop the car if someone stayed to hold it. Above, the inspectors began forcing the corridor door. The car grew louder behind the wall, and the fighter had time to take either the plans or the lever first."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} held the lever until {{heroPlayer}}’s people recovered the plans and cleared the platform.",
+      "heroLoses": "{{otherPlayer}}’s inspectors secured the signal room and stopped the car while the plans remained sealed.",
+      "draw": "The car stopped short; each side escaped with a different page from the route plan."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "The walled reservoir should have been empty. Instead its surface glowed green under the midnight lamps, and every gate into the adjoining orchard stood open. {{heroPlayer}}’s survey crew reached the intake from the hills; {{otherPlayer}}’s officers held the pump house. A downstream neighborhood had already reported green water in its taps.",
+      "{{hero}} slipped along the spillway to inspect the intake valve. The specialist found a dye capsule crushed against the grate and a second, unbroken capsule lodged inside the emergency bypass. Cutting the bypass would stop the color but leave the orchard without water until morning.",
+      "A warning horn sounded from the neighborhood as the officers crossed the pump house bridge. The intact capsule began to move in the current. The specialist braced a tool against the grate, knowing that opening it would release water and the capsule together unless the bypass could be shut first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew shut the bypass, captured the capsule, and kept the reservoir under watch.",
+      "heroLoses": "{{otherPlayer}}’s officers took the pump house and isolated the orchard before the capsule moved farther.",
+      "draw": "The capsule was trapped between closed gates, leaving both crews on opposite banks until daylight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A neighborhood recording studio was sending a live evacuation warning when the signal cut to a single note. {{heroPlayer}}’s escort climbed the sound tower to restore the feed; {{otherPlayer}}’s security detail had taken the street below. Inside the studio, an announcer continued speaking into a dead microphone.",
+      "{{hero}} covered the tower stair while a sound engineer traced the severed cable. Shapes moved behind the window opposite them; the fighter kept their heads down with measured fire, giving the engineer time to pull a spare lead through the wall. The speaker outside crackled, then returned with the announcer’s voice.",
+      "The first warning named a safe route through the market. The second named a shelter that the announcer suddenly realized was locked. Below, the opposing detail was already moving toward that building. The engineer could keep the broadcast open or leave with the escort to unlock it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the tower long enough to broadcast the corrected shelter route.",
+      "heroLoses": "{{otherPlayer}}’s detail seized the street and silenced the tower before the second warning.",
+      "draw": "The broadcast reached the market, but each side controlled one end of the route to shelter."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living relay tree rose through a rooftop observatory, its pale leaves flashing messages from a distant research camp. {{heroPlayer}}’s caretakers arrived to read a new sequence; {{otherPlayer}}’s guards were already cutting the stair access. The tree’s roots reached a cistern that had begun to drain.",
+      "{{hero}} climbed the exterior lattice with a portable reader and caught the sequence before the leaves dimmed. The specialist found the cistern outlet forced open beneath the roof. Restoring the water would keep the tree alive, but the reader needed power from the same pump to send a reply.",
+      "The message said the distant camp had lost its own relay and could see the rooftop flashes only until dawn. Water rattled down the open outlet; footsteps sounded on the observatory stairs. The specialist held the pump cable in one hand and the reader in the other."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers saved the tree and sent a reply before dawn.",
+      "heroLoses": "{{otherPlayer}}’s guards took the observatory and cut the message short.",
+      "draw": "The tree survived on a trickle, while the distant camp received only part of the reply."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An auction hall was empty except for a revolving stage and a crate marked for collection before sunrise. {{heroPlayer}}’s contractors had been hired to retrieve the crate; {{otherPlayer}}’s investigators had locked down the hall. Someone restarted the stage, carrying the crate toward a trapdoor in the floor.",
+      "{{hero}} leapt onto the moving platform and collided with a defender beside the crate. The fighter forced the defender away from the latch, then saw that the crate held a reel of testimony rather than any valuable object. Under the platform, a conveyor was already pulling at its trailing strap.",
+      "The trapdoor opened a handspan. There was room to grab the crate, or to seize the stage brake before everyone standing on it dropped into the machinery. Across the hall, the investigators broke through the locked entrance, their lights sweeping over the turning floor."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} stopped the stage and {{heroPlayer}}’s contractors carried out the reel.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the crate as the contractors escaped the machinery.",
+      "draw": "The stage stopped, but the reel came loose; both sides left with fragments of its testimony."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A customs barge lay moored under a river bridge with one refrigerated container still aboard. {{heroPlayer}}’s guards were hired to deliver it to a field clinic; {{otherPlayer}}’s inspectors had marked it for seizure. As the tide rose, the bridge began pressing against the container’s lifting rig.",
+      "{{hero}} took position behind the barge wheelhouse while a crane operator tried to lower the rig. A defender fired from the far bank; the fighter answered through a gap in the rail, protecting the operator as the cable came taut. The container shifted free, but its temperature warning started blinking.",
+      "The operator had one lift left before the bridge trapped the rig. The clinic waited downstream with its lights on; the inspectors had a truck at the nearer bank. The fighter could see both routes from the wheelhouse and heard the warning beep accelerate inside the container."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards got the container onto the clinic boat before its cooling failed.",
+      "heroLoses": "{{otherPlayer}}’s inspectors took custody on the nearer bank and held the cargo for examination.",
+      "draw": "The container reached shore, but both parties had to share its dwindling cooling supply."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A foundry was casting the final gear for a floodgate that protected the workers’ quarter. {{heroPlayer}}’s hired crew came to collect it; {{otherPlayer}}’s municipal team had secured the casting floor. The first test fit was due at dawn, and rain had already reached the lower streets.",
+      "{{hero}} crossed the hot floor as a defender tried to close the cooling pit over the fresh gear. The fighter drove them off the handle and held the cover open while a worker hooked the casting. Its teeth were still hot enough to burn through the carrying straps.",
+      "A second set of straps hung on the far wall, beyond a line of workers sheltering from flying sparks. The rain hammered harder on the roof. If the casting cooled in the pit, it might crack; if moved too early, it might tear free before it reached the gate."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew carried the gear to the floodgate in time for the rising water.",
+      "heroLoses": "{{otherPlayer}}’s team retained the foundry and fitted the gear under its own supervision.",
+      "draw": "The gear reached the gate, but neither side could claim it before the flood receded."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A solar balloon above the civic square carried the only working signal between the district and its outer farms. {{heroPlayer}}’s technicians came to retrieve its data capsule; {{otherPlayer}}’s officers ordered the tether cut after its shadow fell across the emergency landing pad. A farm vehicle was already approaching the pad.",
+      "{{hero}} climbed the balloon mast and found the capsule locked beneath a panel that had warped in the sun. The specialist freed it, then saw a second tether running toward the landing lights. Cutting the balloon loose would clear the pad but take the capsule out of reach.",
+      "The vehicle’s approach light appeared over the rooftops. The officers began pulling on the emergency cable below while the technicians called for one more minute. From the mast, the specialist could feel the balloon tugging against both tethers as the sun slipped behind cloud."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew recovered the capsule and cleared the pad before the vehicle landed.",
+      "heroLoses": "{{otherPlayer}}’s officers cut the balloon free and kept the landing lane open.",
+      "draw": "The vehicle landed, but the capsule fell into the square between the two waiting groups."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "On a ridge of wind turbines, the district’s water pumps depended on one turning generator. {{heroPlayer}}’s escort brought a mechanic to repair its damaged brake; {{otherPlayer}}’s security detail held the service road. In the valley, a line of empty water carts was forming at the pump station.",
+      "{{hero}} held the tower platform while the mechanic crawled into the brake housing. Shots struck the railing from the road, and the fighter fired back to keep the mechanic beneath cover. The turbine began turning again, but a loosened blade bolt knocked against its hub on every rotation.",
+      "The mechanic could stop the machine to tighten the bolt, risking another stall, or leave it spinning long enough to fill the waiting carts. The noise became louder as the opposing detail reached the tower stairs. From the valley came the first faint sound of water entering a cart."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the tower while the pumps filled the waiting carts.",
+      "heroLoses": "{{otherPlayer}}’s detail secured the turbine and shut it down for repair.",
+      "draw": "A few carts filled before the turbine stopped; both sides guarded the tower until the blade was safe."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "objective",
+    "paragraphs": [
+      "Two recovery teams reached opposite airlocks of the same drifting refinery, each carrying orders to secure its emergency reactor. {{heroPlayer}}’s people came from the service craft; {{otherPlayer}}’s arrived along the outer truss. Between them, the refinery’s rotation pulled a loose cargo net across the only passage.",
+      "{{hero}} entered the central control room as the net struck its window. The specialist found two shutdown controls: one would stabilize the refinery but seal the outer airlock, while the other would keep both exits open and let the reactor run hotter. A second team’s lights appeared at the far door.",
+      "A voice over the intercom called that a worker remained outside on the truss. The reactor gauge climbed. The specialist had a hand on each control and no way to see whether the worker was nearer the service craft or the outer airlock."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team stabilized the refinery and pulled the worker through the service hatch.",
+      "heroLoses": "{{otherPlayer}}’s team took the control room and rescued the worker through the outer airlock.",
+      "draw": "Both exits stayed open just long enough for the worker to cross, leaving the reactor under shared watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Snow had buried the pass markers, leaving a medical convoy stalled above a steep ravine. {{heroPlayer}}’s climbers followed a rope toward the old beacon hut; {{otherPlayer}}’s armored escorts had secured the road below. A second rope, newly cut, dangled from the hut’s upper window.",
+      "{{hero}} climbed the exposed ladder as a defender leaned out to push it loose. The fighter caught the defender at the sill and forced a way inside. The hut’s beacon battery was missing, but the convoy’s lead vehicle still had enough power to run it through a long cable.",
+      "The cable had to be stretched across the ravine in full view of the escorts. Somewhere behind the snowfall, an engine started and the convoy began to move without its markers. The fighter held the empty battery socket while the climbers carried the cable into the white air."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s climbers relit the beacon and guided the convoy along the safe edge.",
+      "heroLoses": "{{otherPlayer}}’s escorts took the hut and directed the convoy down their road.",
+      "draw": "The beacon flashed once, enough for both groups to stop the convoy before the ravine."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "A forest communications bunker held the last working map of a firebreak that had vanished beneath new growth. {{heroPlayer}}’s rangers entered to recover it; {{otherPlayer}}’s advance guard watched the ridge above. Smoke from a distant brushfire threaded through the ventilation grille, carrying the scent of wet pine.",
+      "{{hero}} found the map sealed inside a waterproof tube beneath the bunker floor. The specialist unrolled it and saw a hand-drawn shortcut around the ridge, but the ink had run where someone had marked a new water source. Outside, the advance guard began descending toward the bunker entrance.",
+      "The rangers could follow the old firebreak, whose trees had grown back, or gamble on the shortcut and search for the lost water source. The smoke thickened while the specialist traced both lines with a gloved finger. A whistle sounded once from the ridge and was not answered."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers found the hidden water source and cut a new line around the fire.",
+      "heroLoses": "{{otherPlayer}}’s guard secured the bunker and controlled the only usable map.",
+      "draw": "Both groups followed different paths to the same stream and held opposite banks through the night."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A stone quarry served as the emergency loading yard for a hillside town. {{heroPlayer}}’s protection detail came for a stack of flood barriers; {{otherPlayer}}’s laborers were already hauling them toward a different gate. On the ridge, a section of drainage wall had begun to crack.",
+      "{{hero}} held the quarry ramp while a loader carried the first barrier uphill. Gunfire struck the rail beside the machine, and the fighter returned fire from behind a stone block, keeping the driver moving. The cracked wall split wider, pouring water into the lower lane between both gates.",
+      "There were enough barriers to close one gate before the water reached it, but the second would remain exposed. The loader stopped where the road divided. Over the engine’s noise, a bell sounded from the neighborhood below one gate; no one could tell whether the other neighborhood had a warning."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the barriers and protected the first threatened street.",
+      "heroLoses": "{{otherPlayer}}’s laborers took the barriers to their gate before the lane flooded.",
+      "draw": "The load was split between the gates, leaving both neighborhoods with a narrow but uncertain defense."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "objective",
+    "paragraphs": [
+      "A relief train stopped on a viaduct after its far signal switched to red. {{heroPlayer}}’s rapid response crew arrived along the maintenance walk; {{otherPlayer}}’s sentries held the station at the far end. Below the bridge, floodwater carried a broken signal pole toward a support.",
+      "{{hero}} opened the trackside control box and found a loose wire making the signal flash at random. The specialist could lock the points for the train, but doing so would trap a maintenance trolley still approaching from behind. The trolley’s lamp appeared through the rain before its driver could hear the warning.",
+      "The train’s passengers began to move toward the doors as the water struck the support below. The specialist needed the trolley stopped and the far station cleared before the train could cross. Across the viaduct, the sentries switched on their own signal, a green light that did not explain the red one."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew stopped the trolley and brought the relief train through.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the station and held the train on the viaduct.",
+      "draw": "The train and trolley both stopped safely, one at each end of the damaged points."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A landing capsule fell into a mountain radio array, snapping the dish away from the villages it served. {{heroPlayer}}’s recovery crew followed the impact trail; {{otherPlayer}}’s armored patrol had reached the station from the road. A voice transmitted from the capsule, counting down the minutes of its remaining air.",
+      "{{hero}} reached the dish controls and found the damaged arm could be turned toward either the capsule or the valley, but the motor would survive only one more movement. The specialist sent a short signal to the capsule; its pilot answered with a location beyond the visible wreckage.",
+      "Snow began to fall over the array. A rescue team needed the dish aimed at the pilot to locate the hidden compartment, while the villages needed it pointed outward for weather warnings. The armored patrol climbed the station steps as the last minute of air was called."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew found the pilot and repaired the array before the next weather report.",
+      "heroLoses": "{{otherPlayer}}’s patrol kept the dish aimed at the valley and secured the wreck for later recovery.",
+      "draw": "The pilot’s last signal was heard in both directions; each side searched from a different path."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A winter fuel depot was the last heated building between two isolated towns. {{heroPlayer}}’s patrol came to protect its tanks; {{otherPlayer}}’s armored column had reached the service road. The depot keeper said a single tanker could still move, but its engine would start only if the generator stayed on.",
+      "{{hero}} covered the loading ramp while the keeper connected the tanker. Shots broke the glass of the control booth, and the fighter answered from behind a snowplow, keeping the hose crew working. The generator caught, the tanker started, and a gauge on the largest tank dropped toward empty.",
+      "Fuel was already flowing into the vehicle, enough for one town if it left now. The other town’s message flashed across the booth screen asking whether a second load was possible. The column advanced through the snow as the keeper reached for the valve that would decide."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol got the tanker away and kept the depot running for a second load.",
+      "heroLoses": "{{otherPlayer}}’s column secured the tanks and chose the first destination.",
+      "draw": "The tanker left half full while both sides guarded the fuel needed for the second town."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "At a prairie grain silo, maintenance drones began circling overhead instead of sealing its roof before rain. {{heroPlayer}}’s rangers came for the stored harvest; {{otherPlayer}}’s armored scouts held the approach road. The silo manager had already sent families to stack empty sacks beneath the dripping seam.",
+      "{{hero}} reached the drone station and found its guidance marker torn from the roof hatch. The specialist held a replacement marker against the wind until the first drone returned to the seam. Its welding arm sparked; the rain quickened, and grain shifted against the wall inside.",
+      "The drones could finish the roof only if the station remained powered, but its cable crossed the road where the scouts were advancing. The manager started loading dry grain onto a wagon as insurance. Each spark above him disappeared in the rain before anyone could tell whether it held."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers kept the drones working and saved the stored harvest.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the station while the manager moved what grain remained dry.",
+      "draw": "The roof held in patches; both groups carried sacks out before the next storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A border care station had sealed its supply room during a dust storm, leaving travelers waiting outside with no way to reach their packed provisions. {{heroPlayer}}’s aid crew arrived from the inland road; {{otherPlayer}}’s armored guards controlled the courtyard. A generator inside the room kept running although its door was locked.",
+      "{{hero}} followed the generator’s exhaust to a small maintenance opening and found a release cable hidden beneath the wall. The specialist pulled it, but the latch only lifted halfway. There was enough room to pass provisions through, one package at a time, while sand gathered around the opening.",
+      "The travelers called out the name of a child missing from their group. Behind the supply shelves came a muffled answer. The crew could widen the opening by cutting its frame, risking the air seal, or wait for the guards to bring the proper key through the storm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew opened the room and brought the child and supplies into shelter.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the room and controlled its opening after the storm.",
+      "draw": "The child answered through the gap as both groups passed supplies to the waiting travelers."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A night dispatch office held a strip of coded rail orders that could divert a relief train from a blocked tunnel. {{heroPlayer}}’s courier entered through the roof hatch; {{otherPlayer}}’s armored sentries guarded the station concourse. The dispatch printer was still feeding paper into a bin already half full.",
+      "{{hero}} watched the office stairs while the courier searched for the newest strip. A sentry pushed through the lower door, and the fighter fired to hold the landing as the courier found the correct order. Its code matched the tunnel warning, but the route change had not reached the train.",
+      "The station radio was beside the lower door, in sight of the sentries. The train’s headlight appeared beyond the curve as the printer fed out another copy, already marked obsolete. The courier held the true strip and looked at the fighter, waiting for a path to the transmitter."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s courier reached the radio and diverted the train before the tunnel.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the office and sent their own instructions.",
+      "draw": "The train stopped at the junction while both sides argued over the coded route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A dry dock filled unexpectedly as its floodgate opened under an unfinished rescue boat. {{heroPlayer}}’s dockhands came for the boat; {{otherPlayer}}’s armored crew held the gate machinery. A worker remained under the hull, fastening its last support with water rising around the cradle.",
+      "{{hero}} reached the gate wheel as a defender tried to turn it wider. The fighter pulled the defender from the handle and held the wheel against the flood while dockhands called to the worker below. The cradle began to shift; water forced a narrow channel between the boat and the wall.",
+      "Closing the gate completely would strand the unfinished boat high above the worker. Leaving it open would float the hull before its supports were ready. The worker shouted that the final fastening was nearly done, but their voice disappeared beneath the sound of the rising water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s dockhands saved the worker and launched the rescue boat intact.",
+      "heroLoses": "{{otherPlayer}}’s crew took the gate and lifted the worker out while the boat stayed in the dock.",
+      "draw": "The worker escaped, and the boat floated loose between the opposing crews."
+    }
   }
 ]
