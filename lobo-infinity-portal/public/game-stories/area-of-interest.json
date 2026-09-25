@@ -3418,5 +3418,385 @@
       "heroLoses": "{{otherPlayer}}’s guards retained the depot and controlled the crossing while the rescue plan was revised.",
       "draw": "The equipment crossed safely, and both teams worked beside the families at the mine entrance."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain tea terrace concealed the only working repeater between two stormbound villages. {{heroPlayer}}’s signal crew came for its battery; {{otherPlayer}}’s growers feared losing the warning it carried. A bell inside the repeater hut began ringing although the wind had dropped.",
+      "{{hero}} climbed the wet service stairs and found a stranger prying at the battery housing. The fighter closed the distance where a shot might strike the cables, wrested the tool away, and held the doorway until a technician could cut the current. On the repeater screen, every weather alert showed the same impossible timestamp.",
+      "Below the hut, the growers lit small lamps along the terraces to guide the technician home. The bell rang once more when the new battery was fitted, then gave way to a voice reporting clear skies from the village beyond the storm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew kept the repeater working and sent the warning to both villages.",
+      "heroLoses": "{{otherPlayer}}’s growers held the hut and took charge of its battery.",
+      "draw": "The repeater stayed in service while the crew and growers shared its weather reports."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "An old seismology bunker stood beneath a field of tall, silver grass. {{heroPlayer}}’s field scientists followed a fresh tremor there; {{otherPlayer}}’s agronomists wanted the doors sealed before their irrigation began. The recorder inside had drawn a straight line through the last shaking.",
+      "{{hero}} opened the recorder cabinet and discovered its paper tangled around a spool. The specialist freed the strip and threaded it past a cracked ink roller. Instead of a straight line, the hidden section showed repeated, evenly spaced pulses coming from a point beneath the grass.",
+      "Outside, the irrigation channels were filling. The scientists laid the strip on the bunker step and counted the pulses beside the ticking pump. When the pump stopped, the pattern continued. A grass stem above the buried point quivered in still air."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scientists secured the bunker and began a careful survey of the buried source.",
+      "heroLoses": "{{otherPlayer}}’s agronomists closed the bunker and resumed work in the field.",
+      "draw": "The recorder remained open for observation as both teams marked the same point on their maps."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A glassworks was being cleared for a new road, but its furnace still held the last molds from a vanished workshop. {{heroPlayer}}’s salvagers arrived with a handcart; {{otherPlayer}}’s road crew had brought a crane to move the chimney. No one knew how fragile the furnace floor had become.",
+      "{{hero}} caught the crane operator at the doorway as the chimney began to shift. The fighter pulled the operator clear of a falling lintel and held the release lever down while the salvagers rolled the molds out. A copper plaque slipped from the lintel, warm despite the cold building.",
+      "In the daylight, the salvagers turned the plaque over. It carried the names of apprentices, each beside a tiny fingerprint pressed into the metal. The road crew set the chimney down gently and waited while the oldest worker searched the list for a family name."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s salvagers took the molds and plaque to the town archive.",
+      "heroLoses": "{{otherPlayer}}’s road crew retained the glassworks and scheduled another guarded salvage visit.",
+      "draw": "Both crews helped move the molds before the chimney was lifted again."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Floodwater reached the old railway junction just as a relief train approached. {{heroPlayer}}’s escort needed its signal tower; {{otherPlayer}}’s maintenance team had found the points locked against the train. A lamp flashed from the tower window, though its operator had gone missing at dawn.",
+      "{{hero}} covered the narrow gantry while a mechanic reached the point switch. Someone behind the signal glass raised a weapon, and the fighter kept the gantry clear long enough for the mechanic to throw the lever. The flashing lamp continued, three short pulses followed by one long.",
+      "The relief train slowed into the dry siding. The mechanic climbed the tower and found its door locked from outside, with a second lamp blinking on the floor beneath it. He lifted the lamp and read a penciled note directing him toward a service room below the flooded tracks."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the junction and guided the relief train into the safe siding.",
+      "heroLoses": "{{otherPlayer}}’s team retained the signal tower and controlled the train’s approach.",
+      "draw": "The train stopped safely, and both teams searched the service room together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A returning survey capsule dropped into a grazing field with its beacon still announcing an orbital descent. {{heroPlayer}}’s recovery crew followed the signal; {{otherPlayer}}’s herders were moving animals away from a ribbon of spilled coolant. The capsule’s hatch bore two different return addresses.",
+      "{{hero}} traced the coolant line to a damaged valve and closed it before the herd reached the ditch. The specialist then found a shipping cylinder inside the capsule, padded with loose straw rather than the foam listed on its manifest. Something inside the cylinder answered the tapping of a tool.",
+      "The herders watched from the fence as the crew carried the cylinder into a clean tent. When its lid was opened, a little brass music box played four notes and stopped. Scratched underneath was a request to send it home to whichever address still existed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew contained the spill and recovered the cylinder for its intended recipient.",
+      "heroLoses": "{{otherPlayer}}’s herders kept the field closed until the capsule could be removed safely.",
+      "draw": "The animals returned to the pasture, and both parties signed the cylinder into joint custody."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A remote observatory kept a telescope aimed at a hillside instead of the sky. {{heroPlayer}}’s patrol came to ask why; {{otherPlayer}}’s survey party had planted stakes around the same slope. Through the eyepiece, the hill showed a pale circle that could not be seen with bare eyes.",
+      "{{hero}} held the observatory path while a technician steadied the telescope and copied its coordinates. A shot cracked against the railing, and the fighter pushed the technician below the parapet before answering from cover. In the eyepiece, the pale circle slid across the slope as if something beneath it were moving.",
+      "By sunset, the survey stakes outlined empty ground far below the telescope’s mark. The patrol reached the new point and found a shallow pit of glassy earth, still warm. From the observatory window, the circle had already moved again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol kept the observatory open and followed the next set of coordinates.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the hill and closed the path to the telescope.",
+      "draw": "The telescope stayed trained on the slope while both crews plotted the moving circle."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hydroelectric dam had a narrow fish ladder that no one had used in years. {{heroPlayer}}’s rangers followed fresh chalk marks along its railing; {{otherPlayer}}’s engineers had orders to close the intake before silt reached the turbines. The marks were at the height of a child’s hand.",
+      "{{hero}} found a jammed inspection hatch beside the ladder and pulled it open as water rose around the hinges. A stranger tried to shove it shut from the far side, and the fighter held the gap while a ranger slipped through. Beyond it sat a small rowboat with a blanket and a dry pair of shoes.",
+      "The engineers shut the intake and waited for the water to fall. From under the boat came a quiet voice asking whether the fish could still get upstream. The chalk marks stopped at the hatch, but wet footprints led onward toward the high bank."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers secured the hatch and helped the hidden traveler reach the bank.",
+      "heroLoses": "{{otherPlayer}}’s engineers controlled the intake and continued their search under dam safety rules.",
+      "draw": "The intake stayed closed while rangers and engineers searched the dry side of the ladder together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A clinic greenhouse lost its cooling system during a heat wave. {{heroPlayer}}’s medical team came for the plants used in an experimental treatment; {{otherPlayer}}’s groundskeepers had been told to clear the beds for repairs. One tray carried a handwritten name that did not appear on the inventory.",
+      "{{hero}} traced the faulty cooling circuit beneath the tray and found its valve deliberately locked half open. The specialist freed it, then moved the named plants into the shaded recovery room before their leaves could wilt. Under the tray lay a stack of letters from patients describing the same unmistakable scent.",
+      "As the temperature fell, the groundskeepers opened the greenhouse vents. The room filled with the scent the letters described, and an elderly patient at the clinic door recognized it before anyone showed her the label. She asked who had cared for the plants all these years."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medical team kept the greenhouse operating and preserved the named plants.",
+      "heroLoses": "{{otherPlayer}}’s groundskeepers retained the greenhouse and moved the plants for repairs.",
+      "draw": "The plants survived the heat, and both crews helped document the forgotten tray."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A bookbinder beneath the salt market claimed to have repaired a ledger everyone else believed destroyed. {{heroPlayer}}’s courier came to collect it; {{otherPlayer}}’s inspectors wanted the market evacuated before a leaking roof spread brine into the workshop. The courier could hear pages turning behind the locked door.",
+      "{{hero}} watched the stair while the bookbinder passed a wrapped volume to the courier. A figure appeared at the upper landing and tried to block the way out; the fighter held that narrow line until the courier reached the street. The wrapper left a faint outline of salt across the courier’s sleeve.",
+      "At a dry table, the courier opened the ledger and found no accounts, only a record of houses beneath the market that had disappeared from public maps. One address had been crossed out that morning. Through the open window came the sound of workers repairing the roof above it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s courier kept the ledger dry and brought its addresses to the people living nearby.",
+      "heroLoses": "{{otherPlayer}}’s inspectors sealed the market and took charge of the damaged workshop.",
+      "draw": "The workshop was evacuated, and both parties recorded the ledger before the roof was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A harbor customs scale began registering cargo weight when no ship was berthed. {{heroPlayer}}’s dock crew followed its reading to a chain beneath the water; {{otherPlayer}}’s surveyors were marking the pier for demolition. An abandoned buoy pulled steadily against its mooring as the tide went out.",
+      "{{hero}} stepped onto the slippery lower platform and seized the chain where it crossed a rusted winch. Another person reached for the release handle; the fighter wrested it free and held the chain while the dock crew raised the buoy. A small tin compartment inside was packed with sealed receipts.",
+      "The scale fell to zero as the last receipt came ashore. Each document listed a shipment that had never entered the harbor register, yet several bore the signature of the pier’s original builder. The surveyors put away their demolition flags until the harbor office could read them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew retained the pier and delivered the receipts to the harbor office.",
+      "heroLoses": "{{otherPlayer}}’s surveyors controlled the pier and suspended work pending an inspection.",
+      "draw": "The buoy was lifted intact, and both teams witnessed the opening of its compartment."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "Pilgrims on a desert road relied on a hilltop refuge whose fog bell had fallen silent. {{heroPlayer}}’s care workers came with fresh water; {{otherPlayer}}’s road crew wanted the building closed after finding blue dye in its cistern. The refuge keeper insisted no dye had been stored there.",
+      "{{hero}} traced the cistern feed through the courtyard and found a cracked branch leading to an old signal pipe. The specialist isolated it, then opened the bell housing to see where the pipe ended. Inside hung a blue-stained cloth wrapped around the bell’s clapper, knotted in a pattern the keeper recognized.",
+      "The keeper unfolded the cloth beside the road crew. It was a child’s scarf, lost during a sandstorm years earlier; the dye had washed into the water whenever the fog machinery ran. After the cistern was drained, the bell sounded across the road again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s workers reopened the refuge with clean water and a working warning bell.",
+      "heroLoses": "{{otherPlayer}}’s road crew kept the refuge closed while its supply was replaced.",
+      "draw": "The pilgrims received water outside, and both teams helped clean the cistern before reopening."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An unused amusement dome began projecting a rising sea across its walls, convincing nearby residents that the flood barriers had failed. {{heroPlayer}}’s repair team entered to shut off the display; {{otherPlayer}}’s neighborhood wardens kept people back. The dome’s air pressure was falling for real.",
+      "{{hero}} covered the projection room while a technician reached the ventilation controls. A figure stepped out of the dark seating and leveled a weapon at the console; the fighter drew that attention away, giving the technician time to restore pressure. The painted water vanished, leaving a small handwritten sign on the wall.",
+      "The sign gave instructions for finding a child’s lost coat beneath the rear seats. A warden brought it out, dusty and much too small for its present owner. In its pocket was a ticket for the dome’s final show, dated the day the venue closed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team held the dome and repaired its ventilation before the residents returned.",
+      "heroLoses": "{{otherPlayer}}’s wardens took control of the building and restricted entry for repairs.",
+      "draw": "The false flood ended, and both groups checked the dome before allowing anyone back inside."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A walking bridge inside a habitat’s low-gravity animal house stopped halfway across its enclosure. {{heroPlayer}}’s caretakers needed to reach a stranded juvenile; {{otherPlayer}}’s safety crew had disconnected the motor after spotting damaged supports. A paper bird drifted above the bridge with a child’s name on it.",
+      "{{hero}} secured a tether to the nearest sound beam and crossed by hand, keeping away from the loose railing. The specialist coaxed the juvenile into a carrier and found more paper birds folded into a gap above its nest. Each carried a different name and a wish for the animal to come home.",
+      "Back at the entrance, children pressed against the glass to watch the carrier pass. One recognized her bird and explained that they had made them for a keeper who had been away too long. The keeper arrived as the juvenile was returned to its enclosure."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers rescued the juvenile and secured the bridge for repair.",
+      "heroLoses": "{{otherPlayer}}’s safety crew retained the enclosure and directed the recovery from outside.",
+      "draw": "The juvenile returned safely, and both teams left the bridge closed until its supports could be replaced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An archival cold room stored film reels beneath a freight elevator whose cable had begun to fray. {{heroPlayer}}’s retrieval crew came for a single reel; {{otherPlayer}}’s building stewards wanted the lower level evacuated. From the elevator shaft came music that stopped whenever its inspection lamp turned on.",
+      "{{hero}} reached the lower landing as a stranger tried to force the elevator door against a trapped technician. The fighter held the door open, pulled the technician through, and stayed at the threshold while the crew carried out the reel. In the open shaft, the music started again from a tiny speaker tied to the cable.",
+      "The reel showed a community orchestra playing in the same building before it was converted into storage. The technician recognized the tune from the shaft: an unfinished piece, played here only once. Someone had tied the speaker there so it would be heard whenever the elevator moved."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew recovered the reel and kept the cold room accessible for inspection.",
+      "heroLoses": "{{otherPlayer}}’s stewards closed the lower level and took charge of the archive.",
+      "draw": "The reel and technician came out safely, and both crews agreed to leave the elevator idle."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rooftop antenna began broadcasting street names that had been removed from the city map. {{heroPlayer}}’s signal analysts climbed the roof to locate the source; {{otherPlayer}}’s municipal crews came to cut power before the broadcast confused emergency calls. Small weather vanes around the antenna turned against the wind.",
+      "{{hero}} watched the narrow access stair while an analyst traced the signal through a box of analog wires. An intruder rushed the stair with a cutting tool, and the fighter kept them from the junction until the analyst recorded the transmission. Between street names, a voice was counting doorways in an almost familiar neighborhood.",
+      "At street level, the analysts followed the broadcast’s first address to an empty lot. An elderly neighbor pointed to a faded line of paint on the pavement, the boundary of a house demolished before the new map was printed. She remembered who had lived behind its last doorway."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts preserved the broadcast and kept the antenna connected for a search.",
+      "heroLoses": "{{otherPlayer}}’s municipal crew disconnected the antenna and secured the roof.",
+      "draw": "The signal was recorded before shutdown, and both parties followed its first address together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "objective",
+    "paragraphs": [
+      "On a quiet coast, an abandoned weather machine opened its storm shutters every morning despite having no power. {{heroPlayer}}’s survey party came to map its mechanism; {{otherPlayer}}’s fishing families wanted the tower left alone before the night tide. A line of wet footprints ended at a sealed maintenance door.",
+      "{{hero}} found a manual crank behind the shutters and set it against the seized gears. The specialist opened the maintenance door just enough for the survey party to enter. Inside, the footprints led to a dry chair facing an old display that showed a single sentence awaiting transmission.",
+      "A fisher read the sentence aloud. It was a warning to return before the tide covered a hidden footpath, written in the hand of a relative long missing at sea. As the shutter swung shut, sunlight fell on that path for a moment, revealing the stones beneath the water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors kept the tower open and marked the newly visible path.",
+      "heroLoses": "{{otherPlayer}}’s families secured the tower until the tide had passed.",
+      "draw": "The warning reached shore, and both parties placed markers above the submerged stones."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A disused quarry contained a stone amphitheater cut by workers who had vanished before its opening. {{heroPlayer}}’s explorers followed fresh tool marks into the pit; {{otherPlayer}}’s construction crew arrived to test the unstable rim. Each stone seat held a shallow bowl of collected rainwater.",
+      "{{hero}} reached the central winch as someone tried to lower a heavy block over the entrance. The fighter forced the lever back and held the mechanism long enough for the explorers to leave the pit. On the underside of the block were tiny carved seats, a model of the theater hidden in plain sight.",
+      "The construction crew braced the rim and lifted the block onto level ground. Rain began while the explorers studied the miniature, filling its carved bowls just as it filled those below. In the water, a second set of markings appeared along the little stage."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s explorers secured the amphitheater and preserved the carved model.",
+      "heroLoses": "{{otherPlayer}}’s construction crew closed the unstable pit and retained the site.",
+      "draw": "The pit remained closed while both groups copied the markings that appeared in the rain."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Under a crowded transit station, a forgotten platform had begun growing luminous moss over its timetable. {{heroPlayer}}’s researchers brought sealed jars to collect samples; {{otherPlayer}}’s transit workers worried that the glow was drawing passengers beyond the barriers. The moss brightened whenever an approaching train sounded above.",
+      "{{hero}} watched the stair while a researcher scraped a sample from the far end of the platform. Someone tried to drag the barrier shut with the researcher behind it, and the fighter held the passage clear until the jars were carried out. Then the timetable lit up one destination at a time.",
+      "At the station entrance, a retired conductor saw the illuminated names and stopped walking. They belonged to stops removed when the lower line closed. He could still name the order in which the trains had visited them, even after the paper schedules were thrown away."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers collected the moss and kept the lower platform under observation.",
+      "heroLoses": "{{otherPlayer}}’s transit workers sealed the passage and held the station.",
+      "draw": "The platform was closed to passengers, and both groups recorded the glowing timetable."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A ring of old reflectors on a crater rim once sent winter sunlight to a settlement below. {{heroPlayer}}’s technicians came to restore the mirrors; {{otherPlayer}}’s surveyors reported that one reflector was aimed at an empty ledge. The settlement’s school had been without daylight for a week.",
+      "{{hero}} climbed to the misaligned reflector and released its corroded catch. The specialist turned the mirror toward the school, then saw a second beam strike the empty ledge from behind. In that brief patch of light stood a painted height chart, its highest mark beside a child’s initials.",
+      "Light spilled through the school windows as children gathered at their desks. A teacher climbed the crater path to inspect the chart. It had stood on the ledge before the school was built, and the initials belonged to the person who later designed its roof."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians held the reflector ring and restored light to the school.",
+      "heroLoses": "{{otherPlayer}}’s surveyors retained the rim and set the mirrors for further inspection.",
+      "draw": "The school received daylight, and both teams documented the unexpected beam on the ledge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A butterfly conservatory had sealed itself after a humidity alarm, leaving its curator inside. {{heroPlayer}}’s recovery crew approached through a service tunnel; {{otherPlayer}}’s horticultural team guarded fragile breeding chambers along the main aisle. Through the fogged glass, the curator could be seen carrying an empty specimen tray.",
+      "{{hero}} reached the pressure door when a stranger tried to lock it from the outer panel. The fighter pulled the panel clear and held the heavy door against its spring while the curator crawled out. She had filled the tray with paper tags, each bearing the date a butterfly had emerged.",
+      "The conservatory’s alarm stopped after the vents reopened. The curator spread her tags on a bench and pointed to an emergence date several months away. Inside the glass, the matching chrysalis was already opening, far ahead of the calendar she had kept for years."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew rescued the curator and secured the conservatory for observation.",
+      "heroLoses": "{{otherPlayer}}’s horticultural team retained the chambers and directed the recovery.",
+      "draw": "The curator emerged safely, and both teams stayed to watch the early chrysalis."
+    }
   }
 ]
