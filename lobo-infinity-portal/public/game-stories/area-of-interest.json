@@ -6078,5 +6078,385 @@
       "heroLoses": "{{otherPlayer}}’s organizers retained the gathering and moved everyone indoors.",
       "draw": "The sculpture held, and both groups made room for the late guest."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A civic records hall sheltered residents after a hillside fire, but its evacuation map pointed down a road already blocked by ash. {{heroPlayer}}’s coordinators came to correct the display; {{otherPlayer}}’s volunteer drivers were waiting for a route. A child marked an alternate path in chalk beside the map.",
+      "{{hero}} checked the child’s path against a sealed service gate and found its lock still working. The specialist opened it for a trial vehicle while the volunteers counted everyone inside the hall. The road curved around a reservoir where the fire had burned to the water’s edge and stopped.",
+      "The drivers took the families through the gate before the wind turned. Back at the hall, the child added a small blue reservoir to the chalk map. An older resident copied it onto paper, saying future visitors might need the path even after the trees returned."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators secured the hall and opened the safer evacuation route.",
+      "heroLoses": "{{otherPlayer}}’s drivers retained the gate and moved the families by their own plan.",
+      "draw": "The residents reached safety, and both groups kept the corrected route on display."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A docking garden in orbit grew a row of tiny trees beside the corridor where returning crews first came aboard. {{heroPlayer}}’s watch escorted a botanist after one tree shed all its leaves overnight; {{otherPlayer}}’s dock crew reported an unfamiliar cargo case near its roots. The arriving shuttle was minutes away.",
+      "{{hero}} held the garden entrance while the botanist inspected the case. Someone reached for the pressure controls behind the tree line, and the fighter kept the passage clear until the dock crew sealed the panel. The case contained soil for the garden, labeled with the name of the shuttle’s retiring pilot.",
+      "The pilot came through the dock and found the bare tree waiting beside the others. The botanist planted the new soil around it, leaving a few leaves in the pilot’s hand. By morning, a small green bud had appeared beneath the window."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch secured the garden and welcomed the arriving crew.",
+      "heroLoses": "{{otherPlayer}}’s dock crew retained the corridor and inspected the cargo case.",
+      "draw": "The shuttle docked safely, and both teams helped tend the pilot’s tree."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "An underground concert hall used resonant stone columns to carry music through the streets above. {{heroPlayer}}’s tunnel workers entered when one note began sounding without a performer; {{otherPlayer}}’s city staff feared a leak behind the stage. A violinist outside kept hearing their own unfinished melody beneath the pavement.",
+      "{{hero}} traced the note to a thin stream striking the hollow base of a column. The specialist diverted the water into a drain while preserving the stone’s fragile footing. When the last drop fell, the hall went quiet, and a small instrument case emerged from the recess behind the column.",
+      "The violinist opened the case to find sheet music left by a teacher who had helped design the hall. The final measure was blank. That evening the violinist played the melody again, and the street above heard a new ending instead of the single trapped note."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s workers secured the hall and stopped the leak beneath the streets.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the venue and closed it for repairs.",
+      "draw": "The columns remained safe, and both parties listened to the completed melody."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A swordsmith’s workshop was being cleared for a neighborhood exhibition when its tempering pool began to overflow. {{heroPlayer}}’s escorts brought a former apprentice to collect the old tools; {{otherPlayer}}’s organizers wanted the room safe before visitors arrived. A polished blade lay untouched on the workbench.",
+      "{{hero}} intercepted a stranger reaching for the blade and forced them away from the bench while the apprentice closed the water feed. The fighter held the doorway as the apprentice lifted the blade by its cloth wrapping. Under it lay a sketch of the workshop drawn before the apprentice was born.",
+      "At the exhibition, the apprentice displayed the sketch instead of the blade. Visitors recognized the old street outside the workshop window and began pointing out what had changed. The blade remained wrapped nearby, its maker’s mark recorded in the new catalog."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the workshop and brought its tools to the exhibition.",
+      "heroLoses": "{{otherPlayer}}’s organizers retained the room and delayed access until the pool was repaired.",
+      "draw": "The workshop dried out, and both teams preserved the blade and its old sketch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A footbridge of painted tiles linked a hillside kitchen to a temple courtyard prepared for a communal meal. {{heroPlayer}}’s repairers came after a tile lifted in the rain; {{otherPlayer}}’s cooks had pots waiting on both sides. Beneath the loose tile ran a channel carrying warm water uphill.",
+      "{{hero}} raised the tile and found a blocked valve where the channel turned beneath the bridge. The specialist cleared it and fixed the tile before anyone brought hot food across. Water resumed flowing toward the kitchen, and a cook tested the path with an empty tray.",
+      "The meal began late but still warm. At the bridge, a guest noticed the repaired tile bore a painted bowl held between two hands. Nobody remembered when it had been laid there, though every cook had crossed it for years."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s repairers secured the bridge and reopened the path to the meal.",
+      "heroLoses": "{{otherPlayer}}’s cooks retained the crossing and served people on either side.",
+      "draw": "The meal reached everyone, and both groups kept the warm-water channel working."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An elevated tram line stopped above a lantern market because its station signal showed two routes at once. {{heroPlayer}}’s guards accompanied a signaler up the service stairs; {{otherPlayer}}’s market workers were clearing the platforms below. Inside the signal box, someone had wedged a paper fan between the contacts.",
+      "{{hero}} covered the exposed stairs while the signaler reached the controls. A figure at the landing raised a weapon, and the fighter held them back until the fan was lifted free. The display settled on one route, and the waiting tram began to move toward the station.",
+      "The market reopened beneath the tracks as passengers descended to the lanterns. The fan bore an unfinished painting of that same platform before the tram was built. A vendor put it behind glass, where its old roofline could be compared with the one above them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the signal box and brought the tram safely in.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the station and cleared the market beneath it.",
+      "draw": "The tram arrived safely, and both groups preserved the painted fan."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living root bridge crossed a gorge where migrating families carried young trees to a new village. {{heroPlayer}}’s field crew arrived when one support began to lift; {{otherPlayer}}’s path keepers had stopped the crossing. From the roots hung a line of tiny bells placed there by earlier travelers.",
+      "{{hero}} found a loose anchor in the bank and bound the lifted roots around a sounder stone without cutting them. The specialist tested the crossing with a light pack before the families moved. The bells rang softly as the first tree passed overhead in its carrier.",
+      "On the far bank, a child asked to leave a bell of their own. An elder tied it beside the oldest one, rusted nearly silent. The families continued with their saplings while the bridge settled back toward the growing earth."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the bridge and guided the families across.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the path and postponed the crossing.",
+      "draw": "The young trees reached the far bank, and both parties kept the anchor under observation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A movable book stall rose on a freight lift each morning to meet the street above. {{heroPlayer}}’s hired guards came to recover a book promised to a traveling reader; {{otherPlayer}}’s stall keepers heard the lift cable fray. A parcel remained inside the rising stall with no name on it.",
+      "{{hero}} reached the lift cage as a stranger tried to release its brake. The fighter pulled them from the lever and held the cage still while the keepers brought it to the lower floor. The parcel held the promised book and a pressed leaf marking the passage its reader had requested.",
+      "The reader arrived at street level expecting an empty stall. The keeper met them downstairs instead and opened the book to the leaf. The reader smiled at the marked passage and volunteered to help carry the remaining books until the lift was repaired."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the stall and delivered the promised book.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the lift and closed it for repair.",
+      "draw": "The book reached its reader, and both teams moved the stall’s stock by hand."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A museum placed a newly found meteorite in its courtyard just as metal signs across the square began turning toward it. {{heroPlayer}}’s guards escorted a conservator to inspect the exhibit; {{otherPlayer}}’s grounds crew kept visitors behind a rope. A child’s metal compass spun without finding north.",
+      "{{hero}} held the courtyard entrance while the conservator covered the meteorite in a shielding case. A figure moved toward the rope carrying a metal hook, and the fighter held them back until the lid was secured. The signs settled, and the child’s compass needle steadied toward the old city gate.",
+      "The grounds crew reopened the square but left the exhibit behind glass. The child drew a map from the compass reading, placing the meteorite at its center like a second north. The conservator pinned the drawing beside an explanation of the stone’s magnetic pull."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the exhibit and reopened the courtyard.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the square and moved visitors away from the stone.",
+      "draw": "The exhibit was contained, and both parties watched the compass settle."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A fish farm above the city had its tanks connected by a single flooded service corridor. {{heroPlayer}}’s contractors came to close a broken valve; {{otherPlayer}}’s keepers feared losing the young fish if the corridor drained too quickly. A worker’s tool bag had lodged beneath the valve wheel.",
+      "{{hero}} reached the wheel as a stranger tried to spin it fully open. The fighter grappled them away and held it at the safe setting while a keeper freed the bag. Inside was a small hand net, marked with the worker’s name, meant for moving the last fragile fish.",
+      "Water steadied across the connected tanks. The worker arrived to reclaim the net and found the keepers already guiding the young fish into deeper water. By the time the corridor dried, the smallest were swimming among the others without needing to be carried."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s contractors secured the valve and kept the young fish alive.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the farm and managed the water transfer.",
+      "draw": "The tanks stabilized, and both teams checked every corridor before leaving."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A hill district used broad kites to carry light packages across a river whenever the ferry stopped. {{heroPlayer}}’s courier team arrived with medicine for an isolated house; {{otherPlayer}}’s bridge crew reported that the kite reel had jammed. Across the water, someone had placed a white sheet in the window.",
+      "{{hero}} opened the reel housing and found its cord wrapped around a bent guide. The specialist eased the cord free, attached the small package, and sent the kite across in a steady wind. A hand appeared at the far landing to catch it before the kite touched the river.",
+      "The white sheet vanished from the window, replaced by a bright scarf waved once in thanks. The bridge crew kept the reel ready for another crossing, and the courier team noted the house on the delivery board. On the near bank, the empty kite came home."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s couriers secured the reel and completed the delivery.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the crossing and managed the kite launch.",
+      "draw": "The package reached the house, and both groups kept the kite ready for the next request."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An old geothermal pumping station began warming a road that had been closed after winter rockfalls. {{heroPlayer}}’s security team escorted a surveyor to the pump; {{otherPlayer}}’s road workers warned that the heated ground could loosen the slope again. A single glove lay beside the pressure gauge.",
+      "{{hero}} watched the station door while the surveyor checked its intake. A figure raised a weapon from behind the piping, and the fighter held the doorway until the pressure was lowered. Beneath the gauge, the surveyor found a maintenance note that pointed to a buried second valve uphill.",
+      "The road workers closed that valve, and the slope stopped steaming. The owner of the glove appeared from the shelter, having left it while trying to read the note through fogged glass. Together they marked both valves on a fresh map before reopening the road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the station and made the road safe to survey.",
+      "heroLoses": "{{otherPlayer}}’s road workers retained the slope and kept the road closed.",
+      "draw": "The valves were marked, and both teams agreed on a safe inspection route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "Two inspection teams arrived at the same neighborhood archive, each carrying a different list of homes due to be surveyed. {{heroPlayer}}’s clerks had a recent map; {{otherPlayer}}’s team had a handwritten record from before the streets were renamed. One resident could find her house on neither.",
+      "{{hero}} matched a faded courtyard sketch to the modern street grid and discovered the missing house tucked behind a shared entrance. The specialist added it to both lists before either team began its work. The resident led them through a passage lined with pots of flowering herbs.",
+      "At the rear door, the resident offered the teams water and pointed out the view her old address had once described. They could see the same bell tower, now framed by new buildings. Both lists received the corrected location in the same careful handwriting."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s clerks secured the archive and completed the corrected survey.",
+      "heroLoses": "{{otherPlayer}}’s inspectors retained the records and scheduled the visits.",
+      "draw": "The house appeared on both lists, and the teams conducted the survey together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An emergency communications tower stood above a temporary village built after the floods. {{heroPlayer}}’s protection detail came with a repairer; {{otherPlayer}}’s civil workers were waiting for word that a missing family had been found. The tower kept transmitting half a sentence, then falling silent.",
+      "{{hero}} covered the base while the repairer climbed to replace a damaged relay. A figure moved toward the power junction and raised a weapon, and the fighter held them off until the aerial steadied. The full message named a shelter on the far bank where the family had checked in.",
+      "Workers in the village relayed the news from door to door, until it reached the family’s neighbor. She saved a place at the common table and set out a cup for each person expected back. The tower’s next message arrived without interruption."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the tower and restored the emergency link.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the tower and passed messages by ground courier.",
+      "draw": "The missing family was located, and both groups kept the link open for their return."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An ancestral teahouse stood above stepped fields where irrigation water had begun running through the guest room. {{heroPlayer}}’s protectors brought a mason to inspect the floor; {{otherPlayer}}’s caretakers were moving family keepsakes upstairs. A young visitor found a door beneath the wet floorboards.",
+      "{{hero}} reached the hidden door as a stranger tried to force it shut on the mason’s hand. The fighter pulled them away and held it open while the mason traced a narrow water channel underneath. A blocked outlet sent water into the house instead of the fields.",
+      "The caretakers cleared the outlet and watched water resume its old route downhill. In the drying guest room, the visitor uncovered a painted plan of the fields behind the door. A grandparent recognized the path they had walked to school long before the teahouse was built."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s protectors secured the teahouse and restored the fields’ water route.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retained the house and completed the repairs.",
+      "draw": "The guest room dried, and both teams preserved the field plan."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "A wilderness fire tower carried a hand-painted trail board for visitors who preferred paper maps. {{heroPlayer}}’s rangers arrived after wind tore it loose; {{otherPlayer}}’s inspectors were searching for hikers who had followed its missing arrows. From the tower, a line of colored ribbons could be seen between trees.",
+      "{{hero}} followed the ribbons to a collapsed footbridge and found the hikers sheltering on the near bank. The specialist fixed a temporary arrow at the safe detour and radioed the inspectors, who met the group before dusk. The torn board lay in the stream, caught against a branch.",
+      "Back at the tower, a ranger spread the board to dry. Its arrows had been painted by one of the hikers’ grandparents, who knew every bend of the trail. The hiker helped repaint the missing turn, using the same color as the ribbons that had led them home."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers secured the tower and marked the safe detour.",
+      "heroLoses": "{{otherPlayer}}’s inspectors retained the trail and closed it for bridge repairs.",
+      "draw": "The hikers returned, and both groups restored the trail board together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A riverside forge held a mold for the community bell, scheduled to be cast that morning. {{heroPlayer}}’s escorts came with the bell metal; {{otherPlayer}}’s foundry workers were lifting their tools above a sudden flood. The heavy mold remained on a low bench beside the open door.",
+      "{{hero}} reached the bench as a stranger tried to tip the mold into the water. The fighter grappled them away and held its frame while workers hoisted it onto dry bricks. Beneath the mold lay a handwritten list of neighbors who had donated small pieces of metal for the casting.",
+      "The flood fell by afternoon, and the foundry workers read each name before pouring the metal. No single piece survived visibly in the bell, but the list was kept beside it. When it first rang, families on both banks came to the forge to hear it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts saved the mold and secured the forge for the casting.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the forge and postponed the pour.",
+      "draw": "The mold stayed dry, and both groups witnessed the bell’s first ringing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An electric tram lost power beneath a rail bridge while carrying workers home from an evening shift. {{heroPlayer}}’s rapid response team brought an electrician; {{otherPlayer}}’s bridge staff were checking a loose overhead cable. Through the tram windows, passengers held up their phone lights in a neat row.",
+      "{{hero}} covered the bridge stair while the electrician isolated the broken cable. A figure reached for the supply switch with the repair unfinished, and the fighter held them clear until the electrician gave the signal. The tram lights came back, revealing a passenger’s birthday cake still upright on a seat.",
+      "The tram rolled into the next stop, where relatives were waiting beside a small gathering of candles. The passenger carried out the cake and apologized for being late. A bridge worker said the lights in the windows had told them everyone aboard was still calm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the cable and brought the tram into the station.",
+      "heroLoses": "{{otherPlayer}}’s bridge staff retained the crossing and directed the repair.",
+      "draw": "The passengers reached their stop, and both crews checked the line before the next tram."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A weather balloon from an orbital survey descended into a city courtyard with its sensors still reporting a storm overhead. {{heroPlayer}}’s recovery specialists came for the instruments; {{otherPlayer}}’s municipal officers kept children back from the trailing cable. The sky above the courtyard was perfectly clear.",
+      "{{hero}} reeled in the cable and discovered a pocket of ash trapped around the balloon’s upper sensor. The specialist cleaned it and watched the false storm warning disappear. In the remaining data was a genuine wind shift approaching the far side of the city, still hours away.",
+      "The officers sent the corrected warning to the neighborhoods in its path. A child who had watched the balloon land drew a black cloud on a clear blue page, then added the direction it would travel. When the breeze arrived, the drawing was already pinned to the courtyard wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s specialists secured the instruments and issued the corrected forecast.",
+      "heroLoses": "{{otherPlayer}}’s officers retained the courtyard and sent their own weather warning.",
+      "draw": "The balloon was recovered, and both groups shared the new wind data."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A forest lookout began flashing amber along a migration path just as a herd approached the narrow valley below. {{heroPlayer}}’s patrol climbed to find the cause; {{otherPlayer}}’s wardens were holding a road convoy outside the valley. The amber flashes followed the rhythm of something tapping inside the tower.",
+      "{{hero}} covered the lookout stairs while a warden checked the beacon. A figure appeared at the upper landing with a weapon, and the fighter held the approach until the beacon was made safe. Inside its housing sat a woodpecker, trapped beside a loose contact that blinked whenever it pecked.",
+      "The wardens released the bird into the trees and kept the road closed until the herd passed. As the last animal entered the far woods, the woodpecker began tapping on a pine outside the tower. This time the beacon stayed dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the lookout and protected the migration path.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the road and delayed the convoy.",
+      "draw": "The herd crossed safely, and both groups repaired the amber beacon."
+    }
   }
 ]
