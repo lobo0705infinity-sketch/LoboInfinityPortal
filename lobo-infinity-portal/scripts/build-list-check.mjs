@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { buildArmyListOptions, availableProfiles, ListBuilderError, optimizeCombatGroups,
+import { buildArmyListOptions, availableProfiles, fireteamUsefulness, ListBuilderError, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutocompleteHandler,
@@ -160,6 +160,21 @@ assert.ok(shasLists[0].fireteams.some(team => ['DUO', 'HARIS'].includes(team.typ
   'the coverage target should keep a useful pure Duo or Haris when a comparably good build exists')
 assert.match(formatBuiltList(shasLists[0], 1), /\*\*A\/S coverage \(separate Guns\/ARO\)\*\* Guns \d+\/2 · CC \d+\/2 · ARO \d+\/2 · Specialists \d+\/3/)
 assert.ok(formatBuiltList(shasLists[0], 1).length <= 1990)
+const cheapTeam = Array.from({ length: 5 }, () => ({ specialist: false, gunfighterGrade: 'D', aroGrade: 'C' }))
+const workingDuo = [{ gunfighterGrade: 'A', specialist: true }, cheapTeam[0]]
+const workingCore = [
+  { gunfighterGrade: 'A', specialist: true }, { gunfighterGrade: 'A', ccGrade: 'S' },
+  { aroGrade: 'A', specialist: true }, { aroGrade: 'A' }, cheapTeam[0],
+]
+assert.ok(fireteamUsefulness({ type: 'DUO', level: 2 }, workingDuo)
+  > fireteamUsefulness({ type: 'CORE', level: 5 }, cheapTeam),
+'a productive Duo should outrank a pure Core of five low-impact members')
+assert.ok(fireteamUsefulness({ type: 'HARIS', level: 3 }, [...workingDuo, cheapTeam[0]])
+  > fireteamUsefulness({ type: 'CORE', level: 5 }, cheapTeam),
+'a productive Haris should outrank a pure Core of five low-impact members')
+assert.ok(fireteamUsefulness({ type: 'CORE', level: 5 }, workingCore)
+  > fireteamUsefulness({ type: 'DUO', level: 2 }, workingDuo),
+'a Core with multiple useful roles should still beat a weaker Duo')
 const pairFixture = [
   { id: 'hacker', unitId: 1, hacker: true, specialist: true, mobility: 45, points: 25 },
   { id: 'repeater', unitId: 2, repeater: true, mobility: 55, points: 10 },
