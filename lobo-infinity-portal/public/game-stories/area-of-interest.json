@@ -5698,5 +5698,385 @@
       "heroLoses": "{{otherPlayer}}’s stewards retained the riverbank and closed it until repairs were complete.",
       "draw": "The tower held, and both groups preserved the hidden handprint in the repair record."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At the edge of a terraced valley, an old treaty house became a shelter for families caught between two landslides. {{heroPlayer}}’s relief escort brought an interpreter; {{otherPlayer}}’s local wardens kept the upper path open. In the house, a bronze table bell rang whenever mud shifted against the rear wall.",
+      "{{hero}} watched the path while the interpreter led the families toward the front door. A figure appeared at the uphill gate and raised a weapon; the fighter held that line from cover until the last child cleared the threshold. The bell rang again as the rear wall bowed inward.",
+      "The families climbed to the terraces and saw the house settle without collapsing. An elder carried the bell wrapped in a shawl and said it had once called people into that room to settle arguments. On the high path, it called them onward instead."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the upper path and brought the families to shelter.",
+      "heroLoses": "{{otherPlayer}}’s wardens held the terraces and directed the evacuation.",
+      "draw": "The families reached high ground, and both groups kept watch over the damaged house."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A hydroponic barge beneath the launch corridor raised night-blooming flowers for the crews departing overhead. {{heroPlayer}}’s flight gardeners arrived after the barge drifted across a landing beacon; {{otherPlayer}}’s harbor hands were trying to move it without tearing its roots. The oldest flower opened as the countdown began.",
+      "{{hero}} found the barge’s steering cable looped around a submerged bollard and released it from the service deck. The specialist eased the barge clear while the harbor hands steadied its growing racks. Through the open roof, one departing pilot could see the flowers lift toward the light.",
+      "The launch passed overhead and the petals trembled in its wake. A gardener clipped one fallen blossom into a small envelope addressed to someone who would be waiting at the next port. The barge came to rest beside the quay before dawn."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s gardeners secured the barge and cleared the launch corridor.",
+      "heroLoses": "{{otherPlayer}}’s harbor hands retained the quay and directed the barge’s move.",
+      "draw": "The launch departed safely, and both teams moored the flowers without losing their roots."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An upland watch station guarded a narrow pass where the first spring melt carried loose stones onto the road. {{heroPlayer}}’s patrol arrived to open its warning gate; {{otherPlayer}}’s road keepers found fresh boot prints by the release lever. A school bus waited on the far side with its engine running.",
+      "{{hero}} reached the lever as a stranger grabbed for it, trying to drop the gate into the bus’s path. The fighter wrested the handle free and held it while a keeper cleared the stones below. The driver saw the raised signal and brought the bus across at walking speed.",
+      "Children pressed against the windows to watch water run over the stones they had just avoided. At the station, a keeper discovered the warning flag had been stitched by pupils from the same school years earlier. She hung it where the next driver could see it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol held the station and guided the bus through the pass.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the gate and delayed the crossing for repairs.",
+      "draw": "The bus crossed safely, and both crews kept the warning flag above the road."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A livestock lift carried animals between stacked pasture decks in a crowded settlement. {{heroPlayer}}’s rangers came to guide a stranded herd down; {{otherPlayer}}’s lift operators heard the counterweight grinding against its rail. One calf had stepped into the empty lower bay and refused to move.",
+      "{{hero}} covered the narrow access ramp while an operator reset the counterweight. A figure reached toward the emergency release, and the fighter held the approach until the lift stopped moving. The calf followed its handler into the repaired car, still wearing a faded ribbon from the spring fair.",
+      "The animals reached the lower pasture as residents lined the railing to count them. The handler took off the ribbon and tied it to the lift gate, a bright reminder to inspect the rail before the next trip. The calf turned back once, then joined the herd."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers secured the lift and brought the herd down safely.",
+      "heroLoses": "{{otherPlayer}}’s operators retained the lift and directed the descent.",
+      "draw": "The animals reached pasture, and both groups checked the counterweight before reopening."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "An upland apothecary was preparing supplies for outlying villages when its courier ledger vanished in a rainstorm. {{heroPlayer}}’s care workers followed the last recorded route; {{otherPlayer}}’s district staff feared that patients would wait at the wrong depots. A trail of blue twine led from the apothecary to a covered well.",
+      "{{hero}} opened the well’s dry maintenance cupboard and found the ledger tucked behind a coil of twine. The specialist checked its destinations against the prepared parcels and corrected a page where two village names had been exchanged. A waiting courier recognized the mistake before the first delivery left.",
+      "Each parcel went into a different cart under the clearing sky. A villager arrived to thank the workers for one sent the week before and found her name waiting in the restored ledger. The courier gave her the blue twine to tie around her next request."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s workers recovered the routes and sent the supplies to the right depots.",
+      "heroLoses": "{{otherPlayer}}’s district staff retained the apothecary and organized delivery by hand.",
+      "draw": "The parcels departed on time, and both parties kept a copy of the corrected routes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A disused signal house sent a red light across the valley just as floodwater reached the lower bridge. {{heroPlayer}}’s couriers went to learn who had lit it; {{otherPlayer}}’s bridge staff were evacuating a hamlet downstream. The signal repeated in groups of five, a code missing from the current handbook.",
+      "{{hero}} covered the signal house steps while a courier climbed to the lamp. A figure on the opposite roof leveled a weapon, and the fighter kept the courier clear until they copied the sequence. In an older codebook, the five flashes meant that the northern footbridge was still passable.",
+      "The bridge staff led the last families across that narrow span before the river swallowed its lower steps. When the signal house went dark, a resident held up a hand lantern and repeated five flashes toward the hill to say they had arrived."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s couriers held the signal house and guided the families to the northern bridge.",
+      "heroLoses": "{{otherPlayer}}’s bridge staff retained the crossing and managed the evacuation.",
+      "draw": "The hamlet emptied safely, and both teams preserved the old signal code."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A dry dock far from the coast held a small ceremonial boat built for a river festival. {{heroPlayer}}’s escorts came to deliver its painted prow; {{otherPlayer}}’s carpenters had discovered the lifting cradle was tilting toward a workshop. A worker remained on the deck, trying to untie a mooring rope.",
+      "{{hero}} climbed onto the cradle as a stranger reached for its release handle. The fighter pulled them away, held the brake, and helped the worker over the rail. Freed from the slack rope, the boat settled upright; its painted prow could finally be fitted without covering the maker’s signature.",
+      "The carpenters lowered the boat gently onto a waiting cart. At the festival, the worker pointed out the signature to the builder’s grandchildren, who had never seen the finished vessel. The little boat took the first turn around the river bend without a wobble."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the dock and delivered the boat for the festival.",
+      "heroLoses": "{{otherPlayer}}’s carpenters retained the workshop and delayed the launch until the cradle was repaired.",
+      "draw": "The boat stayed intact, and both parties helped fit its painted prow."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "On a school rooftop, a rain collector supplied the nearby shelter after a heat wave. {{heroPlayer}}’s aid crew arrived to reopen its blocked outlet; {{otherPlayer}}’s teachers needed the roof safe before children could return. The first clouds of the season gathered while the tank remained nearly empty.",
+      "{{hero}} found a paper kite lodged against the outlet and pulled it free without tearing its string. The specialist flushed the pipe, then checked the flow into the shelter tank. A child on the stair recognized the kite and said it had been sent up weeks earlier carrying a wish for rain.",
+      "Rain began before the crew reached the lower landing. The children watched water fill the tank through its clear side panel, counting each marked line as it rose. The kite dried indoors beside a window, its written wish still legible."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the collector and supplied the shelter.",
+      "heroLoses": "{{otherPlayer}}’s teachers retained the roof and postponed access until the tank was inspected.",
+      "draw": "The tank filled, and both groups returned the kite to its owner."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A habitat night market lost its gravity stabilizer just as vendors opened their stalls. {{heroPlayer}}’s mechanics came to the control alcove; {{otherPlayer}}’s market stewards were catching baskets drifting toward the ceiling. A framed family photograph floated out of an abandoned booth.",
+      "{{hero}} guarded the alcove while a mechanic reset the stabilizer. Someone moved toward the emergency cutoff with a tool, and the fighter held the corridor until weight returned to the floor. Vendors caught their goods as they fell; the photograph landed faceup beside a stall selling the same kind of bread it showed.",
+      "A baker recognized their parents in the photograph and took it to the abandoned booth. They had run that stall before moving away. The baker hung the frame beside the oven, where it stayed through the market’s late reopening."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mechanics secured the control alcove and restored the market.",
+      "heroLoses": "{{otherPlayer}}’s stewards retained the stalls and directed the reset.",
+      "draw": "The market reopened, and both teams helped return the drifting goods."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A traveling theater brought a circular stage to the civic square, where a storm made its canvas roof fold inward. {{heroPlayer}}’s artists came to save the set; {{otherPlayer}}’s square wardens were guiding the audience beneath an arcade. The dancers had left a row of masks facing the empty stage.",
+      "{{hero}} found the roof’s center rope crossed through the wrong pulley and eased it into its proper track. The specialist drew the canvas tight while stagehands secured its edges. On the underside, hidden from the audience until then, was a painted night sky with one small constellation left unfinished.",
+      "A dancer returned carrying a brush and completed the last star from memory. The audience watched from the arcade as the canvas settled into a shelter. When the rain passed, they moved back into the square and saw the painted sky above the performance."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s artists secured the stage and resumed the performance.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the square and kept the audience under cover.",
+      "draw": "The canvas held, and both groups helped bring the audience back after the storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A canal lock raised a freight skiff toward the district granary when its gate wheel jammed. {{heroPlayer}}’s riggers reached the machinery platform; {{otherPlayer}}’s lock keepers held the skiff against the current. Its captain was carrying flour for a bakery preparing tomorrow’s first meal.",
+      "{{hero}} reached the wheel as a stranger tried to wrench it free with the gate still under pressure. The fighter pulled them off the platform edge and held the wheel steady while a rigger seated its broken pin. The skiff rose slowly, its sacks shifting but staying dry.",
+      "At the top of the lock, the captain handed a small paper bag to the keeper who had held the bowline. It contained the bakery’s last warm roll from that morning, saved for whoever got the flour through. The keeper ate it beside the quiet wheel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers secured the lock and delivered the flour to the granary.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the gates and directed the skiff’s passage.",
+      "draw": "The skiff reached the upper canal, and both teams inspected the repaired pin."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A public message wall began printing blank cards instead of the small notices neighbors left for one another. {{heroPlayer}}’s data clerks came to restore its feed; {{otherPlayer}}’s civic workers kept the queue orderly. An older resident still carried a handwritten notice asking whether anyone had seen her dog.",
+      "{{hero}} traced the fault to an exhausted ribbon in the printer and replaced it from the wall’s supply drawer. The specialist restored the saved notices, then printed the resident’s message first. A child in the queue recognized the dog’s collar and pointed toward a nearby courtyard.",
+      "The dog was asleep behind a planter, leash tangled around a leg of the bench. The resident returned to write a second notice thanking the child. By evening, the message wall was full again, and both cards hung side by side."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s clerks restored the wall and its missing notices.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the plaza and distributed messages by hand.",
+      "draw": "The notices returned, and both groups helped bring the dog home."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "On a distant forest platform, luminous spores gathered around a survey marker no botanist had placed there. {{heroPlayer}}’s scouts escorted a researcher to the marker; {{otherPlayer}}’s local guides feared the spores would spread along their return trail. At dusk, the marker began casting two shadows.",
+      "{{hero}} covered the narrow platform while the researcher took a sealed sample. A figure moved through the bright growth and raised a weapon; the fighter held them away from the sampling case until the guides reached a clear path. One shadow belonged to the marker, the other to a small plant growing beneath it.",
+      "The guides showed the plant to a child who had helped build the platform years earlier. She remembered planting a seed there and forgetting to mark it. Under the research lamp, its leaves shimmered in the same color as the spores."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts secured the marker and brought the sample back safely.",
+      "heroLoses": "{{otherPlayer}}’s guides retained the platform and closed the trail.",
+      "draw": "The sample stayed sealed, and both parties left the plant undisturbed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An aqueduct crossed a sunbaked market with carved arches that carried voices from one stall to another. {{heroPlayer}}’s guards came to secure a cracked support; {{otherPlayer}}’s vendors refused to leave until their neighbors had packed. Through the arch came the sound of a child counting backward.",
+      "{{hero}} reached the support as a stranger tried to dislodge its brace. The fighter forced them away and held the timber while a mason fitted a new wedge. The counting stopped at one, followed by the child’s voice announcing that every stall on the far side was empty.",
+      "The vendors crossed into the shade together before the mason closed the market. A child repeated the count into the nearest arch, testing how far a whisper could travel. From across the square, someone answered that they had heard every number."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the aqueduct and cleared the market safely.",
+      "heroLoses": "{{otherPlayer}}’s vendors retained the square and directed the closure.",
+      "draw": "The stalls were emptied, and both teams kept the arch supported until repairs were finished."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A night train crossed a causeway beside a field of glowing reeds, but its automatic signal had failed as the water rose. {{heroPlayer}}’s researchers came to check the reeds’ changing light; {{otherPlayer}}’s rail workers needed a safe passage before the last train. A narrow dark band moved steadily across the field.",
+      "{{hero}} measured the dark band against the causeway markers and found it traced the edge of the rising water. The specialist relayed its movement to the rail workers, who slowed the train and cleared a drainage gate ahead of it. Light returned to the reeds as the water receded.",
+      "Passengers looked out to see the glowing field spreading to the horizon. A conductor said the old signal had never warned so beautifully. At the next station, the researchers copied their measurements onto a chart beside the ordinary timetable."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers secured the causeway and guided the train through.",
+      "heroLoses": "{{otherPlayer}}’s rail workers retained the signals and held the train until daylight.",
+      "draw": "The train crossed safely, and both groups recorded the reeds’ warning for the next tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A survey ring suspended above a crater stopped rotating when a small supply capsule snagged on its outer rail. {{heroPlayer}}’s technicians approached by tether; {{otherPlayer}}’s surface crew watched the ring’s shadow creep toward their communications mast. Inside the capsule, something struck the hatch at regular intervals.",
+      "{{hero}} anchored the tether to a stable spoke and released the capsule without sending it toward the mast. The specialist brought it inside the ring, where the knocking stopped. The cargo was a mechanical metronome wrapped with a note asking for a steady beat during the survey crew’s long night shift.",
+      "The ring resumed its slow turn above the crater. A technician set the metronome on a workbench, and its ticking filled the quiet between radio calls. From the ground, the surface crew watched the ring’s shadow pass harmlessly beside their mast."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians freed the ring and secured the capsule.",
+      "heroLoses": "{{otherPlayer}}’s surface crew retained the mast and suspended the ring’s motion.",
+      "draw": "The ring turned safely, and both teams heard the metronome over the next radio check."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cave gallery displayed paintings made from pigments gathered in the tunnels below. {{heroPlayer}}’s escorts came to guide visitors out after a ventilation failure; {{otherPlayer}}’s curators were covering the works against damp air. One visitor remained beside a painting of a doorway that resembled the gallery’s sealed service exit.",
+      "{{hero}} reached the service exit as a stranger tried to pull its locking bar across the visitors’ route. The fighter forced the bar open and held the door while the curator led everyone through. In the light beyond, the painted doorway showed a small blue mark absent from the real one.",
+      "The visitor pointed to that mark and found it on a second door farther along the passage. Behind it waited the gallery’s ventilation controls, still running at half power. The curator restored the airflow and returned to see why the painter had known the way."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the service passage and cleared the gallery.",
+      "heroLoses": "{{otherPlayer}}’s curators retained the cave and closed it for ventilation repairs.",
+      "draw": "The visitors left safely, and both groups followed the painting’s clue to the controls."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A civic fountain began lowering its basin whenever children dropped paper boats into it. {{heroPlayer}}’s analysts came to test its automated water system; {{otherPlayer}}’s maintenance crew saw the basin pull away from a cracked support. The boats gathered in a dry corner, their painted sails still upright.",
+      "{{hero}} isolated the faulty level sensor and found its reading distorted by a chip of colored glass beneath the float. The specialist restored the correct depth while the crew braced the cracked support. Water lifted the boats back toward the middle, where the children could reach them from the edge.",
+      "A child said the glass had come from a broken ornament once hung over the fountain. The maintenance crew set it aside for repair. At sunset, the boats circled slowly around the basin, each following the same current without ever touching another."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts secured the fountain and corrected its level control.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the basin and closed it until the support was repaired.",
+      "draw": "The water steadied, and both teams returned the paper boats to the children."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A hilltop learning center lost its evening astronomy feed while students waited to see a rare passage of lights. {{heroPlayer}}’s security detail brought an archivist to the receiver; {{otherPlayer}}’s teachers kept the students near the dome. A recorded lesson continued playing although the telescope had gone dark.",
+      "{{hero}} covered the receiver stair while the archivist found a severed connector. A figure crossed the roof toward the dish, and the fighter held the approach until the cable was replaced. The live image returned just as the first moving light crossed the edge of the screen.",
+      "Students watched the passage in silence, then replayed the old lesson and heard their former teacher describe exactly where to look. One student wrote the teacher’s name on the margin of the star chart. The archivist left the recording queued for the next class."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the center and restored its live sky feed.",
+      "heroLoses": "{{otherPlayer}}’s teachers retained the dome and continued the lesson from recordings.",
+      "draw": "The students saw the lights, and both groups saved the recording for future classes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Yu Jing",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A courtyard sculpture held hundreds of paper cranes above a memorial gathering. {{heroPlayer}}’s escorts came when its suspension frame began to lean; {{otherPlayer}}’s organizers were trying to move the people below. One crane fell into an empty chair reserved for a late guest.",
+      "{{hero}} reached the support as a stranger tried to pull the last retaining rope from its cleat. The fighter seized the rope, pushed them away, and held the frame until a rigger fixed the brace. The cranes settled overhead, their wings moving only in the warm evening air.",
+      "The late guest arrived to find the paper crane on the chair. They unfolded it and saw a short message from a child welcoming anyone who had made the journey. When the gathering began, the guest folded it again and placed it beside the others."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the frame and kept the courtyard open.",
+      "heroLoses": "{{otherPlayer}}’s organizers retained the gathering and moved everyone indoors.",
+      "draw": "The sculpture held, and both groups made room for the late guest."
+    }
   }
 ]
