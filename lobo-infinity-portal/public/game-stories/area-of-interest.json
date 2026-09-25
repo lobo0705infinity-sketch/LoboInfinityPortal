@@ -11018,5 +11018,385 @@
       "heroLoses": "{{otherPlayer}}’s patrol held the door and recovered the people beyond it from the ice.",
       "draw": "The permits survived, but both parties sealed the vault until the statements could be verified."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A row of survey markers crossed a silent snowfield, but each morning the last marker stood farther east. A lost caravan was using them to find the pass. {{heroPlayer}}’s scouts reached the first marker before dawn; {{otherPlayer}}’s winter patrol held the ridge where the line should have ended.",
+      "{{hero}} covered a surveyor moving between the posts. Shots snapped past the snow stakes, and the fighter answered while the surveyor dug under the newest marker. A narrow track beneath it led to a motorized sled hidden under the snow, still advancing a little with each radio pulse.",
+      "The sled could be stopped and the markers reset, but the caravan was already following the false route. The winter patrol had a flare position above the true pass. The fighter watched another radio pulse shift the last marker as the caravan’s first lantern appeared beyond the snowfield."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts stopped the sled and turned the caravan toward the marked pass.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the ridge and guided the caravan by flare.",
+      "draw": "The caravan returned safely, but the buried sled disappeared beneath fresh snow before either party claimed it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A slag kiln beneath the winter road began rolling its unused iron press at night. The shaking loosened snow above the entrance to a mining hamlet. {{heroPlayer}}’s expedition came to halt the press; {{otherPlayer}}’s winter patrol held the road and said the kiln’s heat was keeping the hamlet warm.",
+      "{{hero}} met a defender at the press lever and fought for a foothold on the iron grating. The fighter pulled the lever out of its notch, slowing the rollers without putting out the fire. A worker spotted a new crack in the heating pipe, directly under the wall facing the hamlet.",
+      "Stopping the rollers entirely would let the pipe be patched, but could cool every house beyond the road. Letting them run might split the line before dawn. The winter patrol had a replacement sleeve outside the kiln. The fighter held the lever halfway as the worker reached toward the cracked pipe."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s expedition repaired the pipe and kept the kiln warm without its dangerous press.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the lever and restored heat to the hamlet safely.",
+      "draw": "The pipe held through the night, but both parties kept watch over the stalled kiln."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A frozen library began chiming noon at a different time in each room. Its oldest clock marked a spring thaw weeks away, but water already ran beneath the entry floor. {{heroPlayer}}’s researchers came to the clock gallery; {{otherPlayer}}’s winter patrol blocked the lower stacks to protect the books.",
+      "{{hero}} compared the clocks and found one wound by water pressure from a forgotten pipe. The specialist opened its casing; a tiny wheel inside carried a map of drains beneath the stacks. A section of the map was missing, and the floor creaked where the patrol had laid its sandbags.",
+      "Turning the water-driven clock back might close a drain and save the books, or force the meltwater up through the missing section. The patrol had located an old valve below the stairs. The specialist held the little map in the clock light as a dark line reached the bottom shelf."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers opened the correct drains and preserved the library’s oldest books.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the lower stacks and diverted the meltwater from its valve.",
+      "draw": "The books stayed dry, but both groups kept the library closed until its missing pipe map was found."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An icebound choir hall began returning its singers’ notes as images on the opposite wall. One image showed a cave entrance beyond the winter patrol’s boundary. {{heroPlayer}}’s investigators came to record the phenomenon; {{otherPlayer}}’s patrol held the hall while its singers repeated the note that made the picture appear.",
+      "{{hero}} covered a recorder crossing to the painted wall. Gunfire broke a window, and the fighter answered while the recorder traced the image to a hidden lens above the organ pipes. Behind it lay an old glass slide marked with a second cave, nearer to the hall, its entrance drawn beneath the floor.",
+      "The slide could be removed and carried to safety, but the projected first cave would vanish before anyone reached it. The winter patrol had a cellar key and was heading for the closer entrance. The fighter watched both images overlap as the singers held their note against the broken window’s wind."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators kept the slide and opened the hidden cave beneath the hall.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the cellar and followed the projected route from its side.",
+      "draw": "The images faded, leaving both parties with a drawing of each cave and no certain route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A cavern of luminous stone beneath the winter barracks began showing moving shadows although no one was inside. The newest shadow resembled a child carrying a lantern toward an unmarked passage. {{heroPlayer}}’s field team entered from the mine stair; {{otherPlayer}}’s winter patrol held the barracks door above.",
+      "{{hero}} followed the shadows to a narrow fissure lined with reflective crystals. The specialist adjusted a lamp and saw the child’s real footprints crossing dust beyond the fissure. A stone at its entrance shifted under the lamp’s warmth, exposing a path just wide enough for one person to crawl through.",
+      "The path could lead to the child, but moving the stone might shut off the shadows that showed where to turn. The patrol was bringing a rope from the barracks. The specialist placed the lamp where the footprints stayed visible and heard a small voice asking who had turned the lights on."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team followed the lit footprints and brought the child back through the cavern.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the barracks entrance and guided the child out by rope.",
+      "draw": "The child returned, but the shifting stone concealed the passage before either party could map it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "At a polar food depot, the ration board assigned every crate to the same distant village. Several nearer settlements had already sent sleds for their shares. {{heroPlayer}}’s logisticians reached the board’s controller; {{otherPlayer}}’s winter patrol guarded the loading yard, where the sled drivers were gathering.",
+      "{{hero}} traced the board’s calculations to a missing weather report. The specialist entered a corrected forecast, and the assignments spread across the villages again. Then the distant village’s signal appeared on a separate receiver: its stores had been destroyed, and its people were already moving toward the depot.",
+      "The recalculated allotments would feed everyone for a week, unless the arriving villagers needed shelter and food tonight. The patrol could hold back some crates until they knew how many were coming. The specialist kept a hand on the controller as the first sled from the distant road emerged through the snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s logisticians divided the stores and opened the depot to the arriving villagers.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the yard and distributed crates to each waiting sled.",
+      "draw": "The villagers found shelter, but both groups postponed the final allotments until morning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A survey rover returned from an unmarked ice ridge with its wheels packed in red dust. Its camera held a view of a door standing alone on the summit. {{heroPlayer}}’s analysts came to the maintenance tent; {{otherPlayer}}’s winter patrol controlled the ridge approach and said the door had not been there at dawn.",
+      "{{hero}} covered a technician retrieving the rover’s camera. Fire struck the tent poles, and the fighter answered while the technician replayed the last frame. It showed the door open a crack with a bootprint on its threshold. Outside, the rover’s wheels turned once more though its power had been disconnected.",
+      "The patrol could take the camera up the ridge, but the red dust might reveal the rover’s actual route if kept in the tent. The technician found a small piece of wood caught in the axle. The fighter watched the ridge through a slit in the canvas as the silhouette of the door emerged in the snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts secured the rover and reached the summit door by its tracks.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the ridge and investigated the unexplained threshold.",
+      "draw": "The camera survived, but wind hid the door before either team could claim the summit."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A winter games arena had been built around an ancient stone marked as the finish of a lost pilgrimage. The crowd left when the stone started to split. {{heroPlayer}}’s custodians entered the arena to protect it; {{otherPlayer}}’s winter patrol kept the warming hall open for the athletes.",
+      "{{hero}} reached the stone as a defender tried to pull down the canvas roof above it. The fighter forced a gap between them and found a narrow object in the split: a rolled route map sealed against the cold. Beneath the arena floor, a support beam gave a hollow sound when someone stepped near the stone.",
+      "The map could be removed quickly, but prying the stone wider might break the beam and drop the finish line into a cellar below. The patrol had timber ready at the hall. The fighter steadied the canvas as a young athlete offered to crawl beneath the floor and brace the stone from underneath."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians saved the stone and recovered the old pilgrimage route.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the arena and braced the finish line for the athletes.",
+      "draw": "The stone held, but both parties left the map sealed until the floor could be rebuilt."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A ballot caravan reached the winter border with its sealed voting box but without the clerk who was meant to witness it. Residents from two settlements waited for their counts to be recorded. {{heroPlayer}}’s observers entered the polling lodge; {{otherPlayer}}’s patrol held the caravan while it searched the road for the clerk.",
+      "{{hero}} checked the box and found two sealed envelopes tucked into a narrow slot beneath the lid. The specialist matched one to the clerk’s handwriting and found instructions for a second polling site across the pass. A tapping sounded from a locked storage cupboard in the lodge, interrupting the reading.",
+      "The votes could be counted in the lodge if the clerk’s instructions were valid, but the second site might still be waiting for its box. The patrol had runners who could cross the pass. The specialist held the envelopes as a voice from the cupboard asked whether the caravan had made it through."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers found the clerk and recorded both settlements’ votes under seal.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the caravan and delivered the ballots to the two sites.",
+      "draw": "The votes stayed sealed while both parties searched for the missing second polling box."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An atmospheric relay on a snowbound ridge started projecting colored bands across the slope. A cargo pilot mistook them for the lights of an open landing zone. {{heroPlayer}}’s airfield detail came to the relay mast; {{otherPlayer}}’s winter patrol held the safer valley approach with lanterns.",
+      "{{hero}} covered an electrician climbing to the relay lens. Shots hit the mast’s lower braces, and the fighter answered as the electrician shaded its faulty color filter. The false landing zone vanished, but so did the one steady line of light the pilot had been using to find the ridge.",
+      "The electrician could reopen the filter to guide the pilot away, risking another false zone, or leave the valley patrol to signal by lantern. The fighter heard the aircraft cross the clouds and watched the electrician’s hand hover over the lens as the valley lights came into view."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail corrected the relay and brought the cargo aircraft down in the valley.",
+      "heroLoses": "{{otherPlayer}}’s patrol guided the pilot with its lanterns and secured the ridge approach.",
+      "draw": "The aircraft landed safely, but both teams left the damaged relay dark until daylight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "The settlement’s wind turbines turned through a clear winter night but produced no heat. The first homes to go dark stood beside an old canal. {{heroPlayer}}’s engineers entered the turbine control room; {{otherPlayer}}’s winter patrol guarded the canal bridge, where ice was gathering around a cable junction.",
+      "{{hero}} opened the controller and found power being drawn to an unused pump beneath the canal. The specialist shut it down, lighting one row of homes, but the ice around the bridge began to rise as the pump stopped. A resident reported that the canal had once carried warm water under the settlement.",
+      "The pump might be keeping the bridge safe while stealing the homes’ heat. The patrol could set temporary heaters if it reached the control room. The specialist held a new power split in place as the bridge creaked and the dark houses began to show candles in their windows."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers restored heat and kept the bridge clear of dangerous ice.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the junction and redirected power to the settlement safely.",
+      "draw": "The homes warmed, but both teams kept the pump on a shared watch until the canal thawed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An observatory on the frozen plain housed a ceremonial blade laid beneath its oldest telescope. Its inscription named a village that no current map showed. {{heroPlayer}}’s custodians came to examine it; {{otherPlayer}}’s winter patrol held the observatory doors after finding fresh bootprints leading toward the missing village’s marked position.",
+      "{{hero}} struggled with a defender at the display case and held its glass lid as a curator freed the blade. A folded star chart under its hilt showed a line across the plain, ending at a small stone circle. Outside, a lamp lit in that direction where the patrol said nothing stood.",
+      "The chart could guide a search tonight, but the blade might be the key to a sealed gate at the circle. Carrying it into the cold would risk damaging the old metal. The patrol had a warm case available. The fighter watched the far lamp blink while the curator tried to read the inscription again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians protected the blade and found the marked stone circle.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the observatory and followed the bootprints across the plain.",
+      "draw": "The lamp went out, leaving both parties with the chart but no confirmed route to the village."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A newspaper press at a winter outpost printed a fresh edition about a village that had vanished from the road a generation ago. The photograph showed a campfire burning behind the nearby hills tonight. {{heroPlayer}}’s searchers came to the pressroom; {{otherPlayer}}’s winter patrol held the back door and said the photograph could be a forgery.",
+      "{{hero}} covered a reporter carrying the printing plate to a lamp. Shots cracked the pressroom window, and the fighter answered while the reporter found a tiny survey marker in the image. It matched an old post buried under snow at the outpost gate, where a new set of tracks led away.",
+      "The plate could be kept as evidence, but the fresh tracks would disappear in the next snowfall. The winter patrol had lanterns ready and knew the hill road. The fighter watched the reporter set down the plate as another sheet emerged from the press, showing the campfire a little closer."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers followed the marker and found the camp behind the hills.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the press and traced the fresh tracks from the gate.",
+      "draw": "The tracks vanished, but both parties kept the photographic plate for a spring search."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A walled winter garden kept its last seeds in clay jars beneath the central path. New snow showed a line of footprints that crossed the wall without a break. {{heroPlayer}}’s gardeners entered from the southern gate; {{otherPlayer}}’s winter patrol held the northern path to protect the buried jars.",
+      "{{hero}} followed the prints to a loose paving stone and found a small bell attached to its underside. The specialist lifted it and uncovered an empty space where one jar should have been. The bell rang once in their hand, and a second sound answered from a shed beyond the garden wall.",
+      "The gardeners could pursue the missing jar or mark the remaining seeds before more went astray. The patrol had the shed in sight from its path. The specialist held the bell beneath a covered lantern as the prints at the wall began filling with fresh snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s gardeners found the missing jar and secured the winter seed beds.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the shed and returned the jar to its marked place.",
+      "draw": "The remaining jars stayed safe, but the missing seeds were not recovered before the storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A field of winter reeds began bending against the wind, pointing toward a buried rescue cache. Its caretaker had died without leaving a map of the supplies. {{heroPlayer}}’s botanists came to study the reeds; {{otherPlayer}}’s winter patrol searched by old survey stakes at the field’s edge.",
+      "{{hero}} found the reeds responding to warmth from a vent beneath the snow. The specialist cleared it and uncovered a metal hatch, but a row of living roots had threaded through its handle. From below came a tapping rhythm matching the caretaker’s hand-written notes on the cache inventory.",
+      "Cutting the roots might open the hatch quickly while losing the only guide to the cache’s deeper rooms. The patrol offered a heated tool to loosen the handle without damage. The specialist held the notes against the reeds as the tapping stopped and a fresh puff of warm air escaped."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists opened the cache and preserved the reeds that marked its route.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the hatch and distributed the stored supplies.",
+      "draw": "The hatch opened, but both parties kept the deeper rooms closed until the inventory could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A traders’ caravan carried antique signal flags through a snowy pass, though its manifest listed only wool. One flag was raised at dusk, and a distant camp answered from a slope believed empty. {{heroPlayer}}’s hired escorts stopped beside the wagons; {{otherPlayer}}’s winter patrol controlled the bend above.",
+      "{{hero}} covered a trader unfolding the next flag. Shots struck the wagon’s canvas, and the fighter answered while the trader found a map stitched into the flag’s hem. The answering camp lay across a frozen stream at the end of an old path, where a row of lanterns now appeared.",
+      "The escorts could follow the old path and learn who sent the answer, but the caravans would be exposed on the bend until they returned. The patrol had a sheltered route to the lanterns from above. The fighter watched the trader raise the map against the moonlight as one lantern went out."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the caravan and reached the camp by the stitched map.",
+      "heroLoses": "{{otherPlayer}}’s patrol held the bend and followed the lanterns to their source.",
+      "draw": "The caravan crossed safely, but the answering camp had gone dark before either party reached it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A museum of northern expeditions displayed a small compass embedded in clear ice. Overnight its needle turned toward a mountain shelter outside the museum’s jurisdiction. {{heroPlayer}}’s security team came for the exhibit; {{otherPlayer}}’s winter patrol held the glass door while curators prepared to move the ice into a cold case.",
+      "{{hero}} covered the curators as gunfire chipped the entry steps. The fighter answered while the curators lifted the ice block and found a second needle suspended beneath the first. It pointed toward a gallery wall bearing the names of explorers who had failed to return from the shelter.",
+      "The curators could preserve the frozen needles or melt enough ice to separate their bearings. The winter patrol knew the shelter and could search it now, before the light failed. The fighter watched the second needle swing as a warm hand touched the cold case."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the compass and traced the hidden bearing beyond the museum.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the exhibit and followed the first needle to the shelter.",
+      "draw": "The ice was preserved, but both teams postponed the shelter search until the compass could be studied."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An ice bridge’s old winch house had one working motor left. A food caravan waited to cross, but the bridge decking had moved away from the near bank during the night. {{heroPlayer}}’s hired guards entered the winch house; {{otherPlayer}}’s winter patrol held the far anchor point.",
+      "{{hero}} caught a defender reaching for the motor switch and fought to keep it from engaging too fast. The fighter eased the lever forward, bringing the decking back a little. Beneath the ice, a mooring cable pulled free of its bolt and began sliding toward the caravan’s waiting horses.",
+      "The decking could be pulled into place if someone grabbed the loose cable, but the motor would need to keep running while the repair was made. The winter patrol had a hook from the far bank. The fighter held the lever against the shaking motor as the first horse stepped toward the gap."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the cable and led the food caravan across the bridge.",
+      "heroLoses": "{{otherPlayer}}’s patrol caught the loose line and guided the caravan from the far anchor.",
+      "draw": "The caravan was delayed safely while both crews rebuilt the bridge’s failed mooring."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A contract beacon on the frozen ridge was meant to confirm the location of a spring shelter. During the aurora it began transmitting two positions, one on either side of a crevasse. {{heroPlayer}}’s technicians climbed to the beacon; {{otherPlayer}}’s winter patrol took the old path to the shelter.",
+      "{{hero}} opened the beacon case and found a second reflector mounted behind its lens. The specialist covered it, leaving one clear coordinate on the receiver, then noticed fresh snowshoe tracks leading to the other position. From that side of the crevasse came a light answering the beacon’s pulse.",
+      "The technicians could keep the reflector covered and guide travelers to the known shelter, or let both positions transmit while someone investigated the answering light. The patrol was already on the old path. The specialist held the receiver against the aurora as the light across the crevasse flashed again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians secured the beacon and traced the second light without losing the shelter route.",
+      "heroLoses": "{{otherPlayer}}’s patrol held the old path and brought the travelers into shelter.",
+      "draw": "The shelter remained marked, but both parties left the second position unclaimed across the crevasse."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The last lantern on the ice border went dark while a family convoy was between the marked posts. A small cabin beside it held the oil, but its door had frozen shut. {{heroPlayer}}’s security detail came along the south line; {{otherPlayer}}’s winter patrol held the northern posts and shouted that the ice was breaking below them.",
+      "{{hero}} covered a lamp keeper crossing the open snow. Shots cut the rope beside the cabin, and the fighter answered while the keeper freed the door. Inside, the oil can was empty; a second lantern had been lit under the floorboards, marking an older crossing beneath the new snow.",
+      "The keeper could carry that lantern to the convoy, leaving the hidden route unmarked, or call the family back toward the patrol’s northern lights. The fighter watched the oldest child appear between the posts, clutching a small map, as a long crack traced the ice toward the cabin."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail relit the safe route and brought the family convoy across.",
+      "heroLoses": "{{otherPlayer}}’s patrol held the northern posts and guided the convoy away from the break.",
+      "draw": "The families reached shore, but both groups left the broken border crossing closed."
+    }
   }
 ]
