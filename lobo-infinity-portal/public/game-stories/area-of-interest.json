@@ -14818,5 +14818,385 @@
       "heroLoses": "{{otherPlayer}}’s instructors protected the class and verified the photograph’s date.",
       "draw": "The wall closed while the climber’s family examined the recovered notebook."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A community darkroom developed photographs showing the inside of a house slated for demolition, although the photographer had never entered it. On the last print, a window showed a person waving. {{heroPlayer}}’s housing workers reached the property; {{otherPlayer}}’s photographers kept the negatives and brought the original camera.",
+      "{{hero}} checked the boarded house against the print and found a loose panel exactly where the waving hand had appeared. The specialist lifted it to reveal an old passage into the neighboring building. Inside lay a stack of eviction letters, each returned undelivered, and one envelope bearing the photographer’s address.",
+      "The housing workers could halt demolition and search the passage, but the photographers wanted the letters delivered to the residents before any wall moved. The camera’s shutter had never opened near the house. The specialist set the returned envelope beside the photograph while a knock came from the adjoining building."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s housing workers found the passage and protected its remaining residents.",
+      "heroLoses": "{{otherPlayer}}’s photographers secured the negatives and delivered the lost letters.",
+      "draw": "Demolition paused while both groups traced the person in the window."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A museum of discarded instruments opened a new exhibit around a music box that played only when visitors walked away. The curator found its key missing before the doors opened. {{heroPlayer}}’s guards covered the exhibit floor; {{otherPlayer}}’s performers searched backstage, where props from an earlier concert were stored.",
+      "{{hero}} held the gallery entrance when a shot struck a hanging metronome. The fighter bought time for the curator to open the music box, where a tiny switch had been fitted beneath the lid. It activated a lamp in the storage room; behind the props, the performers found the missing key attached to a photograph of a former curator.",
+      "The guards could lock down the gallery and investigate the photograph, or keep it open while watching who came to collect the key. The performers feared a child in the audience might trigger the switch again. The fighter kept the entrance clear as the box began its short tune once more."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the music box and traced the hidden key.",
+      "heroLoses": "{{otherPlayer}}’s performers recovered the photograph and protected the exhibit visitors.",
+      "draw": "The box was silenced while both crews checked its unusual switch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Two salvage crews received the same permit to lift a small research vessel from a dry basin. Each carried a different plan showing the location of its recorder. {{heroPlayer}}’s crew reached the overturned hull first; {{otherPlayer}}’s crew set supports on the far side and asked who had altered the plans.",
+      "{{hero}} followed the recorder’s cable through the hull and found it had been moved to a locked drawer in the pilot’s seat. The specialist opened the drawer and discovered a second recording device, still running. Its most recent entry captured the sound of someone working beneath the vessel after both crews had arrived.",
+      "The first crew could lift the hull and see who was below, but the second crew warned that its braces were still settling. Both plans were needed to keep the vessel steady. The specialist held the two recorders against the hull, listening as another metallic knock came from underneath."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the hull and found the hidden worker below.",
+      "heroLoses": "{{otherPlayer}}’s crew stabilized the vessel and recovered both recorders.",
+      "draw": "The lift waited while the two crews compared their conflicting plans."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A shipyard payroll terminal issued wages to workers whose shifts had not yet begun. Its display showed completed repairs on a ferry still sitting untouched in dry dock. {{heroPlayer}}’s auditors opened the payroll room; {{otherPlayer}}’s mechanics held the ferry gate with the real day’s work orders.",
+      "{{hero}} traced the false timecards to a maintenance clock running twelve hours ahead. The specialist reset it and found the advance payments had been authorized with the signature of a worker on leave. A paper message under the clock asked whoever found it to check the ferry’s fire doors before the next shift.",
+      "The auditors could freeze every payment and confirm the warning, but the mechanics depended on their wages that evening. The fire doors were easy to inspect if the ferry stayed docked. The specialist held the signed timecard while the workers gathered outside to ask what had happened."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors corrected the payroll and verified the fire doors.",
+      "heroLoses": "{{otherPlayer}}’s mechanics secured the ferry and protected the workers’ wages.",
+      "draw": "The payments were held for review while the fire doors were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Combined Army"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A scrap compactor stopped halfway through a shift when its pressure gauge reported a person inside. The operator could see only a stack of empty cargo frames beneath the ram. {{heroPlayer}}’s rescue crew approached the control platform; {{otherPlayer}}’s searchers held the intake and checked each frame for a hidden passenger.",
+      "{{hero}} covered a mechanic at the exposed release wheel as shots struck the platform grating. The fighter returned fire while the mechanic backed off the ram. Beneath it was a worker’s helmet strapped to a dummy frame; the helmet’s emergency beacon was live, transmitting from somewhere deeper in the scrap yard.",
+      "The rescue crew could search for the worker using the beacon or first shut down the compactor so nobody else was endangered. The searchers had already reached the far stacks and called out a faint reply. The fighter watched the mechanic hold the release while the beacon’s pulse grew stronger."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew shut down the compactor and recovered the missing worker.",
+      "heroLoses": "{{otherPlayer}}’s searchers traced the beacon and secured the scrap yard.",
+      "draw": "The machine stayed locked out while both crews searched the far stacks."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cliffside freight hangar kept one reserve fuel drum for rescue aircraft. Its winch stalled while the drum hung above the only landing pad. {{heroPlayer}}’s assault party reached the upper catwalk; {{otherPlayer}}’s hangar crew held the winch controls and waved an approaching aircraft toward a holding pattern.",
+      "{{hero}} forced a defender from the catwalk’s narrow turn and held its handrail while a mechanic inspected the stalled cable. Wrapped around the drum’s hook was a paper tag naming a pilot whose aircraft had vanished from the hangar log. The cable slipped again, and the drum swung toward the pad’s warning lights.",
+      "The assault party could lower the drum into the pad, blocking the landing, or haul it back into the hangar with the strained cable. The approaching aircraft had injured passengers aboard. The fighter braced the catwalk while the mechanic called down the tag’s name, hoping someone recognized it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the drum and cleared the pad for landing.",
+      "heroLoses": "{{otherPlayer}}’s hangar crew steadied the winch and identified the missing pilot.",
+      "draw": "The aircraft circled while both parties stabilized the suspended fuel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "An agricultural barge began reversing its irrigation schedule, watering the unused bank and leaving a food nursery dry. Its crew said no one had touched the controls. {{heroPlayer}}’s analysts reached the pump console; {{otherPlayer}}’s repair workers held the feeder pipes and brought the nursery’s handwritten watering log.",
+      "{{hero}} read the console history and found each bad instruction arrived through a weather sensor mounted beneath the barge. The specialist retrieved it with a line and discovered a tiny paper flag caught inside its vane. A child had drawn a crop on the flag, marking a garden far down the unused bank.",
+      "The analysts could restore the nursery’s water immediately, but the repair workers wanted to see whether anyone at the distant garden needed help. The pumps had enough capacity for one bank at full pressure. The specialist set the flag beside the watering log as the nursery’s first dry seedlings wilted."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts balanced the pumps and located the distant garden.",
+      "heroLoses": "{{otherPlayer}}’s workers secured the feeder line and saved the nursery crop.",
+      "draw": "Both banks received a reduced flow while the sensor was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital telescope’s spare mirror disappeared before a public viewing, leaving only its empty shipping case. The main mirror then began tracking a point below the horizon instead of the planned sky. {{heroPlayer}}’s search unit took the observation deck; {{otherPlayer}}’s technicians held the lower optics room and searched the packing records.",
+      "{{hero}} covered a technician crossing a transparent service bridge as fire struck its frame. The fighter kept the route open while the technician found the missing mirror fitted beneath the main instrument. It reflected the telescope’s beam onto the lower deck, where a sealed case cast a shadow shaped like a handwritten arrow.",
+      "The search unit could open the case or reset the telescope before the viewing crowd arrived. The optics crew needed the mirror left in place long enough to trace the arrow’s target. The fighter watched the beam sweep slowly across the deck as the first visitors entered the outer gallery."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s search unit secured the mirror and found the arrow’s target.",
+      "heroLoses": "{{otherPlayer}}’s technicians restored the telescope and preserved the sealed case.",
+      "draw": "The public viewing waited while both groups checked the altered optics."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "At a transport museum, a restored diving bell began releasing bubbles although it was standing dry. Its logbook listed one descent without a return time. {{heroPlayer}}’s examiners reached the display; {{otherPlayer}}’s restoration crew checked the bell’s old air lines before visitors came through the gallery.",
+      "{{hero}} found a small water reservoir beneath the bell’s pedestal, connected to a hand pump in a locked drawer. The specialist opened the drawer and saw an unfinished log entry beside the pump: the diver had heard a voice from inside the seabed. A fresh fingerprint marked the page where the return time belonged.",
+      "The examiners could preserve the print and leave the bell untouched, or operate the pump to learn who had arranged the bubbles. The restorers wanted the reservoir drained before the wooden gallery floor warped. The specialist held the open book above the water as a new bubble escaped the bell’s rim."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s examiners secured the logbook and traced the fresh fingerprint.",
+      "heroLoses": "{{otherPlayer}}’s restoration crew protected the bell and found the hidden pump.",
+      "draw": "The gallery closed while both teams examined the unfinished dive record."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A freight platform’s weight readout reported an extra passenger on every departing shuttle. Maintenance staff found no one hiding aboard, yet the figure appeared even on an empty test launch. {{heroPlayer}}’s analysts came to check the scale; {{otherPlayer}}’s platform crew held the passenger gate and brought recent balance sheets.",
+      "{{hero}} measured the scale at three positions and found the extra weight moved whenever a small service trolley crossed the wall behind it. The specialist opened the wall panel to find a parcel tied underneath the trolley, addressed to a platform worker on leave. The package contained a photograph and a request for a private delivery.",
+      "The analysts could remove the parcel and correct the scale before the next launch, or let the trolley complete its route to see who collected it. The crew worried passengers would lose confidence if the false count continued. The specialist held the photograph while the empty trolley came around again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts corrected the scale and traced the parcel’s intended recipient.",
+      "heroLoses": "{{otherPlayer}}’s platform crew secured the trolley and restored accurate departure counts.",
+      "draw": "The next shuttle waited while both groups checked the hidden package."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A foundry marked a batch of replacement joints for a community playground with the stamp of a company closed years earlier. Its newest worker said the metal had come from the usual supply. {{heroPlayer}}’s inspectors entered the casting room; {{otherPlayer}}’s builders held the finished parts beside the playground’s current repair schedule.",
+      "{{hero}} tested a joint and found an older serial number buried beneath the fresh stamp. The specialist traced it to a retired bridge railing whose alloy would crack under repeated movement. A cutting plan beside the furnace showed the same alloy prepared for another set of parts, due to leave the foundry that afternoon.",
+      "The inspectors could halt the batch and search for the original supplier, but the builders wanted to know whether any unsafe parts had already been installed. Children were using the playground across the street. The specialist laid the test result beside the repair schedule and asked which joints had gone out first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors found the unsafe alloy and stopped the new batch.",
+      "heroLoses": "{{otherPlayer}}’s builders secured the playground and replaced the suspect joints.",
+      "draw": "The playground closed briefly while every recent replacement was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A loading crane above a fishing quay froze with a rescue skiff suspended over the water. Its passenger was a diver who had sent a distress signal from the harbor floor. {{heroPlayer}}’s rescue party climbed the crane stairs; {{otherPlayer}}’s riggers controlled the dock below and prepared a backup sling.",
+      "{{hero}} pushed a defender away from the crane cabin and held the door while a rigger reached the brake. Inside, a knot of fishing line jammed the emergency lever, tied with a pattern the diver used on their own gear. From the skiff came a second distress tone, this one playing through its onboard radio.",
+      "The rescue party could free the lever and lower the skiff immediately, or keep it aloft while the riggers checked the radio for another diver below. The tide was carrying debris toward the dock. The fighter held the cabin door open as the rigger cut at the familiar knot."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party lowered the skiff and located the second distress call.",
+      "heroLoses": "{{otherPlayer}}’s riggers stabilized the crane and brought the diver to shore.",
+      "draw": "The skiff stayed supported while both crews searched beneath the quay."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A new skywalk opened between two public buildings with a safety certificate signed before its final supports were installed. Commuters were already using it. {{heroPlayer}}’s inspectors entered from the library side; {{otherPlayer}}’s builders held the far entrance with a box of unused fasteners and the original engineering plan.",
+      "{{hero}} checked the joints above the walkway and found the missing fasteners already fitted, but in the wrong grade of metal. The specialist marked each one with paint and noticed the certificate’s serial matched a different bridge across town. Beneath the railing sat a small tag naming the worker who had spotted the error first.",
+      "The inspectors could close the skywalk and replace every fastener, though a hospital delivery needed the shortcut that afternoon. The builders offered a covered ground route and the worker’s contact information. The specialist held the borrowed certificate beside the marked joints while the final commuters crossed slowly."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors closed the unsafe span and traced the borrowed certificate.",
+      "heroLoses": "{{otherPlayer}}’s builders secured the entrances and replaced the wrong fasteners.",
+      "draw": "The delivery used the ground route while the skywalk was retested."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital dock received a distress buoy with the name of a maintenance craft still moored in plain sight. Its pilot was missing from the shift roster. {{heroPlayer}}’s patrol approached the buoy recovery bay; {{otherPlayer}}’s repair crew searched the craft and brought the pilot’s last signed checklist.",
+      "{{hero}} held the recovery gantry when shots struck the buoy’s housing. The fighter kept the route clear while a technician copied its log. The distress call had been recorded from inside the moored craft, where a seat cushion now hid a damaged transmitter and a folded note showing a service tunnel outside the dock wall.",
+      "The patrol could follow the service tunnel for the pilot, but the repair crew warned that it was due for a pressure test. The transmitter’s battery had only minutes left. The fighter watched the technician compare the note with the dock plan as the buoy’s final signal faded."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol traced the service tunnel and found the missing pilot.",
+      "heroLoses": "{{otherPlayer}}’s repair crew secured the craft and recovered its transmitter.",
+      "draw": "The dock halted the pressure test while both teams checked the tunnel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A classroom suspended above an engineering yard lost power while students were watching a live demonstration below. The hanging floor began to tilt toward the crane track. {{heroPlayer}}’s technicians reached the support tower; {{otherPlayer}}’s yard crew held the cranes still and called the teacher over a backup radio.",
+      "{{hero}} climbed into the winch cabinet and found a safety brake engaged on one side only. The specialist fitted a temporary pin, then discovered a smaller control wire deliberately tied around the teacher’s demonstration cable. Below, the students began naming parts of the rig they could see through the window, helping locate its missing pin.",
+      "The technicians could level the classroom under load or lower it into the yard, but the crew needed to move a disabled crane first. The teacher kept the students seated and speaking over the radio. The specialist held the temporary pin while the floor shivered against the tower rail."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians leveled the classroom and brought the students down safely.",
+      "heroLoses": "{{otherPlayer}}’s yard crew cleared the cranes and secured the hanging room.",
+      "draw": "The class waited on backup power while both crews rebuilt the brake."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ferry carrying a ceremonial banner lost propulsion beneath a narrow lifting bridge. Its passengers included the elders who had sewn the banner for a homecoming across the river. {{heroPlayer}}’s escorts boarded from a small boat; {{otherPlayer}}’s bridge workers held the machinery and tried to keep the span raised.",
+      "{{hero}} fought past a defender at the ferry’s wheelhouse and held the door while a passenger reached the emergency oars. The propeller had caught a length of bright cloth, but the banner was still folded safely aboard. The fighter spotted a second, identical banner floating downstream with a name stitched along its edge.",
+      "The escorts could row the passengers to shore or pursue the floating cloth to learn who had planted it near the propeller. The bridge workers warned that the span would need lowering before more boats arrived. The fighter kept the oars clear as an elder recognized the name on the drifting banner."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts brought the elders ashore and recovered the second banner.",
+      "heroLoses": "{{otherPlayer}}’s bridge workers freed the ferry and traced the loose cloth.",
+      "draw": "The passengers reached safety while the duplicate banner drifted out of sight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A migration guide for rare shorebirds began broadcasting from the roof of a shipyard instead of the nearby marsh. Its calls drew a flock over active welding arcs. {{heroPlayer}}’s naturalists climbed to the transmitter; {{otherPlayer}}’s riggers stopped work beneath the birds and brought the yard’s roof access plan.",
+      "{{hero}} found the guide wired to a small recording loop rather than the marsh sensors. The specialist removed the loop and heard a child’s voice on its final seconds, asking someone to look inside an old nest box. A line of fresh footprints led to a nest box bolted under the roof edge, beyond easy reach.",
+      "The naturalists could retrieve the box while the flock circled, but the riggers warned that shifting the roof cradle would startle the birds. The child’s voice might belong to a visitor from the morning tour. The specialist held the silent guide as the first bird landed near the box."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s naturalists guided the flock away and checked the nest box.",
+      "heroLoses": "{{otherPlayer}}’s riggers protected the birds and secured the transmitter roof.",
+      "draw": "Work paused while both groups traced the child’s recorded message."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A repair market received a glass crate labeled with the name of a machinist who had died aboard the ship years earlier. Inside sat a working metal hand with its fingers curled around a folded letter. {{heroPlayer}}’s patrol came from the market gate; {{otherPlayer}}’s mechanics held the crate beside the tools they had once shared with the machinist.",
+      "{{hero}} covered a mechanic cutting the crate seal as shots struck the market shutters. The fighter kept the lane clear while the mechanic eased open the metal fingers. The letter gave measurements for a missing part of the ship’s ventilation system, along with a note asking the reader to check a workshop still in use.",
+      "The patrol could go straight to the workshop, but the mechanics wanted to confirm whether the hand had been built by the machinist. Someone inside the market had known exactly where to deliver the crate. The fighter watched the mechanic compare the handwriting with an old repair log."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the workshop and recovered the missing ventilation part.",
+      "heroLoses": "{{otherPlayer}}’s mechanics authenticated the letter and traced the maker of the hand.",
+      "draw": "The crate remained guarded while the workshop was inspected."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A hull repair yard tested a living sealant on a small vessel with a crack below its waterline. The sealant spread far beyond the repair and covered an inspection hatch. {{heroPlayer}}’s biologists reached the tank; {{otherPlayer}}’s welders held the vessel in its cradle and kept a dry access route open.",
+      "{{hero}} sampled the spreading edge and found the sealant following an older fracture hidden beneath paint. The specialist marked the true line of damage while a welder located a forgotten log describing a collision at sea. Behind the covered hatch, the vessel’s old emergency beacon began to sound faintly through the new growth.",
+      "The biologists could trim the sealant to reach the beacon, but that might reopen the old fracture. The welders could brace the hull before cutting if the vessel stayed in the cradle another day. The specialist held the growth steady with a temporary barrier while the beacon continued to pulse."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists contained the sealant and exposed the hidden fracture.",
+      "heroLoses": "{{otherPlayer}}’s welders secured the hull and recovered the old beacon.",
+      "draw": "The vessel stayed in its cradle while both crews reinforced the hatch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A sealed cryogenic storeroom held a navigational artifact claimed by two expedition teams. Its last registered owner had left instructions to hand it to whoever could name an uncharted pass. {{heroPlayer}}’s couriers came for the artifact; {{otherPlayer}}’s technicians kept the refrigeration stable and searched the owner’s old travel notes.",
+      "{{hero}} forced past a defender in the narrow cold vestibule and held its door while a courier opened the storage case. The artifact was a compass with no needle. Its glass held a scratched outline of the pass, matching a map drawn on the back of a photograph among the travel notes.",
+      "The couriers could take the compass to the pass or leave it in storage until the photograph’s owner was identified. The technicians warned that keeping the door open would frost the delicate glass. The fighter held the vestibule clear as the courier compared the compass with the map through a cloud of cold air."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s couriers secured the compass and identified the uncharted pass.",
+      "heroLoses": "{{otherPlayer}}’s technicians preserved the artifact and found the photograph’s owner.",
+      "draw": "The compass returned to cold storage while both teams checked the map."
+    }
   }
 ]
