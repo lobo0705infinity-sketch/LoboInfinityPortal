@@ -7978,5 +7978,385 @@
       "heroLoses": "{{otherPlayer}}’s patrol secured the cache and led the convoy along its marked route.",
       "draw": "The convoy waited at the pass while both groups sent teams to check the silent sensor."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A glacier exposed the entrance to a chamber older than the mining road above it. {{heroPlayer}}’s survey escort went inside to retrieve its survey markers; {{otherPlayer}}’s mountain guards held the road. The chamber walls reflected lantern light into a tunnel that was not on the miners’ map.",
+      "{{hero}} covered the entrance while a surveyor photographed the new passage. Shots struck the ice outside, and the fighter returned fire from behind a stone pillar, keeping the surveyor in the chamber. In the photograph, another lantern appeared deep in the tunnel although none of the party had gone there.",
+      "The surveyor could follow that light or carry the image back to the road before the glacier shifted again. Ice cracked above the entrance, and the reflected lantern moved closer without a sound. The fighter held the pillar as the mountain guards’ lights came down the road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party found the light’s source and escaped with the chamber survey.",
+      "heroLoses": "{{otherPlayer}}’s guards sealed the entrance and retained the road.",
+      "draw": "Both parties withdrew with different photographs of the tunnel, each showing the lantern in a different place."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain freight winch carried winter fuel above a village built along the slope. {{heroPlayer}}’s assault party reached the lower engine room; {{otherPlayer}}’s highland defenders held the cable station above. The fuel car stopped halfway up, hanging over houses whose chimneys were already cold.",
+      "{{hero}} met a defender at the engine brake and drove them away from its release pin. The fighter held the brake as a worker checked the cable. Its outer strands were unraveling where they passed around the upper wheel, and restarting the engine would pull the damage directly into the mechanism.",
+      "A rescue line could lower the car into the village, but the cable station was still held from above. The worker offered to climb the damaged span to fit it. The fighter felt the brake handle jerk as the car swayed, and a house light came on directly below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party recovered the fuel car and kept the village supplied.",
+      "heroLoses": "{{otherPlayer}}’s defenders secured the upper wheel and lowered the car under their control.",
+      "draw": "The car came down between the two crews, leaving both to carry fuel through the village."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A living flood sensor was planted along the riverbank below a mountain settlement. {{heroPlayer}}’s researchers arrived when its leaves began turning black; {{otherPlayer}}’s patrol was guarding the footbridge nearby. The river appeared low, yet the sensor had never warned without a rise upstream.",
+      "{{hero}} traced the sensor’s roots beneath the bank and found them wrapped around an old gauge whose needle was pinned at zero. The specialist freed the mechanism. Its pointer swung toward a level higher than the bridge’s deck, while the plant’s remaining leaves darkened in a wave.",
+      "The first villagers stepped onto the bridge carrying crates for market. A warning bell stood on the far bank, beyond the patrol’s position. The specialist could run for it or keep reading the gauge long enough to know whether the warning was real."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers sounded the warning and cleared the bridge before the flood.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the bridge and directed villagers to higher ground.",
+      "draw": "The bridge emptied, but both groups waited beside the sensor for the delayed water to arrive."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "An array of mirrors above the crater village redirected a few hours of sunlight into homes beneath the rim. {{heroPlayer}}’s technicians came when one beam stopped; {{otherPlayer}}’s mountain sentries held the access stairs. In the darkened homes, residents lit candles while a second beam began striking the empty road.",
+      "{{hero}} climbed the outer brace and discovered that a fastening pin had slipped from the leading mirror. The specialist reset its angle, bringing a strip of light back into the village. The pin, however, was too worn to hold through the next rotation of the array.",
+      "A replacement lay in the locked station above the sentries. The worn pin began creeping outward under the weight of the mirror as the village children cheered the returning light. The specialist kept one hand against the frame and watched the sun continue moving."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians replaced the pin and restored daylight to every home.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the station and brought the mirrors back under control.",
+      "draw": "The first homes stayed lit while both sides braced the failing mirror through the afternoon."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain conservatory was built around a single tree whose branches held an archive of weather ribbons. {{heroPlayer}}’s entry team came for the newest ribbon; {{otherPlayer}}’s highland guards sealed the glass corridor. A missing caretaker’s lantern burned near the tree, though no one was visible inside.",
+      "{{hero}} forced past a defender at the corridor lock and held it open while a teammate crossed the threshold. The caretaker emerged from beneath the branches with the ribbon in hand, warning that a vent above the tree had opened to freezing air. The lock began closing under automatic pressure.",
+      "The team could bring the caretaker through before the lock shut, or reach the vent first to protect the tree and its hanging archive. Frost was already gathering on the oldest ribbons. The defender pushed against the fighter at the doorway as the lantern went out."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team saved the caretaker and carried out the newest ribbon.",
+      "heroLoses": "{{otherPlayer}}’s guards took the conservatory and sealed its damaged vent.",
+      "draw": "The caretaker reached the corridor while both groups worked to keep the archive from freezing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A route planner at the mountain transit hub predicted that the morning shuttles would meet an avalanche on the east road. {{heroPlayer}}’s analysts reached its console; {{otherPlayer}}’s patrol had already directed the first shuttle toward a western detour. The planner then marked the detour as unsafe too.",
+      "{{hero}} compared the prediction against a live snow sensor and found that its clock lagged the hub by an hour. Correcting it erased the western warning but left the east road red. The first shuttle was now between the two roads, its driver asking which sign to trust.",
+      "The patrol’s lights appeared at the road junction as snow began falling faster. The corrected plan could guide the driver west, but another update was still loading from a sensor high above that route. The specialist held the transmission open while the shuttle slowed beneath both signs."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts verified the detour and guided every shuttle safely west.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the junction and led the shuttles along its marked route.",
+      "draw": "The shuttles waited at the junction while both parties checked the high sensor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An observatory above a mountain town received a narrow-band call from a climber stranded on the far ridge. {{heroPlayer}}’s operators reached the dish; {{otherPlayer}}’s highland patrol held the lower path. The climber could hear the town bells but could not see their lights through the cloud.",
+      "{{hero}} covered the dish platform while an operator aligned the receiver. Shots struck the housing, and the fighter returned fire to keep the operator at the controls. The climber’s voice cleared long enough to describe a red marker post and the sound of running water beneath the snow.",
+      "The nearest rescue team was waiting in town for exact coordinates. The operator could keep listening for a second bearing or send the uncertain first one before the dish motor failed. The fighter watched a crack spread across the shot-up housing as the climber called again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s operators found the climber and guided rescuers across the ridge.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the observatory and used the last bearing for its search.",
+      "draw": "The first bearing reached town, but both sides set out for different red marker posts."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old stone bridge carried a procession carrying food to homes cut off by a rockslide. {{heroPlayer}}’s escorts met it at the near arch; {{otherPlayer}}’s mountain guards held the opposite bank. Water rose beneath the bridge, loosening one of the stones engraved with the names of its builders.",
+      "{{hero}} drove a defender back from the parapet and caught the loosened stone as it shifted under a porter’s foot. The fighter braced it long enough for the porter to cross. The next person in line carried a heavier basket, and another stone began to move nearby.",
+      "There was space on the bridge for one escort and one porter, no more. The far bank called for the food before the path behind them disappeared beneath water. The fighter could brace the arch again or pull the procession back to the high road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts got the food across before the bridge closed.",
+      "heroLoses": "{{otherPlayer}}’s guards held the far arch and sent the procession along a safer route.",
+      "draw": "A few baskets crossed, while both sides held the bridge closed until the water fell."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A remote district office was storing the names of residents who needed transport before an expected landslide. {{heroPlayer}}’s coordinators arrived to collect the final registry; {{otherPlayer}}’s patrol was moving families toward the pass. A clerk had circled one household in red but left its address blank.",
+      "{{hero}} searched the office’s older ledgers and found the household listed under a trail name replaced on newer maps. The specialist located the trail at the foot of the unstable slope and sent a runner to warn the patrol. From that direction, a small lamp began signaling through the dusk.",
+      "The runner could follow the lamp or turn back before the slope moved. The transport bus had room for the household but was already pulling away from the office. The specialist held the old ledger open while the sound of loose rock came across the valley."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators found the household and brought them aboard before the slide.",
+      "heroLoses": "{{otherPlayer}}’s patrol reached the old trail first and directed the evacuation.",
+      "draw": "The bus waited at a safe bend while both groups followed the lamp to the trail."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mountain tracking station kept an orbital rescue capsule on its approach line while a storm hid the landing site. {{heroPlayer}}’s watch came to defend the dish; {{otherPlayer}}’s ridge sentries had closed the access track. The capsule’s pilot reported that guidance fuel would last for only one correction.",
+      "{{hero}} held the dish gantry while a controller aligned its beam. Fire struck the support strut, and the fighter answered from behind the motor housing, keeping the controller at the console. The beam found the capsule, but the landing site shown below was a shallow lake rather than the dry meadow in the station map.",
+      "The controller could direct the pilot to the lake, within reach of a rescue boat, or wait for a dry site to appear through cloud. The pilot asked for a decision as the fuel gauge fell. The fighter saw the ridge sentries’ lamps moving toward the gantry stairs."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch guided the capsule to ground and recovered the pilot.",
+      "heroLoses": "{{otherPlayer}}’s sentries took the tracking station and chose the landing site.",
+      "draw": "The capsule came down beside the lake, where both parties raced to reach its hatch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A mine refuge beneath the pass lost its ventilation while surveyors were mapping an escape tunnel. {{heroPlayer}}’s tunnel crew arrived at the fan room; {{otherPlayer}}’s mountain patrol held the old shaft. The surveyors had painted a line of arrows through the passage but stopped before the final turn.",
+      "{{hero}} opened the fan casing and found its drive packed with dust from a new breach. The specialist cleared enough for a short restart, sending air toward the unfinished arrows. Over the radio, a surveyor reported hearing water where the map showed solid rock.",
+      "The fan could run long enough to clear the refuge or be shut down so the crew could listen for the source of water. Above, the patrol began descending the shaft. The last arrow appeared through thinning dust, pointing toward a tunnel that had never been dug."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the air and led the surveyors through the newly found exit.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the shaft and evacuated the refuge by its known route.",
+      "draw": "The surveyors came out safely while both sides sealed the unexplored turn against the water."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A monastery’s upper stair was the only path to a signal bell above the snow line. {{heroPlayer}}’s escorts came to ring it for travelers lost in fog; {{otherPlayer}}’s mountain defenders held the lower gate. An older monk waited beside the bell rope, listening for a reply from the valley.",
+      "{{hero}} forced a defender away from the stair railing and climbed to the landing. The fighter caught the bell rope as the monk collapsed, exhausted from holding the slippery steps alone. One pull sent a note across the fog; from below came a second bell, much farther away than expected.",
+      "The rope had begun to fray at the roof beam. The lost travelers needed several more notes to follow, but another hard pull could break it. The fighter steadied the monk on the landing as the defenders climbed the stair and the distant bell answered again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts held the stair and guided the travelers to the monastery.",
+      "heroLoses": "{{otherPlayer}}’s defenders secured the bell and directed the travelers through the lower gate.",
+      "draw": "The bells exchanged one final call, and both parties searched the fog from opposite paths."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "The upper tea terraces were drying while a storm filled the lower irrigation pond. {{heroPlayer}}’s caretakers came to reopen the stepped channels; {{otherPlayer}}’s ridge patrol had blocked the gate at the dividing wall. Water lapped against the lower homes while the highest plants curled in dry soil.",
+      "{{hero}} found an old bypass beneath a stone bench and worked its seized wheel free. A thread of water reached the first upper row, but the lower pond kept rising. The specialist noticed that the bypass could be opened wider only by closing the sluice protecting the homes below.",
+      "Residents at the lower wall began stacking sandbags as the patrol approached. Above, a grower called that the tea plants might survive one more day without water. The specialist held the bypass wheel between two positions, hearing rain strike both the dry leaves and the crowded roofs."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers balanced the channels and protected both homes and terraces.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the dividing wall and closed the bypass.",
+      "draw": "The lower homes stayed dry while the upper terraces received a narrow, temporary flow."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A summit train carried rescue equipment through a tunnel whose far signal had stopped answering. {{heroPlayer}}’s rail escort reached the beacon house; {{otherPlayer}}’s mountain detail guarded the upper switch. A worker at the tunnel mouth held up a red lamp, too small for the approaching driver to see.",
+      "{{hero}} took cover beside the beacon lens while a signaler tried to restore its power. Shots struck the stonework, and the fighter returned fire from the window, keeping the signaler at the contacts. The red beacon lit for a moment, then blinked out as the power cell overheated.",
+      "The driver sounded the train horn from inside the tunnel. The signaler could cool the cell and try again, or run onto the track with the hand lamp. The mountain detail was crossing toward the switch, and the fighter watched their shadows pass behind the dark lens."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort stopped the train and delivered the rescue equipment safely.",
+      "heroLoses": "{{otherPlayer}}’s detail took the switch and halted the train beyond the tunnel.",
+      "draw": "The train stopped between signals while both groups held the equipment on its car."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A highland weather garden used sensitive vines to signal when the valley below needed shelter. {{heroPlayer}}’s caretakers came when the plants began curling toward a windless sky; {{otherPlayer}}’s sentries held the ridge path. In the valley, the school remained open, its doors wide for the afternoon.",
+      "{{hero}} found warm air escaping from a fault beneath the garden beds, misleading one row of vines. The specialist closed the fault, but the remaining plants still curled in the same direction. Their roots were reacting to a tremor the instruments beside them had not yet recorded.",
+      "The school could be warned immediately, or the caretaker could wait for a mechanical reading to confirm the danger. The sentries’ radio crackled from the path, asking why the garden had gone quiet. A second tremor lifted loose soil from the vine roots."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers warned the school and guided its children away from the threatened slope.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the ridge and issued their own warning after confirming the tremor.",
+      "draw": "The school emptied while both sides watched the vines for the next sign."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An archive carved into a cliff held seeds collected from valleys since swallowed by reservoirs. {{heroPlayer}}’s contractors came to extract one sealed case; {{otherPlayer}}’s mountain guards held the front corridor. Inside, rotating shelves had jammed while an archivist was still trapped behind them.",
+      "{{hero}} reached the shelf drive as a defender tried to throw its brake closed. The fighter shoved them clear and held the handle while a technician turned the shelves just far enough for the archivist to crawl through. The seed case appeared in the gap, but its label had been scraped clean.",
+      "The archivist recognized the case by a faded seal and warned that another, nearly identical one contained spoiled stock. The drive began pulling the shelves back toward the wall. The fighter could seize one case before the gap closed, with no time to check the contents until they reached daylight."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s contractors brought out the archivist and the viable seeds.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the archive and cataloged both cases themselves.",
+      "draw": "The archivist escaped, but both groups held an unmarked case whose contents remained uncertain."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A high-altitude survey station held an ice core whose layers could date the last deadly slide on the mountain. {{heroPlayer}}’s guards escorted a scientist to recover it; {{otherPlayer}}’s ridge patrol watched the return path. The station freezer had failed, and meltwater was already running down the core’s case.",
+      "{{hero}} covered the loading door while the scientist wrapped the core in portable insulation. A shot struck the stair rail, and the fighter fired back from behind the freezer unit, keeping the scientist out of the open. The insulation alarm showed enough cooling for one descent, provided the lift did not stop.",
+      "The lift moved only a few feet before its cable snagged above the ridge patrol. The scientist could carry the core down an exposed service stair or stay with it while someone freed the lift. Water dripped onto the fighter’s glove as another shot sounded from below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards delivered the core intact to the valley laboratory.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the lift and took custody of the sample.",
+      "draw": "The scientist escaped with fragments of the core while both groups held the stalled lift."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ridge festival had left its observation wheel standing so residents could watch the season’s first clear sunrise. {{heroPlayer}}’s hired security crew came when a gondola stopped near the top; {{otherPlayer}}’s mountain wardens controlled the base. Two children inside held their hands against the fogged glass.",
+      "{{hero}} reached the brake platform as a defender tried to release the wheel all at once. The fighter forced them from the lever and held it while a mechanic engaged the manual drive. One gondola came down safely; the children’s remained above, where the main axle began to shake.",
+      "The mechanic said one more turn might bring the children within reach, but the axle could also slip and send the gondola past the landing. At the base, the wardens raised a rescue net. The fighter kept pressure on the lever as the children’s gondola emerged from the fog."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew lowered the children and secured the wheel before sunrise.",
+      "heroLoses": "{{otherPlayer}}’s wardens took the base and used the rescue net to bring them down.",
+      "draw": "The gondola stopped above the net while both groups held the failing axle still."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A string of amateur telescopes on the mountainside began tracking the same point beneath the glacier instead of the night sky. {{heroPlayer}}’s technicians came to check their linked clocks; {{otherPlayer}}’s highland watch held the upper observatory. A faint beacon was pulsing from the point every six seconds.",
+      "{{hero}} aligned the telescopes and found their mirrors reflecting a signal from a buried rescue pod. The specialist locked its position and sent coordinates to a recovery team. The beacon sped up, though the team was still an hour away, and the ice above the pod began settling.",
+      "One telescope could be dismantled for its heating cell to melt a narrow shaft, but doing so would erase the alignment the recovery team needed. The watch’s lights approached along the upper path. The specialist held the cell in one hand and a print of the coordinates in the other."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians opened a shaft and guided rescuers to the pod.",
+      "heroLoses": "{{otherPlayer}}’s watch secured the observatory and directed recovery from above.",
+      "draw": "The pod’s location remained marked while both groups waited for a safe way through the ice."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "White Banner",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mountain water station held the last clean reserve above a valley cut off by a rockfall. {{heroPlayer}}’s guards came to open the transfer line; {{otherPlayer}}’s highland detail held the upper pumps. Empty tanks waited on carts below, their drivers watching the station lamps.",
+      "{{hero}} covered the pump room while a worker checked the transfer valve. Shots struck the concrete beside the gauges, and the fighter returned fire from the doorway, buying the worker time to open the line. Water began to move, then the pressure gauge climbed past its red mark.",
+      "A blockage farther down the line could burst beneath the waiting carts. The worker could close the valve now, saving the pipes but leaving the valley dry, or run outside to clear the blockage under fire. The fighter heard the drivers shouting as the first cart filled too slowly."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards held the station while the blockage was cleared and the valley tanks filled.",
+      "heroLoses": "{{otherPlayer}}’s detail took the pumps and shut down the dangerous line.",
+      "draw": "A few tanks filled before both sides closed the valve and repaired the pipe."
+    }
   }
 ]
