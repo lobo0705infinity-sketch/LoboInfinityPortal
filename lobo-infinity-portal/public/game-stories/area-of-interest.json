@@ -17098,5 +17098,385 @@
       "heroLoses": "{{otherPlayer}}’s scouts protected the supplies and checked the service duct.",
       "draw": "Both doors remained guarded while the container count was reconciled."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A remote clinic sent two identical lab reports for a patient who had never been there. One report carried a correction made by hand; the other matched a medical archive perfectly. {{heroPlayer}}’s analysts reached the records console; {{otherPlayer}}’s scouts held the specimen room and checked which couriers had used its service entrance.",
+      "{{hero}} compared the corrections and found a street name hidden in the handwritten version. The specialist followed it to a closed greenhouse next door, where a gardener recognized the patient as someone who had asked about a missing friend. Beneath an overturned pot lay an appointment card for the clinic’s next visiting doctor.",
+      "The analysts could seek the patient before the appointment, but the scouts wanted the reports preserved for the doctor to examine. The gardener said the friend might return to the greenhouse that evening. The specialist held the appointment card in a clean sleeve as light appeared inside the locked building."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts resolved the reports and found the missing friend’s trail.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the specimen room and protected the doctor’s visit.",
+      "draw": "The clinic held both reports until the patient could be reached."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A repair bay began sending tool requests to a workshop that had been abandoned before the new road was built. The requests described a machine nobody at the bay recognized. {{heroPlayer}}’s analysts checked the order terminal; {{otherPlayer}}’s surveyors held the old workshop and found its door standing open.",
+      "{{hero}} traced the orders to a small controller still attached beneath the bay’s floor. The specialist opened its casing and found a rough sketch of a water pump, with one broken bearing circled in red. At the abandoned workshop, the surveyors discovered the same pump keeping an underground well from flooding the cellar.",
+      "The analysts could stop the false orders and repair the pump, but the surveyors wanted the workshop’s neighbors warned before anyone entered its wet cellar. A delivery cart arrived with the requested bearing. The specialist held the controller while the old pump began to grind audibly through the floor."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts traced the controller and repaired the threatened pump.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the workshop and protected its flooded cellar.",
+      "draw": "The pump kept running slowly while both groups reinforced the old well."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mining camp sounded its evacuation horn after a newly opened tunnel joined a sealed cave. The last worker inside was bringing out a box of photographs from the first crew. {{heroPlayer}}’s rescuers reached the tunnel mouth; {{otherPlayer}}’s scouts held a second exit marked on the camp’s old plans.",
+      "{{hero}} pushed a defender away from a narrow support arch and held its timbers while a companion reached the worker. The box was safe, but a loose photograph showed a stone ledge carrying a lantern beyond the sealed cave. The worker said a real lantern had lit there moments before the horn sounded.",
+      "The rescuers could bring the worker out and close the cave, but the scouts wanted the unexplained light checked in case another person remained inside. Dust sifted from the arch. The fighter held the support as the worker named the ledge’s location from a picture still in the box."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers cleared the tunnel and found the source of the light.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the second exit and brought the worker out.",
+      "draw": "The cave stayed sealed while both teams accounted for its occupants."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A witness entered a protected waiting room and found their own name crossed out on the day's visitor register. A second name had been written in its place by someone using the same pen. {{heroPlayer}}’s officials took the desk; {{otherPlayer}}’s searchers held the corridor and interviewed the attendant who had last checked the room.",
+      "{{hero}} studied the overwritten entry and recovered a faint imprint from the page beneath it. The specialist found an address for a nearby tailor, who had fitted the witness’s coat the previous evening. A loose label in the waiting room matched the tailor’s shop, but carried a different person’s measurements.",
+      "The officials could send someone to the tailor or keep the witness under guard until the false name was explained. The attendant insisted no second visitor had entered. The specialist laid the old register page beside the loose label as the corridor camera showed someone approaching the outer door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s officials verified the register and protected the witness’s testimony.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured the corridor and traced the coat label.",
+      "draw": "The waiting room remained locked while both names were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An observation deck aboard a station received a sealed cargo pod addressed to a passenger who had left on an earlier flight. Its tracking light blinked only when the viewing windows were uncovered. {{heroPlayer}}’s patrol took the cargo entrance; {{otherPlayer}}’s technicians held the deck and checked its shutter controls.",
+      "{{hero}} covered a technician reaching the pod as shots struck the cargo rail. The fighter kept the approach clear while the technician opened its inspection port and found a glass plate etched with star coordinates. When the deck window opened, the light through the plate pointed to a small service capsule drifting outside the station.",
+      "The patrol could launch a retrieval craft for the capsule, but the technicians wanted the plate measured before anyone followed its beam. The station’s next shift was approaching the deck. The fighter held the cargo lane while the technician aligned the etched stars with the actual view beyond the glass."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the pod and reached the drifting capsule.",
+      "heroLoses": "{{otherPlayer}}’s technicians traced the plate and safeguarded the observation deck.",
+      "draw": "The deck stayed closed while the capsule’s origin was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A subterranean transit line filled with mist after a pressure test, leaving a maintenance cart stalled beyond its last safe platform. Its driver reported a cool draft from a wall that should have been solid. {{heroPlayer}}’s engineers reached the platform; {{otherPlayer}}’s scouts checked an old ventilation map from the surface station.",
+      "{{hero}} traced the draft to a blocked vent behind the cart and cleared its first grille by hand. The specialist found a folded station timetable trapped there, stamped for a route that had been removed decades ago. The cart driver called that the mist was thinning, but a second grille farther ahead had begun to rattle.",
+      "The engineers could bring the cart back now or follow the vent to see whether the removed route still connected to another platform. The scouts warned that the pressure system needed isolating first. The specialist held the grille against the moving air as a distant light appeared beyond the mist."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers cleared the line and recovered the stalled cart.",
+      "heroLoses": "{{otherPlayer}}’s scouts mapped the old vent and secured the second grille.",
+      "draw": "The driver waited on the platform while both teams tested the draft."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A garden bridge used for a seasonal procession began moving its painted railings inward. An old carpenter said the bridge had a hidden joint meant to make space for passing boats. {{heroPlayer}}’s guardians entered from the garden; {{otherPlayer}}’s sentries held the far bank and diverted visitors from the narrowing span.",
+      "{{hero}} pushed a defender from the cramped bridge center and held the rail while the carpenter found the joint. Beneath it was a small wooden box with a freshly cut lock. Inside lay a sketch of the bridge’s original opening mechanism, along with a pressed flower from a garden that no longer existed.",
+      "The guardians could use the sketch to reopen the bridge, but the sentries worried a boat approaching downstream would strike it before the joint moved. The carpenter remembered where the lost garden had stood. The fighter held the rail clear as the boat’s bell sounded under the near arch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians reopened the bridge and found the old garden’s site.",
+      "heroLoses": "{{otherPlayer}}’s sentries protected the visitors and guided the boat through.",
+      "draw": "The procession paused while the bridge joint was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal nesting ground reported the return of a bird tagged as having died years earlier. Its metal band had the correct number, but a new ribbon was tied beside it. {{heroPlayer}}’s wardens reached the observation hide; {{otherPlayer}}’s trackers held the shore path and watched the flock without disturbing it.",
+      "{{hero}} read the ribbon through a long lens and saw a date for the following morning. The specialist found a folded bird survey in the hide, showing the same nest before the old bird’s recorded death. In its margin, someone had questioned whether the band had ever been recovered from the first bird.",
+      "The wardens could wait for the next morning’s return, but the trackers wanted to check who had left the survey in the hide. An incoming tide would cut the shore path off by then. The specialist marked the nest on a fresh map while the tagged bird settled into the grass."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s wardens verified the band and protected the returning flock.",
+      "heroLoses": "{{otherPlayer}}’s trackers secured the hide and traced the disputed survey.",
+      "draw": "Both teams stayed back from the nest until the next tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mountain courier road closed after an empty wagon appeared at its checkpoint with its wheels covered in river mud. The river was several miles away. {{heroPlayer}}’s patrol went toward the lower ford; {{otherPlayer}}’s searchers held the checkpoint and asked the wagon’s owner to identify the cargo it had carried.",
+      "{{hero}} covered a tracker crossing the ford as shots struck the stones beside the road. The fighter kept the route clear while the tracker found another set of wagon prints ending at a narrow shed. Inside lay the owner’s unopened parcels, placed on a dry shelf with a note asking them to wait for the next courier.",
+      "The patrol could carry the parcels back to the checkpoint, but the searchers wanted the shed watched to learn who had moved them. A courier was due before dusk, and rain threatened to erase the tracks. The fighter stood beside the shed door while the tracker covered the parcels against the weather."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the parcels and reopened the courier road.",
+      "heroLoses": "{{otherPlayer}}’s searchers traced the wagon and protected the next courier.",
+      "draw": "The road stayed closed while the shed and tracks were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal greenhouse grew a thin membrane over one window after a research team installed living insulation. At sunset the membrane began showing shadows from a room beyond the glass, though that side faced open sea. {{heroPlayer}}’s biologists reached the window; {{otherPlayer}}’s surveyors watched from the headland with a shoreline map.",
+      "{{hero}} found the shadows came from a film of water trapped between the membrane and the glass. The specialist drained a corner and revealed a reflected image of a distant boat in the greenhouse’s side mirror. Its deck carried a crate labeled for the research team, drifting without visible crew.",
+      "The biologists could remove the membrane and identify the boat more clearly, but the surveyors wanted the living insulation preserved until they could launch a rescue craft. Twilight was closing over the water. The specialist held the drained corner while a small light appeared on the boat’s deck."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists protected the greenhouse and located the drifting boat.",
+      "heroLoses": "{{otherPlayer}}’s surveyors reached the boat and recovered the marked crate.",
+      "draw": "The greenhouse stayed lit while both teams watched the offshore signal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A salvage crew offered a reward for an old signal box found in a coastal cave. By the time their buyer arrived, the box had been carried into a locked quarry store. {{heroPlayer}}’s escorts reached the store; {{otherPlayer}}’s searchers held the cave mouth and checked the salvage claim.",
+      "{{hero}} forced past a defender inside the tight store and held its door while a salvager opened the box. Its lamp still worked, casting a coded sequence across the wall. The sequence identified another cave beyond the quarry, one marked on the buyer’s map as sealed after a past rescue mission.",
+      "The escorts could carry the box to the buyer, but the searchers wanted its signal read before anyone took it away. The tide would cover the first cave soon. The fighter held the door while the salvager repeated the sequence and the buyer unfolded a map showing a dry route inland."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the box and located the second cave.",
+      "heroLoses": "{{otherPlayer}}’s searchers verified the claim and traced the coded signal.",
+      "draw": "The box stayed at the store while both groups compared the maps."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A relief ship submitted an insurance claim for a lost refrigerated case, then its crew found the case at a village dock. The seal was unbroken, but its temperature indicator had reset. {{heroPlayer}}’s inspectors arrived with the ship’s log; {{otherPlayer}}’s search party held the dock and asked the village doctor when the case appeared.",
+      "{{hero}} tested the contents through the inspection port and found them stable. The specialist checked the case’s handle for salt deposits and saw a tiny paper tag tied inside it, naming a footpath above the village. The doctor recognized it as the route used to carry medicine during a storm when the dock was closed.",
+      "The inspectors could release the medicine now, but the search party wanted to know who had carried it across the footpath. Patients were waiting at the clinic. The specialist recorded the intact seal beside the paper tag while the doctor counted the doses needed before nightfall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors verified the medicine and traced its unusual journey.",
+      "heroLoses": "{{otherPlayer}}’s search party secured the case and protected the village clinic.",
+      "draw": "The case was held under cooling while both groups checked the carrier."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A storm shelter beneath a freight station began filling with parcels bearing addresses for buildings long gone. One held a family’s emergency papers still needed for relocation. {{heroPlayer}}’s guards entered the parcel corridor; {{otherPlayer}}’s searchers held the shelter stairs and checked whether anyone remained below.",
+      "{{hero}} wrestled a defender away from a narrow parcel chute and kept it open while a carrier reached the paper bundle. Behind it stood an empty cart with a route board for the demolished streets. The carrier recognized its handwritten stops, made by a retired driver who had once delivered supplies during an earlier storm.",
+      "The guards could return the family’s papers immediately, but the searchers wanted to contact the retired driver before more parcels arrived. Water was running down the station stair. The fighter held the chute while the carrier read the last stop on the route board, a shelter still open today."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the papers and traced the parcels’ route.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured the shelter and reached the retired driver.",
+      "draw": "The papers stayed dry while both groups mapped the old stops."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A rooftop library for families awaiting housing reopened after its books were moved to an unnamed storage site. New books began appearing on the bare shelves each morning, each carrying a handwritten return date. {{heroPlayer}}’s volunteers checked the roof; {{otherPlayer}}’s searchers held the stair and followed the last delivery cart.",
+      "{{hero}} compared the return dates and found they matched the days children from the library had moved into new homes. The specialist followed a colored ribbon in one book down to a neighboring balcony, where a former volunteer had set up a little lending shelf. A note offered to bring the missing books back if someone needed them.",
+      "The volunteers could ask for the collection’s return, but the searchers worried the other families still relied on it. The rooftop visitors had already begun borrowing again. The specialist held the note beside the new shelf’s lending list and asked the former volunteer how many books could be shared."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s volunteers restored the rooftop library and shared the collection.",
+      "heroLoses": "{{otherPlayer}}’s searchers located the books and protected both lending shelves.",
+      "draw": "The books circulated between the two roofs while ownership was settled."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An archive bridge between two municipal buildings shook during a document transfer, leaving a wheeled cabinet caught between its doors. Inside were the sole records of a bridge repair across town. {{heroPlayer}}’s guards reached the near end; {{otherPlayer}}’s searchers held the far end and kept staff away from the glass floor.",
+      "{{hero}} covered an archivist moving to the cabinet as fire cracked against the bridge frame. The fighter held the passage while the archivist secured a drawer that had come loose. It contained a signed repair order for the archive bridge itself, dated weeks before any visible problem had been reported.",
+      "The guards could move the cabinet and evacuate the records, but the searchers wanted the repair order checked against the bridge’s construction log. Another tremor crossed the glass floor. The fighter steadied the archivist as the cabinet wheels rolled toward the joint named in the old order."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the records and cleared the archive bridge.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured both ends and traced the earlier repair.",
+      "draw": "The records stayed protected while engineers inspected the shaking joint."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "Two observatory teams received equal claims to a forgotten telescope after its lens began showing a missing star. Both agreed the dark spot was real but disagreed over where to search. {{heroPlayer}}’s observers took the eastern control room; {{otherPlayer}}’s observers held the western dome and prepared an older chart.",
+      "{{hero}} aligned both charts and discovered the spot came from a tiny chip in the telescope lens, matching the outline of an island. The specialist projected the chip onto a map and found the island had been renamed after the chart was printed. A research vessel was due to pass it the following morning.",
+      "The eastern team could tell the vessel to inspect the island, but the western observers wanted the old name verified before distracting its crew. A second lens showed no chip. The specialist held the island’s two names side by side while the dome turned toward the horizon."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers traced the dark spot and contacted the passing vessel.",
+      "heroLoses": "{{otherPlayer}}’s observers secured the charts and verified the island’s history.",
+      "draw": "Both teams kept the telescope trained on the horizon overnight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A restoration laboratory received a recording of a long-demolished train station’s departure bell. Its timestamp named the next morning, and a former station attendant insisted the bell sounded different. {{heroPlayer}}’s technicians checked the audio bench; {{otherPlayer}}’s archivists held the station model and compared the surviving plans.",
+      "{{hero}} isolated a small sound beneath the bell and recognized the rattle of a particular signal lever. The specialist found that lever displayed inside the station model, newly polished on one side. Beneath it lay a ticket stamped with the next morning’s date for a route once departing from the demolished platform.",
+      "The technicians could follow the ticket to the replacement terminal, but the archivists wanted the model secured before anything was removed. The attendant said one of the old routes still operated under a different name. The specialist held the ticket beside the lever as its metal rattle sounded again in the recording."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians traced the signal and found the ticket’s current route.",
+      "heroLoses": "{{otherPlayer}}’s archivists secured the model and identified the polished lever.",
+      "draw": "The recording stayed in the lab while both teams checked the terminal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A research courier carried a sealed capsule across a stone aqueduct when its maintenance gate swung closed. A guide on the far side shouted that the aqueduct’s old drain was about to open. {{heroPlayer}}’s rescuers reached the gate; {{otherPlayer}}’s analysts held the control house and searched its water-level logs.",
+      "{{hero}} pushed a defender from the narrow gate and braced it open for the courier. The capsule had lodged in a crack beneath the parapet; the fighter held a line while the courier reached back for it. From below came the sound of the drain turning, though the control house lever remained locked.",
+      "The rescuers could bring the courier across without the capsule or wait while the analysts stopped the drain. The guide warned that wet stone would soon become slippery. The fighter kept the line taut as the courier’s hand closed around the capsule and water began moving beneath the arch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers brought the courier and capsule safely across.",
+      "heroLoses": "{{otherPlayer}}’s analysts stopped the drain and secured the aqueduct controls.",
+      "draw": "The capsule was held at the gate while the old drain was inspected."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A city published two flood forecasts on the same morning, one calling for evacuation and one for an open market beside the river. Both bore the municipal seal. {{heroPlayer}}’s coordinators reached the planning room; {{otherPlayer}}’s forecasters held the gauge station and gathered fresh measurements before the afternoon tide.",
+      "{{hero}} compared the forecasts and found one used a river gauge moved upstream after last year’s bridge repair. The specialist visited its old mounting point and saw a chalk line recording a much higher past flood. A shopkeeper recognized the handwriting of a volunteer who had been trying to warn the market vendors.",
+      "The coordinators could close the market immediately, but the forecasters wanted to confirm whether the old chalk mark referred to a rare storm. The tide was already rising. The specialist held both forecasts against the bridge plan while the shopkeeper began calling vendors away from the lowest stalls."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators issued a clear warning and protected the river market.",
+      "heroLoses": "{{otherPlayer}}’s forecasters corrected the gauge and verified the tide risk.",
+      "draw": "The market delayed opening while the two readings were reconciled."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "ALEPH",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A station’s navigation classroom projected a distress marker on a live star chart even after its teaching system was switched off. A patrol vessel near the marked coordinates reported calm space. {{heroPlayer}}’s security unit reached the classroom; {{otherPlayer}}’s analysts held the chart controls and checked the projection history.",
+      "{{hero}} covered a technician crossing the dark room as shots struck the projector frame. The fighter held the door while the technician discovered a second light source inside a hollow desk. It cast the distress marker through a glass slide etched with a station corridor, where a maintenance hatch had been left ajar.",
+      "The security unit could search the corridor, but the analysts wanted the slide preserved to learn who planted it. A teaching group was about to arrive for class. The fighter watched the technician switch off the desk lamp as the marker vanished and footsteps sounded beyond the ajar hatch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s security unit cleared the corridor and secured the hidden projector.",
+      "heroLoses": "{{otherPlayer}}’s analysts traced the slide and protected the classroom.",
+      "draw": "Class moved elsewhere while both groups examined the maintenance hatch."
+    }
   }
 ]
