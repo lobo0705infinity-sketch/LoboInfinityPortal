@@ -9,6 +9,20 @@ const roleNames = /\b(hacker|forward observer|engineer|doctor|paramedic|speciali
 
 export class ListBuilderError extends Error {}
 
+export function resolveRequiredProfile(profiles, name) {
+  const query = token(name)
+  if (!query) return null
+  return profiles.map(profile => {
+    const [slug, unit, option] = [profile.slug, profile.unitName, profile.optionName].map(token)
+    const priority = slug === query ? 0 : unit === query ? 1 : option === query ? 2
+      : [slug, unit, option].some(value => value.includes(query)) ? 3 : Infinity
+    return { profile, priority }
+  }).filter(item => Number.isFinite(item.priority))
+    .sort((a, b) => a.priority - b.priority
+      || Number(b.profile.groupId === 0) - Number(a.profile.groupId === 0)
+      || b.profile.gunfighter - a.profile.gunfighter || a.profile.points - b.profile.points)[0]?.profile || null
+}
+
 export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs, gunfighterCatalog, aroCatalog, closeCombatCatalog, mobilityCatalog }) {
   if (!Array.isArray(payload?.units) || !Array.isArray(payload?.fireteamChart?.teams) || !Array.isArray(metadata?.skills)) {
     throw new ListBuilderError('Current official Army profiles and Fireteam chart are unavailable.')
@@ -44,6 +58,8 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       .map(ref => weaponNames.get(Number(ref.id)) || '').filter(Boolean)
     const roleText = [...skills, ...equipment.filter(name => /hacking device/i.test(name))].join(' ')
     const lieutenant = (choice.orders || []).some(order => String(order.type).toUpperCase() === 'LIEUTENANT')
+    const orderCount = type => (choice.orders || []).filter(order => String(order.type).toUpperCase() === type)
+      .reduce((sum, order) => sum + Number(order.total || 0), 0)
     const side = (base.chars || []).includes(surfaceId) ? 'Surface'
       : (base.chars || []).includes(deepspaceId) ? 'Deepspace' : null
     const primaryWeapon = weapons.find(weapon => /rifle|shotgun|machine gun|spitfire|sniper|feuerbach|thunderbolt|launcher|smg|submachine/i.test(weapon)) || weapons[0]
@@ -56,6 +72,10 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       ava, avaKey: `${unit.id}:${group.id}:${base.id}`, slots,
       lieutenant, side,
       regular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'REGULAR'),
+      startsOffTable: skills.some(skill => /\b(combat jump|parachutist|hidden deployment)\b/i.test(skill)),
+      tacticalOrders: orderCount('TACTICAL') || (skills.some(skill => /\btactical awareness\b/i.test(skill)) ? 1 : 0),
+      lieutenantOrders: lieutenant ? orderCount('LIEUTENANT') || 1 : 0,
+      nco: skills.some(skill => /^NCO$/i.test(skill)),
       specialist: roleNames.test(roleText),
       fireteamEligible: slots === 1 && !(base.chars || []).includes(27)
         && !skills.some(skill => /\b(infiltration|combat jump|parachutist|peripheral)\b/i.test(skill)),
@@ -99,10 +119,9 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const constraints = { payload, points, mission: String(mission || '').trim(), sectorialId: Number(sectorialId) }
   const forced = (Array.isArray(mustInclude) ? mustInclude : String(mustInclude).split(','))
     .map(String).map(value => value.trim()).filter(Boolean).map(name => {
-      const matches = profiles.filter(profile => [profile.unitName, profile.slug, profile.optionName].some(value => token(value).includes(token(name))))
-      if (!matches.length) throw new ListBuilderError(`No selectable ${faction.name} profile matches “${name}”.`)
-      // Prefer an actual enabled paired option to a disabled component profile.
-      return matches.sort((a, b) => (b.groupId === 0) - (a.groupId === 0) || b.gunfighter - a.gunfighter || a.points - b.points)[0]
+      const match = resolveRequiredProfile(profiles, name)
+      if (!match) throw new ListBuilderError(`No selectable ${faction.name} profile matches “${name}”.`)
+      return match
     })
   const forcedKeys = new Set(forced.map(item => item.id))
   if (forcedKeys.size !== forced.length) throw new ListBuilderError('The same required profile was specified twice.')
@@ -141,22 +160,23 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!next) break
       selected.push(next)
     }
-    const groups = [1, 2].map(index => ({ members: selected.filter(item => item.combatGroup === index)
+    const grouped = optimizeCombatGroups(selected, payload.fireteamChart, buildConstraints.side)
+    const groups = [1, 2].map(index => ({ members: grouped.filter(item => item.combatGroup === index)
       .map(({ unitId, groupId, optionId }) => ({ unitId, groupId, optionId })) })).filter(group => group.members.length)
     const code = encodeArmyCode({ sectorialId: Number(sectorialId), sectorialSlug: faction.slug,
       listName: `Lobo ${mission || 'mission'} ${options.length + 1}`, maxPoints: points, combatGroups: groups })
     const decoded = decodeArmyCode(code)
     const legality = validateInfListLegality({ decoded, payload })
     if (legality.status !== 'legal') continue
-    const signature = selected.map(item => `${item.combatGroup}:${item.id}`).sort().join('|')
+    const signature = grouped.map(item => `${item.combatGroup}:${item.id}`).sort().join('|')
     if (seen.has(signature)) continue
     seen.add(signature)
-    const fireteams = proposedFireteams(selected, payload.fireteamChart, buildConstraints.side)
-    options.push({ code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`, profiles: selected, fireteams,
+    const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side)
+    options.push({ code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`, profiles: grouped, fireteams,
       legality, mission, faction: faction.name, payloadVersion: payload.version,
-      specialistCount: selected.filter(item => item.specialist).length,
+      specialistCount: grouped.filter(item => item.specialist).length,
       points: legality.totals.points, swc: legality.totals.swc,
-      score: scoreList(selected, fireteams, mission, points) })
+      score: scoreList(grouped, fireteams, mission, points) })
   }
   if (!options.length) throw new ListBuilderError('I could not make a legal list with those required profiles and points.')
   const ranked = options.sort((a, b) => b.score - a.score)
@@ -210,6 +230,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const count = selected.reduce((n, item) => n + item.slots, 0)
   const currentPoints = selected.reduce((n, item) => n + item.points, 0)
   const remaining = constraints.points - currentPoints
+  const targetCount = attempt % 3 === 2 ? 12 : 15
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -226,7 +247,11 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
     const existing = selected.filter(profile => profile.unitId === item.unitId).length
     const variation = ((hash(item.id + ':' + attempt * 701) % 100) / 100 - .5) * (attempt ? 1.3 : .15)
     const spend = count >= 12 ? Math.min(item.points, remaining) * .055 : Math.min(item.points, 45) * .025
-    const affordable = count < 12 ? Math.max(0, item.points - remaining / Math.max(1, 14 - count) * 1.6) * .10 : 0
+    // Most attempts reserve room for 15 troopers. Other attempts retain the
+    // stronger expensive-profile builds for comparison in the final ranking.
+    const affordable = targetCount === 15 && count < 15
+      ? Math.max(0, item.points / item.slots - remaining / (15 - count)) * .3
+      : count < 12 ? Math.max(0, item.points - remaining / Math.max(1, 14 - count) * 1.6) * .10 : 0
     const value = regular + missionValue + engineer + coverage + Math.min(5, item.gunfighter / 13)
       + (selected.some(profile => profile.ccRating > 10) ? 0 : item.ccRating / 14)
       + (item.specialist ? item.mobility / 80 : 0)
@@ -235,6 +260,100 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   }
   candidates.sort((a, b) => b.value - a.value || a.points - b.points)
   return mode === 'specialist' ? candidates.find(item => item.specialist) : candidates.find(item => item.value > -.5)
+}
+
+export function projectedRegularOrders(profiles, group) {
+  return profiles.filter(item => item.combatGroup === group && item.regular && !item.startsOffTable).length
+}
+
+function actionPotential(item) {
+  return Math.min(65, Math.max(0, item.gunfighter || 0)) / 16
+    + (item.specialist ? 1.7 + Math.min(1, (item.mobility || 0) / 100) : 0)
+    + Math.min(1.5, Math.max(0, item.ccRating || 0) / 24)
+    + (item.hacker ? .4 : 0)
+}
+
+function groupActivity(members, teams, ncoOrders = 0) {
+  let first = 0, second = 0, third = 0
+  let orders = 0
+  let tactical = 0, ncoWeight = 0
+  const teamMembers = new Set(teams.flatMap(team => team.members))
+  for (const item of members) {
+    if (item.regular && !item.startsOffTable) orders++
+    const action = actionPotential(item)
+    const selfOrderWeight = Math.min(1, Math.max(.2, action / 3 + (teamMembers.has(item) ? .25 : 0)))
+    tactical += (item.tacticalOrders || 0) * selfOrderWeight
+    if (item.nco) ncoWeight = Math.max(ncoWeight, selfOrderWeight)
+    if (action > first) { third = second; second = first; first = action }
+    else if (action > second) { third = second; second = action }
+    else if (action > third) third = action
+  }
+  const teamActivity = teams.reduce((sum, team) => sum + .6
+    + (team.members.some(item => item.specialist) ? .6 : 0)
+    + (team.members.some(item => item.gunfighter >= 25) ? .6 : 0), 0)
+  const activity = .35 + first + second * .65 + third * .3 + teamActivity
+  // Tactical Awareness and NCO orders belong to their user (or their Fireteam
+  // when leading it), so their contribution is weighted by that user's role.
+  const usable = orders + tactical + ncoOrders * ncoWeight
+  return { orders, activity, ncoWeight, utility: activity * Math.log1p(usable)
+    - (orders < 3 ? Math.max(0, activity - 2) * (3 - orders) * .5 : 0) }
+}
+
+function groupPlacementScore(groups, teamGroups, lieutenantOrders) {
+  const initial = groups.map((members, index) => groupActivity(members, teamGroups[index]))
+  const possible = [initial[0].utility + initial[1].utility]
+  for (const index of [0, 1]) {
+    if (!initial[index].ncoWeight || !lieutenantOrders) continue
+    possible.push(groupActivity(groups[index], teamGroups[index], lieutenantOrders).utility + initial[1 - index].utility)
+  }
+  return Math.max(...possible) + initial[0].activity * .04
+}
+
+export function optimizeCombatGroups(profiles, chart, side = null) {
+  const totalSlots = profiles.reduce((sum, item) => sum + item.slots, 0)
+  if (totalSlots <= 10) return profiles
+  const teams = proposedFireteams(profiles, chart, side)
+  const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
+  const claimed = new Set()
+  const blocks = []
+  for (const team of teams) {
+    const withinTeam = new Set()
+    const indices = team.members.map(label => {
+      const index = profiles.findIndex((item, index) => !claimed.has(index) && !withinTeam.has(index)
+        && item.combatGroup === team.combatGroup && item.label === label)
+      if (index !== -1) withinTeam.add(index)
+      return index
+    })
+    if (indices.includes(-1)) continue
+    indices.forEach(index => claimed.add(index))
+    blocks.push({ indices, team })
+  }
+  profiles.forEach((item, index) => { if (!claimed.has(index)) blocks.push({ indices: [index], team: null }) })
+
+  let best = null
+  for (let mask = 1; mask < 2 ** blocks.length - 1; mask++) {
+    const groups = [[], []], teamGroups = [[], []], slots = [0, 0]
+    for (let index = 0; index < blocks.length; index++) {
+      const group = mask & (1 << index) ? 0 : 1
+      const block = blocks[index]
+      for (const profileIndex of block.indices) {
+        const member = profiles[profileIndex]
+        groups[group].push(member)
+        slots[group] += member.slots
+      }
+      if (block.team) teamGroups[group].push({ ...block.team, members: block.indices.map(i => profiles[i]) })
+    }
+    if (slots[0] > 10 || slots[1] > 10) continue
+    const main = groupActivity(groups[0], teamGroups[0])
+    const reserve = groupActivity(groups[1], teamGroups[1])
+    if (main.orders < reserve.orders) continue
+    const score = groupPlacementScore(groups, teamGroups, lieutenantOrders)
+    if (!best || score > best.score + 1e-8) best = { mask, score }
+  }
+  if (!best) return profiles
+  const assignment = new Map()
+  blocks.forEach((block, index) => block.indices.forEach(i => assignment.set(i, best.mask & (1 << index) ? 1 : 2)))
+  return profiles.map((item, index) => ({ ...item, combatGroup: assignment.get(index) }))
 }
 
 function starterTeams(profiles, chart, constraints, side) {
@@ -363,12 +482,19 @@ function scoreList(profiles, fireteams, mission, points) {
   const specialists = profiles.filter(item => item.specialist).length
   const regular = profiles.filter(item => item.regular).length
   const shooter = profiles.map(item => item.gunfighter).sort((a, b) => b - a).slice(0, 2).reduce((a, b) => a + b, 0)
+  const troopers = profiles.reduce((sum, item) => sum + item.slots, 0)
+  const groups = [1, 2].map(group => profiles.filter(item => item.combatGroup === group))
+  const teamGroups = [1, 2].map((group, index) => fireteams.filter(team => team.combatGroup === group)
+    .map(team => ({ ...team, members: groups[index].filter(item => team.members.includes(item.label)) })))
+  const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, /hardlock/i.test(mission) ? 4 : 3) * 6) + regular * 2
     + shooter / 8 + fireteams.reduce((n, item) => n + item.level * 3, 0)
     + Math.max(0, ...profiles.map(item => item.aroRating)) / 4
     + Math.max(0, ...profiles.map(item => item.ccRating)) / 8
     + profiles.filter(item => item.specialist).map(item => item.mobility).sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 65
     + Math.min(profiles.reduce((n, item) => n + item.points, 0), points) / points * 12
+    + Math.min(15, troopers) * 3
+    + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
 }
 
 function hash(input) {
