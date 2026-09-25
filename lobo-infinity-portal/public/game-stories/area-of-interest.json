@@ -1518,5 +1518,385 @@
       "heroLoses": "{{otherPlayer}}’s sentries kept the ventilation station while the patrol withdrew with those it had rescued.",
       "draw": "The passengers escaped, but neither group found the voice in the dark shaft."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A shipyard chapel kept a lantern burning for crews who never returned. {{heroPlayer}}’s visitors came to carry it in a harbor procession; {{otherPlayer}}’s guardians occupied the slipway after discovering an unfinished vessel there. The lantern’s glass held names etched so faintly they appeared only when its flame moved.",
+      "{{hero}} met a defender at the narrow gangplank, where neither could step aside without falling between the hull and the quay. Steel crossed above the water. The fighter won enough room for the procession to reach the lantern, then saw its flame bend toward a name that had not been there when the visitors arrived.",
+      "A woman at the front recognized the new name as her brother’s, though his boat was due in the morning. {{hero}} held the gangplank while she lifted the lantern and turned it toward the harbor. Far out in the mist, a single answering light changed course."
+    ],
+    "endings": {
+      "heroWins": "The procession reached the shore, and {{heroPlayer}}’s visitors kept the lantern lit for the returning boat.",
+      "heroLoses": "{{otherPlayer}}’s guardians held the slipway and returned the lantern to its chapel.",
+      "draw": "Both groups saw the boat’s light; the lantern stayed between them until morning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "Monsoon water entered a hillside monastery through a stair no one could find on the floor plan. {{heroPlayer}}’s couriers came for an old map stored in its cellar; {{otherPlayer}}’s custodians carried valuables toward the upper rooms. The map could show a dry way out for the villagers below.",
+      "{{hero}} followed the water through a tiled corridor and found the missing stair behind a movable screen. The specialist rescued a lacquered map case just as the lower steps disappeared beneath the flood. Its painted trail crossed the monastery courtyard, then ended at a well marked with a symbol no one recognized.",
+      "The custodians began closing the courtyard gate against the rising water. {{hero}} held the map open for them beneath a roof eave while a villager climbed through the well’s old service opening. The trail went under the wall, and the next person through would have to carry the map into the dark."
+    ],
+    "endings": {
+      "heroWins": "The villagers followed the route, and {{heroPlayer}}’s couriers kept the map safe above the flood.",
+      "heroLoses": "{{otherPlayer}}’s custodians retained the monastery and its map as the couriers withdrew.",
+      "draw": "The villagers escaped by the well, leaving both crews to argue over the damaged original."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A clockmaker’s square had four public clocks, all showing a different hour on the day its founder was to be commemorated. {{heroPlayer}}’s survey detail came to repair the central bell; {{otherPlayer}}’s watch held the tower stairs for the ceremony. Shopkeepers insisted each clock was correct for their side of the square.",
+      "{{hero}} covered the tower from a shuttered workshop and fired at a hinge when a guard moved to seal the stairs. The door swung back open. A clockmaker’s apprentice emerged with a gear that had four sets of teeth, each matched to one of the clocks, and begged for a moment to fit it.",
+      "The ceremony began as the apprentice climbed. {{hero}} kept the stairs clear and watched the hands around the square move together for the first time. The bell rope jerked from an unseen pull above, threatening to strike before the apprentice reached the mechanism."
+    ],
+    "endings": {
+      "heroWins": "The bell sounded at the agreed hour, and {{heroPlayer}}’s detail held the tower through the ceremony.",
+      "heroLoses": "{{otherPlayer}}’s watch closed the stairs and set the clocks without the survey detail.",
+      "draw": "All four clocks agreed for one minute; neither party could keep them synchronized afterward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A rare flowering vine grew across the roof of a neutral meeting house. {{heroPlayer}}’s botanists came to preserve its only viable cutting; {{otherPlayer}}’s keepers wanted the meeting to continue beneath the shade it provided. The petals opened for only an hour each year, and rain was already gathering beyond the valley.",
+      "{{hero}} climbed the roof trellis and found a cluster of unopened flowers wrapped around a cracked skylight. The specialist braced the glass before reaching for a cutting. Through the skylight, delegates below struggled to hear one another over the first drops of rain, unaware that the trellis had begun to sag.",
+      "A wooden support gave way. {{hero}} secured the vine with the carrying line meant for the cutting and called for help from the meeting floor. The petals opened as the delegates reached the skylight; saving the flowers now meant letting the cutting wait until the roof was safe."
+    ],
+    "endings": {
+      "heroWins": "The roof held and the cutting survived, leaving {{heroPlayer}}’s botanists to tend the meeting house.",
+      "heroLoses": "{{otherPlayer}}’s keepers retained the vine while the botanists left without a cutting.",
+      "draw": "The delegates saved the roof together; the brief flowering passed before anyone could take a sample."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A temporary market had grown around a field radio mast, its awnings tied to every support cable. {{heroPlayer}}’s hired escorts came for a stranded broadcaster; {{otherPlayer}}’s wardens occupied the stall beside the transmitter. A public warning was halfway through when someone began cutting the guy ropes.",
+      "{{hero}} took cover beneath a spice stall and fired into the cobbles ahead of the cutters, scattering them without hitting the traders. One awning fell across the broadcaster’s doorway. The mast swayed above the crowd as the warning continued, now naming the market itself as the danger.",
+      "The fighter held the approach while merchants pulled the fallen fabric aside. The broadcaster stepped out carrying a hand microphone and asked {{hero}} for thirty more seconds. Above them another guy rope snapped, and the remaining stalls began to slide toward the unsteady mast."
+    ],
+    "endings": {
+      "heroWins": "The warning went out and the traders cleared the square under {{heroPlayer}}’s escort.",
+      "heroLoses": "{{otherPlayer}}’s wardens took the transmitter while the escorts led the broadcaster away.",
+      "draw": "The mast fell in the empty square; both groups saved the traders but lost the signal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A border warehouse held aid parcels for a town whose access road had vanished in a landslide. {{heroPlayer}}’s contractors had been hired to move the supplies by rail; {{otherPlayer}}’s guardians held the loading doors until the sender could be verified. Each parcel carried a handwritten destination but no return address.",
+      "{{hero}} covered the loading platform as a forklift approached from the wrong end of the track. The fighter fired at its empty wheel housing, turning it away from workers stacking crates. One package spilled open and revealed a child’s winter coat with a school badge from the isolated town.",
+      "The rail wagon was nearly full when the warehouse lights went out. {{hero}} stayed between the workers and the darkened doors while a foreman found the manual gate chain. Beyond the yard a train whistle sounded, promising one trip before the repaired road reopened."
+    ],
+    "endings": {
+      "heroWins": "The train carried the parcels, and {{heroPlayer}}’s contractors kept the platform until the final wagon left.",
+      "heroLoses": "{{otherPlayer}}’s guardians held the warehouse while the contractors lost their rail window.",
+      "draw": "The coats reached the town; both parties stayed to sort the unclaimed parcels."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A coastal salvage depot had taken in a sealed lifeboat after a storm. {{heroPlayer}}’s contractors arrived to collect its emergency transmitter; {{otherPlayer}}’s guardians held the depot until the boat’s crew could be identified. A maintenance light blinked inside the sealed hull whenever someone tried the door.",
+      "{{hero}} covered the crane yard when a defender moved to swing a cargo hook over the contractors’ approach. The fighter fired at the crane’s empty control housing, stopping the hook clear of the lifeboat. A mechanic cut through the seal and found every seat occupied by a neatly folded raincoat.",
+      "The transmitter clicked on as the mechanic lifted the last coat. {{hero}} held the yard while the crew listened to a distress call from the boat’s registered position, still far out at sea. The tide was rising, and the contractors had to choose between the transmitter and a rescue launch."
+    ],
+    "endings": {
+      "heroWins": "The rescue launch departed, and {{heroPlayer}}’s contractors kept the transmitter working at the depot.",
+      "heroLoses": "{{otherPlayer}}’s guardians secured the boat and its transmitter before a launch could be readied.",
+      "draw": "Both groups sent a launch; the lifeboat remained empty when its call sounded again."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A hilltop listening station intercepted a call from an expedition missing for six months. {{heroPlayer}}’s contractors held a recovery agreement for the recording; {{otherPlayer}}’s guardians kept the station open to the families waiting for news. The call began with a weather report from the morning the expedition disappeared.",
+      "{{hero}} reached the recording desk and found its tape almost at the end. The specialist threaded a spare reel through the machine while the families took turns recognizing voices. Beneath the weather report came three knocks and an address that had once belonged to the station itself.",
+      "The wind tore the antenna loose during the transfer. {{hero}} held the tape in place as a technician climbed the mast to restore reception. The expedition leader began to speak, then paused for someone beside them to answer. In the listening room, a family member answered the pause aloud."
+    ],
+    "endings": {
+      "heroWins": "The whole call was saved, and {{heroPlayer}}’s crew kept the station available to the families.",
+      "heroLoses": "{{otherPlayer}}’s guardians retained the recording while the contractors withdrew.",
+      "draw": "Each party kept part of the call; neither could identify the place named in its final seconds."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Military Orders",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain checkpoint kept a snowbound convoy waiting while the last driver searched for a missing passenger. {{heroPlayer}}’s support crew came to open a warm shelter; {{otherPlayer}}’s sentries held it for a medical delivery due through the pass. A set of footprints stopped at its locked rear wall.",
+      "{{hero}} inspected the shelter’s ventilation plan and found an unused hatch behind a stack of fuel drums. The specialist followed the footprints through it to a maintenance alcove, where the missing passenger sat beside a frozen heater. They had gone inside to leave space for a child on the convoy’s last heated seat.",
+      "The shelter heater caught when {{hero}} restarted its pilot. Outside, the medical delivery arrived, and the sentries asked for the alcove to unload supplies. The missing passenger rose unsteadily; the convoy’s drivers began carrying blankets through the open hatch before anyone settled who owned the room."
+    ],
+    "endings": {
+      "heroWins": "The convoy warmed its passengers, and {{heroPlayer}}’s crew kept the shelter open for the delivery.",
+      "heroLoses": "{{otherPlayer}}’s sentries took the shelter as the convoy continued toward the next pass.",
+      "draw": "Both groups shared the heater through the night, with the checkpoint closed until morning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Kestrel Colonial Force"
+    ],
+    "heroFaction": "Kestrel Colonial Force",
+    "role": "objective",
+    "paragraphs": [
+      "Two settlement crews carried different land grants to the same canyon spring. {{heroPlayer}}’s surveyors set their instruments above the western bank while {{otherPlayer}}’s surveyors marked the eastern path. Neither grant mentioned the fossil beds visible beneath the clear water, each showing a creature curled around something bright.",
+      "{{hero}} reached the original boundary stone underwater with a weighted measuring line. The specialist found an older line engraved along its base, running directly through the spring. Each crew gathered on a bank to watch the reading, and both knew moving the stone would erase the only shared reference.",
+      "A tremor clouded the spring with silt. {{hero}} held the line against the current while the other surveyors pulled back from falling rock. The bright object inside the nearest fossil reflected the afternoon sun once, and the two crews called out different measurements at the same moment."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew kept the spring and recorded the old line before the water cleared.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the spring and the exposed boundary stone.",
+      "draw": "Both crews copied the measurement; neither accepted a boundary through the spring."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Neoterra Capitaline Army"
+    ],
+    "heroFaction": "Neoterra Capitaline Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The colony’s first school occupied a prefab block scheduled for replacement by a larger campus. {{heroPlayer}}’s inspection detail arrived with the new building plans; {{otherPlayer}}’s settlers kept children inside the old classrooms until a safe route across the construction site was marked. One wall had begun to bow toward the playground.",
+      "{{hero}} covered the site as workers hurried to brace the failing wall. A machine moved toward the playground with its driver’s cab empty, and the fighter fired at the exposed control panel to stop it short of the children’s gate. The engine died, but the machine’s weight blocked the only marked path.",
+      "Teachers began leading children around the stopped machine. {{hero}} watched the unstable wall while a worker pulled the machine’s brake clear. The oldest pupil returned for a class project still drying near the doorway; above that doorway, the first brace started to bend."
+    ],
+    "endings": {
+      "heroWins": "The pupils reached safety, and {{heroPlayer}}’s detail held the site for repairs.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the school grounds while the inspectors withdrew.",
+      "draw": "The school emptied safely, but both parties delayed construction until the old wall could be saved."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "objective",
+    "paragraphs": [
+      "An earthquake exposed the colony’s gas line beneath a row of new houses. {{heroPlayer}}’s engineers came to isolate the break; {{otherPlayer}}’s settlers held the block while their neighbors gathered possessions. A kitchen light flickered on in one empty house just as a detector sounded outside.",
+      "{{hero}} reached the junction box by crawling under a tilted porch. The specialist closed one valve, then found a second feed supplying the community kitchens across the street. Shutting both would make the line safe but leave the kitchens dark while food spoiled in their warm storage.",
+      "The porch shifted, trapping the junction handle against the wall. {{hero}} asked a settler to hold a brace while turning the valve a fraction at a time. Across the road, cooks carried their last hot trays outside for the evacuated families, watching the detector’s warning light flash faster."
+    ],
+    "endings": {
+      "heroWins": "The leak was sealed, and {{heroPlayer}}’s engineers kept the block safe for the returning families.",
+      "heroLoses": "{{otherPlayer}}’s settlers retained the junction while the engineers backed away from the unstable porch.",
+      "draw": "The families ate together outside; both groups left the houses empty until the line could be replaced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A survey rover froze halfway across an ice shelf with its sample canisters still warm. {{heroPlayer}}’s recovery patrol approached from the high ridge; {{otherPlayer}}’s colonists had tied a towline from the far camp. Each crew needed the rover intact, but a widening crack ran between them.",
+      "{{hero}} held the ridge while a mechanic advanced with a replacement power cell. Fire struck the snow near the rover’s antenna, and the fighter answered from behind a rock outcrop to keep the mechanic moving. The rover’s wheels began turning as the new cell connected, dragging the towline across the crack.",
+      "The mechanic stumbled when the ice split beneath the line. {{hero}} kept the approach covered while the recovery patrol pulled them toward firm ground. Across the shelf the colonists braced their towline, and the rover moved slowly between both teams with its canisters still heating inside."
+    ],
+    "endings": {
+      "heroWins": "The patrol brought in the rover and kept the samples cold beneath {{heroPlayer}}’s shelter.",
+      "heroLoses": "{{otherPlayer}}’s colonists pulled the rover across to their camp.",
+      "draw": "Both crews saved the mechanic; the rover dropped into the crack with its samples."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A desalination plant had begun drawing living coral into its coastal intake, coloring the colony’s drinking water pink. {{heroPlayer}}’s divers came to clear the screens; {{otherPlayer}}’s settlers guarded the reservoir above the plant. Families had already filled every spare container ahead of a forecasted dry week.",
+      "{{hero}} opened the underwater maintenance gate and saw that the coral had formed a wall around a small sealed canister. The specialist lifted it free without tearing the branches. Inside was a handwritten tide chart, wrapped so carefully that its last page remained dry despite the pressure outside.",
+      "The intake pump restarted automatically while {{hero}} was still below. The diver held the gate open for a second teammate and passed the chart toward the surface. A pink plume reached the reservoir pipe, and the settlers called down that the morning water allocation was about to begin."
+    ],
+    "endings": {
+      "heroWins": "The water ran clear, and {{heroPlayer}}’s divers kept the intake open for the colony.",
+      "heroLoses": "{{otherPlayer}}’s settlers controlled the plant while the divers withdrew with the tide chart.",
+      "draw": "The coral survived and the water cleared, but both groups closed the intake pending a new survey."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A freight lift served the cliffside settlement until its counterweight slipped during the morning delivery. {{heroPlayer}}’s response team reached the top station; {{otherPlayer}}’s colonists waited below with grain already loaded. The lift hung over the homes with its door open and a driver still at the controls.",
+      "{{hero}} covered the upper platform as a figure tried to cut the emergency cable. The fighter fired into the platform railing ahead of them, turning them back without striking the lift. A mechanic reached the winding drum, where a broken tooth caught every third turn and shook the cabin.",
+      "The driver shouted that the grain was shifting toward the open door. {{hero}} kept the platform clear while the mechanic fitted a temporary brace into the drum. At the bottom, colonists stretched a loading net between two rooftops, preparing for the driver whether the cabin moved or not."
+    ],
+    "endings": {
+      "heroWins": "The lift settled safely, and {{heroPlayer}}’s team held the upper station for repairs.",
+      "heroLoses": "{{otherPlayer}}’s colonists took the lift controls as the response team withdrew.",
+      "draw": "The driver reached the net, but both groups left the freight cabin hanging until a new counterweight arrived."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "The settlement registry listed a visitor who had never arrived, yet every household had a different memory of offering them supper. {{heroPlayer}}’s investigators came to compare the records; {{otherPlayer}}’s colonists held the town hall for a vote on whether to close the settlement road. At the desk lay a coat nobody claimed.",
+      "{{hero}} traced the visitor’s signature across three guest books and found that each had been signed on the same date, in a different hand. The specialist turned the coat inside out and discovered tickets for all three households sewn into its lining, each valid for the following evening.",
+      "The vote began while {{hero}} carried the tickets toward the hall. One voter recognized their own handwriting on a ticket they had never seen. A knock sounded at the locked front door, and the clerk asked whether the investigators would let the visitor speak before the road was closed."
+    ],
+    "endings": {
+      "heroWins": "The visitor entered under {{heroPlayer}}’s protection, and the registry stayed open through the vote.",
+      "heroLoses": "{{otherPlayer}}’s colonists closed the road while the investigators kept the coat as evidence.",
+      "draw": "The road stayed open for one night; no one at the hall admitted owning the coat."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A quarry at the edge of the colony exposed a buried shelter just before its next scheduled blast. {{heroPlayer}}’s safety team came to stop the charges; {{otherPlayer}}’s miners held the pit because their equipment was still inside. Through a small window in the shelter door, someone held up a light.",
+      "{{hero}} covered the quarry rim while a technician reached the blast controller. A figure ran toward the detonator line, and the fighter fired into an empty crusher chute to force them back. The light behind the shelter window blinked twice, then traced a number in the dust on the glass.",
+      "The number matched the minutes remaining on the blast timer. {{hero}} kept the line clear as the technician disconnected one charge after another. A miner climbed into the pit with a cutting torch; the shelter door had swollen shut, and its light was fading."
+    ],
+    "endings": {
+      "heroWins": "The charges stayed silent, and {{heroPlayer}}’s team opened the shelter before the light went out.",
+      "heroLoses": "{{otherPlayer}}’s miners kept the quarry controls while the safety team retreated.",
+      "draw": "The shelter opened, but both groups postponed the blast until its occupant could be identified."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "objective",
+    "paragraphs": [
+      "A wildlife corridor crossed the colony’s new access road. {{heroPlayer}}’s trackers came to mark a safe crossing; {{otherPlayer}}’s road crew had laid the first foundation that morning. Small tracks in the wet concrete showed that an animal had already crossed while the workers’ backs were turned.",
+      "{{hero}} followed the tracks to a culvert and found two young animals trapped behind a fallen survey panel. The specialist lifted the panel and fitted a tracking marker to its frame, making the culvert visible on the road crew’s maps. Their parent waited on the opposite side of the foundations, watching without approaching.",
+      "The concrete truck returned before the crossing was clear. {{hero}} waved it back and guided the young animals through the culvert as the crew removed its outer formwork. The parent stepped forward at last, just as the first concrete started flowing toward the unfinished edge."
+    ],
+    "endings": {
+      "heroWins": "The animals crossed safely, and {{heroPlayer}}’s trackers kept the corridor marked for future traffic.",
+      "heroLoses": "{{otherPlayer}}’s crew closed the roadbed before the trackers could establish the crossing.",
+      "draw": "The animals escaped; both groups left the road unfinished until a permanent culvert was planned."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A survey camp on the open steppe reported a drilling crew missing after its mast struck a hollow layer of stone. {{heroPlayer}}’s searchers arrived along the ridge; {{otherPlayer}}’s colonists occupied the camp and kept the drill running to reach trapped voices below. The borehole made a low note whenever the bit stopped.",
+      "{{hero}} covered the rig while searchers moved to the mast. A warning shot from the camp struck its support, and the fighter returned fire at an empty fuel drum to turn the shooter away. A rescuer climbed the ladder and heard three knocks beneath the engine, separate from the trapped voices.",
+      "The drill seized with a crew member still below its platform. {{hero}} kept the ridge clear as the rescuers lowered a spare cable into the hollow stone. The first person to emerge carried a marked survey slate that showed an exit beneath the camp, not the borehole."
+    ],
+    "endings": {
+      "heroWins": "The missing crew reached the ridge, and {{heroPlayer}}’s searchers held the camp for recovery.",
+      "heroLoses": "{{otherPlayer}}’s colonists controlled the rig while the searchers withdrew with the survey slate.",
+      "draw": "The crew escaped through the hidden exit; both groups left the drill silent above it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A grazing valley had been chosen for the colony’s new fence line, straight through the path used for the seasonal cattle drive. {{heroPlayer}}’s herders came to open the old gate; {{otherPlayer}}’s survey party held it until the boundary posts could be set. The cattle gathered in the narrowing lane behind them.",
+      "{{hero}} reached the gate as a survey guard stepped into the way. There was no space for a shot with animals pressing against the rails, so the fighter met the guard at arm’s length and forced a passage by the latch. The herd’s lead animal pushed forward before the hinges were fully free.",
+      "The gate came loose in {{hero}}’s hands. The fighter held it upright while the herders guided the first animals through, each passing close enough to brush the broken hinge. Across the valley, the surveyors raised another post where the old path turned toward water."
+    ],
+    "endings": {
+      "heroWins": "The herd reached water, and {{heroPlayer}}’s people kept the valley path open.",
+      "heroLoses": "{{otherPlayer}}’s surveyors closed the boundary and sent the drive toward the longer pass.",
+      "draw": "The cattle crossed; both groups returned the next day to move the fence away from the gate."
+    }
   }
 ]
