@@ -1898,5 +1898,385 @@
       "heroLoses": "{{otherPlayer}}’s surveyors closed the boundary and sent the drive toward the longer pass.",
       "draw": "The cattle crossed; both groups returned the next day to move the fence away from the gate."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A border watch cabin overlooked the narrow trail used to bring mail into the colony. {{heroPlayer}}’s scouts arrived after the courier failed to report; {{otherPlayer}}’s settlers had sheltered the courier’s horse but could not find its rider. The cabin window was open and a fresh map lay pinned under an empty lantern.",
+      "{{hero}} took the ridge above the cabin as a figure moved between the pine trunks. When a shot hit the mailbag left on the porch, the fighter answered toward a rock face clear of the horse and the settlers, holding the trail while a scout reached the cabin door. Inside, a boot was wedged against a hidden floor hatch.",
+      "The scout pulled the hatch open and found the courier beneath the floor, shielding a bundle of undelivered letters. {{hero}} kept the tree line covered while the settlers ran for a stretcher. On the map, a newly drawn route avoided the trail entirely and led toward smoke rising beyond the ridge."
+    ],
+    "endings": {
+      "heroWins": "The courier reached safety, and {{heroPlayer}}’s scouts held the cabin while the mail went on.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the cabin as the scouts withdrew toward the smoke.",
+      "draw": "The letters were delivered, but both crews left the newly drawn route unexplored."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A tethered weather balloon above the colony’s orchard began reporting snow in the middle of harvest. {{heroPlayer}}’s observers came for its instruments; {{otherPlayer}}’s growers needed the forecast before deciding whether to pick early. The balloon cast a moving shadow across rows where the fruit had ripened on only one side.",
+      "{{hero}} reached the winch and read the balloon’s pressure record as its tether unwound. The specialist discovered that the sensors had been recording weather from a valley hundreds of kilometers away. A second cable, hidden under the orchard soil, led toward an abandoned listening box on the hill.",
+      "The winch brake failed when the first cold gust reached the trees. {{hero}} wrapped the tether around a post and called for the growers to clear the lower rows. At the listening box, a lamp switched on and the forecast changed to a warning meant for the orchard itself."
+    ],
+    "endings": {
+      "heroWins": "The warning reached the growers, and {{heroPlayer}}’s observers kept the balloon tethered above the orchard.",
+      "heroLoses": "{{otherPlayer}}’s growers took the winch while the observers retreated to examine the listening box.",
+      "draw": "The harvest was saved, but the balloon broke free before either crew could recover its instruments."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A stone bridge gave the colony its shortest route to winter stores, until a landslide cut the path at both ends. {{heroPlayer}}’s patrol arrived to secure the crossing; {{otherPlayer}}’s builders were already testing its damaged supports. A wagon remained stranded on the bridge with its driver guarding a crate of medicine.",
+      "{{hero}} covered the open approach from a ledge when a figure began loosening the last brace under the wagon. The fighter fired at the empty edge of the stonework to force them away. The bridge shifted nonetheless, leaving the driver pinned between the wagon and a broken parapet.",
+      "The builders fed a rope over the gap while {{hero}} watched the far bank. The driver passed the crate across first, then reached for the rope as loose stones fell into the ravine. Behind the patrol, the landslide moved again and erased their own retreat path."
+    ],
+    "endings": {
+      "heroWins": "The driver and medicine reached firm ground, and {{heroPlayer}}’s patrol kept the crossing open.",
+      "heroLoses": "{{otherPlayer}}’s builders took the bridge while the patrol found a longer route home.",
+      "draw": "Both sides saved the driver; the bridge fell after the final rope was removed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "The colony drilled a new well beside a working oil derrick, and the first bucket came up smelling of fuel. {{heroPlayer}}’s rangers arrived to trace the leak; {{otherPlayer}}’s drilling crew guarded the pumps, certain their equipment was sound. The settlement’s water wagon was due to leave at dawn with empty tanks.",
+      "{{hero}} followed the contamination to an old pipe buried under a storage shed. The specialist found its valve handle missing and a thin line of clean water running past it, separated by one corroded wall. The rangers marked a safe channel while the drilling crew searched for a tool to turn the valve stem.",
+      "Pressure climbed as {{hero}} gripped the stem with a wrench. The shed floor began to lift, and the clean-water line shook beside the fuel pipe. Across the yard the wagon driver opened the tanks, waiting to know whether the next bucket would be safe enough to carry."
+    ],
+    "endings": {
+      "heroWins": "The wagon filled with clean water, and {{heroPlayer}}’s rangers kept the well under watch.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the pumps while the rangers closed the well as unsafe.",
+      "draw": "The leak stopped, but both parties waited for another test before sending the wagon out."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A caravan of field medics stopped at a colony food hall after its cooks fell ill at once. {{heroPlayer}}’s team needed the kitchen for treatment; {{otherPlayer}}’s settlers wanted the hall kept open to feed everyone waiting outside. The first patients had eaten different dishes but shared the same drinking cups.",
+      "{{hero}} examined the washing station and found a cracked reservoir beneath its counter. The specialist closed its feed, then asked the cooks to bring every used cup into the courtyard. A gardener recognized the mineral residue on their rims from a spring behind the hall, usually considered too bitter to drink.",
+      "The kitchen’s last clean pot was already on the fire. {{hero}} tested the water as a line formed for supper, explaining what might have made the cooks sick. The settlers brought sealed stores from their homes, but the medics still needed the hall’s table space for the patients."
+    ],
+    "endings": {
+      "heroWins": "The patients received care and supper, and {{heroPlayer}}’s medics held the hall until the water was safe.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the hall while the medics treated patients from their caravan.",
+      "draw": "Both groups shared the hall through the night, with the spring closed for testing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "objective",
+    "paragraphs": [
+      "A parcel of farmland changed hands three times on the same afternoon, each buyer holding a stamped deed. {{heroPlayer}}’s investigators came to inspect the sale ledger; {{otherPlayer}}’s colonists had already planted seedlings along the new boundary. The disputed plot included a small cemetery no deed mentioned.",
+      "{{hero}} found the original ledger at a caravan stop and matched its entries to a carved date on the cemetery wall. The specialist noticed that one deed transferred only the surface land; its missing second page reserved everything beneath the graves for an owner whose name had been rubbed away.",
+      "A surveyor began setting posts in the cemetery path. {{hero}} carried the ledger out where both buyers could see it and asked the colonists to halt the digging. The cemetery gate opened from inside, and a caretaker brought out the missing page folded beneath a stone marker."
+    ],
+    "endings": {
+      "heroWins": "The graves stayed undisturbed, and {{heroPlayer}}’s investigators kept the ledger for a fair hearing.",
+      "heroLoses": "{{otherPlayer}}’s colonists retained the plot while the investigators withdrew with a copy of the deed.",
+      "draw": "The seedlings remained outside the cemetery; neither side could establish ownership of the ground beneath it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A customs island at the mouth of the colony river kept a generator running for boats that crossed after dark. {{heroPlayer}}’s harbor detail came to secure its fuel; {{otherPlayer}}’s settlers had stored emergency supplies beside the same engine. A lantern on the upper landing blinked an unfamiliar channel code.",
+      "{{hero}} watched the landing from a shuttered control room and fired at the empty winch arm when an intruder tried to lower the fuel barge away from the dock. The barge drifted only a few meters. A boat answered the lantern code from the far shore, carrying passengers who had no other landing.",
+      "The generator sputtered as the passengers approached. {{hero}} kept the dock in sight while an engineer switched the beacon to a reserve battery. The barge line strained against the current, and the passengers called for guidance before their boat slid beyond the last marker."
+    ],
+    "endings": {
+      "heroWins": "The passengers landed safely, and {{heroPlayer}}’s detail kept the island beacon lit.",
+      "heroLoses": "{{otherPlayer}}’s settlers retained the fuel and took responsibility for the landing.",
+      "draw": "The passengers reached shore; both crews shared the last fuel until a new shipment arrived."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "The colony greenhouse became a field clinic when a survey team returned with severe burns. {{heroPlayer}}’s medics needed its cooling system; {{otherPlayer}}’s growers feared losing a season of seedlings if the vents stayed open. A burned surveyor kept repeating the name of a place absent from their route map.",
+      "{{hero}} rigged a misting line beside the treatment beds and narrowed the vents so the seedlings would not freeze. The specialist examined a shard caught in the surveyor’s sleeve: black glass with a compass line etched across it. The remaining surveyors claimed they had found it beneath a field that had never been dug.",
+      "The cooling pump seized as the beds filled. {{hero}} turned its flywheel by hand while a grower fetched parts from the nursery. The surveyor opened their eyes long enough to point beyond the greenhouse, where a survey stake stood in ground the growers had fenced off years earlier."
+    ],
+    "endings": {
+      "heroWins": "The patients stabilized, and {{heroPlayer}}’s medics kept the greenhouse working without losing its crop.",
+      "heroLoses": "{{otherPlayer}}’s growers reclaimed the greenhouse while the medics moved the patients to their transport.",
+      "draw": "The seedlings and patients survived; both groups waited for the surveyors to explain the stake."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A recycling barge arrived at the colony dock carrying equipment from a ship officially lost in transit. {{heroPlayer}}’s salvage crew came to inventory the load; {{otherPlayer}}’s settlers guarded the pier until the missing crew could be accounted for. Fresh food wrappers lay among the sealed crates.",
+      "{{hero}} covered the barge ramp as a figure on the far pier moved to cut its mooring. The fighter fired at a metal cleat beside the figure, forcing them back while workers secured a second line. Beneath a crate lid, the salvage crew found a hand-written list of names and meals for the last six days.",
+      "The barge shifted with the incoming tide. {{hero}} kept the ramp clear as a worker called out the names one by one. A reply came from inside the empty hold, where a small service hatch was bolted from the outside and the air was running low."
+    ],
+    "endings": {
+      "heroWins": "The crew emerged alive, and {{heroPlayer}}’s salvagers held the barge for its passengers.",
+      "heroLoses": "{{otherPlayer}}’s settlers took the pier and the inventory while the salvagers withdrew.",
+      "draw": "The passengers reached land; neither party accepted the barge’s account of its journey."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An underground bee farm supplied the colony’s orchards with pollinators. {{heroPlayer}}’s keepers came to retrieve a missing queen; {{otherPlayer}}’s settlers had sealed the access shaft after the bees began gathering around their outdoor lights at night. Without the queen, the hives would divide before spring.",
+      "{{hero}} entered the farm with a portable lamp and followed a quiet line of workers to an empty observation chamber. There the specialist found the queen inside a cracked glass display, surrounded by a brood that had built comb against a vent. The bees were carrying pollen from flowers that grew nowhere near the colony.",
+      "The chamber fan started and drew the brood toward the vent. {{hero}} covered the display and shut the fan while the settlers opened the shaft above. The queen climbed onto the keeper’s sleeve, and the distant outdoor lights went out one after another."
+    ],
+    "endings": {
+      "heroWins": "The queen returned to her hive, and {{heroPlayer}}’s keepers kept the bee farm open.",
+      "heroLoses": "{{otherPlayer}}’s settlers closed the shaft and took charge of the threatened hives.",
+      "draw": "The brood survived; both groups agreed to trace the unfamiliar pollen before reopening the farm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A hanging garden above the colony square was due to open for the spring festival. {{heroPlayer}}’s riggers arrived to replace a cracked support; {{otherPlayer}}’s settlers guarded the upper walkway because the first visitors were already climbing the stairs. Water from the garden’s irrigation trays dripped onto the crowded stalls below.",
+      "{{hero}} clipped into the maintenance rail and reached the damaged support beneath the central planter. The specialist found its bolt torn free from soft concrete, not merely loose. A child on the upper walkway dropped a festival ribbon over the edge and leaned after it as the entire garden shifted.",
+      "The rigger caught the ribbon and called for the walkway to clear. {{hero}} braced the planter with a spare strut while two workers led the visitors back down. Beneath the square, the stalls went quiet as the dripping stopped and everyone looked up at the load hanging over them."
+    ],
+    "endings": {
+      "heroWins": "The garden stayed aloft, and {{heroPlayer}}’s riggers held its walkway until the new supports set.",
+      "heroLoses": "{{otherPlayer}}’s settlers took the garden under their own watch while the riggers withdrew.",
+      "draw": "The festival moved to the square below; both crews kept the upper walkway closed for repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A colony museum displayed a meteor fragment on loan from a private collector. When its return date arrived, {{heroPlayer}}’s auditors found two valid receipts for the same stone; {{otherPlayer}}’s settlers held the gallery until the schoolchildren finished their visit. The fragment had grown heavier since its last inspection.",
+      "{{hero}} checked the display scale and discovered a second object inside the plinth. The specialist removed a maintenance panel to reveal a small locked box, its seal matching neither receipt. A teacher said the children had heard tapping from the display during the night tour, though no one had touched it.",
+      "The gallery alarm began to sound as {{hero}} reached for the box. The collector’s courier arrived at the entrance, asking for the meteor alone. The children gathered behind the teacher while the auditors moved the plinth clear of the exit, leaving the box where both groups could see it."
+    ],
+    "endings": {
+      "heroWins": "The auditors secured both objects, and {{heroPlayer}}’s people kept the gallery open for an honest inventory.",
+      "heroLoses": "{{otherPlayer}}’s settlers held the museum while the courier took the fragment away.",
+      "draw": "The fragment stayed on display; neither side opened the unlisted box before the children left."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The colony’s rain catchment filled with salt after a clear night. {{heroPlayer}}’s survey party came to test the upper cistern; {{otherPlayer}}’s engineers held the valves to protect the remaining fresh water. A pale deposit traced the shape of a door along the interior wall.",
+      "{{hero}} covered the service path as a defender tried to shut the inspection hatch. The fighter fired into the empty hinge above them, forcing the hatch open for a technician. Its lamp revealed a second deposit shaped like a handprint, this one on the dry side of the wall.",
+      "A valve wheel began to turn without an engineer beside it. {{hero}} held the path while the technician reached across the cistern to stop the flow. Below, families had lined up with water containers; the first of them called that the taps smelled of the sea."
+    ],
+    "endings": {
+      "heroWins": "The fresh-water line was isolated, and {{heroPlayer}}’s party kept the cistern for testing.",
+      "heroLoses": "{{otherPlayer}}’s engineers took the valves and excluded the survey party.",
+      "draw": "Both groups shared the remaining clean water while the salt deposit dried into the wall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A grain silo beside the colony landing field began shedding dust just as a relief aircraft lined up to land. {{heroPlayer}}’s assault team came to secure the silo; {{otherPlayer}}’s settlers held its lower doors and warned that one spark could ignite the dust. The aircraft needed the grain and a safe landing strip.",
+      "{{hero}} took position behind an empty hopper and covered the silo catwalk without firing toward the suspended dust. When a figure tried to release the grain chute over the runway, the fighter fired into the steel latch outside the dust cloud, jamming the mechanism long enough for the ground crew to wave the aircraft off.",
+      "The aircraft circled while workers opened a vent on the far side. {{hero}} watched the catwalk as the dust thinned, then signaled the landing field when its lights came back into view. Inside the silo a worker shouted that the blocked chute was heating, and someone had to reach it before the plane returned."
+    ],
+    "endings": {
+      "heroWins": "The plane landed safely, and {{heroPlayer}}’s team held the silo while the grain was unloaded.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the silo and directed the plane to another strip.",
+      "draw": "The landing was canceled; both groups spent the night clearing the dangerous dust."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "Workers clearing ground for a tram line uncovered a playground beneath the new colony, its equipment clean and its swings moving. {{heroPlayer}}’s researchers came to catalog the site; {{otherPlayer}}’s builders wanted it fenced before children arrived from the nearby housing block. A painted height chart showed marks dated years in the future.",
+      "{{hero}} measured the playhouse and found its smallest door led to a full-sized room below. The specialist placed a portable camera on the floor before entering. It showed chalk drawings of the tram line as it would look after construction, including a stop the builders had not planned.",
+      "A child slipped past the fence while {{hero}} carried the camera out. One swing stopped in front of them, and the child pointed to a drawn route that ran around the playhouse instead of through it. The tram survey crew was already setting stakes across that exact path."
+    ],
+    "endings": {
+      "heroWins": "The builders rerouted the line, and {{heroPlayer}}’s researchers kept the playground open for study.",
+      "heroLoses": "{{otherPlayer}}’s builders fenced the site and continued the tram survey.",
+      "draw": "The child returned home; both groups paused construction until they understood the drawings."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A solar array above the colony’s farms stopped following the sun and turned toward an unlit patch of sky. {{heroPlayer}}’s recovery team came for its central controller; {{otherPlayer}}’s technicians guarded the power feed that kept irrigation pumps running. The panels cast a single broad shadow over the fields at noon.",
+      "{{hero}} covered the array’s service corridor when a defender moved to sever the controller cable. The fighter fired into an empty support bracket, forcing the defender back and leaving the feed intact. Inside the controller, a rotating image showed a craft approaching from beyond the moon, although no telescope had reported one.",
+      "The shadow moved across the irrigation pumps as the panels turned again. {{hero}} kept the corridor clear while the recovery team copied the image and the technicians prepared a manual reset. On the screen, the approaching craft changed course at the exact moment the workers touched the switch."
+    ],
+    "endings": {
+      "heroWins": "The controller was secured, and {{heroPlayer}}’s team held the array long enough to warn the farms.",
+      "heroLoses": "{{otherPlayer}}’s technicians kept the array and its power feed under their control.",
+      "draw": "The pumps stayed running, but both teams lost the image when the panels returned to the sun."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A row of fishing huts stood empty after their owners reported a strange cache beneath the jetty. {{heroPlayer}}’s coastal team came to inspect it; {{otherPlayer}}’s colonists kept the huts sealed until the families returned. The cache was arranged like a nest around a boat bell whose clapper had been removed.",
+      "{{hero}} reached beneath the wet boards with a sampler and found thin shells packed around the bell. The specialist lifted one into a clear case while the tide rose against the jetty supports. A faint clicking answered from the shells left behind, repeating the rhythm of a bell nobody had struck.",
+      "The first shell opened in the case. {{hero}} closed its vent and called the team back from the jetty, where a fisher had returned to claim the bell. The colonists watched the water climb, and the fisher said the bell had been taken from a boat lost before any of the huts were built."
+    ],
+    "endings": {
+      "heroWins": "The team removed the sealed sample, and {{heroPlayer}}’s people kept the jetty closed until the families were safe.",
+      "heroLoses": "{{otherPlayer}}’s colonists retained the jetty while the team withdrew with its case.",
+      "draw": "The families returned to shore; neither group disturbed the remaining shells at high tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "Migrating birds began striking the colony’s new communication tower after its nighttime guidance lights changed color. {{heroPlayer}}’s systems crew came to correct the pattern; {{otherPlayer}}’s settlers protected the tower because their emergency channel relied on it. At sunrise the tower base was crowded with injured birds.",
+      "{{hero}} opened the controller and found its lighting schedule copied from a tower on another planet, where birds followed a different coast. The specialist restored the local pattern while volunteers carried the injured animals to a shelter. A storm alert arrived on the emergency channel just as the lights blinked out.",
+      "The controller would accept only one active schedule. {{hero}} held a temporary bridge in place so the storm warning could transmit while the new lights came online. Above, the flock wheeled once around the tower and then settled toward the marsh, leaving the volunteers room to reach the last injured bird."
+    ],
+    "endings": {
+      "heroWins": "The warning went through, and {{heroPlayer}}’s crew kept the tower safe for the migrating flock.",
+      "heroLoses": "{{otherPlayer}}’s settlers took the controller while the systems crew left its repair incomplete.",
+      "draw": "The birds passed without another strike; both groups kept a watch on the emergency channel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A depot of retired care machines was due to be recycled when one unit began delivering food to an address erased from the colony map. {{heroPlayer}}’s analysts came to recover its route memory; {{otherPlayer}}’s settlers kept the depot locked until they knew who might still need the food.",
+      "{{hero}} followed the machine through a side service gate and found it stopping at an empty lot. The specialist checked its records: it had delivered there every morning for twelve years. Beneath the grass stood a cellar door, covered by soil but warm to the touch when the machine placed a meal above it.",
+      "The cellar door opened a finger’s width. {{hero}} held the care machine steady while the settlers cleared the soil, and someone below asked why breakfast had arrived late. In the depot behind them, other retired units powered on and began calculating routes to addresses no longer shown on any public map."
+    ],
+    "endings": {
+      "heroWins": "The hidden residents were reached, and {{heroPlayer}}’s analysts kept the depot open for the machines to finish their rounds.",
+      "heroLoses": "{{otherPlayer}}’s settlers took custody of the depot and its undisclosed routes.",
+      "draw": "The residents received food; both groups agreed not to erase the old routes again."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A bridge over the colony gorge had been chosen for a peace ceremony, but a storm knocked away its central deck before the delegates arrived. {{heroPlayer}}’s escort came to hold the remaining span; {{otherPlayer}}’s settlers guarded the opposite bank. Both parties carried halves of the same banner.",
+      "{{hero}} crossed the narrow side rail with a safety line and met a defender at the broken deck. There was no room for a shot over the drop. The fighter forced a passage at arm’s length, then used the line to draw the loose planks toward the gap without dislodging the other half of the banner.",
+      "The delegates appeared at both ends of the bridge as rain began to fall. {{hero}} held the rail while builders secured the first plank, leaving enough room for one person at a time. A child on the far bank lifted their half of the banner and asked who would cross first."
+    ],
+    "endings": {
+      "heroWins": "The banner joined across the repaired span, and {{heroPlayer}}’s escort kept the bridge safe for the delegates.",
+      "heroLoses": "{{otherPlayer}}’s settlers held the crossing while the escort withdrew from the storm.",
+      "draw": "The delegates met halfway, but neither side claimed the bridge when the rain returned."
+    }
   }
 ]
