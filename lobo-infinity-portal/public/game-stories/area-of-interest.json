@@ -6458,5 +6458,385 @@
       "heroLoses": "{{otherPlayer}}’s wardens retained the road and delayed the convoy.",
       "draw": "The herd crossed safely, and both groups repaired the amber beacon."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "A municipal wildlife gate had closed on the migration route outside a crowded district. {{heroPlayer}}’s rangers arrived before dusk; {{otherPlayer}}’s street inspectors worried that opening it would send animals through the bus depot. On the far side, a small herd waited with a calf pressing its nose to the fence.",
+      "{{hero}} walked the fence and found an older service lane behind the depot, still blocked by fallen branches. The specialist cleared it and opened the gate just wide enough to guide the herd toward the trees. The calf passed last, stopping to look at its reflection in a depot window.",
+      "Bus drivers watched the animals disappear beyond the service lane. One driver said the route had been there before the depot and asked for it to remain marked. The rangers painted a small sign before they left, pointing away from the buses and toward the woods."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers secured the gate and guided the herd to woodland.",
+      "heroLoses": "{{otherPlayer}}’s inspectors retained the depot and delayed the crossing.",
+      "draw": "The herd passed safely, and both groups marked the old lane for future migrations."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A clinic courtyard held a mural painted by patients over many years. {{heroPlayer}}’s care team came to preserve it before a cracked irrigation channel washed the wall; {{otherPlayer}}’s building inspectors had marked the courtyard for closure. Water was already spreading toward the lowest painted row.",
+      "{{hero}} found the channel’s break beneath a planter and turned its flow into a dry catch basin. The specialist worked around the plants while the inspectors braced the wall. Once the water stopped, a painted date emerged beneath the muddy edge, older than anyone had guessed.",
+      "A former patient recognized the date as the day the clinic first opened and pointed out a tiny portrait of its first caretaker beside it. Staff brought out chairs so people could look without stepping on the wet ground. The channel was repaired while the mural dried."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the courtyard and preserved the mural.",
+      "heroLoses": "{{otherPlayer}}’s inspectors retained the building and closed the garden for repair.",
+      "draw": "The wall survived, and both parties documented its newly visible date."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A narrow archive beneath the old courthouse held witness statements from a dispute resolved decades ago. {{heroPlayer}}’s couriers came to recover a sealed packet before the room flooded; {{otherPlayer}}’s caretakers were carrying boxes upstairs. A whistle sounded from the locked records stair.",
+      "{{hero}} covered the stair while a courier opened the packet room. A figure appeared behind the boxes and raised a weapon, and the fighter held them away until the packet was carried out. The whistle continued from a small brass timer left to warn when the flood pump stopped.",
+      "The caretakers restarted the pump and opened the packet with its designated recipient present. Inside was a letter from a witness who had asked that it be read only if the courthouse was ever threatened. It urged the city to preserve the room where neighbors had finally listened to one another."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s couriers secured the packet and brought it upstairs dry.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retained the archive and managed the flood response.",
+      "draw": "The room was pumped out, and both groups preserved the letter and its original packet."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A customs shed held a carved door meant for a rebuilt seaside school. {{heroPlayer}}’s escorts arrived to move it; {{otherPlayer}}’s shipping clerks had discovered its pallet shifting toward an open loading edge. Children outside waited to see the painted panels for the first time.",
+      "{{hero}} reached the pallet as a stranger tried to release its retaining strap. The fighter grabbed the strap, pushed the person clear, and held the load until movers set the pallet flat. The door’s panels showed fish, boats, and a row of children standing together beneath a painted roof.",
+      "The shipping clerks brought the door into the light where the waiting children could see it. One child asked why the artist had left a blank face in the row. A mover said it was for whoever entered the school next, and the children began naming one another."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the shed and delivered the school door.",
+      "heroLoses": "{{otherPlayer}}’s clerks retained the pallet and scheduled a safer loading crew.",
+      "draw": "The door remained intact, and both groups let the children see its painting before delivery."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile care station stopped beside a school during a power outage, drawing families to its shaded courtyard. {{heroPlayer}}’s staff needed its generator; {{otherPlayer}}’s district workers found the cable stretched across the only accessible entrance. A parent pushing a chair waited at the far curb.",
+      "{{hero}} rerouted the cable overhead through the station’s raised support hooks and tested a clear path into the courtyard. The specialist brought the parent and child across while the workers guarded the newly suspended line. Inside, the child spotted a classroom art display visible through an open window.",
+      "After the station reopened, the child added a drawing of the care vehicle to that display. The parent returned to see it beside the other pictures, all hung low enough to read from the chair. The generator ran until the school lights came back."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s staff secured the station and kept the accessible entrance open.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the courtyard and moved the station to a safer position.",
+      "draw": "Families reached the station safely, and both teams kept the cable above the path."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rooftop transmitter stopped sending the neighborhood’s evening announcements just before a storm. {{heroPlayer}}’s technical crew climbed to repair it; {{otherPlayer}}’s city staff were preparing a community hall below. On the silent screen, one announcement remained queued: a request to bring spare blankets.",
+      "{{hero}} covered the rooftop stair while a technician connected a replacement aerial lead. A figure emerged from behind the cooling unit with a weapon, and the fighter held them back until the technician finished. The blanket request went out with the updated shelter address while the first rain struck the roof.",
+      "People arrived at the hall carrying more blankets than anyone had asked for. A child picked a bright one and spread it across two empty chairs for neighbors still on the way. The rooftop screen displayed the next announcement: all arrivals accounted for."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the transmitter and restored the shelter announcements.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the roof and organized the hall without the broadcast.",
+      "draw": "The hall filled safely, and both teams kept the announcements running through the storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A temporary aerial stage hung over a civic plaza for its annual night performance. {{heroPlayer}}’s performers arrived to test the rig; {{otherPlayer}}’s safety crew had seen one tether slacken above the audience seats. A young acrobat waited at the edge with a length of silver ribbon.",
+      "{{hero}} reached the tether as someone tried to pull its anchor free. The fighter wrestled them away and held the anchor while a rigger set a new lock. The acrobat crossed only after the safety crew gave the signal, her ribbon tracing a bright loop in the air.",
+      "The audience below saw the loop but never the repair behind it. Afterward, the acrobat left the ribbon tied to the safe anchor for the next rehearsal. A rigger kept it there until morning as a visible reminder to check the lock again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s performers secured the rig and completed the night show.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the plaza and suspended the aerial act.",
+      "draw": "The performance finished safely, and both groups inspected every tether afterward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A workers’ dormitory shared one air recycler between its oldest and newest wings. {{heroPlayer}}’s maintenance crew arrived when the old rooms grew stuffy; {{otherPlayer}}’s building officers had already posted a notice asking residents to leave. One resident refused to go without a box of family photographs.",
+      "{{hero}} traced the airflow to a damper left closed after the new wing opened. The specialist freed its hinge and measured fresh air in both corridors while the officers guided residents outside. When it was safe to return, the resident carried the photograph box back into the oldest room.",
+      "The first picture unpacked showed the dormitory before its newest wing was built, with a garden in the space now occupied by a hall. A younger worker proposed putting plants in that hall. By evening, a few pots had appeared beneath its bright windows."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored air to both wings and reopened the dormitory.",
+      "heroLoses": "{{otherPlayer}}’s officers retained the building and kept residents out for inspection.",
+      "draw": "The air stayed clear, and both parties welcomed the residents back."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A public scoreboard began counting fewer participants than the charity walk could see gathering in the square. {{heroPlayer}}’s data team came to fix its registration terminal; {{otherPlayer}}’s organizers were handing out paper numbers. A child had joined the walk without a device or a number.",
+      "{{hero}} found that the terminal skipped registrations made at the accessible entrance. The specialist merged the missing entries from the paper sheet while the organizers made space for everyone at the starting line. The count rose to include the child, who asked to have number one for a friend unable to attend.",
+      "The organizers pinned an extra number to an empty chair at the finish. When the walkers returned, the child left a small ribbon on that chair. The scoreboard showed the full count, including the registrations no device had recorded."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team repaired the terminal and recorded every walker.",
+      "heroLoses": "{{otherPlayer}}’s organizers retained registration and used paper numbers.",
+      "draw": "The walk began together, and both groups kept the full count on display."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An abandoned listening post began playing a low call that drew migrating birds down to its empty courtyard. {{heroPlayer}}’s scouts escorted a researcher inside; {{otherPlayer}}’s district staff feared the birds would strike the glass tower nearby. The call sounded like a sea creature heard far from any shore.",
+      "{{hero}} held the listening room doorway while the researcher traced the sound to a looped old recording. A figure appeared behind the relay cabinet with a weapon, and the fighter kept them from the switch until the recording was saved and silenced. Outside, the birds rose together above the courtyard.",
+      "The researcher identified the call as one made by an animal recorded before the district existed. A staff member remembered hearing it on a classroom tape years earlier. They played a few seconds at low volume once more, this time with the tower windows covered."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts secured the post and protected the migrating birds.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the courtyard and closed the tower approach.",
+      "draw": "The recording was preserved, and both teams watched the birds continue their flight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A market freight scale sank under a stack of relief crates, blocking the station platform as a train approached. {{heroPlayer}}’s escorts came to shift the load; {{otherPlayer}}’s station workers were holding passengers at the far stair. A small parcel slid from the top and landed beside the tracks.",
+      "{{hero}} reached the scale as a stranger tried to release its broken catch toward the train. The fighter seized the handle and held the stack while workers lifted crates to level ground. A worker retrieved the parcel from the rail bed before the train rounded the bend.",
+      "The parcel held a pair of worn shoes, sent from a parent to a child learning to run. It was handed to the family waiting at the station after the train stopped. The child put the shoes on before anyone could ask whether they fit."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the platform and cleared the freight scale.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the station and delayed the train.",
+      "draw": "The train arrived safely, and both teams carried the crates away from the tracks."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "Tiny maintenance robots tended an urban aqueduct whose rain gutters watered a rooftop nursery. {{heroPlayer}}’s technicians arrived when the robots began circling one dry junction; {{otherPlayer}}’s gardeners carried seedlings toward the roof. A single robot had found a gap too narrow for the others.",
+      "{{hero}} widened the inspection cover and found a tile wedged across the gutter. The specialist cleared it, then guided the robots through the restored channel without trapping the one beyond. Water reached the nursery as the gardeners set down their last tray of seedlings.",
+      "The smallest robot returned with a piece of the tile balanced on its body. It carried a painted green leaf, a fragment from an old roof sign. The gardeners set it beside the new seedlings while the robots resumed their quiet rounds."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians secured the aqueduct and restored the nursery supply.",
+      "heroLoses": "{{otherPlayer}}’s gardeners retained the roof and watered the seedlings by hand.",
+      "draw": "The water returned, and both groups watched the robots clear the junction."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A crater settlement used a slow-turning sky wheel to tell its night workers when dawn would reach the rim. {{heroPlayer}}’s survey team came after the wheel stopped; {{otherPlayer}}’s settlement crew feared the jam would leave a remote shift waiting in darkness. A narrow strip of reflected light remained fixed on a doorway.",
+      "{{hero}} cleared dust from the wheel’s bearings and found a small folded map beneath its housing. The specialist reset the mirror to send a dawn signal toward the remote shift, then opened the map. It showed the same doorway, with a handwritten note marking where hot drinks could be collected.",
+      "The waiting workers followed the returning beam to the settlement and found warm cups set out beside the door. One said the map had been drawn for their first winter there, when everyone got lost after dark. The wheel turned until sunlight replaced its signal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors secured the sky wheel and guided the remote shift home.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the mechanism and sent guides out on foot.",
+      "draw": "The workers returned safely, and both groups kept the folded map beside the wheel."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A natural-history museum built a mirrored passage to show visitors how a habitat looked from an animal’s height. {{heroPlayer}}’s guides came to clear it after an alarm; {{otherPlayer}}’s curators had counted one fewer visitor leaving than entering. Footsteps echoed from behind a panel that appeared to be a wall.",
+      "{{hero}} reached the panel as a stranger tried to wedge it shut. The fighter pulled the wedge free and held the hidden door while a guide led the missing visitor through. The visitor carried a sketchbook full of drawings of the passage, each mirror marked with the exit it reflected.",
+      "The curators used the sketches to place visible arrows at eye level for younger visitors. Before leaving, the artist drew one more picture: the hidden door open, with every guide and curator reflected together in its glass."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides secured the passage and found the missing visitor.",
+      "heroLoses": "{{otherPlayer}}’s curators retained the museum and closed the exhibit for repairs.",
+      "draw": "The visitor returned safely, and both groups added clearer exit signs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "At a spring kite festival, an automated wind board predicted that every kite would tangle over the same street. {{heroPlayer}}’s analysts came to check its sensors; {{otherPlayer}}’s festival stewards were already moving families away. One little kite had risen smoothly where the board showed the strongest gust.",
+      "{{hero}} compared the board with the kite’s line and discovered the sensor had been mounted in the lee of a new rooftop canopy. The specialist moved it into clear air and revised the safe launch area. The stewards shifted the festival to a broad field, where the children lifted their kites one by one.",
+      "From the field, the board’s old predicted tangle looked like a cluster of roofs with no wind above them. A child sent the little kite toward the open sky and laughed as its line stayed clear of every other one."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts secured the board and found a safe launch field.",
+      "heroLoses": "{{otherPlayer}}’s stewards retained the festival and grounded the kites for the day.",
+      "draw": "The kites flew safely, and both teams kept the corrected wind readings on display."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A district archive began playing an unfinished oral-history recording over its public address system. {{heroPlayer}}’s security escort accompanied an archivist to the console; {{otherPlayer}}’s librarians moved visitors into a quiet reading room. The voice stopped just before naming the place where a garden had once stood.",
+      "{{hero}} covered the console corridor while the archivist recovered the damaged final spool. A figure moved behind the shelving with a weapon, and the fighter held the passage until the spool was safe. Replayed carefully, the voice named a courtyard hidden behind the archive’s newer wall.",
+      "The librarians opened a rear door and found the courtyard overgrown but still catching afternoon light. A visitor recognized the speaker as a relative who had planted its first tree. They listened to the recording again beneath that tree, now taller than the wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the archive and preserved the full recording.",
+      "heroLoses": "{{otherPlayer}}’s librarians retained the console and closed the rear passage.",
+      "draw": "The voice was restored, and both groups visited the courtyard it described."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A public training arena had been turned into a temporary relief depot after a storm. {{heroPlayer}}’s escorts came to secure its upper tier; {{otherPlayer}}’s depot workers were passing supplies through the old athletes’ entrance. A young runner had gone back for an elderly spectator left above.",
+      "{{hero}} reached the stair as a stranger tried to drop its barrier across the runner’s path. The fighter forced it open and held the landing while the runner helped the spectator down. Behind them, rainwater flowed over the tier where spectators had once painted names for every competitor.",
+      "The runner found their own name almost washed away and traced it with a finger before leaving. At the depot entrance, the elderly spectator offered the runner a dry blanket. Supplies kept moving through the arena while the storm passed beyond its open roof."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the upper tier and cleared the arena safely.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the depot and closed the unsafe stairs.",
+      "draw": "The runner and spectator came down, and both teams kept supplies moving."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood planetarium closed during a school visit after a ceiling projector began showing two skies at once. {{heroPlayer}}’s public-safety team came to inspect it; {{otherPlayer}}’s school staff kept children beside the exit. One student insisted the second sky contained a star missing from the first.",
+      "{{hero}} opened the projection housing and found a second glass slide left in the lamp path. The specialist separated it from the current map and projected each sky in turn. The older slide showed a star chart drawn for the planetarium’s opening, complete with a handwritten dedication on its edge.",
+      "A teacher read the dedication to the children. It was addressed to anyone who found a new place in the sky to look. The student pointed again to the missing star, and the class drew their own chart before the projector was turned off."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the planetarium and restored the correct sky map.",
+      "heroLoses": "{{otherPlayer}}’s school staff retained the room and postponed the visit.",
+      "draw": "Both slides were saved, and the children finished their new chart together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rescue glider hung outside an orbital station’s docking ring with its pilot signaling through a frosted canopy. {{heroPlayer}}’s watch escorted a mechanic to the release controls; {{otherPlayer}}’s station operators warned that the ring was rotating out of alignment. The pilot’s last signal was a small circle drawn in condensation.",
+      "{{hero}} covered the access gantry while the mechanic adjusted the ring. A figure at the far controls raised a weapon, and the fighter held the approach until the glider could be drawn into the bay. Its canopy opened to reveal the pilot pointing toward a crack in the ring’s outer seal.",
+      "Operators repaired the seal before the next docking cycle. The pilot explained that the circle had meant the ring was turning around a damaged point, not that the glider was drifting. On a station window, a mechanic traced the same circle to teach the next watch where to look."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch secured the ring and brought the glider into the bay.",
+      "heroLoses": "{{otherPlayer}}’s operators retained the controls and delayed recovery until rotation stopped.",
+      "draw": "The pilot returned safely, and both groups repaired the cracked seal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Imperial Service",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "An underground library kept a small mushroom garden to clean the air in its deepest reading room. {{heroPlayer}}’s tunnel crew came after its ventilation fan slowed; {{otherPlayer}}’s librarians were guiding readers upward. The mushrooms had begun bending toward a thin shaft of light beneath the shelf.",
+      "{{hero}} traced the light to a forgotten service hatch and found its fan belt caught on a loose page of an old catalog. The specialist freed the belt and secured the page without tearing it. Air moved again, carrying the smell of damp earth through the reading room.",
+      "The recovered page described the garden when it was first planted, with notes from readers who had helped tend it. A librarian added the names of the tunnel crew to a new page. Readers returned to find the mushrooms upright beneath their shelf."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored ventilation and secured the library’s deepest room.",
+      "heroLoses": "{{otherPlayer}}’s librarians retained the room and closed it for repair.",
+      "draw": "The air cleared, and both groups kept the recovered catalog page with the garden records."
+    }
   }
 ]
