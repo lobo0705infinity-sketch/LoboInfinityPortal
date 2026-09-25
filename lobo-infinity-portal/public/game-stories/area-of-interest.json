@@ -9118,5 +9118,385 @@
       "heroLoses": "{{otherPlayer}}’s quarry crew cleared the main passage and led the worker out beneath its own watch.",
       "draw": "The worker came out safely, but unstable rock kept the chamber closed to both crews."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ridge beacon began sending orders in the voice of a commander who had died the previous winter. The messages pointed a supply column toward a closed mountain pass. {{heroPlayer}}’s trackers climbed the beacon steps to find its source; {{otherPlayer}}’s highlanders took the lower platform, ready to tear out the transmitter.",
+      "{{hero}} caught a defender at the narrow trapdoor beneath the beacon. The fighter forced past and found a speaking tube running from a hidden room into the transmitter housing. A fresh message began as they lifted its cover. Someone in the hidden room was reading the column’s location from a sheet still wet with ink.",
+      "The column was approaching the fork. Disabling the transmitter would stop the false orders, but the hidden reader might escape through a tunnel under the ridge. The highlanders below had found its other entrance. The fighter held the speaking tube, waiting to hear whether the reader knew the real road had been closed too."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s trackers silenced the false orders, stopped the column, and secured the hidden room.",
+      "heroLoses": "{{otherPlayer}}’s highlanders took the beacon and warned the column from the lower platform.",
+      "draw": "The column halted safely, but the reader escaped before either team could learn who sent the messages."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "At a mountain customs house, a set of scales began weighing every sack of seed grain twice. The ledgers showed a whole wagon missing from the count, though its wheel tracks ended at the locked shed. {{heroPlayer}}’s inspectors came through the trade road; {{otherPlayer}}’s hill guards held the shed door while farmers waited for their spring seed.",
+      "{{hero}} tested the scales with an empty sack and discovered a second pan concealed beneath the floor. The specialist followed its chain into the shed and found the missing wagon balanced on a lift over a disused cellar. A loose bolt dropped past their hand, and the wagon shifted toward the open shaft below.",
+      "Lowering the lift would bring the grain within reach but might break the last chain. The hill guards had a heavy rope ready, if the inspectors let them through the shed. The specialist held the ledger beside the lift handle as the waiting farmers counted the sacks they could see and the wagon moved again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors recovered the wagon and delivered the full seed allotment under customs seal.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the shed and brought the wagon down for the waiting farmers.",
+      "draw": "The grain reached the farmers, but the missing entries remained disputed at the customs house."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A fog machine left behind by a film crew began pumping a thick mist across a mountain infirmary’s only access road. An ambulance was due before sunset. {{heroPlayer}}’s escort sought the pump controls in a deserted shed; {{otherPlayer}}’s hill patrol controlled the road junction and thought the fog concealed a trap.",
+      "{{hero}} took a firing position beside the shed while a technician examined the machine. Fire from a stone wall struck the pressure tank, and the fighter answered to give the technician room to close a valve. The mist thinned on the road, revealing an overturned trailer and the missing film crew sheltering behind it.",
+      "The ambulance could squeeze past the trailer if it kept moving; stopping to collect the crew might block the road again. The hill patrol was already descending toward them, and the damaged tank continued to hiss. The fighter watched the technician reach for the final valve as the ambulance’s headlights appeared through the remaining fog."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort opened the road, recovered the film crew, and guided the ambulance through.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the junction and cleared the trailer before the ambulance arrived.",
+      "draw": "The ambulance passed, but both groups stayed at the broken machine to keep the road clear."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "objective",
+    "paragraphs": [
+      "New boundary stones appeared overnight across a sheep meadow, each engraved with a different village’s seal. No cart tracks led to them. {{heroPlayer}}’s survey crew brought a scanner to the meadow; {{otherPlayer}}’s shepherds guarded the original stone and refused to let it be moved until the copies were explained.",
+      "{{hero}} scanned the engravings and found thin layers of printed material beneath the moss. One false stone hid a portable fabricator, still warm, and its feed tube ran under the grass toward the old boundary. The specialist followed the tube to a sealed box just as the machine began printing another claim.",
+      "The box held the molds for both villages’ seals. Opening it could identify the forger, but the tube crossed the sheep’s pen and a sudden pull might bring the fence down. The shepherds approached with the real stone’s worn survey marks. The specialist held the tube still while a fresh slab rose from the ground."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew stopped the fabricator and restored the meadow boundary from the original marks.",
+      "heroLoses": "{{otherPlayer}}’s shepherds took the box and protected the old stone until both villages could witness it.",
+      "draw": "The false stones were removed, but the owner of the molds remained unknown and the boundary stayed under watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain chapel’s bell rang by itself whenever a traveler entered the pass below. The caretaker found a trail of wet footprints to the locked choir loft, though the roof had stayed dry. {{heroPlayer}}’s investigators climbed the rear stairs; {{otherPlayer}}’s highland wardens guarded the front door and wanted the bell stopped before dark.",
+      "{{hero}} met a defender on the loft’s cramped landing and fought through to the bell rope. The fighter pulled it aside, exposing a wire attached to a small pressure plate hidden beneath the floorboards. A second wire disappeared into a side room where the caretaker said the chapel had stored its emergency provisions.",
+      "Cutting the first wire would quiet the bell, but might release whatever the second kept closed. The wardens were close to the side room from the other stair. The fighter listened as another traveler crossed the pass; the bell stayed silent, and the pressure plate under the loft began to sink."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators disabled the hidden mechanism and kept the chapel’s supplies secure.",
+      "heroLoses": "{{otherPlayer}}’s wardens took the side room and made the bell safe for the pass travelers.",
+      "draw": "The bell stopped, but both teams sealed the loft when they could not trace the second wire."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A freight train stopped halfway across a high viaduct, its last car filled with timber needed to shore up a village school. One wheel had slipped off the rail. {{heroPlayer}}’s riggers arrived with a jack from the west; {{otherPlayer}}’s hill crew held the east approach and insisted the bridge could bear no more weight.",
+      "{{hero}} covered a rigger crawling beneath the tilted car. Gunfire hit the iron truss above them, and the fighter returned fire from behind a signal post while the rigger fitted the jack. The wheel lifted a finger’s width. Then a bolt dropped from the truss, and the car shifted toward the outer edge.",
+      "The jack needed a heavier base, but the only spare sleepers were stacked at the guarded east end. The hill crew was signaling that it had a safer plan from that side. The fighter could see the school’s timber through the car’s broken door as another bolt worked loose overhead."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers reset the wheel, moved the timber, and kept the viaduct open for repairs.",
+      "heroLoses": "{{otherPlayer}}’s hill crew secured the east approach and brought the car back onto the rails.",
+      "draw": "The timber came off safely, but both crews closed the viaduct until its trusses were rebuilt."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "At an old sawmill, a locked cabinet began issuing receipts for logs that had never arrived. Each receipt charged a different farmer for the same grove of trees. {{heroPlayer}}’s auditors came to the counting desk; {{otherPlayer}}’s woodland wardens blocked the loading bay, where someone had stacked freshly cut trunks.",
+      "{{hero}} opened the cabinet and found a mechanical printer connected to the mill’s weighing bridge. The specialist balanced an empty dolly on the bridge; the printer produced one more false receipt, pointing to a hidden counterweight under the floor. A quick inspection revealed a crawlspace with the real timber ledger at its end.",
+      "Pulling out the counterweight would end the fraud but might drop the bridge onto anyone in the crawlspace. The wardens were opening the bay to check the stacked wood. The specialist held the empty dolly still as footsteps sounded beneath the weighing platform, moving toward the ledger."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors recovered the ledger and corrected the false charges while holding the mill.",
+      "heroLoses": "{{otherPlayer}}’s wardens secured the timber and brought the mill’s records to the farmers.",
+      "draw": "The printing stopped, but the true ownership of the stacked trunks remained under joint investigation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A radio mast on a bare summit began carrying a shepherd’s song from three valleys at once. A research team claimed an unknown transmitter was buried beneath it; the hill wardens believed the mast had simply broken. {{heroPlayer}}’s surveyors climbed from the north while {{otherPlayer}}’s patrol held the stone shelter beside the aerial.",
+      "{{hero}} held the path as a surveyor tested the mast footing. Fire from the shelter struck the metal housing, and the fighter answered while the surveyor dug a dark receiver from the rock. It was receiving the song from below the summit. When the aerial turned, the receiver’s faint light swung toward a second hill.",
+      "The buried device could be carried away, but removing it would cut off the signal that might lead to the missing singer. The hill patrol was bringing a spade to the other side of the footing. The fighter heard the song pause for a breath, then resume with a verse none of the shepherds knew."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors kept the receiver and traced the new verse to its hidden source.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the summit and followed the signal from the shelter.",
+      "draw": "The song faded, leaving both teams with part of the bearing and the summit still contested."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A stone floodgate had held a mountain lake for generations. Its keeper found the control chamber open and a fresh score cut across the old waterline. {{heroPlayer}}’s expedition came to inspect the mark; {{otherPlayer}}’s highlanders guarded the raised causeway as rain swelled the lake behind it.",
+      "{{hero}} entered the gatehouse and seized a loose chain as a defender lunged for the release lever. The fighters struggled above the grinding gate, and the combatant pulled the chain tight enough to stop its downward slide. From the opposite window, the keeper saw that the score on the stone was a warning: the old wall had shifted overnight.",
+      "The gate could be opened to relieve the pressure, but water would fill the lower path where travelers were sheltering. Holding it shut might spare the path until they moved, if the wall lasted. The combatant kept the chain wrapped around a post as the keeper shouted for the highlanders to clear the causeway."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s expedition cleared the lower path, opened the gate safely, and held the control chamber.",
+      "heroLoses": "{{otherPlayer}}’s highlanders took the causeway and controlled the release after moving the travelers.",
+      "draw": "The water receded, but the damaged wall left the gatehouse under a shared emergency watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "During an eclipse, a glass lake showed the reflection of a road that did not exist along its shore. A cart driver followed the image and disappeared behind a ridge. {{heroPlayer}}’s observers brought instruments to the water; {{otherPlayer}}’s hill trackers searched the real road for the driver’s prints.",
+      "{{hero}} set an instrument at the lake’s edge and found a second landscape projected through the glass from a hidden lens. The specialist aligned it with the ridge and exposed a narrow service track concealed by the falling shadow. A distant lantern appeared where the driver had vanished, then blinked as though someone were asking for help.",
+      "The service track would be visible only while the eclipse lasted. The trackers knew a longer path across the ridge, but the driver’s cart might already be trapped on the short one. The specialist kept the instrument aligned with one hand and signaled toward the lantern with the other as daylight began to return."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers reached the cart and marked the concealed track before the reflection vanished.",
+      "heroLoses": "{{otherPlayer}}’s trackers found the driver by the ridge path and secured the lake approach.",
+      "draw": "The driver returned, but the hidden track disappeared before either team could establish its route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A ruined map room on a high plateau contained a wall of dark glass showing unfamiliar mountain passes. Someone had scratched a fresh route across its surface and marked a shelter that the hill patrol still used. {{heroPlayer}}’s cartographers entered the room; {{otherPlayer}}’s highlanders held the adjacent stair to prevent anyone following the new mark.",
+      "{{hero}} kept the stair in view as a cartographer measured the glass. Fire cracked the frame, and the fighter answered from the doorway while the cartographer pried away a loose panel. Behind it was a second map, cut into the stone before the glass had been installed, showing a path beneath the shelter rather than through it.",
+      "Removing the panel would reveal the full path but leave the glass wall unsupported above the cartographer. The highlanders said the shelter was occupied tonight, and someone was already moving toward its lower entrance. The fighter watched a new light appear behind the glass, directly over the mark for the occupied room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s cartographers secured the map room and warned the shelter before reaching the hidden path.",
+      "heroLoses": "{{otherPlayer}}’s highlanders took the room and closed the path beneath their occupied shelter.",
+      "draw": "The shelter was warned, but the glass wall fell and buried the route before either party could claim it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A root cellar beneath a shepherd’s cottage started growing pale moss shaped like the surrounding hills. One mound held a dark gap where the cottage’s well should have been. {{heroPlayer}}’s field observers came to examine the growth; {{otherPlayer}}’s hill watch arrived with the shepherd, who said his sister had gone down for water.",
+      "{{hero}} traced the missing well on the living map and located a blocked side shaft behind the shelves. The specialist eased the shelves aside and heard the sister answer from below. As the wall opened, the moss began to curl away from a second gap that pointed toward the shepherd’s house, as though the ground there were moving too.",
+      "The sister could climb the side shaft if it was cleared now, but someone needed to keep watch over the new gap beneath the house. The hill watch had brought a rope and a lantern. The specialist kept a hand on the shelves as the cellar floor gave a low crack, and the shepherd called his sister’s name again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers opened the shaft, brought the sister up, and secured the cottage before it shifted.",
+      "heroLoses": "{{otherPlayer}}’s watch recovered the sister and moved the shepherd from the threatened house.",
+      "draw": "Both escaped, but the cottage settled over the map and neither party could hold the cellar."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A village registry listed a stranger as the owner of every empty room, including the old assembly hall. The person had never arrived, yet a key had been cut for each door. {{heroPlayer}}’s investigators came for the key press; {{otherPlayer}}’s highlanders occupied the hall while displaced families waited outside for shelter.",
+      "{{hero}} examined the registry and matched the false entries to a single stamp worn at one corner. The specialist found it in the basement press, set beside a stack of unsigned housing permits. Upstairs, the highlanders discovered that the hall’s storeroom door had already been locked from within, and a faint tapping came through it.",
+      "The press could void the false keys, but turning its lever would stamp the unsigned permits as well. Opening the storeroom first might reveal who made the entries, while the families remained in the cold. The specialist held the worn stamp against the oldest permit as someone inside the locked room asked for a light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators exposed the false entries and reopened the hall for the waiting families.",
+      "heroLoses": "{{otherPlayer}}’s highlanders secured the hall and issued rooms after taking custody of the press.",
+      "draw": "The families found shelter, but the stranger’s name remained on the registry under joint review."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A survey camera frozen into a mountain ledge sent out its first image in years: a bright doorway in a wall of ice. The hill patrol said there was no doorway there when it passed at dawn. {{heroPlayer}}’s retrieval crew sought the camera’s memory unit; {{otherPlayer}}’s highlanders watched the ice wall from a neighboring ridge.",
+      "{{hero}} covered a technician edging across the ledge. Gunfire from the ridge struck the ice beside the camera, and the fighter answered while the technician removed the memory unit. The next image showed the doorway opening outward, with a figure carrying something toward the slope. Then a crack ran between the ledge and the frozen wall.",
+      "The technician could save the camera or go after the figure, not both. The highlanders were already descending toward the wall by another route. The fighter saw a fresh track in the snow and heard a dull knock from behind the ice as the camera prepared its final exposure."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew kept the images and reached the hidden doorway before the ledge fell.",
+      "heroLoses": "{{otherPlayer}}’s highlanders secured the ice wall and brought the figure out by their descent route.",
+      "draw": "The last image survived, but the doorway vanished when the ice broke away from the ledge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The ceremonial forge at a mountain fair was meant to light a signal fire for the villages beyond the pass. Its bellows had been strapped shut, and the unlit brazier was already being carried up the ridge. {{heroPlayer}}’s escort reached the smithy from the fairground; {{otherPlayer}}’s highland guard controlled the lane to the signal platform.",
+      "{{hero}} caught a defender at the forge door and forced a way to the bellows in a tight struggle among the cold tools. The fighter cut the straps, and the smith pumped a first breath of air into the coals. A runner returned from the ridge: the brazier had arrived, but its bearer could not light it against the wind.",
+      "The coals could be carried up in a covered pan, if someone held the lane open long enough. The highland guard claimed it had another way to light the platform from above. The fighter lifted the pan while sparks caught in its lid and listened for the first signal call from the far village."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort carried the coals up the lane and lit the signal for the distant villages.",
+      "heroLoses": "{{otherPlayer}}’s guard secured the platform and sent the signal from its own fire.",
+      "draw": "The signal burned, but neither guard kept the forge once the fair returned to its work."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "An abandoned mine began exhaling warm air through a courthouse floor during a hearing about who owned the mountain. The judge stopped proceedings when a miner identified the smell of fresh lantern oil. {{heroPlayer}}’s inspectors came through the cellar; {{otherPlayer}}’s hill guard kept the court above as witnesses gathered around the crack.",
+      "{{hero}} found a blocked vent beneath the judge’s bench and traced it to a side gallery shown on no mine plan. The specialist opened an inspection plate and uncovered a miner’s lamp burning on a ledge beyond. It had been left beside a row of survey pegs planted from inside the disputed hill.",
+      "Following the pegs might settle the hearing, but removing the inspection plate had let the mine’s air into the crowded court. The judge wanted the room cleared; the hill guard said it could hold the door while the inspectors went down. The specialist held the lamp up to the pegs and read a date older than either claim."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the gallery and presented the old survey line to the court.",
+      "heroLoses": "{{otherPlayer}}’s guard took the gallery and brought the dated pegs out for the hearing.",
+      "draw": "The court evacuated safely, but the gallery was sealed before anyone could establish the line’s full route."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A giant tracking dish on the moor turned toward a mountain rescue aircraft that had gone missing in clear weather. Its operator said the dish was following the plane’s emergency tag, though the signal came from inside the fenced compound. {{heroPlayer}}’s recovery detail entered by the south gate; {{otherPlayer}}’s hill patrol held the control tower.",
+      "{{hero}} covered an operator crossing to the dish base as fire from the tower raked the fence. The fighter answered until the operator opened a buried junction box. Inside lay the missing plane’s tag, wired to a repeater pointing beyond the mountain. The repeater clicked twice, then showed a second signal from the far valley.",
+      "If the operator removed the tag, the false signal would stop, but the repeater might lose the plane’s real position. The hill patrol could turn the dish from the tower if it took over the controls. The fighter watched the far signal blink while the operator reached for the tag’s loose wire."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail held the dish and traced the aircraft to the far valley.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the controls and followed the plane’s second signal.",
+      "draw": "The false tag was isolated, but both teams shared the dish while the aircraft search continued."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A road tunnel lost its lights while a wedding procession was halfway through. An old evacuation map showed an exit on the ridge, but that door had been bricked up years ago. {{heroPlayer}}’s engineers came to the west portal with portable lamps; {{otherPlayer}}’s highland volunteers entered from the east to lead the travelers back.",
+      "{{hero}} located the failed junction behind a wet service hatch and restored one row of lamps. Their light revealed a fresh crack across the tunnel roof and a narrow maintenance passage the map had omitted. The specialist marked it with reflective tape as the procession’s last cart reached the damaged section.",
+      "The new passage could take people on foot, but not the cart or its elderly passengers. Keeping the main tunnel lit might allow the cart through before the roof shifted; moving everyone into the passage would leave it behind. The specialist held a lamp beneath the crack while the volunteers called from the far portal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers led the procession out and kept the tunnel closed for safe repairs.",
+      "heroLoses": "{{otherPlayer}}’s volunteers brought the travelers and their cart through the east portal.",
+      "draw": "The people escaped, but the cart stayed inside and both crews guarded the tunnel until dawn."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A potter’s kiln on the mountain edge fired a set of tiles bearing a map of the old footpaths. The potter had promised the tiles to both villages, and each sent an escort to collect them before a heavy rain. {{heroPlayer}}’s party reached the kiln door; {{otherPlayer}}’s hill guard came by the path the map was meant to mark.",
+      "{{hero}} faced a defender in the kiln’s narrow loading bay and wrestled past the open door. The fighter caught a rack of cooling tiles before it fell into the coals. One tile showed a culvert running beneath the mountain path, where the rain was already pooling, and the potter said its old cover had been removed.",
+      "The tiles were too hot to carry all at once. The hill guard knew the shortest way to the culvert; the potter could identify which tile marked its remaining cover. The fighter held the rack steady as the first drops hissed on the kiln roof and a messenger called that the path had begun to sink."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party carried the map to the path and closed the dangerous crossing before the rain.",
+      "heroLoses": "{{otherPlayer}}’s guard secured the kiln and used the tiles to warn both villages.",
+      "draw": "The crossing was marked, but the villages divided the hot tiles before either could claim the path."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A migratory flock stopped circling a hilltop fire tower and gathered on its empty signal frame. The tower keeper said the birds returned every year to a nesting cliff that had vanished behind a new quarry fence. {{heroPlayer}}’s trackers came to follow the flock; {{otherPlayer}}’s hill watch controlled the tower and feared the birds would scatter if fighting reached it.",
+      "{{hero}} held position beside the tower stairs while a tracker checked the keeper’s old field notes. Fire from the lower fence struck a rung, and the fighter answered until the tracker could reach the frame. There, a ring from one bird’s leg matched a mark on the notes beside a photograph of a cave in the fenced cliff.",
+      "The flock would leave at dusk. The cave entrance might be visible from the tower if its signal lamp turned toward the quarry, but the hill watch wanted the birds left undisturbed. The fighter watched the flock lift together and saw one bird fly low through a gap in the fence."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s trackers found the cave and secured the route before the flock moved on.",
+      "heroLoses": "{{otherPlayer}}’s watch kept the tower and guided the birds back to the cliff from above.",
+      "draw": "The flock reached its nesting cliff, but both parties left the cave unclaimed to protect the birds."
+    }
   }
 ]
