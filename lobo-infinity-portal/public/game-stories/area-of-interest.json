@@ -12538,5 +12538,385 @@
       "heroLoses": "{{otherPlayer}}’s investigators secured the far side and guided the patients by the footpath.",
       "draw": "The patients reached the clinic, but both teams closed the bridge until its brace was corrected."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An abandoned courier warehouse began receiving drones addressed to people who no longer lived in the district. The latest package carried an address for the building itself. {{heroPlayer}}’s signal crew came through the loading yard; {{otherPlayer}}’s investigators watched the roof vent where the drones disappeared.",
+      "{{hero}} covered a technician reaching the conveyor controls. Shots struck the warehouse shutters, and the fighter answered while the technician caught the newest package. Inside was a key to a parcel locker beneath the floor, and the conveyor had begun moving toward a door the warehouse plans did not show.",
+      "The crew could stop the conveyor and open the locker or let the package travel to its intended recipient. The investigators had found a narrow stair behind the roof vent. The fighter watched the key turn in the technician’s hand as a fresh drone landed on the moving belt."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the conveyor and traced the packages to their hidden destination.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the warehouse and opened the locker from the hidden stair.",
+      "draw": "The packages stopped arriving, but both teams kept the unexplained door under watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A rehearsal stage kept lowering its curtain during the final act, even after its machinery was unplugged. The performers found a note pinned backstage naming a missing member of the company. {{heroPlayer}}’s stage crew entered through the prop room; {{otherPlayer}}’s investigators guarded the audience aisle where the missing person had last been seen.",
+      "{{hero}} fought a defender at the narrow fly-rail and kept the curtain rope from slipping through their hands. As the fighter secured it, a hidden trap opened below the stage. A light shone into the space, revealing a coat with the missing performer’s name sewn into its lining.",
+      "The crew could descend through the trap, but the curtain would fall unless someone held the rope. The investigators had another route through the orchestra pit. The fighter heard footsteps below as the performers stopped speaking and the theater fell quiet around the still-open hatch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew held the stage and found the missing performer beneath it.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the orchestra pit and brought the performer out.",
+      "draw": "The coat was recovered, but both teams kept searching after the footsteps faded."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cargo crane above a river terminal lifted an empty container that began tapping from within. Its manifest listed a shipment delivered a week earlier, though nobody at the terminal remembered unloading it. {{heroPlayer}}’s riggers reached the crane platform; {{otherPlayer}}’s investigators held the terminal office with the original delivery papers.",
+      "{{hero}} covered a welder crossing to the suspended container. Fire struck the platform railing, and the fighter answered while the welder cut through its seal. Inside was a radio playing a message recorded in the terminal office, and beneath it a fresh bootprint in the otherwise empty floor.",
+      "The container could be brought down for inspection, but its swaying load hung directly over the office. The investigators offered a safe landing space on the far dock. The fighter watched the welder clip in a guide line as the radio repeated a warning about the crane’s next lift."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers landed the container and traced its unexplained recording.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the far dock and matched the recording to its source.",
+      "draw": "The container landed safely, but no one could explain the fresh print inside."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A private archive released the same sealed identity file to two separate requesters, each claiming to be its subject. The original had been locked in an escrow cabinet since childhood. {{heroPlayer}}’s auditors took the reading desk; {{otherPlayer}}’s investigators held the side door where one requester had been told to wait.",
+      "{{hero}} compared the copies and found a faint watermark missing from both. The specialist opened the cabinet to find its original still intact, with a fresh handwritten page tucked inside. The page named a third person and gave the time of an appointment at the archive’s back window that afternoon.",
+      "The auditors could verify the original now or watch the window to learn who arranged the copies. The investigators had a clear line to the back courtyard. The specialist held the original beneath the desk lamp as someone outside knocked three times against the glass."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors secured the original and identified who made the false copies.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the courtyard and met the third requester.",
+      "draw": "All three files remained under seal while the claimants waited for a hearing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A navigation beacon on a salt flat began naming every person who approached it, then repeated a name nobody recognized. The old survey team had left no log of installing it. {{heroPlayer}}’s searchers came along the raised track; {{otherPlayer}}’s investigators held the beacon hut and asked for its memory core.",
+      "{{hero}} covered a technician crossing the open salt. Fire struck a metal mast, and the fighter answered while the technician found a recording cylinder below the beacon. The unknown name was etched on its lid. Inside, the cylinder carried a route to a second hut standing beyond the edge of the mapped flat.",
+      "The technician could remove the cylinder or leave it spinning while the searchers followed the route. The investigators had a faster approach to the unmapped hut from the far side. The fighter heard the beacon repeat the unknown name again as a lamp lit in the distance."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers held the beacon and reached the second hut with the cylinder intact.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the core and followed the distant lamp.",
+      "draw": "The light went out before either party reached it, leaving the name unexplained."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old fort’s cistern began filling with warm water despite a month without rain. The garrison feared a pipe beneath its cellar had been opened from outside. {{heroPlayer}}’s expedition came to the courtyard; {{otherPlayer}}’s investigators held the cellar door with a drawing of the forgotten pipe network.",
+      "{{hero}} struggled with a defender at the cistern hatch and forced room for an engineer to look inside. A sealed message cylinder floated against the grate, its wax impressed with the fort’s own mark. As the engineer reached for it, the waterline climbed over a second opening in the stone.",
+      "The expedition could pull out the message and close the hatch or open the second passage before it flooded. The investigators had a dry stair to the lower pipe, but needed the courtyard gate. The fighter held the hatch as a hollow knock sounded through the rising water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s expedition secured the cistern and recovered the message without flooding the fort.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the lower pipe and traced the water to its source.",
+      "draw": "The message survived, but both groups sealed the flooded passage for a later search."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A rain observatory showed a reflection of an empty laboratory where its own instrument room ought to be. The image appeared only when the glass roof was wet, and vanished whenever the rainfall stopped. {{heroPlayer}}’s observers brought a watering line; {{otherPlayer}}’s investigators held the dry stair beneath the instrument room.",
+      "{{hero}} adjusted the roof spray and found a second chamber mirrored behind the rain gauge. The specialist marked its outline on the floor, then heard a voice from below the marked spot asking for the water to stop. The image began fading even though the roof was still wet.",
+      "The observers could keep the spray running to hold the chamber’s position, but the water was spilling toward the old electrical panels. The investigators had found a maintenance hatch below. The specialist held the hose while the voice called again, closer to the stair this time."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers found the mirrored chamber and reached the voice safely.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the hatch and brought its occupant up the dry stair.",
+      "draw": "The voice was heard, but the chamber’s outline vanished before either party could open it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A meteorite displayed in a memorial garden began focusing sunlight through a crack in its case. Its bright line pointed toward a locked crypt beneath the far wall. {{heroPlayer}}’s researchers entered from the garden path; {{otherPlayer}}’s investigators guarded the crypt gate, certain the light had moved since morning.",
+      "{{hero}} covered a researcher examining the case. Fire struck a stone bench, and the fighter answered while the researcher tilted the meteorite slightly. A second line appeared, revealing the crypt’s old ventilation grate. From behind the grate came a gust of cool air and the smell of fresh paint.",
+      "The researchers could preserve the light’s alignment or open the grate to see who had entered the crypt. The investigators had a key to the gate, but the lock looked newly replaced. The fighter watched both lines of sunlight move as the afternoon shade approached the garden wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers secured the meteorite and opened the marked grate.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the crypt gate and discovered who had changed its lock.",
+      "draw": "The garden remained safe, but the light faded before the crypt’s second entrance was found."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "The leaves of an abandoned treehouse grew back in a pattern matching the footprints beneath it. One trail climbed the trunk and did not return. {{heroPlayer}}’s field observers reached the lower branches; {{otherPlayer}}’s investigators guarded the ladder, where a child’s satchel hung from a rung.",
+      "{{hero}} followed the leaf pattern to a hollow in the trunk and found a sealed compartment containing a folded trail map. The specialist opened it just enough to see a path to a second treehouse beyond the fence. A bell rang from that direction, and the living leaves changed their pattern as though someone had moved.",
+      "The observers could follow the new trail or keep the map where the leaves might update it again. The investigators had a route through the fence but no view of the second treehouse. The specialist held the map against the trunk while the satchel’s owner called from somewhere above."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers traced the living map and found the missing climber.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the ladder and reached the second treehouse.",
+      "draw": "The satchel was returned, but the leaves hid the new trail before either group could map it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "An automated transit junction began sending every shuttle to the same disused platform. A traveler had boarded one of them before anyone noticed the wrong signs, and their luggage was still aboard. {{heroPlayer}}’s traffic analysts reached the controller; {{otherPlayer}}’s investigators held the platform entrance while the traveler’s family waited nearby.",
+      "{{hero}} checked the route table and found a forgotten platform number inserted between two current stops. The specialist corrected it, bringing the traveler’s shuttle back into contact. Then the disused platform’s lights came on and another voice answered over the same channel, asking why no one had arrived.",
+      "The analysts could bring the shuttle directly home or route it briefly through the old platform to find the other speaker. The investigators had a guarded stair to the old stop. The specialist watched two arrival times appear on the controller for the same single vehicle."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts returned the traveler and traced the second voice from the controller.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the old platform and brought both callers to safety.",
+      "draw": "The traveler came home, but the old stop stayed lit without an arriving vehicle."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A radio tower began broadcasting directions to a caravan that had gone missing on the plains. The message named a well no current chart showed, along with a warning to bring water. {{heroPlayer}}’s analysts approached its transmitter room; {{otherPlayer}}’s investigators held the outer fence, where fresh wagon ruts crossed the dirt.",
+      "{{hero}} covered a technician climbing to the tower console. Fire chipped the concrete beside the door, and the fighter answered while the technician found a route card caught in the feed. It showed the unknown well and a second stop farther south, with a hurried mark beside the caravan’s name.",
+      "The analysts could transmit the new route to searchers now or keep the tower listening for another message. The investigators had followed the ruts toward the southern stop. The fighter watched the technician hold the card near the microphone as a faint voice returned to the speaker."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts located the caravan and kept the tower broadcasting its safe route.",
+      "heroLoses": "{{otherPlayer}}’s investigators followed the wagon ruts and brought the travelers home.",
+      "draw": "The route was shared, but both teams lost the signal before reaching the marked well."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A stone bridge carried a pilgrimage over an aqueduct that had recently run dry. An inscription under the parapet named a hidden source in the hills. {{heroPlayer}}’s escort reached the central arch; {{otherPlayer}}’s investigators held the far end, where a pilgrim had found a loose stone.",
+      "{{hero}} fought a defender beside the parapet and held them back while a mason lifted the stone. Beneath it lay a small gate key and a sketch of a channel feeding the aqueduct. A pilgrim called that water had begun sounding under the bridge again, though the stone trough was still empty.",
+      "The escort could follow the sketch uphill or open the gate beside the bridge to see what was coming. The investigators had the aqueduct’s old survey book at the far end. The fighter held the key as a first thin stream appeared in the dry trough below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort found the source and kept the bridge open for the pilgrims.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the gate and restored the aqueduct from its survey.",
+      "draw": "The water returned, but both parties left the source under joint protection."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A traveling court reached a ferry landing with a sealed evidence trunk. Its case number had been changed while the boat was still on the river. {{heroPlayer}}’s inspectors entered the dock office; {{otherPlayer}}’s investigators guarded the ferry, where the only witness refused to come ashore.",
+      "{{hero}} compared the case number to a second mark beneath the trunk’s handle and found an older hearing recorded in the dock ledger. The specialist turned to that page as the witness shouted that someone had opened the office window during the crossing. Wet footprints led from the window toward an unused storage shed.",
+      "The inspectors could follow the tracks or keep the trunk beside the witness until its seal was verified. The investigators had eyes on the shed from the ferry. The specialist held the ledger open to the older case as a key turned in the shed’s lock."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the evidence and identified who changed its number.",
+      "heroLoses": "{{otherPlayer}}’s investigators held the ferry and brought the witness through the hearing.",
+      "draw": "The trunk remained sealed while both parties traced the wet footprints."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A pilot’s distress signal arrived from a reconnaissance drone instead of its aircraft. The drone had landed in an empty schoolyard with its camera pointed at a locked shed. {{heroPlayer}}’s flight detail approached by the fence; {{otherPlayer}}’s investigators held the school doors after children reported hearing someone inside.",
+      "{{hero}} covered a mechanic recovering the drone. Fire struck the fence posts, and the fighter answered while the mechanic replayed its final image. The pilot had stood beside the shed only minutes earlier, carrying a bright orange panel. A knock sounded from within as the camera continued recording an empty doorway.",
+      "The mechanic could open the shed now or trace the drone’s route to see whether the pilot had left through another gate. The investigators had a key from the school caretaker. The fighter watched the orange panel appear for one frame on the live camera, then vanish behind the shed wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail found the pilot and secured the drone’s full flight record.",
+      "heroLoses": "{{otherPlayer}}’s investigators opened the shed and brought the caller to safety.",
+      "draw": "The shed was empty when opened, leaving both groups with only the drone’s images."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A miners’ warning lamp lit over a sealed tunnel although the shafts had been abandoned for years. A crowd had gathered at the entrance to ask whether someone was trapped within. {{heroPlayer}}’s engineers brought a portable meter; {{otherPlayer}}’s investigators held a side passage the old plans left unmarked.",
+      "{{hero}} checked the lamp circuit and found it powered by a small battery hidden beneath the entrance step. The specialist traced its wire toward the side passage, where fresh dust lay on the floor and a muffled voice named a miner missing long before the shafts closed.",
+      "The engineers could open the sealed tunnel or follow the wire into the side passage without telling the crowd what they had heard. The investigators had already placed a lantern at that second entrance. The specialist held the meter against the wall as its needle moved with each whispered word."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers opened a safe route and traced the warning lamp to its source.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the side passage and found who had powered the signal.",
+      "draw": "The tunnel stayed sealed while both teams kept listening for the voice beneath it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "In a walled orchard, a row of prayer ribbons began twisting toward a path that had been bricked up. A gardener reported a visitor’s footsteps there after the evening bell. {{heroPlayer}}’s custodians came through the east gate; {{otherPlayer}}’s investigators held the arch leading to the old wall.",
+      "{{hero}} fought a defender at the narrow arch and kept the path open for a gardener carrying a lantern. The fighter pulled a loose ribbon from the wall and found a key tied at its end. Behind the bricks, a small wind chime sounded and someone called for the orchard gate to stay open.",
+      "The custodians could use the key on the wall’s concealed lock or follow the voice around to a service door outside the orchard. The investigators knew that second route. The fighter held the ribbon against the evening wind as a shadow crossed the crack between two bricks."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians opened the old path and found the missing visitor.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the service door and brought the visitor out.",
+      "draw": "The voice stopped, leaving both groups guarding the newly opened wall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A clock tower relayed a dispatch by striking its bell in an unfamiliar rhythm. The message seemed to come from an abandoned postal route across the ridge, closed years before the bell was installed. {{heroPlayer}}’s listeners reached the tower floor; {{otherPlayer}}’s investigators held the stair with the old route maps.",
+      "{{hero}} covered a signaler climbing toward the bell. Fire struck the clock face, and the fighter answered while the signaler found a small hammer tied to a wire from the attic. The wire led through a broken window toward the ridge, where a distant lamp began flashing in time with the bell.",
+      "The listeners could sever the wire to stop the bell or leave it sounding while they followed the lamp. The investigators had a safer descent from the attic and could see the ridge path. The fighter watched the hands of the damaged clock cross midnight as the lamp flashed again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s listeners traced the dispatch and secured the tower and its signal.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the attic and followed the old postal route.",
+      "draw": "The bell fell silent, but both teams kept the route maps for another search."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "Paper boats appeared overnight in a canal beside the municipal garden, each carrying a word from a missing letter. The current led toward a locked waterworks building. {{heroPlayer}}’s guides arrived at the garden landing; {{otherPlayer}}’s investigators held the bridge where the canal passed out of sight.",
+      "{{hero}} collected the boats in order and pieced together a warning about a pump below the waterworks. The specialist opened a service chart and found a dry maintenance ledge running along the canal. As they marked it, another boat emerged from the locked building with a fresh word written in wet ink.",
+      "The guides could cross the maintenance ledge to the building or keep collecting boats until the full message appeared. The investigators had a key to the bridge gate but no access to the ledge. The specialist held the newest word against the chart as the pump began to thrum under the water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides reached the pump and recovered the complete letter.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the waterworks and traced the boats from the bridge.",
+      "draw": "The pump stopped safely, but the missing letter remained unfinished in both teams’ hands."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "An abandoned weather archive grew a ring of moss around one file cabinet while the rest of the building stayed dry. Its records covered a season when the nearby valley had been evacuated without an explanation. {{heroPlayer}}’s botanists came to examine the growth; {{otherPlayer}}’s investigators guarded the archive door.",
+      "{{hero}} lifted a strand and found a fine root leading through the cabinet lock. The specialist opened it to a bundle of maps, one damp and marked with the location of a buried shelter. A fresh drop fell from the ceiling onto the map, though the roof above it had no hole.",
+      "The botanists could carry the damp map outside, risking its fragile ink, or follow the root to see whether the shelter was still connected to the archive. The investigators had a dry case ready. The specialist held the map level as another drop fell directly onto the shelter mark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists preserved the map and found the hidden shelter beneath the valley.",
+      "heroLoses": "{{otherPlayer}}’s investigators took the cabinet and secured its weather records.",
+      "draw": "The map survived, but both parties left the archive’s unexplained water source unopened."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A freight train stopped at a border siding during a lightning storm. Its sealed car held relief blankets, but a dispatch nailed to the door ordered it sent back toward the storm. {{heroPlayer}}’s hired guards reached the siding; {{otherPlayer}}’s investigators occupied the station office with the original route book.",
+      "{{hero}} covered a conductor crossing the wet platform. Shots struck the signal board, and the fighter answered while the conductor opened the sealed car. Beneath the blankets lay a small generator already running, its cable leading through the floor to a light beneath the tracks.",
+      "The guards could uncouple the car and investigate the light, or move the blankets toward the families waiting inland before the storm worsened. The investigators had located an old underpass on the route book. The fighter watched the hidden light flicker as the train’s engine began to warm."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards delivered the blankets and traced the generator’s hidden cable.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the siding and followed the light into the underpass.",
+      "draw": "The relief cargo stayed safe, but both sides kept the car at the station until the storm passed."
+    }
   }
 ]
