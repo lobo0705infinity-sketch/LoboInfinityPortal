@@ -3038,5 +3038,385 @@
       "heroLoses": "{{otherPlayer}}’s officers retained manual control while the engineers withdrew to test another map.",
       "draw": "Everyone crossed safely under a human guide; both groups left the automated directions off for the day."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood archive began sending residents notices that their buildings had never existed. {{heroPlayer}}’s records team came to restore the addresses; {{otherPlayer}}’s city guards held the street while families waited with keys to homes missing from the official map. The archive printer kept producing blank deeds for the same block.",
+      "{{hero}} found an obsolete municipal robot still sorting the archive’s basement cards. The specialist traced its route and discovered a box labeled for a demolished district had been placed among current records. Inside lay photographs of the supposedly missing homes, each with a newer handwritten address on its back.",
+      "The guards prepared to clear the building as {{hero}} carried the box upstairs. A resident recognized her front door in a photograph and held it beside her key. The robot returned for another card, stopping when the specialist showed it a deed with the correct street number."
+    ],
+    "endings": {
+      "heroWins": "The addresses returned, and {{heroPlayer}}’s team kept the archive open for the residents.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the archive while the records team left with the misplaced box.",
+      "draw": "Both groups restored the street on paper, but the public map still showed an empty block."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old aqueduct crossed the city plaza above a memorial procession. {{heroPlayer}}’s honor guard came to carry a banner beneath it; {{otherPlayer}}’s security detail had closed the plaza after a masonry inspection. The procession was already gathering at the gate when a stone fell into the empty basin.",
+      "{{hero}} met a defender at the narrow walkway that led to the aqueduct’s control hatch. The fighter forced a passage at arm’s length without striking the crumbling parapet. At the hatch, a loose chain held the cracked arch against a temporary brace placed there before the plaza was closed.",
+      "The chain slipped as the procession began to sing below. {{hero}} braced the hatch and called for the crowd to move back while workers secured the support from the other side. The banner waited folded at the gate, and the first row of mourners could see the fighter holding the arch steady."
+    ],
+    "endings": {
+      "heroWins": "The arch held, and {{heroPlayer}}’s guard carried the banner safely across the plaza.",
+      "heroLoses": "{{otherPlayer}}’s detail kept the plaza closed while the procession found another route.",
+      "draw": "The mourners gathered outside the gate as both teams worked through the night to secure the arch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A public evidence room contained the final recording from a bridge collapse, but its custody seal bore a date after the bridge was rebuilt. {{heroPlayer}}’s investigators came to examine the original; {{otherPlayer}}’s civic officials held the room ahead of an anniversary ceremony. Survivors wanted to hear what the recording actually said.",
+      "{{hero}} compared the seal to the room’s entry ledger and found it had been replaced during a power outage. The specialist copied the untouched audio beneath a conservation hood. Under the sound of the collapse came a voice calling for workers to leave the bridge several minutes before the official warning.",
+      "The anniversary guests arrived while {{hero}} carried the copy toward the hearing desk. An official asked that the recording remain sealed until the ceremony ended, but a survivor was standing beside the desk with a photograph of the person whose voice they had recognized."
+    ],
+    "endings": {
+      "heroWins": "The survivors heard the warning, and {{heroPlayer}}’s investigators preserved the recording for review.",
+      "heroLoses": "{{otherPlayer}}’s officials retained the room while the investigators left with their copy.",
+      "draw": "The recording was played once; both parties agreed to keep its original under joint custody."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A space elevator’s transfer deck stopped with a passenger car suspended just above the station floor. {{heroPlayer}}’s dock patrol came to open a rescue path; {{otherPlayer}}’s facility guards held the deck while technicians inspected the traction cable. The passengers could see the floor but could not reach it.",
+      "{{hero}} covered the deck when a figure moved to release the car’s emergency brake before the rescue lift was ready. The fighter fired into an empty guardrail behind them and kept the brake engaged. A technician found the cable wound around a dropped luggage frame that had become lodged in the machinery.",
+      "The rescue lift climbed toward the car while {{hero}} held the platform clear. From the passenger window, a child passed out a scarf to mark the frame’s exact position. The technician pulled on it gently, and the traction cable moved for the first time since the car had stopped."
+    ],
+    "endings": {
+      "heroWins": "The passengers reached the deck, and {{heroPlayer}}’s patrol held the elevator for repairs.",
+      "heroLoses": "{{otherPlayer}}’s facility guards took the rescue lift and kept the dock closed.",
+      "draw": "The car emptied safely, but both groups left the traction system stopped until the frame was removed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A night museum reported a visitor trapped inside its new planetarium exhibit after a citywide blackout. {{heroPlayer}}’s search team entered through the loading bay; {{otherPlayer}}’s guards held the main doors while a crowd waited outside. The exhibit projected stars even without power, slowly rotating toward a painted exit that did not exist.",
+      "{{hero}} covered the dark hallway as a figure moved to shut a fire door on the search team. The fighter fired into the door’s empty closer mechanism, leaving it open while a rescuer followed the trapped visitor’s voice. Behind the painted exit was a maintenance panel with scratches on its inner side.",
+      "The rescuer pulled the panel free and found the visitor in a narrow service space. {{hero}} held the hallway clear as they emerged, blinking into the starlight that still crossed the ceiling. The visitor said the painted exit had opened for a moment just before the blackout."
+    ],
+    "endings": {
+      "heroWins": "The visitor reached the street, and {{heroPlayer}}’s team kept the museum open for a final sweep.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the exhibit and directed the evacuation themselves.",
+      "draw": "The visitor escaped; both teams closed the museum until its unexplained projection ended."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A riverside theater displayed costumes from a performance canceled generations earlier. {{heroPlayer}}’s visitors came for a ceremonial mask kept backstage; {{otherPlayer}}’s museum detail guarded the collection during a charity rehearsal. A performer discovered that the missing final scene was written inside the mask.",
+      "{{hero}} reached the narrow backstage bridge as a defender stepped across it to block the costume room. The fighter met them at arm’s length, careful not to send either of them into the orchestra pit. The mask slipped from a performer’s hands and hung by its ribbon over the gap.",
+      "The fighter caught the ribbon while the rehearsal continued onstage. {{hero}} held the bridge as the performer read the final scene by the work lights: it required the audience to leave the theater before the curtain fell. In the seats, volunteers had begun to take their places."
+    ],
+    "endings": {
+      "heroWins": "The mask was carried out and {{heroPlayer}}’s visitors helped clear the theater before the final curtain.",
+      "heroLoses": "{{otherPlayer}}’s detail retained the costume room and ended the rehearsal.",
+      "draw": "The audience left safely; both groups kept the mask backstage until its warning could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A communal kiln fired the last clay water filters needed by the district before summer. {{heroPlayer}}’s couriers came to collect them; {{otherPlayer}}’s city staff kept the workshop closed after its chimney developed a crack. The kiln was already hot, and removing the filters early would ruin them.",
+      "{{hero}} entered by a side service hatch and found smoke leaking into a storeroom of finished pieces. The specialist set a temporary draft plate beneath the crack while the potter packed the safe filters. A child outside called that the chimney bricks had begun falling into the public lane.",
+      "The workshop needed more time than the chimney could offer. {{hero}} held the draft plate as staff cleared the lane and the potter took the final tray from the heat. The new filters glowed faintly; they would survive only if they cooled without another rush of cold air."
+    ],
+    "endings": {
+      "heroWins": "The filters cooled intact, and {{heroPlayer}}’s couriers kept the workshop safe until the chimney was rebuilt.",
+      "heroLoses": "{{otherPlayer}}’s staff closed the kiln while the couriers carried away only the finished stock.",
+      "draw": "The district received some filters; both groups left the kiln idle for repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "An archive of folded paper birds hung above the city’s central fountain, one for every person who helped rebuild the district. {{heroPlayer}}’s caretakers came to repair the hanging frame; {{otherPlayer}}’s officials controlled the fountain after one bird fell into the water with a fresh name written inside.",
+      "{{hero}} climbed the scaffold to inspect the frame and found a strand of new thread tied among the old knots. The specialist followed it to a sealed envelope perched at the highest point. Inside was a list of people still working on the district, including the fountain mechanic standing beneath the scaffold.",
+      "The frame began to slip as {{hero}} handed down the envelope. The mechanic closed the fountain pump and reached for the falling line while the caretakers steadied the scaffold. Dozens of paper birds lifted in the breeze, and the new one landed dry in the mechanic’s open hand."
+    ],
+    "endings": {
+      "heroWins": "The birds remained aloft, and {{heroPlayer}}’s caretakers kept the fountain open for its neighbors.",
+      "heroLoses": "{{otherPlayer}}’s officials closed the site and took the envelope into custody.",
+      "draw": "The frame was repaired, but both groups left the new name unread until the mechanic chose to open it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living canopy over the district playground stopped opening its leaves each morning, leaving the ground dark and damp. {{heroPlayer}}’s gardeners came to examine its roots; {{otherPlayer}}’s city crew held the playground until its support posts could be tested. Children watched from the fence with drawings of the canopy in full light.",
+      "{{hero}} followed a root to a maintenance trench, where a new cable had been laid across its growing tip. The specialist moved the cable onto a bracket and found the root bruised but alive. Above, the leaves began turning toward a patch of sunlight that had not reached the ground in weeks.",
+      "The support posts creaked when the canopy lifted. {{hero}} held the root in a padded sling while the city crew tightened the posts and the children asked to come back inside. A single leaf unfolded over the gate, making a small, dry place for the first visitor to stand."
+    ],
+    "endings": {
+      "heroWins": "The canopy recovered, and {{heroPlayer}}’s gardeners kept the playground safe for the children.",
+      "heroLoses": "{{otherPlayer}}’s city crew retained the grounds while the gardeners withdrew for more tests.",
+      "draw": "The gate reopened briefly; both groups agreed to watch the support posts before full use."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A scrap yard held the only working pump motor available for a flooded neighborhood. {{heroPlayer}}’s hired retrieval team came to claim it; {{otherPlayer}}’s civic guards held the yard while a mechanic tested whether the motor would run. The rising water had already reached the neighborhood’s lowest apartments.",
+      "{{hero}} covered the yard entrance when a figure moved toward the motor with a cutting tool. The fighter fired at an empty sheet-metal frame, stopping the approach without striking the mechanic. The motor turned once on its test stand, then rattled loose from a bolt hidden beneath years of rust.",
+      "The mechanic braced the motor while {{hero}} held the lane open for a cart. From the neighborhood came a call that an older resident was trapped above the waterline. The retrieval team loaded the motor carefully, knowing the next jolt could break the bolt before they reached the pumps."
+    ],
+    "endings": {
+      "heroWins": "The motor reached the pumps, and {{heroPlayer}}’s team kept the yard route open for the rescue.",
+      "heroLoses": "{{otherPlayer}}’s guards retained the motor and sent their own repair crew to the apartments.",
+      "draw": "The resident escaped; both groups worked together to fit the motor before the next surge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A ferry terminal held sealed relief packages that had spent a week circling the harbor on an automated boat. {{heroPlayer}}’s contractors came to unload them; {{otherPlayer}}’s civic guards controlled the pier until the packages could be checked. Their labels named streets the city had renamed after the shipment left.",
+      "{{hero}} covered the pier as the boat drifted against a piling. A figure moved to release its mooring, and the fighter fired into an empty bollard to stop them without striking the workers. When one package split, dried blankets spilled out beside a photograph of the family who had packed them.",
+      "The workers began matching the old addresses to current homes. {{hero}} held the gangway steady while residents arrived with their own photographs, recognizing packages meant for neighbors. The boat’s engine started again without a pilot, and the last parcel was still across the water on its deck."
+    ],
+    "endings": {
+      "heroWins": "The parcels reached their homes, and {{heroPlayer}}’s contractors kept the terminal open for the final delivery.",
+      "heroLoses": "{{otherPlayer}}’s guards retained the boat and checked the parcels after the contractors left.",
+      "draw": "Most packages were delivered; both crews waited for the boat to return with the last one."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An old arena kept a trophy made from the first city tram, soon to be moved into private storage. {{heroPlayer}}’s hired crew came to secure it for the neighborhood; {{otherPlayer}}’s guards held the display hall while the transfer papers were checked. The trophy contained a hand-cranked emergency bell that still worked.",
+      "{{hero}} covered the hall as a trolley rolled toward the locked service exit with the trophy aboard. The fighter fired at an empty wheel bracket, stopping the trolley before it reached the door. A former tram driver recognized a brass plate on its base and asked to read the names behind it.",
+      "The guards entered as {{hero}} kept the service corridor clear. The driver lifted the plate and found the workers’ names, including a relative who had never been listed in the city’s records. Outside, the bell rang through the open hall and brought other families to the entrance."
+    ],
+    "endings": {
+      "heroWins": "The names were displayed, and {{heroPlayer}}’s crew kept the trophy in the neighborhood.",
+      "heroLoses": "{{otherPlayer}}’s guards moved it to storage while the driver copied the inscription.",
+      "draw": "The trophy stayed in the arena for the families to see while its ownership was reviewed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A weather station rented its unused upper floor to artists, who turned the old forecast charts into a public exhibition. {{heroPlayer}}’s contractors came to recover a missing instrument case; {{otherPlayer}}’s city staff held the stair during an incoming storm. The exhibition’s central drawing showed the storm bending around the station.",
+      "{{hero}} checked the gallery and found the instrument case supporting a canvas frame. The specialist removed it carefully, revealing a barometer whose needle had passed beyond its printed scale. An artist said the case had been under the painting all week, yet the needle had begun moving only that morning.",
+      "Wind struck the roof while {{hero}} carried the case downstairs. The city staff opened the shelter beneath the gallery, and visitors followed with the paintings rolled under their arms. On the newly exposed canvas backing was a second forecast, drawn in charcoal, showing the station itself missing from the hill."
+    ],
+    "endings": {
+      "heroWins": "The visitors reached shelter, and {{heroPlayer}}’s crew kept the station instruments running through the storm.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the station and stored the instrument case upstairs.",
+      "draw": "The exhibition survived; both parties stayed to compare the drawing with the storm’s path."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A high-altitude laboratory opened a viewing deck for visitors on the same day a research drone failed to return. {{heroPlayer}}’s security team came to search the lower slope; {{otherPlayer}}’s facility guards held the deck until everyone was accounted for. From the railing, a child spotted the drone balanced above a ravine.",
+      "{{hero}} covered the cable bridge while a technician crossed to retrieve it. A figure moved to cut the anchor, and the fighter fired into an empty support panel to turn them away. The technician found the drone’s camera still running, its screen showing a second bridge beneath the snow.",
+      "A gust lifted the drone from its perch. {{hero}} held the anchor path while the technician caught its tether and crawled back across. On the viewing deck, visitors counted the figures in the drone’s latest image: all of them, photographed from beneath the ravine minutes before the search began."
+    ],
+    "endings": {
+      "heroWins": "The drone and technician returned, and {{heroPlayer}}’s team held the deck until the visitors were safe.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the laboratory while the security team left the slope.",
+      "draw": "Everyone left the deck; both groups kept the drone’s image for the next survey."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "objective",
+    "paragraphs": [
+      "Two reforestation crews received identical orders to plant the same cleared hillside before the rains. {{heroPlayer}}’s workers brought young trees in red-marked trays; {{otherPlayer}}’s crew arrived with blue-marked trays. Their soil maps disagreed about where the old riverbed lay beneath the grass.",
+      "{{hero}} dug a test hole along the disputed line and found a buried irrigation tile stamped with both crews’ district marks. The specialist followed it downhill to a blocked outlet, where water had collected just below the surface. Planting either tray without opening the outlet would drown its roots.",
+      "The first rain began while {{hero}} cleared the outlet by hand. Both crews carried their trays up the slope and waited for the water to run. At the lowest planting row, a worker found a living sapling from the old forest, rooted exactly on the line neither map could settle."
+    ],
+    "endings": {
+      "heroWins": "The outlet drained and {{heroPlayer}}’s crew planted its trees around the surviving sapling.",
+      "heroLoses": "{{otherPlayer}}’s crew kept the hillside and chose the first planting rows.",
+      "draw": "Both crews planted around the old tree and left their boundary flags in the truck."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "In a glacial survey camp, a warm spring began leaving black grit on the snow. {{heroPlayer}}’s geologists crossed the frozen lake to collect a sample; {{otherPlayer}}’s surveyors had already marked the spring as unsafe. The only dry approach ran below an old avalanche shelf.",
+      "{{hero}} held the approach while a geologist lowered a vial into the warm water. Shapes appeared on the ridge, and the fighter drove them away from the sampling line without firing toward the shelf. The geologist pulled up a vial of ordinary water and a glove dusted with ash.",
+      "A low crack sent everyone back across the lake. By the time the ice stopped trembling, a fresh seam had opened beside the spring, exposing a layer of charred timber deep within the glacier. No one could say what had burned there or how long the ice had kept it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team held the safe bank and carried the sample to the camp laboratory.",
+      "heroLoses": "{{otherPlayer}}’s surveyors closed the approach and retained the spring for a later inspection.",
+      "draw": "Both teams returned across the lake with one vial each and left the unstable shelf alone."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A floating coral nursery came loose from its moorings before a tropical squall. {{heroPlayer}}’s recovery crew reached the platform by launch; {{otherPlayer}}’s shore team waited with a towline and a narrow window before the tide turned. Underwater, the nursery dragged a heavy chain across living reef.",
+      "{{hero}} went below the platform and worked the chain free from the coral without breaking its anchor pin. The specialist surfaced to call for slack while the towline tightened above. In the pause between waves, a diver saw new coral growing along a metal plate hidden under the nursery.",
+      "The squall arrived as the platform swung clear of the reef. Both crews helped guide it into sheltered water, keeping the plate submerged. No inventory listed that plate; someone had installed it long enough ago for a living colony to take hold."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew moored the nursery in shelter and saved the growing colony beneath it.",
+      "heroLoses": "{{otherPlayer}}’s shore team took the tow and chose where the platform would be anchored.",
+      "draw": "The nursery reached sheltered water, and both crews agreed to leave the unknown plate in place."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A harvest conveyor carried crates from hillside greenhouses to the market until a sealed box appeared among the produce. {{heroPlayer}}’s inspection crew recognized a mark from a crop lost years earlier; {{otherPlayer}}’s growers demanded the line keep moving before their harvest spoiled. The box was already approaching the open bridge.",
+      "{{hero}} covered the bridge while an inspector stopped the conveyor and opened the box. A figure reached for its latch from the opposite bank, but the fighter kept the inspector clear long enough to lift out paper packets of seed. Each packet bore a date later than the crop’s disappearance.",
+      "The machinery started again, and the growers sent their crates to market. The inspector carried the packets uphill toward a greenhouse with empty benches. Beneath the last layer of paper lay a photograph of the field that had supposedly gone barren, its irrigation lines newly repaired."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the seed and reopened the conveyor under their watch.",
+      "heroLoses": "{{otherPlayer}}’s growers reclaimed the bridge and took charge of the box.",
+      "draw": "The harvest reached market; both crews witnessed the seeds being sealed for testing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "At a district tribunal, a submission box filled with petitions to preserve a walled garden. {{heroPlayer}}’s clerks came to file them before the hearing; {{otherPlayer}}’s maintenance crew was there to inspect a leaking wall. The garden’s owner said the water line ended at the street.",
+      "{{hero}} opened the jammed box and sorted the petitions by address. One child had drawn a channel beneath the garden instead of signing a page. The specialist took the drawing to the wall, where a trickle escaped between bricks, and called the maintenance crew to look.",
+      "The hearing began with damp petitions spread across the table. A worker lifted the loose brick and found a small water gate behind it, still turning under a careful hand. From the garden came the sound of a fountain no one in the chamber had known was there."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s clerks entered the petitions and the hidden channel into the tribunal record.",
+      "heroLoses": "{{otherPlayer}}’s crew kept control of the wall and closed the garden pending its inspection.",
+      "draw": "The tribunal heard the petitions while both parties watched water run through the reopened gate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shock Army of Acontecimento",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An emergency armory stored the drills and breathing sets needed after a collapse at the old mine. {{heroPlayer}}’s rescue team arrived for the gear; {{otherPlayer}}’s depot guards reported that an unfamiliar person was carrying a charge toward the only bridge. Families of the trapped miners waited on the far bank.",
+      "{{hero}} took position beside the bridge and forced the person with the charge away from its supports. The fighter kept the crossing clear while the rescuers wheeled a drill over the planks. A worker recognized the charge as a blasting tool from the mine, with its warning tag still attached.",
+      "The rescuers reached the tunnel mouth with their equipment intact. Inside, faint tapping answered a hammer struck against the rock. The families counted each tap in silence, then watched an empty breathing set disappear into the opening ahead of the first rescuer."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers carried the gear into the mine and kept the bridge open for evacuation.",
+      "heroLoses": "{{otherPlayer}}’s guards retained the depot and controlled the crossing while the rescue plan was revised.",
+      "draw": "The equipment crossed safely, and both teams worked beside the families at the mine entrance."
+    }
   }
 ]
