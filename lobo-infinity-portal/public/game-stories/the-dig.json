@@ -720,5 +720,385 @@
       "draw": "The model reached the surface while both parties retained a claim to its discovery."
     },
     "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A collapsed aid station emerged beneath a new transit platform. Ramah medics came for a registry of patients left there during an evacuation; PanOceanian engineers needed to shore up the platform before its next train. The station door opened onto a row of sealed drawers, each colder than the surrounding earth.",
+      "{{hero}} checked the drawers and found that a surviving coolant loop protected a tray of blood samples. The patient registry was printed on the underside of that tray, where condensation had not reached it. The specialist rerouted power through a portable cell while a cracked ceiling beam began to creep across the door.",
+      "The tray could leave only after the beam was braced. {{heroPlayer}}'s medics carried the portable cell into the passage; {{otherPlayer}}'s engineers lowered a support through the platform. For several minutes the two crews listened to a train approaching overhead, unable to tell whether its weight would hold the chamber closed or bring it down."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s medics recovered the patient registry and its protected samples.",
+      "heroLoses": "{{otherPlayer}}'s engineers stabilized the platform and took control of the sealed station.",
+      "draw": "The train passed safely while the samples remained cooled inside the braced station."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "objective",
+    "paragraphs": [
+      "A dig below a disused relay yard found an antenna folded into a concrete tomb. Nomad salvagers recognized a call sign on its casing; PanOceanian inspectors wanted to know why the old yard had transmitted after its power was cut. A voice came through the antenna each time a worker struck the concrete.",
+      "{{hero}} traced the voice to a mechanical recorder, its needle driven by vibration from the excavation. The specialist separated the antenna from a live cable and wound the tape by hand. Between repetitions of a weather forecast, someone had spoken a list of names and the depth of a second buried vault.",
+      "The forecast ended just as water seeped into the tomb. {{heroPlayer}}'s salvagers raised the recorder in a sealed basket while {{otherPlayer}}'s inspectors isolated the cable. Everyone heard the last name spoken aloud before the tape stopped. It belonged to a worker who was standing among them, holding the basket rope."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s salvagers saved the recording and located the second vault.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the relay yard and impounded the recorder.",
+      "draw": "The crew preserved a partial list while the second vault remained buried."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A housing block was being dismantled when workers exposed a narrow stair behind its foundation. Bakunin archivists believed a communal mural survived below; PanOceanian demolition crews were closing the site before the building shifted. A young archivist slipped down the stair and called up that the mural had faces still visible under the plaster.",
+      "{{hero}} descended when an armed guard blocked the archivist at the landing. In the cramped stairwell the fighter drove the guard back without firing into the painted wall. The archivist freed a small panel from the plaster, revealing that the faces were portraits of people who had disappeared during the block's first winter.",
+      "A crack opened over the landing as the demolition rig changed its weight. {{heroPlayer}}'s archivists passed the panel upward, portrait by portrait, while {{otherPlayer}}'s crew set braces around the foundation. The final face was painted directly on the wall, too large to move before the stair began to settle."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s archivists secured the mural and documented every portrait.",
+      "heroLoses": "{{otherPlayer}}'s crew closed the dangerous stair and controlled the demolition site.",
+      "draw": "The portable panel survived, but the last portrait stayed beneath the braced foundation."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A drydock that had been filled with rubble revealed a second floor of rusted lifting chains. Corregidor riggers sought a missing crew capsule suspended below it; PanOceanian recovery officers had orders to claim the dock's cargo. The first winch movement sent a chain snapping across the open pit.",
+      "{{hero}} took position behind a crane housing and held an armed recovery team away from the winch controls. A rigger followed the fighter's covering fire across a swaying bridge and locked the loose chain. Below, a lamp blinked inside the capsule, although the dock had been abandoned for years.",
+      "The capsule proved empty except for a navigation plate still drawing power from its own battery. {{heroPlayer}}'s riggers raised it as {{otherPlayer}}'s officers secured the crane track. With every meter gained, the plate changed its displayed destination, finally settling on the exact coordinates of the drydock where they stood."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s riggers lifted the capsule and retained its navigation plate.",
+      "heroLoses": "{{otherPlayer}}'s officers took the dock and claimed the recovered cargo.",
+      "draw": "The capsule reached the surface while both crews recorded its impossible destination."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Under a demolished banking kiosk lay a vault of paper identity slips, each sealed in wax. Tunguska auditors came to reconcile missing account holders; PanOceanian investigators searched for the contractor who had poured the kiosk foundation. A slip on the top shelf bore the contractor's signature dated thirty years after the vault was closed.",
+      "{{hero}} checked the wax for tampering and found the date was stamped into a reusable seal, not written by the contractor. The specialist matched its scratches to a second seal hidden beneath the shelf. Someone had changed the stamp each time a person took a slip, leaving the true removal dates in a shallow line of impressions.",
+      "The line ended with an impression made that morning. {{heroPlayer}}'s auditors copied it while {{otherPlayer}}'s investigators checked every worker at the dig. One worker carried fresh wax on a glove and a slip with no name, yet neither crew could find the corresponding empty space in the vault."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s auditors recovered the date trail and accounted for the missing slips.",
+      "heroLoses": "{{otherPlayer}}'s investigators seized the vault and questioned the worker.",
+      "draw": "Both teams retained the morning impression while the blank slip remained unexplained."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Combined Army"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A quarry bore broke into a chamber lined with dark, flexible plates. PanOceanian surveyors entered to map its supports; a rival Combined force advanced through an older cut to recover a buried device. The plates flexed at regular intervals, making every loose stone in the chamber jump toward the bore.",
+      "{{hero}} held a firing angle across the older cut while the surveyors took readings. The fighter noticed each shot made the plates pause, then start again in a different sequence. A surveyor used the pause to pull a worker clear of a falling shelf and found a small motor buried behind the vibrating wall.",
+      "Disabling the motor would also stop the wall that supported the quarry roof. {{heroPlayer}}'s surveyors marked a safe corridor as {{otherPlayer}}'s force approached the device. The fighter kept the older cut covered until the last worker escaped, and the chamber continued to pulse beneath both teams' feet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s surveyors secured the motor and mapped a safe way out.",
+      "heroLoses": "{{otherPlayer}}'s force reached the buried device and controlled the chamber.",
+      "draw": "Both teams withdrew through marked passages while the motor kept the roof steady."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A drill broke into an underground firing range sealed beneath a training field. Morat soldiers sought equipment stored beyond its last blast door; PanOceanian personnel wanted to retrieve a survey probe trapped inside. Every attempt to open the door released a gust that blew grit through the narrow approach.",
+      "{{hero}} forced a defender away from the door wheel in the close passage and held the space while a technician tested the pressure. The gust came from an old ventilation fan still turning behind the wall. The fighter braced the wheel between bursts so the technician could open a gap without tearing the probe cable.",
+      "Inside, the probe rested beside a stack of numbered targets, all shot from the wrong side. {{heroPlayer}}'s soldiers lifted the targets clear while {{otherPlayer}}'s personnel reeled in the probe. The fan turned once more and exposed a fresh target at the bottom of the stack, its paint not yet dry."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s soldiers secured the range and its unexplained targets.",
+      "heroLoses": "{{otherPlayer}}'s personnel recovered the probe and sealed the blast door.",
+      "draw": "The probe came free as both teams photographed the newly painted target."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "objective",
+    "paragraphs": [
+      "A road crew found a freight wagon buried nose first in a dry ravine. Dashat contractors had a claim ticket for its missing pay chest; PanOceanian inspectors came to trace a cargo manifest that had vanished with the wagon. The brake lever was still locked, though the rails above had been removed years earlier.",
+      "{{hero}} opened the axle housing and found the pay chest wedged where a wheel had once been. The specialist freed it with a jack while an inspector read chalk marks inside the wagon. Each mark counted a day after the derailment, ending with a small arrow pointing down through the floorboards.",
+      "Below the boards lay a bundle of letters, addressed but never sent. {{heroPlayer}}'s contractors checked the chest against their ticket while {{otherPlayer}}'s inspectors copied the vanished cargo manifest from a letter. The last envelope carried no address, only a rubbing of the rail junction before the track was lifted."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s contractors recovered the pay chest and proved their claim.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the wagon and reconstructed its manifest.",
+      "draw": "The letters were saved while both teams studied the junction rubbing."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A stone quarry uncovered a grid of polished panels below its lowest cut. PanOceanian engineers thought the panels focused sunlight into a power well; an Onyx recovery party entered through a drainage tunnel. At noon, a stripe of light traveled across the quarry floor despite the panels lying underground.",
+      "{{hero}} kept the drainage tunnel covered while engineers followed the stripe to a buried mirror shaft. The fighter called a warning when a reflector rose unexpectedly, throwing light toward a worker on the scaffolding. An engineer turned the mirror by hand and found a scorched pattern beneath it, shaped like a map of the quarry.",
+      "The stripe pointed to a cut scheduled for blasting that afternoon. {{heroPlayer}}'s engineers evacuated the scaffolding while {{otherPlayer}}'s party examined the shaft. The fighter stayed at the tunnel mouth until the last worker crossed, watching the bright line stop exactly at the place where the blast charges had been set."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s engineers secured the mirror shaft and cleared the blast site.",
+      "heroLoses": "{{otherPlayer}}'s party controlled the panel grid and its buried map.",
+      "draw": "The blast was postponed while both teams tracked the moving light."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "Workers excavating a drainage basin uncovered smooth pods packed among ordinary stones. PanOceanian field specialists feared the pods would break when the basin filled; Shasvastii scouts approached along the dry spillway. The first pod made a faint clicking sound whenever its shadow crossed a survey flag.",
+      "{{hero}} set a light screen around the pods and found the clicks came from a shallow sensor buried beneath them. The specialist loosened the surrounding soil one layer at a time, exposing a narrow cable that led away from the basin. A scout at the spillway had already found its far end.",
+      "The cable ran into a locked pump housing, where the basin gates could be opened. {{heroPlayer}}'s specialists packed the pods against the coming water while {{otherPlayer}}'s scouts held the spillway. The clicking stopped when the screen was lowered, and every pod remained still even as the first gate began to move."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s specialists protected the pods and secured the sensor.",
+      "heroLoses": "{{otherPlayer}}'s scouts controlled the spillway and the pump housing.",
+      "draw": "The basin stayed dry long enough for both teams to inspect the unbroken pods."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "Beneath a ruined records office, a dig team found shelves of clay tablets wrapped in fiber. ALEPH analysts sought a missing index to an evacuation archive; PanOceanian custodians had come to safeguard the original documents. The tablets carried numbers in ink, but the paper index beside them had turned black with damp.",
+      "{{hero}} angled a lamp across the paper and read the indentations left by a writer on an earlier sheet. The specialist matched a sequence of tablet numbers to an unmarked shelf, where a sealed envelope held the names of people whose records had been deliberately omitted. A ceiling leak began to spread toward the envelope.",
+      "The names could be copied only while the paper remained dry. {{heroPlayer}}'s analysts recorded them as {{otherPlayer}}'s custodians lifted the tablets from the leaking shelf. The last line was an address for the old records office itself, written in a hand that matched the ink on every tablet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s analysts recovered the omitted index and its names.",
+      "heroLoses": "{{otherPlayer}}'s custodians preserved the tablets and retained the archive.",
+      "draw": "The envelope was copied as both teams moved the tablets away from the leak."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An ice shelf excavation uncovered the dome of a forgotten observatory. Operations Subsection researchers needed its last sky log; PanOceanian explorers wanted to raise the dome before spring runoff filled it. Through the frost, someone saw a mechanical pointer turning even though its viewing slit faced solid ice.",
+      "{{hero}} held the narrow ice approach against armed explorers while a researcher reached the log cabinet. A shot cracked a support, and the fighter shifted position to keep the doorway clear of falling ice. Inside, the pointer was following a reflection in an old lens, not the sky above the dome.",
+      "The log described a light seen beneath the observatory, deep in the ice. {{heroPlayer}}'s researchers copied the final entry as {{otherPlayer}}'s explorers rigged the dome for lifting. The pointer completed one more turn and stopped on a spot below the cabinet, where neither team had time to dig."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s researchers recovered the sky log and its final observation.",
+      "heroLoses": "{{otherPlayer}}'s explorers raised the dome and secured the observatory.",
+      "draw": "The log was copied while the pointer's last bearing remained under the ice."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A quarry cut through a chamber of carved reliefs, bringing an elderly witness to the dig. She said the figures marked a route used by her family, not a tomb. Steel Phalanx escorts brought her to identify the passage; PanOceanian guards had cordoned the quarry off after a theft from its tool store.",
+      "{{hero}} intercepted a guard at the tight arch and pushed the fight away from the witness. She slipped past and pressed a loose stone in the relief, opening a shallow recess with a worn path marker inside. The fighter held the arch while she compared the marker to a sketch she had carried since childhood.",
+      "The marker pointed across the active quarry cut, where machines were already moving. {{heroPlayer}}'s escorts led the witness along a safe ledge while {{otherPlayer}}'s guards halted the saws. She reached the far wall and found a second carving, blank except for the fresh dust caught in its grooves."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s escorts brought the witness to the far wall and secured the marker.",
+      "heroLoses": "{{otherPlayer}}'s guards controlled the quarry and protected the reliefs.",
+      "draw": "The witness identified the route while both teams stopped work around the carvings."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A border survey exposed a buried stone marker beneath a disputed footbridge. O-12 observers came to verify an old treaty line; PanOceanian surveyors had already laid out a new crossing. The stone carried two arrows pointing in opposite directions, and fresh soil filled the cut around its base.",
+      "{{hero}} measured the marker's depth and found its foundation farther down than the recent soil. The specialist cleared a narrow trench without turning the stone, revealing a second inscription on the buried side. It named a seasonal stream that had been diverted long before either team arrived at the bridge.",
+      "The stream still ran inside a culvert under the new crossing. {{heroPlayer}}'s observers traced it from below while {{otherPlayer}}'s surveyors measured the bridge above. Water rose in the trench as they worked, blurring the inscription just after both teams had copied it and before either could agree which arrow mattered."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s observers documented the original marker and treaty line.",
+      "heroLoses": "{{otherPlayer}}'s surveyors secured the bridge and established a surveyed crossing.",
+      "draw": "Both teams recorded the buried inscription before the trench filled."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Canal workers unearthed a ship's recorder beneath a reclaimed quay. Starmada recovery officers wanted its final route; PanOceanian contractors held the construction permit and an older claim to the wreck. The recorder was still tied to a length of chain that descended into water below the excavation.",
+      "{{hero}} held the quay stairs under fire while a diver freed the recorder from its chain. A contractor tried to start the pumps, and the fighter shot the control lock rather than risk draining the diver's passage. The diver surfaced with a second object: a small brass bell whose clapper had been wrapped in cloth.",
+      "The recorder's clock had stopped an hour before the ship vanished. {{heroPlayer}}'s officers dried its contacts while {{otherPlayer}}'s contractors examined the bell. Its cloth bore a date one day later than the stopped clock, and the chain below still moved gently against the quay even after the pumps were shut."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers recovered the recorder and traced the ship's final route.",
+      "heroLoses": "{{otherPlayer}}'s contractors controlled the quay and retained the recovered bell.",
+      "draw": "The diver reached safety with both objects before the chain slipped away."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A quarry blast opened an emergency shaft beneath a remote signal station. Torchlight rescuers followed a lamp flashing from below; PanOceanian security personnel arrived to secure the damaged station. A trapped geologist called that the ladder had broken and the next shift of gravel would bury the lamp.",
+      "{{hero}} forced a defender from the shaft rim and held a clear landing for the rescue line. Below, the geologist tied the line to a case of survey cards before accepting a harness. The fighter hauled when the gravel began to slide, bringing the case up first so the geologist could climb without its weight.",
+      "The cards marked another shaft beyond the station fence. {{heroPlayer}}'s rescuers checked the geologist for injuries while {{otherPlayer}}'s personnel inspected the unstable rim. The lamp kept flashing after the rescue, far lower than the geologist had been, and no one at the top had a second line ready."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s rescuers saved the geologist and secured the survey cards.",
+      "heroLoses": "{{otherPlayer}}'s personnel closed the shaft and took control of the station.",
+      "draw": "The geologist escaped while both teams prepared to investigate the deeper light."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "objective",
+    "paragraphs": [
+      "A new foundation cut exposed a small bronze bell beneath a road that had covered an old shrine. Japanese Secessionist Army caretakers came to return it to its setting; PanOceanian archaeologists wanted to record the layers before anything moved. A cord still hung from the bell, passing through a hole in the buried floor.",
+      "{{hero}} followed the cord to a wooden tray concealed under the floor and lifted it without pulling the bell. The tray held dozens of folded notes, each naming someone who had never returned from a journey. The specialist separated the damp pages and found one blank note tucked between two that shared the same handwriting.",
+      "The cord would ring the bell if the tray left its place. {{heroPlayer}}'s caretakers carried the notes toward dry light while {{otherPlayer}}'s archaeologists measured the floor. At the moment the last page cleared the hole, the bell sounded once, although no one had touched the cord."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s caretakers saved the notes and restored the bell to the shrine.",
+      "heroLoses": "{{otherPlayer}}'s archaeologists documented the floor and retained the excavation.",
+      "draw": "The notes were dried while the bell remained in its recorded position."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Beneath stepped farm terraces, a dig revealed a stone channel carrying water away from the fields. Oban wardens sought the blocked sluice that had dried the upper plots; PanOceanian contractors planned a reservoir on the lower ground. A worker heard tapping behind a wall just as the trench began to fill.",
+      "{{hero}} grappled with a guard in the narrow channel and cleared a route to the wall. A warden found the tapping came from a loose wooden gate, not a trapped worker, and wedged it against the current. The fighter held the gate while the warden scraped silt from an older side passage.",
+      "Water divided between the passages, reaching the dry plots and the proposed reservoir basin. {{heroPlayer}}'s wardens measured the flow above while {{otherPlayer}}'s contractors staked the lower bank. When the fighter released the gate, it stayed open by itself; the stone channel had been shaped to hold exactly that balance."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s wardens restored water to the upper terraces.",
+      "heroLoses": "{{otherPlayer}}'s contractors controlled the channel and supplied the reservoir basin.",
+      "draw": "Both sets of fields received water while the old gate remained open."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An excavation under a ruined theater exposed a rehearsal room with its painted floor intact. Shindenbutai scouts searched for a concealed signal station; PanOceanian guards sought the theater's missing inventory. A small red lamp lit whenever anyone stepped on the mark where an actor would have stood.",
+      "{{hero}} kept the entrance covered as a scout tested the floor marks one at a time. When a guard rushed the doorway, the fighter fired into a hanging counterweight, dropping a curtain between them. Behind it, the scout lifted a stage board and found a signal key connected to the red lamp by a fresh wire.",
+      "The wire led outside to a buried transmitter with no power cell. {{heroPlayer}}'s scouts traced it while {{otherPlayer}}'s guards opened the inventory chest. Inside lay a stack of scripts, each with the same stage mark circled in a different color; the red lamp blinked again after the key had been disconnected."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts secured the signal key and the hidden transmitter.",
+      "heroLoses": "{{otherPlayer}}'s guards held the theater and recovered its inventory.",
+      "draw": "Both teams kept a copy of the marked scripts while the source of the last blink stayed hidden."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A greenhouse extension exposed three layers of roots crossing a buried stone basin. Tohaa botanists wanted to preserve the living network; PanOceanian builders needed to finish the foundation before a storm. The upper roots were pale and dry, yet water dripped from their tips onto the lowest layer.",
+      "{{hero}} cleared a small window in the soil and found a porous tile lifting moisture from a hidden reservoir. The specialist marked each root before removing one tile, then guided the water into a temporary channel. The lowest roots changed color in minutes, showing which plants were still connected across the basin.",
+      "A foundation beam would sever the temporary channel unless the crews shifted it overnight. {{heroPlayer}}'s botanists bound the roots in damp cloth while {{otherPlayer}}'s builders raised the beam on jacks. Rain struck the greenhouse roof as the last tile came free, and water began to flow through the basin again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s botanists saved the root network and its hidden reservoir.",
+      "heroLoses": "{{otherPlayer}}'s builders secured the foundation and controlled the basin.",
+      "draw": "The shifted beam and restored channel let the living roots remain in place."
+    },
+    "mission": "The Dig"
   }
 ]

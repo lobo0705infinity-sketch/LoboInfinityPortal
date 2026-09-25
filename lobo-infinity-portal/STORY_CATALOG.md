@@ -8,11 +8,11 @@ The review tries a written story for a concrete player highlight first. When the
 
 - `src/data/gameHighlightStories.ts`: four individually written submitted moments (games 109, 114, 116, 117).
 - `src/data/gameStoryCatalog.ts`: two individually written The Dig matchups, including game 105's Next Wave versus Operations Subsection.
-- `public/game-stories/the-dig.json`: thirty-eight more individually written The Dig matchups.
+- `public/game-stories/the-dig.json`: fifty-eight more individually written The Dig matchups.
 - `public/game-stories/dead-man-s-switch.json`: twenty individually written Dead Man's Switch matchups, for **40 of 22,770** mission-matchup stories in total.
 - `public/game-stories/hardlock.json`: twenty individually written Hardlock matchups, for **60 of 22,770** mission-matchup stories in total.
 - `public/game-stories/area-of-interest.json`: nine hundred and eighty individually written Area of Interest matchups.
-- **Total: 1,060 of 22,770** individually written mission-matchup stories.
+- **Total: 1,080 of 22,770** individually written mission-matchup stories.
 - `src/services/gameStoryRouting.ts`: highlight-first routing and on-demand loading of generated mission shards.
 - Open reports waiting on submitted lists check newer public snapshots; once an additional list decodes and links to that game, the report reloads with the new pinned generation.
 - `src/data/storyCharacters.json`: 201 named-character identities classified by the bundled official Army dataset; `npm run game-stories:characters` regenerates it. The Sāchā is classified as a unit type, so story text calls it “the Sāchā.”
