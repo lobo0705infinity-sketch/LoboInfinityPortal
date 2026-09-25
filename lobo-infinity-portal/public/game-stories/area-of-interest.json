@@ -4938,5 +4938,385 @@
       "heroLoses": "{{otherPlayer}}’s pilots retained the lantern room and guided the boat by their own signals.",
       "draw": "The boat reached shore, and both groups kept the lanterns burning through the squall."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "objective",
+    "paragraphs": [
+      "An island fog station sounded its bell at noon despite a clear horizon. {{heroPlayer}}’s surveyors arrived to inspect the mechanism; {{otherPlayer}}’s boat crews had already diverted around the island. In the station’s open logbook, yesterday’s entry described a boat that had never returned.",
+      "{{hero}} followed the bell cord below the floor and found it tied to a tide gauge. The specialist released a jammed float, and the cord fell silent as the gauge marked an unusually low channel. Across the flats, the missing boat appeared where falling water had stranded it behind a sandbar.",
+      "The boat’s crew walked back over the exposed ground, carrying their oars on their shoulders. They had kept ringing the station bell at every high tide, hoping someone would question its timing. Their last log entry was made safely on shore."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors secured the station and guided the boat crew across the flats.",
+      "heroLoses": "{{otherPlayer}}’s crews retained the island approaches and managed the recovery.",
+      "draw": "The boat crew returned, and both parties reset the fog bell for ordinary tides."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A fishing village had stitched old woolen sails into shade tents for a summer market. {{heroPlayer}}’s escorts brought a missing sailcloth panel; {{otherPlayer}}’s fishers were tightening lines before a squall. One tent began to lift with a vendor still beneath its central pole.",
+      "{{hero}} caught the pole as a stranger tried to cut its last ground line. The fighter wrested the knife away and held the canvas down while the vendor climbed free. The missing panel, sewn into the tent beside it, showed faded handprints made when the village first launched its fishing boats.",
+      "After the squall, the fishers lowered the tent and traced each handprint with a fingertip. A visitor found the print of her grandmother beside one scarcely larger than a child’s. The vendor offered her the first fish from the reopened stall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the market tents and protected the vendor.",
+      "heroLoses": "{{otherPlayer}}’s fishers retained the square and repaired the lines themselves.",
+      "draw": "The market reopened, and both parties saved the old handprinted sailcloth."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A pearl nursery kept a row of submerged frames just beyond a storm wall. {{heroPlayer}}’s patrol accompanied a diver to retrieve its records; {{otherPlayer}}’s caretakers warned that the tide would hide the walkway before sunset. One frame had surfaced early with its oysters open.",
+      "{{hero}} covered the storm wall while the diver reached the records box. A figure raised a weapon on the far walkway, and the fighter held that line until the diver crossed safely. Inside the box was a hand-drawn map showing where the first nursery frame had been placed by a long-retired caretaker.",
+      "The retired caretaker arrived to study the surfaced frame. Between its oysters sat a smooth stone bearing a tiny painted dot, the marker she had once used to anchor the original nursery. She put it back where the tide could reach it again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol held the storm wall and recovered the nursery records.",
+      "heroLoses": "{{otherPlayer}}’s caretakers retained the walkway and secured the frames against the tide.",
+      "draw": "The records remained dry, and both teams helped restore the original frame."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A small return capsule splashed into a lagoon reserved for nesting birds. {{heroPlayer}}’s recovery crew came by launch; {{otherPlayer}}’s wildlife wardens were already steering boats away from the nests. From inside the capsule came a recording of a person humming an unfamiliar tune.",
+      "{{hero}} anchored the capsule against the current and opened its outer panel without disturbing the reeds. The specialist found an audio beacon tied to a dry compartment of soil samples. The tune repeated between location coordinates, guiding the recovery launch away from shallow nests as the tide changed.",
+      "At shore, a warden recognized the tune as one local boat pilots used to remember the lagoon’s safe turns. The capsule had borrowed it from an old navigation file. The wardens played it once more before setting the beacon down beside the birds’ quiet nests."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew recovered the capsule while protecting the nesting lagoon.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the lagoon and delayed recovery until the birds moved.",
+      "draw": "The capsule reached shore without disturbing the nests, and both groups kept the beacon recording."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A seafront museum had moved its old telescope into an underwater gallery, where the glass now pointed at the harbor floor. {{heroPlayer}}’s escort brought a conservator to retrieve it; {{otherPlayer}}’s divers were checking a leak in the gallery wall. Through the telescope, a small silver bell could be seen under a pier.",
+      "{{hero}} held the gallery entrance while the conservator measured the water rising around the telescope mount. Someone tried to seal the outer hatch with the divers still below, and the fighter held them away until the divers surfaced. One carried the bell, its handle carved with the museum’s founding date.",
+      "The conservator rang the bell on dry ground. Its sound brought the curator from the upper floor, where an empty display case had held a label describing a ship’s farewell gift. The telescope stayed aimed at the pier until the leak was fixed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the gallery and saved the telescope and bell.",
+      "heroLoses": "{{otherPlayer}}’s divers retained the gallery and closed it for repairs.",
+      "draw": "The divers surfaced safely, and both groups brought the bell to the museum curator."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "On a moonlit beach, newly hatched turtles began crawling toward the lights of a ferry terminal instead of the sea. {{heroPlayer}}’s rangers came to guide them; {{otherPlayer}}’s terminal crew needed lights for an incoming passenger boat. Waves washed over the narrow strip between the nests and the quay.",
+      "{{hero}} set low shields around the terminal lamps and marked a dark path down the beach. The specialist counted hatchlings as they crossed, moving one stranded in a footprint onto firm sand. The ferry pilot followed a separate high beacon into the berth without lighting the beach again.",
+      "By dawn, the terminal crew found tiny tracks running straight to the water. One hatchling had stopped beside a child’s lost sandal, leaving a loop of prints before finding its way. The child carried the sandal home and told everyone where it had been."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers protected the nesting beach while the ferry docked.",
+      "heroLoses": "{{otherPlayer}}’s terminal crew retained the quay and managed lighting for the crossing.",
+      "draw": "The ferry arrived and the hatchlings reached the sea under the crews’ shared watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A floating clinic lost its clean-water supply while visiting houses along a tidal canal. {{heroPlayer}}’s care team came to repair the filter; {{otherPlayer}}’s canal wardens worried the clinic would drift into a shallow bend. A patient waiting aboard offered to hold its mooring line.",
+      "{{hero}} traced the blockage to a small shell wedged inside the intake and cleared it without damaging the mesh. The specialist tested the flow while the patient kept the line taut. Under the shell was a bright bead that the patient recognized from a bracelet lost during the last visit.",
+      "The clinic finished its rounds with fresh water on board. At the final house, the patient returned the bead to its owner, who laughed that the canal had taken better care of it than she had. The mooring line lay coiled and dry at the bow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team restored the clinic’s supply and completed its canal visits.",
+      "heroLoses": "{{otherPlayer}}’s wardens retained the bend and guided the clinic to shore for repairs.",
+      "draw": "The clinic stayed safe and supplied while both crews watched it through the shallow bend."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cliffside radio theater was rehearsing a storm play when real fishing boats began answering its staged distress call. {{heroPlayer}}’s stage crew rushed to stop the broadcast; {{otherPlayer}}’s coastal lookouts tried to contact the boats. An actor could not leave the sound booth because its door had jammed.",
+      "{{hero}} reached the booth as a stranger tried to force its latch further into the frame. The fighter pulled them back, pried the door open, and gave the actor room to silence the effects board. On the quiet channel came a real call from a boat seeking the harbor entrance.",
+      "The lookouts relayed the safe bearing while the stage crew kept every speaker dark. Once the boat arrived, the actor stepped back to the microphone and told listeners that the performance would begin again tomorrow. No one asked for an encore that night."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the booth and cleared the channel for the fishing boats.",
+      "heroLoses": "{{otherPlayer}}’s lookouts controlled the transmission and directed the boats home.",
+      "draw": "The channel stayed clear, and both groups waited until every boat had answered."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a floating customs pier, a launch returned from the outer reef without its diver. {{heroPlayer}}’s guard team came aboard to search; {{otherPlayer}}’s harbor pilots saw an air hose snagged around an old anchor chain. The launch’s signal flag had been tied upside down.",
+      "{{hero}} covered the pier ladder while a pilot followed the hose. Someone tried to cast off the launch before the pilot returned, and the fighter kept its line secured. A tug on the hose brought the diver up beside the chain, carrying a small wooden float marked with an unfamiliar harbor number.",
+      "The diver said the float had been caught below for years and had drawn the hose down. The oldest pilot recognized the number as the berth that existed before the pier was rebuilt. They hung the float beside the corrected signal flag to dry."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards held the pier and brought the diver aboard safely.",
+      "heroLoses": "{{otherPlayer}}’s pilots retained the launch and directed the reef search.",
+      "draw": "The diver returned, and both teams secured the hose before the launch moved."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A medical supply boat arrived at a storm-damaged jetty while people waited under its roof for deliveries. {{heroPlayer}}’s care workers came to inspect its cold case; {{otherPlayer}}’s dock crew warned that the jetty would not hold a crowd. A handwritten list of recipients was soaking through in the rain.",
+      "{{hero}} carried the cold case to a dry storeroom, verified its indicator, and helped move the waiting people onto firm ground. The specialist copied the blurred list from the names each person gave, leaving a blank line for a neighbor still out at sea. The dock crew braced the loose roof above them.",
+      "The neighbor returned by small boat after the rain eased. Someone handed over the last package and wrote the missing name in the blank space. When the roof was fixed, the list stayed pinned inside the storeroom as a record of everyone who came."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s workers kept the supplies safe and completed delivery from the shore.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the jetty and delayed unloading until the roof was secured.",
+      "draw": "Everyone received their package, and both groups kept the wet jetty clear."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An undersea data cable surfaced in a storm and wrapped around the mooring of a small fishing boat. {{heroPlayer}}’s repair crew came to free it; {{otherPlayer}}’s fishers feared moving the boat would break the cable. Over a portable receiver, a string of children’s voices kept calling roll.",
+      "{{hero}} covered the beach approach while a diver unwound the cable from the mooring. A figure stepped toward the repair reel with a cutter, and the fighter held them off until the diver reached shore. The receiver steadied, and the voices answered one another in a distant classroom.",
+      "A teacher on the far coast came onto the line to explain that the class had been rehearsing a call to their sister school. The local fishers brought the receiver to their children, who shouted their names back. The freed boat bobbed against an intact mooring."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the cable and kept the fishing boat secure.",
+      "heroLoses": "{{otherPlayer}}’s fishers retained the mooring and directed the cable recovery.",
+      "draw": "The cable and boat were safe, and both groups listened as the schools spoke."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A kinetic sculpture in the tidal square was supposed to ring softly as the water rose. {{heroPlayer}}’s artists came to repair it; {{otherPlayer}}’s flood team had seen the entire frame shudder in an unexpected current. An audience gathered for the evening performance beneath a clear sky.",
+      "{{hero}} found one counterweight mounted backward and shifted it before the tide reached the lowest chime. The specialist stepped back as a new rhythm passed up the frame, each bell sounding only when its float rose. The audience heard the approaching water long before it appeared between the stones.",
+      "The flood team guided people onto higher steps, where they stayed to listen. When the final chime sounded, the square below held a shallow mirror of the sculpture. A child asked the artist whether the tide had learned the song or the song had learned the tide."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s artists secured the sculpture and kept the performance safe.",
+      "heroLoses": "{{otherPlayer}}’s flood team retained the square and postponed the evening crowd.",
+      "draw": "The audience watched from high ground while both groups monitored the tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A breakwater crane stopped with a crate of damaged navigation lights hanging over the harbor. {{heroPlayer}}’s riggers came to bring it down; {{otherPlayer}}’s dock crew said the crane’s lower brake was slipping. A technician remained in the cab, unable to reach the service ladder.",
+      "{{hero}} climbed to the brake platform as someone tried to force the release while the technician was trapped. The fighter pushed the person away and held the lever until riggers lowered a rescue line. The technician came down first, then the crate, its lamps swinging harmlessly above the water.",
+      "At the pier, the technician opened the crate and found one lamp still glowing faintly on its reserve cell. A dock worker set it on the breakwater until replacements could be fitted. Across the harbor, a late boat turned toward that small light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers secured the crane and recovered the technician and lights.",
+      "heroLoses": "{{otherPlayer}}’s dock crew retained the breakwater and directed the lowering.",
+      "draw": "The cab was emptied safely, and both teams left the glowing lamp as a temporary marker."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A chain of floating navigation buoys began blinking inland after its automated map lost the coastline. {{heroPlayer}}’s technicians boarded the control barge; {{otherPlayer}}’s pilot boat held traffic outside the harbor. One buoy had washed into a mangrove channel and was blinking alone.",
+      "{{hero}} covered the barge’s open deck while a technician reset the map against a physical chart. A figure moved toward the battery rack with a metal hook, and the fighter held the deck until the lights changed back to the seaward route. The lone buoy continued its separate signal.",
+      "The pilot boat followed that last light and found a skiff sheltered inside the mangroves, its passengers waiting for a safe opening. Once they were aboard, the buoy was returned to its place. The harbor lights made a complete line again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians secured the barge and restored the harbor route.",
+      "heroLoses": "{{otherPlayer}}’s pilots retained control of the channel and navigated by hand.",
+      "draw": "The skiff was found, and both parties reset the final buoy together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "objective",
+    "paragraphs": [
+      "At low tide, a ring of coral pillars emerged beside an island research station. {{heroPlayer}}’s divers wanted to survey it; {{otherPlayer}}’s shoreline team warned that the returning water could trap anyone inside. Each pillar cast a shadow toward the same bare patch of sand.",
+      "{{hero}} set a measuring line across the patch and uncovered a flat stone beneath the sand. The specialist made an impression of its markings before the tide covered the ring. In the recording, the coral shadows pointed not to the stone but to a smaller shape behind the divers.",
+      "From the station roof, the shoreline team saw the smaller shape clearly: a new pillar just beginning to grow under the water. The divers stepped back as the tide lifted over it. Their impression would show where the circle stood before its newest member appeared."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s divers recorded the ring and returned before the tide closed it.",
+      "heroLoses": "{{otherPlayer}}’s shoreline team kept the area clear and postponed the survey.",
+      "draw": "Both teams preserved the recording and left the new coral pillar undisturbed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A volcanic shoreline boardwalk warmed under visitors’ feet even after rain. {{heroPlayer}}’s escorts brought a geologist to inspect its new cracks; {{otherPlayer}}’s park staff were leading visitors back toward higher ground. The last person on the walkway had stopped to photograph steam rising between the boards.",
+      "{{hero}} reached the photographer as a stranger tried to force the safety gate closed behind them. The fighter pulled the stranger away and held the gate wide while the geologist led everyone across. A fresh vent opened where the photographer had stood, lifting a plank without flame.",
+      "From high ground, the park staff marked the new vent on their map. The photographer’s final picture showed the first small plume, almost hidden beside a child’s abandoned sunhat. The hat was still on safe boards, and a staff member went back for it after the steam thinned."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the boardwalk and cleared everyone from the vent.",
+      "heroLoses": "{{otherPlayer}}’s park staff retained the shore and closed the path to visitors.",
+      "draw": "The visitors reached high ground, and both teams marked the new vent before reopening any trail."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A floating research lab played a strange melody through its hull whenever a wave struck the eastern side. {{heroPlayer}}’s scientists came to inspect the moorings; {{otherPlayer}}’s rescue swimmers noticed a second rhythm beneath the sound. Far offshore, an unlit boat answered with three knocks.",
+      "{{hero}} covered the lab’s deck while a scientist freed a jammed sonar unit from the railing. A figure reached for its power lead, and the fighter held them back until the unit was working. The second rhythm resolved into a range signal from the unlit boat, too faint for ordinary radio.",
+      "The rescue swimmers followed the sonar pulses and returned with the boat in tow. Its occupants said they had struck the hull of their own vessel until they heard the floating lab echo back. That night the scientists recorded the melody, then shut the sonar down for repair."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scientists held the lab and traced the stranded boat.",
+      "heroLoses": "{{otherPlayer}}’s swimmers retained the mooring and conducted the rescue directly.",
+      "draw": "The boat returned safely, and both groups listened to the hull’s final recorded notes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A moon pool in a coastal cave reflected the night sky even at midday. {{heroPlayer}}’s explorers came to measure its depth; {{otherPlayer}}’s cave wardens feared the incoming tide would seal the exit. In the reflection, one star brightened each time a wave entered the cave.",
+      "{{hero}} lowered a light past the moon pool’s edge and found a polished fragment set in its wall. The specialist turned it gently, sending a narrow beam through a crack toward the exit. Above the waterline appeared a row of old handholds previously hidden in shadow.",
+      "The wardens guided everyone out along those handholds before the tide rose. From the beach, the cave’s reflected star became a small daytime glint. An explorer marked its position on the map and left the fragment where the next visitor could find the path."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s explorers secured the cave and documented its safe exit.",
+      "heroLoses": "{{otherPlayer}}’s wardens closed the cave as the tide rose.",
+      "draw": "Everyone reached the beach, and both teams marked the hidden handholds for future surveys."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mangrove field camp used a rope ferry to bring water samples across a narrow tidal channel. {{heroPlayer}}’s surveyors arrived as the ferry stalled midstream; {{otherPlayer}}’s local guides could see a child and two full sample bottles aboard. The tide was beginning to pull the craft sideways.",
+      "{{hero}} reached the winch just as someone tried to release its brake. The fighter wrestled them away from the handle and hauled the rope until the guides could catch the ferry. The child stepped onto shore with both bottles held level, proud that not a drop had spilled.",
+      "A guide asked why the child had crossed alone. They pointed to a small crab caught in one bottle’s sampling cage, lifted it out, and returned it to the mud. The adults checked the water samples while the crab vanished beneath the roots."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors secured the ferry and recovered the child and samples.",
+      "heroLoses": "{{otherPlayer}}’s guides retained the crossing and brought the ferry ashore.",
+      "draw": "The ferry returned safely, and both groups agreed to keep its brake attended."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "An old tidal computer forecast a wave over the outer quay, but the water remained calm. {{heroPlayer}}’s analysts came to inspect its sensors; {{otherPlayer}}’s dock workers had already moved people off the quay. The screen displayed a rising line whenever a cargo vessel passed, even in deep water.",
+      "{{hero}} checked the pressure tube and found an abandoned anchor chain brushing its lower end. The specialist moved the tube clear and ran the forecast again; the false wave vanished, leaving a smaller genuine swell expected after sunset. The dock workers checked their lines against the corrected timing.",
+      "At dusk, the swell lifted each moored boat in turn and passed beneath the empty quay. An older worker watched the computer’s line rise and fall with the water for the first time in years. The corrected forecast stayed on its screen until morning."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts secured the computer and restored its tidal forecast.",
+      "heroLoses": "{{otherPlayer}}’s dock workers retained the quay and relied on their own observations.",
+      "draw": "The quay stayed safe, and both groups checked the new forecast against the evening swell."
+    }
   }
 ]
