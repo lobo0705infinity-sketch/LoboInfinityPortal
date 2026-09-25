@@ -12,8 +12,8 @@ The review tries a written story for a concrete player highlight first. When the
 - `public/game-stories/dead-man-s-switch.json`: twenty individually written Dead Man's Switch matchups, for **40 of 22,770** mission-matchup stories in total.
 - `public/game-stories/hardlock.json`: twenty individually written Hardlock matchups, for **60 of 22,770** mission-matchup stories in total.
 - `public/game-stories/area-of-interest.json`: all one thousand and thirty-five individually written Area of Interest matchups.
-- `public/game-stories/akial-interference.json`: forty-five individually written Akial Interference matchups.
-- **Total: 1,180 of 22,770** individually written mission-matchup stories.
+- `public/game-stories/akial-interference.json`: sixty-five individually written Akial Interference matchups.
+- **Total: 1,200 of 22,770** individually written mission-matchup stories.
 - `src/services/gameStoryRouting.ts`: highlight-first routing and on-demand loading of generated mission shards.
 - Open reports waiting on submitted lists check newer public snapshots; once an additional list decodes and links to that game, the report reloads with the new pinned generation.
 - `src/data/storyCharacters.json`: 201 named-character identities classified by the bundled official Army dataset; `npm run game-stories:characters` regenerates it. The Sāchā is classified as a unit type, so story text calls it “the Sāchā.”
