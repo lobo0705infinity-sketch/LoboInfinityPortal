@@ -15578,5 +15578,385 @@
       "heroLoses": "{{otherPlayer}}’s auditors secured the account and identified the hidden beneficiary.",
       "draw": "The chamber lights were reset while both groups examined the scratched instruction."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A freight exchange placed a single empty cargo sled under guard after its manifest listed a shipment of rare metal. The insurer wanted proof it had ever carried anything. {{heroPlayer}}’s escort team reached the loading rail; {{otherPlayer}}’s brokers held the weighbridge records and asked the driver to recount the trip.",
+      "{{hero}} covered the sled as shots struck the upper loading door. The fighter held a clear lane while a mechanic lifted its false floor and found a strip of polished metal no wider than a hand. It reflected an engraving on the rail above: a locker number, visible only from the angle of the missing cargo.",
+      "The escorts could open the numbered locker immediately, but the brokers wanted its renter identified first. The driver recognized the engraving as a mark left before his trip. The fighter kept the loading door in view while the mechanic turned the narrow metal strip to catch the light again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the locker and recovered the true shipment.",
+      "heroLoses": "{{otherPlayer}}’s brokers verified the manifest and traced its hidden renter.",
+      "draw": "The sled stayed guarded while both teams investigated the engraved rail."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A privately insured water wheel stopped at dawn, cutting power to a hillside market. Its policy covered damage to the wheel but excluded the canal that fed it. {{heroPlayer}}’s surveyors reached the mill; {{otherPlayer}}’s assessors held the market’s signed policy and began interviewing the stallholders.",
+      "{{hero}} traced the stopped wheel to a wooden gate upstream, opened just enough to drain the flow into a forgotten side channel. The specialist found a child’s toy boat caught in its hinge, bearing the name of a family that had moved away. Beyond the channel, a row of new market stalls stood unexpectedly lit.",
+      "The surveyors could close the gate and return power to the old market, but the assessors wanted to learn who had connected the new stalls. The traders on both sides were preparing for customers. The specialist held the little boat while water ran past the gate into the disputed channel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors restored the wheel and traced the altered canal.",
+      "heroLoses": "{{otherPlayer}}’s assessors secured the policy and identified the new power connection.",
+      "draw": "Both markets shared reduced power while the gate’s ownership was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a warehouse auction, a sealed tool chest was sold in the name of a worker who had never agreed to part with it. The worker arrived just as the winning bidder left through a side passage. {{heroPlayer}}’s friends followed the chest; {{otherPlayer}}’s auction staff held the sale ledger and asked everyone to stop at the doors.",
+      "{{hero}} struggled with a defender in the cramped passage and held the chest while the worker checked its contents. The tools were there, but their wooden handles had been marked with fresh measurements. Fitted together, the marks sketched a room at the warehouse’s far end, where the worker had once repaired a locked machine.",
+      "The friends could return the chest and leave the sketch unexplained, or take the worker to the locked machine before the bidder came back. The auction staff wanted proof the sale had been unauthorized. The fighter kept the passage open while the worker lined up the handles on the floor."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s friends recovered the chest and found the marked room.",
+      "heroLoses": "{{otherPlayer}}’s staff voided the sale and secured the auction ledger.",
+      "draw": "The chest was held while both sides examined the worker’s measurements."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A debt collector posted a closure notice on a free neighborhood kitchen while its volunteers were preparing lunch. The notice named a lender nobody remembered. {{heroPlayer}}’s community advocates reached the kitchen; {{otherPlayer}}’s clerks brought the financing records and offered to check whether the debt belonged to the building next door.",
+      "{{hero}} compared the notice with the old lease and found a handwritten correction under the lender’s printed address. The specialist followed it to an unused basement pantry shared by both properties. Inside was a ledger showing neighbors had already paid off the kitchen years earlier, with one final receipt folded into a recipe book.",
+      "The advocates could show the collector the receipt immediately, but the clerks wanted to verify its signature before the notice was removed. Diners were lining up outside. The specialist laid the recipe book beside the lease while the volunteers kept the stove warm and watched the door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s advocates proved the kitchen debt was settled and kept it open.",
+      "heroLoses": "{{otherPlayer}}’s clerks verified the ledger and corrected the mistaken notice.",
+      "draw": "Lunch was served while the final receipt was authenticated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tunguska Jurisdictional Command",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A secure server bridge between two office towers lost its access logs during a change of shift. A courier remained inside carrying a drive needed to restore public transit accounts. {{heroPlayer}}’s guards reached the nearer entrance; {{otherPlayer}}’s systems staff held the far tower with an offline backup key.",
+      "{{hero}} covered the glass span as shots struck a handrail. The fighter kept a route open for the courier, who found an access panel hanging loose halfway across. Inside it lay a portable reader with the missing logs, along with a handwritten request to delay the account restoration until a disputed fare charge was reviewed.",
+      "The guards could bring the drive through and restore service, but the systems staff warned that the disputed charge affected hundreds of riders. The courier could see a line of people forming at the station below. The fighter held the span while the portable reader finished copying its final log."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the drive and secured the bridge for the courier.",
+      "heroLoses": "{{otherPlayer}}’s staff restored the transit accounts and identified the missing logs.",
+      "draw": "Service continued on backup records while the fare charge was reviewed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "objective",
+    "paragraphs": [
+      "Two recovery teams reached a silent relay buried beneath a field of dark glass. Both carried a different authorization to retrieve its core. The relay began transmitting their arrival times before either team had opened the hatch. {{heroPlayer}}’s technicians held the near approach; {{otherPlayer}}’s technicians inspected a second entrance cut into the glass.",
+      "{{hero}} opened the hatch and found two core sockets, one empty and one occupied by a device that still felt warm. The specialist read its last transmission: a warning that moving either socket would collapse the only stable path across the field. A line of tiny cracks was already spreading toward the second entrance.",
+      "The first team could take the warm core and retreat, but the other technicians needed a route out before the glass shifted. Neither authorization mentioned the empty socket. The specialist held the relay’s handle while a voice called from the second entrance, asking what the warning said."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the core and guided both approaches across the glass.",
+      "heroLoses": "{{otherPlayer}}’s team reached the second socket and protected the relay.",
+      "draw": "The core stayed in place while both teams found a stable exit."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An abandoned fort’s signal drum sounded from beneath a roof of fallen stone. Two expeditions reached its courtyard with orders to recover a small engraved plate from the drum. {{heroPlayer}}’s party entered by the breach; {{otherPlayer}}’s party held the intact gate and a diagram of the fort’s old chambers.",
+      "{{hero}} forced past a defender in the tight drum passage and steadied a cracked support for a companion. The plate was attached to a cord stretched through the drum, pulling a latch whenever it sounded. Behind the latch lay a narrow stair marked with the names of those who had once defended the fort.",
+      "The party could remove the plate and silence the drum, or leave the cord intact until the others traced the stair. The stone roof continued to settle above them. The fighter held the support while a companion read one name aloud and heard a reply from below the stair."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the plate and reached the hidden stair.",
+      "heroLoses": "{{otherPlayer}}’s party held the fort and traced the sounding drum.",
+      "draw": "The plate stayed attached while both expeditions reinforced the passage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A survey station on a glacier received a sample canister from a drill it had retired years earlier. Its label named a depth the ice should not have reached. {{heroPlayer}}’s researchers inspected the canister; {{otherPlayer}}’s search party followed the old drill line across the ice with a lamp.",
+      "{{hero}} warmed the canister just enough to see a thin layer of black particles suspended inside. The specialist matched them to a sample from a distant survey site, then noticed the retired drill’s identification scratched on the cap. Outside, the search party found fresh tracks ending at an unmarked borehole beneath the station.",
+      "The researchers could seal the canister and study its origin, but the search party wanted the borehole checked before the ice shifted. A low sound rose through the station floor. The specialist returned the cap to its seal while the lamp outside disappeared briefly behind blowing snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers preserved the sample and identified the hidden borehole.",
+      "heroLoses": "{{otherPlayer}}’s search party secured the drill line and traced the tracks.",
+      "draw": "The station stayed occupied while both teams mapped the ice below."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A relay tower in an empty valley began transmitting a countdown to a rendezvous no one had scheduled. A small vehicle arrived beneath it without a driver. {{heroPlayer}}’s intercept party reached the tower foot; {{otherPlayer}}’s technicians took the nearby shelter and scanned the vehicle for its cargo.",
+      "{{hero}} covered a climber on the tower ladder when fire struck the lower struts. The fighter held the approach while the climber found the countdown wired to a spool of physical film. Its first frame showed the empty vehicle arriving; its final frame showed a person stepping out of it at the tower’s door.",
+      "The intercept party could open the vehicle now, but the technicians warned that its doors were linked to the same countdown. A figure moved inside the shelter window. The fighter kept the ladder clear while the climber lowered the film and the tower’s clock passed another minute."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the tower and identified the hidden vehicle passenger.",
+      "heroLoses": "{{otherPlayer}}’s technicians disabled the countdown and recovered the film.",
+      "draw": "The vehicle remained locked while both parties examined the final frame."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A sealed greenhouse stood alone in a salt basin, its roof dark under clear noon sunlight. Inside, plants had arranged their leaves toward an empty corner rather than the lamps above. {{heroPlayer}}’s examiners entered through the airlock; {{otherPlayer}}’s surveyors checked the outside walls and found no opening there.",
+      "{{hero}} sampled the air in the corner and found a faint current passing through a floor seam. The specialist lifted one panel to reveal a small mirrored chamber below, holding a seed packet addressed to someone at the survey base. One mirror carried a fresh handprint pointing toward a second packet still beneath the soil.",
+      "The examiners could take the visible packet and leave the chamber intact, or open the soil to learn why the plants were turning. The surveyors had already reported the base recipient missing that morning. The specialist held the first packet above the mirror as the air current shifted across its surface."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s examiners secured the packets and traced their missing recipient.",
+      "heroLoses": "{{otherPlayer}}’s surveyors protected the greenhouse and mapped its mirrored chamber.",
+      "draw": "The plants remained undisturbed while both groups searched the survey base."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A sealed translation archive produced a warning in a language none of its operators could identify. Its display translated one phrase as the name of a child currently visiting the adjacent museum. {{heroPlayer}}’s linguists reached the archive; {{otherPlayer}}’s search party secured the museum exits and looked for the child’s guide.",
+      "{{hero}} compared the warning with an older inscription from the archive and found a repeated symbol for a nearby stone stair. The specialist discovered the stair beneath a temporary exhibit, where the child had dropped a paper map. Its route ended at an unused chamber the museum had closed for repairs.",
+      "The linguists could follow the map into the chamber or continue translating to learn why the archive named the child. The search party had already found the guide, who said the child was playing a treasure game. The specialist held the map against the inscription as footsteps sounded below the exhibit floor."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s linguists translated the warning and found the child safely.",
+      "heroLoses": "{{otherPlayer}}’s search party secured the museum and located the chamber.",
+      "draw": "The exhibit stayed closed while both groups checked the untranslated symbols."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A floating survey station reported a strip of riverbank that shifted location each morning. Its charts showed the shore moving toward an old settlement despite a steady current. {{heroPlayer}}’s analysts boarded the station; {{otherPlayer}}’s surveyors held the river markers and checked the banks from two small boats.",
+      "{{hero}} measured the station’s anchor chain and found it had been shortened one link each night. The specialist followed the removed links to a locked chest beneath the chart table. Inside lay a faded map of the settlement, with a landing place marked at precisely the position where the station now drifted.",
+      "The analysts could reset the anchor and preserve accurate measurements, or let the station drift one more night to see who was moving it. The settlement’s residents were already asking about the old landing. The specialist held the chain links beside the map while the boats moved slowly downstream."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts corrected the survey and identified the old landing.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the river markers and traced the missing links.",
+      "draw": "The station anchored overnight while both teams checked the settlement map."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hillside memorial shelter opened after a storm, exposing a sealed chamber beneath its steps. Visitors could hear a bell ringing from inside, though the building had no bell. {{heroPlayer}}’s rescuers reached the upper path; {{otherPlayer}}’s surveyors took the lower entrance with a plan of the shelter’s foundations.",
+      "{{hero}} fought through a defender on the narrow stair and held the chamber doorway while a companion shone a light below. There was no bell, only a metal cup striking against a pipe each time water drained from the roof. Beneath the cup lay a visitor’s scarf and a note asking for help at the lower entrance.",
+      "The rescuers could clear the lower entrance for whoever left the scarf, but the surveyors warned its supporting wall had shifted. Another shower was beginning. The fighter held the doorway while the companion read the note through damp fingers and called down into the dark passage."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers opened the passage and found the missing visitor.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the foundation and reached the lower entrance.",
+      "draw": "The shelter stayed closed while both teams reinforced the chamber."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A remote peacekeeping post received two incompatible evacuation orders for the same valley. One named a rising river, the other a road hazard, and both carried a valid seal. {{heroPlayer}}’s coordinators reached the command desk; {{otherPlayer}}’s scouts watched the bridge and the high road for signs of danger.",
+      "{{hero}} compared the orders against a weather chart and found that each route crossed the other’s warning zone. The specialist called a survey team, which reported a narrow footpath over stable ground between them. An old map on the desk marked a gate on that path, locked since the post was built.",
+      "The coordinators could send the valley residents toward the locked gate, but the scouts wanted it checked before families arrived. The river was rising, and the road had already begun to crack. The specialist marked the footpath on both orders as the first evacuation bus called in."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators verified the footpath and guided the residents out.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the gate and cleared the safer route.",
+      "draw": "The residents sheltered nearby while both hazards were confirmed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An unoccupied rescue pod began broadcasting a distress beacon from an active docking ring. Each arriving shuttle adjusted its course toward the empty berth, where no crew had requested a landing. {{heroPlayer}}’s patrol entered the ring; {{otherPlayer}}’s technicians held traffic control and warned the next shuttle to wait outside.",
+      "{{hero}} covered an engineer crossing the ring as fire struck a guidance lamp. The fighter protected the approach while the engineer opened the rescue pod and found a second beacon inside its floor. Its code named a person aboard the waiting shuttle, and a handwritten note asked that passenger to look through the pod’s rear window.",
+      "The patrol could disable both beacons before the shuttle arrived, but the technicians wanted the message delivered without risking a collision. The passenger was already on the radio asking what was happening. The fighter kept watch across the ring as the engineer turned the pod toward open space."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the ring and delivered the hidden message safely.",
+      "heroLoses": "{{otherPlayer}}’s technicians controlled traffic and traced the second beacon.",
+      "draw": "The shuttle waited while both teams inspected the empty pod."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A desert excavation uncovered the curved roof of a buried transport cabin. Its door was warm despite the cool sand, and a passenger list remained visible through the window. {{heroPlayer}}’s excavation engineers brought lifting gear; {{otherPlayer}}’s surveyors held the outer trench and checked whether the cabin connected to anything deeper.",
+      "{{hero}} tested the cabin’s frame and discovered that its heat came from a small battery beneath the sill. The specialist lifted a loose panel to find an evacuation ticket stamped for that day. Outside, the surveyors found a row of footprints approaching the trench, then disappearing beneath sand that had settled overnight.",
+      "The engineers could open the cabin before its battery died, but the surveyors wanted its underside supported in case the trench collapsed. The passenger list included a name from a nearby settlement. The specialist held the ticket against the window while someone in the settlement came running toward the dig."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers opened the cabin and traced the current ticket.",
+      "heroLoses": "{{otherPlayer}}’s surveyors stabilized the trench and followed the footprints.",
+      "draw": "The cabin remained supported while both groups contacted the listed passengers."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain silk archive received a bolt of cloth dyed in the color of a family whose workshop had closed decades ago. Its label named a weaver believed to be traveling far away. {{heroPlayer}}’s guardians reached the loom room; {{otherPlayer}}’s investigators guarded the sealed dye vats and studied the archive’s delivery book.",
+      "{{hero}} forced through a defender at the narrow loom bench and held it while a weaver unrolled the cloth. Stitched into its edge was a route up the mountain to a shelter, with one turn crossed out in red. The weaver recognized that turn as the path lost beneath a recent rockfall.",
+      "The guardians could follow the revised route, but the investigators wanted to verify who delivered the cloth before anyone climbed in poor weather. A fresh length of silk still hung on the loom. The fighter held the bench clear as the weaver found the shelter’s name worked into its border."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians followed the woven route and found the missing weaver.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the archive and traced the delivery.",
+      "draw": "The mountain route remained closed while the cloth’s message was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A tidal sanctuary reported a sudden bloom of luminous algae inside a sealed pool. Its caretakers had promised not to disturb the water until an injured animal could recover there. {{heroPlayer}}’s naturalists studied the light from the walkway; {{otherPlayer}}’s searchers checked the sanctuary roof for a source outside the pool.",
+      "{{hero}} lowered a sampler into the glow and found ordinary algae illuminated by a tiny lamp beneath a stone shelf. The specialist lifted the lamp to reveal a waterproof message left for a caretaker who had retired. It described a small animal once rescued there and named a safe place to release it when healed.",
+      "The naturalists could remove the lamp and let the pool return to darkness, but the searchers wanted to learn who had set it beneath the stone. The injured animal stirred in the water. The specialist held the message above the pool as the tide reached the sanctuary steps."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s naturalists protected the pool and honored its release instructions.",
+      "heroLoses": "{{otherPlayer}}’s searchers found the lamp’s owner and secured the sanctuary.",
+      "draw": "The pool stayed closed while the retired caretaker was contacted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A village grain tower transmitted a warning that its stores were empty, although every silo looked full. Farmers were about to load seed for spring planting. {{heroPlayer}}’s patrol reached the tower stairs; {{otherPlayer}}’s investigators held the loading yard and brought a sample from the top bin.",
+      "{{hero}} covered a farmer climbing to the top hatch as shots struck the outer ladder. The fighter held the stair while the farmer opened the bin and discovered a shallow layer of grain over an empty chamber. At its bottom lay the tower’s missing volume gauge, carefully wrapped in a cloth marked with a neighboring farm’s name.",
+      "The patrol could secure the yard and find the missing grain, but the investigators wanted the neighboring farmer questioned before the cloth was treated as evidence. Planting would be delayed without seed. The fighter watched the farmer lower the gauge while a second silo began sounding its own warning."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the stores and traced the missing grain.",
+      "heroLoses": "{{otherPlayer}}’s investigators recovered the gauges and protected the planting seed.",
+      "draw": "Loading stopped while every silo was measured by hand."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A field archive stored the last viable cutting of a tree thought extinct across the valley. A new leaf appeared bearing a spiral mark identical to a carving on an abandoned orchard gate. {{heroPlayer}}’s botanists reached the cutting room; {{otherPlayer}}’s surveyors held the orchard entrance with an old land map.",
+      "{{hero}} examined the leaf and found its spiral came from light passing through a tiny crack in the growth cabinet. The specialist adjusted the lamp to reveal a second mark, shaped like a planting row. The surveyors called from the orchard gate: below the carved spiral lay a sealed container of soil, still damp inside.",
+      "The botanists could transplant the cutting into that soil, but the surveyors wanted it tested before the only living specimen left the archive. Rain was moving over the valley. The specialist held the leaf beside the land map and traced the planting row toward the orchard’s sheltered wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists protected the cutting and revived the orchard’s planting plan.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the soil and mapped the old rows.",
+      "draw": "The cutting stayed sheltered while both groups tested the damp soil."
+    }
   }
 ]
