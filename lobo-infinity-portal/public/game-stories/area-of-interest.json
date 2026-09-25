@@ -15958,5 +15958,385 @@
       "heroLoses": "{{otherPlayer}}’s surveyors secured the soil and mapped the old rows.",
       "draw": "The cutting stayed sheltered while both groups tested the damp soil."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mining outpost marked a newly found seam with a silver flag before any claim had been filed. By morning the flag stood on the opposite side of a dangerous ravine. {{heroPlayer}}’s guards reached the upper crossing; {{otherPlayer}}’s surveyors held the original marker stone and disputed the new position.",
+      "{{hero}} fought a defender on the narrow cable bridge and held its handrail while a miner recovered the flag. Its pole contained a rolled permit naming a child as the seam’s owner. The miner recognized the child’s surname from an abandoned camp farther up the ravine, where the old mine had once kept its records.",
+      "The guards could carry the permit to the camp or stake the seam at the original marker before someone moved it again. The surveyors warned that the bridge was losing tension. The fighter held the flag against the wind as the miner folded the permit and stepped back toward safe stone."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the seam and located the permit’s young owner.",
+      "heroLoses": "{{otherPlayer}}’s surveyors restored the true marker and recovered the camp records.",
+      "draw": "The mine stayed unclaimed while the child’s family was found."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather station on a remote ridge issued an insurance warning for a storm that did not appear on any map. Its caretaker had left a jacket over the instrument rail. {{heroPlayer}}’s contracted guards climbed from the valley; {{otherPlayer}}’s search party held the ridge road with an older hand-drawn forecast.",
+      "{{hero}} covered a technician approaching the rail when fire broke a window in the observation hut. The fighter drove the shooter back while the technician found the jacket’s pocket stuffed with dry leaves from a distant orchard. The leaves were pinned around a note giving a shelter location the station’s instruments had not recorded.",
+      "The guards could follow the note toward the shelter, but the search party wanted the caretaker’s whereabouts confirmed before anyone left the ridge. A wind rose suddenly through the instruments. The fighter held the hut entrance while the technician compared the dry leaves with the dark clouds now gathering below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the station and checked the unlisted shelter.",
+      "heroLoses": "{{otherPlayer}}’s search party found the caretaker and verified the warning.",
+      "draw": "The ridge stayed occupied while both groups waited for the storm."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A traveling tribunal stopped at an isolated quarry to hear who owned a piece of carved stone. Before testimony, the stone was moved into a locked crane cab above the hearing site. {{heroPlayer}}’s escorts climbed toward it; {{otherPlayer}}’s investigators held the tribunal tent and took statements from both claimants.",
+      "{{hero}} pushed a defender from the narrow cab door and held it while a mason examined the stone. Its underside bore a line of writing finished in two different hands. One named a quarry worker missing for years; the other gave an address for the worker’s daughter in a village beyond the site.",
+      "The escorts could carry the stone down for testimony or bring the daughter to see it before anyone made a claim. The investigators wanted the cab secured as a possible crime scene. The fighter braced against the crane’s movement while the mason copied the two lines without letting the stone slip."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts recovered the stone and reached the worker’s daughter.",
+      "heroLoses": "{{otherPlayer}}’s investigators secured the tribunal and verified the second inscription.",
+      "draw": "The hearing paused while both claimants examined the carved writing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A line of painted stones guided displaced families through a salt plain toward a relief station. One stone had been turned overnight, sending them toward a dry basin with no marked return path. {{heroPlayer}}’s guides reached the misplaced marker; {{otherPlayer}}’s scouts held the station’s water cache and counted the families due before dusk.",
+      "{{hero}} checked the stone’s base and found fresh rope fibers from a sled hidden in the basin. The specialist followed the sled’s tracks to a canvas shelter where several travelers rested beside full water canisters. They had followed a second set of markers, made from scraps of the same paint as the original route.",
+      "The guides could lead the travelers back immediately, but the scouts worried another family might still follow the false stones. Light was fading over the plain. The specialist set the true marker upright and counted the visible canisters before sending a lamp signal toward the relief station."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides restored the route and brought the families to water.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the station and searched the false trail.",
+      "draw": "Both parties marked the basin while the last travelers were counted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Combined Army",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A border checkpoint’s emergency gate lowered while a bus of evacuees was still passing through. Its controller displayed a safety lockout, but the upper hinge continued to descend. {{heroPlayer}}’s guards reached the checkpoint roof; {{otherPlayer}}’s technicians held the control booth and directed the driver to stop clear of the gate.",
+      "{{hero}} covered a mechanic reaching the exposed hinge as shots struck the roof railing. The fighter held the approach while the mechanic found a bent retaining pin and a strip of paper caught behind it. The strip listed the bus’s destination and an unoccupied seat number, with a request to deliver a message there.",
+      "The guards could lift the gate by hand and keep the bus moving, but the technicians wanted the hinge braced first. The driver could see the empty seat from the windshield mirror. The fighter watched the mechanic secure the pin as the last passengers moved away from the narrowing passage."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards cleared the bus and secured the failing gate.",
+      "heroLoses": "{{otherPlayer}}’s technicians stabilized the hinge and delivered the hidden message.",
+      "draw": "The checkpoint stayed closed while the gate and passenger list were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two patrols reached the same battlefield cairn with orders to recover a missing regimental standard. The cairn had been rebuilt with stones from a demolished watchtower, obscuring its original marker. {{heroPlayer}}’s patrol climbed the eastern slope; {{otherPlayer}}’s patrol held the old approach and carried a drawing made before the rebuilding.",
+      "{{hero}} drove a defender from the narrow ledge and steadied a loose capstone while a comrade looked beneath it. They found no standard, only a shaft leading into the watchtower’s old signal room. A scrap of its cloth was caught on a ladder rung, wet from a leak that had not touched the cairn.",
+      "The first patrol could follow the shaft or secure the cairn against another collapse. The other patrol knew an entrance through the demolished tower’s lower wall. The fighter held the capstone as water dripped onto the cloth and voices sounded somewhere deep beneath the stones."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol recovered the standard and secured the cairn.",
+      "heroLoses": "{{otherPlayer}}’s patrol reached the signal room and traced the cloth.",
+      "draw": "Both patrols braced the cairn before descending toward the standard."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A laboratory planted hardy grass in an old impact crater to test whether its soil could support a new settlement. The first ring of growth followed a perfect circle not shown on the planting grid. {{heroPlayer}}’s researchers checked the soil; {{otherPlayer}}’s guards held the crater rim and watched a low opening beneath it.",
+      "{{hero}} dug inside the ring and found a shallow metal hoop beneath the grass. The specialist lifted one end to expose a small hatch marked with the date of an expedition lost in the crater. A faint current of warm air came through the hatch, carrying a scrap of the expedition’s field notebook.",
+      "The researchers could open the hatch now, but the guards wanted supports along the rim before anyone went below. The grass roots had already grown around the hoop. The specialist held the notebook fragment in the crater light while a voice from the guards reported movement beneath the opening."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers secured the hatch and recovered the lost expedition’s notes.",
+      "heroLoses": "{{otherPlayer}}’s guards protected the crater and reached the lower opening.",
+      "draw": "The new grass stayed intact while the buried chamber was reinforced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A highland radar array tracked a single vehicle circling a ruined fortress, yet no vehicle was visible on the road. The old radar operator had left its receiver running. {{heroPlayer}}’s search unit reached the dish platform; {{otherPlayer}}’s fortress patrol took the lower road and checked the empty turning bay.",
+      "{{hero}} covered a technician crossing the platform when fire struck the dish’s support. The fighter returned fire while the technician found a small metal toy vehicle attached to the rotating receiver. Its wheel turned in time with the phantom signal, and a key taped below named a locked store inside the fortress.",
+      "The search unit could take the key down to the store, but the patrol warned that its door faced an unstable wall. The radar continued to show the toy circling in place. The fighter watched the technician hold the little wheel still as a real engine started somewhere behind the ruins."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s unit secured the receiver and opened the fortress store.",
+      "heroLoses": "{{otherPlayer}}’s patrol traced the real engine and protected the unstable wall.",
+      "draw": "The radar was shut down while both parties searched the turning bay."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "An abandoned mountain observatory displayed a topographic map of a cave system no survey team had finished exploring. One route had been corrected in fresh ink. {{heroPlayer}}’s pathfinders entered the map room; {{otherPlayer}}’s sentries held the cave entrance and compared the map with marks cut into its stone.",
+      "{{hero}} set the corrected map against an older rubbing and found the new ink followed a vein of mineral that reflected light. The specialist aimed a lamp into the cave and revealed matching flecks leading to a dry side chamber. A small pack lay at its threshold, tagged with the name of a surveyor still missing from the observatory roll.",
+      "The pathfinders could follow the reflected flecks, but the sentries wanted the chamber checked for loose rock before anyone entered. The pack’s strap was warm in the sun. The specialist marked the safe turns on a separate sheet while the light inside the cave shifted with the clouds."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s pathfinders mapped the chamber and traced the missing surveyor.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the cave and recovered the tagged pack.",
+      "draw": "The side chamber stayed closed while both teams checked its roof."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A frozen archive stored recordings from the first survey of a volcanic plain. It began playing an evacuation call for a settlement built there only recently. {{heroPlayer}}’s analysts reached the playback room; {{otherPlayer}}’s guards held the sealed cold vault and looked for the original survey tapes.",
+      "{{hero}} separated the call from the old tapes and heard a different warning hidden beneath the familiar words. The specialist traced it to a recorder left inside the vault, aimed at the new settlement’s water intake. A recent photograph beside it showed a crack in the intake pipe that the settlement had not reported.",
+      "The analysts could alert the settlement immediately, but the guards wanted the photograph’s date verified before an evacuation. Outside the archive, the plain was unusually quiet. The specialist held the recorder and the old survey tape together while the warning repeated through the frozen room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts traced the warning and protected the settlement’s intake.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the vault and verified the cracked pipe.",
+      "draw": "The settlement checked its water while both parties dated the photograph."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A field library opened a box of campaign journals that had been sealed during a retreat. Its catalog listed one extra volume, written under the name of a person still stationed nearby. {{heroPlayer}}’s archivists reached the reading table; {{otherPlayer}}’s sentries held the entrance and brought the soldier’s current service record.",
+      "{{hero}} compared the volume’s binding with the others and found its last pages made of newer paper. The specialist read a route through an abandoned supply depot, with the final turn marked by the soldier’s childhood nickname. The soldier recognized the nickname but denied ever having seen the depot.",
+      "The archivists could follow the route, but the sentries wanted the soldier protected until its author was known. The library box still held a scrap of unused binding thread. The specialist placed the journal beside the service record as the soldier recalled a voice from the retreat."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s archivists traced the route and identified the journal’s writer.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the library and protected the named soldier.",
+      "draw": "The volume stayed sealed while both groups checked the depot records."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ceremonial race crossed a damaged stone causeway toward a small island fort. The runner carrying the last relay baton vanished at its halfway arch. {{heroPlayer}}’s searchers reached the arch from the mainland; {{otherPlayer}}’s defenders held the fort side with the race judges and a spare baton.",
+      "{{hero}} wrestled a defender from the arch’s narrow parapet and held the opening while a companion looked below. The missing runner clung to a maintenance ledge, protecting the baton against the wall. The fighter lowered a line, then noticed the runner had tied a second line to a small case wedged beneath the stones.",
+      "The searchers could lift the runner immediately, but the case might fall into the water if the second line snapped. The judges wanted the race stopped until everyone was safe. The fighter braced against the parapet as the runner called up a warning about the crumbling ledge."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers rescued the runner and recovered the hidden case.",
+      "heroLoses": "{{otherPlayer}}’s defenders secured the causeway and brought the runner ashore.",
+      "draw": "The race ended while both sides reinforced the damaged arch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A census team reached a temporary settlement built inside a former vehicle depot. Its official count included an entire row of rooms that appeared empty. {{heroPlayer}}’s observers took the registration desk; {{otherPlayer}}’s patrol held the far loading door and compared the count with arriving supply crates.",
+      "{{hero}} checked the empty rooms and found the beds freshly made, with meal tokens tucked beneath every pillow. The specialist matched the tokens to names on a handwritten list taped inside a heating duct. A resident explained that the absent families had left before dawn to gather water beyond the depot’s marked boundary.",
+      "The observers could register the families now or wait until they returned to confirm their consent. The patrol knew the water route crossed a restricted yard. The specialist folded the list and followed its last name to a child’s drawing of the route, pinned over the desk."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers counted the families and secured their water route.",
+      "heroLoses": "{{otherPlayer}}’s patrol protected the depot and brought the missing residents home.",
+      "draw": "Registration stayed open until the families returned to speak for themselves."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A remote landing field received a beacon claiming a survey shuttle was approaching, although its flight plan had been canceled. Ground crews found a single wheel track crossing the pad. {{heroPlayer}}’s patrol searched the beacon shed; {{otherPlayer}}’s sentries held the field perimeter and watched the empty sky.",
+      "{{hero}} covered a controller crossing to the shed when fire struck the pad lights. The fighter kept the crossing clear while the controller found the beacon wired to a wheeled instrument cart. Under its cover lay a real survey log, describing a shuttle that had landed at the field in darkness weeks earlier.",
+      "The patrol could follow the old wheel track toward the storage hangar, but the sentries wanted the pad secured for an incoming medical flight. The beacon continued to announce the nonexistent shuttle. The fighter watched the controller shut it off as the first real aircraft appeared against the horizon."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol cleared the pad and traced the missing survey shuttle.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the field and recovered the old survey log.",
+      "draw": "The medical flight landed while both parties checked the storage hangar."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "An excavation tunnel beneath a rocky plateau grew warm after its ventilation fan stopped. A cart carrying geological samples was stranded below the last shaft. {{heroPlayer}}’s engineers brought a portable fan; {{otherPlayer}}’s guards secured the tunnel mouth and counted the miners already back above ground.",
+      "{{hero}} traced the heat to a sealed steam pipe installed during a forgotten drilling campaign. The specialist closed its old valve and found a metal tag bearing the name of a miner absent from the current roll. Below, a voice answered the count from beside the stranded cart, asking the engineers to leave one sample untouched.",
+      "The engineers could retrieve the miner and cart, but the guards wanted the unknown sample isolated before it reached the surface. Cooler air began flowing through the shaft. The specialist held the valve shut while the voice below described a second pipe that had not appeared on the excavation plan."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers cooled the tunnel and recovered the stranded miner.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the shaft and isolated the unusual sample.",
+      "draw": "The cart stayed below while both groups checked the forgotten pipes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A hilltop shrine opened its gate for a night of remembrance, but the stone steps beneath it shifted as mourners climbed. A caretaker reported someone had moved a foundation slab earlier that day. {{heroPlayer}}’s guardians entered through the side court; {{otherPlayer}}’s sentries held the upper landing and guided visitors to another route.",
+      "{{hero}} forced a defender from the narrow stair and held its rail while a mason examined the shifted slab. Beneath it lay a tin of photographs, including one of the caretaker standing with a person no mourner knew. On the tin’s lid, a note asked that the pictures be returned before the remembrance bell sounded.",
+      "The guardians could recover the tin and clear the steps, but the sentries wanted the stranger identified before anyone left the shrine. The caretaker had gone to prepare the bell. The fighter held the stair steady as the mason replaced the slab and an older mourner recognized the stranger’s face."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians secured the steps and returned the forgotten photographs.",
+      "heroLoses": "{{otherPlayer}}’s sentries protected the mourners and identified the unknown visitor.",
+      "draw": "The ceremony moved outside while both groups checked the shrine foundation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A wildlife corridor through an abandoned industrial yard stopped registering the passage of its tagged animals. One collar continued broadcasting from inside a locked warehouse after the gates had been shut. {{heroPlayer}}’s wardens reached the loading door; {{otherPlayer}}’s trackers held the outer fence and listened for movement beneath the roof.",
+      "{{hero}} found the collar hanging from a ceiling pipe, its buckle opened without damage. The specialist followed scuffed prints to a stack of crates, where a young animal was resting beside a container of clean water. A second collar lay in the crate, still in its wrapper and addressed to a keeper far away.",
+      "The wardens could bring the animal through the yard now, but the trackers worried it would run toward open machinery. The distant keeper might know why the second collar was sent. The specialist held the wrapper and waited for the animal to lift its head before moving the crates."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s wardens guided the animal out and restored the wildlife corridor.",
+      "heroLoses": "{{otherPlayer}}’s trackers secured the yard and traced the extra collar.",
+      "draw": "The animal rested inside while both teams made a safe passage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A watch lamp beside a frontier river began signaling a bridge closure even though the span was empty and intact. A school coach was due to cross before sunrise. {{heroPlayer}}’s patrol reached the lamp housing; {{otherPlayer}}’s sentries held the near bank and checked the bridge planks one by one.",
+      "{{hero}} covered an electrician climbing the lamp post as shots struck the river railing. The fighter returned fire while the electrician uncovered an extra shutter shaped like a child’s hand. Its motion spelled a plea to look under the bridge, where a small boat had been tied to the central pier.",
+      "The patrol could retrieve the boat, but the sentries wanted the bridge load tested before the coach arrived. In the boat lay a packed school bag without a name tag. The fighter watched the electrician lower the shutter as a light from the far bank answered the signal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the bridge and found the bag’s young owner.",
+      "heroLoses": "{{otherPlayer}}’s sentries cleared the coach route and recovered the hidden boat.",
+      "draw": "The coach waited on the near bank while both parties checked the reply."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A ship’s arboretum preserved a living graft from a forest lost to a landslide. Its leaves began shedding fine red dust during a tour, and the visitors watched it settle on their sleeves. {{heroPlayer}}’s botanists isolated the plant; {{otherPlayer}}’s sentries cleared visitors from the glass walkway and checked the ventilation filters.",
+      "{{hero}} examined the dust and found it was harmless mineral powder from a cracked growth tray, lifted into the leaves by the fan. The specialist repaired the tray and noticed a small carved wooden marker beneath its soil. The marker gave a planting date from before the landslide and named a grove beyond the lost forest.",
+      "The botanists could prepare the graft for that grove, but the sentries wanted the tour area certified safe before moving anything. A visitor claimed their family still owned the carved marker. The specialist rinsed its inscription in a clean bowl while the arboretum lights slowly came back on."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists saved the graft and traced the older grove.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the arboretum and identified the marker’s owner.",
+      "draw": "The graft stayed isolated while the grove’s location was confirmed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A caravan checkpoint displayed a customs seal from a fort abandoned before the road existed. Its inspector refused to let a relief wagon pass until the origin was explained. {{heroPlayer}}’s escorts reached the barrier; {{otherPlayer}}’s sentries held the inspection shed with old maps of the fort.",
+      "{{hero}} forced a defender away from the narrow gate and held it while a driver checked the wagon’s cargo. Beneath the sacks lay a wooden stamp identical to the mysterious seal and a recent note asking for supplies at the abandoned fort. Its last line named a wounded traveler the driver thought had died.",
+      "The escorts could carry the supplies to the fort, but the sentries wanted a guide sent ahead to confirm anyone lived there. The relief wagon’s medicine had to stay cool. The fighter held the gate open while the driver read the wounded traveler’s name again, then turned toward the old road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts delivered the supplies and found the wounded traveler.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the checkpoint and verified the fort’s seal.",
+      "draw": "The wagon waited in shade while both parties checked the old road."
+    }
   }
 ]
