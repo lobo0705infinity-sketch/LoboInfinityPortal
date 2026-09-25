@@ -24,6 +24,7 @@ export type TacticalProfile = {
   percentage: number
   profile: string
   profileId: string
+  rankingVariants?: string
   unit: string
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
   aro?: { fireteam?: BenchmarkState; normal?: BenchmarkState }
@@ -82,6 +83,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
 
   const rows = Array.from(appearances.values()).map(({ entry, lists: listIndexes }) => ({
     entry,
+    listIndexes,
     profile: toProfile(entry, listIndexes.size, decoded.length, gunfighterRating(entry), closeCombatRating(entry), aroRating(entry)),
   }))
   const category = (id: TacticalCategoryId, title: string, description: string, predicate: (entry: ArmyIntelligenceDecodedEntry) => boolean, unavailableReason?: string): TacticalCategory => ({
@@ -155,6 +157,12 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
       category('defensive', 'Defensive Network', 'Profiles with Camouflage, Decoy, or Minelayer; Mimetism alone does not qualify.', (entry) => entry.skills.some((skill) => defensiveSkill.test(normalize(skill)))),
     ]
   addMultiRoleMetadata(categories)
+  if (hasBenchmarkRatings) {
+    const gunfighters = categories.find((item) => item.id === 'apex')!
+    const shown = new Set(gunfighters.profiles)
+    gunfighters.profiles = consolidateGunfighterRankings(rows.filter(({ profile }) => shown.has(profile)), decoded.length)
+      .sort(compareGunfighters)
+  }
   return {
     categories,
     hackerListCount: hackerLists.size,
@@ -168,10 +176,36 @@ function gunfighterRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile[
   const key = String(entry.combinedId || '').replaceAll('-', ':')
   const states = (portalGunfighterRatings.ratings as Record<string, Record<string, { grade: string; percentile: number; rating: number; weaponsUsed: Array<{ weapon: string; scoreContribution: number }> }>>)[key]
   if (!states) return undefined
-  const [state, rating] = Object.entries(states).sort(([, left], [, right]) => right.rating - left.rating)[0] || []
+  const [state, rating] = Object.entries(states).filter(([state]) => state === 'normal'
+    || state === 'fireteam' && Number(entry.fireteamSdBonus || 0) > 0)
+    .sort(([, left], [, right]) => right.rating - left.rating)[0] || []
   if (!rating || (state !== 'normal' && state !== 'fireteam')) return undefined
   const weapon = [...rating.weaponsUsed].sort((left, right) => right.scoreContribution - left.scoreContribution || left.weapon.localeCompare(right.weapon))[0]?.weapon || 'No selected weapon'
   return { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, state, weapon }
+}
+
+function consolidateGunfighterRankings(rows: Array<{ entry: ArmyIntelligenceDecodedEntry; listIndexes: Set<number>; profile: TacticalProfile }>, listCount: number): TacticalProfile[] {
+  const groups = new Map<string, { profile: TacticalProfile; entries: ArmyIntelligenceDecodedEntry[]; lists: Set<number> }>()
+  for (const { entry, listIndexes, profile } of rows) {
+    const rating = profile.gunfighter!
+    const weapons = normalizedWeapons(entry).map((weapon) => [normalize(weapon.name), normalize(weapon.mode), weapon.burst,
+      (weapon.modifiers || []).map(normalize).sort().join(',')].join(':')).sort().join('|')
+    const key = [entry.canonicalUnitId ?? normalize(entry.unit).toLowerCase(), normalize(entry.unit).toLowerCase(),
+      normalize(entry.profile).toLowerCase(), entry.points, entry.bs, entry.cc, entry.wounds, entry.structure,
+      weapons, rating.state, rating.rating, rating.grade, rating.percentile, rating.weapon,
+      profile.mobility?.score ?? ''].join('::')
+    const group = groups.get(key) || { profile: { ...profile }, entries: [], lists: new Set<number>() }
+    group.entries.push(entry)
+    for (const index of listIndexes) group.lists.add(index)
+    group.profile.roles = unique([...group.profile.roles, ...profile.roles]) as TacticalCategoryId[]
+    groups.set(key, group)
+  }
+  return [...groups.values()].map(({ profile, entries, lists }) => {
+    const variants = unique(entries.map((entry) => `${entry.lieutenant ? 'Lieutenant' : 'Standard'} (${entry.swc} SWC)`))
+    return { ...profile, listCount: lists.size, percentage: listCount ? lists.size / listCount * 100 : 0,
+      ...(entries.length > 1 ? { rankingVariants: variants.length === entries.length && variants.length <= 3
+        ? variants.join(' · ') : `${entries.length} Army profile variants` } : {}) }
+  })
 }
 
 function closeCombatRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['closeCombat'] {

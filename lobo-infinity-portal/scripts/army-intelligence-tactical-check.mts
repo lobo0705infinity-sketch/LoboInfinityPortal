@@ -174,6 +174,21 @@ assert.equal(lamedhProfiles.length, 1, 'one canonical LAMEDH profile must render
 assert.equal(lamedhProfiles[0].listCount, 10, 'one LAMEDH row must aggregate all ten unique submitted lists')
 assert.equal(lamedhProfiles[0].percentage, 100)
 
+const maximusStandard = entry('703-1720-1-1-1', 'MAXIMUS OPTIMATE', 'MAXIMUS OPTIMATE', {
+  bs: 14, cc: 23, canonicalUnitId: 1720, canonicalOptionId: 1, points: 82, swc: 1.5,
+  weapons: ['AP Heavy Machine Gun'], weaponProfiles: [canonicalBurst('AP Heavy Machine Gun', 4)],
+})
+const maximusLieutenant = { ...maximusStandard, combinedId: '703-1720-1-3-1', canonicalOptionId: 3,
+  lieutenant: true, skills: ['Lieutenant'], swc: 0 }
+const maximusRankings = buildTacticalAnalysis([
+  decodedList('Standard 1', [maximusStandard]), decodedList('Standard 2', [maximusStandard]),
+  decodedList('Standard 3', [maximusStandard]), decodedList('Lieutenant', [maximusLieutenant]),
+] as never).categories.find((item) => item.id === 'apex')?.profiles.filter((profile) => profile.unit === 'MAXIMUS OPTIMATE') || []
+assert.equal(maximusRankings.length, 1, 'identical shooting profiles with different Lieutenant/SWC options share one gunfighter rank')
+assert.equal(maximusRankings[0].listCount, 4, 'usage is the union of lists containing either option')
+assert.equal(maximusRankings[0].gunfighter?.rating, 36.94, 'a singleton must use its non-linked rating, not hypothetical Fireteam +1SD')
+assert.equal(maximusRankings[0].rankingVariants, 'Standard (1.5 SWC) · Lieutenant (0 SWC)')
+
 const gammaFeuerbach = entry('1001-1457-1-2-1', 'GAMMA UNIT', 'Feuerbach', {
   bs: 14,
   points: 35,

@@ -320,6 +320,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
         <strong>{formatTacticalUnitName(profile.unit)}</strong>
         <span>{rankedBenchmark.weapon}</span>
         <small>{rankedBenchmark.state}</small>
+        {category === 'apex' && profile.rankingVariants ? <small>{profile.rankingVariants}</small> : null}
         {otherAroStates.map((state) => <small key={state.label}>{state.label}: {state.rating.toFixed(2)} · Grade {state.grade} · {formatRankingPercentile(state.percentile)} percentile</small>)}
         {profile.mobility && category === 'apex' ? <small>Mobility {profile.mobility.score.toFixed(1)}/100{profile.mobility.mov ? ` · MOV ${profile.mobility.mov.join('-')}″` : ''}{profile.mobility.travel !== null ? ` · Travel ${profile.mobility.travel}″` : ''}</small> : null}
       </div>
