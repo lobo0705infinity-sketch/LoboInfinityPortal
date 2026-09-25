@@ -18238,5 +18238,385 @@
       "draw": "The clinic remained accessible while both teams documented the moving beacon."
     },
     "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "objective",
+    "paragraphs": [
+      "An O-12 inspection team arrived at a mountain school after its training drones began obeying orders from an unknown transmitter. Japanese secessionist defenders guarded the students and refused to leave the grounds. At dusk, every drone turned toward an empty cliff path, as if awaiting someone there.",
+      "{{hero}} reached the school's control room and separated the unknown commands from the instructors' routine. The signal carried a student's old practice pattern, replayed from a lost drone beyond the cliff. The specialist cut its control channel before the other machines could follow it into the ravine.",
+      "The student recognized a mark on the lost drone's last image: a carved stone only the school used for its dawn exercises. {{heroPlayer}}'s defenders watched the cliff path while {{otherPlayer}}'s inspectors searched for a safe descent. The remaining drones hovered in formation, facing the place where their companion had fallen."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s defenders secured the school and recovered the drone without endangering the students.",
+      "heroLoses": "{{otherPlayer}}'s inspectors isolated the command signal and controlled the cliff search.",
+      "draw": "The drone was located as both teams kept the other machines safely grounded."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A city block went dark just before an O-12 witness transfer, leaving the convoy visible only through emergency signs. An Oban reconnaissance cell crossed the rooftops to learn who had disabled the grid. The officers below heard a second convoy moving through the blackout, though none had been authorized.",
+      "{{hero}} closed on an armed lookout at the transformer roof and drove the figure away from the access hatch. Beneath it, a portable projector cast the second convoy's lights against the tunnel wall. The real witness vehicle had stopped safely nearby, unseen by whoever had staged the deception.",
+      "The projector's operator fled toward the tunnel mouth, carrying a list of the convoy's planned turns. {{heroPlayer}}'s cell could pursue aboveground; {{otherPlayer}}'s officers could shield the witness below. The specialist at the transformer brought one line of street lamps back, revealing both routes at once."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s cell caught the projector's operator and exposed the false convoy.",
+      "heroLoses": "{{otherPlayer}}'s officers protected the witness and secured the blackout route.",
+      "draw": "The witness departed under guard while both teams traced the staged lights."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Shindenbutai"
+    ],
+    "heroFaction": "O-12",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A coastal lighthouse flashed an evacuation code during a scheduled naval exercise. Shindenbutai patrol boats turned toward it; O-12 observers came to determine whether the signal was real. A second beam answered from a buoy offshore, but no voice responded on the lighthouse channel.",
+      "{{hero}} held a rocky approach against gunfire while an observer reached the lighthouse door. Inside, the lamp had been rewired to repeat a warning every time the tide touched its power cable. The buoy's beam belonged to a boat signaling that its crew was trapped on the exposed side of the reef.",
+      "The exercise ended over the open radio, leaving both patrols to navigate the reef in failing light. {{heroPlayer}}'s observers marked a safe bearing; {{otherPlayer}}'s boat crews prepared a line. The gunfighter watched the headland for another muzzle flash as the stranded boat answered with its own lamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s observers secured the lighthouse and guided the rescue across the reef.",
+      "heroLoses": "{{otherPlayer}}'s patrol boats reached the trapped crew and held the channel.",
+      "draw": "The crew crossed the reef while both patrols kept the warning lights aligned."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A quarantine fence enclosed a grove whose leaves carried a pattern no botanist could explain. O-12 officers wanted a controlled sample before the wind changed; a Tohaa envoy insisted the grove was communicating with a lost caretaker. Both teams entered when its outer leaves began repeating a human distress rhythm.",
+      "{{hero}} followed the pulse through the roots to a buried irrigation chamber. The rhythm came from a maintenance worker tapping a pipe after a collapsed door trapped her below. The specialist opened a narrow water channel to carry air into the chamber and signaled the officers without breaking the grove's living conduit.",
+      "The envoy knew how to separate the roots from the door; the officers had a lift strong enough to move it. {{heroPlayer}}'s delegation guided the cut while {{otherPlayer}}'s team secured the fence. Above them, the leaves slowed their rhythm as the worker answered by name."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s delegation opened the chamber and kept the grove's living network intact.",
+      "heroLoses": "{{otherPlayer}}'s officers lifted the door and carried the worker beyond the quarantine fence.",
+      "draw": "The worker emerged safely while both teams continued to watch the grove."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A contract crew was clearing an abandoned desalination plant when a pressure gauge showed water moving through dry pipes. Dashat guards entered to protect the workers; O-12 inspectors arrived with a closure order based on old contamination reports. A red inspection lamp blinked from the deepest pump room.",
+      "{{hero}} held the pump-room stairs against armed intruders while the workers traced the flow. An unauthorized line had been carrying clean water to a nearby settlement whose main supply had failed. The gunfighter's position let a worker close the unsafe return valve without shutting off that hidden feed.",
+      "The inspectors could condemn the old plant, but cutting the line at once would leave the settlement dry. {{heroPlayer}}'s guards stood between the valves and the intruders; {{otherPlayer}}'s team called for a safe replacement. The red lamp continued blinking beside the gauge, asking for a decision before pressure rose again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards held the plant while the workers stabilized the water feed.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the pump room and arranged a safe replacement supply.",
+      "draw": "The settlement kept receiving water while both teams isolated the unsafe return line."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A refugee exchange station lost its queue records moments before a transport arrived. Druze contractors controlled the loading gates for a private operator; O-12 monitors were checking that every family had a place aboard. An unmarked group tried to push through the open gate as the arrival announcement played.",
+      "{{hero}} caught an armed intruder in a close fight beside the gate and held the passage without letting the crowd spill onto the tracks. A monitor found the missing queue copied onto a paper roll under the counter. The intruders had erased the screen, but overlooked the station's oldest printer.",
+      "The transport waited with its doors open while the contractors and monitors read names from the damp roll. {{heroPlayer}}'s guards held the entrance; {{otherPlayer}}'s team checked each family. One name was written twice, and a child in the queue raised a hand before anyone could call it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s contractors secured the loading gate and protected the boarding families.",
+      "heroLoses": "{{otherPlayer}}'s monitors restored the queue and accounted for every passenger.",
+      "draw": "The transport departed after both teams resolved the duplicate name."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "Ikari Company"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A sealed ammunition shipment arrived at a warehouse that had ordered medical supplies instead. Ikari guards held the loading floor under contract; O-12 officers came to trace the routing error before either cargo could disappear. The crate's temperature alarm sounded as a clinic runner waited outside for her delivery.",
+      "{{hero}} checked the crate's tracking seal and found two labels printed on the same backing. Beneath the ammunition designation lay a valid clinic manifest, redirected after a scanner fault. The specialist located the medical cases in a guarded side bay and transmitted their identifiers before anyone broke the wrong seal.",
+      "The clinic runner could take the medicine at once, but the swapped labels left the ammunition's destination uncertain. {{heroPlayer}}'s officers kept the warehouse ledger open; {{otherPlayer}}'s guards protected the side bay. An arriving driver held up a third manifest bearing both addresses on one line."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers traced the labels and released the medicine to the clinic.",
+      "heroLoses": "{{otherPlayer}}'s guards secured both shipments and controlled the warehouse floor.",
+      "draw": "The medicine reached the clinic while both teams investigated the mislabeled cargo."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A decommissioned communications tower began transmitting a living witness's voice after the witness entered O-12 protection. StarCo technicians had maintained the tower years before; investigators suspected an unauthorized recording. Both groups reached its relay floor as the voice announced a meeting that had not happened yet.",
+      "{{hero}} followed the broadcast through a maze of retired antenna feeds and found a predictive voice model left running in a test rack. Its scheduled message pointed callers toward an empty plaza. The specialist silenced the public channel, then saved the program's configuration so investigators could learn who had supplied its training samples.",
+      "{{heroPlayer}}'s crew watched the plaza from the tower, while {{otherPlayer}}'s officers warned the real witness about the impersonation. The model generated one final sentence on its disconnected screen: a location the witness had never told anyone. The specialist wrote it down before pulling the power."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s technicians secured the tower and preserved the model's configuration.",
+      "heroLoses": "{{otherPlayer}}'s investigators protected the witness and contained the false broadcast.",
+      "draw": "The tower fell silent while both teams pursued the unexplained location."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "O-12",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather dome above a farming basin stopped opening at sunrise, leaving its fields under artificial night. White Company guards held the repair crews' route; O-12 inspectors approached to check whether a security override had trapped anyone inside. Lights moved behind the opaque panels where no worker was scheduled.",
+      "{{hero}} forced an armed saboteur away from the dome controls, covering a technician who reached the manual release. The lights came from a maintenance crawler carrying the missing night crew. Its radio had failed, and the crawler's lamps were the only way they could signal through the panels.",
+      "The release would open the dome, but a sudden temperature change could ruin the crop beneath it. {{heroPlayer}}'s guards held the control deck while {{otherPlayer}}'s inspectors helped the technician stage the panels one row at a time. The first line of dawn touched the crawler's roof."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards held the controls while the night crew and crop were brought into daylight.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the dome and directed its careful reopening.",
+      "draw": "The panels opened gradually as both teams watched the fields and the crawler."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "objective",
+    "paragraphs": [
+      "Two Starmada patrols met at an orbital traffic junction after their ships received the same transponder number. {{heroPlayer}}'s crew was carrying relief supplies; {{otherPlayer}}'s crew had been assigned to intercept an impostor. Neither captain would surrender the junction until the approaching civilian convoy could identify a safe escort.",
+      "{{hero}} compared the transponder pulses at a service terminal and found they differed only during a fraction of each cycle. A damaged synchronizer at the junction was broadcasting both ships under an old code. The specialist isolated its output, allowing the captains to announce separate identities without dropping the convoy's guidance link.",
+      "The convoy answered each ship by its own call sign, but the synchronizer still had to be replaced before another patrol arrived. {{heroPlayer}}'s crew held the supplies beside the lock; {{otherPlayer}}'s crew watched the approach. The terminal displayed a third copy of the old code and no matching vessel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crew guided the relief convoy through the junction with its cargo intact.",
+      "heroLoses": "{{otherPlayer}}'s crew secured the junction and identified the source of the duplicate transponders.",
+      "draw": "The convoy passed safely while both patrols investigated the unexplained third signal."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A frontier rescue shuttle sent two distress calls from opposite sides of an orbital debris field. Torchlight scouts followed the lower signal from the surface; Starmada officers controlled the traffic lane above. Each call named the same pilot, and a supply vessel was already turning toward the wrong one.",
+      "{{hero}} kept a debris-clearing gun platform from firing into the shuttle's approach while a scout compared the calls. One was a recording bouncing off a disabled relay; the other carried a faint cough between words. Under cover, the scout marked the live signal for the Starmada traffic officer.",
+      "The supply vessel corrected course, but its fuel margin left only one pass through the debris. {{heroPlayer}}'s scouts held the surface relay; {{otherPlayer}}'s officers cleared a high corridor. The gunfighter watched the platform's barrel follow the shuttle until its safety circuit finally went dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts identified the live shuttle and protected its approach.",
+      "heroLoses": "{{otherPlayer}}'s officers opened the traffic lane and brought the rescue vessel through.",
+      "draw": "The shuttle was reached as both teams kept the false signal out of the traffic channel."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A ceremonial sword was scheduled for return to a Japanese cultural collection aboard a Starmada transport. A duplicate arrived at the receiving dock first, carrying a forged release order. Japanese secessionist escorts held the original courier route while naval officers locked down the cargo ring.",
+      "{{hero}} intercepted an armed thief in the narrow loading passage and drove the fight away from the courier. Inside the duplicate case lay a transmitter, not a blade, broadcasting the route of the genuine artifact. The escort crushed its power cell while the courier passed the sword to the naval inventory officer.",
+      "The thief escaped into a crowd of departing passengers, leaving the forged order behind. {{heroPlayer}}'s escorts protected the collection's representative; {{otherPlayer}}'s officers searched the transport for another receiver. The representative opened the true case just far enough to see the old maker's mark still on the hilt."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s escorts delivered the original sword and exposed the forged release.",
+      "heroLoses": "{{otherPlayer}}'s officers secured the cargo ring and traced the transmitter's receivers.",
+      "draw": "The sword reached the collection as both teams continued the search for the thief."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "An unmanned naval listening post began broadcasting the position of every ship that passed it. Starmada officers approached openly to shut it down; an Oban cell entered through an older service route to learn who had changed its settings. The first ship listed was a medical carrier traveling without escort.",
+      "{{hero}} reached the antenna controller and found a diagnostic program had been set to publish its raw reception log. Beneath the program's signature was a maintenance request filed before the post went unmanned. The specialist cut the public feed, preserving its history for the officers while the medical carrier cleared the sector.",
+      "The naval captain wanted the post dismantled; the reconnaissance leader wanted its author found. {{heroPlayer}}'s cell watched the hidden route while {{otherPlayer}}'s officers boarded from the dock. A message arrived on the now silent controller, asking whether the diagnostic had finally been seen."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s cell secured the controller and traced the diagnostic request.",
+      "heroLoses": "{{otherPlayer}}'s officers shut down the listening post and protected passing ships.",
+      "draw": "The broadcast ceased while both teams retained evidence of the program's origin."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A naval survey vessel found a coastal hydrofoil drifting with its engine running and no crew on deck. Starmada officers marked it for inspection; Shindenbutai scouts arrived by a narrow channel known to local fishers. A flare rose from the hydrofoil's locked lower compartment and went out beneath the hull.",
+      "{{hero}} suppressed an armed figure on the upper rail as the scouts reached the compartment hatch. Its crew had sealed themselves below after discovering a stowaway trying to seize the navigation unit. The flare's heat had scorched a hinge, and the fighter's cover let a scout pry it open without exposing the people inside.",
+      "The stowaway escaped overboard into a maze of fishing nets. {{heroPlayer}}'s scouts guarded the recovered crew; {{otherPlayer}}'s officers searched the water and recorded the hydrofoil's route. The navigator handed over a torn page of tide marks, saying the stowaway had asked about one particular cove."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts freed the crew and secured the hydrofoil's navigation unit.",
+      "heroLoses": "{{otherPlayer}}'s officers contained the vessel and pursued the stowaway through the channel.",
+      "draw": "The crew came ashore as both teams searched the cove marked on the torn page."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A Tohaa seed vessel carried a living archive through a naval quarantine lane. Starmada officers stopped it when its cargo began sending a repeating signal to another ship. The envoy said the archive was responding to a damaged graft aboard that vessel, though its crew insisted they carried no plants.",
+      "{{hero}} read the archive's change in color and matched it to the signal's rhythm. A tiny fragment of the graft had been woven into an injured sailor's bandage on the other ship. The specialist offered a harmless way to separate it, allowing the officers to inspect the cargo without cutting open the archive.",
+      "The sailor remembered receiving the bandage in an emergency clinic, far from the quarantine lane. {{heroPlayer}}'s delegation protected the archive; {{otherPlayer}}'s officers logged the transfer and cleared a quiet route for both vessels. As they parted, the cargo's signal slowed to the pace of the sailor's breathing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s delegation preserved the archive and safely separated the living fragment.",
+      "heroLoses": "{{otherPlayer}}'s officers secured the lane and completed the quarantine inspection.",
+      "draw": "Both vessels passed inspection while the archive's signal faded to silence."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mobile refinery crossed a naval exclusion line after a tug lost control of its thrusters. Dashat guards aboard the refinery tried to keep workers at their posts; Starmada officers approached with an order to stop the drifting plant. A tank of volatile coolant began rolling against its unsecured cradle.",
+      "{{hero}} held the refinery's central passage under fire while a worker reached the tank restraints. A loose clamp had struck the tug's remote pilot, explaining its erratic thrust. The gunfighter drove the attackers away long enough for the worker to lock the coolant in place and warn the naval vessel.",
+      "The refinery was still moving toward the exclusion line, and its own engines could not turn it without upsetting the tank. {{heroPlayer}}'s guards protected the worker at the cradle; {{otherPlayer}}'s officers lined up a tow. The clamp lay on the deck, warm from the damaged pilot housing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards secured the refinery and stabilized the coolant tank.",
+      "heroLoses": "{{otherPlayer}}'s officers took the refinery under tow and cleared the exclusion line.",
+      "draw": "The tug and refinery slowed together while both teams protected the workers."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Starmada",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A corporate courier ship carried a sealed vote from a remote settlement. Druze guards controlled its hold for the contracting company; Starmada officers demanded access after the settlement reported that one ballot container was missing. The ship's internal cameras showed the container moving after the hold had been locked.",
+      "{{hero}} grappled with an armed guard at the narrow hold entrance and kept the passage open for a naval examiner. The container had slid beneath a raised deck plate during a hard maneuver; nobody had taken it. Its seal remained intact, but the impact had cracked the case around it.",
+      "The settlement's observers watched by live link as the examiner lifted the case without touching the vote. {{heroPlayer}}'s officers stood by the plate while {{otherPlayer}}'s guards checked the rest of the hold. On screen, a remote observer asked for a photograph of the seal before the ship moved again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers recovered the sealed container and documented its condition.",
+      "heroLoses": "{{otherPlayer}}'s guards secured the hold and delivered the vote under its original contract.",
+      "draw": "The seal was verified while both teams watched the container return to its rack."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "Ikari Company"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An Ikari salvage crew boarded a wreck that Starmada officers had marked as hazardous. The wreck's beacon named a captain who had disappeared before either team's records began. As both parties converged on the bridge, its navigation display turned on and plotted a course toward the nearest inhabited station.",
+      "{{hero}} pinned an armed boarder behind a broken console while a naval technician cut the bridge's automatic guidance. The course had been written into an emergency memory module, still trying to take a vessel home. Beneath the module was a handwritten instruction to deliver a small case to the station's medical bay.",
+      "The salvage captain claimed the case under the crew's contract; the officers wanted it inspected before docking. {{heroPlayer}}'s team held the bridge while {{otherPlayer}}'s fighters guarded the cargo hatch. The old beacon repeated the missing captain's name as the wreck drifted quietly past its programmed turn."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers secured the wreck and delivered the case for inspection.",
+      "heroLoses": "{{otherPlayer}}'s salvage crew recovered the case and protected its claim.",
+      "draw": "The case traveled under joint guard while the wreck remained clear of the station."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "An orbital theater's audience heard an evacuation order in the middle of a live performance. StarCo security had been hired by the venue; Starmada officers arrived to clear the docking ring. The order came from the theater's own emergency system, yet none of its sensors reported danger.",
+      "{{hero}} traced the announcement to a rehearsal console where an old cue had been assigned to the live alarm channel. The specialist moved it back to the closed stage circuit and found the real cause of the confusion: a damaged docking indicator blinking beside an occupied shuttle.",
+      "The audience could stay if the shuttle's bay was cleared, but the next performance cue would sound like another alarm. {{heroPlayer}}'s crew handled the console while {{otherPlayer}}'s officers checked the bay. Onstage, the performer held a note until the docking lights turned steady again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crew corrected the alarm channel and kept the audience safe.",
+      "heroLoses": "{{otherPlayer}}'s officers secured the docking ring and cleared the shuttle bay.",
+      "draw": "The performance resumed once both teams confirmed the alarm was no longer live."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": [
+      "Starmada",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "A diplomatic transport requested a quiet berth after an anonymous message named its next port. White Company escorts protected the passengers under contract; Starmada officers controlled the receiving dock. The ship arrived with every external destination display blank, but one small cabin window still showed a blinking route light.",
+      "{{hero}} reached the cabin and found a travel aid projecting directions for a passenger with impaired vision. Its route had been copied into the anonymous message by a compromised hospitality terminal. The specialist removed the terminal's access and kept the aid working so the passenger could leave without a new escort path.",
+      "The dock was secure, though the message's sender remained unknown. {{heroPlayer}}'s escorts surrounded the passenger corridor; {{otherPlayer}}'s officers locked down the terminal logs. The passenger asked to see the sea beyond the berth, and the route light traced a calm path toward the viewing deck."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s escorts protected the passenger and closed the compromised route.",
+      "heroLoses": "{{otherPlayer}}'s officers secured the berth and preserved the terminal evidence.",
+      "draw": "The passenger reached the viewing deck while both teams investigated the message."
+    },
+    "mission": "Area of Interest"
   }
 ]
