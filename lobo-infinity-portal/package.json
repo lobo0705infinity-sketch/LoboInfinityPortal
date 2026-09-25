@@ -132,6 +132,7 @@
     "test:lobos-little-helper": "node scripts/lobos-little-helper-check.mjs",
     "test:inf-id-caledonian": "node scripts/inf-id-caledonian-check.mjs",
     "test:inf-list-tactical": "node scripts/inf-list-tactical-check.mjs",
+    "test:build-list": "node scripts/build-list-check.mjs",
     "test:gunfighter-rating": "node scripts/gunfighter-rating-check.mjs && node scripts/aro-rating-check.mjs && node scripts/infinity-weapon-chart-check.mjs && node scripts/tts-workshop-profile-catalog-check.mjs && node scripts/gunfighter-profile-canonicalizer-check.mjs && node scripts/fireteam-bonus-eligibility-check.mjs && node scripts/matchup-renderer-check.mjs && node scripts/matchup-fireteam-audit-check.mjs && node scripts/aro-counter-renderer-check.mjs",
     "test:close-combat-benchmark": "node scripts/close-combat-benchmark-check.mjs && node scripts/close-combat-catalog-check.mjs",
     "close-combat:catalog": "node scripts/build-close-combat-benchmark.mjs",
