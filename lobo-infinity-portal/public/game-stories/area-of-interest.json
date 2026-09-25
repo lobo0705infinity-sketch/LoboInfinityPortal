@@ -14438,5 +14438,385 @@
       "heroLoses": "{{otherPlayer}}’s restorers found the old corridor and preserved the artist’s note.",
       "draw": "The mural was braced while both crews searched for the missing neighbor."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An aerial dance troupe suspended a practice stage between two residential towers. Before the performance, its safety net retracted by itself while a dancer was still aloft. {{heroPlayer}}’s riggers reached the rooftop winch; {{otherPlayer}}’s performers held the lower balcony and called the dancer toward a rescue line.",
+      "{{hero}} found the winch turning under power from a rehearsal timer nobody had set. The specialist disconnected it and discovered a painted cue card lodged in the gears, marked with the dancer’s name and an earlier performance date. A copy of that card lay on the lower balcony, where its corner had been torn away.",
+      "The riggers could lower the dancer immediately, but a crosswind was building between the towers. The performers wanted the net restored first. The specialist fed the damaged card out of the winch and held the brake while the rescue line swung toward the dancer’s outstretched hand."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers restored the net and brought the dancer safely down.",
+      "heroLoses": "{{otherPlayer}}’s performers secured the rescue line and traced the altered cue.",
+      "draw": "The stage closed while both crews inspected every rehearsal timer."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A community choir received invoices for performances it had never given. Each bill carried the voiceprint of its retired conductor, who was sitting among the singers and had not performed for years. {{heroPlayer}}’s auditors took the recording booth; {{otherPlayer}}’s musicians gathered on the stage with the conductor’s original rehearsal tapes.",
+      "{{hero}} isolated the billed recording and heard the conductor pause to cough in the same place as one old rehearsal. The specialist traced the copied sound to a spool of tape stored in a locked prop chest. Inside was a second tape, still blank, addressed to the choir’s youngest singer for a performance the next evening.",
+      "The auditors could stop the invoices before more charges arrived, but the musicians feared the blank tape was a threat to the young singer. The conductor offered to identify who had borrowed the chest key. The specialist kept the spool beside the original tape while the choir fell silent outside."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors stopped the false bills and traced the copied recording.",
+      "heroLoses": "{{otherPlayer}}’s musicians secured the tapes and protected the young singer.",
+      "draw": "The concert was postponed while both groups checked the chest key."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Combined Army"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Across a row of rooftops, an enormous mural began showing a door that had never been painted into the scene. A resident looking from her window recognized the door as the entrance to a sealed basement below. {{heroPlayer}}’s mural crew reached the rooftops; {{otherPlayer}}’s searchers held the basement stair and watched its padlock.",
+      "{{hero}} covered a painter crossing between roofs when fire struck a stack of brushes. The fighter answered while the painter found a projection lens hidden in a chimney. Its beam came from inside the basement, where someone had arranged the mural to point toward a particular brick in the wall.",
+      "The painter could cover the lens and let the searchers open the basement, or keep the image visible to locate the marked brick from above. The resident had brought an old photograph showing the wall before it was sealed. The fighter held the rooftop route as the door’s outline shifted across the painted figures."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mural crew found the lens and opened the basement’s hidden wall.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured the stair and traced the projected door.",
+      "draw": "The mural stayed under watch while both groups examined the sealed basement."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A sculptor’s quarry supplied stone for a monument to workers killed in an old tunnel collapse. The final block arrived bearing a fresh name no one had authorized. {{heroPlayer}}’s stone crew reached the loading platform; {{otherPlayer}}’s artists guarded the quarry ledger and refused to cut the inscription away.",
+      "{{hero}} forced past a defender beside the crane controls and kept the block from swinging into the gallery. A companion examined its underside and found a chisel wedged in the lift sling, its handle carved with the fresh name. Behind it was a small note directing the finder to a still sealed section of the old tunnel.",
+      "The stone crew could stop the lift and search for the tunnel entrance, but the artists wanted the block safely set down before its sling frayed. Dust blew through the open quarry as the crane shifted. The fighter held the controller housing steady while the companion read the note aloud."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s stone crew landed the block and found the named worker’s trail.",
+      "heroLoses": "{{otherPlayer}}’s artists protected the monument and traced the forgotten tunnel.",
+      "draw": "The inscription remained intact while the quarry was closed for inspection."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A laboratory studying shared memory invited a choir to sing before a wall of responsive glass. After rehearsal, one singer saw a childhood home reflected where the laboratory doorway should be. {{heroPlayer}}’s researchers checked the glass controls; {{otherPlayer}}’s performers stayed with the singer and compared the rehearsal recordings.",
+      "{{hero}} separated the glass into its individual panels and found that one had stored an earlier visitor’s handprint. The specialist placed the singer’s hand beside it, revealing a second reflection of an unfamiliar street sign. A postcard in the performer’s coat showed the same street, though the singer insisted they had never traveled there.",
+      "The researchers could reset the panel and end the visions or preserve the handprint until its owner was found. The performers wanted the singer to decide whether to see the street again. The specialist kept the panel dark while the choir’s last note lingered faintly through the room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers identified the old handprint and explained the reflected street.",
+      "heroLoses": "{{otherPlayer}}’s performers protected the singer and preserved the unaltered recording.",
+      "draw": "The panel stayed dark while the visitor’s identity was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A sound studio recorded footsteps in its empty isolation chamber each night at the same hour. Its producer planned to close the studio after a technician vanished there. {{heroPlayer}}’s search unit reached the mixing desk; {{otherPlayer}}’s artists held the chamber entrance with the original recordings playing through their headsets.",
+      "{{hero}} covered a sound engineer as a shot struck the studio window. The fighter held the line while the engineer lifted a floor panel beneath the supposedly empty chamber. Inside ran a service track with a small wheeled recorder, still carrying the missing technician’s badge. Its timer was set to move again in minutes.",
+      "The search unit could stop the recorder and recover its audio, or let it travel to learn where the track ended. The artists knew the chamber would be occupied for an evening session. The fighter watched the timer’s final seconds while the engineer lowered a hand toward the switch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s search unit secured the track and located the missing technician.",
+      "heroLoses": "{{otherPlayer}}’s artists protected the studio and recovered the hidden recording.",
+      "draw": "The session was canceled while the service track was searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "An open-air perfume garden produced a scent identical to one used in an old missing-person notice. A gardener found its source beside a locked irrigation box that had never held flowers. {{heroPlayer}}’s trackers reached the box; {{otherPlayer}}’s gardeners protected the surrounding beds and brought records of every recent planting.",
+      "{{hero}} opened the irrigation box and found a tiny atomizer set to release scent whenever the gate was used. The specialist traced its tube beneath the garden path to a sealed letter, dry inside a glass pipe. The handwriting belonged to the missing person, asking the gardener to meet them at the next rain.",
+      "The trackers could take the letter to its addressee or wait by the gate to see who maintained the atomizer. The gardeners knew rain was forecast that evening. The specialist returned the pipe beneath the path and marked its place with a fallen leaf before the first clouds arrived."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s trackers followed the scent and located the letter’s sender.",
+      "heroLoses": "{{otherPlayer}}’s gardeners secured the garden and arranged the promised meeting.",
+      "draw": "The garden waited through the rain while the sender remained unseen."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "An artist’s final collection of colors disappeared from a gallery, leaving every canvas washed in the same pale gray under its new lights. The gallery owner insisted the pigments had not been touched. {{heroPlayer}}’s conservators tested the lighting controls; {{otherPlayer}}’s painters stood beside the original color chart and refused to let the works be moved.",
+      "{{hero}} changed the lamp spectrum one step at a time and watched a hidden note emerge beneath the gray. The specialist read a sequence of colors naming another gallery room, where an unfinished canvas had been stored away. Its surface showed the artist’s handprint beneath a second coat of paint, still wet to the touch.",
+      "The conservators could reveal the note to the public, but the painters feared another light change might damage the unfinished canvas. The owner offered the old lamps from a locked cabinet. The specialist held the color chart against the hidden note while the room slowly regained its original hues."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s conservators restored the colors and found the artist’s unfinished work.",
+      "heroLoses": "{{otherPlayer}}’s painters secured the canvases and preserved the hidden note.",
+      "draw": "The gallery stayed dim while both groups tested the original lamps."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A communal laundry began returning costumes embroidered with initials belonging to people who had never worn them. The first owner found a map sewn into the hem of a winter coat. {{heroPlayer}}’s investigators checked the sorting machines; {{otherPlayer}}’s costume makers compared the altered hems against their pattern books.",
+      "{{hero}} stopped one machine and pulled free a spool threaded with a thin data strip. The specialist read a series of locker numbers from it, then found the corresponding lockers in a disused changing room. One held a pair of dry boots, though a wet trail led from its door to the laundry’s back exit.",
+      "The investigators could follow the trail before it dried or check whether the other lockers held messages for people still in the community. The makers recognized the boots as part of a costume never returned after a festival. The specialist kept the spool clean while footprints faded along the service floor."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators traced the lockers and found the altered costume’s owner.",
+      "heroLoses": "{{otherPlayer}}’s makers secured the garments and decoded the stitched map.",
+      "draw": "The laundry paused while the remaining lockers were opened with witnesses."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A pottery workshop prepared a public firing in an ancient kiln when someone found a small ceramic hand inside its ash chute. A former apprentice recognized the gesture as a signal for help. {{heroPlayer}}’s rescuers came through the loading yard; {{otherPlayer}}’s potters held the kiln controls and kept the audience beyond the heat screen.",
+      "{{hero}} forced a defender away from the narrow ash door and kept it open while an apprentice shone a lamp inside. Beyond the hand, a service passage led under the kiln to a chamber with a person’s shadow moving across its wall. The fire had already been lit above, and the passage was warming fast.",
+      "The rescuers could crawl through the hot passage now or ask the potters to extinguish the kiln before anyone entered. The former apprentice knew another opening behind the glaze shelves but could not reach it alone. The fighter held the ash door against its spring while voices from inside answered the call."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers opened the passage and led its occupant out.",
+      "heroLoses": "{{otherPlayer}}’s potters cooled the kiln and reached the hidden chamber.",
+      "draw": "The firing ended early while both groups searched beneath the kiln."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood jury received invitations to decide whether a public mural should be removed. The notice was signed by a judge who had never seen the case, and one juror had already disappeared. {{heroPlayer}}’s observers took the meeting hall; {{otherPlayer}}’s artists kept the wall lit and collected the invitations from residents.",
+      "{{hero}} compared the printed notices and found a watermark that appeared only on the missing juror’s copy. The specialist followed its tiny map to a storage room behind the mural and found the juror there, sheltered with original sketches. The sketches showed the wall had once been promised to a family still living nearby.",
+      "The observers could void the meeting and investigate who forged the judge’s name, or hold a public hearing with the juror present. The artists wanted the family to see the sketches before any vote. The specialist spread them across a table as neighbors began to arrive at the hall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers protected the juror and restored a fair hearing.",
+      "heroLoses": "{{otherPlayer}}’s artists secured the sketches and defended the family’s wall.",
+      "draw": "The vote was delayed while the forged invitations were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cinema aboard a long-haul vessel began screening live footage of its own cargo deck during an evening film. In the picture, someone was moving a sealed crate beneath a sign marked for evacuation. {{heroPlayer}}’s security crew reached the projection booth; {{otherPlayer}}’s filmmakers kept the audience calm and saved the footage.",
+      "{{hero}} covered the service stair as shots broke the booth window. The fighter kept the corridor clear while a projectionist traced the feed to a camera attached to the crate itself. Onscreen, the camera turned to show a worker locked inside the cargo gate, pointing toward an emergency release just beyond reach.",
+      "The security crew could use the cinema feed to guide a rescue across the deck, but the filmmakers needed power kept on in the crowded hall. The worker tapped the release code against the crate. The fighter repeated the pattern over the radio while the projectionist froze a clear frame."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s security crew freed the worker and secured the sealed crate.",
+      "heroLoses": "{{otherPlayer}}’s filmmakers protected the audience and preserved the rescue footage.",
+      "draw": "The film stopped while both teams checked the cargo gate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A kinetic sculpture over a pier drew its movement from the falling tide. Overnight, its counterweights began lifting instead, straining the supports above a morning crowd. {{heroPlayer}}’s engineers came with a lockout kit; {{otherPlayer}}’s artists kept visitors back and showed the machine’s original balancing notes.",
+      "{{hero}} climbed to the drive housing and found a second weight concealed within one painted panel. The specialist tied it off, then discovered a rolled sketch beneath its bracket showing a revised sculpture the artist had never installed. Its final page marked a place below the pier where someone had left a metal case.",
+      "The engineers could remove the extra weight now, but the artists wanted to see whether the hidden case explained why it had been added. The pier was already filling with visitors for the unveiling. The specialist kept a hand on the safety rope while the sculpture hung motionless against the tide."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers balanced the sculpture and recovered the case beneath the pier.",
+      "heroLoses": "{{otherPlayer}}’s artists protected the crowd and preserved the revised sketch.",
+      "draw": "The unveiling waited while both groups inspected the hidden counterweight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "During a lantern ceremony, the community garden’s oldest tree dropped a ribbon bearing a message from an artist missing since spring. Its knot pointed toward a locked tool shed beyond the path. {{heroPlayer}}’s searchers moved through the lanterns; {{otherPlayer}}’s gardeners kept the ceremony route open and brought the shed key.",
+      "{{hero}} drove an intruder back from the shed door and held it while a gardener opened the lock. Inside lay dozens of unlit lanterns, each marked with a destination. One carried the missing artist’s address and a sketch of a bridge that had been removed from the garden years earlier.",
+      "The searchers could follow the address at once or ask the gardeners where the old bridge stood before the paths changed. The ceremony crowd was approaching the tree with candles. The fighter kept the shed clear as the gardener lifted the lantern marked for the missing artist."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers followed the lantern and found the missing artist’s trail.",
+      "heroLoses": "{{otherPlayer}}’s gardeners secured the shed and traced the forgotten bridge.",
+      "draw": "The ceremony ended while both groups checked the lantern addresses."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A kite festival on a high terrace halted when several handmade kites climbed against the wind toward an empty rooftop. One carried a message from a maker who had missed the festival. {{heroPlayer}}’s climbers checked the roof anchors; {{otherPlayer}}’s performers held the flying lines and kept children away from the edge.",
+      "{{hero}} traced the impossible pull to a fine powered line running from the rooftop into a vacant studio. The specialist stopped its motor and found a table laid with half-finished kites, each naming a person invited to the maker’s farewell. The last kite carried no name, only a drawing of the terrace below.",
+      "The climbers could follow the maker’s route from the studio or return the kites to their intended people before the festival ended. The performers knew the maker had planned to move away, but not without saying goodbye. The specialist held the unnamed kite while the crowd below waited for it to fly."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s climbers found the maker and returned the farewell kites.",
+      "heroLoses": "{{otherPlayer}}’s performers secured the terrace and delivered the named messages.",
+      "draw": "The kites stayed grounded while both groups searched the vacant studio."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A traveling puppet clinic visited a crowded neighborhood, offering children small figures to explain difficult medical treatment. One puppet began repeating the name of a child who had never signed in. {{heroPlayer}}’s patrol searched the parked clinic; {{otherPlayer}}’s puppeteers kept the waiting families calm and checked their recordings.",
+      "{{hero}} covered the clinic’s rear door when shots struck the canopy poles. The fighter held a clear route for a puppeteer to retrieve the talking figure. Its mechanism concealed a tiny recorded plea from someone locked in the storage trailer, where the blank puppets were kept. A child’s drawing was taped to the trailer latch.",
+      "The patrol could open the trailer under guard or call the named child’s family before anyone touched the latch. The puppeteers recognized the drawing from their last visit to another neighborhood. The fighter watched the trailer windows while the puppet repeated the name in its small recorded voice."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol secured the trailer and brought its occupant to safety.",
+      "heroLoses": "{{otherPlayer}}’s puppeteers traced the recording and reunited the missing child.",
+      "draw": "The trailer stayed closed briefly while the family was located."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "An artist painted a public wall with harmless living pigment that changed color with the weather. Before the unveiling, one patch formed the shape of a key instead of the planned landscape. {{heroPlayer}}’s gardeners took a sample; {{otherPlayer}}’s muralists held the scaffolding and showed them the approved design.",
+      "{{hero}} followed the pigment’s growth under a lamp and found a thin root reaching through the wall’s old mortar. The specialist traced it to a sealed cavity containing a box of letters from the previous residents. One letter described the day the wall had been built, and asked that a particular stone remain untouched.",
+      "The gardeners could open the box without disturbing the living mural, but the muralists wanted the former residents contacted before any letter was read aloud. The key shape slowly changed in the warming light. The specialist kept the sample covered while the scaffold crew searched for the stone named in the note."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s gardeners saved the pigment and recovered the residents’ letters.",
+      "heroLoses": "{{otherPlayer}}’s muralists secured the wall and found the protected stone.",
+      "draw": "The unveiling paused while the former residents were invited back."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A public game of moving mirrors filled an old warehouse. At its center stood a prize chest awarded to whoever found a path through the maze. When the contestants arrived, the chest held a real inheritance claim with several names crossed out. {{heroPlayer}}’s guards entered from the loading bay; {{otherPlayer}}’s game makers kept the contestants at the entrance.",
+      "{{hero}} shoved past a defender in a narrow mirror passage and held it while a companion lifted the chest. The fighter noticed that one mirror had been reversed, sending everyone away from a small room behind the prize. There they found the unaltered claim, with all the heirs listed and a new signature in fresh ink.",
+      "The guards could carry both papers to the heirs, but the makers wanted to understand who had reset the maze before opening it. The contestants were already pressing toward the mirrored doors. The fighter turned the reversed panel back into place and caught a glimpse of movement in the hidden room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the true claim and located the omitted heirs.",
+      "heroLoses": "{{otherPlayer}}’s makers secured the maze and exposed the false prize.",
+      "draw": "The game remained closed while both claims were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A private collection of miniature buildings arrived for a public exhibition. Its model of the district contained a house that had vanished in a recent fire, complete with light in one upper window. {{heroPlayer}}’s guards took the exhibit hall; {{otherPlayer}}’s curators compared the models with the neighborhood’s survey photographs.",
+      "{{hero}} covered a curator crossing the hall when fire struck the glass display. The fighter drew the shooter away while the curator lifted the model house and found an address written beneath its base. The address belonged to a temporary shelter for the fire’s survivors; someone had deliberately marked one occupied room.",
+      "The guards could protect the shelter before asking who sent the miniature, but the curators wanted to preserve the model for evidence. Visitors had already seen the lit window. The fighter kept the hall clear while the curator switched off the tiny bulb and copied the address."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards protected the shelter and traced the model’s sender.",
+      "heroLoses": "{{otherPlayer}}’s curators secured the collection and identified the marked room.",
+      "draw": "The exhibition closed while both groups checked the shelter’s safety."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An indoor climbing wall displayed a new route labeled for a climber who had died during an expedition. The holds had been installed overnight, leading to a sealed hatch near the roof. {{heroPlayer}}’s rope team reached the wall; {{otherPlayer}}’s instructors kept the evening class below and brought the old accident report.",
+      "{{hero}} struggled with a defender on the high platform and kept the hatch in reach while an instructor belayed a second climber. Behind the hatch lay the missing climber’s field notebook and a photograph taken after the reported accident. The fighter held the platform steady as the second climber read a date on the photograph.",
+      "The rope team could take the notebook to the climber’s family, or leave the hatch untouched until the instructors found who built the route. The class below had stopped to watch. The fighter returned the photograph to its sleeve while the belay line creaked through its overhead wheel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rope team secured the notebook and traced the climber’s last journey.",
+      "heroLoses": "{{otherPlayer}}’s instructors protected the class and verified the photograph’s date.",
+      "draw": "The wall closed while the climber’s family examined the recovered notebook."
+    }
   }
 ]
