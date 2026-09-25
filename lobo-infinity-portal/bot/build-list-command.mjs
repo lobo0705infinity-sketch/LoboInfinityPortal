@@ -9,6 +9,7 @@ import { loadCloseCombatCatalog } from './close-combat-catalog-store.mjs'
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 import { availableProfiles, buildArmyListOptions, ListBuilderError, projectedRegularOrders, rosterConnections,
   resolveRequiredProfile } from './build-list-generator.mjs'
+import { loadTeamTypeEvidence } from './build-list-team-evidence.mjs'
 
 export const BUILD_LIST_COMMAND = 'build-list'
 export const BUILD_LIST_FACTION_OPTION = 'faction'
@@ -146,15 +147,17 @@ async function cachedJson(key, url, fetchImpl) {
 export async function buildListResponses({ faction, mission, mustInclude = '', points = 300,
   getSource = getCurrentArmySource, getCatalog = loadGunfighterBenchmarkCatalog,
   getAroCatalog = loadAroBenchmarkCatalog, getCloseCombatCatalog = loadCloseCombatCatalog,
-  getMobilityCatalog = loadMobilityCatalog } = {}) {
+  getMobilityCatalog = loadMobilityCatalog,
+  getTeamEvidence = async () => loadTeamTypeEvidence(await loadBundledSource()) } = {}) {
   const source = await getSource(faction)
-  const [gunfighterCatalog, aroCatalog, closeCombatCatalog, mobilityCatalog] = await Promise.all([
-    getCatalog(), getAroCatalog(), getCloseCombatCatalog(), getMobilityCatalog(),
+  const [gunfighterCatalog, aroCatalog, closeCombatCatalog, mobilityCatalog, teamTypeEvidence] = await Promise.all([
+    getCatalog(), getAroCatalog(), getCloseCombatCatalog(), getMobilityCatalog(), getTeamEvidence(),
   ])
   const lists = buildArmyListOptions({ ...source, sectorialId: Number(source.faction.id),
     rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)), gunfighterCatalog,
     aroCatalog, closeCombatCatalog, mobilityCatalog,
-    mission, mustInclude: String(mustInclude).split(','), points })
+    mission, mustInclude: String(mustInclude).split(','), points, teamTypeEvidence })
+  for (const list of lists) list.teamTypeEvidence = teamTypeEvidence?.decisiveLists ? teamTypeEvidence : null
   return lists.map((list, index) => ({ allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1) }))
 }
 
@@ -171,12 +174,16 @@ export function formatBuiltList(list, number) {
   }).filter(Boolean).join('\n')
   const fireteams = list.fireteams.length
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')
-    : '• No legal Level 2 Duo or Haris found in this roster.'
+    : '• No legal Level 2 Fireteam found in this roster.'
   const intro = `**${list.faction} · ${list.mission} · option ${number}**\n`
     + `${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC · ${list.legality.totals.troopers}/15 troopers · ${list.specialistCount} specialists\n`
     + `**Proposed fireteams**\n${fireteams}\n`
-  const ending = `${groupText}\n[Open in Infinity Army](${list.url})\n`
+  const evidenceNote = list.teamTypeEvidence
+    ? ` Portal type prior: ${list.teamTypeEvidence.decisiveLists} decisive lists; compatible teams inferred, not observed.` : ''
+  const baseEnding = `${groupText}\n[Open in Infinity Army](${list.url})\n`
     + `-# Army profiles ${list.payloadVersion}; verify fireteams during deployment.`
+  let ending = baseEnding
+  if (intro.length + baseEnding.length + evidenceNote.length <= 1990) ending += evidenceNote
   const links = rosterConnections(list.profiles)
   let support = ''
   for (let size = links.length; size > 0; size--) {

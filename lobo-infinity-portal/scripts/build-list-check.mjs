@@ -10,6 +10,7 @@ import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutoc
   createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
   searchBuildListFactions, searchBuildListMissions, searchBuildListUnits } from '../bot/build-list-command.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
+import { deriveTeamTypeEvidence, loadTeamTypeEvidence, possibleFireteamTypes } from '../bot/build-list-team-evidence.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
 
@@ -47,7 +48,8 @@ for (const result of results) {
   assert.ok(result.legality.totals.troopers >= 12)
   assert.ok(!result.profiles.some(item => item.side === 'Deepspace'), 'Surface/Deepspace exclusivity')
   assert.ok(result.fireteams.some(team => ['DUO', 'HARIS'].includes(team.type) && team.level >= 2))
-  assert.ok(result.fireteams.every(team => team.members.length === (team.type === 'DUO' ? 2 : 3)))
+  assert.ok(result.fireteams.every(team => team.type === 'CORE'
+    ? team.members.length >= 3 && team.members.length <= 5 : team.members.length === (team.type === 'DUO' ? 2 : 3)))
   assert.ok(result.fireteams.every(team => team.members.every(label => result.profiles.some(profile => profile.combatGroup === team.combatGroup && profile.label === label))))
   assert.ok([1, 2].every(group => result.profiles.filter(item => item.combatGroup === group)
     .reduce((sum, item) => sum + item.slots, 0) <= 10), 'each group has at most 10 trooper slots')
@@ -64,13 +66,16 @@ for (const result of results) {
   assert.equal(decoded.combatGroups.flatMap(group => group.members).length, result.profiles.length)
   assert.equal(encodeArmyCode({ ...decoded, combatGroups: decoded.combatGroups }), result.code, 'Army code must round-trip')
 }
-assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 9
+assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 8
+  && projectedRegularOrders(result.profiles, 2) === 7
+  && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0) > 0
+  || projectedRegularOrders(result.profiles, 1) === 9
   && projectedRegularOrders(result.profiles, 2) === 6
   || projectedRegularOrders(result.profiles, 1) === 10
   && projectedRegularOrders(result.profiles, 2) === 5
   && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0)
     > result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
-'keep Tactical Awareness supported in a full primary group when it is the better order split')
+'keep Tactical Awareness supported in a capable primary group when it is the better order split')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
@@ -144,6 +149,42 @@ assert.deepEqual(proposedFireteams([
   { ...profiles.find(item => item.slug === 'corregidor-alguaciles'), combatGroup: 1 },
 ], wrongFtoChart), [], 'a non-FTO Jazz option cannot enter an FTO-only Fireteam')
 
+const evidenceTeam = { name: 'Line Fireteams', type: ['DUO', 'HARIS', 'CORE'], units: [
+  { slug: 'line', name: 'LINE', required: true, min: 0, max: 5 },
+] }
+const evidencePayload = { url: 'https://api.corvusbelli.com/army/units/en/777',
+  units: [{ id: 1, slug: 'line', name: 'LINE', profileGroups: [{ id: 1, options: [{ id: 1, name: 'LINE Rifle' }] }] }],
+  fireteamChart: { teams: [evidenceTeam], spec: { CORE: 1, HARIS: 1, DUO: 1 } } }
+const evidenceEntry = () => ({ combinedId: '777-1-1-1-1',
+  fireteamEligibility: { state: 'verified', teams: ['Line Fireteams'] } })
+const evidenceList = (result, count = 3, split = false) => ({ status: 'decoded', result, results: [result.toLowerCase()],
+  decoded: { combatGroups: [{ combatGroup: 1, entries: Array.from({ length: split ? 1 : count }, evidenceEntry) },
+    { combatGroup: 2, entries: split ? Array.from({ length: count - 1 }, evidenceEntry) : [] }] } })
+assert.deepEqual(possibleFireteamTypes(evidenceList('Win'), evidencePayload), ['DUO', 'HARIS', 'CORE'],
+  'a same-group pure trio can choose any legal type in the chart')
+assert.deepEqual(possibleFireteamTypes(evidenceList('Win', 2, true), evidencePayload), [],
+  'entries split across combat groups cannot form a team')
+assert.deepEqual(possibleFireteamTypes(evidenceList('Win', 2), evidencePayload), ['DUO'],
+  'two matching members cannot form Haris or Core')
+const evidenceSnapshot = { snapshotId: 'test', data: [{ lists: [
+  evidenceList('Win'), evidenceList('Win'), evidenceList('Win'), evidenceList('Loss'),
+  evidenceList('Loss', 1), evidenceList('Loss', 1),
+  { ...evidenceList('Win'), results: ['win', 'loss'] },
+] }] }
+const evidence = deriveTeamTypeEvidence(evidenceSnapshot, { payloads: [evidencePayload] })
+assert.equal(evidence.decisiveLists, 6, 'mixed and draw results cannot become definite wins')
+assert.deepEqual([evidence.observations.CORE.wins, evidence.observations.CORE.losses], [3, 1])
+assert.ok(evidence.preferences[777].CORE > 0 && evidence.preferences[777].CORE < .75,
+  'a modest type preference is earned from the within-sectorial result difference')
+const evidenceMembers = Array.from({ length: 3 }, (_, index) => ({ id: `line-${index}`, unitId: 1,
+  slug: 'line', unitName: 'LINE', optionName: 'LINE Rifle', label: `LINE Rifle ${index}`,
+  combatGroup: 1, slots: 1, points: 10, specialist: false, gunfighter: 0 }))
+assert.equal(proposedFireteams(evidenceMembers, evidencePayload.fireteamChart)[0]?.type, 'HARIS')
+assert.equal(proposedFireteams(evidenceMembers, evidencePayload.fireteamChart, null,
+  { CORE: -20, DUO: 20 })[0]?.type, 'DUO', 'type evidence can change which overlapping legal team is selected')
+assert.equal(await loadTeamTypeEvidence({ payloads: [evidencePayload] }, async () => ({ ok: false, status: 503 })), null,
+  'if the public snapshot is unavailable, Fireteam generation retains its chart-only fallback')
+
 const vanilla = buildArmyListOptions({ ...input, payload: { ...payload, fireteamChart: { teams: [], spec: {} } }, count: 1 })
 assert.equal(vanilla.length, 1)
 assert.deepEqual(vanilla[0].fireteams, [], 'armies without a chart must still get a list')
@@ -151,11 +192,12 @@ assert.deepEqual(vanilla[0].fireteams, [], 'armies without a chart must still ge
 const messages = await buildListResponses({ faction: 'Corregidor', mission: 'Hardlock', mustInclude: 'Jazz, Iguana',
   getSource: async () => ({ faction: source.metadata.factions.find(item => item.id === 502), payload, metadata: source.metadata }),
   getCatalog: async () => catalog, getAroCatalog: async () => aroCatalog,
-  getCloseCombatCatalog: async () => closeCombatCatalog, getMobilityCatalog: async () => mobilityCatalog })
+  getCloseCombatCatalog: async () => closeCombatCatalog, getMobilityCatalog: async () => mobilityCatalog,
+  getTeamEvidence: async () => null })
 assert.equal(messages.length, 3)
 for (const message of messages) {
   assert.ok(message.content.length <= 2000)
-  assert.match(message.content, /Proposed fireteams[\s\S]*Level [23]/)
+  assert.match(message.content, /Proposed fireteams[\s\S]*Level [2345]/)
   assert.match(message.content, /Support links/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
   assert.match(message.content, /Group 1 · \d+ Regular/)

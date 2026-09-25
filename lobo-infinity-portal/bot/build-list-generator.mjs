@@ -110,7 +110,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
 }
 
 export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlugs, gunfighterCatalog,
-  aroCatalog, closeCombatCatalog, mobilityCatalog, mission, mustInclude = [], points = 300, count = 3 } = {}) {
+  aroCatalog, closeCombatCatalog, mobilityCatalog, teamTypeEvidence, mission, mustInclude = [], points = 300, count = 3 } = {}) {
   const faction = metadata?.factions?.find(item => Number(item.id) === Number(sectorialId))
   if (!faction) throw new ListBuilderError('Unknown Infinity Army faction.')
   if (!String(mission || '').trim() || String(mission).length > 60) throw new ListBuilderError('Enter a mission name of 60 characters or fewer.')
@@ -131,7 +131,8 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const side = forced.some(item => item.slug === 'iguana-squadron') ? 'Surface'
     : forced.some(item => item.slug === 'gator-squadron') ? 'Deepspace' : null
   constraints.side = side
-  const seeds = starterTeams(profiles, payload.fireteamChart, constraints, side)
+  const teamPreference = teamTypeEvidence?.preferences?.[Number(sectorialId)] || teamTypeEvidence?.preferences?.global || {}
+  const seeds = starterTeams(profiles, payload.fireteamChart, constraints, side, teamPreference)
   const options = []
   const seen = new Set()
   for (let attempt = 0; attempt < 48 && options.length < 48; attempt++) {
@@ -163,7 +164,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!next) break
       selected.push(next)
     }
-    const grouped = optimizeCombatGroups(selected, payload.fireteamChart, buildConstraints.side)
+    const grouped = optimizeCombatGroups(selected, payload.fireteamChart, buildConstraints.side, teamPreference)
     const groups = [1, 2].map(index => ({ members: grouped.filter(item => item.combatGroup === index)
       .map(({ unitId, groupId, optionId }) => ({ unitId, groupId, optionId })) })).filter(group => group.members.length)
     const code = encodeArmyCode({ sectorialId: Number(sectorialId), sectorialSlug: faction.slug,
@@ -174,18 +175,21 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     const signature = grouped.map(item => `${item.combatGroup}:${item.id}`).sort().join('|')
     if (seen.has(signature)) continue
     seen.add(signature)
-    const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side)
+    const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side, teamPreference)
     options.push({ code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`, profiles: grouped, fireteams,
       legality, mission, faction: faction.name, payloadVersion: payload.version,
       specialistCount: grouped.filter(item => item.specialist).length,
       points: legality.totals.points, swc: legality.totals.swc,
-      score: scoreList(grouped, fireteams, mission, points) })
+      score: scoreList(grouped, fireteams, mission, points, teamPreference) })
   }
   if (!options.length) throw new ListBuilderError('I could not make a legal list with those required profiles and points.')
   const ranked = options.sort((a, b) => b.score - a.score)
+  const fullEnough = ranked.filter(item => item.legality.totals.troopers >= 12
+    && item.score >= ranked[0].score - 12)
+  const candidates = fullEnough.length >= Math.min(3, count) ? fullEnough : ranked
   // Prefer the fullest roster among similarly strong builds. A sparse list
   // can still win when adding bodies causes a marked loss in overall quality.
-  const competitive = ranked.filter(item => item.score >= ranked[0].score - 6)
+  const competitive = candidates.filter(item => item.score >= candidates[0].score - 6)
   const pool = [...competitive].sort((a, b) => b.legality.totals.troopers - a.legality.totals.troopers
     || b.score - a.score)
   const chosen = []
@@ -195,7 +199,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     chosen.push({ ...option, teamSignature: signature })
     if (chosen.length >= Math.min(3, count)) break
   }
-  for (const option of [...pool, ...ranked]) {
+  for (const option of [...pool, ...candidates]) {
     if (chosen.length >= Math.min(3, count)) break
     if (!chosen.some(item => item.code === option.code)) chosen.push(option)
   }
@@ -388,10 +392,10 @@ function groupPlacementScore(groups, teamGroups, lieutenantOrders) {
   return Math.max(...possible) + initial[0].activity * .04
 }
 
-export function optimizeCombatGroups(profiles, chart, side = null) {
+export function optimizeCombatGroups(profiles, chart, side = null, teamPreference = {}) {
   const totalSlots = profiles.reduce((sum, item) => sum + item.slots, 0)
   if (totalSlots <= 10) return profiles
-  const teams = proposedFireteams(profiles, chart, side)
+  const teams = proposedFireteams(profiles, chart, side, teamPreference)
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   const claimed = new Set()
   const blocks = []
@@ -435,7 +439,7 @@ export function optimizeCombatGroups(profiles, chart, side = null) {
   return profiles.map((item, index) => ({ ...item, combatGroup: assignment.get(index) }))
 }
 
-function starterTeams(profiles, chart, constraints, side) {
+function starterTeams(profiles, chart, constraints, side, teamPreference = {}) {
   const plans = []
   for (const team of chart.teams || []) {
     if (!Array.isArray(team.type) || !team.type.length || side && /Surface|Deepspace/i.test(team.name) && !team.name.includes(side)) continue
@@ -446,9 +450,9 @@ function starterTeams(profiles, chart, constraints, side) {
         && (!/\bFTO\b/i.test(member.name || '') || /\bFTO\b/i.test(profile.optionName)))
         .sort((a, b) => (b.specialist - a.specialist) * 3 + (b.gunfighter - a.gunfighter) / 20 + (a.points - b.points) / 10)
         .slice(0, 5)
-      for (const type of ['HARIS', 'DUO']) {
+      for (const type of ['HARIS', 'DUO', 'CORE']) {
         if (!team.type.includes(type)) continue
-        const size = type === 'HARIS' ? 3 : 2
+        const size = type === 'DUO' ? 2 : 3
         for (const item of matches) {
           if (item.ava < 2) continue
           const partners = [item, ...matches.filter(profile => profile.unitId === item.unitId && profile.id !== item.id).slice(0, 3)]
@@ -463,17 +467,37 @@ function starterTeams(profiles, chart, constraints, side) {
               item,
             ]
             for (const third of thirdOptions) {
-              const choices = third ? [item, partner, third] : [item, partner]
-              if (choices.reduce((n, choice) => n + choice.points, 0) > constraints.points * .45) continue
-              const seed = choices.map(choice => ({ ...choice, combatGroup: 1 }))
-              if (seed.some((choice, index) => !canAdd(seed.slice(0, index), choice, 1, constraints))) continue
-              const teamPlan = validTeam(seed, team, type, chart)
-              if (!teamPlan || teamPlan.level < 2) continue
-              plans.push({ ...teamPlan, members: choices,
-                value: 12 + (type === 'HARIS' ? 1 : 0) + choices.filter(choice => choice.specialist).length * 1.5
-                  + Math.max(...choices.map(choice => choice.gunfighter)) / 17
-                  - choices.reduce((n, choice) => n + choice.points, 0) * .09
-                  + rosterSynergy(choices) * 1.4 - rosterRedundancy(choices) * 1.3 })
+              const initial = third ? [item, partner, third] : [item, partner]
+              const variants = [initial]
+              if (type === 'CORE') {
+                let extended = initial
+                for (let length = 4; length <= 5; length++) {
+                  const options = eligible.filter(candidate => canAdd(extended.map(profile => ({ ...profile, combatGroup: 1 })), candidate, 1, constraints))
+                    .map(candidate => {
+                      const members = [...extended, candidate].map(profile => ({ ...profile, combatGroup: 1 }))
+                      const plan = validTeam(members, team, type, chart)
+                      return { candidate, plan, value: (plan?.level || 0) * 4
+                        + (candidate.specialist ? 1 : 0) - candidate.points * .06 - rosterRedundancy(members) * .8 }
+                    }).filter(option => option.plan?.level >= 2)
+                    .sort((a, b) => b.value - a.value)
+                  if (!options.length) break
+                  extended = [...extended, options[0].candidate]
+                  variants.push(extended)
+                }
+              }
+              for (const choices of variants) {
+                if (choices.reduce((n, choice) => n + choice.points, 0) > constraints.points * .45) continue
+                const seed = choices.map(choice => ({ ...choice, combatGroup: 1 }))
+                if (seed.some((choice, index) => !canAdd(seed.slice(0, index), choice, 1, constraints))) continue
+                const teamPlan = validTeam(seed, team, type, chart)
+                if (!teamPlan || teamPlan.level < 2) continue
+                plans.push({ ...teamPlan, members: choices,
+                  value: 12 + (type === 'HARIS' ? 1 : 0) + choices.filter(choice => choice.specialist).length * 1.5
+                    + Math.max(...choices.map(choice => choice.gunfighter)) / 17
+                    - choices.reduce((n, choice) => n + choice.points, 0) * .09
+                    + rosterSynergy(choices) * 1.4 - rosterRedundancy(choices) * 1.3
+                    + (teamPreference[type] || 0) })
+              }
             }
           }
         }
@@ -494,23 +518,24 @@ function starterTeams(profiles, chart, constraints, side) {
   return [...diverse.values(), ...sorted.filter(plan => ![...diverse.values()].includes(plan))].slice(0, 24)
 }
 
-export function proposedFireteams(profiles, chart, side = null) {
+export function proposedFireteams(profiles, chart, side = null, teamPreference = {}) {
   const choices = []
   const used = new Set()
   const usedTypes = new Map()
   for (const team of chart?.teams || []) {
     if (!team.type?.length || side && /Surface|Deepspace/i.test(team.name) && !team.name.includes(side)) continue
-    for (const type of ['HARIS', 'DUO']) {
+    for (const type of ['HARIS', 'DUO', 'CORE']) {
       if (!team.type.includes(type)) continue
-      const size = type === 'HARIS' ? 3 : 2
+      const sizes = type === 'CORE' ? [5, 4, 3] : [type === 'HARIS' ? 3 : 2]
       for (const group of [1, 2]) {
         const eligible = profiles.map((item, index) => ({ ...item, listIndex: index }))
           .filter(item => item.combatGroup === group && item.fireteamEligible !== false && item.slots === 1 && membershipRows(item, team, chart).length)
-        for (const members of combinations(eligible, size)) {
+        for (const size of sizes) for (const members of combinations(eligible, size)) {
           const plan = validTeam(members, team, type, chart)
           if (plan?.level >= 2) choices.push({ ...plan, members, combatGroup: group, value: plan.level * 4
             + members.filter(item => item.specialist).length + Math.max(...members.map(item => item.gunfighter)) / 20
-            - members.reduce((n, item) => n + item.points, 0) * .015 })
+            - members.reduce((n, item) => n + item.points, 0) * .015
+            - Math.max(0, members.length - plan.level) * 1.4 + (teamPreference[type] || 0) })
         }
       }
     }
@@ -518,7 +543,7 @@ export function proposedFireteams(profiles, chart, side = null) {
   choices.sort((a, b) => b.value - a.value)
   const selected = []
   for (const choice of choices) {
-    const cap = Number(chart.spec?.[choice.type] ?? (choice.type === 'HARIS' ? 1 : 256))
+    const cap = Number(chart.spec?.[choice.type] ?? (choice.type === 'DUO' ? 256 : 1))
     if ((usedTypes.get(choice.type) || 0) >= cap || choice.members.some(member => used.has(member.listIndex))) continue
     choice.members.forEach(member => used.add(member.listIndex))
     usedTypes.set(choice.type, (usedTypes.get(choice.type) || 0) + 1)
@@ -529,8 +554,10 @@ export function proposedFireteams(profiles, chart, side = null) {
   return selected
 }
 
-function validTeam(members, team, type, chart = { teams: [] }) {
-  if (members.length !== (type === 'DUO' ? 2 : 3) || members.some(item => item.combatGroup !== members[0].combatGroup)) return null
+export function validTeam(members, team, type, chart = { teams: [] }) {
+  if (!team.type?.includes(type) || members.length < (type === 'DUO' ? 2 : 3)
+    || members.length > (type === 'CORE' ? 5 : type === 'HARIS' ? 3 : 2)
+    || members.some(item => item.combatGroup !== members[0].combatGroup)) return null
   const selections = members.map(item => membershipRows(item, team, chart))
   if (selections.some(rows => !rows.length)) return null
   const rows = selections.map(candidates => candidates[0])
@@ -573,7 +600,7 @@ function combinations(values, size, offset = 0, prefix = [], output = []) {
   return output
 }
 
-function scoreList(profiles, fireteams, mission, points) {
+function scoreList(profiles, fireteams, mission, points, teamPreference = {}) {
   const specialists = profiles.filter(item => item.specialist).length
   const regular = profiles.filter(item => item.regular).length
   const shooter = profiles.map(item => item.gunfighter).sort((a, b) => b - a).slice(0, 2).reduce((a, b) => a + b, 0)
@@ -583,7 +610,7 @@ function scoreList(profiles, fireteams, mission, points) {
     .map(team => ({ ...team, members: groups[index].filter(item => team.members.includes(item.label)) })))
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, /hardlock/i.test(mission) ? 4 : 3) * 6) + regular * 2
-    + shooter / 8 + fireteams.reduce((n, item) => n + item.level * 3, 0)
+    + shooter / 8 + fireteams.reduce((n, item) => n + item.level * 3 + (teamPreference[item.type] || 0), 0)
     + Math.max(0, ...profiles.map(item => item.aroRating)) / 4
     + Math.max(0, ...profiles.map(item => item.ccRating)) / 8
     + profiles.filter(item => item.specialist).map(item => item.mobility).sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 65
