@@ -11778,5 +11778,385 @@
       "heroLoses": "{{otherPlayer}}’s rangers secured the fork and guided the carts around the cracked bridge.",
       "draw": "The carts turned back safely, but both teams kept the station dark until the bridge was checked."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A stone archive on the mesa housed a painted screen showing the old routes between two settlements. Windblown sand had entered through the roof and was erasing the lower paths. {{heroPlayer}}’s custodians climbed from the eastern trail; {{otherPlayer}}’s rangers held the western steps with a group of travelers waiting for directions.",
+      "{{hero}} met a defender at the archive threshold and struggled through a gap between fallen beams. The fighter caught the screen before it tipped into the sand. On its back lay a map of a spring that neither group had seen, drawn beside a line marking a path beneath the mesa.",
+      "The custodians could carry the screen to safety, but the travelers would lose the only guide across the sand today. The rangers had a dry cloth ready to copy the old paths in place. The fighter held the screen upright as another gust pushed through the broken roof."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians saved the screen and marked a safe path for the travelers.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the archive and guided the travelers by the copied routes.",
+      "draw": "The travelers crossed, but both groups kept only fragments of the screen’s spring map."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A bird sanctuary on the frontier reported a string of silent alarms from its nesting cliffs. A caretaker found a fresh cable laid between the alarm post and a shuttered hunting blind. {{heroPlayer}}’s searchers entered the sanctuary from the creek; {{otherPlayer}}’s rangers held the cliff path until the birds settled.",
+      "{{hero}} covered a keeper crossing beneath the cliffs. Shots struck the empty blind, and the fighter answered while the keeper opened its shutter. Inside lay a small camera trained on a nest; behind it, a broken alarm switch was still ticking whenever a bird crossed its beam.",
+      "Removing the camera would stop the false alarms, but its last recording might show who laid the cable. The rangers had a clear view of the cliff path and were moving toward the blind. The fighter watched a bird land over the camera lens as the keeper played back its final frame."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers recovered the recording and restored the sanctuary’s warning system.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the blind and protected the nesting path.",
+      "draw": "The false alarms stopped, but neither party identified who had installed the camera."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "At a spring crossing, paper kites marked the safe stones across a flooded stream. Overnight their strings were tied to a new post on the wrong bank. {{heroPlayer}}’s guides arrived with fresh line; {{otherPlayer}}’s rangers held the old bridge while a school group waited to cross.",
+      "{{hero}} followed the knots and found a hidden weight beneath the new post. The specialist lifted it to reveal a small tin box containing a drawing of a second, shallower crossing. A kite dipped toward the water where the first child was preparing to step, and the rangers shouted from the bridge.",
+      "The guides could redirect the kites to the shallow ford, but the drawing might be outdated after the flood. Keeping them over the old stones would require someone to hold the weight by hand. The specialist felt the pull of the wet string while the waiting teacher counted the children again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guides marked the safe ford and brought the children across without losing a kite.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the bridge and guided the school group over its dry span.",
+      "draw": "The children crossed safely, but the kites stayed down until both routes could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A memorial grove on the frontier began growing fresh leaves on its dead central tree. Each leaf carried a name from the village register, including one belonging to a person who had vanished. {{heroPlayer}}’s botanists entered the grove; {{otherPlayer}}’s rangers held its outer wall while the family waited outside.",
+      "{{hero}} examined a root exposed by rain and found a thin speaking tube running under the wall. The specialist lifted it to hear a faint voice reading names from a cellar below the grove. The voice stopped at the missing person’s name, and a section of the root lifted over a hidden stone hatch.",
+      "Opening the hatch could reveal who was speaking, but it might sever the root that fed the new leaves. The rangers had reached the cellar door from outside the wall. The specialist held a leaf against the register as the faint voice began reciting a different list."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists preserved the tree and found the speaker beneath the grove.",
+      "heroLoses": "{{otherPlayer}}’s rangers opened the cellar and brought the missing person’s story to the family.",
+      "draw": "The new leaves survived, but the cellar was sealed before anyone learned who had read the names."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a frontier toll station, a wagon of spare bridge parts arrived without its driver. Its wheels were still turning when the gatekeeper stopped it, and one crate was marked for a crossing that had never been built. {{heroPlayer}}’s hired escorts came to inspect the cargo; {{otherPlayer}}’s rangers secured the road.",
+      "{{hero}} covered a mechanic opening the marked crate as shots struck the tollhouse roof. The fighter answered while the mechanic uncovered a set of heavy bolts and a folded drawing. It showed the missing bridge built beneath the road, over a culvert where water was rising behind the station.",
+      "The escorts could use the parts to brace the road before it fell, but no one knew whether the drawing was current. The rangers were measuring the culvert from their side. The fighter held the road clear as the mechanic rolled the first bolt toward an old access hatch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts braced the hidden crossing and kept the toll station open.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the road and repaired the culvert from below.",
+      "draw": "The station closed safely while both groups checked the abandoned bridge plans."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A fossil quarry opened a stone layer that held a metal token instead of a bone. The curator on site said its markings were the coordinates of a long-lost supply cache. {{heroPlayer}}’s security detail reached the cutting floor; {{otherPlayer}}’s rangers controlled the quarry lift and demanded the token be left in place for study.",
+      "{{hero}} covered the curator crossing to the new seam. Gunfire struck a stack of empty stone trays, and the fighter answered while the curator lifted the token. Beneath it lay a second impression, showing the coordinates backward, and a drill operator shouted that the cliff above the seam had begun shedding rock.",
+      "The token could be carried out immediately, but the reversed impression would vanish if the rock face collapsed. The rangers were bringing a brace down on the lift. The fighter kept the curator behind the trays as another stone fell and the drill operator called for everyone to move."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail preserved both marks and secured the quarry cutting.",
+      "heroLoses": "{{otherPlayer}}’s rangers braced the seam and protected the token for examination.",
+      "draw": "The token survived, but the reverse impression fell with the cliff before either party could read it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A steam tractor hauling flood barriers stalled beside the river gate while rain approached. The driver said its engine was fine; its wheels had caught on a hidden chain under the mud. {{heroPlayer}}’s contracted guards reached the tractor; {{otherPlayer}}’s rangers controlled the gate where the barriers were needed.",
+      "{{hero}} met a defender at the tractor’s brake and fought to keep it set as the driver dug out the chain. The fighter pulled its loose end free, revealing a line to an older gate buried near the riverbank. That gate began lifting under the pressure of water upstream.",
+      "The barriers could stop the old gate if moved now, but releasing the tractor might drag the chain across the road and strand the driver. The rangers had a rope at the main gate. The fighter held the brake as the first barrier tilted on the trailer behind them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards freed the tractor and sealed the old river gate before the flood.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the barriers and held the river at the main gate.",
+      "draw": "The river stayed within its banks, but both groups left the buried gate closed for repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A desert observatory’s survey light swept a neighboring town each night, waking residents who said it had once marked a safe route across the dunes. Its operator had vanished before setting the new schedule. {{heroPlayer}}’s technicians entered the observatory; {{otherPlayer}}’s rangers held the road the beam now ignored.",
+      "{{hero}} checked the lamp drive and found a strip of hand-drawn map wound around its timing drum. The specialist unrolled enough to see a dry well and a shaded caravan stop. The light paused over the well, where a lantern answered from the dark, then began moving toward an unmarked part of the dunes.",
+      "Following the lamp might lead to the operator, but the town needed its old route marked before dawn. The rangers were preparing a line of ground flags along the road. The specialist held the map against the drum as the far lantern flashed in a pattern the timing mechanism could not have made."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians found the operator and restored the survey light to a safe route.",
+      "heroLoses": "{{otherPlayer}}’s rangers secured the road and guided travelers by ground markers.",
+      "draw": "The town kept its route, but both parties left the unmarked lantern to be traced later."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "USAriadna Ranger Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The frontier reservoir fell overnight, exposing a sealed doorway on the bank beneath a long line of stranded reeds. Its lock carried the water company’s symbol, but the current keeper had no key. {{heroPlayer}}’s hired guards came to the waterline; {{otherPlayer}}’s rangers held the ridge that overlooked the village supply pipe.",
+      "{{hero}} covered a worker cutting the old lock as shots struck the dry mud beside them. The fighter answered while the worker opened the door to a room of gauges, one showing pressure rising in the village pipe although the reservoir was falling. A valve handle turned slowly behind the worker’s shoulder.",
+      "Closing the valve might save the village pipe, but it could empty whatever reserve remained beyond the sealed room. The rangers could read the pipe from their ridge if given time. The fighter watched the worker grip the moving handle as water began seeping through the room’s far wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the gauge room and steadied the village water supply.",
+      "heroLoses": "{{otherPlayer}}’s rangers took the ridge and closed the dangerous pipe from above.",
+      "draw": "The pipe held, but both teams sealed the doorway until the hidden reserve could be measured."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "Two medical caravans arrived at a buried well carrying the same old promise of water rights. The well had been dry for years, yet its stone cover was wet that morning. {{heroPlayer}}’s crew took the east gallery; {{otherPlayer}}’s team lowered a bucket from the surface while villagers waited for a drink.",
+      "{{hero}} tested the water and found it rising through a second shaft hidden behind the gallery wall. The specialist cleared a stone and heard a pump working somewhere below. The bucket from above came up empty even as the new shaft filled, and a child at the wellhead called down that the stone cover was warming.",
+      "The crews could break through the gallery wall and reach the pump, but the villagers might lose the new water if the shaft collapsed. Another route might run from the surface, where the old rights marker still stood. The specialist held a clean flask against the rising flow as the pump stopped suddenly."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew opened the hidden shaft and brought safe water to the villagers.",
+      "heroLoses": "{{otherPlayer}}’s team secured the wellhead and restored the pump from above.",
+      "draw": "The well flowed again, but both caravans shared its care until the old claim was resolved."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A private garden of medicinal plants began displaying lantern signals no gardener had arranged. They pointed to a greenhouse door kept locked since the last harvest. {{heroPlayer}}’s investigators entered through the side path; {{otherPlayer}}’s caretakers held the main arch and asked that the plants be left untouched.",
+      "{{hero}} struggled with a defender at the narrow greenhouse gate and kept it open long enough for a companion to look inside. A row of pots had been moved to spell a date on the floor. Beneath them lay a key and a note naming a patient at the nearby clinic.",
+      "The investigators could take the key and hurry to the clinic, or stay to learn who had moved the pots and why. The caretakers were bringing a lamp to read the note themselves. The fighter held the gate as another lantern blinked across the garden, this time from an empty path."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators found the signaler and reached the named patient in time.",
+      "heroLoses": "{{otherPlayer}}’s caretakers secured the garden and carried the note to the clinic.",
+      "draw": "The patient received the message, but the source of the garden signals remained unknown."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal quarantine pier received a cooler of tissue samples without the ship listed on its manifest. The cooler was cold, but the labels inside belonged to a different research station inland. {{heroPlayer}}’s port inspectors took the cargo office; {{otherPlayer}}’s medical team guarded the pier with a portable cold case.",
+      "{{hero}} checked the cooler’s seal and found a transit tag folded beneath its handle. The specialist traced it to a shipment due to pass through the pier that evening. A warning light on the cooler began flashing as its temperature climbed, while a messenger reported the inland station had lost all power.",
+      "The inspectors could send the cooler inland at once, but the pending shipment might identify its true owner. Holding it for proof risked losing the samples. The medical team had room in its cold case. The specialist kept the transit tag against the light as the cooler’s warning became steady red."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors preserved the samples and traced their route through the pier.",
+      "heroLoses": "{{otherPlayer}}’s medical team took the cooler to safe storage at the inland station.",
+      "draw": "The samples stayed cold, but both parties held them at the pier pending a verified manifest."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "Two research crews reached a greenhouse where the first crop from a new grain strain had grown overnight under the sealed glass roof. Its caretaker said the soil was warming from below. {{heroPlayer}}’s technicians entered by the pump shed; {{otherPlayer}}’s botanists guarded the seed bank at the opposite end.",
+      "{{hero}} tested the soil and found an old steam pipe active beneath the beds. The specialist closed its valve, slowing the heat, but a pressure gauge rose behind the seed bank wall. The caretaker found a maintenance drawing showing an overflow route that led under the greenhouse floor.",
+      "Opening the overflow could save the seed bank and flood the young crop; holding the valve might burst the hidden pipe. The botanists had trays ready to move the new grain. The specialist held the drawing above the warming floor as a thin seam of water appeared between the beds."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians relieved the pipe and saved both the grain and its seed bank.",
+      "heroLoses": "{{otherPlayer}}’s botanists secured the bank and moved the crop before the floor flooded.",
+      "draw": "The seed stock survived, but both crews closed the greenhouse for pipe repairs."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A floating clinic stopped answering radio calls while tied to the river bank. Its record terminal was still transmitting patients’ names to an unknown address. {{heroPlayer}}’s signal crew boarded from a skiff; {{otherPlayer}}’s medical escort held the gangway to keep the patients from being disturbed.",
+      "{{hero}} covered a technician crossing the upper deck. Fire struck the empty mooring post, and the fighter answered while the technician disconnected the terminal’s outgoing line. A printer below began producing slips that named a nearby landing and a time before dawn. One slip bore the name of the clinic’s missing operator.",
+      "The crew could secure the clinic’s records or follow the slips to the landing while the trail was fresh. The medical escort had a boat and a patient list that might explain the destination. The fighter watched another slip emerge as the clinic’s mooring line began to loosen."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew protected the patient records and found the missing operator at the landing.",
+      "heroLoses": "{{otherPlayer}}’s escort secured the clinic and took the patient list to the landing.",
+      "draw": "The records stopped transmitting, but the operator’s whereabouts remained under joint investigation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A community theater hosted a health fair while a projection onstage began showing the inside of a distant laboratory. No camera had been connected to the screen. {{heroPlayer}}’s stage technicians entered the lighting booth; {{otherPlayer}}’s medical staff kept visitors away from the locked cellar below the stage.",
+      "{{hero}} traced the projection to a fiber running through an old trapdoor. The specialist opened its frame and found a live image feed beneath the floor. In the laboratory on screen, a worker held up a sign asking for help, then pointed to a clock counting down beside a sealed door.",
+      "The technicians could keep the image up to read the worker’s next message or disconnect the feed and use the line to call the laboratory directly. The medical staff had already contacted its local number without success. The specialist held the fiber against the booth lamp as the worker raised another sign."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians reached the laboratory and sent help while keeping the theater secure.",
+      "heroLoses": "{{otherPlayer}}’s medical staff traced the call and took charge of the remote emergency.",
+      "draw": "The worker’s message was relayed, but the laboratory feed ended before either team learned what was behind the door."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A hillside clinic’s new stretcher lift stopped between floors with a patient inside after a brief power flicker. The service scaffold leaned over the courtyard where family members waited. {{heroPlayer}}’s riggers approached the motor; {{otherPlayer}}’s medical team held the landing and kept the lift doors from opening too far.",
+      "{{hero}} covered a mechanic crossing the scaffold as shots broke the motor housing. The fighter answered while the mechanic fitted a hand crank. The lift rose a little, then a hanging counterweight knocked against the clinic’s rainwater tank. A nurse inside called that the patient needed a level landing.",
+      "The riggers could bring the lift up by hand, risking the tank, or lower it to the medical team on the ground floor. The clinic’s old stairs were too narrow for the stretcher. The fighter watched the mechanic reach the crank again as water began leaking from the tank’s lower seam."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers steadied the lift and brought the patient to the waiting clinic staff.",
+      "heroLoses": "{{otherPlayer}}’s medical team secured the landing and lowered the patient safely.",
+      "draw": "The patient came out, but both teams closed the broken lift until a new counterweight arrived."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "An inheritance vault opened after a scientist’s death, revealing a jar of seeds whose patent named no owner. Several families had grown the same crop for generations. {{heroPlayer}}’s auditors entered the record chamber; {{otherPlayer}}’s botanists held the cultivation room where the seeds had already begun to sprout.",
+      "{{hero}} compared the patent to the vault’s growth log and found a page written before the scientist was born. The specialist unfolded it to reveal a promise that the seed line would stay with the valley’s growers. A root pushed under the chamber door as someone in the cultivation room shouted that the jars had cracked.",
+      "The auditors could take the old page to the families or help move the fragile sprouts before their roots dried. The botanists needed clean trays and room in the record chamber. The specialist held the promise above the water spreading across the floor as the first jar broke apart."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors preserved the promise and secured the seeds for the valley growers.",
+      "heroLoses": "{{otherPlayer}}’s botanists saved the sprouts and delivered them to the families.",
+      "draw": "The crop survived, but both parties left the question of ownership to a later hearing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A fragment from the night sky struck beside a desert dispensary and left a ring of cool sand. The clinic’s instruments began playing a pulse matching one of its patients. {{heroPlayer}}’s searchers reached the fragment; {{otherPlayer}}’s medical staff guarded the clinic entrance while the patient slept.",
+      "{{hero}} covered a technician approaching the ring as fire struck the sand beyond it. The fighter answered while the technician touched a probe to the fragment. Its pulse sped up, and inside the clinic a monitor sounded at the same rate. The patient opened their eyes and pointed toward a closed storeroom.",
+      "The searchers could move the fragment away to end its effect, but the patient might be trying to warn them of something in the storeroom. The medical staff was already reaching for its key. The fighter watched the probe’s light match a second pulse coming from behind the clinic wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers secured the fragment and traced the second pulse without disturbing the patient.",
+      "heroLoses": "{{otherPlayer}}’s staff protected the clinic and isolated the fragment from its instruments.",
+      "draw": "The patient recovered, but the two pulses remained under joint observation overnight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A desert aqueduct carried clean water to a medical outpost. A new barrier in the channel diverted its flow toward a ruined fort instead. {{heroPlayer}}’s expedition entered the sluice house; {{otherPlayer}}’s clinic guards held the bank and waited for a way to move the barrier safely.",
+      "{{hero}} struggled with a defender at the handwheel and kept it from locking the barrier in place. The fighter turned it a quarter circle, sending water back toward the outpost. In the ruined fort, a light came on behind a shutter as the diverted channel ran dry.",
+      "Opening the sluice fully would fill the clinic tanks, but someone at the fort might be depending on the same water. The guards had a messenger moving along the dry channel to check. The fighter held the wheel against the current while the light behind the shutter flashed twice."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s expedition restored the clinic supply and found another way to reach the fort.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the sluice and divided the water between the two sites.",
+      "draw": "Both sites received water, but neither party kept the sluice without the other’s watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Haqqislam",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A desert research pavilion cast a shadow shaped like a different building each morning. Today its shadow showed a hospital ward that had been demolished years earlier. {{heroPlayer}}’s observers set out measuring rods; {{otherPlayer}}’s medical researchers entered the pavilion to test its old glass roof.",
+      "{{hero}} aligned the rods and found a lens hidden in the roof, projecting an image from a chamber below the sand. The specialist cleared the lens enough to see rows of empty beds and a single lamp still burning. The roof shifted in the heat, sending the shadow toward the pavilion’s open doors.",
+      "The observers could dig toward the buried chamber before the sun moved, or preserve the lens to guide a slower search. The medical team had found a sealed hatch beneath the pavilion floor. The specialist held the last rod against the moving shadow as the lamp in the projected ward went out."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers reached the buried chamber and secured its surviving records.",
+      "heroLoses": "{{otherPlayer}}’s researchers opened the hatch and protected the pavilion’s old ward.",
+      "draw": "The chamber stayed sealed, but both teams marked its position before the shadow disappeared."
+    }
   }
 ]
