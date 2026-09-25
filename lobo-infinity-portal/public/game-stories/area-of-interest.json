@@ -18938,5 +18938,245 @@
       "draw": "Both circles preserved the seed jars and marked the old village together."
     },
     "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cliffside lighthouse began sweeping its beam across inland villages instead of the sea. Oban wardens climbed the keeper's stair while Shindenbutai scouts approached through caves below. Smugglers occupied the lantern room, using its shutters to signal an unseen aircraft beyond the ridge.",
+      "{{hero}} fired through the rotating gaps, pinning the smugglers away from the lens while a scout reached the brake. The beam stopped over a hillside reservoir, revealing three boats hidden under camouflage far from navigable water. A warden found the keeper bound beside a chart whose coastline had been carefully cut away.",
+      "The aircraft answered with a red flare and began descending toward the reservoir. {{heroPlayer}}'s scouts turned the shutters into a warning pattern while {{otherPlayer}}'s wardens freed the keeper. On the chart's reverse, pencil marks joined the inland boats to a tunnel directly beneath the lighthouse foundation."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s scouts reclaimed the lantern room and diverted the descending aircraft.", "heroLoses": "{{otherPlayer}}'s wardens rescued the keeper and secured the lighthouse caves.", "draw": "The aircraft withdrew while both teams searched the tunnel beneath the tower."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A village spring turned bright green after a Tohaa pilgrim vessel landed in the upper valley. Oban wardens closed the water steps while Tohaa healers followed a trail of glowing pollen upstream. Fish remained healthy, but every metal cup dipped into the spring emerged etched with the same spiral.",
+      "{{hero}} separated the pollen from the water and discovered it was gathering dissolved ore into harmless threads. The specialist wound those threads around a reed frame, revealing that the spiral copied a mark carved inside the spring pipe. Behind the carving lay a corroded filter installed before the village records began.",
+      "Removing the filter restored clear water but exposed a sealed clay tube in the bank. {{heroPlayer}}'s delegation preserved the living threads while {{otherPlayer}}'s wardens opened the tube under village witness. It contained a map of wells that had all vanished except the spring now flowing between them."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s delegation purified the spring and preserved the ore-gathering organism.", "heroLoses": "{{otherPlayer}}'s wardens restored the village water and secured the hidden well map.", "draw": "Clear water returned while both teams documented the spring's forgotten filter."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Dashat Company"],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A Dashat convoy stopped at a forest tollhouse whose bridge had been raised by Oban wardens. The contractors carried winter medicine; the wardens said the far road crossed a protected burial grove. Before terms could be settled, thieves rushed the tollhouse and seized the bridge crank.",
+      "{{hero}} fought through the cramped counting room and drove the thieves away from the crank without breaking its wooden gears. A contractor lowered the bridge halfway, exposing medicine crates already floating beneath it. Their seals matched the convoy, although every truck inventory still appeared complete.",
+      "The floating crates contained stones and one recently printed delivery receipt. {{heroPlayer}}'s guards searched the trucks for false walls while {{otherPlayer}}'s wardens pulled the crates from the river. The receipt named a clinic beyond the burial grove, signed by a doctor who had disappeared during the previous winter."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s guards recovered the bridge and exposed the substituted cargo.", "heroLoses": "{{otherPlayer}}'s wardens secured the crossing and preserved the burial grove.", "draw": "The medicine crossed under joint escort while both teams traced the false receipt."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Druze Bayram Security"],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A mining company fenced a hillside cemetery after ground sensors indicated valuable ore beneath it. Druze guards held the new perimeter; Oban custodians arrived with burial rolls and an injunction. During their dispute, one sensor began moving slowly uphill though its casing remained fixed in the soil.",
+      "{{hero}} opened the casing and found its cable pulled taut through an animal burrow. Following the line uncovered a survey probe being dragged by an old irrigation wheel below ground. The specialist stopped the wheel and retrieved a copper memorial tag that the probe had hooked from a collapsed grave marker.",
+      "The tag named a miner omitted from both the company roster and cemetery roll. {{heroPlayer}}'s custodians searched nearby markers while {{otherPlayer}}'s guards checked the original survey. Every ore reading formed a rectangle around the lost grave, suggesting the sensors had detected buried support rails rather than a mineral seam."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s custodians restored the lost grave and disproved the mining claim.", "heroLoses": "{{otherPlayer}}'s guards secured the hillside and corrected the faulty survey.", "draw": "The cemetery remained undisturbed while both teams documented the buried rails."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Ikari Company"],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Ikari salvagers dragged a crashed weather drone into a hill village just before a predicted hailstorm. Oban wardens claimed its warning instruments belonged to the valley. When raiders attacked the village square, the drone unexpectedly unfolded a dish and began broadcasting the defenders' positions.",
+      "{{hero}} shot the dish hinge and turned its beam into a stone wall while a salvager crawled beneath the chassis. The broadcast came from a foreign relay wired beside the weather package. A warden removed the relay, and the drone's original display showed the storm tracking toward an evacuation road rather than the village.",
+      "The road would become impassable before the school transport arrived. {{heroPlayer}}'s crew used the drone tractor to clear fallen branches while {{otherPlayer}}'s wardens warned the outlying farms. Hail struck the disabled dish, tapping out the same burst pattern the raiders had used to coordinate their attack."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s salvagers stopped the broadcast and reopened the evacuation road.", "heroLoses": "{{otherPlayer}}'s wardens recovered the true forecast and protected the valley settlements.", "draw": "The school transport passed safely as both teams tracked the raiders' relay signal."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A traveling market unfolded across land claimed by two villages, and StarCo security locked its payment hub when every stall received the same ownership demand. Oban mediators brought the original boundary songs, but the market's speakers distorted each recording into a different set of directions.",
+      "{{hero}} isolated the speakers and discovered their delay increased according to distance from a buried transmitter. By moving a receiver among the stalls, the specialist triangulated it beneath an ancient milestone now hidden under the payment hub. Its inscription matched a verse missing from both villages' songs.",
+      "Lifting the hub would suspend trade and strand hundreds of travelers. {{heroPlayer}}'s crew rerouted payments while {{otherPlayer}}'s mediators exposed only the milestone's edge. A final demand appeared on every stall screen, offering to withdraw the ownership claim in exchange for the stone itself."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s crew kept the market operating and located the hidden transmitter.", "heroLoses": "{{otherPlayer}}'s mediators recovered the boundary verse and protected the milestone.", "draw": "Trade continued while both villages accepted a survey centered on the old stone."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "White Company"],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A White Company escort convoy entered a canyon where Oban rangers were evacuating shepherds from a brush fire. Armed hijackers blocked the only paved exit and fired from an abandoned cable station. Smoke concealed a second trail, but an old livestock bridge across it could bear only one vehicle.",
+      "{{hero}} suppressed the cable station while the escorts uncoupled the convoy's heavy carrier. A ranger released counterweights that lowered the livestock bridge without snapping its weathered lines. Under the station floor they found a fuel hose feeding the fire from a tank marked as emergency water.",
+      "The flames turned toward the bridge as the last shepherd crossed. {{heroPlayer}}'s escorts rolled the carrier downhill as a firebreak while {{otherPlayer}}'s rangers shut the hidden tank. From the empty water label, heat revealed a shipping code matching one truck still waiting inside the convoy."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s escorts cleared the hijackers and carried the shepherds through the canyon.", "heroLoses": "{{otherPlayer}}'s rangers stopped the fuel-fed fire and preserved the escape bridge.", "draw": "The canyon emptied safely while both teams isolated the marked truck."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "Two Shindenbutai reconnaissance teams converged on a silent fishing village after separate sources reported an illegal transmitter. One team found every radio neatly stacked in the harbor office; the other saw fresh lamps burning aboard empty boats. At low tide, a signal pulsed from beneath the longest pier.",
+      "{{hero}} descended between the pilings and found an insulated message capsule tethered just above the mud. Its timer activated only when seawater dropped below a copper contact. The specialist copied the message without detaching the capsule, preserving a trail to whoever returned at the next tide.",
+      "The recording contained weather reports spoken backward and one ordinary request for medicine. {{heroPlayer}}'s scouts watched the shore while {{otherPlayer}}'s team searched the empty houses. A lamp on the farthest boat blinked in reply, though its anchor chain led under the pier instead of into the harbor."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s team decoded the tidal transmitter and traced its reply.", "heroLoses": "{{otherPlayer}}'s team secured the village and recovered the hidden radio network.", "draw": "Both teams preserved the capsule while waiting for its unknown collector."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A Tohaa memorial organism rooted itself around an island communications mast, silencing every channel except emergency calls. Shindenbutai scouts sought a missing courier whose last message came through the mast. The organism changed color whenever the same three words repeated in intercepted traffic.",
+      "{{hero}} mapped the color shifts and realized the growth was filtering a distress phrase hidden beneath routine broadcasts. The specialist separated its tendrils from the antenna without cutting them, exposing a courier token caught against the feed line. Its serial belonged to someone reported missing years earlier.",
+      "A new transmission gave coordinates inside the island's flooded quarry. {{heroPlayer}}'s delegation kept the organism linked to the signal while {{otherPlayer}}'s scouts prepared a dive. As the team departed, the memorial produced a seed shaped around the courier token and released it toward the quarry on the rainwater."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s delegation preserved the memorial and isolated the buried distress call.", "heroLoses": "{{otherPlayer}}'s scouts recovered the courier token and reached the quarry coordinates.", "draw": "The signal stayed open while both teams followed the floating seed inland."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "Dashat Company"],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A Dashat freight crew leased a warehouse whose hidden basement opened onto a Shindenbutai surveillance route. Scouts demanded the passage remain untouched; the contractors wanted compensation for cargo ruined by its damp air. Then an intruder emerged from below carrying a case taken from the locked office.",
+      "{{hero}} caught the thief between stacked containers and wrested the case away before a forklift crossed the narrow aisle. Inside lay moisture records proving the basement had flooded on a precise monthly cycle. A scout compared the dates with surveillance logs and found each flood covered an unexplained gap in observation.",
+      "Water began rising through the floor ahead of schedule. {{heroPlayer}}'s contractors lifted the cargo while {{otherPlayer}}'s scouts followed the intruder's wet footprints downstairs. The trail ended at a dry wall where the stolen case's hinges fit two slots concealed in the brickwork."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s contractors recovered the records and saved the warehouse cargo.", "heroLoses": "{{otherPlayer}}'s scouts secured the hidden route and exposed the surveillance breach.", "draw": "The cargo stayed dry while both teams opened the false basement wall."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "Druze Bayram Security"],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A diplomatic cable car stopped over a gorge with Druze guards aboard and Shindenbutai scouts tracking it from the ridge. Attackers seized the upper control house and began pulling the car toward a damaged tower. The passengers could not see that one support wheel had already slipped from its rail.",
+      "{{hero}} fired across the gorge, forcing the attackers below the control windows while a scout climbed the tower's service line. A controlled shot severed the hauling cable just after the scout engaged the emergency brake. The car swung clear, exposing a package magnetized beneath its floor.",
+      "The package transmitted passenger conversations to a receiver in the control house. {{heroPlayer}}'s scouts jammed it while {{otherPlayer}}'s guards moved the passengers into rescue harnesses. One recorded voice belonged to nobody aboard and calmly described the wheel failure several minutes before it occurred."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s scouts retook the control house and stabilized the cable car.", "heroLoses": "{{otherPlayer}}'s guards evacuated the passengers and secured the listening device.", "draw": "Every passenger reached the ridge while both teams examined the predictive recording."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "Ikari Company"],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Ikari salvagers raised a courier pod from a flooded subway entrance while Shindenbutai scouts watched for its intended receiver. Before the hatch opened, gunmen attacked from an elevated station and tried to drive the pod back underwater. Its status light continued counting delivered messages despite having no power.",
+      "{{hero}} covered the salvage winch and shot loose a station sign that blocked the gunmen's angle. A crew member opened the pod behind it and found rows of empty message slots surrounding a mechanical counter. One slot held a subway token polished smooth except for a newly cut arrow.",
+      "The arrow pointed along a sealed track tunnel. {{heroPlayer}}'s crew hauled the pod onto a trolley while {{otherPlayer}}'s scouts pursued the retreating gunmen. As the trolley crossed the station boundary, the counter advanced once and a distant signal lamp illuminated over the flooded rails."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s salvagers recovered the courier pod and drove off its attackers.", "heroLoses": "{{otherPlayer}}'s scouts secured the station and traced the sealed delivery route.", "draw": "The pod remained under joint guard while both teams followed the new signal lamp."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A crowded spaceport assigned one departure gate to two evacuation flights. StarCo marshals controlled the concourse while Shindenbutai scouts guarded witnesses booked under false names. Both boarding systems printed valid passes, but each opened a different pressure door onto the same narrow jet bridge.",
+      "{{hero}} compared microscopic printer marks and found the passes came from one machine alternating between two archived schedules. The specialist froze both queues, then used a maintenance tag to identify which aircraft was physically docked. Its registration had been painted over while passengers were already waiting.",
+      "The aircraft's original number belonged to a flight missing since the port opened. {{heroPlayer}}'s marshals cleared the bridge while {{otherPlayer}}'s scouts moved the witnesses to a secure lounge. Inside the cockpit, a fresh route appeared one waypoint at a time, beginning at the gate beneath their feet."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s marshals separated the flights and secured the disguised aircraft.", "heroLoses": "{{otherPlayer}}'s scouts protected the witnesses and exposed the false boarding schedule.", "draw": "Both passenger groups remained safe while the unknown route was investigated."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Shindenbutai", "White Company"],
+    "heroFaction": "White Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A White Company detail escorted a defecting engineer through a bathhouse whose steam tunnels concealed a Shindenbutai observation post. The engineer refused to leave without a ceramic data tile hidden in the furnace room. An assassin emerged from the steam just as both teams reached the narrow tiled passage.",
+      "{{hero}} fought at arm's length, keeping the attacker away from the exposed heating pipes while an escort found the tile wedged beneath a drain cover. Steam erased footprints almost instantly, but the attacker dropped a cold metal key that never gathered condensation. Its teeth matched no door in the bathhouse.",
+      "The engineer said the key opened a locker at the next safe house. {{heroPlayer}}'s detail led the defector outside while {{otherPlayer}}'s scouts copied the data tile. Behind them, the empty furnace door unlocked with the same pattern and revealed a dry corridor leading in the opposite direction."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s detail protected the engineer and recovered the unexplained key.", "heroLoses": "{{otherPlayer}}'s scouts secured the data tile and the hidden observation route.", "draw": "The engineer escaped while both teams mapped the corridor behind the furnace."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "Two Tohaa delegations arrived at a seed sanctuary after its oldest tree produced fruit bearing contradictory lineage marks. One delegation sought quarantine; the other believed the fruit could restore a lost grove. The sanctuary's caretaker had vanished, leaving a trail of shed bark toward a sealed greenhouse.",
+      "{{hero}} read the pigments beneath each lineage mark and found both had grown around a third symbol cut into the fruit while it was young. The specialist matched that symbol to the greenhouse lock, opening it without harming the living door. Inside, dozens of unmarked saplings leaned toward an empty caretaker's chair.",
+      "Each sapling carried a graft from a grove neither delegation recognized. {{heroPlayer}}'s envoys sampled the soil while {{otherPlayer}}'s delegation isolated the fruit. The oldest tree bent a branch through the open greenhouse and placed one final unmarked seed on the caretaker's chair."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s delegation opened the sanctuary and identified the concealed grafts.", "heroLoses": "{{otherPlayer}}'s delegation protected the lineage fruit and contained the unknown grove.", "draw": "Both delegations preserved the saplings while searching for the missing caretaker."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "Dashat Company"],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A Dashat drilling camp struck a chamber filled with dormant Tohaa pollinators. Tohaa custodians demanded all machinery stop, but armed claim jumpers seized the drill platform before samples could be moved. Their gunfire woke the swarm and sent luminous insects spiraling around the fuel tanks.",
+      "{{hero}} drove the attackers behind the spoil wall, choosing shots that kept sparks away from the circling swarm. A driller shut the fuel valves while a custodian opened a shaded route back to the chamber. One pollinator settled on the gunfighter's discarded magazine and traced a glowing line across its serial number.",
+      "The serial matched ammunition missing from the camp before the chamber was found. {{heroPlayer}}'s guards searched the supply cages while {{otherPlayer}}'s custodians guided the swarm underground. The glowing line continued onto a crate manifest, ending beside the name of the company surveyor who had selected the drill site."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s guards retook the platform and exposed the stolen ammunition trail.", "heroLoses": "{{otherPlayer}}'s custodians returned the pollinators safely to their chamber.", "draw": "The swarm survived while both teams detained the compromised survey crew."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "Druze Bayram Security"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A Druze-secured laboratory held a Tohaa symbiont that began mimicking the vital signs of every person nearby. The contractors prepared to isolate the wing; Tohaa specialists argued that the creature was relaying a specific patient's distress. No registered patient matched the repeating heartbeat.",
+      "{{hero}} adjusted the monitors until environmental noise fell away, revealing a second rhythm hidden between ventilation cycles. The specialist followed it to a sealed transport cradle stored behind the laboratory wall. Its occupant was gone, but a living membrane inside still carried the missing patient's last pulse.",
+      "The cradle log showed it had arrived empty under a valid security seal. {{heroPlayer}}'s delegation linked the membrane to the symbiont while {{otherPlayer}}'s guards audited the loading dock. A new heartbeat joined the pattern from an elevator descending below the laboratory's lowest listed floor."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s delegation interpreted the symbiont and located the hidden transport route.", "heroLoses": "{{otherPlayer}}'s guards secured the laboratory and traced the sealed cradle's arrival.", "draw": "The signals remained stable while both teams followed the descending elevator."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "Ikari Company"],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Ikari salvagers opened a wrecked colony module and found Tohaa refugees tending a living navigation core inside. The refugees said it remembered a safe route; the crew claimed the core under maritime salvage law. A masked boarder lunged from a storage niche and tried to sever the organism's anchor.",
+      "{{hero}} grappled with the boarder in the weightless compartment, turning the blade away from the core's translucent branches. A salvager caught the attacker against a cargo net while a refugee sealed the cut anchor. The organism responded by projecting a star map onto every metal surface in the module.",
+      "The map ended at the wreck's current coordinates, marked as a destination rather than a departure. {{heroPlayer}}'s crew stabilized the module while {{otherPlayer}}'s delegation questioned the boarder. Outside, debris began aligning into the same branching pattern, though no thrusters or magnetic fields were active."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s salvagers protected the core and secured the damaged colony module.", "heroLoses": "{{otherPlayer}}'s delegation preserved the living route and detained its attacker.", "draw": "The core remained under joint care while the debris completed its unexplained map."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A StarCo team guarded a botanical auction when a Tohaa bloom released spores that displayed each bidder's private offer in colored light. Thieves cut the hall power and rushed the specimen under cover of darkness. The bloom remained visible, painting moving price figures across their weapons.",
+      "{{hero}} followed those figures through the dark and fired into a display stand, dropping a transparent barrier between the thieves and the exit. A guard restored emergency lamps while a botanist sealed the bloom's spore vents. One projected offer continued climbing even though its registered bidder had left before the auction opened.",
+      "The false bid originated from the specimen's transport crate. {{heroPlayer}}'s team opened its transmitter compartment while {{otherPlayer}}'s delegation checked the living bloom for harm. Beneath the transmitter lay a pressed flower identical to the auction specimen, labeled with a sale date fifty years earlier."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s team stopped the theft and exposed the bidding transmitter.", "heroLoses": "{{otherPlayer}}'s delegation protected the bloom and secured the mysterious pressed flower.", "draw": "The auction was suspended while both teams audited every projected offer."},
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Tohaa", "White Company"],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "White Company escorts brought a xenobiologist to an ice cavern where Tohaa custodians protected a dormant living archive. Meltwater had begun lifting the archive toward a ceiling of sharp crystal. Moving it might wake the organism; leaving it would crush its outer shell before morning.",
+      "{{hero}} anchored flotation lines through natural holes in the ice and balanced the archive without touching its shell. The specialist noticed its weight changed whenever the xenobiologist spoke, as though internal chambers were opening toward familiar words. A custodian repeated an old greeting, and one chamber released a warm current.",
+      "The current melted a safe channel toward deeper water, but also revealed a human field case frozen beneath the archive. {{heroPlayer}}'s escorts recovered the case while {{otherPlayer}}'s custodians guided the organism down the channel. Its logbook described the living archive years before any official expedition had entered the cavern."
+    ],
+    "endings": {"heroWins": "{{heroPlayer}}'s escorts stabilized the archive and recovered the buried expedition case.", "heroLoses": "{{otherPlayer}}'s custodians moved the organism safely into deeper water.", "draw": "The archive survived while both teams preserved the impossible early logbook."},
+    "mission": "Area of Interest"
   }
 ]
