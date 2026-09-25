@@ -7218,5 +7218,385 @@
       "heroLoses": "{{otherPlayer}}’s crew took the gate and lifted the worker out while the boat stayed in the dock.",
       "draw": "The worker escaped, and the boat floated loose between the opposing crews."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "The care depot at the edge of the desert was cooling boxes for three towns when the electricity failed. {{heroPlayer}}’s field team came through the service entrance; {{otherPlayer}}’s armored detachment held the loading bay. A line of drivers waited outside, each claiming their town needed the first box.",
+      "{{hero}} reached the backup generator and found its fuel line pierced. The specialist clamped the leak and brought it back to life, but the cooling room had already warmed. The log showed that only one box could be sent immediately without a new inspection.",
+      "A runner arrived with word that the road to one town would close at dusk. The drivers stepped forward together, their headlights already on. The specialist could hear the armored detachment at the bay door as the cooling unit steadied and the first box was pulled toward the light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s field team secured the depot and dispatched the boxes along safe routes.",
+      "heroLoses": "{{otherPlayer}}’s detachment took the loading bay and controlled the first shipment.",
+      "draw": "One box left before dusk; both sides held the remaining cargo under cooling overnight."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A habitat’s central gravity junction failed during an evacuation drill, sending loose equipment drifting through the corridor. {{heroPlayer}}’s mechanics came to restore it; {{otherPlayer}}’s armored escort had sealed the only route to the lower shelter. People waited at the doors holding their children by the wrists.",
+      "{{hero}} floated behind a service bulkhead while a mechanic reached the junction panel. Shots sparked against the handrails, and the fighter fired from the bulkhead to keep the mechanic clear. The panel lit up, but its readout showed two conflicting gravity vectors, one pulling toward the sealed doors.",
+      "The first child slipped from a parent’s grip and began drifting toward the junction. The mechanic could select one vector blindly or wait for the sensor to recalibrate; the fighter had to leave cover to catch the child. A warning klaxon began counting down to the next automatic reset."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mechanics restored the corridor and brought the evacuees to shelter.",
+      "heroLoses": "{{otherPlayer}}’s escort secured the junction and rerouted the evacuation.",
+      "draw": "The child reached safety, but both crews held the corridor while gravity steadied."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A suspended walkway linked a gallery of illuminated sculptures to the district’s emergency tower. {{heroPlayer}}’s performers were clearing the gallery for a storm; {{otherPlayer}}’s armored guard occupied the tower. One sculpture kept swinging against the walkway cable, flashing red with every impact.",
+      "{{hero}} stepped onto the swaying bridge as a defender reached for its anchor pin. The fighter shoved them back and held the pin in place while a rigger caught the swinging sculpture with a safety line. The red flashes stopped, revealing a steady light aimed at the tower window.",
+      "Someone inside the tower answered with two brief flashes. The storm had disabled its radio, and the signal was the only reply the performers had received. The rigger could secure the sculpture or swing it deliberately to send a message while the bridge strained beneath them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s performers kept the bridge intact and signaled the people in the tower.",
+      "heroLoses": "{{otherPlayer}}’s guard secured the tower and closed the walkway.",
+      "draw": "Both sides exchanged a brief signal before the sculpture was lowered out of the wind."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A cargo port’s pressure gate was stuck open while a salvage shuttle approached with a damaged seal. {{heroPlayer}}’s dock crew came to close the gate; {{otherPlayer}}’s armored technicians had taken the control booth. Behind the shuttle, a trail of loose containers was drifting into the docking lane.",
+      "{{hero}} reached the manual wheel and discovered that closing it would trap the shuttle outside until the damaged seal was repaired. The specialist set a temporary catch and called for the pilot to slow, while a dockhand pulled a container out of the lane with a tether.",
+      "The shuttle’s oxygen indicator flashed low. A second container struck the outer gate, knocking the catch loose. The specialist had one hand on the wheel and the other on a release cord that could pull the shuttle inside, provided the control booth did not override the lock first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew brought the shuttle into a sealed berth and cleared the containers.",
+      "heroLoses": "{{otherPlayer}}’s technicians took the gate controls and ordered the shuttle to hold outside.",
+      "draw": "The shuttle sheltered at the threshold while both crews fought to keep the gate from closing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A records vault began erasing the identity files of everyone registered at the district shelter. {{heroPlayer}}’s data specialists entered from the municipal side; {{otherPlayer}}’s armored detail guarded the server floor. Outside, evacuees waited for the files they needed to cross the next checkpoint.",
+      "{{hero}} found the erasure coming from a failing backup drive, not an instruction sent by a person. The specialist copied the intact names to a portable unit, but the recovery key remained behind a locked server cage. The armored detail’s footsteps sounded on the stair above it.",
+      "The checkpoint announced it would close in ten minutes. The copied files could get most people through, while the missing key would restore the few names already lost. The specialist held the portable unit and looked at the cage as a final drive light went dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s specialists recovered the key and brought the full roster to the checkpoint.",
+      "heroLoses": "{{otherPlayer}}’s detail took the vault and issued its own verified roster.",
+      "draw": "Most evacuees crossed, while both sides searched for the names still missing from the drive."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Combined Army"
+    ],
+    "heroFaction": "Combined Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A geological scanner above an abandoned mine began drawing shapes that looked like rooms beneath the rock. {{heroPlayer}}’s survey party came to preserve its readings; {{otherPlayer}}’s armored scouts were approaching along the tram tracks. From the mine entrance came a brief light, although its power had been cut for years.",
+      "{{hero}} covered the scanner deck while a geologist transferred its data. A burst of fire struck the gantry; the fighter answered from behind the scanner housing, buying time for the transfer. The final reading showed a narrow shaft connecting the buried rooms to the dark mine entrance.",
+      "The light flashed again, twice this time. The geologist could carry the data away or use the shaft coordinates to find whoever was below. The armored scouts reached the last bend of track, and the scanner’s display began to fade under a rising charge warning."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors found the shaft and escaped with the readings intact.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the scanner and closed the mine entrance.",
+      "draw": "Both sides left with a partial map, while the light beneath the rock continued to flash."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cliffside pump drew drinking water through a stone amphitheater used as an emergency gathering place. {{heroPlayer}}’s assault party reached its lower steps; {{otherPlayer}}’s armored defenders held the control terrace. Below them, families waited with empty containers as a warning light blinked on the pump.",
+      "{{hero}} drove into a defender at the terrace rail and pulled them away from the manual cutoff. The fighter held the narrow landing while a technician opened the pump casing. Inside, the pressure seal had torn, and water was draining back into the cliff faster than it could reach the taps.",
+      "A replacement seal sat in a crate beside the defenders’ position. The technician waved for it while the fighter heard people calling from the steps below. Without the seal, the pump might run dry before dawn; crossing the terrace for the crate would leave the cutoff unguarded."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the seal and kept water flowing to the gathering place.",
+      "heroLoses": "{{otherPlayer}}’s defenders held the terrace and repaired the pump themselves.",
+      "draw": "The pump delivered a small reserve while both groups held opposite sides of the terrace."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A living filter beneath the commuter tunnels had stopped cleansing the station’s water. {{heroPlayer}}’s researchers entered its maintenance chamber; {{otherPlayer}}’s armored guards controlled the main stair. On the filter’s glass wall, a pattern of dark spots was spreading toward the outlet.",
+      "{{hero}} checked the nutrient lines and found one feeding the wrong side of the filter. The specialist corrected the flow, and pale color returned to part of the living membrane. The rest stayed dark. A sample taken from the outlet showed the change had reached the water already stored upstairs.",
+      "The station could close its taps immediately, leaving waiting travelers without a supply, or keep them open while the membrane recovered. Footsteps descended the guarded stair as the specialist raised the alarm. Inside the chamber, the pale patch grew, too slowly to settle the choice."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers isolated the stored water and restored the filter.",
+      "heroLoses": "{{otherPlayer}}’s guards took the chamber and closed the station taps.",
+      "draw": "The taps stayed closed through the night while both groups watched the membrane recover."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "A lunar mirror array carried daylight to a settlement cut into the crater wall. {{heroPlayer}}’s technicians reached its hub after one mirror began turning toward an unused shaft; {{otherPlayer}}’s armored patrol stood between the hub and the settlement’s power room. A child’s voice reported darkness inside the school.",
+      "{{hero}} climbed the hub and found the control wheel split along an old repair seam. The specialist held the damaged mirror in place with a temporary brace, restoring light to one classroom. The rest of the array would follow only if the main motor could be restarted from the guarded power room.",
+      "The brace creaked as the sun moved across the crater. On the radio, the child said the light was sliding slowly off the desks. A technician offered to hold the mirror by hand while the specialist crossed to the motor, but the hub had no second safety line."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians restarted the array and filled the school with daylight.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the motor and directed the mirrors toward the settlement.",
+      "draw": "One classroom stayed lit while both parties worked from opposite ends of the damaged array."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An enclosed research garden locked its doors as a fast-growing vine crossed the ventilation shaft. {{heroPlayer}}’s infiltrators came through the lower service route; {{otherPlayer}}’s armored custodians held the public entrance. A researcher remained inside, visible through the fogged glass with a sealed specimen in hand.",
+      "{{hero}} met a defender at the service hatch and wrestled them away from its closing wheel. The fighter held the hatch open while a teammate pulled the researcher through. The specimen case caught on the sill; on its label, the researcher had written a warning about the vine’s rapid spread.",
+      "The custodians started sealing the ventilation shaft above them. The researcher could carry the case clear, or open it to confirm whether the warning described a harmless growth phase. The vine pressed against the vent grille as the hatch wheel began to turn again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team recovered the specimen and got the researcher out before the shaft sealed.",
+      "heroLoses": "{{otherPlayer}}’s custodians held the garden and kept the specimen inside for inspection.",
+      "draw": "The researcher reached the service passage while the sealed case remained between the two crews."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A city evacuation map predicted a safe crossing over a canal that no longer had a bridge. {{heroPlayer}}’s analysts reached the traffic center as residents began moving toward the missing span; {{otherPlayer}}’s armored responders held the control floor. On the map, the bridge remained drawn in bright green.",
+      "{{hero}} traced the bad route to a survey image copied before the bridge was removed. The specialist deleted the false crossing and found two real ones, each too narrow for the full crowd. Traffic lights could divide the evacuees, but their power depended on a failing battery bank.",
+      "A camera showed the first families already turning down the dead-end street. The battery warning flashed as the armored responders approached the controls. The specialist held a hand over the route switch, needing to choose which crossing should receive the first green lights."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts split the crowd safely between the two real bridges.",
+      "heroLoses": "{{otherPlayer}}’s responders seized the center and directed people by ground patrol.",
+      "draw": "The false route vanished, but each side guided a separate line across the canal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An encrypted transmitter in a hillside tunnel carried the only contact with a trapped excavation crew. {{heroPlayer}}’s operators came for its key module; {{otherPlayer}}’s armored team held the main access shaft. The voices underground had fallen from three to two during the last transmission.",
+      "{{hero}} covered the transmitter alcove while an operator removed the failing module. Fire struck the tunnel mouth; the fighter held the angle and kept the operator beneath the alcove’s concrete lip. A fresh key came online, but the next voice reported that rising water had reached the crew’s equipment.",
+      "A rescue winch stood beyond the shaft held by the armored team. The operator could stay to guide the crew by radio or carry the module to the winch and risk losing contact in transit. Water dripped from the ceiling as the third voice finally answered with a weak tap."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s operators held the transmitter and guided all three workers to the winch.",
+      "heroLoses": "{{otherPlayer}}’s team took the shaft and ran the rescue through its own line.",
+      "draw": "Two workers emerged while both sides searched the flooded passage for the third."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The memorial arena’s water tower had been filled for an approaching fire, but its lower supports were cracking under the weight. {{heroPlayer}}’s fighters crossed the arena to reach the release valve; {{otherPlayer}}’s armored unit held the platform. Families waiting outside needed the water carried to the fire line.",
+      "{{hero}} climbed the tower stair and met a defender beside the valve. The fighter drove them into the railing and held the platform while a volunteer opened the release. Water rushed into the waiting hoses, but a support beam split and dropped onto the stair behind them.",
+      "The volunteer could close the valve and save the tower, leaving hoses half full, or keep it open until the tank drained and risk trapping everyone on the platform. The fire appeared over the arena wall as the fighter tested the broken stair with one foot."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s fighters kept the water flowing and brought the volunteer down safely.",
+      "heroLoses": "{{otherPlayer}}’s unit secured the tower and rationed the water for the fire line.",
+      "draw": "The hoses filled partway before the valve closed, leaving both teams to hold the tower together."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A temporary tribunal had been built around the only copy of a missing-persons registry after the floods. {{heroPlayer}}’s record keepers came to secure it; {{otherPlayer}}’s armored officers were clearing the hall for an evacuation. The registry’s final pages had been left on a table beside an open window.",
+      "{{hero}} gathered the loose pages and matched them to their binding marks while rain blew through the room. The specialist found one page written in a different hand, listing people still waiting at a shelter outside the evacuation zone. Their names had never been entered into the official count.",
+      "An officer called that the transport would leave in minutes. The specialist could carry the complete registry onto it or send someone to the uncounted shelter with the newly discovered page. At the open window, rain began to erase the address written in the margin."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s keepers saved the registry and brought the uncounted people onto transport.",
+      "heroLoses": "{{otherPlayer}}’s officers evacuated the hall with the registry under their custody.",
+      "draw": "The registry survived, but both sides went separately to check the uncounted shelter."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A service craft hung from the outer docking ring of a station, its cable snagged on a broken antenna. {{heroPlayer}}’s watch moved to recover the craft; {{otherPlayer}}’s armored unit controlled the inside hatch. A worker in the craft held up a hand with four fingers, showing the minutes left on their air display.",
+      "{{hero}} took cover behind the ring’s maintenance rail while a mechanic crawled out on a tether. Shots struck the rail, and the fighter returned fire to keep the mechanic moving. The antenna tore free, but the craft swung toward an unlit docking port whose seal had not been tested.",
+      "The mechanic could tow the craft into that port immediately or pull it around the ring toward a certified hatch that was farther away. The worker held up three fingers. Inside, the armored unit began cycling the inner hatch, and the mechanic’s tether tightened against the station wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch brought the worker through the certified hatch with air to spare.",
+      "heroLoses": "{{otherPlayer}}’s unit took the docking controls and recovered the craft at the near port.",
+      "draw": "The craft reached the ring as both sides worked together to test the unlit port seal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "An underground waystation kept the tunnel air moving with a fan cut into the rock. {{heroPlayer}}’s rescue crew arrived after travelers reported smoke near the lower exit; {{otherPlayer}}’s armored column had stopped at the upper gate. Inside, the fan was turning backward, pushing smoke toward the occupied sleeping rooms.",
+      "{{hero}} opened the fan housing and found the direction switch jammed by a piece of melted insulation. The specialist freed it and restored the draft, but a sensor showed fresh smoke entering from a second passage. A family behind the sleeping-room door began knocking for help.",
+      "Turning the fan faster might clear the rooms while drawing the new smoke deeper into the station. Shutting it down would buy time to reach the family but leave the tunnel air still. The armored column started opening the upper gate as the specialist held the switch between its two settings."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew cleared the rooms and brought the family out through clean air.",
+      "heroLoses": "{{otherPlayer}}’s column took the station and opened a different escape shaft.",
+      "draw": "The family reached the corridor, but both sides kept the fan at low speed while searching for the smoke."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A narrow timber bridge carried the annual remembrance procession across a mountain stream. {{heroPlayer}}’s procession guards reached it with lanterns; {{otherPlayer}}’s armored unit held the far bank. Beneath the planks, floodwater had taken the central support while people were still walking onto the bridge.",
+      "{{hero}} met a defender at the entrance and pulled them away from the barricade, making room for the procession to retreat. The fighter then caught a fallen beam against the remaining post while a carpenter secured a rope across the gap. On the far side, someone raised a lantern in reply.",
+      "The bridge could hold only a few people at a time, and the procession carried more lanterns than there were hands to spare. Rain swelled the stream as the carpenter called for the first crossing. The fighter felt the beam shift under its weight and saw the far-bank lantern go dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards brought the procession across and kept the bridge standing.",
+      "heroLoses": "{{otherPlayer}}’s unit secured the far bank and redirected the procession upstream.",
+      "draw": "The people crossed in small groups, leaving both sides holding the rope until the last lantern passed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A hillside shrine had kept a water clock running through generations of drought. {{heroPlayer}}’s caretakers came when its bowls emptied before dawn; {{otherPlayer}}’s armored watch controlled the terrace above. The clock’s last drop fell just as a bell below announced the opening of the village wells.",
+      "{{hero}} followed the supply channel beneath the shrine and found a fresh diversion feeding an unused upper cistern. The specialist closed it and sent a trickle back toward the clock. At the village, however, a second bell began to ring: the wells were running low too.",
+      "There was enough water to restart the clock or fill the village’s morning reserve first. A caretaker said the clock could wait, but its mechanism held the only record of how the channels had been divided in earlier droughts. Footsteps crossed the terrace overhead as light reached the first bowl."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers recovered the channel records and sent water to the village wells.",
+      "heroLoses": "{{otherPlayer}}’s watch secured the cistern and rationed its supply.",
+      "draw": "The clock stayed silent while both sides measured what remained for the village."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A dispatch office above the express line lost contact with the train carrying emergency bridge parts. {{heroPlayer}}’s signal escort entered from the east stair; {{otherPlayer}}’s armored guards held the platforms below. Through the window, the train was visible but approaching a switch set toward a closed tunnel.",
+      "{{hero}} covered the signaler as they reached the manual lever. A burst of fire hit the stair rail, and the fighter answered from behind the dispatch desk, holding the upper floor. The lever moved halfway before its cable snapped, leaving the switch pointed between both routes.",
+      "A ground signaler could finish the change at the track, but the office radio was the only way to warn them. The train’s horn sounded beneath the window as the fighter watched the stairs and the signaler tried to raise a voice through a damaged microphone."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the office and steered the train onto the safe track.",
+      "heroLoses": "{{otherPlayer}}’s guards took the platforms and stopped the train before the switch.",
+      "draw": "The train halted between signals while both parties repaired their half of the line."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Invincible Army",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A canopy archive stored its history in living leaf patterns high above a border settlement. {{heroPlayer}}’s readers came to copy a new pattern; {{otherPlayer}}’s armored patrol controlled the path beneath the trees. A spreading gray mark had already erased part of the lowest branch.",
+      "{{hero}} climbed through the canopy and found dry sap where a water line should have fed the branch. The specialist restored the line and photographed the remaining pattern. The gray mark slowed, but the newest leaves began changing shape, as though the archive had been writing through the damage.",
+      "The copied image showed a warning about the settlement’s old boundary trail, now used by children returning from school. The trail could be closed before anyone read the full pattern, or the reader could stay until the last leaves opened. Below, the patrol began cutting through the undergrowth toward the path."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s readers completed the warning and guided the children along a safe route.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the trail and closed the canopy archive.",
+      "draw": "The children turned back while both sides waited for the new leaves to finish opening."
+    }
   }
 ]
