@@ -1,0 +1,382 @@
+[
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "PanOceania"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "Two survey crews arrived at the same abandoned conservatory with orders bearing the same seal. Each had been promised exclusive access to the glasshouse at its center. By the time {{heroPlayer}}’s team saw {{otherPlayer}}’s lamps through the vines, both crews had already planted their boundary flags.",
+      "{{hero}} found the conservatory’s old irrigation controls beneath a bed of dead orchids. Opening the valves revealed a second boundary, drawn decades earlier in blue ceramic beneath the soil. A burst pipe sent water through the trenches, washing the newer flags away while the two crews argued across the glass.",
+      "The original marker lay under a fallen tree that neither crew could move alone. {{hero}} worked the buried valve until water loosened the roots, then reached beneath them for the ceramic seal. A shout came from the opposite door. For one breath, both crews were close enough to read the same inscription."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew carried out the original seal and claimed the glasshouse it marked.",
+      "heroLoses": "{{otherPlayer}}’s crew reached the seal first and kept the conservatory behind its boundary.",
+      "draw": "The seal broke in two, leaving each crew with a claim the other refused to recognize."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Military Orders"
+    ],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A bell rang each night from a chapel that had been sealed for generations. {{heroPlayer}}’s pilgrims wanted the doors opened before dawn; {{otherPlayer}}’s security detail had orders to keep everyone off the hill. Neither side knew who had lit the candle visible in the upper window.",
+      "{{hero}} crossed the ruined cloister as a defender stepped from the archway at arm’s length. Steel struck stone in the cramped passage. The fighter drove the opponent back from the chapel steps, but the bell rang again, close enough now to make the loose glass tremble in its frames.",
+      "The upper door opened on its own. Behind it stood a small figure trying to pull the bell rope down with both hands. {{hero}} lowered the weapon and held the archway while the pilgrims climbed toward the child. The security lamps swept the steps before anyone reached the top."
+    ],
+    "endings": {
+      "heroWins": "The pilgrims brought the child down, and {{heroPlayer}}’s people kept the chapel open.",
+      "heroLoses": "{{otherPlayer}}’s detail closed the hill again, with the bell still sounding behind the door.",
+      "draw": "Both sides guided the child away; neither would leave the chapel in the other’s hands."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Kestrel Colonial Force"
+    ],
+    "heroFaction": "Kestrel Colonial Force",
+    "role": "objective",
+    "paragraphs": [
+      "The colonial land office had mapped a dry ridge through the marsh. On arrival, {{heroPlayer}}’s settlers found their future town under knee-deep water. {{otherPlayer}}’s survey detail had staked the only high ground beside a weather station whose warning light had stopped flashing the previous night.",
+      "{{hero}} waded out to the station with a coil of field cable above the water. Its instruments showed that the flood would climb again at dusk, and the settlement markers stood directly in its path. The specialist carried the cable toward a raised relay while voices called from the occupied ridge.",
+      "A floating section of boardwalk struck the relay supports. {{hero}} caught the cable before it disappeared under the planks and climbed the swaying ladder with the weather log clenched between their teeth. From that height the evacuation route was clear, though reaching the transmitter meant remaining in plain view."
+    ],
+    "endings": {
+      "heroWins": "The warning reached the settlers, and {{heroPlayer}}’s people held the ridge as the water rose.",
+      "heroLoses": "The warning arrived too late; {{otherPlayer}}’s detail kept the ridge while the settlers retreated.",
+      "draw": "The settlers escaped the flood, but both parties abandoned their stakes beneath the water."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Neoterra Capitaline Army"
+    ],
+    "heroFaction": "Neoterra Capitaline Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A civic archive was scheduled to become a private vault at midnight. {{heroPlayer}}’s detail had to keep the public entrance open until its records could be copied; {{otherPlayer}}’s contractors arrived with new locks and a deed. Inside, the final clerk was still wheeling crates toward the loading lift.",
+      "{{hero}} took a position above the service hall and fired into the shutter mechanism as the contractors began closing it. The damaged shutter stopped halfway, leaving a narrow path for the clerk’s cart. Every muzzle flash from the opposite balcony reflected in the polished floor below.",
+      "The cart jammed under the shutter. The clerk tried to pull it free, but the last crate fell open and photographs scattered across the hall. {{hero}} kept the balcony covered while the clerk gathered what they could. A hand reached for the emergency release on the far wall."
+    ],
+    "endings": {
+      "heroWins": "The clerk escaped with the photographs, and {{heroPlayer}}’s detail held the archive entrance.",
+      "heroLoses": "{{otherPlayer}}’s contractors sealed the hall around the abandoned crates.",
+      "draw": "The clerk saved some records; the shutter remained stuck between two competing claims."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "objective",
+    "paragraphs": [
+      "A hillside seed vault held the last viable crop from a burned valley. {{heroPlayer}}’s relief party came to move its samples before the fire crossed the road. {{otherPlayer}}’s guards had secured the vault for another shipment, and the smoke was already hiding the lower terraces.",
+      "{{hero}} reached the vault’s cooling controls through a side vent too narrow for a carrier. The temperature rose with each passing minute; opening the main door would ruin the seeds before the boxes could be packed. The specialist found a manual bypass that fed cold air into the loading passage.",
+      "The bypass wheel seized with the passage half cooled. Outside, the first trees caught and a guard called for everyone to clear the hillside. {{hero}} braced a foot against the wall and turned the wheel another fraction, making room for one crate at a time while smoke rolled through the vent."
+    ],
+    "endings": {
+      "heroWins": "The last crate crossed the road with {{heroPlayer}}’s relief party before the fire reached the vault.",
+      "heroLoses": "{{otherPlayer}}’s guards kept the vault and its surviving seed stock behind their cordon.",
+      "draw": "Both parties saved crates, but the flames left neither a vault to claim."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A listening post on the ice recorded a voice calling from inside the glacier. {{heroPlayer}}’s patrol followed it to a weather mast, where {{otherPlayer}}’s team had already set up a recovery winch. The voice repeated its message every nine minutes, always ending before it gave a location.",
+      "{{hero}} took cover behind the mast and fired across the frozen equipment yard to keep the winch from dragging its cable away. A bullet struck an abandoned microphone, and the voice came through every open channel at once. Beneath the snow, something answered the new sound with three heavy knocks.",
+      "The patrol found a seam opening across the ice between the mast and the winch. {{hero}} watched the opposing team retreat from the crack, then saw one of their crew slip toward it. There was time to cover a rescue or secure the recording gear, but no route that would keep both safe."
+    ],
+    "endings": {
+      "heroWins": "The stranded crew member reached firm ice, and {{heroPlayer}}’s patrol carried the recording away.",
+      "heroLoses": "{{otherPlayer}}’s team took the recorder as the patrol withdrew from the widening seam.",
+      "draw": "Everyone left the equipment behind; the voice kept calling from beneath the glacier."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A ferry pier resurfaced each low tide after years beneath the bay. {{heroPlayer}}’s divers came for the navigation ledger sealed in its office; {{otherPlayer}}’s patrol had marked the pier as a restricted salvage site. The tide chart gave both crews less than an hour before the office went under again.",
+      "{{hero}} entered through a skylight and found the ledger chained to a desk. A tide clock on the wall still worked, its brass hand moving toward the red mark. The specialist freed one end of the chain while water pressed through a door that somebody outside had opened.",
+      "The pages were too fragile to drag through the rising water. {{hero}} lifted the ledger onto the upper shelf and sent photographs through a portable link as the office filled. Above the skylight, footsteps crossed the roof. A rope dropped beside the desk, but there was no sign whose hand held it."
+    ],
+    "endings": {
+      "heroWins": "The photographs reached shore, and {{heroPlayer}}’s divers recovered the ledger before the tide swallowed the pier.",
+      "heroLoses": "{{otherPlayer}}’s patrol controlled the pier when the water returned, with the ledger still inside.",
+      "draw": "Both crews escaped with partial photographs while the ledger disappeared beneath the bay."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An observatory had tracked a falling object to the crater behind its eastern dome. {{heroPlayer}}’s retrieval team reached the grounds at the same time as {{otherPlayer}}’s guards. Lightning kept striking the unfinished antenna above the crater, briefly showing a shape half buried in the dust.",
+      "{{hero}} climbed into the dome and fired at the supports of a mobile floodlight that was exposing the retrieval crew. The light tipped harmlessly into the gravel. In the sudden darkness, the object began transmitting a string of numbers through the observatory’s old speakers.",
+      "The numbers counted down as storm water collected in the crater. {{hero}} could see the opposing guards moving toward the object and the retrieval crew trapped beyond an electrified fence. The fighter kept the crossing covered, holding a line of fire while the antenna snapped overhead."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team reached the crater and carried the object clear of the rising water.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the object as the dome lights finally failed.",
+      "draw": "The antenna collapsed into the crater, leaving both teams with a recording and no object."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "Someone had filed a demolition order for a crowded night market, then replaced the street number with one that did not exist. {{heroPlayer}}’s investigators came for the original permit; {{otherPlayer}}’s security detail arrived to clear the block. Shopkeepers kept trading while the crews argued over whose map was current.",
+      "{{hero}} traced the order to a public terminal beneath a fabric stall. Its last login belonged to a vendor who had died five years earlier. The specialist copied the access record as a second authorization appeared on the screen, this one instructing the terminal to erase itself.",
+      "The stall owner folded the fabric away, revealing an old street marker under the counter. {{hero}} held the marker beside the permit and found the missing number stamped on its back. Outside, engines started at the end of the lane. The record would matter only if someone could carry it past the cordon."
+    ],
+    "endings": {
+      "heroWins": "The investigators saved the record, and {{heroPlayer}}’s people kept the market standing.",
+      "heroLoses": "{{otherPlayer}}’s detail cleared the block before the permit could be challenged.",
+      "draw": "The market closed for the night; both parties left with copies of the disputed order."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A tidal generator fed power to two settlements, one on either side of a seawall. {{heroPlayer}}’s repair column needed access to its central control room; {{otherPlayer}}’s detail held the door under an emergency claim. With the water rising, neither settlement could afford a shutdown.",
+      "{{hero}} fired across the turbine gallery when figures moved to cut the repair column off. The fighter used the steady rhythm of the machinery to time each advance, stopping a rush at the access ladder without hitting the brittle gauges behind it. Then the turbines fell silent in the middle of a cycle.",
+      "A maintenance worker appeared behind the control-room glass, knocking on a pressure gauge that had climbed into the red. {{hero}} stepped into the open to cover the worker’s path to a manual release. The first surge struck the seawall as the worker reached for the handle."
+    ],
+    "endings": {
+      "heroWins": "The release held, and {{heroPlayer}}’s column restored power from the central room.",
+      "heroLoses": "{{otherPlayer}}’s detail kept the controls while the repair column withdrew above the flood line.",
+      "draw": "Both settlements got power back, but the damaged room stayed under a shared watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain courier tower had been built on a pass that moved with every thaw. {{heroPlayer}}’s guides found its signal lamp still burning, though the path below had broken away. {{otherPlayer}}’s expedition camped on the opposite slope, waiting for a dispatch that nobody had been able to deliver.",
+      "{{hero}} crossed a narrow snow bridge with a message tube tied to a climbing line. Inside the tower, the signal mechanism had wound its chain around a packet of undelivered letters. The specialist freed the chain, but the newly lit lamp revealed fresh cracks in the bridge outside.",
+      "One letter was addressed to a household on each side of the pass. {{hero}} could take the packet back across the bridge or use the tower’s transmitter to send the warning that the pass was failing. The lamp kept turning, sweeping its light over figures gathering at both ends."
+    ],
+    "endings": {
+      "heroWins": "The warning went through, and {{heroPlayer}}’s guides brought the letters down the safe slope.",
+      "heroLoses": "{{otherPlayer}}’s expedition reached the tower while the guides turned back from the broken pass.",
+      "draw": "Both parties received their letters; the tower stood alone after the snow bridge fell."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An old battlefield lay hidden beneath a young forest. {{heroPlayer}}’s recovery party came for a missing soldier’s identification tag; {{otherPlayer}}’s excavators were already marking out a construction site. The first trench exposed a row of helmets facing a direction neither map had recorded.",
+      "{{hero}} held the tree line when shots broke out near the excavation. Between bursts, a medic carried a stretcher across the marked ground. The fighter shifted fire away from the trench to give the medic a corridor, then spotted a small metal disc caught in the stretcher’s wheel.",
+      "It was the missing tag, polished by years of rain. The medic could reach the recovery party if the corridor stayed open, but an excavator’s loader was turning toward the trench. {{hero}} kept the weapon trained on its cab while the stretcher rolled over roots and old wire."
+    ],
+    "endings": {
+      "heroWins": "The stretcher reached {{heroPlayer}}’s people, who carried the tag and its owner’s name home.",
+      "heroLoses": "{{otherPlayer}}’s excavators took the ground while the recovery party left without the tag.",
+      "draw": "The medic saved the tag; both parties agreed to leave the helmets undisturbed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A peat bridge joined two villages that no longer spoke to each other. {{heroPlayer}}’s people came to reopen it for a funeral procession; {{otherPlayer}}’s guards occupied the far bank to keep a disputed parcel of land untouched. The coffin bearers waited in the rain while both sides argued over the crossing.",
+      "{{hero}} reached the narrow bridge as a guard moved in to bar the way. There was no room to circle. The fighter met the guard at arm’s length, blade against blade, and forced a passage wide enough for the first bearers to step onto the boards.",
+      "The peat gave way beneath the rear of the procession. {{hero}} caught the coffin rope and hauled it onto the remaining planks, turning away from the guard for a moment. On the far bank, the mourners began singing an old name that both villages recognized."
+    ],
+    "endings": {
+      "heroWins": "The procession crossed, and {{heroPlayer}}’s people kept the bridge open for the mourners.",
+      "heroLoses": "{{otherPlayer}}’s guards closed the crossing, sending the mourners back through the rain.",
+      "draw": "The coffin passed between the villages; neither side claimed the damaged bridge afterward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The last train into the border station arrived with every passenger gone and the luggage still aboard. {{heroPlayer}}’s search party took the platform while {{otherPlayer}}’s investigators approached from the freight yard. A conductor’s cap hung on the signal lever, though no one remembered seeing a conductor.",
+      "{{hero}} watched the empty carriages from a signal box. When a figure stepped between two cars and raised a weapon, the fighter fired through the window frame, driving the figure back toward the yard. The train lurched forward on its own, dragging a baggage cart into the platform edge.",
+      "A faint knock came from inside the cart. {{hero}} could keep the yard covered or break the box’s glass to stop the train at the next signal. Below, the search party ran after the cart, and the empty carriages began to pick up speed."
+    ],
+    "endings": {
+      "heroWins": "The train stopped, and {{heroPlayer}}’s party opened the cart before it left the station.",
+      "heroLoses": "{{otherPlayer}}’s investigators held the platform as the search party lost the train.",
+      "draw": "The cart was saved, but the empty train disappeared beyond the final signal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A dust survey station reported falling debris from an orbit that had been empty for decades. {{heroPlayer}}’s salvage team came to collect the fragments before night; {{otherPlayer}}’s patrol marked the crater as a restricted research site. Each fragment carried the same tiny map, with a different route traced in red.",
+      "{{hero}} used the station’s scanner to fit the fragments together. The routes converged on a spot beneath the survey mast, where the ground rang hollow under a boot. The specialist found a hatch handle beneath the dust and turned it while the patrol’s lamps moved around the crater rim.",
+      "The hatch opened onto a ladder, and cold air rose from below. On its first rung hung a clean glove, sized for a child. {{hero}} called for a light and descended far enough to see a second set of maps drawn on the wall, all pointing away from the sky."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team held the mast and followed the wall maps into the hidden station.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the hatch while the salvage team left with its scattered fragments.",
+      "draw": "Both parties copied the maps; neither would descend until the other had gone."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Miners had found a buried freight lift under the city, still carrying fresh parcels to a floor that did not appear on any plan. {{heroPlayer}}’s recovery squad followed the lift cable down. {{otherPlayer}}’s security crew waited at the bottom, guarding a crate that moved whenever the lift bell sounded.",
+      "{{hero}} covered the shaft from a maintenance ledge and fired at the lift’s counterweight when the security crew tried to send the crate up. The counterweight locked the cage halfway between floors. Through the mesh, a parcel split open and spilled hundreds of stamped keys onto the floor.",
+      "The bell rang again without anyone touching it. Keys began sliding toward the crate as the lift cage tilted. {{hero}} held the ledge under fire while the recovery squad reached through the mesh for a key; the metal floor creaked at every movement."
+    ],
+    "endings": {
+      "heroWins": "The recovery squad stopped the cage and brought the crate into {{heroPlayer}}’s hands.",
+      "heroLoses": "{{otherPlayer}}’s security crew freed the lift and sent the crate beyond the squad’s reach.",
+      "draw": "The cage jammed between floors, leaving both crews staring at the keys through the mesh."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "A weather balloon came down in a cattle field and played tomorrow’s emergency bulletin through its torn speaker. {{heroPlayer}}’s rangers went to warn the nearby farms; {{otherPlayer}}’s technicians fenced off the landing site. The bulletin named a storm no satellite had seen yet.",
+      "{{hero}} opened the balloon’s instrument case and found a memory spool still turning. Its forecast marked the low road as safe, but the creek beside it was already rising. The specialist copied the readings onto a handheld display while the cattle crowded the gate leading uphill.",
+      "The first gust flattened the fence before anyone settled the forecast. {{hero}} pulled open the uphill gate and waved the farmers through, keeping the spool’s fragile antenna above the herd. Across the field, the technicians shouted for the equipment while thunder rolled in from a clear horizon."
+    ],
+    "endings": {
+      "heroWins": "The farms received the warning, and {{heroPlayer}}’s rangers kept the balloon long enough to learn why.",
+      "heroLoses": "{{otherPlayer}}’s technicians took the balloon while the rangers led the farmers away.",
+      "draw": "The farmers reached high ground; the storm tore the balloon apart before either crew could claim it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile clinic stopped beside the only clean well for miles. {{heroPlayer}}’s medical team needed its water to prepare a vaccine; {{otherPlayer}}’s guards had secured the well for an arriving convoy. The patients formed a quiet line between the clinic and a locked pump house.",
+      "{{hero}} found the pump’s intake clogged with strands of dark cloth. The specialist cleared a narrow channel and drew a sample, then noticed that the water running beneath the cloth was warmer than the surface flow. Someone had built a second pipe under the pump house years earlier.",
+      "The convoy’s engines sounded beyond the dunes as the clinic’s refrigerator began to lose power. {{hero}} could seal the warm pipe and fill the clinic’s tanks, or follow it back to find what had contaminated the well. A patient offered a lantern and waited for an answer."
+    ],
+    "endings": {
+      "heroWins": "The clinic filled its tanks, and {{heroPlayer}}’s team kept the well open for the patients.",
+      "heroLoses": "{{otherPlayer}}’s guards held the pump house as the clinic left with its limited supply.",
+      "draw": "The patients received clean water, but both parties left the source of the warm pipe unexplained."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "objective",
+    "paragraphs": [
+      "A hospice received a ledger of names whose owners were still alive, each followed by a date two days away. {{heroPlayer}}’s visitors came to learn who sent it; {{otherPlayer}}’s protection detail had orders to remove the ledger before the residents saw it. One nurse had already found her own name.",
+      "{{hero}} inspected the ledger under a reading lamp and discovered that the ink darkened near the hospice’s old radio. Every entry held a frequency beneath the handwriting. The specialist tuned the radio to the nurse’s line and heard her voice describing a room she had never entered.",
+      "From the upper floor came a crash, followed by that same voice calling for help. {{hero}} closed the ledger and climbed the stairs with the radio hissing at each step. The protection detail reached the hall at the same time, and the nurse stood between them beside an open window."
+    ],
+    "endings": {
+      "heroWins": "The nurse stayed safe, and {{heroPlayer}}’s visitors carried the ledger away for answers.",
+      "heroLoses": "{{otherPlayer}}’s detail removed the ledger while the visitors searched the empty upper room.",
+      "draw": "The nurse survived, but the ledger vanished before either party could trace its sender."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "PanOceania",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A harbor pilot’s beacon shone inland instead of out to sea. {{heroPlayer}}’s dock crew tried to correct it before the fog thickened; {{otherPlayer}}’s marines held the quay for a vessel due at dawn. Every few minutes a ship’s horn sounded from a part of the channel too shallow for a hull.",
+      "{{hero}} covered the beacon stairs from a net loft, firing past the lamp whenever someone moved to swing it back toward the quay. The fighter heard an answering horn beneath the loft. Through a gap in the planks, the water showed the roof of a sunken pilot boat rising with the tide.",
+      "The lamp turned once more and lit figures trapped inside the boat’s wheelhouse. {{hero}} kept the stairs covered while the dock crew lowered a line toward the roof. The incoming vessel’s horn answered from the fog, much closer than any safe chart allowed."
+    ],
+    "endings": {
+      "heroWins": "The crew rescued the pilot and turned the beacon seaward before {{heroPlayer}}’s vessel arrived.",
+      "heroLoses": "{{otherPlayer}}’s marines held the quay while the beacon kept calling ships toward shallow water.",
+      "draw": "The pilot escaped, but neither party could keep the beacon lit through the fog."
+    }
+  }
+]
