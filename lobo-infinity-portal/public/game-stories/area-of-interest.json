@@ -8738,5 +8738,385 @@
       "heroLoses": "{{otherPlayer}}’s patrol took the crossing and managed the diversion from the trackside switch.",
       "draw": "The crossing cleared in time, but neither party restored the controller before traffic stopped for the night."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A dome above the frontier market had projected the same night sky for forty years. That morning its stars shifted to show a second market, beneath the floor where the old observatory had been buried. {{heroPlayer}}’s analysts wanted the projection kept running; {{otherPlayer}}’s watch closed the public steps after a vendor disappeared down them.",
+      "{{hero}} aligned the dome’s original star wheel with the new pattern and found a service hatch hidden in the central plinth. The specialist opened it to a stairwell full of dust and fresh footprints. From below came the vendor’s voice, followed by the sound of a door sliding shut. The projector began to overwrite the hatch location with a new sky.",
+      "Someone had to hold the wheel at its old setting while another person descended. The watch was bringing a search lamp through the entrance, and the analyst could not tell whether the footprints led out of the buried room. The specialist braced the wheel as the light crossed the floor and the vendor called once more."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts held the dome, found the vendor, and preserved the route to the buried observatory.",
+      "heroLoses": "{{otherPlayer}}’s watch took the hatch and led the vendor back through its own cordon.",
+      "draw": "The vendor returned safely, but the dome changed again before either team could map the room below."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A drowned amphitheater appeared when the reservoir fell, its upper seats still dry above the mud. People sheltering on the central stage had made a rope ladder from their costumes. {{heroPlayer}}’s rescuers came down the western aisle; {{otherPlayer}}’s hill patrol approached the east, each seeking the one stable exit.",
+      "{{hero}} met a fighter at the top of the western stair, where loose stone left room for only one person. After a brief struggle, the combatant forced a passage and carried a section of railing down to the stranded people. They used it to bridge a gap between two rows, but the mud rose behind the stage as a dam sluice opened upstream.",
+      "A second railing could reach the far aisle if someone detached it from the high seats. That would leave the first bridge unsupported unless both teams held it. The combatant heard the sheltering people count their remaining steps across, while the patrol on the opposite side called out a shorter route through the water."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers carried everyone up the western aisle and held the dry amphitheater entrance.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the eastern aisle and brought the stranded people out ahead of the water.",
+      "draw": "Both routes met above the flood, and neither team controlled the amphitheater once the reservoir refilled."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "The border archive began returning letters addressed to people who had not yet written them. One envelope described a dispute over the archive itself and bore tomorrow’s date. {{heroPlayer}}’s clerks entered to find its register; {{otherPlayer}}’s rangers held the mailroom while residents gathered to ask who had sent the letters.",
+      "{{hero}} unlocked the sorting ledger and found every future letter entered beside an older, unclaimed parcel. The specialist pulled that parcel from a lower shelf as the mailroom’s pneumatic tubes began delivering more envelopes. Inside the parcel was a blank boundary deed, sealed before either settlement existed.",
+      "The archive could stamp a valid deed only while its old date wheel still turned. Fixing the date might stop the strange deliveries, but it could also make the unclaimed parcel impossible to register. The specialist held the deed beneath the stamp as a ranger at the doorway asked whether the neighbors were ready to witness it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s clerks registered the deed and kept the archive open for both settlements to inspect.",
+      "heroLoses": "{{otherPlayer}}’s rangers took custody of the deed and closed the mailroom pending a joint hearing.",
+      "draw": "The letters stopped, but the deed remained unsigned and both settlements retained a claim to the archive."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A shuttle landed hard on a glacier, far from its intended port, and its emergency lights glowed through the snow. {{heroPlayer}}’s recovery detail arrived with a portable winch; {{otherPlayer}}’s ice patrol had already set markers around a crevasse between them and the hull. Through the cockpit glass, a passenger waved a broken radio.",
+      "{{hero}} covered the winch crew crossing a narrow bridge of snow. Fire splintered the ice ahead of them, and the fighter answered from a sheltered ridge while the crew ran its cable toward the shuttle. The cable caught, but its hook tore a panel loose and exposed a line of frost spreading across the cabin wall.",
+      "The crew could pull the shuttle a little closer, risking the panel, or take the passengers out one at a time over the crevasse. The ice patrol’s markers offered a safer route, if the detail could reach them. The fighter watched the passenger knock twice on the glass and saw the first crack climb toward the window."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail brought the passengers across and secured the stranded shuttle for recovery.",
+      "heroLoses": "{{otherPlayer}}’s ice patrol opened its marked route and took charge of the shuttle rescue.",
+      "draw": "The passengers crossed safely, but the shuttle slipped into the crevasse before either party could hold it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "At the far end of the frontier, a geothermal lighthouse stopped turning just as a dust front swallowed the road. Its fixed beam pointed travelers toward a collapsed bridge. {{heroPlayer}}’s maintenance crew reached the tower with spare bearings; {{otherPlayer}}’s road wardens were already steering carts away from the false light.",
+      "{{hero}} climbed behind the lens and found a bearing packed with ash. The specialist cleared it and turned the mechanism by hand. One sweep revealed a second road marker almost hidden in the dust, but the motor stalled again before the travelers could see it. Someone below called that a cart had followed the fixed beam.",
+      "Keeping the lens moving needed a person at the crank; reaching the lost cart needed the lighthouse crew on the road. The wardens knew the marker’s position now, though they still distrusted the beam. The specialist drew a breath against the hot metal and heard wheels on the bridge approach, out beyond sight."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the rotating beam and led the cart onto the safe road.",
+      "heroLoses": "{{otherPlayer}}’s wardens intercepted the cart and secured the tower before reopening the road.",
+      "draw": "The cart turned back in time, but the dust kept the lighthouse dark while both crews repaired it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Wind chimes along a terraced garden rang in a pattern the gardeners had never heard. A crack was opening beneath the upper terrace, where the last families were packing their tools. {{heroPlayer}}’s escort reached the high path; {{otherPlayer}}’s valley scouts guarded a stone footbridge below, convinced it was the only safe way out.",
+      "{{hero}} climbed the high gate as a defender tried to close it against the shifting earth. The fighters grappled beside the latch, and the combatant won enough space to wedge it open with a fallen branch. Gardeners rushed through, but the path beyond the gate sagged toward the valley, pulling a row of chimes down with it.",
+      "One person could keep the gate from swinging into the path while the rest descended; the valley scouts could also lead the gardeners across their bridge if it held. The combatant braced the branch against the gate as the oldest gardener stopped to listen. All the surviving chimes were ringing in the same direction."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort cleared the terrace and guided the families along the high path before it failed.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the bridge and brought the families to the valley below.",
+      "draw": "The families escaped by both paths, leaving the damaged terraces and their boundary markers behind."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A riverside clock tower began chiming whenever the ferry left its landing, even though the bell had been removed years ago. Fishermen said the sound came from a warehouse across the river. {{heroPlayer}}’s investigators took the west bank; {{otherPlayer}}’s river patrol held the warehouse doors and refused to let anyone near the ferry’s old logbook.",
+      "{{hero}} covered a companion rowing toward a service window. Fire from the warehouse roof crossed the water, and the fighter shot through the rope holding an empty cargo net, dropping it between the skiff and the roof. The companion reached the window and found the missing bell hanging above a set of wires stretched to the ferry slip.",
+      "Each arriving boat pulled the wires tight enough to ring the bell. The next ferry was already midstream, and a loose weight above the logbook might fall when it docked. The fighter had a clear line to the wire, but the companion was still beneath the bell. The clock tower chimed from across the river."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators stopped the weight, recovered the logbook, and secured the warehouse.",
+      "heroLoses": "{{otherPlayer}}’s patrol reached the rigging first and kept the ferry records under its guard.",
+      "draw": "The ferry docked safely, but the bell and the logbook were removed to separate banks pending an inquiry."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "The spring festival’s signal kites were meant to guide supply carts through a forest cut. At noon they began pointing to a clearing that appeared on no map, and the first cart followed them in. {{heroPlayer}}’s signal team entered through the east trees; {{otherPlayer}}’s trackers approached from the ridge with a sketch of the older road.",
+      "{{hero}} climbed the central kite mast and found the lines crossed around a metal marker buried in the clearing. The specialist freed one line and read the marker’s warning: a sealed well lay directly under the cart track. Before the team could signal the first driver, a wheel dropped through the moss above the well.",
+      "The cart could be hauled back with the kite lines, but that would tear down the signals guiding those behind it. The ridge trackers were close enough to stop the next cart if they saw the warning. The specialist kept one line taut and watched the trapped driver lean out over the broken ground."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team freed the cart, rerouted the signals, and held the safe clearing for the convoy.",
+      "heroLoses": "{{otherPlayer}}’s trackers secured the clearing and led the carts along the mapped ridge road.",
+      "draw": "The cart came free, but both routes stayed closed while the old well was made safe."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A hollow tree at the edge of a canyon held a living archive: each leaf bore a mark from an expedition that had passed through. The newest leaves described a camp farther down the canyon, where nobody was meant to be. {{heroPlayer}}’s botanists came for a cutting; {{otherPlayer}}’s pathfinders wanted the tree left intact as a guide.",
+      "{{hero}} traced the new marks to a root exposed by erosion and found a strip of camp cloth caught beneath it. The specialist lifted the root, exposing a narrow ledge that led below the marked path. A fresh leaf unrolled with a different symbol as voices rose from the other side of the canyon.",
+      "Taking a cutting would preserve the clue if the tree fell, but opening the root farther might destroy the ledge someone had used. The pathfinders were bringing a rope to the far rim. The specialist held the cloth against the newest leaf and saw that its mark matched the voices’ location, not the hidden camp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists preserved the new record and reached the hidden camp by the ledge.",
+      "heroLoses": "{{otherPlayer}}’s pathfinders secured the tree and guided the search along the canyon rim.",
+      "draw": "The clue survived, but neither team could enter the camp before the canyon darkened."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a rail waystation, a freight car arrived with its doors welded shut and its delivery seals already broken. The manifest said it held blankets for an outlying village. {{heroPlayer}}’s hired guards sought the loading ramp; {{otherPlayer}}’s local patrol held the points and wanted the car examined before it moved again.",
+      "{{hero}} took the roof of the station office while a cutter worked on the doors. Shots struck the ramp, and the fighter returned fire long enough for the cutter to expose a narrow gap. Through it came a child’s voice. The car carried people beside the blankets, and one of the couplings began to pull against the brake.",
+      "Opening the doors could free the passengers before the car rolled, but the welded edge was still hot. The patrol could lock the points and keep the car from the downhill track if it reached the lever. The fighter watched the coupling stretch while the cutter asked for another minute they might not have."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards freed the passengers and kept the freight car at the ramp for inspection.",
+      "heroLoses": "{{otherPlayer}}’s patrol locked the points and brought the passengers out under its own protection.",
+      "draw": "The passengers escaped, but the empty car rolled away before either party could claim the cargo."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A museum auction was interrupted when its prized sound cylinder began playing a battle no witness remembered. A collector said the recording proved ownership of the valley beyond the museum. {{heroPlayer}}’s security crew moved toward the playback room; {{otherPlayer}}’s hill militia blocked the gallery doors and demanded the cylinder for inspection.",
+      "{{hero}} covered a conservator crossing the gallery as shots chipped the marble behind them. The fighter fired into a display shutter’s release and brought it down between the conservator and the doors. At the player, the conservator found a second cylinder turning underneath the first, its wax still soft enough for new grooves to appear.",
+      "Stopping the machine would preserve the old recording but erase whatever was being cut into the new one. Across the shutter, the militia called for the collector to surrender his claim. The fighter kept the conservator in view as the unheard battle changed to a voice asking for the machine to be kept running."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured both cylinders and kept the gallery open for an independent examination.",
+      "heroLoses": "{{otherPlayer}}’s militia took the playback room and placed the cylinders under valley custody.",
+      "draw": "The new cylinder finished recording, but neither group agreed to let the other remove it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The only bridge into a mining camp began counting each crossing on an old mechanical tollboard. It stopped one short of the number of people who had left that morning. {{heroPlayer}}’s hired escort sought the keeper’s booth to check the count; {{otherPlayer}}’s camp watch barred the bridge, worried someone was still beneath it.",
+      "{{hero}} pushed through the booth’s narrow doorway and caught a defender reaching for the tollboard’s crank. The two wrestled against its painted gears, and the fighter held the crank still long enough for a companion to read a second counter hidden behind it. That one showed an extra crossing, made after the keeper had locked the booth.",
+      "A maintenance ladder led under the bridge, but turning the crank would retract its lower rungs. Someone had been there since the count changed; the river below was rising with meltwater. The fighter kept one hand on the crank as the companion called into the darkness beneath the planks and received an answer."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort reached the person under the bridge and kept the tollbooth for the camp’s inquiry.",
+      "heroLoses": "{{otherPlayer}}’s watch took the booth and brought the missing traveler up its own ladder.",
+      "draw": "The traveler returned, but the two counters disagreed and both crews stayed to guard the bridge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A tide clock in a landlocked laboratory began reporting the rise and fall of an ocean no one could see. Its readings predicted a surge at a dry drainage gate below the town. {{heroPlayer}}’s technicians reached the instrument room; {{otherPlayer}}’s flood wardens went to the gate, certain the clock was broken.",
+      "{{hero}} opened the clock’s case and found its sensor connected to a buried reservoir instead of the distant sea. The specialist transmitted the pressure readings to the wardens and worked the manual release, but the handwheel stuck at halfway. Water began to knock beneath the laboratory floor. A caretaker found the reservoir’s old plans behind a cabinet.",
+      "The plans showed a spillway under the wardens’ position and a second release behind the locked laboratory door. Opening one might save the town and flood the other team’s route. The specialist held the plans against the turning clock face while a message came from the gate: the ground had begun to move."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians released the pressure safely and kept the laboratory and its records.",
+      "heroLoses": "{{otherPlayer}}’s wardens controlled the spillway and secured the laboratory after diverting the water.",
+      "draw": "Both releases opened together, sparing the town but leaving the damaged clock under joint guard."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ariadna",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cable car carrying a sealed geological core stopped above an abandoned mine. The car’s windows showed a worker inside, but the radio returned only static. {{heroPlayer}}’s escort came to the lower station to recover the sample; {{otherPlayer}}’s ridge watch held the upper drive and said the cable might give way.",
+      "{{hero}} guarded the platform while a climber attached a rescue line. Fire from the upper station cracked a glass panel, and the fighter answered until the climber could reach the stopped car. The worker was awake and holding the core shut with both hands; a thin seam had opened along its casing.",
+      "Drawing the car down would bring the unstable casing through the crowded platform. Leaving it above the mine meant the worker would have to climb the rescue line while the car swayed. The fighter saw the ridge watch begin turning the upper drive by hand and tried to tell them what the worker was holding."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort brought the worker down and contained the core at the lower station.",
+      "heroLoses": "{{otherPlayer}}’s watch held the cable and recovered the worker and core from above.",
+      "draw": "The worker reached safety, but the core remained suspended until both sides could secure its casing."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two clans arrived at a winter hall with competing invitations to guard its hearth. Inside, an old bell rope marked the boundary between their assigned rooms. A storm had brought travelers to the hall as well, and neither guard could lock the doors while people were still coming over the pass.",
+      "{{hero}} reached the bell rope as a rival tried to pull the divider shut. The combatants wrestled across the threshold, and the fighter held the rope high enough for the travelers to pass. A stone fell from the chimney, sending smoke into the crowded hall and exposing a narrow flue above the hearth.",
+      "The flue could be cleared from the roof, but whoever climbed would leave the threshold in the other clan’s hands. Someone had to keep the door open while the smoke escaped. The fighter heard a child coughing behind the divider and saw the rival offer a ladder, its feet already set against the wrong wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guard cleared the flue and kept the hall warm under its own watch.",
+      "heroLoses": "{{otherPlayer}}’s guard took the hearth, opened the flue, and sheltered the travelers.",
+      "draw": "The smoke cleared, but the travelers kept both guards at the hearth until the storm passed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "objective",
+    "paragraphs": [
+      "An old hill fort still had a working semaphore on its eastern wall. A village below had sent up a runner to ask whether the ridge pass was open, but the fort’s flags were giving the opposite answer to travelers on the far side. {{heroPlayer}}’s scouts climbed to the signal platform as {{otherPlayer}}’s highlanders occupied the courtyard.",
+      "{{hero}} examined the gears beneath the flags and found one reversed by a fallen stone. The specialist corrected the first arm, exposing a second problem: someone had sent a warning from the opposite tower about a wagon stranded on the pass. A courier offered to carry the answer by foot while the highlanders called for the fort to be closed.",
+      "The platform could show either the safe route for the village’s travelers or the warning for the wagon’s rescuers; its damaged gearing could not display both at once. The specialist held one arm against the wind while the runner waited below, and from the pass came a small flash of reflected sunlight."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts signaled both routes in sequence and held the fort until the wagon was found.",
+      "heroLoses": "{{otherPlayer}}’s highlanders took the platform and directed the travelers from the courtyard.",
+      "draw": "The wagon and travelers were warned, but neither party could repair the flags before nightfall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather balloon landed in a high pasture trailing a length of silver fabric across the shepherds’ footpath. Its recorder predicted a sudden freeze before morning. {{heroPlayer}}’s recovery party wanted the instrument intact; {{otherPlayer}}’s hill watch feared the tether would bring down the old suspension bridge nearby.",
+      "{{hero}} shielded a technician moving toward the balloon as fire from the ridge sent the grazing animals scattering. The fighter returned fire from behind a stone trough while the technician read the first temperature record. The tether snagged the bridge’s outer cable, and each gust drew the two structures tighter together.",
+      "Severing the tether would save the bridge but send the recorder down the valley; pulling it in could strip away the cable that the shepherds needed to get home. The hill watch was coming across from the other bank with cutters. The fighter heard the bridge creak and saw the technician raise a hand for one more reading."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party recovered the recorder, freed the bridge, and sent the freeze warning down the valley.",
+      "heroLoses": "{{otherPlayer}}’s watch cut the dangerous tether and secured the pasture and bridge for the shepherds.",
+      "draw": "The bridge held and the warning went out, but the recorder blew away before either side could claim it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An ice road across the moor began to glow from below, revealing a line of warm springs no map had recorded. The first supply sled stopped where its runners sank into softening ice. {{heroPlayer}}’s hill escort came along the near bank; {{otherPlayer}}’s winter patrol had already stepped onto the far end of the road.",
+      "{{hero}} reached the sled and found a defender pulling at the same harness buckle. The fighter forced a grip off the strap and dragged it around a rock, shifting the load toward firmer ground. Beneath the runners, the ice turned transparent; a long pipe could be seen carrying heat straight toward the narrowest part of the road.",
+      "The sled could be emptied and pulled back, but the supply barrels would need to cross before the villages ran out. Closing the buried pipe might freeze the road again, or it might crack it. The fighter held the harness as the winter patrol’s engineer knelt by a valve at the far bank."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort recovered the sled and marked a safe crossing for the supply barrels.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the valve and guided the barrels across a new route.",
+      "draw": "The supplies reached shore, but both parties closed the ice road until the warm pipe could be studied."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "objective",
+    "paragraphs": [
+      "A centuries-old orchard stood across two survey lines, and both communities had kept bees there through the winter. The first blossom opened out of season, sending the hives toward a pump shed no one had used in years. {{heroPlayer}}’s rangers came to inspect the water; {{otherPlayer}}’s hill wardens held the orchard path to protect the hives.",
+      "{{hero}} opened the pump shed and found a warm pipe feeding the roots beneath one side of the boundary. The specialist traced it to a buried valve and set a marker where its stem broke the soil. A sudden hum rose from the hives as the bees gathered over the marker, blocking the path the rangers needed for their measuring line.",
+      "Closing the valve might return the orchard to its normal season, but the early bloom was the bees’ only food after the long frost. Leaving it open could exhaust the shared reservoir. The specialist watched the wardens bring a spare hive box through the trees and wondered which survey line would still matter when spring arrived."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers regulated the warm pipe and secured the orchard for a shared spring harvest.",
+      "heroLoses": "{{otherPlayer}}’s wardens took the pump shed and protected the hives while the reservoir was assessed.",
+      "draw": "The valve stayed open on a short watch, and both communities kept their boundary claims until spring."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Caledonian Highlander Army",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "Deep in a limestone quarry, miners uncovered a chamber whose walls breathed warm air through hundreds of small holes. An injured worker remained inside after a rockfall, beyond a gap too narrow for a stretcher. {{heroPlayer}}’s rescue team brought a collapsible sled; {{otherPlayer}}’s highland crew controlled the quarry winch above.",
+      "{{hero}} mapped the breathing holes and found they connected to an old ventilation shaft. The specialist opened a grille and lowered a speaking tube to the worker, who answered that the air was fading. The quarry crew began clearing the main passage, but each strike sent fine dust through the holes and into the sealed chamber.",
+      "The rescue sled could pass through the shaft if the grille came free. Removing it might cut off the worker’s last clean air until the sled arrived. The specialist held the speaking tube while the winch creaked above and the worker asked how much farther the rescuers had to go."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team brought the worker through the shaft and secured the chamber for a careful survey.",
+      "heroLoses": "{{otherPlayer}}’s quarry crew cleared the main passage and led the worker out beneath its own watch.",
+      "draw": "The worker came out safely, but unstable rock kept the chamber closed to both crews."
+    }
   }
 ]
