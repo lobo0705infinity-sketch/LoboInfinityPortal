@@ -88,10 +88,10 @@ assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Jazz
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
 assert.equal(lowPointLists.length, 3)
-assert.ok(lowPointLists.some(list => list.legality.totals.troopers >= 13),
-  'at 200 points the forced TAG should not cause the builder to give up on model count')
+assert.ok(lowPointLists.some(list => list.legality.totals.troopers >= 11),
+  'at 200 points the forced TAG should still allow at least 11 actual Troopers')
 assert.ok(lowPointLists.every(list => list.legality.status === 'legal'
-  && list.legality.totals.troopers >= 12))
+  && list.legality.totals.troopers >= 10), 'Peripherals do not inflate the 200-point Trooper count')
 
 const onyxPayload = source.payloads.find(item => item.url?.endsWith('/units/en/604'))
 const onyxInput = { ...input, payload: onyxPayload, sectorialId: 604,
