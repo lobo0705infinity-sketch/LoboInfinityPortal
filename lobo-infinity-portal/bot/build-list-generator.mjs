@@ -6,6 +6,7 @@ import { lookupMobility } from './mobility-lookup.mjs'
 const normalize = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const token = value => normalize(value).replace(/\s/g, '')
 const roleNames = /\b(hacker|forward observer|engineer|doctor|paramedic|specialist operative|chain of command)\b/i
+const gradeRank = grade => ({ S: 5, A: 4, B: 3, C: 2, D: 1, F: 0 })[String(grade || '').toUpperCase()] ?? 0
 
 export class ListBuilderError extends Error {}
 
@@ -35,11 +36,11 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
   const surfaceId = Number(payload.filters?.chars?.find(item => item.name === 'Surface')?.id)
   const deepspaceId = Number(payload.filters?.chars?.find(item => item.name === 'Deepspace')?.id)
   const ratings = new Map((gunfighterCatalog?.entries || []).filter(item => Number(item.sectorialId) === sectorialId)
-    .map(item => [item.key, Number(item.result?.states?.find(state => state.id === 'normal')?.rating || 0)]))
+    .map(item => [item.key, item.result?.states || []]))
   const aroRatings = new Map((aroCatalog?.entries || []).filter(item => Number(item.sectorialId) === sectorialId)
-    .map(item => [item.key, Number(item.result?.states?.find(state => state.id === 'normal')?.rating || 0)]))
+    .map(item => [item.key, item.result?.states || []]))
   const ccRatings = new Map((closeCombatCatalog?.entries || []).flatMap(item => (item.aliases || []).filter(alias => Number(alias.sectorialId) === sectorialId)
-    .map(alias => [alias.key, Number(item.rating || 0)])))
+    .map(alias => [alias.key, item])))
   const result = []
   const add = (unit, group, base, choice, groupId, includes = []) => {
     const points = Number(choice.points)
@@ -65,6 +66,12 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       : (base.chars || []).includes(deepspaceId) ? 'Deepspace' : null
     const primaryWeapon = weapons.find(weapon => /rifle|shotgun|machine gun|spitfire|sniper|feuerbach|thunderbolt|launcher|smg|submachine/i.test(weapon)) || weapons[0]
     const key = `${sectorialId}:${unit.id}:${groupId}:${choice.id}:1`
+    const shooting = ratings.get(key) || []
+    const aroResults = aroRatings.get(key) || []
+    const normalShooting = shooting.find(state => state.id === 'normal')
+    const linkedShooting = shooting.find(state => state.id === 'fireteam')
+    const normalAro = aroResults.find(state => state.id === 'normal')
+    const linkedAro = aroResults.find(state => state.id === 'fireteam')
     result.push({
       id: key, unitId: Number(unit.id), unitName: unit.isc || unit.name, slug: unit.slug,
       groupId, optionId: Number(choice.id), optionName: choice.name, points,
@@ -88,9 +95,16 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       aro: /sniper|feuerbach|missile launcher|rocket launcher|flash pulse|panzerfaust|thunderbolt/i.test(toolkit),
       closeThreat: /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit),
       defensive: /camouflage|minelayer|decoy/i.test(roleText),
-      gunfighter: ratings.get(key) || 0,
-      aroRating: aroRatings.get(key) || 0,
-      ccRating: ccRatings.get(key) || 0,
+      gunfighter: Number(normalShooting?.rating || 0),
+      gunfighterGrade: normalShooting?.grade || '',
+      linkedGunfighter: Number(linkedShooting?.rating || 0),
+      linkedGunfighterGrade: linkedShooting?.grade || '',
+      aroRating: Number(normalAro?.rating || 0),
+      aroGrade: normalAro?.grade || '',
+      linkedAroRating: Number(linkedAro?.rating || 0),
+      linkedAroGrade: linkedAro?.grade || '',
+      ccRating: Number(ccRatings.get(key)?.rating || 0),
+      ccGrade: ccRatings.get(key)?.grade || '',
       mobility: Number(lookupMobility(mobilityCatalog, key)?.score || 0),
       label: `${choice.name}${primaryWeapon ? ` · ${primaryWeapon}` : ''}${lieutenant ? ' · Lieutenant' : ''}${skills.filter(skill => roleNames.test(skill)).length ? ` · ${skills.filter(skill => roleNames.test(skill)).join(', ')}` : ''}`,
     })
@@ -176,8 +190,9 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     if (seen.has(signature)) continue
     seen.add(signature)
     const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side, teamPreference)
+    const quality = roleCoverage(grouped, fireteams, mission)
     options.push({ code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`, profiles: grouped, fireteams,
-      legality, mission, faction: faction.name, payloadVersion: payload.version,
+      legality, mission, faction: faction.name, payloadVersion: payload.version, quality,
       specialistCount: grouped.filter(item => item.specialist).length,
       points: legality.totals.points, swc: legality.totals.swc,
       score: scoreList(grouped, fireteams, mission, points, teamPreference) })
@@ -187,9 +202,16 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const fullEnough = ranked.filter(item => item.legality.totals.troopers >= 12
     && item.score >= ranked[0].score - 12)
   const candidates = fullEnough.length >= Math.min(3, count) ? fullEnough : ranked
+  const complete = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 2
+    && item.quality.cc >= 2 && item.quality.aro >= 2
+    && item.quality.specialists >= item.quality.specialistTarget) : []
+  const rolePool = complete.length ? complete : candidates
   // Prefer the fullest roster among similarly strong builds. A sparse list
   // can still win when adding bodies causes a marked loss in overall quality.
-  const competitive = candidates.filter(item => item.score >= candidates[0].score - 6)
+  const similarlyStrong = rolePool.filter(item => item.score >= rolePool[0].score - 6)
+  const duoOrHaris = similarlyStrong.filter(item => item.fireteams.some(team =>
+    (team.type === 'DUO' || team.type === 'HARIS') && team.level >= 2))
+  const competitive = duoOrHaris.length ? duoOrHaris : similarlyStrong
   const pool = [...competitive].sort((a, b) => b.legality.totals.troopers - a.legality.totals.troopers
     || b.score - a.score)
   const chosen = []
@@ -199,7 +221,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     chosen.push({ ...option, teamSignature: signature })
     if (chosen.length >= Math.min(3, count)) break
   }
-  for (const option of [...pool, ...candidates]) {
+  for (const option of [...pool, ...rolePool, ...candidates]) {
     if (chosen.length >= Math.min(3, count)) break
     if (!chosen.some(item => item.code === option.code)) chosen.push(option)
   }
@@ -243,6 +265,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const targetCount = attempt % 3 === 2 ? 12 : 15
   const currentSynergy = rosterSynergy(selected)
   const currentRedundancy = rosterRedundancy(selected)
+  const currentQuality = rosterQuality(selected, [], constraints.mission, constraints.points)
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -252,7 +275,14 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
     const missionValue = item.specialist && specialists < (/hardlock/i.test(constraints.mission) ? 4 : 3) ? 5.5
       : item.specialist && specialists >= 5 ? -2.5 : item.specialist ? .5 : 0
     const engineer = hasTag && !engineers && item.engineer ? 3.5 : 0
-    const coverage = (item.aro && !selected.some(profile => profile.aro) ? 2.5 + item.aroRating / 5 : 0)
+    const qualityAro = item.aro && gradeRank(item.aroGrade) >= gradeRank('B')
+    const firstAro = !selected.some(profile => profile.aro)
+    const firstQualityAro = !selected.some(profile => profile.aro && gradeRank(profile.aroGrade) >= gradeRank('B'))
+    const aroCoverage = constraints.points < 300
+      ? item.aro && firstAro ? 2.5 + item.aroRating / 5 : 0
+      : qualityAro && firstQualityAro ? 2.5 + item.aroRating / 5
+        : item.aro && firstAro ? .8 + item.aroRating / 8 : 0
+    const coverage = aroCoverage
       + (item.smoke && !selected.some(profile => profile.smoke) ? 1.8 : 0)
       + (item.defensive && !selected.some(profile => profile.defensive) ? 2 : 0)
       + (item.repeater && !selected.some(profile => profile.repeater) ? 1 : 0)
@@ -269,6 +299,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (item.specialist ? item.mobility / 80 : 0)
       + spend - item.points * .075 - existing * .35 - affordable + variation
       + (rosterSynergy([...selected, item]) - currentSynergy) * .9
+      + (rosterQuality([...selected, item], [], constraints.mission, constraints.points) - currentQuality) * 1.2
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
     candidates.push({ ...item, combatGroup: group, value })
   }
@@ -312,7 +343,8 @@ export function rosterRedundancy(profiles) {
   const counts = new Map()
   const units = new Map()
   for (const item of profiles) {
-    const entry = counts.get(item.id) || { count: 0, points: item.points }
+    const entry = counts.get(item.id) || { count: 0, points: item.points,
+      gunfighter: item.gunfighter || 0, gunfighterGrade: item.gunfighterGrade || '', ccGrade: item.ccGrade || '' }
     entry.count++
     counts.set(item.id, entry)
     units.set(item.unitId, [...(units.get(item.unitId) || []), item.points])
@@ -320,10 +352,69 @@ export function rosterRedundancy(profiles) {
   const identical = [...counts.values()].reduce((sum, { count, points }) =>
     sum + Math.max(0, count - 1) * Math.max(0, points - 28) * .3
       + Math.max(0, count - 2) * (1.5 + Math.max(0, points - 18) * .3), 0)
+  const repeatedRole = [...counts.values()].reduce((sum, item) => sum + Math.max(0, item.count - 1)
+    * (item.points >= 20 && gradeRank(item.gunfighterGrade) >= gradeRank('B')
+      ? 3 + Math.min(1.5, Math.max(0, item.gunfighter - 20) / 8)
+      : item.points >= 20 && gradeRank(item.ccGrade) >= gradeRank('A') ? 1.5 : 0), 0)
   const expensiveUnitCopies = [...units.values()].reduce((sum, points) =>
     sum + points.sort((a, b) => b - a).slice(1)
       .reduce((extra, points) => extra + Math.max(0, points - 30) * .35, 0), 0)
-  return identical + expensiveUnitCopies
+  return identical + repeatedRole + expensiveUnitCopies
+}
+
+// Grade the physical models in the proposed teams, not just their unlinked
+// profiles. Each gunfighter or ARO slot must be filled by a different model;
+// a gunfighter may also satisfy a CC slot. Linked grades count only when the
+// model belongs to a proposed Level 2+ team.
+export function roleCoverage(profiles, fireteams = [], mission = '') {
+  const linked = new Set()
+  for (const team of fireteams) {
+    if (team.level < 2) continue
+    for (const label of team.members) {
+      const index = profiles.findIndex((item, index) => !linked.has(index)
+        && item.combatGroup === team.combatGroup && item.label === label)
+      if (index >= 0) linked.add(index)
+    }
+  }
+  const qualify = (normal, upgraded, index) => gradeRank(normal) >= gradeRank('A')
+    || linked.has(index) && gradeRank(upgraded) >= gradeRank('A')
+  const gunfighters = profiles.map((item, index) => index)
+    .filter(index => qualify(profiles[index].gunfighterGrade, profiles[index].linkedGunfighterGrade, index))
+  const aro = profiles.map((item, index) => index)
+    .filter(index => qualify(profiles[index].aroGrade, profiles[index].linkedAroGrade, index))
+  const gunChoices = [[], ...gunfighters.map(index => [index])]
+  for (let i = 0; i < gunfighters.length; i++) {
+    for (let j = i + 1; j < gunfighters.length; j++) gunChoices.push([gunfighters[i], gunfighters[j]])
+  }
+  let best = null
+  for (const guns of gunChoices) {
+    const remainingAro = aro.filter(index => !guns.includes(index))
+    const defenders = remainingAro.length >= 2
+      ? [remainingAro[0], remainingAro.find(index => profiles[index].unitId !== profiles[remainingAro[0]].unitId) ?? remainingAro[1]]
+      : remainingAro
+    const distinctGunfighters = new Set(guns.map(index => profiles[index].unitId)).size
+    const distinctAro = new Set(defenders.map(index => profiles[index].unitId)).size
+    const score = guns.length * 8 + defenders.length * 6
+      + (distinctGunfighters >= 2 ? 2 : 0) + (distinctAro >= 2 ? 1.5 : 0)
+    if (!best || score > best.score) best = { guns, defenders, distinctGunfighters, distinctAro, score }
+  }
+  const cc = profiles.filter(item => gradeRank(item.ccGrade) >= gradeRank('A'))
+  const specialists = profiles.filter(item => item.specialist)
+  const linkedRequired = (index, normalGrade) => linked.has(index) && gradeRank(normalGrade) < gradeRank('A')
+  return { gunfighters: best.guns.length, aro: best.defenders.length, cc: cc.length,
+    specialists: specialists.length, specialistTarget: /hardlock/i.test(mission) ? 4 : 3,
+    distinctGunfighters: best.distinctGunfighters, distinctAro: best.distinctAro,
+    linkedGunfighters: best.guns.filter(index => linkedRequired(index, profiles[index].gunfighterGrade)).length,
+    linkedAro: best.defenders.filter(index => linkedRequired(index, profiles[index].aroGrade)).length }
+}
+
+export function rosterQuality(profiles, fireteams = [], mission = '', points = 300) {
+  if (points < 300) return 0
+  const quality = roleCoverage(profiles, fireteams, mission)
+  return Math.min(2, quality.gunfighters) * 8 + Math.min(2, quality.cc) * 5
+    + Math.min(2, quality.aro) * 6
+    + (quality.distinctGunfighters >= 2 ? 2 : 0)
+    + (quality.distinctAro >= 2 ? 1.5 : 0)
 }
 
 export function rosterConnections(profiles) {
@@ -603,21 +694,26 @@ function combinations(values, size, offset = 0, prefix = [], output = []) {
 function scoreList(profiles, fireteams, mission, points, teamPreference = {}) {
   const specialists = profiles.filter(item => item.specialist).length
   const regular = profiles.filter(item => item.regular).length
-  const shooter = profiles.map(item => item.gunfighter).sort((a, b) => b - a).slice(0, 2).reduce((a, b) => a + b, 0)
+  const distinctShooters = new Map()
+  for (const item of profiles) distinctShooters.set(item.unitId,
+    Math.max(distinctShooters.get(item.unitId) || 0, item.gunfighter || 0))
+  const [bestShooter = 0, secondShooter = 0] = [...distinctShooters.values()].sort((a, b) => b - a)
   const troopers = profiles.reduce((sum, item) => sum + item.slots, 0)
   const groups = [1, 2].map(group => profiles.filter(item => item.combatGroup === group))
   const teamGroups = [1, 2].map((group, index) => fireteams.filter(team => team.combatGroup === group)
     .map(team => ({ ...team, members: groups[index].filter(item => team.members.includes(item.label)) })))
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, /hardlock/i.test(mission) ? 4 : 3) * 6) + regular * 2
-    + shooter / 8 + fireteams.reduce((n, item) => n + item.level * 3 + (teamPreference[item.type] || 0), 0)
+    + (bestShooter + secondShooter * .6) / 8
+    + fireteams.reduce((n, item) => n + item.level * 3 + (teamPreference[item.type] || 0), 0)
     + Math.max(0, ...profiles.map(item => item.aroRating)) / 4
     + Math.max(0, ...profiles.map(item => item.ccRating)) / 8
     + profiles.filter(item => item.specialist).map(item => item.mobility).sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 65
     + Math.min(profiles.reduce((n, item) => n + item.points, 0), points) / points * 12
     + Math.min(15, troopers) * 4
     + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
-    + rosterSynergy(profiles) * 1.5 - rosterRedundancy(profiles) * 1.5
+    + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
+    - rosterRedundancy(profiles) * 1.5
 }
 
 function hash(input) {

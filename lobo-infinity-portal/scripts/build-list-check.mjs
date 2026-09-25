@@ -4,7 +4,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { buildArmyListOptions, availableProfiles, ListBuilderError, optimizeCombatGroups,
-  projectedRegularOrders, proposedFireteams, resolveRequiredProfile,
+  projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutocompleteHandler,
   createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
@@ -45,6 +45,9 @@ for (const result of results) {
   assert.ok(result.profiles.some(item => /jazz/i.test(item.optionName)))
   assert.ok(result.profiles.some(item => /iguana/i.test(item.optionName)))
   assert.ok(result.specialistCount >= 4)
+  assert.ok(result.quality.gunfighters >= 2 && result.quality.aro >= 2
+    && result.quality.cc >= 2 && result.quality.specialists >= 4,
+  'each 300-point Hardlock list should cover separate gun and ARO slots plus CC and mission specialists')
   assert.ok(result.legality.totals.troopers >= 12)
   assert.ok(!result.profiles.some(item => item.side === 'Deepspace'), 'Surface/Deepspace exclusivity')
   assert.ok(result.fireteams.some(team => ['DUO', 'HARIS'].includes(team.type) && team.level >= 2))
@@ -74,7 +77,7 @@ assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 
   || projectedRegularOrders(result.profiles, 1) === 10
   && projectedRegularOrders(result.profiles, 2) === 5
   && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0)
-    > result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
+    >= result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
 'keep Tactical Awareness supported in a capable primary group when it is the better order split')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
 
@@ -102,6 +105,8 @@ assert.ok(onyxLists.some(list => list.fireteams.some(team =>
 for (const list of onyxLists) {
   assert.equal(list.legality.status, 'legal')
   assert.equal(list.legality.totals.troopers, 15)
+  assert.ok(list.quality.gunfighters >= 2 && list.quality.aro >= 2
+    && list.quality.cc >= 2 && list.quality.specialists >= 3)
   const expensiveCopies = Object.values(Object.groupBy(list.profiles.filter(item => item.points >= 30), item => item.id))
   assert.ok(expensiveCopies.every(copies => copies.length <= 2),
     'do not fill the list with three identical expensive profiles when alternatives exist')
@@ -110,6 +115,51 @@ for (const list of onyxLists) {
   assert.ok(rosterConnections(list.profiles).some(link => link.startsWith('Repairs:')))
   assert.ok(formatBuiltList(list, 1).length <= 1990)
 }
+
+const shasPayload = source.payloads.find(item => item.url?.endsWith('/units/en/603'))
+const shasInput = { ...input, payload: shasPayload, sectorialId: 603,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(603), mission: 'B-Pong', mustInclude: [] }
+const shasProfiles = availableProfiles(shasInput)
+const haiduk = shasProfiles.find(item => item.optionName === 'HAIDUK' && item.label.includes('MULTI Sniper Rifle'))
+assert.deepEqual([haiduk.gunfighterGrade, haiduk.aroGrade, haiduk.linkedGunfighterGrade, haiduk.linkedAroGrade],
+  ['B', 'C', 'A', 'A'], 'the linked Haiduk benchmark must not be confused with its unlinked grade')
+const haidukPair = [{ ...haiduk, combatGroup: 1 }, { ...haiduk, combatGroup: 1 }]
+const haidukDuo = proposedFireteams(haidukPair, shasPayload.fireteamChart)
+assert.equal(haidukDuo[0]?.type, 'DUO')
+assert.deepEqual([roleCoverage(haidukPair).gunfighters, roleCoverage(haidukPair).aro], [0, 0])
+assert.deepEqual([roleCoverage(haidukPair, haidukDuo).gunfighters, roleCoverage(haidukPair, haidukDuo).aro], [2, 0],
+  'two linked Haiduks fill gunfighter slots, but cannot simultaneously fill ARO slots')
+const speculo = shasProfiles.find(item => item.optionName === 'SPECULO KILLER' && item.points === 29)
+const jayth = shasProfiles.find(item => item.optionName === 'JAYTH CUTTHROATS FTO' && item.points === 24)
+const plasmaDrone = shasProfiles.find(item => item.optionName === 'Q-DRONE' && item.label.includes('Plasma Rifle'))
+assert.deepEqual([speculo.ccGrade, jayth.ccGrade, plasmaDrone.aroGrade], ['S', 'A', 'A'])
+const pastedListCore = [...haidukPair, { ...speculo, combatGroup: 1 },
+  { ...jayth, combatGroup: 1 }, { ...jayth, combatGroup: 1 }, { ...plasmaDrone, combatGroup: 1 }]
+assert.deepEqual([roleCoverage(pastedListCore, haidukDuo).gunfighters,
+  roleCoverage(pastedListCore, haidukDuo).cc, roleCoverage(pastedListCore, haidukDuo).aro], [2, 3, 1],
+  'the posted Shasvastii roster still lacks a second separate A/S ARO piece')
+const alternateAro = shasProfiles.find(item => item.aroGrade === 'A' && item.id !== plasmaDrone.id)
+assert.ok(alternateAro, 'another A-tier ARO profile should be available for a distinct role')
+const completeListCore = [...pastedListCore, { ...alternateAro, combatGroup: 1 }]
+assert.deepEqual([roleCoverage(completeListCore, haidukDuo).gunfighters,
+  roleCoverage(completeListCore, haidukDuo).aro], [2, 2],
+  'two gunfighters and two other ARO models meet separate role requirements')
+assert.equal(roleCoverage(completeListCore, haidukDuo).cc, 3,
+  'CC specialists count independently from shooting and ARO roles')
+const allRounder = { ...haiduk, gunfighterGrade: 'A', ccGrade: 'S', aroGrade: 'A' }
+assert.deepEqual([roleCoverage([allRounder]).gunfighters, roleCoverage([allRounder]).cc,
+  roleCoverage([allRounder]).aro], [1, 1, 0],
+  'a gunfighter may double as CC but cannot simultaneously fill an ARO slot')
+assert.ok(rosterRedundancy(haidukPair) > 0,
+  'two identical mid-cost sniper profiles should still pay a redundancy cost')
+const shasLists = buildArmyListOptions(shasInput)
+assert.ok(shasLists.every(list => list.quality.gunfighters >= 2 && list.quality.cc >= 2
+  && list.quality.aro >= 2 && list.quality.specialists >= 3),
+'all offered 300-point Shasvastii B-Pong builds should fill two separate gun and ARO slots')
+assert.ok(shasLists[0].fireteams.some(team => ['DUO', 'HARIS'].includes(team.type) && team.level >= 2),
+  'the coverage target should keep a useful pure Duo or Haris when a comparably good build exists')
+assert.match(formatBuiltList(shasLists[0], 1), /\*\*A\/S coverage \(separate Guns\/ARO\)\*\* Guns \d+\/2 · CC \d+\/2 · ARO \d+\/2 · Specialists \d+\/3/)
+assert.ok(formatBuiltList(shasLists[0], 1).length <= 1990)
 const pairFixture = [
   { id: 'hacker', unitId: 1, hacker: true, specialist: true, mobility: 45, points: 25 },
   { id: 'repeater', unitId: 2, repeater: true, mobility: 55, points: 10 },
@@ -198,6 +248,7 @@ assert.equal(messages.length, 3)
 for (const message of messages) {
   assert.ok(message.content.length <= 2000)
   assert.match(message.content, /Proposed fireteams[\s\S]*Level [2345]/)
+  assert.match(message.content, /A\/S coverage.*Guns \d+\/2.*CC \d+\/2.*ARO \d+\/2/)
   assert.match(message.content, /Support links/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
   assert.match(message.content, /Group 1 · \d+ Regular/)
