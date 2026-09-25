@@ -13678,5 +13678,385 @@
       "heroLoses": "{{otherPlayer}}’s care staff secured the mill and protected the arriving patient.",
       "draw": "The roll remained intact while both teams checked the names against clinic records."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A remote hearing center received a voice recording from a patient whose speech had been lost years ago. The patient came in person to say the words were unfamiliar. {{heroPlayer}}’s analysts took the sound booth; {{otherPlayer}}’s care team stayed with the patient in the waiting room, where a second recording had begun playing quietly.",
+      "{{hero}} compared the recordings and found the same pause in both, made by a ventilation fan hidden behind the booth wall. The specialist shut off the fan, and the new voice stopped mid-sentence. A cable from the motor led into an unused treatment room, where a handwritten consent form named the patient but bore someone else’s signature.",
+      "The analysts could preserve the equipment for investigation or disconnect it before the patient heard another false account of their life. The care team held the original clinical notes and wanted the patient’s wishes on record. The specialist stood beside the fan switch as a third voice began to form."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts traced the recordings and protected the patient’s real testimony.",
+      "heroLoses": "{{otherPlayer}}’s care team secured the records and removed the false voice system.",
+      "draw": "The equipment stayed sealed while the patient chose whether to hear more."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A wind farm above a relief camp stopped generating power while every turbine still turned. Its maintenance chief had left a toolbox and gone missing on the ridge. {{heroPlayer}}’s troubleshooters took the switch house; {{otherPlayer}}’s relief crew brought warm blankets and checked the chief’s last safety call.",
+      "{{hero}} opened the power bus and found that the turbines were charging a buried test battery instead of the camp. The specialist followed its cable to a shallow trench and uncovered the missing chief’s glove snagged on a hatch latch. A voice called from inside the test chamber, faint beneath the blades turning overhead.",
+      "The troubleshooters could reconnect the camp immediately or use the stored charge to open the sealed chamber. The relief crew had people growing cold in the unpowered tents and a rescue team climbing the ridge. The specialist set a hand on the selector while the voice below called again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s troubleshooters freed the chief and brought power back to the camp.",
+      "heroLoses": "{{otherPlayer}}’s relief crew rescued the chief and kept the tents warm.",
+      "draw": "The chamber was opened as the camp waited on portable generators."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A firebreak through an old olive grove lay across the path of an ambulance due from the valley. A farm gate had been chained shut, and smoke was rising on the far side. {{heroPlayer}}’s scouts reached the gate from the hills; {{otherPlayer}}’s medics waited at the road with the ambulance’s revised route.",
+      "{{hero}} wrested the gate chain from a defender and kept the opening clear while a companion pulled the ambulance marker from the smoke. On its back someone had drawn a detour through the grove, directing the vehicle toward a low bridge already weakened by heat. The fighter called the danger down the road as the siren approached.",
+      "The scouts could open the firebreak and guide the driver through the safe cut, but the medics needed to keep the smoky grove clear for the patient. A wind shift sent sparks across both routes. The fighter held the gate against its weight while the driver slowed at the junction."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts cleared the firebreak and brought the ambulance through safely.",
+      "heroLoses": "{{otherPlayer}}’s medics redirected the ambulance and protected its patient from smoke.",
+      "draw": "The ambulance waited at the junction while both teams checked the bridge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mobile polling station serving a remote settlement stopped at a relief depot instead of its assigned square. The locked ballot case remained aboard, but its escort had disappeared. {{heroPlayer}}’s security detail came along the depot road; {{otherPlayer}}’s medical volunteers guarded the waiting voters and the station’s driver.",
+      "{{hero}} held the depot entrance when shots struck the empty station’s mirror. The fighter returned fire while a clerk crossed to the ballot case and found a route card slipped into its handle. It marked a second settlement whose voters had been removed from the official itinerary, with the missing escort’s name beside it.",
+      "The detail could keep the ballots under guard and search for the escort, or drive on to the omitted settlement before the polling window closed. The volunteers knew an elderly voter there who had already been turned away once. The fighter watched the road while the clerk unfolded the route card."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the ballots and restored the omitted polling stop.",
+      "heroLoses": "{{otherPlayer}}’s volunteers protected the voters and found the missing escort.",
+      "draw": "The ballot case remained sealed while officials checked both settlement routes."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "objective",
+    "paragraphs": [
+      "A hydroponic habitat received a radiation alarm during its first harvest, though the crew’s personal monitors showed no exposure. One technician refused to leave before checking the seedlings. {{heroPlayer}}’s inspectors entered the sealed growing bay; {{otherPlayer}}’s medical observers held the decontamination lock and counted everyone outside.",
+      "{{hero}} moved a hand scanner across the crop trays and found the alarm originated from a luminous calibration tile beneath one bench. The specialist lifted it to discover an older sensor, still recording, with a date from before the habitat was assembled. Its last reading came from a section of floor the construction plan showed as solid.",
+      "The inspectors could open the floor to check that earlier exposure or evacuate the crop before the alarm confused other crews. The medical observers wanted the original sensor isolated and the technician brought through decontamination. The specialist held both instruments apart, comparing their readings while the seedlings trembled in the ventilation draft."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors traced the alarm and kept the harvest safely under observation.",
+      "heroLoses": "{{otherPlayer}}’s medical observers secured the habitat and cleared the crew.",
+      "draw": "The bay remained sealed while both sensors were tested against the floor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A canyon shelter’s emergency door jammed after a tremor, trapping its supply sled and a team of surveyors inside. The access road could carry only one rescue vehicle at a time. {{heroPlayer}}’s drill crew brought cutting equipment; {{otherPlayer}}’s responders prepared oxygen and a medical bay near the canyon mouth.",
+      "{{hero}} examined the door and discovered its frame had shifted against a buried column of old concrete. The specialist drilled a listening hole and heard the surveyors tapping from a lower chamber, not the one on the shelter plan. Their rhythm changed when the crew started cutting, a warning that the saw’s vibration was loosening debris above them.",
+      "The drill crew could widen the listening hole slowly or reach the lower chamber through a much longer drainage pipe. The responders heard one surveyor’s breathing over the link and advised against another hard cut. The specialist marked the safe concrete with chalk as the canyon settled around the shelter."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s drill crew opened a safe route and brought the surveyors out.",
+      "heroLoses": "{{otherPlayer}}’s responders reached the lower chamber and treated the trapped crew.",
+      "draw": "The surveyors received air through the hole while the teams built a safer exit."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A school for displaced families displayed a wall of embroidered names after its founder died. One panel was missing, and a former student insisted it included a sibling everyone believed lost. {{heroPlayer}}’s searchers entered through the courtyard; {{otherPlayer}}’s relief staff protected the remaining panels and the school’s enrollment books.",
+      "{{hero}} fought off an intruder beside the narrow storeroom door and held it while a teacher searched the shelves. Behind an unfinished frame lay the missing panel, folded around a current address. The fighter heard someone running along the courtyard wall just as the teacher realized the address belonged to a living family nearby.",
+      "The searchers could follow the runner, who might know who hid the panel, or stay and bring the former student to the teacher. The relief staff offered to check the address without announcing it to the crowd. The fighter kept the storeroom clear while the teacher carefully unfolded the stitched name."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers secured the panel and reunited the family with its record.",
+      "heroLoses": "{{otherPlayer}}’s relief staff protected the school archive and traced the address.",
+      "draw": "The panel was restored, but the sibling’s whereabouts still needed confirmation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain cable car stopped short of the summit with a portable dialysis unit and its patient aboard. The service cable had slipped from a guide wheel above a sheer drop. {{heroPlayer}}’s climbers reached the upper station; {{otherPlayer}}’s medics established voice contact with the patient and prepared a ground transfer.",
+      "{{hero}} crossed the narrow maintenance beam and found the guide wheel intact but blocked by a loose signal bell. The specialist removed it, revealing a painted mark on the wheel that showed it had been set in reverse. From the car below came the patient’s voice counting the remaining charge on the dialysis unit.",
+      "The climbers could reset the wheel and bring the car up, but the medics warned that another jolt might interrupt treatment. Lowering the car required a longer cable and more time. The specialist held the bell and the exposed wheel while the station operator waited for a signal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s climbers reset the cable and brought the patient safely to the station.",
+      "heroLoses": "{{otherPlayer}}’s medics reached the car and kept treatment running through the rescue.",
+      "draw": "The patient remained stable while both crews rigged a slower transfer."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A wildfire watchpost sent an all-clear while smoke rose behind it. Its two volunteer observers had been scheduled to change shifts an hour earlier. {{heroPlayer}}’s patrol approached by the ridge path; {{otherPlayer}}’s rescue party came from the valley with water and the names of both observers.",
+      "{{hero}} covered the watchpost ladder when fire flashed from its upper platform. The fighter forced the shooter back as a companion climbed and found one observer hiding beside the radio. The other had gone to warn a campsite below, where the old all-clear message was still repeating over a speaker.",
+      "The patrol could replace the broadcast immediately or chase its source to learn who had sent it. The rescue party needed the location of the campsite before flames reached the access trail. The fighter held the ladder while the rescued observer pointed through the smoke toward a distant line of tents."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol corrected the warning and led the campers out.",
+      "heroLoses": "{{otherPlayer}}’s rescue party reached the campsite and treated both observers.",
+      "draw": "The campsite evacuated while the source of the false all-clear escaped."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "An experimental shade canopy over a crowded plaza unfolded its leaves against the sun and then refused to retract before a night market. Vendors could not reach the lamps beneath it. {{heroPlayer}}’s gardeners studied the living hinge; {{otherPlayer}}’s public health team counted the people waiting for an evening cooling station to open.",
+      "{{hero}} tested the canopy’s roots and found their nutrient lines connected to a buried heat exchanger serving the cooling station. The specialist loosened one clamp, and a row of leaves slowly lifted, revealing a warm patch of stone where the exchanger had cracked. Repairing it would mean drawing the canopy’s last stored water into the plaza floor.",
+      "The gardeners could divert that water to the exchanger or keep the living canopy healthy until a tanker arrived. The health team had opened a smaller cooling room, but its queue was growing. The specialist held the clamp open while the vendors carried their lamps into the newly exposed strip of evening sky."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s gardeners saved the canopy and reopened the plaza cooling station.",
+      "heroLoses": "{{otherPlayer}}’s health team secured a safe cooling space for the crowd.",
+      "draw": "The night market moved under temporary lamps while repairs continued."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a desert supply fair, someone traded away the last certified water filter for a crate of polished glass. The caravan that needed it was already crossing a contaminated basin. {{heroPlayer}}’s escorts traced the bargain to a locked tent; {{otherPlayer}}’s medics came with the filter’s serial number and an empty test case.",
+      "{{hero}} forced past a guard inside the tent and caught a falling rack before its glass could shatter over the filter. Beneath the rack, a clerk found two identical cylinders. One carried the correct serial number; the other contained a small sample of basin water, with a handwritten note naming a well along the caravan route.",
+      "The escorts could take the certified cylinder after checking its seals or follow the note to test the well first. The medics warned that a false filter could leave the caravan worse off than no filter. The fighter kept the doorway clear while the clerk held both cylinders up to the tent light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts recovered the genuine filter and reached the caravan.",
+      "heroLoses": "{{otherPlayer}}’s medics verified the cylinder and tested the well before delivery.",
+      "draw": "The caravan waited while both parties checked the exchanged equipment."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A reservoir dam’s insurance office received a claim for a breach that had not occurred. The dated photographs showed a crack directly above a village’s only road. {{heroPlayer}}’s surveyors took the maintenance walkway; {{otherPlayer}}’s relief engineers examined the structure from the lower spillway, where the road was still open.",
+      "{{hero}} covered a technician moving across the exposed crest. Fire struck a railing, and the fighter held the line until the technician reached the photographed stone. There was no crack, but fresh measuring marks showed someone had mapped the wall’s thinnest point. A folded claim form lay wedged inside a drain nearby.",
+      "The surveyors could secure the crest and ask the village to move before anyone acted on the measurements. The engineers wanted the road left open for water deliveries until a structural scan was complete. The fighter kept watch from the walkway as the technician compared the marks to the false photograph."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors secured the dam and exposed the fraudulent claim.",
+      "heroLoses": "{{otherPlayer}}’s engineers protected the road and verified the dam’s condition.",
+      "draw": "Traffic slowed below the dam while both crews inspected the marked stone."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cold storage vessel grounded beside a field hospital carrying sterile dressings that would spoil when its power failed. Its crew had evacuated after an alarm, leaving a sealed loading ramp. {{heroPlayer}}’s recovery party crossed the tidal flats; {{otherPlayer}}’s hospital team waited inland with refrigerated transport and an inventory sheet.",
+      "{{hero}} held the exposed ramp as shots sounded from the open deck above. The fighter drove the shooter to cover while a mechanic restored power to the loading winch. Inside, crates marked as dressings contained empty insulation sleeves. One unopened crate still carried the correct batch number, buried behind the stack closest to the hull.",
+      "The party could load the genuine crate and leave the false cargo aboard for investigators, but the tide would cut off the ramp soon. The hospital team wanted every batch checked before treatment. The fighter watched the mechanic hook the winch to the rear stack as water crept across the flats."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s recovery party delivered the verified dressings before the tide arrived.",
+      "heroLoses": "{{otherPlayer}}’s hospital team secured the cargo and identified the false crates.",
+      "draw": "The true batch was saved while the grounded vessel remained under guard."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A mutual aid kitchen sent dinners to a block scheduled for demolition, yet every delivery came back with empty trays. No one was supposed to live there. {{heroPlayer}}’s outreach crew followed the driver’s route; {{otherPlayer}}’s medics brought clean water and checked whether anyone had been injured among the vacant buildings.",
+      "{{hero}} found a chalk mark beside a sealed basement entrance and followed it to a vent warmed by cooking fires. The specialist opened a service hatch to find families living below street level, their paperwork lost during relocation. On a wall they had pinned meal labels, using the deliveries to count who was still present.",
+      "The outreach crew could bring the families into the open, but demolition workers were arriving with a lockout order. The medics asked for time to check the cellar air before anyone moved. The specialist carried the families’ hand-drawn list upstairs, where the driver recognized names from every returned tray."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s outreach crew found the families and secured safe temporary housing.",
+      "heroLoses": "{{otherPlayer}}’s medics protected the cellar residents and stopped the demolition.",
+      "draw": "Work halted while the families’ names were restored to the relocation roll."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Ramah Taskforce",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "A night ferry carrying a mobile vaccination team lost its navigation lights just beyond a river bend. The boat’s radio worked, but the pilot could see a new barrier stretching across the channel. {{heroPlayer}}’s bridge crew reached its control box; {{otherPlayer}}’s medical escorts waited beside the ferry’s receiving dock with cooling packs.",
+      "{{hero}} opened the control box and found the barrier linked to a sensor on the downstream flood gate. The specialist tested the circuit and learned that lifting the barrier would also drop the gate against the ferry’s route. A narrow maintenance switch could separate them, but its handle had snapped off inside the housing.",
+      "The bridge crew could repair the switch and guide the ferry through in darkness, or send the pilot upriver to a longer crossing. The cooling packs would hold only until morning. The specialist braced a tool against the broken handle while the medical escorts flashed a lamp from the receiving dock."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s bridge crew separated the gates and guided the ferry safely through.",
+      "heroLoses": "{{otherPlayer}}’s escorts met the ferry upriver and preserved its medical cargo.",
+      "draw": "The ferry anchored overnight while both teams repaired the gate circuit."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "objective",
+    "paragraphs": [
+      "Two radio crews claimed a disused transmitter room on the same vessel after it began sending a distress call from a berth that had been empty for years. Both crews carried keys from the original operator. {{heroPlayer}}’s technicians reached the console; {{otherPlayer}}’s technicians followed the signal cable through the service deck below.",
+      "{{hero}} tuned the transmitter away from the distress frequency and heard a recording of the operator reading a list of people still aboard. The specialist checked the final name against the ship’s present roster and found an empty cabin assigned to that person. A light came on in the cabin as the cable crew reached its door.",
+      "The console crew could open a shipwide search, but the operator’s recording also described a hatch behind the empty cabin. The cable crew wanted the signal kept live so they could follow it. The specialist held a finger above the broadcast switch while footsteps sounded through the supposedly vacant room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians traced the call and found who occupied the empty cabin.",
+      "heroLoses": "{{otherPlayer}}’s technicians secured the service deck and followed the hidden cable.",
+      "draw": "Both crews kept the transmitter running while the cabin was searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A maker fair opened beneath a suspended sculpture built from hundreds of donated machine parts. During the first demonstration, its arms rearranged to spell the name of a missing builder. {{heroPlayer}}’s artists entered the control booth; {{otherPlayer}}’s safety crew cleared the audience and disconnected the public controls.",
+      "{{hero}} fought past a defender on the booth’s short catwalk and kept a hand on the release lever while a friend searched the program. An old voice note from the builder played over the speakers, pointing to one red part high in the sculpture. As the friend located it, the hanging frame began to sway over the empty seats.",
+      "The artists could bring the frame down to inspect the red part or hold it aloft while the safety crew secured the rigging. The builder’s family waited outside the booth for any word. The fighter kept the release lever steady as the frame’s shadow moved across the floor."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s artists secured the sculpture and recovered the builder’s message.",
+      "heroLoses": "{{otherPlayer}}’s safety crew stabilized the frame and located the red part.",
+      "draw": "The fair closed early while the builder’s family examined the voice note."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A zero gravity foundry received a casting order for a component larger than its only furnace. The order bore the missing foreman’s signature and a delivery date that morning. {{heroPlayer}}’s riggers secured the furnace bay; {{otherPlayer}}’s crew held the cargo hatch and asked why the casting had not appeared on the work roster.",
+      "{{hero}} checked the furnace dimensions and discovered its rear wall had been removed to reach an older chamber. The specialist floated a lamp inside and found the oversized casting cooling there, a ring with a worker’s identification card embedded in its metal. The foreman’s card was still on the roster board outside.",
+      "The riggers could let the ring cool and recover the card, or cut it free now in case it led to the missing foreman. The cargo crew needed the chamber sealed before moving another load. The specialist held the lamp against the ring while heat shimmered across its unfinished surface."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers secured the casting and traced the foreman’s last work order.",
+      "heroLoses": "{{otherPlayer}}’s crew sealed the foundry and recovered the embedded identification card.",
+      "draw": "The ring remained under guard while both crews waited for it to cool."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A lending library aboard a crowded vessel began recalling books no reader remembered borrowing. Each notice included a small charge and a handwritten apology from someone who had disappeared. {{heroPlayer}}’s records staff took the circulation desk; {{otherPlayer}}’s librarians checked the physical shelves and asked the readers to keep their notices.",
+      "{{hero}} compared the charges and found they paid for access to a locked study room instead of the missing books. The specialist opened its door to find blank volumes, each containing a different map of the ship. On the newest map someone had drawn a narrow passage leading from the library to a cabin still occupied.",
+      "The records staff could cancel the false debts or preserve them long enough to learn who had used the study room. The librarians feared the map might expose a reader hiding for good reason. The specialist kept the newest volume open as a soft knock came from the wall behind the desk."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s records staff cleared the false charges and identified the study room’s user.",
+      "heroLoses": "{{otherPlayer}}’s librarians secured the maps and protected the hidden reader.",
+      "draw": "The notices were suspended while both groups traced the locked room."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Combined Army"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A traveling planetarium raised its dome beside a crowded transport stop. During the show, the projected stars changed to a distress diagram pointing beneath the audience seats. {{heroPlayer}}’s stage hands checked the projector room; {{otherPlayer}}’s search party took the service entrance and asked the visitors to leave in small groups.",
+      "{{hero}} covered the aisle as fire struck the dome’s support strut. The fighter answered while a stage hand lifted a marked seat and found a sealed navigation capsule strapped below it. Its display showed a route out of the city, with the next stop scheduled for the very transport waiting outside.",
+      "The stage hands could take the capsule aboard the transport and see who came to collect it, or hand it to the search party for immediate inspection. The departing passengers were already lining up at the door. The fighter held the aisle while the projector cast the same route across the stars above."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s stage hands secured the capsule and traced its intended passenger.",
+      "heroLoses": "{{otherPlayer}}’s search party recovered the capsule and cleared the transport stop.",
+      "draw": "The transport departed without the capsule while its sender remained unknown."
+    }
   }
 ]
