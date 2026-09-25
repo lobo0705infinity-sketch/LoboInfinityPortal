@@ -10638,5 +10638,385 @@
       "heroLoses": "{{otherPlayer}}’s crew took the buoy and launched its boat toward the beacon’s source.",
       "draw": "The beacon was saved, but the tide hid the cable’s end until both teams could return."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "The backup lights at a frontier landing field blinked out just as a rescue shuttle called for permission to descend. A row of miners’ work lamps marked the only open strip, but their batteries were almost spent. {{heroPlayer}}’s engineers reached the power shed; {{otherPlayer}}’s flight crew watched the sky from the tower.",
+      "{{hero}} found the field cable cut beneath an old trench cover and joined its ends with a temporary clamp. Half the landing lights came back, tracing a route across a strip of soft ground. The specialist discovered that the other half were wired to a buried test pad beyond the field fence.",
+      "The shuttle could land on the half-lit strip if the soft ground held, or wait while the engineers rewired the test pad and risk exhausting its fuel. The flight crew was calling out the remaining descent time. The specialist held the clamp as the test pad lights began coming on by themselves."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers lit a safe approach and brought the rescue shuttle down on the field.",
+      "heroLoses": "{{otherPlayer}}’s crew directed the shuttle to a secure landing from the tower.",
+      "draw": "The shuttle landed safely, but the unexplained test pad lights kept both teams at the field."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A botanical dome beside the spaceport lost pressure during a ceremony to plant its first fruit tree. The inner garden was still sealed, with its caretaker trapped beyond a narrow door. {{heroPlayer}}’s escort reached the dome entrance; {{otherPlayer}}’s flight technicians held the air pumps in a neighboring shed.",
+      "{{hero}} wrestled past a defender at the inner lock and caught its wheel before the seal closed on the caretaker’s sleeve. The fighter held the wheel while the caretaker crossed into the safe chamber. Behind them, a branch struck the dome roof and knocked loose a vent cover above the young tree.",
+      "The vent could be shut from inside, but opening the door again would lose more air. The flight technicians offered a pump line through the outer wall. The fighter kept a hand on the wheel while the caretaker pointed to a growing tear in the canopy directly above the planted roots."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort rescued the caretaker and sealed the dome around the young tree.",
+      "heroLoses": "{{otherPlayer}}’s technicians restored pressure and secured the garden from the pump shed.",
+      "draw": "The caretaker escaped, but both teams moved the tree before the dome could be repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "After a night of falling lights, a glassy circle appeared in the meadow beside a village. At its center lay a cluster of signal flags folded into a box stamped with a flight crew’s mark. {{heroPlayer}}’s searchers approached from the hedgerow; {{otherPlayer}}’s recovery crew held the road and warned that the circle might still be hot.",
+      "{{hero}} covered a searcher testing the glass. Fire from the road struck the flag box, and the fighter answered while the searcher opened it. The flags held a sequence for a distress signal, but the last piece was missing; the glass circle began to ring underfoot when the first flag was raised.",
+      "The searchers could finish the signal using their own cloth or carry the flags away and keep the meadow quiet. The recovery crew had a receiver tuned to the distress frequency. The fighter watched the circle’s edge light up one point at a time as the searcher lifted the second flag."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers completed the signal and secured the meadow when an answer came.",
+      "heroLoses": "{{otherPlayer}}’s crew took the flags and traced the distress call from the road.",
+      "draw": "The signal went unanswered, and both teams left the circle under guard until its light faded."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A mural in a transit gallery showed the night sky on the day of a long-forgotten launch. That morning a new star appeared on the wall, although the paint was dry. {{heroPlayer}}’s conservators entered to examine it; {{otherPlayer}}’s flight crew secured the gallery after their tracking station lost an object at the same coordinates.",
+      "{{hero}} matched the new star to a tiny pinhole behind the plaster. The specialist opened a panel and found a moving model of the solar system wired to an old receiver. One arm pointed toward a derelict fuel depot beyond the city; the model’s power cell was swelling against its case.",
+      "Removing the cell would preserve the mural, but stop the arm before the conservators could fix the depot’s precise position. The flight crew knew the depot’s approximate route and had a search craft ready. The specialist held the model steady while the painted star brightened for the final time."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s conservators saved the mural and gave the flight crew the depot’s position.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the gallery and traced the missing object from the model.",
+      "draw": "The model stopped safely, but its final bearing left the depot’s position unresolved."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "Lichen spread over a discarded heat shield and formed a ring of tiny shelters in its scorched surface. A nearby settlement recognized its own water tower in the pattern. {{heroPlayer}}’s botanists came to document the growth; {{otherPlayer}}’s recovery team wanted the shield for a flight investigation.",
+      "{{hero}} lifted one edge of the lichen and found a thin network of roots growing toward a hidden cavity in the shield. The specialist traced them to a pocket of condensed water and an old transmitter still sending a location ping. One root reached across its switch, keeping it powered as the water began to evaporate.",
+      "Saving the transmitter would require removing the roots, which might erase the settlement pattern before it could be copied. The recovery team could carry the entire shield away, but its weight would shake the fragile growth loose. The specialist held a camera above the ring as the transmitter’s ping slowed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists preserved the pattern and secured the shield’s surviving signal.",
+      "heroLoses": "{{otherPlayer}}’s team recovered the shield and copied the lichen map before transport.",
+      "draw": "The ping faded, but both groups kept a record of the ring around the water tower."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A convoy on the desert road carried launch equipment inside ordinary grain wagons. One wagon overturned near a village well, spilling a ring-shaped engine part into the sand. {{heroPlayer}}’s hired escorts sought the overturned load; {{otherPlayer}}’s recovery crew held the well and said the part had to be kept away from water.",
+      "{{hero}} covered a hauler moving the ring out of the wagon. Fire from the well struck the sand beside them, and the fighter answered as the hauler found a cracked coolant line within the part. A blue drop fell from it, sending a thin stain toward the well’s stone lip.",
+      "The part could be lifted onto dry ground if the escorts used the wagon’s damaged winch; a sudden jerk might split the coolant line wider. The recovery crew had absorbent cloth but no path to the load. The fighter watched the stain creep between the stones as the winch began to turn."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts recovered the engine part and kept the village well clean.",
+      "heroLoses": "{{otherPlayer}}’s crew contained the leak and took charge of the overturned cargo.",
+      "draw": "The well was protected, but the engine part stayed on the road until both crews could move it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a casino built into a decommissioned orbital terminal, the nightly prize was a sealed flight recorder. The dealer claimed it contained the location of a missing supply cache. {{heroPlayer}}’s security detail entered the gaming room; {{otherPlayer}}’s recovery crew guarded the old departure gate and wanted the recorder returned unopened.",
+      "{{hero}} covered a dealer crossing between tables as fire broke the colored lamps above them. The fighter answered while the dealer slid the recorder beneath a heavy wheel of chance. Its display lit briefly and showed a cache coordinate, then a warning that the departure gate was about to cycle closed.",
+      "The detail could secure the recorder now, leaving anyone beyond the gate trapped in the old terminal, or hold the gate for the recovery crew and risk losing the prize. The fighter saw a silhouette through the departing glass and heard the dealer call out another coordinate from the display."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the recorder and opened the gate before it locked.",
+      "heroLoses": "{{otherPlayer}}’s crew held the departure gate and recovered its flight record.",
+      "draw": "The gate stayed open, but the recorder lost power before either party could confirm the cache."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A fuel tower at the edge of the spaceport held enough reserve for one departing craft. Its inventory gauge showed two competing orders with the same authorization seal. {{heroPlayer}}’s contracted guards entered the pump gallery; {{otherPlayer}}’s flight crew held the upper valve and demanded a full check before fueling.",
+      "{{hero}} met a defender beside the main handwheel and fought to keep it from turning. The fighter forced the wheel into its lock as a mechanic found a second hose hidden behind the tank. It ran toward an unregistered vehicle beyond the fence, and the inventory gauge was dropping even with the valve closed.",
+      "Stopping the hidden flow required closing a buried cutoff under the guarded valve. The flight crew could reach it from above if the gallery opened, but the unregistered vehicle was ready to leave. The fighter kept a hand on the wheel while the mechanic shouted that the reserve had fallen below launch minimum."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards stopped the hidden flow and secured enough fuel for the authorized craft.",
+      "heroLoses": "{{otherPlayer}}’s crew took the valve and recovered the reserve before the unregistered vehicle left.",
+      "draw": "The diversion stopped, but neither craft launched until both orders were authenticated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "An atmospheric laboratory reported a new pocket of breathable air in a sealed test chamber. The reading was impossible: no one had opened its filters in months. {{heroPlayer}}’s technicians came to sample the chamber; {{otherPlayer}}’s flight team guarded an old experiment box stored against its far wall.",
+      "{{hero}} inspected the sampling port and found a strand of moss growing from the box’s cracked seal. The specialist captured an air sample as the chamber’s pressure indicator rose. Inside the box, something tapped three times against the casing, then stopped when the flight team moved its portable light closer.",
+      "Opening the box might explain the air change, but its seal was the only barrier between the chamber and the corridor. The flight team had a containment sleeve ready. The specialist held the sample vial to the light as another green strand appeared along the box’s hinge."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians isolated the box and secured the air sample for testing.",
+      "heroLoses": "{{otherPlayer}}’s team contained its old experiment and kept the laboratory sealed.",
+      "draw": "The box stayed closed while both groups watched the unexpected air reading through the glass."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A coastal tracking station registered a supply craft landing offshore, but the sea was empty. Its last cargo was meant for a town cut off by a storm. {{heroPlayer}}’s hired guards came to the lighthouse antenna; {{otherPlayer}}’s flight technicians held the control room and insisted the craft was still in the air.",
+      "{{hero}} covered a signaler climbing to the antenna while shots struck the lighthouse stair. The fighter answered until the signaler turned the array seaward. A pale shape appeared far below the clouds, not on the water: the craft was moving behind a bank of freezing mist toward the rocky headland.",
+      "The signaler could keep the antenna trained on the craft or rotate it to warn the town’s shore watch. The technicians had a spare radio inside the control room, but its power was uncertain. The fighter saw the craft’s light vanish again as the headland lamps came on below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards held the lighthouse and guided the cargo to a safe approach.",
+      "heroLoses": "{{otherPlayer}}’s technicians took the array and redirected the craft away from the rocks.",
+      "draw": "The cargo arrived safely, but neither party kept sole control of the tracking station."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two winter detachments arrived at the same heated shelter after a storm erased the border markers and buried the route back. Its generator fed a single room and a beacon on the roof. {{heroPlayer}}’s patrol reached the stove entrance; {{otherPlayer}}’s crew secured the narrow doorway to the beacon ladder.",
+      "{{hero}} grappled with a defender at the generator switch and kept its lever from falling. The fighter pulled it back toward the stove, warming the shelter, but the roof beacon went dark. A stranded traveler’s call came through the radio, giving a position on the slope above both patrols.",
+      "The generator could power the beacon or the heat, not both while its second cable was frozen. One patrol could search the slope and the other stay with the shelter’s cold guests. The fighter held the switch as boots gathered at the roof ladder and a new burst of snow covered the window."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol restored the beacon, found the traveler, and held the warm shelter.",
+      "heroLoses": "{{otherPlayer}}’s crew took the ladder and guided the traveler down to the stove.",
+      "draw": "The traveler returned, but both detachments divided the shelter while the storm lasted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A border checkpoint received a map that marked a new valley road through what the winter patrol knew was solid ice. A supply truck had already taken the turn. {{heroPlayer}}’s rangers raced to the checkpoint mast; {{otherPlayer}}’s winter crew held the barricade and called the road a dangerous mirage.",
+      "{{hero}} covered a signaler climbing the mast as shots struck its lower rungs. The fighter answered while the signaler spotted the truck beyond a screen of drifting snow. Its driver had stopped at the edge of a deep cut where the map showed a bridge, and another vehicle was approaching behind it.",
+      "The rangers could warn the second driver by flare, but the first might misread the light as a safe path. The winter crew had a line of old guide stakes from the checkpoint, if it could reach the cut. The fighter watched the signaler raise a flare as the truck’s brake lights vanished behind snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers stopped both vehicles and marked the real road from the mast.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the cut and guided the trucks back past the barricade.",
+      "draw": "The trucks returned, but the false map remained in circulation until both crews corrected it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain cold store held medicine for settlements on both sides of the pass. Its thermometer began climbing while the outside temperature fell. {{heroPlayer}}’s medical courier reached the loading door; {{otherPlayer}}’s winter patrol controlled the roof vents and feared the store’s power line was buried in ice.",
+      "{{hero}} found a second thermostat hidden beneath a crate and traced it to a heater switched on behind the wall. The specialist isolated the faulty circuit; the temperature fell in the first room, but another gauge showed a warmer chamber behind the storage racks. There, a sealed package had begun to thaw.",
+      "The courier could move the package into the cooling room, leaving the rest of the medicine briefly exposed, or open the warm chamber to find what had switched on the heater. The patrol offered a sled for evacuation. The specialist held a cold pack against the package as the wall heater clicked again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s courier saved the medicine and restored the store’s proper cooling cycle.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the vents and moved the medicine to a safe shelter.",
+      "draw": "Most supplies survived, but both groups kept the store closed until the hidden heater was removed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A lookout hut in the winter forest began sending dispatches on paper that appeared blank in daylight. After sunset they named supply routes nobody had announced. {{heroPlayer}}’s investigators slipped through the tree line; {{otherPlayer}}’s winter patrol kept the hut and waited for whoever was collecting the messages.",
+      "{{hero}} met a defender at the hut’s narrow chimney passage and fought into the writing room. The fighter found a warmed sheet whose letters had just appeared, along with a small lens aimed at a cabin across the clearing. A figure in its window raised another blank page to the light.",
+      "The investigator could take the sheet and retreat or stay to discover how the cabin received it. The patrol had started toward the cabin by the frozen stream. The fighter held the lens still as the last line on the warm page changed to a route through the same clearing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators secured both rooms and recovered the changing dispatches.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the cabin and stopped the route messages at their source.",
+      "draw": "The sheets went blank again, leaving both teams watching the clearing for another signal."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A customs sled crossed a frozen lake with a sealed trunk of river charts. Its escort disappeared in the whiteout, leaving the sled stopped near a patch of dark ice. {{heroPlayer}}’s inspectors reached it from the southern shore; {{otherPlayer}}’s winter patrol approached from the north with a route through the pressure ridges.",
+      "{{hero}} checked the trunk’s seal and found a warm key tied to its underside. The specialist unlocked a small drawer containing the missing escort’s compass and a note pointing to an island under the lake’s fog. The sled’s runners began to sink as water flowed over the ice behind it.",
+      "Pulling the trunk south would save the charts but might erase the tracks leading to the escort. The winter patrol could guide a search around the ridges if it reached the sled. The specialist held the compass against the fog and saw its needle point to a shape moving toward the island."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors saved the charts and found the escort on the island.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the sled and led the search through the pressure ridges.",
+      "draw": "The charts came ashore, but the escort’s route remained hidden by fog until morning."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile laboratory stopped beside an avalanche field to test a medicine that had to stay at a steady temperature. The driver went to clear snow from its vents and did not return. {{heroPlayer}}’s medics entered the rear chamber; {{otherPlayer}}’s winter patrol held the road and searched for tracks around the vehicle.",
+      "{{hero}} steadied the heating unit and found its inlet packed with a folded survey flag. The specialist freed it, bringing the medicine back within range, then saw a wet boot print on the inside of the lab’s locked front door. A voice from under the vehicle called for help as the snow shifted beside its wheels.",
+      "The medics could climb underneath for the driver or stay at the temperature controls while the patrol dug from the roadside. Leaving the heater alone risked spoiling the dose. The specialist held the valve as the voice called again and the front door’s locked handle began to move."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics saved the medicine and brought the driver safely from beneath the lab.",
+      "heroLoses": "{{otherPlayer}}’s patrol recovered the driver and secured the road and its stalled vehicle.",
+      "draw": "The driver escaped, but both teams stayed with the lab while its heating system was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather radio in a snowbound cabin began broadcasting the names of places that had disappeared from current maps. The last name belonged to a shelter below an unstable slope. {{heroPlayer}}’s signal crew came through the trees; {{otherPlayer}}’s winter patrol held the cabin’s chimney path and warned of fresh tracks in the snow.",
+      "{{hero}} covered a technician carrying a receiver to the cabin. Fire from the chimney path struck the porch, and the fighter answered while the technician found a second microphone behind the radio. It was live, picking up breathing from a buried line that ran toward the named shelter.",
+      "Following the line through the snow could reach whoever was breathing, but disconnecting the radio would end the signal that guided them. The patrol had a safer route around the slope. The fighter watched the receiver’s light pulse as the breathing paused and a faint knock replaced it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew followed the live line and reached the shelter before the slope shifted.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the cabin and reached the shelter by its safer route.",
+      "draw": "The person in the shelter was saved, but the radio went silent before its other names were traced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A winter carnival’s light wheel turned once by itself and projected a new route across the snow to an old power hut. The organizers had no record of that hut being connected to the rides. {{heroPlayer}}’s technicians came to the wheel’s controls; {{otherPlayer}}’s winter patrol guarded the dark hut beyond the booths.",
+      "{{hero}} reset the wheel’s timing gear and found a small transmitter hidden inside the ticket drum. The specialist traced its beam to a shutter in the power hut. A caretaker there lifted the shutter, showing rows of lanterns prepared for an emergency shelter that had never been opened.",
+      "The technicians could follow the beam and open the shelter, but the light wheel would need to stop while they rewired it. Families were still gathering for the carnival, and the patrol said a cold front was nearing. The specialist held the ticket drum open as the caretaker lit a lantern inside the hut."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians opened the hidden shelter and kept the carnival safely lit.",
+      "heroLoses": "{{otherPlayer}}’s patrol took the power hut and prepared its lanterns for the cold front.",
+      "draw": "The shelter opened, but both groups kept the light wheel dark while its wiring was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A signal arch was being raised over a mountain road when one support foot settled into an old well. The steel frame leaned toward the workers’ camp. {{heroPlayer}}’s riggers reached the hoist platform; {{otherPlayer}}’s winter patrol held the road below and ordered the work stopped.",
+      "{{hero}} covered a welder climbing to brace the arch. Shots struck the hoist rail, and the fighter answered while the welder fixed a cable around the sinking foot. Through the exposed well opening came a sound like a motor starting; the foot lifted slightly, then began to settle faster.",
+      "The riggers could release the hoist and let the arch fall away from camp, or hold it while they inspected the motor beneath the well. The winter patrol had a route to the well’s side hatch. The fighter watched the welder’s cable tighten as the first camp tent folded beneath the arch’s shadow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s riggers steadied the arch and reopened the road after securing the well.",
+      "heroLoses": "{{otherPlayer}}’s patrol reached the side hatch and stopped the sinking support.",
+      "draw": "The camp was cleared, but both teams left the tilted arch standing until the well was mapped."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Tartary Army Corps",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A bank carved into a glacier began issuing account statements from a vault sealed since the first winter settlement. Each statement listed a debt paid with a name instead of money. {{heroPlayer}}’s auditors entered the records room; {{otherPlayer}}’s winter patrol held the vault door against a slow meltwater seep.",
+      "{{hero}} matched the statements to a register of people who had disappeared from the mountain road. The specialist opened a false drawer beneath the clerk’s desk and found their unused travel permits, still clipped together. Beyond the vault door, someone struck the ice three times in the same pattern written beside the final account.",
+      "Opening the door might reveal the person beyond it, but meltwater would damage the permits needed to identify everyone. The patrol had sandbags ready along the threshold. The specialist kept a permit under the desk lamp as a new statement emerged from the printer with today’s date."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors protected the permits and traced the missing travelers through the vault.",
+      "heroLoses": "{{otherPlayer}}’s patrol held the door and recovered the people beyond it from the ice.",
+      "draw": "The permits survived, but both parties sealed the vault until the statements could be verified."
+    }
   }
 ]
