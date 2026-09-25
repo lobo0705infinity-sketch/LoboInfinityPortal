@@ -12918,5 +12918,385 @@
       "heroLoses": "{{otherPlayer}}’s investigators secured the siding and followed the light into the underpass.",
       "draw": "The relief cargo stayed safe, but both sides kept the car at the station until the storm passed."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The auctioneer had vanished, leaving a private sale in a fortified counting house and one lot locked beneath the floor. Every bidder wanted the little copper cylinder named on the sale card. {{heroPlayer}}’s escorts arrived with a buyer’s receipt; {{otherPlayer}}’s investigators held the stair where the auctioneer had last been seen.",
+      "{{hero}} held the upper gallery while a locksmith lifted the floor plate. A shot shattered the hanging lamps, and the fighter fired at the muzzle flash instead of the retreating figure below. In the darkness the locksmith found the cylinder still attached to a wrist by a fine wire: whoever took it would pull a bell in the basement.",
+      "The escorts could cut the wire and leave the auctioneer’s route unexplored, or follow it down with the cylinder still tethered. The investigators heard the bell’s answering chime from beneath their stair. With the buyers shouting outside, the fighter watched the locksmith raise a cutter to the wire."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the cylinder and traced the missing auctioneer through the basement.",
+      "heroLoses": "{{otherPlayer}}’s investigators reached the bell first and recovered the tethered cylinder.",
+      "draw": "The cylinder stayed under guard while both parties searched for its missing seller."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a mountain tollhouse, the gates shut behind a convoy carrying a sealed evacuation roster. Someone had replaced the road signs below with arrows toward an unused quarry. {{heroPlayer}}’s drivers wanted the gate open before darkness; {{otherPlayer}}’s scouts wanted to inspect the roster before another vehicle went through.",
+      "{{hero}} fought through the narrow mechanism room to reach a jammed handwheel. The fighter drove a guard back against the stone wall, then leaned into the wheel as the convoy’s lead engine sounded from outside. A folded map fell from the axle housing, showing an alternate route with the names of the roster’s passengers written alongside it.",
+      "Raising the barrier would put the convoy on the signed road, where the scouts already had a clear view. The hidden route might keep the passengers out of sight, but nobody knew who had prepared it. The fighter held the wheel while the drivers called for a decision through the gate."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s drivers opened the tollhouse and guided the passengers beyond the false signs.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the gate and checked every name before the convoy moved.",
+      "draw": "The convoy sheltered at the tollhouse while both groups investigated the altered map."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A city’s emergency relay station began announcing an evacuation through streets that had been closed for demolition. Residents followed its voice toward the fenced district. {{heroPlayer}}’s technicians reached the station with an updated route; {{otherPlayer}}’s searchers entered the empty streets to learn who had changed the broadcast.",
+      "{{hero}} opened the relay cabinet and found a second transmitter fitted behind the official one. The specialist could cut its power, but a small screen showed the position of a child still walking inside the restricted district. As a patrol approached the cabinet, {{hero}} patched a warning into the public channel without revealing the child’s location.",
+      "The false transmitter still carried a signal strong enough to drown the warning. The searchers offered to guide the child out if the technicians kept it alive long enough to trace its origin. Sirens echoed off the empty buildings, and the specialist had seconds to choose which wire to pull."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians corrected the warning and led the child away from the fence.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured the district and located the hidden broadcaster.",
+      "draw": "The child reached safety, but the source of the false evacuation stayed hidden."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Hassassin Bahram",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rail museum preserved a carriage with its doors welded shut after a border incident. In the morning, a fresh destination card appeared in its window, bearing the name of a station that had burned down. {{heroPlayer}}’s custodians came to open the carriage; {{otherPlayer}}’s investigators guarded the coupling to keep the exhibits intact.",
+      "{{hero}} covered a mechanic as sparks fell from the first cut. Fire came from behind the old ticket barrier, and the fighter held that angle until the mechanic pulled back the door. Inside lay a working route selector and a suitcase tagged for the demolished station, with a train ticket dated for the next morning.",
+      "The mechanic wanted to disconnect the selector before anybody tried the carriage’s controls. The investigators recognized the suitcase tag from a passenger inquiry and wanted to leave it undisturbed. A low vibration passed through the still carriage while the fighter held the open door against its spring."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s custodians secured the carriage and identified who had planted the ticket.",
+      "heroLoses": "{{otherPlayer}}’s investigators recovered the suitcase and protected its possible owner’s trail.",
+      "draw": "The carriage was locked again, with the ticket sealed for further examination."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "Two harbor watch crews received matching orders to secure an empty pilot house before the tide turned. Each had the same seal, yet one order named the harbor master as missing and the other ordered him detained. {{heroPlayer}}’s crew reached the chart table; {{otherPlayer}}’s crew approached from the pier with the master’s last signed log.",
+      "{{hero}} laid the two orders beneath a lamp and spotted a tiny error in the copying of a tide mark. The specialist opened the table drawer to find a third, unsigned chart showing a boat anchored beyond the breakwater. As footsteps sounded on both stairs, {{hero}} rubbed salt from the chart’s edge and uncovered the boat’s call sign.",
+      "The harbor master might be aboard that boat or might have planted the chart to draw both crews out. The tide would carry the boat beyond the navigation lights before another launch could be readied. The specialist held the chart between the rival orders and asked the crews for a single working channel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch crew secured the pilot house and contacted the boat beyond the lights.",
+      "heroLoses": "{{otherPlayer}}’s watch crew took the charts and reached the harbor master first.",
+      "draw": "Both crews kept the pilot house open while a launch checked the conflicting orders."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A refrigerated cargo bay held a crate of experimental antidote that had arrived without its temperature record. On the quay, a sick customs officer needed a dose before the sample could be tested. {{heroPlayer}}’s medics entered with a portable assay kit; {{otherPlayer}}’s harbor guards held the crate under seal.",
+      "{{hero}} drew a sample through the crate’s inspection port and watched two lines appear where the assay promised only one. The specialist recognized a stabilizer in one vial and a harmless dye in the other, but the crate labels had been switched. As the officer’s breathing worsened outside, {{hero}} matched the stabilizer’s batch mark to a note on the crate’s underside.",
+      "Opening the crate would break the guards’ seal, while waiting for authorization would leave the officer without help. The harbor guards offered a witness and a spare camera, enough to preserve an honest record of the choice. The specialist held the correct vial in gloved fingers as the quay clock sounded."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s medics verified the antidote and treated the officer under witnessed seal.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the shipment and found another safe dose through customs.",
+      "draw": "The officer received care while both teams quarantined the mislabeled crate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A floating market’s music stage slid away from its moorings during the morning rush, carrying the only working repeater for the district. A child on the stage used it to call for help. {{heroPlayer}}’s ferry crew pushed off in a small boat; {{otherPlayer}}’s harbor officers guarded the closed bridge and watched the current.",
+      "{{hero}} held the bow while a deckhand prepared a throw line. Fire cracked from a maintenance barge tucked beneath the bridge, and the fighter drove its gunner back long enough to reach the drifting stage. A new cable beneath the stage snagged the ferry boat; it led back toward the barge, pulling both vessels into the bridge supports.",
+      "The deckhand could cut the cable and lose whoever had attached it, or use it to draw near enough for an arrest. The child was still at the repeater, asking when the boat would come alongside. The fighter steadied the bow as the stage bumped once against a stone pier."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s ferry crew freed the stage and brought its passengers ashore.",
+      "heroLoses": "{{otherPlayer}}’s harbor officers took the bridge and intercepted the cable’s other end.",
+      "draw": "The passengers escaped, though the repeater drifted away before either crew recovered it."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "During a public festival, a masked performer carried a sealed petition onto the customs balcony and disappeared into the crowd below. The petition’s signers claimed an entire block had been erased from the property register. {{heroPlayer}}’s performers searched behind the parade floats; {{otherPlayer}}’s officers held the balcony doors and the surviving register.",
+      "{{hero}} grappled with a pursuer in the cramped frame of a festival float. The fighter forced open its painted hatch, revealing the missing performer crouched with the petition under one arm. Beneath them the float’s axle had cracked; a push from the parade behind would send it into the crowd unless someone set a brake.",
+      "The performer could hand over the petition and escape while the others held the wheel, or stay long enough to point out the forged page in the register. The officers on the balcony could see the broken axle and were calling for space. The fighter reached for the brake as drums approached."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s performers stopped the float and brought the forged entry into daylight.",
+      "heroLoses": "{{otherPlayer}}’s officers secured the petition and kept the crowd clear of the float.",
+      "draw": "The parade halted safely, but the disputed block remained off the register."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A salvage diver surfaced with a ceramic compass from a harbor wreck, then refused to return to the water. Its needle pointed toward a dry warehouse instead of north. {{heroPlayer}}’s repair crew brought a portable scanner to the warehouse; {{otherPlayer}}’s harbor patrol sealed the wreck while the diver gave a statement.",
+      "{{hero}} traced the compass’s signal through a wall of stacked timber and found an old hull plate welded into the warehouse foundation. The specialist set the scanner against its rivets as a faint tapping came from behind. The map on the screen showed a narrow chamber beneath the floor, built before the warehouse itself.",
+      "The repair crew could open the chamber from inside, but water from the tide pressed against its harbor side. The patrol offered a pump if the crew surrendered the compass for evidence. The specialist checked the rising pressure on the scanner and marked a safe opening before the next wave struck."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew opened the chamber and brought its hidden contents above the tide.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the compass and reached the chamber through the wreck.",
+      "draw": "The chamber stayed sealed while both teams reinforced the flooded foundation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "A contract broker placed a sealed debt ledger in an automated exchange booth and vanished before the other party arrived. The booth began charging each person who tried its door, including people who had never borrowed a credit. {{heroPlayer}}’s auditors came with a court key; {{otherPlayer}}’s port wardens held the queue away from the machine.",
+      "{{hero}} accessed the booth’s transaction history and found payments routing to a trust named for a ship lost years earlier. The specialist froze the account, but the booth started printing receipts bearing the names of people waiting outside. One receipt included the broker’s signature and a storage address beneath the old ferry terminal.",
+      "The auditors could keep the booth frozen or follow that address before the broker cleared the ledger. The wardens needed the court key to stop the printer from exposing more names. As the queue pressed toward the glass, the specialist reached for a single copy of the earliest receipt."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s auditors stopped the false charges and located the missing broker’s records.",
+      "heroLoses": "{{otherPlayer}}’s wardens secured the exchange booth and protected the people in its queue.",
+      "draw": "The ledger remained frozen, with the trust’s owner still unidentified."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Combined Army"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A lifeboat washed into a naval training basin with nobody aboard and every safety light burning. Its emergency transmitter carried a mayday from a ship absent from harbor records. {{heroPlayer}}’s dock watch moved to the boat ramp; {{otherPlayer}}’s search party took cover beside the simulator building where the transmission had first appeared.",
+      "{{hero}} held the ramp as a sailor leaned into the empty lifeboat. Fire struck the waterline, and the fighter returned it while the sailor lifted an insulated cover from the floor. Underneath was a live transmitter wired to a model of the training basin, its tiny warning lights marking three real gates along the quay.",
+      "One of the gates led out to open water; another was the only way to reach the missing ship’s supposed position. The search party had already moved toward the third. The fighter watched the sailor copy the lights’ pattern as the lifeboat’s mayday changed to a countdown."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s dock watch secured the transmitter and checked all three marked gates.",
+      "heroLoses": "{{otherPlayer}}’s search party took the simulator and traced the false mayday.",
+      "draw": "The countdown ended harmlessly, but the lifeboat’s origin stayed unanswered."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A fortress built from ship ballast guarded a narrow causeway to the old signal fort. Inside its gatehouse lay a brass stamp that could authorize passage through the entire inlet. {{heroPlayer}}’s assault team approached at low tide; {{otherPlayer}}’s keepers barred the gate and hid the stamp among decoys.",
+      "{{hero}} forced through a crush of defenders at the gate hinge and held open just enough space for a companion to search. A stone block dropped from above and jammed the gate half open. The companion found the real stamp inside its hollow core, but the returning tide had begun washing through the exposed causeway.",
+      "The team could lift the block and withdraw with the stamp or push toward the fort before the crossing vanished. The keepers had a dry passage behind the gatehouse and might reach the signal bell first. The fighter braced against the iron hinge while the companion weighed the heavy stamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team carried the stamp across the causeway and claimed the fort’s gate.",
+      "heroLoses": "{{otherPlayer}}’s keepers recovered the stamp and sounded the signal bell.",
+      "draw": "The tide cut off both groups, leaving the stamp trapped in the gatehouse."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "Above a coastal repair yard, a survey satellite began broadcasting images of an inlet that had been drained decades ago. A crew at the yard recognized its own building in the pictures, submerged to the roof. {{heroPlayer}}’s technicians came to retrieve the receiver; {{otherPlayer}}’s dock officers kept workers clear of its antenna.",
+      "{{hero}} aligned the receiver by hand and recovered the image’s timestamp: tomorrow morning. The specialist then saw a small maintenance valve in the picture, open against a wall that stood dry beside the yard today. When an officer pointed out a matching valve below the antenna, {{hero}} sent a worker to check its seal.",
+      "The valve was intact, but the satellite kept adding water to every new image. The dock officers wanted the receiver disconnected so the workforce would not panic. The technicians needed one last pass to see whether the pictures showed a cause. The specialist held the alignment as clouds crossed the antenna."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians isolated the flood risk and kept the repair yard working.",
+      "heroLoses": "{{otherPlayer}}’s officers secured the receiver and evacuated the vulnerable dock.",
+      "draw": "The yard closed for inspection while both teams tested the stubborn images."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A lighthouse keeper found fresh footprints on the glass stair to a lamp that had been extinguished for years. By dusk the lamp lit again, aimed inland toward a crowded station rather than out to sea. {{heroPlayer}}’s search unit reached the cliff path; {{otherPlayer}}’s harbor watch held the keeper’s cottage and its spare lens.",
+      "{{hero}} covered the narrow landing while a climber moved toward the lamp. Shots from the cottage struck the railing, and the fighter answered through the glass without breaking the lens. The climber found a shutter in the housing cut to throw a coded shape over the station’s ticket hall, where passengers had begun to gather beneath it.",
+      "Removing the shutter would end the signal, though it might also hide a warning meant for someone at the station. The harbor watch had the spare lens and could change its direction from below. The fighter watched the shadow stretch across the ticket hall as the first train came into view."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s search unit controlled the lamp and decoded the message above the station.",
+      "heroLoses": "{{otherPlayer}}’s harbor watch secured the lighthouse and redirected its strange beam.",
+      "draw": "The lamp went dark before its intended recipient stepped forward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "At a port customs hall, an unclaimed violin case triggered the declaration sensor without containing anything metal. Its owner had signed in and walked out under a different name. {{heroPlayer}}’s examiners reached the inspection table; {{otherPlayer}}’s officers guarded the exits with a still image of the traveler.",
+      "{{hero}} opened the case and found a second layer sewn into the lining, thin enough to evade a hurried search. The specialist held it up to the hall light and read a string of berth numbers pressed into the fabric. One number belonged to a vessel leaving before midnight; another was for a ship that had sunk there years ago.",
+      "The examiners could follow the living vessel or search the archives for the lost one. The officers knew the traveler’s face but could not agree whether the case had been left as bait. The specialist folded the lining along its creases and found that the two berth numbers occupied the same place."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s examiners traced the berth numbers and found the traveler’s intended handoff.",
+      "heroLoses": "{{otherPlayer}}’s officers held the customs hall and intercepted the traveler at departure.",
+      "draw": "The case remained sealed as the living ship sailed under observation."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "The harbor collision archive suddenly displayed a warning for a crash that had not happened. Its chart placed two loaded ferries in the same channel at dawn, with hundreds of passengers expected aboard. {{heroPlayer}}’s analysts came to test the warning; {{otherPlayer}}’s dispatchers held the harbor office and its live traffic board.",
+      "{{hero}} reconstructed the forecast from the archive’s damaged records and found a missing buoy hidden in the calculation. The specialist contacted a launch to inspect its coordinates. From the office window, the buoy was still visible, but its light flashed on the wrong rhythm, drawing an approaching ferry toward a shallower channel.",
+      "The dispatchers could reroute both ferries at once, at the cost of closing the port, or send the launch to reset the buoy while vessels waited. The analysts needed the archive intact to tell whether other warnings had been altered. The specialist marked the next safe passage across the chart with a pencil."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts corrected the chart and guided both ferries through safely.",
+      "heroLoses": "{{otherPlayer}}’s dispatchers secured the office and halted traffic until the buoy was repaired.",
+      "draw": "Both ferries waited outside the channel while the disputed warning was tested."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A city library’s restoration lab found a catalog card listing a book still being written. Its projected title named a trial scheduled to begin the next day. {{heroPlayer}}’s archivists sought the card’s source; {{otherPlayer}}’s port constables protected the witness due to testify, who had arrived to inspect it in person.",
+      "{{hero}} examined the card’s ink beneath a lamp and saw the indent of a second title erased before printing. The specialist fitted the card to the library’s old indexing press and recovered a maker’s mark. From the stacks came the sound of fresh cards falling: each now listed a different account of the witness’s testimony.",
+      "The witness could leave with the one verified card or stay until the press revealed who had fed it false records. The constables wanted the library doors locked before the trial notes spread outside. The specialist stood at the press, holding the recovered mark beside a drawer full of possible names."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s archivists identified the counterfeit cards and preserved the witness’s account.",
+      "heroLoses": "{{otherPlayer}}’s constables secured the witness and seized the printing press.",
+      "draw": "The witness reached court, but the maker of the cards remained unknown."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Beneath a seaside amphitheater, a service tunnel opened into a newly discovered room filled with campaign banners. A crowd gathered above for a memorial, unaware the floor over the room had begun to sag. {{heroPlayer}}’s guards entered from the stage trap; {{otherPlayer}}’s port wardens reached the room through a maintenance gate.",
+      "{{hero}} drove a defender away from the timber brace supporting the stage and held the narrow entrance for the others. A banner unrolled from the wall, revealing the plan for a second brace hidden beneath the orchestra pit. The fighter shouted the location upward while a companion pulled the first timber back into place.",
+      "The guards could evacuate the memorial before opening the sealed chamber, or hold the stage while the wardens searched for the buried support. Footsteps and music continued overhead. The fighter leaned against the shaking brace as a thin line of dust fell across the newly revealed plan."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards held the stage and opened the room without endangering the crowd.",
+      "heroLoses": "{{otherPlayer}}’s wardens secured the tunnel and led the memorial away from the weak floor.",
+      "draw": "The ceremony ended outdoors while both parties propped up the buried room."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "Two ships arrived with custody papers for the same rescued passenger. One document bore a fresh court seal; the other carried the passenger’s own signature, dated before the rescue. {{heroPlayer}}’s mediators asked to meet the passenger in a neutral waiting room; {{otherPlayer}}’s quay officers held both gangways until the papers could be checked.",
+      "{{hero}} compared the documents with the passenger present and noticed that both described a distinctive scar on the wrong hand. The specialist asked the passenger to draw the rescue craft from memory. In its stern was a painted mark matching neither ship, and beneath it a number that pointed to a third berth.",
+      "The mediators could send someone to the third berth, but the passenger refused to be left alone with either claimant. The quay officers offered a guarded route through the customs hall. The specialist folded the drawing and kept it where all three parties could see it during the walk."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mediators protected the passenger and established who filed the false claim.",
+      "heroLoses": "{{otherPlayer}}’s quay officers secured the third berth and brought the claimant in for questioning.",
+      "draw": "The passenger stayed under neutral care while the competing papers were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Qapu Khalqi",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A launch window opened at a small orbital ferry platform, but its departure clock counted down for a craft still listed in storage. An engineer heard footsteps in the fuel gallery and called for an inspection. {{heroPlayer}}’s response team reached the access bridge; {{otherPlayer}}’s platform guards held the ignition booth and its missing key record.",
+      "{{hero}} covered the engineer’s crossing when fire flashed from an equipment bay. The fighter returned it through the grated bridge while the engineer found a portable ignition unit plugged into the stored ferry. The countdown was real; someone had set the launch sequence without clearing the gallery or checking the platform’s personnel list.",
+      "The engineer could kill the power at the craft, but the controls needed a minute to discharge. The guards could interrupt the sequence from the booth if they recovered the missing key. The fighter held the bridge while a warning siren brought the last workers out of the fuel gallery."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s response team stopped the launch and cleared the gallery safely.",
+      "heroLoses": "{{otherPlayer}}’s guards recovered the key and locked down the ferry platform.",
+      "draw": "The ferry stayed grounded while both teams investigated the unauthorized countdown."
+    }
   }
 ]
