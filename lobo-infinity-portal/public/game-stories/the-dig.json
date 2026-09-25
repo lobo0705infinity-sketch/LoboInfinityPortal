@@ -1863,4 +1863,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Military Orders",
+        "Shindenbutai"
+      ],
+      "heroFaction": "Shindenbutai",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a buried tea warehouse uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the bamboo message case stored inside, but Shindenbutai produced a survey placing the room on its side of the boundary. During the argument, the roof tiles slid toward the shaft, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the bamboo message case and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the bamboo message case to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tohaa"
+      ],
+      "heroFaction": "Tohaa",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a fossilized grove uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the living resin compass stored inside, but Tohaa produced a survey placing the room on its side of the boundary. During the argument, pollen filled every lamp beam, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the living resin compass. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the living resin compass to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Dashat Company"
+      ],
+      "heroFaction": "Dashat Company",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a canyon toll station uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the silver toll stamp stored inside, but Dashat Company produced a survey placing the room on its side of the boundary. During the argument, a rockfall blocked the road above, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the silver toll stamp. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the silver toll stamp to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a submerged caravan vault uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the pearl-inlaid strongbox stored inside, but Druze Bayram Security produced a survey placing the room on its side of the boundary. During the argument, the vault's trapped air escaped, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the pearl-inlaid strongbox. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the pearl-inlaid strongbox to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a scrapped foundry uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the iron casting pattern stored inside, but Ikari Company produced a survey placing the room on its side of the boundary. During the argument, molten slag began leaking from a cracked conduit, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the iron casting pattern and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the iron casting pattern to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a collapsed broadcast studio uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the portable voice archive stored inside, but StarCo produced a survey placing the room on its side of the boundary. During the argument, recorded applause echoed from an empty room, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the portable voice archive. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the portable voice archive to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a snowbound customs tunnel uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the folded border charter stored inside, but White Company produced a survey placing the room on its side of the boundary. During the argument, a ventilation fan drove snow through the corridor, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the folded border charter. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the folded border charter to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Kestrel Colonial Force"
+      ],
+      "heroFaction": "Kestrel Colonial Force",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a colonial seed nursery uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the numbered seed carousel stored inside, but Kestrel Colonial Force produced a survey placing the room on its side of the boundary. During the argument, sprinklers awakened and flooded the beds, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the numbered seed carousel. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the numbered seed carousel to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Neoterra Capitaline Army"
+      ],
+      "heroFaction": "Neoterra Capitaline Army",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a executive shelter uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the glass evacuation roster stored inside, but Neoterra Capitaline Army produced a survey placing the room on its side of the boundary. During the argument, the shelter doors began closing in sequence, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the glass evacuation roster and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the glass evacuation roster to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a rainforest rail terminus uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the brass locomotive governor stored inside, but Shock Army of Acontecimento produced a survey placing the room on its side of the boundary. During the argument, a locomotive horn sounded below the platform, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the brass locomotive governor. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the brass locomotive governor to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a icebound power relay uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the ceramic heat exchanger stored inside, but Svalarheima Winter Force produced a survey placing the room on its side of the boundary. During the argument, the relay discharged into the surrounding ice, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the ceramic heat exchanger. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the ceramic heat exchanger to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a reef-side research pier uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the coral-encrusted depth gauge stored inside, but Varuna Immediate Reaction Division produced a survey placing the room on its side of the boundary. During the argument, the pier pilings started to shear, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the coral-encrusted depth gauge. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the coral-encrusted depth gauge to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a riverbank porcelain kiln uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the painted firing schedule stored inside, but Yu Jing produced a survey placing the room on its side of the boundary. During the argument, the kiln relit beneath their feet, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the painted firing schedule and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the painted firing schedule to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a sealed census office uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the mechanical population counter stored inside, but Imperial Service produced a survey placing the room on its side of the boundary. During the argument, paper cards poured from a broken sorter, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the mechanical population counter. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the mechanical population counter to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a fortified machine shop uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the titanium tool ledger stored inside, but Invincible Army produced a survey placing the room on its side of the boundary. During the argument, an assembly arm began repeating its final task, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the titanium tool ledger. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the titanium tool ledger to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a high-altitude signal hut uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the wind-scored heliograph stored inside, but White Banner produced a survey placing the room on its side of the boundary. During the argument, the heliograph flashed toward an unseen ridge, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the wind-scored heliograph. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the wind-scored heliograph to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a frontier schoolhouse uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the slate attendance board stored inside, but Ariadna produced a survey placing the room on its side of the boundary. During the argument, desks shifted as the floor settled, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the slate attendance board and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the slate attendance board to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Caledonian Highlander Army"
+      ],
+      "heroFaction": "Caledonian Highlander Army",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a granite whisky cellar uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the copper distilling license stored inside, but Caledonian Highlander Army produced a survey placing the room on its side of the boundary. During the argument, fermentation gas forced open a stone hatch, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the copper distilling license. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the copper distilling license to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Force de Réponse Rapide Merovingienne"
+      ],
+      "heroFaction": "Force de Réponse Rapide Merovingienne",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a limestone canal lock uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the oak lock-gate model stored inside, but Force de Réponse Rapide Merovingienne produced a survey placing the room on its side of the boundary. During the argument, the buried gate admitted a wall of water, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the oak lock-gate model. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the oak lock-gate model to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Kosmoflot"
+      ],
+      "heroFaction": "Kosmoflot",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a polar balloon hangar uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the silk weather balloon stored inside, but Kosmoflot produced a survey placing the room on its side of the boundary. During the argument, a winch reeled in a cable from beneath the permafrost, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the silk weather balloon. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the silk weather balloon to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    }
 ]
