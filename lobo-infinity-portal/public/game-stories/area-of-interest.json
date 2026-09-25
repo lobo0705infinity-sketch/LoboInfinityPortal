@@ -2278,5 +2278,385 @@
       "heroLoses": "{{otherPlayer}}’s settlers held the crossing while the escort withdrew from the storm.",
       "draw": "The delegates met halfway, but neither side claimed the bridge when the rain returned."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A colonial tribunal convened in a schoolhouse to decide whether a spring belonged to the settlement or to a passing relief convoy. {{heroPlayer}}’s investigators brought a witness from the convoy; {{otherPlayer}}’s settlers held the hall and the well key. The first witness testimony had been recorded before either side arrived.",
+      "{{hero}} inspected the recorder and found its clock set a day ahead. The specialist played the testimony for everyone present: a child described finding a second spring beneath the schoolhouse, where a loose floorboard now moved with each footstep. The child in the recording stood outside the hall, listening without recognizing their own voice.",
+      "The hearing paused as {{hero}} lifted the floorboard. Fresh water shone far below a stone stair, and the well key would not fit its gate. Both parties gathered around the opening, waiting for the child to say whether they had ever been down those steps."
+    ],
+    "endings": {
+      "heroWins": "The tribunal heard the child, and {{heroPlayer}}’s investigators kept the new spring open to both parties.",
+      "heroLoses": "{{otherPlayer}}’s settlers retained the schoolhouse and its water access.",
+      "draw": "The hearing adjourned with both springs protected until the stair could be surveyed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "objective",
+    "paragraphs": [
+      "A damaged lander touched down beside the colony’s cattle pasture, carrying an empty rescue capsule that continued to report a heartbeat. {{heroPlayer}}’s flight crew came to inspect its systems; {{otherPlayer}}’s ranchers held the pasture gate while children watched from behind it. The lander’s engines were too hot to approach from the front.",
+      "{{hero}} entered through a cooled service panel and followed the heartbeat signal to a cargo container strapped beneath the capsule. The specialist cut away its webbing and found a second, much older distress beacon whose battery should have died years ago. It had been transmitting the heartbeat whenever the capsule passed over the pasture.",
+      "A rancher called that one animal had wandered beneath the hot wing. {{hero}} carried the beacon outside and used its signal to guide the flight crew around the engine wash. The animal emerged unharmed, but the beacon’s pulse quickened each time it faced the farmhouse beyond the gate."
+    ],
+    "endings": {
+      "heroWins": "The lander was secured, and {{heroPlayer}}’s crew kept the beacon for a careful examination.",
+      "heroLoses": "{{otherPlayer}}’s ranchers retained the pasture and asked the flight crew to remove the lander.",
+      "draw": "The animals returned to the field; both crews left the beacon sealed beside the empty capsule."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The colony’s northern gate lost power while a night transport waited outside in falling sleet. {{heroPlayer}}’s patrol came to keep the road open; {{otherPlayer}}’s settlers held the gatehouse until the transport’s manifest could be checked. Its headlights showed people walking alongside it, carrying no luggage.",
+      "{{hero}} covered the gate from an earthwork as a figure moved to drop the road barrier onto the waiting passengers. The fighter fired at its unoccupied hinge and stopped the barrier halfway down. A woman from the transport slipped under it and handed the gatekeeper a manifest with one line rubbed through.",
+      "The patrol found the erased name stamped on an identification card beside the road. {{hero}} kept the barrier open while the passengers counted one another, each looking for the person who had walked beside them. Beyond the headlights, the sleet thickened enough to hide the transport’s far door."
+    ],
+    "endings": {
+      "heroWins": "The transport entered safely, and {{heroPlayer}}’s patrol held the gate until everyone was accounted for.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the barrier lowered while the patrol escorted the transport elsewhere.",
+      "draw": "The passengers reached shelter; the missing name remained unreadable on the manifest."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A kite festival had been planned on a colony ridge where the winter winds first returned. {{heroPlayer}}’s visitors brought a ceremonial kite made for an elder who could no longer climb; {{otherPlayer}}’s surveyors held the ridge while a communications mast was repaired. Children waited below with their own small kites.",
+      "{{hero}} met a defender near the mast’s anchor line as the ceremonial kite lifted unexpectedly. The fighter closed to arm’s length and held the narrow path without cutting the windward cable. A fallen tool struck the kite’s string, dragging it toward the exposed mast wires.",
+      "The elder’s granddaughter caught the trailing string and called for help. {{hero}} held the defender away from the wires while she pulled the kite across the safe side of the ridge. From below, the children launched their kites one by one, filling the air with lines neither crew could cross carelessly."
+    ],
+    "endings": {
+      "heroWins": "The ceremonial kite reached the elder, and {{heroPlayer}}’s visitors kept the ridge for the festival.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the mast and moved the festival down the slope.",
+      "draw": "The kites flew together while both crews left the narrow ridge path open."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A community bus broke down beside a colony nursery with a sealed parcel beneath its last seat. {{heroPlayer}}’s couriers came to retrieve it; {{otherPlayer}}’s settlers needed the bus to carry children home before nightfall. No one aboard remembered loading the parcel, although its label named the nursery.",
+      "{{hero}} opened the service panel and found the parcel wedged against the bus battery. The specialist freed it without cutting power, then read the delivery note: a packet of saplings meant for a field the colony had abandoned after the soil turned gray. The oldest child said they had seen green shoots there that morning.",
+      "The bus engine caught on its final attempt. {{hero}} carried the packet to the nursery gate while the settlers counted the children. The courier could keep the parcel for its recorded recipient or send the bus toward the abandoned field, whose road would be difficult after dark."
+    ],
+    "endings": {
+      "heroWins": "The saplings reached their field, and {{heroPlayer}}’s couriers kept the nursery route open.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the bus and parcel at the nursery for the night.",
+      "draw": "The children reached home; both groups agreed to inspect the field at first light."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A deer crossing ran directly through the colony’s unfinished junction. {{heroPlayer}}’s road patrol came to keep its temporary barriers open; {{otherPlayer}}’s settlers had prepared to pour concrete before the morning traffic. A line of deer stood among the traffic signs, refusing to turn back.",
+      "{{hero}} covered the junction from a retaining wall when a vehicle accelerated toward the crossing. The fighter fired into an empty road marker beside the driver, making them brake before the herd. The deer moved past the stopped vehicle, but a fawn remained trapped between two temporary steel fences.",
+      "The concrete mixer arrived behind the vehicle. {{hero}} held the roadway clear as a settler loosened the fence bolts and guided the fawn out. Beyond the junction, the herd waited at the tree line instead of disappearing, as if it would not continue without its last member."
+    ],
+    "endings": {
+      "heroWins": "The fawn rejoined the herd, and {{heroPlayer}}’s patrol kept the crossing open.",
+      "heroLoses": "{{otherPlayer}}’s settlers controlled the junction and redirected the herd around the new road.",
+      "draw": "The deer passed; both groups delayed the concrete until a safe crossing could be marked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A pond outside the colony began flowering under its surface, drawing families to watch the lights beneath the water. {{heroPlayer}}’s researchers came to collect a sample; {{otherPlayer}}’s settlers guarded the bank because the pond supplied their irrigation canal. A week earlier, the water had been clear enough to see the bottom.",
+      "{{hero}} lowered a transparent tube and caught a single glowing filament. The specialist watched it divide when exposed to sunlight and stop when the tube entered shade. Beneath the bank, an old drain fed water from a second pond the settlers believed had dried up years ago.",
+      "The irrigation pump turned on, pulling the flowers toward its intake. {{hero}} shaded the sampling tube and worked with the settlers to close the pump for a few minutes. Along the old drain, the first flowers appeared in the supposedly dry pond, far beyond where their lights could be seen."
+    ],
+    "endings": {
+      "heroWins": "The sample survived, and {{heroPlayer}}’s researchers kept the pond safe while its waters were traced.",
+      "heroLoses": "{{otherPlayer}}’s settlers held the irrigation bank and barred further sampling.",
+      "draw": "The canal stayed clear; both parties watched the second pond flower after sunset."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A paymaster disappeared before a construction crew could collect the wages owed for the colony’s floodwall. {{heroPlayer}}’s contracted guards tracked the payroll case to a shuttered bakery; {{otherPlayer}}’s settlers held the street to prevent anyone from carrying the colony funds away. The ovens were warm although the bakery had been closed all week.",
+      "{{hero}} covered the rear exit when a figure with the case moved through the kitchen. The fighter fired at the empty metal rack beside the door, forcing the figure to leave the case behind. Its lock had been opened already, and the payroll envelopes inside bore the workers’ names in correct order.",
+      "The bakers returned as the construction crew gathered outside. {{hero}} held the rear yard clear while a foreman counted the envelopes under the bakery lamps. One was missing. On a flour-covered counter lay its contents and a note asking that the money go to a worker injured on the wall."
+    ],
+    "endings": {
+      "heroWins": "The crew received its wages, and {{heroPlayer}}’s guards kept the case until the missing worker was found.",
+      "heroLoses": "{{otherPlayer}}’s settlers took custody of the case and paid the crew themselves.",
+      "draw": "The wages were distributed; both groups searched for the injured worker before leaving."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rail depot received a night train with its doors locked and a child’s bicycle tied to the last car. {{heroPlayer}}’s security team came to inspect the cargo; {{otherPlayer}}’s settlers held the platform for passengers expected on the next train. Someone inside the locked car rang its service bell once.",
+      "{{hero}} covered the end of the platform while a worker cut the cargo seal. A figure at the far signal box raised a weapon, and the fighter fired at a track lamp to turn them from the car. The worker opened the door onto rows of empty seats and a bicycle helmet on the floor.",
+      "A second bell rang beneath the carriage. {{hero}} kept the signal box in sight as workers crawled under the frame and found a cramped luggage space with a person inside. The next train sounded from beyond the bend, giving the team minutes to clear the platform."
+    ],
+    "endings": {
+      "heroWins": "The hidden passenger reached safety, and {{heroPlayer}}’s team kept the depot ready for the next train.",
+      "heroLoses": "{{otherPlayer}}’s settlers took control of the platform as the security team withdrew.",
+      "draw": "Both groups helped the passenger out; the bicycle’s owner never came forward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The colony’s tool shed held equipment needed to rebuild a collapsed storm barrier. {{heroPlayer}}’s hired crew arrived for the cutting gear; {{otherPlayer}}’s settlers had locked the shed after noticing several tools marked with names of workers still missing beyond the barrier. Rain was gathering over the lower houses.",
+      "{{hero}} covered the lane while a technician checked the shed lock. A figure on the opposite roof tried to draw the crew away; the fighter fired at an empty gutter and kept them back without striking the families sheltering below. Inside the shed, the technician found a cutting torch with a freshly emptied fuel tank.",
+      "The rain arrived before another tank could be found. {{hero}} watched the lane as a missing worker returned carrying fuel on a handcart, the barrier’s mud still on their boots. They pointed down the street: two more workers were trapped where the first wall had fallen."
+    ],
+    "endings": {
+      "heroWins": "The crew reached the trapped workers, and {{heroPlayer}}’s people held the shed for the barrier repair.",
+      "heroLoses": "{{otherPlayer}}’s settlers kept the tools while the hired crew sought equipment elsewhere.",
+      "draw": "The workers escaped together; both groups spent the night raising a temporary wall."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A survey beacon had been insured against lightning, but each morning a fresh lightning scar appeared beside it under clear skies. {{heroPlayer}}’s contractors came to inspect the claim; {{otherPlayer}}’s settlers guarded the beacon because its signal marked their only safe route through the flats. The next scar appeared while both crews were watching.",
+      "{{hero}} checked the ground beneath the beacon and found a damaged conductor buried just under the salt. The specialist traced it to an old battery casing, still charged and connected to a timer. Someone had built a machine that imitated a strike closely enough to fool the distant weather sensors.",
+      "The timer clicked toward its next cycle. {{hero}} lifted the conductor out of the salt while a settler held the beacon upright. Out on the flats, a caravan followed the beacon light toward them, too far away to hear a warning if the machine failed or the signal went dark."
+    ],
+    "endings": {
+      "heroWins": "The false strikes stopped, and {{heroPlayer}}’s crew kept the beacon lit for the caravan.",
+      "heroLoses": "{{otherPlayer}}’s settlers took the beacon while the contractors withdrew with the battery casing.",
+      "draw": "The caravan arrived safely; both parties remained to learn who had buried the conductor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kestrel Colonial Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A small airship carrying emergency post caught its tether on the colony’s hilltop windmill. {{heroPlayer}}’s rescue contractors came to bring it down; {{otherPlayer}}’s settlers held the mill while its sails turned dangerously near the envelope. The postmaster inside could steer, but the tether kept pulling the ship back.",
+      "{{hero}} covered the hill path as a figure moved to start the mill’s stalled drive. The fighter fired at a metal cover plate to turn them from the controls, buying the rescue crew time to reach the tether. From the airship window, the postmaster held up a bag marked for the colony clinic.",
+      "A gust drove the envelope toward a sail. {{hero}} held the path while a rescuer climbed the mill ladder and cut the snagged end free. The airship drifted above the hill, close enough for a rope to be caught but too high for the postmaster to jump."
+    ],
+    "endings": {
+      "heroWins": "The airship landed, and {{heroPlayer}}’s crew kept the windmill stopped until its post reached the clinic.",
+      "heroLoses": "{{otherPlayer}}’s settlers held the mill while the rescue crew followed the drifting ship.",
+      "draw": "The post was saved, but both groups watched the empty airship rise beyond the hills."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Neoterra Capitaline Army"
+    ],
+    "heroFaction": "Neoterra Capitaline Army",
+    "role": "objective",
+    "paragraphs": [
+      "Two emergency teams reached the same municipal archive with orders to protect different collections. {{heroPlayer}}’s team marked the ground floor; {{otherPlayer}}’s team claimed the upper vault. Water from an activated sprinkler system was running down the central stair between them, soaking both floors at once.",
+      "{{hero}} found the sprinkler valve in a locked service closet and traced its trigger to a smoke detector that showed no smoke. The specialist shut off one zone, saving the lower documents but directing the remaining water toward the upper vault. From above came a call that a real fire had just started inside a copy room.",
+      "The two teams met on the stair with dry blankets and fire gear. {{hero}} opened a narrow bypass to feed the copy room while keeping the collection shelves dry. The valve shuddered under pressure, and both team leaders had to choose which documents to carry before anyone could bring the fire under control."
+    ],
+    "endings": {
+      "heroWins": "The fire was contained, and {{heroPlayer}}’s team preserved the lower archive and its stair.",
+      "heroLoses": "{{otherPlayer}}’s team controlled the upper vault and directed the final salvage.",
+      "draw": "Both collections survived in part; the teams shared the stair until the building dried."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "objective",
+    "paragraphs": [
+      "A hillside aqueduct had brought water to a growing district until a quake opened a crack above the footpath. {{heroPlayer}}’s field engineers came to stop the leak; {{otherPlayer}}’s civic detail held the lower gate to keep pedestrians away. A family still lived in the small house beneath the damaged arch.",
+      "{{hero}} climbed onto the aqueduct and found the crack spreading beneath a newer patch. The specialist lowered a temporary seal into place while a civic worker led the family from its house. Their youngest child stopped at the gate to point out a second leak running from the arch’s dry side.",
+      "The seal began to lift in the current. {{hero}} held it down with the repair line while the family crossed the footpath and the workers opened a pressure release. The aqueduct shivered overhead, sending a fine spray across the gate before the water level finally began to fall."
+    ],
+    "endings": {
+      "heroWins": "The arch held, and {{heroPlayer}}’s engineers kept the path safe for the returning family.",
+      "heroLoses": "{{otherPlayer}}’s civic detail closed the aqueduct while the engineers withdrew.",
+      "draw": "The family reached safety; both groups left the water channel shut until a permanent repair."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An ice dome protecting a city food market lost its heating grid during a bitter night. {{heroPlayer}}’s cold-weather patrol brought portable heaters; {{otherPlayer}}’s security team guarded the market’s emergency generator. Vendors were still inside, trying to keep their produce from freezing beneath the glass.",
+      "{{hero}} covered the generator entrance from a delivery cart when a figure moved to lock the patrol out. The fighter fired at an empty latch plate, holding the door ajar while technicians rolled in a heater. Frost had already spread across the dome’s lower panels, obscuring the nearest exit.",
+      "A vendor called that the glass above the fruit stalls was cracking. {{hero}} kept the entrance clear as workers moved their carts away from the falling frost. The generator turned over once, failed, then caught while the patrol’s heater battery warned it had only minutes left."
+    ],
+    "endings": {
+      "heroWins": "The dome warmed and {{heroPlayer}}’s patrol kept the market open until morning.",
+      "heroLoses": "{{otherPlayer}}’s security team held the generator while vendors carried their stock into the street.",
+      "draw": "The vendors saved their stalls, but both teams closed the dome until its glass could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "A tidal siren above the harbor fell silent as a spring surge approached. {{heroPlayer}}’s marine technicians came to restart it; {{otherPlayer}}’s municipal crew controlled the pump house below. The siren’s painted warning line was already wet, and fishermen still worked on the lowest pier.",
+      "{{hero}} reached the siren motor by a narrow stair and found its main belt wrapped around a broken signal flag. The specialist freed the belt while a pump operator called that the lower intake was blocked. They could sound the warning or help restore the pumps, but the same power feed ran to both machines.",
+      "The tide rose past the pier steps. {{hero}} held the belt in place with one hand and signaled the fishermen with the other, using the siren’s inspection lamp. The pump house lights returned below, and the motor began to turn before the flag was fully clear."
+    ],
+    "endings": {
+      "heroWins": "The siren sounded in time, and {{heroPlayer}}’s technicians kept the harbor warnings working.",
+      "heroLoses": "{{otherPlayer}}’s crew held the pump house as the marine technicians retreated from the rising tide.",
+      "draw": "The fishermen reached shore; both groups left the damaged siren off until the pumps stabilized."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rooftop data cache above the central station contained the names of people waiting to be reunited after a long evacuation. {{heroPlayer}}’s search team came to retrieve it; {{otherPlayer}}’s civic guards held the stair because the roof’s safety rail had failed. Families were arriving below with photographs and little else.",
+      "{{hero}} covered the upper landing when someone moved to take the cache across the exposed roof. The fighter fired at an empty metal frame, forcing them back from the broken rail. A searcher reached the cache and found its power pack loose, its stored names disappearing a few at a time.",
+      "The rooftop sign began to sway in the wind. {{hero}} held the landing while the searcher braced the pack and read the remaining names down to families waiting at the stair. One family heard its missing person called just as the pack’s warning light went red."
+    ],
+    "endings": {
+      "heroWins": "The cache was saved, and {{heroPlayer}}’s team kept the station roof open for the families.",
+      "heroLoses": "{{otherPlayer}}’s guards took the roof and held the cache for later review.",
+      "draw": "The families received the names that survived, while both groups searched for the missing records."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "A city registry issued two residency cards with the same number to people who had never met. {{heroPlayer}}’s investigators came to compare the original forms; {{otherPlayer}}’s civic staff held the office until its morning queue could be served. Both cardholders were waiting with families who depended on their addresses.",
+      "{{hero}} found a duplicate printing plate beside the registry press. The specialist traced it to a night shift when the machine had been repaired by a clerk now absent from the office. Beneath the plate lay a third form carrying the same number, but its address was a building demolished years ago.",
+      "The queue reached the front desk as {{hero}} brought out the forms. A clerk recognized the demolished building as an old shelter and offered its paper sign-in book. One of the cardholders began turning its pages, stopping at a signature in handwriting unmistakably their own."
+    ],
+    "endings": {
+      "heroWins": "The cardholders kept their homes, and {{heroPlayer}}’s investigators secured the registry for correction.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the office and deferred the duplicate-card review.",
+      "draw": "Both residents were served, but the third form remained unresolved in the shelter book."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A power substation on the city fringe failed just as a lunar eclipse began. {{heroPlayer}}’s armored repair escort came to protect the transformers; {{otherPlayer}}’s civic team controlled the lower switchyard. The hospital beyond the ridge had enough backup charge for only one more procedure.",
+      "{{hero}} covered the transformer lane when a figure moved toward an open breaker. The fighter fired into the empty steel frame beside them, making space for an electrician to reach the damaged insulation. A line of sparks crossed the lane, and the hospital’s distant windows went dark one row at a time.",
+      "The electrician called for a manual reset from the lower switchyard. {{hero}} held the lane while a messenger carried the request toward the civic team. Overhead the moon entered shadow, and every work lamp on the substation flickered as the two crews tried to synchronize their switches."
+    ],
+    "endings": {
+      "heroWins": "The hospital lights returned, and {{heroPlayer}}’s escort held the substation through the repair.",
+      "heroLoses": "{{otherPlayer}}’s civic team took the switchyard and directed power elsewhere.",
+      "draw": "The hospital received its procedure’s power, but both crews kept the damaged station under joint watch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Neoterra Capitaline Army",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "objective",
+    "paragraphs": [
+      "An old observatory in the foothills had sealed its entrance after a snow slide exposed a room missing from its plans. {{heroPlayer}}’s mountain guides came to open a safe approach; {{otherPlayer}}’s researchers held the telescope room and guarded its fragile plates. A diagram on the hidden room’s door showed the sky without its brightest star.",
+      "{{hero}} followed a ventilation shaft around the snow blockage and found the hidden room filled with empty plate boxes. The specialist checked a brass index against the researchers’ collection: the missing plates had all been exposed on the same winter night. One box held a note asking whoever found it to watch the east ridge at dawn.",
+      "The snow shifted beneath the entrance stair. {{hero}} guided the researchers through the ventilation passage with the index in hand, then climbed a safe ledge facing east. The first light reached the ridge, revealing a line of old survey markers where no trail had been mapped."
+    ],
+    "endings": {
+      "heroWins": "The plates and index survived, and {{heroPlayer}}’s guides kept the approach open for a survey.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the observatory while the guides withdrew from the unstable slope.",
+      "draw": "Both groups saw the markers at dawn and left the hidden room sealed until the snow settled."
+    }
   }
 ]
