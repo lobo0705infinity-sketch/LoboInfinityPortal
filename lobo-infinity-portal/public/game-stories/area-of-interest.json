@@ -9878,5 +9878,385 @@
       "heroLoses": "{{otherPlayer}}’s scouts found the walker by rope and took control of the bog crossing.",
       "draw": "The walker came back safely, but the lights returned after both parties left the box in place."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The bell in an old granite watchtower rang every time stones shifted on the mountain above it. This afternoon it would not stop. {{heroPlayer}}’s expedition climbed to the bell chamber while {{otherPlayer}}’s frontier scouts held the village road, where a line of carts had already formed.",
+      "{{hero}} grappled with a defender at the chamber’s narrow stair and forced enough space for a surveyor to inspect the bell. It was being struck by a counterweight linked to a rock face beyond the village. The surveyor found a new crack along the link as the bell began ringing twice as fast.",
+      "Cutting the link would quiet the tower but remove the last warning of a slide. Keeping it intact meant the carts could not tell one strike from another. The fighter braced a hand against the swinging weight while the scouts below shouted that the last cart had lost a wheel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s expedition secured the tower and signaled the carts through before the rock face shifted.",
+      "heroLoses": "{{otherPlayer}}’s scouts cleared the village road and took over the warning from below.",
+      "draw": "The carts escaped, but the tower was abandoned when the bell’s link finally broke."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A floodplain appeared dry in the morning and filled with reflected stars by noon, though the sky was blue. A survey wagon had stopped in its center, its driver afraid to cross the shining ground. {{heroPlayer}}’s observers entered from the north; {{otherPlayer}}’s scouts marked the far bank with rope.",
+      "{{hero}} set a probe among the reflections and detected a thin sheet of water beneath a clear film. The specialist traced a seam to a buried drainage key while the driver waved from the wagon. A stone dropped onto the film did not break it; a wheel turning slowly left a spreading white line.",
+      "Opening the drain might save the wagon but draw the hidden sheet toward the scouts’ rope line. Leaving the film untouched meant the driver could run out of daylight. The specialist held the key above the seam as the wagon horse stepped forward and the white line lengthened."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers drained the plain and led the wagon out over solid ground.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the rope line and pulled the wagon toward the far bank.",
+      "draw": "The driver escaped, but the wagon stayed on the plain until the strange film disappeared."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At the top of a forest observatory, a telescope showed a map painted on the underside of its own mirror. The map led to a sealed clearing that neither nearby patrol recognized. {{heroPlayer}}’s researchers sought the mirror controls while {{otherPlayer}}’s frontier scouts guarded the stair down to the trees.",
+      "{{hero}} held the dome entrance as a researcher turned the telescope. Shots hit the metal shutter, and the fighter answered while the map slid into focus. One mark showed a maintenance hatch beneath the clearing; a second appeared only when a lamp shone through the mirror, marking someone’s fresh footprints beside it.",
+      "The researcher could detach the mirror and preserve the evidence or leave it aligned to guide a team through the forest. The scouts were already moving toward the clearing from the lower stair. The fighter watched the lamp’s beam move across the new footprints while the dome motor began to slip."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s researchers held the telescope and opened the marked hatch before its alignment failed.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the clearing and reached the hatch from below.",
+      "draw": "The mirror was saved, but both teams lost the footprints before either could identify who made them."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A patch of pale fungi spread through an abandoned maze garden, tracing the footsteps of visitors who had entered before the gates were locked. A gardener said one set never came out. {{heroPlayer}}’s searchers reached the central fountain; {{otherPlayer}}’s frontier scouts held the gate with a hand-drawn plan.",
+      "{{hero}} followed the newest fungal marks to a hedge grown over an old maintenance door. The specialist eased it open and found a glove beside a ladder leading under the fountain. A faint knock came from below, but the fungus on the door began closing over the gap as soon as fresh air entered.",
+      "The searchers could hold the door and send one person down, or cut the hedge and risk destroying the tracks that led to the missing visitor. The scouts brought their plan to the opposite side of the fountain. The specialist held the glove above the opening while the knock came again, weaker."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s searchers reached the visitor and kept the garden entrance for the rescue.",
+      "heroLoses": "{{otherPlayer}}’s scouts found the fountain ladder and brought the visitor through the gate.",
+      "draw": "The visitor emerged safely, but the living tracks vanished before either party could keep the maze."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A pottery village woke to find its water gate opening and closing in time with the kiln fires. The canals flooded whenever the potters stoked their furnaces. {{heroPlayer}}’s engineers went to the gate controls; {{otherPlayer}}’s frontier scouts stood between the canals and the loaded kilns.",
+      "{{hero}} traced the gate’s control wire to a temperature sensor bolted behind a clay oven. The specialist disconnected it and held the gate steady, but the canal level kept rising. A second sensor was buried beneath the oldest kiln, where a firing of ceremonial tiles could not be interrupted without ruining them.",
+      "The potters could stop their firing and expose the sensor or keep the kilns hot while the scouts blocked the canal by hand. The specialist watched the oldest kiln’s chimney turn red and heard the gate motor strain against its new setting. One more surge would reach the workshop floors."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers separated the sensors, protected the tiles, and held the water gate.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the canal and kept water away from the working kilns.",
+      "draw": "The workshops stayed dry, but the gate remained under joint manual control until the firing ended."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A weather station beside a gorge stopped transmitting after recording a sharp fall in temperature. Its keeper’s snowshoe tracks ended at the station fence, beside a dropped glove and an unopened field notebook. {{heroPlayer}}’s retrieval team approached through the pines; {{otherPlayer}}’s frontier scouts guarded the suspension path across the gorge.",
+      "{{hero}} covered a technician crossing the fence while fire struck the station’s vane. The fighter answered from a rock shelf as the technician recovered the last data card. It showed a pocket of cold air rising from a hollow beneath the station, with a recent heat trace moving toward the gorge bridge.",
+      "The data might lead to the keeper, but the bridge was icing faster than anyone could cross. The scouts were bringing a rope from the far side. The fighter saw a figure under the bridge lift an arm, then vanish behind the frozen beams as the wind turned colder."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team reached the keeper and secured the station’s last records.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the bridge and brought the keeper across with their rope.",
+      "draw": "The keeper escaped the cold, but the station remained inaccessible until the ice thawed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The glassworks’ abandoned furnace held a mirror tilted toward the forest road. At sunset it lit a warning marker deep among the trees. {{heroPlayer}}’s escort entered the furnace house to adjust the mirror; {{otherPlayer}}’s frontier scouts held the road, unsure why a light was shining through a stand of dead pines.",
+      "{{hero}} met a defender on the furnace’s spiral stair. The fighters struggled above the cold firebox, and the combatant gained enough ground to turn the mirror toward the marker. Its reflection revealed a damaged footbridge beyond the pines, with a wagon already moving toward it from the far side.",
+      "The mirror could signal the wagon if held at the right angle, but its cracked frame was slipping. The scouts on the road could reach the bridge sooner if they knew which path to take. The combatant kept one hand on the glass as the sun sank and the wagon’s lamps disappeared behind the trees."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort held the mirror and warned the wagon before it reached the bridge.",
+      "heroLoses": "{{otherPlayer}}’s scouts reached the bridge and stopped the wagon from the forest road.",
+      "draw": "The wagon stopped, but the mirror fell and neither group retained the furnace house."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "At a rural station, two trains arrived carrying the same locked evidence chest, each with a receipt from a different district. The magistrate waiting there refused to accept either until its seal could be checked. {{heroPlayer}}’s inspectors took the platform office; {{otherPlayer}}’s frontier scouts kept the trains apart on their sidings.",
+      "{{hero}} compared the receipts and found one impressed by a seal with a small broken tooth. Both chests bore that flaw. The specialist opened the office’s master log and discovered a third delivery scheduled for the next train, whose whistle was already sounding from the cutting.",
+      "Checking the third chest might identify the original, but the two trains on the sidings were nearly ready to depart with their duplicates. The scouts could hold the points if the inspectors showed them the log. The specialist folded the pages open to the missing entry as the incoming train rounded the bend."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors identified the genuine chest and kept the station evidence under seal.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the sidings and held all three chests for the magistrate.",
+      "draw": "The trains stopped, but no chest was opened until both districts sent witnesses to the station."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A cargo capsule hung over a forest clearing from an old skyhook, its release clock counting down with nobody at the controls. The capsule’s manifest listed emergency shelters for the nearby hamlets. {{heroPlayer}}’s recovery team approached the control hut; {{otherPlayer}}’s frontier scouts guarded the clearing where the load would land.",
+      "{{hero}} covered a mechanic running to the hut as fire from the trees struck its roof. The fighter answered while the mechanic opened the release panel and found a manual catch wired backward. One cut would stop the countdown but leave the capsule hanging above a grove of saplings where the hamlets expected to plant in spring.",
+      "The mechanic could cut the wire or redirect the load to the scouts’ landing space, if the scouts cleared it in time. The fighter saw figures moving through the grove as the clock lost another minute. Above them, the capsule began to turn on its cable."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team landed the shelters safely and held the control hut for delivery.",
+      "heroLoses": "{{otherPlayer}}’s scouts cleared the landing space and took charge of the capsule below.",
+      "draw": "The capsule stayed suspended until both teams could reset the reversed catch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "An old mine offered a dry passage under a mountain whose surface road had washed out. Families trying to cross found a row of miners’ lamps burning at its entrance, though the mine had been closed for years. {{heroPlayer}}’s engineers sought the lamp keeper; {{otherPlayer}}’s frontier scouts controlled the exit shaft.",
+      "{{hero}} followed the lamps to a ventilation switch hidden behind a collapsed cart. The specialist turned it and a cool current reached the tunnel, but fresh footprints appeared in dust beyond the switch. A child’s voice sounded from the far end, where the scouts had found a door chained from their side.",
+      "Opening the chained door could let the families through, but the air current might carry mine gas toward the entrance. The scouts could clear their exit shaft while the engineers checked the vent. The specialist kept the switch in hand as the nearest lamp changed from blue to orange."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers cleared the air, opened the door, and guided the families through the mine.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the exit and brought the families out by its shaft.",
+      "draw": "The families crossed safely, but both groups closed the mine when the lamps signaled bad air."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An abandoned bathhouse filled with warm water overnight, and its painted tiles showed a map of a spring the villagers thought had run dry. {{heroPlayer}}’s visitors reached the inner room; {{otherPlayer}}’s frontier scouts held the outer pool to keep its water from reaching the street.",
+      "{{hero}} met a defender at the narrow sluice door and forced it open in a struggle against the rising water. The fighter caught a loose tile before it sank. Beneath it lay the key to an old reservoir, and the map on the remaining wall showed a second valve beyond the flooded room.",
+      "Opening the reservoir could restore the village spring or send the bathhouse’s warm flood downhill. The scouts had a dry entrance to the second valve, if the fighter released the first. The water reached the doorframe as the villager who owned the tile map asked which valve had been closed first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s visitors restored the spring and held the bathhouse until its flood subsided.",
+      "heroLoses": "{{otherPlayer}}’s scouts controlled the valves and kept the flood out of the village streets.",
+      "draw": "The water settled, but neither party reopened the reservoir before its old plan could be checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A waterwheel beside the border bakery turned at night when the stream lay still. The baker found small sealed parcels riding through its spokes into a hatch beneath the floor. {{heroPlayer}}’s investigators came by the footpath; {{otherPlayer}}’s frontier scouts guarded the bakery while the baker opened before dawn.",
+      "{{hero}} covered a companion crossing to the wheel. Fire struck the bakery’s stone chimney, and the fighter answered while the companion caught a parcel and read a date from years ahead. Under the wheel lay an archive chamber, its lid just visible through the water, and a second parcel was about to drop inside.",
+      "The wheel could be stopped, leaving its parcels accessible, but doing so would block the baker’s millrace and send water against the ovens. The scouts had a dry cellar door into the chamber. The fighter watched the wheel lift another parcel as the baker called that the dough was already rising."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators kept the wheel turning safely and recovered the archive parcels.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the cellar and secured the parcels without flooding the bakery.",
+      "draw": "The bread baked and the parcels stayed dry, but both parties sealed the chamber for a later opening."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A wind harp on a frontier ridge used to sing when the north trail was safe. This morning it sounded a warning from every direction. {{heroPlayer}}’s route team came to check its strings; {{otherPlayer}}’s scouts had set up a checkpoint where the trail vanished into fog.",
+      "{{hero}} tightened a loose string and discovered a second row of tuned reeds hidden beneath the harp. The specialist sounded each one in turn, tracing a clear path through the fog that appeared only when the wind changed. A traveler answered from somewhere beyond the checkpoint, then the main harp fell silent.",
+      "The route team could carry the small reeds into the fog, but removing them would end the warning for those still on the ridge. The scouts had a rope ready to follow the sound from their side. The specialist held the last note while the traveler called again, much farther away than the first answer."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team kept the harp sounding and led the traveler out along the safe trail.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the checkpoint and followed the tuned reeds through the fog.",
+      "draw": "The traveler returned, but the harp lost its tune and both teams closed the north trail."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A seed pod the size of a tent washed into a canyon after a storm. Its shell displayed rings of color matching every season the nearby orchard had survived. {{heroPlayer}}’s botanists approached with sampling tools; {{otherPlayer}}’s frontier scouts held the canyon mouth where orchard workers were waiting for news.",
+      "{{hero}} found a narrow split in the shell and saw a living seed suspended above a pool of rainwater. The specialist collected a drop to test it; the shell changed color and began folding inward. A worker recognized the latest ring as the season when half the orchard had died, not the year it was planted.",
+      "Opening the shell might save the seed but destroy the rings that could explain the loss. Leaving it closed would let the rising canyon water sweep it away. The scouts were fastening a rope across the mouth. The specialist held the water sample to the light while the shell folded another inch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists saved the seed and its record for the orchard workers.",
+      "heroLoses": "{{otherPlayer}}’s scouts secured the pod at the canyon mouth for the workers to inspect.",
+      "draw": "The shell washed away, but both parties kept samples and copies of its final color rings."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a high trading camp, an auctioneer opened a locked crate to find a scale model of the camp, complete with a tent that had not yet been pitched. {{heroPlayer}}’s hired guards sought the auction platform; {{otherPlayer}}’s frontier scouts held the entrance until the seller could produce a real manifest.",
+      "{{hero}} covered the auctioneer as shots splintered the platform steps. The fighter answered while the auctioneer lifted the model’s unfinished tent and found a compartment underneath holding the camp’s stolen keys. One key was already missing; across the market, a supply shed door swung open.",
+      "The guards could take the keys to the shed or stay with the model, which might show another hidden compartment. The scouts were moving toward the open door from the entrance. The fighter watched a shadow cross the platform lantern as the auctioneer pressed the model’s tiny latch again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the missing key and secured the platform and supply shed.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the shed and held the model for a full account of its contents.",
+      "draw": "The stolen keys were returned, but the model’s maker remained unknown and the auction was suspended."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A music conservatory near the border kept an instrument made from the hull of a lost vessel. When its strings were played, a map appeared in the varnish. {{heroPlayer}}’s contracted guards came for the instrument; {{otherPlayer}}’s frontier scouts held the concert hall, believing the map pointed to a cache on their side.",
+      "{{hero}} protected the musician as shots broke the gallery’s upper panes. The fighter answered from behind the seats while the musician played a lower note. A second line appeared in the varnish, tracing a path under the stage. Beneath the boards, a latch opened and a faint voice asked for the lights to be lowered.",
+      "Following the path would require the musician to keep playing while the hall remained exposed. The scouts could reach the stage through a service door, but had not heard the voice beneath it. The fighter watched the lower note pull another line across the varnish as the musician’s hand began to shake."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the hall and followed the completed map beneath the stage.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the stage and found the voice behind the hidden latch.",
+      "draw": "The voice was heard by both groups, but the map faded when the instrument fell silent."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A frozen seedling house held the only living cuttings of a valley’s old fruit trees. Its furnace had failed, and the caretaker was carrying trays into a warmer outbuilding. {{heroPlayer}}’s hired crew reached the service gate; {{otherPlayer}}’s frontier scouts guarded the main path after finding the caretaker’s tracks split in two.",
+      "{{hero}} met a defender at the furnace hatch and fought through to a stuck fuel valve. The fighter wrenched it half open; heat returned to one row of trays, but a loud crack came from the ceiling above the caretaker. A second set of footsteps ran toward the outbuilding, away from the warming plants.",
+      "Holding the valve might keep the cuttings alive until the pipe cleared. Following the footsteps could find who led the caretaker away, but leave the furnace unguarded. The scouts were at the outbuilding door with their lanterns raised. The fighter kept a hand on the valve as a tray slid from its shelf."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew restored the furnace, found the caretaker, and secured the seedling house.",
+      "heroLoses": "{{otherPlayer}}’s scouts protected the caretaker and moved the cuttings before the ceiling fell.",
+      "draw": "Most cuttings survived, but both parties left the damaged house and shared the outbuilding."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A fish hatchery’s monitoring screens showed constellations instead of its underwater cameras. Each star blinked when a fish passed through the nursery channel. {{heroPlayer}}’s technicians sought the camera hub; {{otherPlayer}}’s frontier scouts stood at the sluice, afraid an unfamiliar signal would release the young stock into the river.",
+      "{{hero}} followed the camera cables to a lens mounted inside the channel. The specialist rotated it, bringing the fish back on screen and revealing a small capsule caught behind a filter. As the image sharpened, the capsule began transmitting a pulse through the water, and the nursery fish gathered around the filter.",
+      "Lifting the capsule would require opening the filter and letting a few fish escape; leaving it could harm the whole nursery if the pulse grew stronger. The scouts were ready at the sluice with a net. The specialist held the filter latch while a school of fish turned together toward the open river."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians recovered the capsule and kept the nursery intact behind the filter.",
+      "heroLoses": "{{otherPlayer}}’s scouts held the sluice and removed the capsule with the fish safely netted.",
+      "draw": "The pulse stopped, but both groups kept the nursery closed while its cameras were repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Force de Réponse Rapide Merovingienne",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An emergency airstrip on a snowy plateau began flashing landing lights although no plane was due. The caretaker found one row of lamps pointing at a stretch of ice rather than the cleared runway. {{heroPlayer}}’s guards entered the equipment shed; {{otherPlayer}}’s frontier scouts held the northern beacon as an aircraft appeared through the clouds.",
+      "{{hero}} covered an electrician running between the lamp rows. Fire from the beacon struck the shed roof, and the fighter answered while the electrician reset the first circuit. The correct strip lit up, but the northern beacon stayed fixed on the ice. The aircraft banked toward it, losing height.",
+      "Cutting power to the beacon might bring the pilot’s eye to the runway; it could also leave the aircraft without any guide in the snow. The scouts were trying to turn the beacon by hand. The fighter watched the electrician reach the main breaker as the aircraft’s lights dipped behind a cloud."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards restored the lights and guided the aircraft onto the cleared strip.",
+      "heroLoses": "{{otherPlayer}}’s scouts turned the beacon and held the airstrip for the landing.",
+      "draw": "The aircraft landed safely, but the damaged beacon kept the strip closed afterward."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Kosmoflot",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "Two recovery crews reached an abandoned launch pad with orders to collect the same memory core. The pad’s beacon sent an arrival signal for a craft that had landed there years ago. {{heroPlayer}}’s crew opened the western bunker; {{otherPlayer}}’s team secured the gantry, where a fresh scorch mark crossed the old landing circle.",
+      "{{hero}} located the core beneath a protective glass hood and found it recording a second arrival. The specialist replayed its final seconds: one set of footsteps approached from the gantry, another from the sealed bunker. As the glass lifted, a motor somewhere under the pad began to turn and the old beacon repeated its call.",
+      "Removing the core would preserve its evidence but stop the beacon that might reveal the unseen craft. The other crew had reached the far end of the landing circle with a portable receiver. The specialist held the core above its socket while a new scorch line appeared beside the first."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the core and mapped the new arrival from its last recording.",
+      "heroLoses": "{{otherPlayer}}’s crew held the pad and traced the beacon with its receiver.",
+      "draw": "Both crews heard the beacon, but the scorch marks cooled before either could prove what made them."
+    }
   }
 ]
