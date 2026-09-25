@@ -16718,5 +16718,385 @@
       "heroLoses": "{{otherPlayer}}’s engineers stopped the test and traced the false destination.",
       "draw": "The cart remained parked while both groups checked the mine entrance."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A neighborhood research lab developed a portable water tester and promised to publish its design freely. Its first shipment went instead to a private buyer, leaving local wells untested. {{heroPlayer}}’s community advocates reached the shipping depot; {{otherPlayer}}’s researchers held the lab bench and tried to reproduce the missing tester from its notes.",
+      "{{hero}} traced the shipment label to a locker still inside the depot. The specialist opened it to find the tester intact beside a letter from the buyer asking that the design be sent to a drought-struck village before any public release. A hand-drawn map showed the village had wells farther away than either team knew.",
+      "The advocates could send the original tester to the village, but the researchers warned they needed it to finish the open design. Their neighbors were waiting for well results too. The specialist held the letter beside the lab notes while a courier arrived asking which destination should go on the parcel."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s advocates tested the local wells and delivered a design to the village.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the instrument and published its working plans.",
+      "draw": "The tester stayed at the lab while both communities shared early results."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A high-security observatory closed after its lenses began focusing noon sunlight onto a nearby field station. The station held an experiment its scientists could not move before evening. {{heroPlayer}}’s guards reached the observatory roof; {{otherPlayer}}’s researchers held the field station and prepared a reflective canopy.",
+      "{{hero}} covered a technician crossing between the lens mounts as fire struck the metal framework. The fighter kept the roof clear while the technician found an extra mirror clipped behind the principal lens. Removing it revealed a small dated photograph of the field station before construction, with a solitary tree where the experiment now stood.",
+      "The guards could turn the light away immediately, but the researchers wanted the mirror preserved to learn who had aligned it. The canopy was beginning to overheat. The fighter watched the technician shade the lens with a sheet of dark cloth while the last bright line slid across the station wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the observatory and protected the field experiment.",
+      "heroLoses": "{{otherPlayer}}’s researchers shielded the station and traced the altered lens.",
+      "draw": "Both sites closed temporarily while the mirror and photograph were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "objective",
+    "paragraphs": [
+      "Two survey teams reached a dormant relay at the bottom of a steep basin. Its beacon flashed the coordinates of a ridge both teams had crossed that morning. {{heroPlayer}}’s operators entered the relay hut; {{otherPlayer}}’s operators held the descent path and watched for changes in the signal.",
+      "{{hero}} opened the relay and found a row of unused memory slots, all labeled with the same day. The specialist inserted a test card, and the beacon briefly showed a safer route through the basin. On the returned card was a picture of a broken bridge along that route, with its repair completed in the image.",
+      "The hut team could transmit the safer route to those still approaching, but the path team wanted the bridge checked before anyone relied on it. A distant vehicle appeared at the ridge. The specialist held the card under the hut lamp while the beacon changed back to the original coordinates."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s operators secured the relay and verified the basin route.",
+      "heroLoses": "{{otherPlayer}}’s operators checked the bridge and guided the arriving vehicle.",
+      "draw": "The vehicle waited at the ridge while both teams tested the beacon."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A sealed field shelter began registering footsteps inside while its entrance remained buried beneath drifted sand. Its weather vane turned in a wind no one outside could feel. {{heroPlayer}}’s scouts reached the shelter roof; {{otherPlayer}}’s searchers held the dunes and tried to locate the old access tunnel.",
+      "{{hero}} removed the vane and found a thin line running through its axle to a bell below. The specialist tugged once, and the footsteps stopped. Beneath the roof hatch was a folded blanket, a filled canteen, and a second line tied to a marker pointing out toward the open desert.",
+      "The scouts could follow the marker across the dunes, but the searchers wanted the shelter opened first to learn who had left the supplies. The sand was shifting over its main door. The specialist held the canteen in one hand and the signaling line in the other as another footstep sounded below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts opened the shelter and traced the marked trail.",
+      "heroLoses": "{{otherPlayer}}’s searchers cleared the entrance and secured the supplies.",
+      "draw": "The shelter remained guarded while the dunes were searched."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A remote astronomy station recorded a star moving in a small circle while the rest of its chart remained still. The chart had been signed by an observer who was away. {{heroPlayer}}’s analysts reached the telescope console; {{otherPlayer}}’s surveyors held the outer dish and checked its bolts against the last inspection report.",
+      "{{hero}} compared the moving light with a reference image and found it came from a reflector mounted on the valley floor. The specialist trained a narrow beam on it and saw a second reflector answer from behind an abandoned research cabin. The sequence outlined a short path across ground the station maps called impassable.",
+      "The analysts could follow the reflected path, but the surveyors warned that old ground subsidence had closed it years ago. A supply carrier was due by nightfall. The specialist copied the light sequence as the reflector behind the cabin answered once more and then went dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts traced the reflector path and corrected the chart.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the dishes and checked the valley crossing.",
+      "draw": "The station watched the dark cabin while both teams examined the ground."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A desalination plant’s output labels began naming wells far inland rather than the sea intake feeding it. Villagers complained that their own water had begun tasting of salt. {{heroPlayer}}’s analysts opened the sampling room; {{otherPlayer}}’s guards held the pump yard and protected a delivery truck waiting for clean water.",
+      "{{hero}} tested each pipe and found that the labels had been switched after the water was processed, while the inland wells were unaffected. The specialist followed the mislabeled line to a storage tank containing a carefully packed set of geological samples. Its final sample bore a village name missing from the region’s current map.",
+      "The analysts could relabel the clean water and release the truck, but the guards wanted the unexpected samples explained before opening the tank. The villagers had brought empty cans to fill. The specialist held the missing village’s sample beside the real pipe diagram while the plant operator opened the delivery valve."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts restored the labels and protected the village’s water supply.",
+      "heroLoses": "{{otherPlayer}}’s guards secured the plant and traced the geological samples.",
+      "draw": "The truck waited while both teams verified each pipe by hand."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A fortified research pier began to break away from the shore after its outer pilings cracked. A night watchkeeper was still in the instrument hut at its far end. {{heroPlayer}}’s rescuers reached the shore gate; {{otherPlayer}}’s guards held a short boat ready if the walkway fell.",
+      "{{hero}} fought through a defender at the narrow gate and kept it open while a companion ran toward the hut. Beneath the grating, the fighter saw a freshly installed cable holding the broken pilings together. Its anchor was attached to the watchkeeper’s door, pulling it tighter whenever the pier shifted.",
+      "The rescuers could cut the cable to open the door, but the guards warned that doing so might let the pier separate. The boat waited below with its engine running. The fighter held the gate against the wind as the companion called the watchkeeper’s name through the jammed door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers freed the watchkeeper and stabilized the pier.",
+      "heroLoses": "{{otherPlayer}}’s guards reached the hut by boat and held the broken pilings.",
+      "draw": "The watchkeeper sheltered inside while both teams rigged a second anchor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "At a border crossing, two evacuation groups received the same number for their temporary shelter. One came from a storm area and the other from a closed industrial site. {{heroPlayer}}’s coordinators checked the shelter assignment; {{otherPlayer}}’s sentries held the buses apart while their drivers compared paper manifests.",
+      "{{hero}} found a torn page in the assignment book between the two entries. The specialist fitted its edge to a notice on the shelter door, revealing that a second building had been offered by a nearby school. No address was printed, but the school bus driver recognized the caretaker’s handwritten initials.",
+      "The coordinators could redirect one group to the school, but the sentries wanted the building inspected before anyone entered. Both buses carried tired passengers and little spare water. The specialist held the repaired notice beside the manifests while the caretaker answered a call from the crossing."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators found safe rooms for both evacuation groups.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the crossing and verified the school shelter.",
+      "draw": "The buses waited under cover while the second building was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital water purifier began rejecting a day’s clean supply after a sample alarm triggered in its lower compartment. The station had only one reserve tank for the night. {{heroPlayer}}’s patrol entered the service ring; {{otherPlayer}}’s technicians held the testing bench and retested the first rejected bottle.",
+      "{{hero}} covered a technician crawling toward the sample port as shots struck the ring’s handrail. The fighter held the approach while the technician found a tag caught inside the port, blocking its sensor. The tag named a different purifier on an older station module, disconnected from the water system but still pressurized.",
+      "The patrol could pull the tag and restart distribution, but the technicians wanted to know how it arrived in a sealed port. Families were waiting for water containers. The fighter watched the technician preserve the tag in a clean sleeve as the reserve tank’s level slowly fell."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol restored clean water and secured the sample port.",
+      "heroLoses": "{{otherPlayer}}’s technicians verified the supply and traced the older module.",
+      "draw": "The reserve tank served the station while the sensor was examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A subterranean museum lost air circulation during an exhibition of rescued cave paintings. Its entrance remained open, but a guide reported visitors waiting in a sealed gallery below. {{heroPlayer}}’s engineers reached the fan room; {{otherPlayer}}’s searchers held the lower stair and counted everyone coming out.",
+      "{{hero}} found the fan belt slipped from its wheel and a fallen painting crate resting on the drive shaft. The specialist moved the crate, revealing a museum label for a canvas not listed in the exhibition. Through the restored vent came a visitor’s voice describing a picture of an older cave entrance beyond the sealed gallery.",
+      "The engineers could restart the fan at full speed, but the searchers warned that loose pigment might lift from the paintings. Visitors needed fresh air. The specialist set the crate aside and began a slower turn of the wheel while the guide directed the last group toward the stair."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers restored air and cleared the galleries safely.",
+      "heroLoses": "{{otherPlayer}}’s searchers brought the visitors out and protected the paintings.",
+      "draw": "The museum remained closed while the fan and loose pigment were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A stone court hosted a display of swords surrendered after an old conflict. One blade was replaced overnight by a wooden practice copy, carved with a route toward the hills. {{heroPlayer}}’s guardians reached the display case; {{otherPlayer}}’s sentries held the courtyard and checked the museum’s visitor book.",
+      "{{hero}} fought past a defender at the narrow gate and kept the route clear while a curator examined the practice blade. A wrapped note inside its handle named the original sword’s keeper and asked for a meeting beside a cedar at dawn. The curator knew the tree, but not the signature beneath the note.",
+      "The guardians could take the blade to the cedar or hold the display until the keeper came forward. The sentries warned the hillside track had washed out in the rain. The fighter set the wooden copy beside the empty case as the first light appeared over the court wall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians found the original sword and its missing keeper.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the court and verified the hillside route.",
+      "draw": "The empty case stayed guarded while the dawn meeting was observed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A wildlife refuge mapped the return of a small nocturnal animal through old stone culverts. Its latest trail ended abruptly at a sealed research fence. {{heroPlayer}}’s rangers reached the fence with a tracking receiver; {{otherPlayer}}’s surveyors held the far gate and examined the refuge’s original migration map.",
+      "{{hero}} followed the receiver beneath the fence and discovered the animal had passed through a gap covered by fresh leaves. The specialist found its collar on a low branch and the animal nearby, unhurt, tending a nest. The nest lay on a metal case whose warning label had been worn away by weather.",
+      "The rangers could move the nest before the case was inspected, but the surveyors warned that the ground around it might be unstable. The animal returned with food while the group watched. The specialist marked the branch on the map and stepped back to let it pass."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rangers protected the nest and reopened the migration gap.",
+      "heroLoses": "{{otherPlayer}}’s surveyors secured the case and preserved the refuge route.",
+      "draw": "The fence stayed closed to visitors while the nest was monitored."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mountain shelter flashed its emergency lantern twice and then went dark. Three hikers were due there after a long climb through worsening cloud. {{heroPlayer}}’s patrol reached the narrow approach; {{otherPlayer}}’s searchers held the lower trail with the hikers’ planned route and an extra lamp.",
+      "{{hero}} covered a guide crossing the exposed scree as shots struck the shelter door. The fighter kept the path clear while the guide discovered a broken lantern beside a full thermos and three untouched blankets. Beneath the thermos lay a sketch showing a safer alternate path toward a second shelter, marked only by a small cairn.",
+      "The patrol could follow the sketch, but the searchers wanted the first shelter secured in case the hikers still arrived. Cloud had settled over both paths. The fighter watched the guide set the spare lamp in the window while a moving light appeared far across the slope."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol reached the second shelter and located the hikers.",
+      "heroLoses": "{{otherPlayer}}’s searchers secured the first shelter and marked both trails.",
+      "draw": "The lantern stayed lit while both groups searched the clouded slope."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A ruined hill station grew a living screen of vines over a broken radio mast. Its caretaker said the vines had begun carrying the mast’s vibrations through the walls, sounding like distant speech. {{heroPlayer}}’s biologists studied the screen; {{otherPlayer}}’s surveyors held the mast footing and checked its last service record.",
+      "{{hero}} touched a sensor to one vine and identified a repeated pulse made by a loose metal tag striking the mast. The specialist climbed to retrieve it and found a maintenance date engraved on the reverse, far more recent than the abandoned station’s closing. Another tag was visible deeper in the vines, beyond easy reach.",
+      "The biologists could trim the growth to reach the second tag, but the surveyors warned that the vines were supporting the weakened mast. The caretaker remembered a visitor who had tied something there. The specialist steadied the first tag as the second began its soft rhythm in the wind."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists preserved the vines and recovered the maintenance tags.",
+      "heroLoses": "{{otherPlayer}}’s surveyors stabilized the mast and traced the recent visitor.",
+      "draw": "The mast remained silent while both groups supported the living screen."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A frontier market’s quarantine gate locked itself with a caravan halfway through. Its cargo consisted of blankets for a clinic beyond the ridge. {{heroPlayer}}’s escorts reached the crank room; {{otherPlayer}}’s sentries held the outer lane and looked for the official who had signed the closure order.",
+      "{{hero}} forced a defender away from the gate crank and held its arm against a sudden release. A driver inspected the closure switch and found it wired to a small clock, set to the exact time the caravan arrived. In the clock’s case lay a blank medical certificate with the clinic’s address already printed.",
+      "The escorts could open the gate and deliver the blankets, but the sentries wanted the clinic contacted before anyone bypassed quarantine. A patient transport was expected from the other side. The fighter kept the crank steady while the driver read the certificate’s empty signature line aloud."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts cleared the gate and delivered the blankets safely.",
+      "heroLoses": "{{otherPlayer}}’s sentries verified the clinic and exposed the false closure.",
+      "draw": "The caravan waited under shelter while both parties checked the order."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A solar farm lost power while its mirrored collectors still pointed squarely at the sun. A field inspector reported one panel turned toward a locked equipment barn instead, against its programmed position. {{heroPlayer}}’s guards reached the array; {{otherPlayer}}’s technicians held the inverter shed and followed its declining output.",
+      "{{hero}} covered the inspector crossing a lane of mirrors as shots struck a collector frame. The fighter held the line while the inspector found a tiny stencil beneath the turned panel: a number matching a crate in the barn. Inside that crate lay a replacement inverter, undamaged and already signed out to a missing technician.",
+      "The guards could install the replacement immediately, but the technicians wanted to know why the old inverter failed and who diverted the panel. Households were already conserving power. The fighter watched the inspector shade the stencil while the technicians prepared a safe route across the hot array."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the array and restored the replacement inverter.",
+      "heroLoses": "{{otherPlayer}}’s technicians recovered the crate and brought the farm online.",
+      "draw": "The community used backup power while both groups checked the panels."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old tram bridge served as a temporary market during repairs to the main road. A vendor’s cart rolled away from its stall carrying a locked box of family deeds. {{heroPlayer}}’s escorts chased it across the bridge; {{otherPlayer}}’s sentries held the far ramp and warned that its rails were loose.",
+      "{{hero}} fought through a defender at the narrow ramp and stopped the cart before it reached the missing rail. The fighter held its wheel while the vendor opened the box, finding every deed intact except for a page listing a public walkway through the district. Under the cart lay that page, tucked inside a fresh market permit.",
+      "The escorts could return the box to the vendor, but the sentries wanted the walkway page examined before any stall was moved across it. The tram bridge creaked under the crowd. The fighter kept the cart still as the vendor read the permit’s signature beside the recovered deed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts saved the deeds and protected the market passage.",
+      "heroLoses": "{{otherPlayer}}’s sentries secured the ramp and checked the disputed walkway.",
+      "draw": "The market closed briefly while the old bridge was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A mutual aid storehouse received boxes of winter clothing with no sender, each addressed to a different family. One family had moved away years earlier. {{heroPlayer}}’s organizers checked the addresses; {{otherPlayer}}’s search party held the warehouse doors and examined the truck that had brought the gifts.",
+      "{{hero}} opened the box for the absent family with a storehouse witness and found a tailored coat bearing the size of a child still living nearby. Its pocket held a photograph taken at a community feast, with that child beside the missing family. The organizer recognized the feast as the day before the family left.",
+      "The organizers could deliver the coat to the child, but the search party wanted to trace the anonymous sender before any box went out. Cold weather was due overnight. The specialist held the photograph while a neighbor arrived with the child’s current address and an old story about the feast."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s organizers delivered the clothing and found the family’s connection.",
+      "heroLoses": "{{otherPlayer}}’s search party secured the gifts and traced the delivery truck.",
+      "draw": "The clothing stayed warm and dry while addresses were verified."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Onyx Contact Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A freight tether snapped between two floating platforms, leaving a cargo pod drifting across a busy flight lane. Its tag said the pod carried replacement air filters. {{heroPlayer}}’s guards reached a retrieval skiff; {{otherPlayer}}’s riggers held the dock and prepared a second line for the moving cargo.",
+      "{{hero}} covered a rigger leaning from the skiff as fire struck its rail. The fighter kept the approach clear while the rigger hooked the pod and saw that its outer latch had been replaced. Through the inspection window, the filters were still stacked correctly, but a small warning beacon blinked beneath them.",
+      "The guards could tow the pod back before another craft crossed its path, but the riggers wanted the beacon inspected before the filters entered the station. Traffic controllers were asking for the lane. The fighter held the skiff steady while the rigger drew the pod into a sheltered bay."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards recovered the pod and cleared the flight lane.",
+      "heroLoses": "{{otherPlayer}}’s riggers secured the filters and checked the hidden beacon.",
+      "draw": "The pod remained outside the station until the warning was understood."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Shasvastii Expeditionary Force",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "Two scouting parties returned to a hidden supply cache and found it sealed with different marks on its two doors. Both parties carried the correct opening code for one door. {{heroPlayer}}’s scouts reached the inner chamber; {{otherPlayer}}’s scouts held the outer entrance and counted the containers through a viewing slit.",
+      "{{hero}} opened the inner door and discovered a small case sitting between two larger containers. The specialist found a map on its underside showing a second cache connected by a narrow service duct. From that duct came a faint breath of warm air and the sound of another door being tested.",
+      "The inner party could take the case and close the cache, but the outer scouts wanted the unseen connection checked before the supplies moved. Their container count did not match the storage list. The specialist held the map in the chamber light while the warm air stopped, then began again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s scouts secured the case and located the connected cache.",
+      "heroLoses": "{{otherPlayer}}’s scouts protected the supplies and checked the service duct.",
+      "draw": "Both doors remained guarded while the container count was reconciled."
+    }
   }
 ]
