@@ -4,9 +4,10 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { buildArmyListOptions, availableProfiles, ListBuilderError, optimizeCombatGroups,
-  projectedRegularOrders, proposedFireteams, resolveRequiredProfile } from '../bot/build-list-generator.mjs'
+  projectedRegularOrders, proposedFireteams, resolveRequiredProfile,
+  rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutocompleteHandler,
-  createBuildListInteractionHandler, ensureBuildListCommand, getCurrentArmySource,
+  createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
   searchBuildListFactions, searchBuildListMissions, searchBuildListUnits } from '../bot/build-list-command.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
@@ -64,8 +65,59 @@ for (const result of results) {
   assert.equal(encodeArmyCode({ ...decoded, combatGroups: decoded.combatGroups }), result.code, 'Army code must round-trip')
 }
 assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 9
-  && projectedRegularOrders(result.profiles, 2) === 6), 'a useful 9–6 Regular Order split is considered')
+  && projectedRegularOrders(result.profiles, 2) === 6
+  || projectedRegularOrders(result.profiles, 1) === 10
+  && projectedRegularOrders(result.profiles, 2) === 5
+  && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0)
+    > result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
+'keep Tactical Awareness supported in a full primary group when it is the better order split')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
+
+const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
+assert.equal(lowPointLists.length, 3)
+assert.ok(lowPointLists.some(list => list.legality.totals.troopers >= 13),
+  'at 200 points the forced TAG should not cause the builder to give up on model count')
+assert.ok(lowPointLists.every(list => list.legality.status === 'legal'
+  && list.legality.totals.troopers >= 12))
+
+const onyxPayload = source.payloads.find(item => item.url?.endsWith('/units/en/604'))
+const onyxInput = { ...input, payload: onyxPayload, sectorialId: 604,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(604), mission: 'Crossing Lines', mustInclude: [] }
+const onyxProfiles = availableProfiles(onyxInput)
+assert.ok(onyxProfiles.some(item => item.slug === 't-drones' && item.aro),
+  'ARO coverage must recognize weapons as well as skills')
+assert.ok(onyxProfiles.some(item => item.slug === 'm-drones' && item.repeater),
+  'hacking support must recognize weapons and equipment')
+const onyxLists = buildArmyListOptions(onyxInput)
+assert.equal(onyxLists.length, 3)
+assert.ok(onyxLists.some(list => list.fireteams.some(team =>
+  new Set(team.members.map(label => label.split(' · ')[0])).size < team.members.length
+  && new Set(team.members).size > 1)),
+'mixed loadouts should be eligible for pure fireteams')
+for (const list of onyxLists) {
+  assert.equal(list.legality.status, 'legal')
+  assert.equal(list.legality.totals.troopers, 15)
+  const expensiveCopies = Object.values(Object.groupBy(list.profiles.filter(item => item.points >= 30), item => item.id))
+  assert.ok(expensiveCopies.every(copies => copies.length <= 2),
+    'do not fill the list with three identical expensive profiles when alternatives exist')
+  assert.ok(list.fireteams.some(team => team.level >= 2))
+  assert.ok(rosterConnections(list.profiles).some(link => link.startsWith('Hacking:')))
+  assert.ok(rosterConnections(list.profiles).some(link => link.startsWith('Repairs:')))
+  assert.ok(formatBuiltList(list, 1).length <= 1990)
+}
+const pairFixture = [
+  { id: 'hacker', unitId: 1, hacker: true, specialist: true, mobility: 45, points: 25 },
+  { id: 'repeater', unitId: 2, repeater: true, mobility: 55, points: 10 },
+  { id: 'engineer', unitId: 3, engineer: true, specialist: true, mobility: 45, points: 20 },
+  { id: 'remote', unitId: 4, repairable: true, points: 45 },
+]
+assert.ok(rosterSynergy(pairFixture) > rosterSynergy([pairFixture[0], pairFixture[2]]),
+  'the complete support network must beat isolated specialists')
+assert.ok(rosterRedundancy([pairFixture[0], pairFixture[0], pairFixture[0]]) > 0,
+  'a third copy of the same premium profile must carry an opportunity cost')
+assert.ok(rosterRedundancy([{ id: 'tag-a', unitId: 5, points: 68 }, { id: 'tag-b', unitId: 5, points: 64 }])
+  > rosterRedundancy([{ id: 'line-a', unitId: 6, points: 14 }, { id: 'line-b', unitId: 6, points: 15 }]),
+'two different loadouts of the same expensive unit must still carry a cost')
 
 const groupFixture = Array.from({ length: 15 }, (_, index) => ({
   id: String(index), label: `Trooper ${index}`, slots: 1, combatGroup: index < 10 ? 1 : 2,
@@ -104,6 +156,7 @@ assert.equal(messages.length, 3)
 for (const message of messages) {
   assert.ok(message.content.length <= 2000)
   assert.match(message.content, /Proposed fireteams[\s\S]*Level [23]/)
+  assert.match(message.content, /Support links/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
   assert.match(message.content, /Group 1 · \d+ Regular/)
   assert.match(message.content, /Open in Infinity Army/)

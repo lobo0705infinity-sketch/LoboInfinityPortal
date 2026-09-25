@@ -7,7 +7,7 @@ import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
 import { loadAroBenchmarkCatalog } from './aro-catalog-store.mjs'
 import { loadCloseCombatCatalog } from './close-combat-catalog-store.mjs'
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
-import { availableProfiles, buildArmyListOptions, ListBuilderError, projectedRegularOrders,
+import { availableProfiles, buildArmyListOptions, ListBuilderError, projectedRegularOrders, rosterConnections,
   resolveRequiredProfile } from './build-list-generator.mjs'
 
 export const BUILD_LIST_COMMAND = 'build-list'
@@ -172,10 +172,21 @@ export function formatBuiltList(list, number) {
   const fireteams = list.fireteams.length
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')
     : '• No legal Level 2 Duo or Haris found in this roster.'
-  const message = `**${list.faction} · ${list.mission} · option ${number}**\n`
+  const intro = `**${list.faction} · ${list.mission} · option ${number}**\n`
     + `${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC · ${list.legality.totals.troopers}/15 troopers · ${list.specialistCount} specialists\n`
-    + `**Proposed fireteams**\n${fireteams}\n${groupText}\n[Open in Infinity Army](${list.url})\n`
+    + `**Proposed fireteams**\n${fireteams}\n`
+  const ending = `${groupText}\n[Open in Infinity Army](${list.url})\n`
     + `-# Army profiles ${list.payloadVersion}; verify fireteams during deployment.`
+  const links = rosterConnections(list.profiles)
+  let support = ''
+  for (let size = links.length; size > 0; size--) {
+    const proposed = `**Support links** ${links.slice(0, size).join(' · ')}\n`
+    if (intro.length + proposed.length + ending.length <= 1990) {
+      support = proposed
+      break
+    }
+  }
+  const message = intro + support + ending
   if (message.length > 1990) throw new ListBuilderError('The generated list is too long for Discord; try fewer required profiles.')
   return message
 }
