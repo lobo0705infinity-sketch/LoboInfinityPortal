@@ -1101,4 +1101,385 @@
     },
     "mission": "The Dig"
   }
+,
+  {
+      "factions": [
+        "PanOceania",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the collapsed customs house uncovered a locked survey room and a brass seal press. PanOceania claimed the chamber under an older recovery order, while Druze Bayram Security arrived with a competing map. Before either crew could present proof, masonry settled around the entrance, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the brass seal press while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the brass seal press before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the salt quarry uncovered a locked survey room and a ceramic courier tube. PanOceania claimed the chamber under an older recovery order, while Ikari Company arrived with a competing map. Before either crew could present proof, salt dust blinded every rangefinder, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ceramic courier tube while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ceramic courier tube before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the abandoned tram depot uncovered a locked survey room and a star chart etched on slate. PanOceania claimed the chamber under an older recovery order, while StarCo arrived with a competing map. Before either crew could present proof, a dead tram shifted on its rails, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the star chart etched on slate while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the star chart etched on slate before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the flooded counting house uncovered a locked survey room and a ledger sealed in wax. PanOceania claimed the chamber under an older recovery order, while White Company arrived with a competing map. Before either crew could present proof, black water climbed the stairwell, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ledger sealed in wax while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ledger sealed in wax before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Military Orders"
+      ],
+      "heroFaction": "Military Orders",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the ruined chapel uncovered a locked survey room and a bell mechanism. Military Orders claimed the chamber under an older recovery order, while Military Orders arrived with a competing map. Before either crew could present proof, the cracked bell began to swing, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the bell mechanism while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the bell mechanism before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Kestrel Colonial Force"
+      ],
+      "heroFaction": "Kestrel Colonial Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the orchard cistern uncovered a locked survey room and a irrigation tablet. Military Orders claimed the chamber under an older recovery order, while Kestrel Colonial Force arrived with a competing map. Before either crew could present proof, roots tightened across the passage, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the irrigation tablet while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the irrigation tablet before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Neoterra Capitaline Army"
+      ],
+      "heroFaction": "Neoterra Capitaline Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the sunken observatory uncovered a locked survey room and a mirrored lens assembly. Military Orders claimed the chamber under an older recovery order, while Neoterra Capitaline Army arrived with a competing map. Before either crew could present proof, the dome's remaining glass fell inward, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the mirrored lens assembly while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the mirrored lens assembly before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the jungle pumping station uncovered a locked survey room and a pressure map. Military Orders claimed the chamber under an older recovery order, while Shock Army of Acontecimento arrived with a competing map. Before either crew could present proof, a pump restarted without warning, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the pressure map while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the pressure map before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the glacial cable vault uncovered a locked survey room and a frozen navigation core. Military Orders claimed the chamber under an older recovery order, while Svalarheima Winter Force arrived with a competing map. Before either crew could present proof, meltwater split the ice floor, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the frozen navigation core while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the frozen navigation core before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the coastal desalination plant uncovered a locked survey room and a tide-calibration wheel. Military Orders claimed the chamber under an older recovery order, while Varuna Immediate Reaction Division arrived with a competing map. Before either crew could present proof, the returning tide filled the intake, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the tide-calibration wheel while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the tide-calibration wheel before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the buried magistrate's court uncovered a locked survey room and a testimony cylinder. Military Orders claimed the chamber under an older recovery order, while Yu Jing arrived with a competing map. Before either crew could present proof, archive shelves toppled into the aisle, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the testimony cylinder while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the testimony cylinder before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the old parade ground uncovered a locked survey room and a bronze muster roll. Military Orders claimed the chamber under an older recovery order, while Imperial Service arrived with a competing map. Before either crew could present proof, buried loudspeakers crackled to life, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the bronze muster roll while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the bronze muster roll before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the armored rail depot uncovered a locked survey room and a switching diagram. Military Orders claimed the chamber under an older recovery order, while Invincible Army arrived with a competing map. Before either crew could present proof, an unmanned engine rolled downhill, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the switching diagram while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the switching diagram before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the mountain weather station uncovered a locked survey room and a storm chronometer. Military Orders claimed the chamber under an older recovery order, while White Banner arrived with a competing map. Before either crew could present proof, lightning grounded through the antenna, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the storm chronometer while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the storm chronometer before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the forgotten survey camp uncovered a locked survey room and a surveyor's compass. Military Orders claimed the chamber under an older recovery order, while Ariadna arrived with a competing map. Before either crew could present proof, loose spoil slid toward the tents, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the surveyor's compass while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the surveyor's compass before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Caledonian Highlander Army"
+      ],
+      "heroFaction": "Caledonian Highlander Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the peat-cutters' village uncovered a locked survey room and a carved boundary stone. Military Orders claimed the chamber under an older recovery order, while Caledonian Highlander Army arrived with a competing map. Before either crew could present proof, bog water swallowed the plank road, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the carved boundary stone while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the carved boundary stone before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Force de Réponse Rapide Merovingienne"
+      ],
+      "heroFaction": "Force de Réponse Rapide Merovingienne",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the vineyard aqueduct uncovered a locked survey room and a water-allocation register. Military Orders claimed the chamber under an older recovery order, while Force de Réponse Rapide Merovingienne arrived with a competing map. Before either crew could present proof, a retaining arch shed stones, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the water-allocation register while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the water-allocation register before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Kosmoflot"
+      ],
+      "heroFaction": "Kosmoflot",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the permafrost listening post uncovered a locked survey room and a magnetic tape spool. Military Orders claimed the chamber under an older recovery order, while Kosmoflot arrived with a competing map. Before either crew could present proof, the thaw buckled the steel ladder, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the magnetic tape spool while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the magnetic tape spool before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tartary Army Corps"
+      ],
+      "heroFaction": "Tartary Army Corps",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the steppe grain silo uncovered a locked survey room and a granary tally board. Military Orders claimed the chamber under an older recovery order, while Tartary Army Corps arrived with a competing map. Before either crew could present proof, stored dust ignited in the vents, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the granary tally board while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the granary tally board before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "USAriadna Ranger Force"
+      ],
+      "heroFaction": "USAriadna Ranger Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the desert ranger outpost uncovered a locked survey room and a ranger beacon. Military Orders claimed the chamber under an older recovery order, while USAriadna Ranger Force arrived with a competing map. Before either crew could present proof, a sandstorm erased the surface markers, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ranger beacon while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ranger beacon before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    }
 ]
