@@ -15,13 +15,18 @@ export const BUILD_LIST_COMMAND = 'build-list'
 export const BUILD_LIST_FACTION_OPTION = 'faction'
 export const BUILD_LIST_MISSION_OPTION = 'mission'
 export const BUILD_LIST_MUST_INCLUDE_OPTION = 'must-include'
+export const BUILD_LIST_EXTRA_MODEL_OPTIONS = Object.freeze(['model-2', 'model-3', 'model-4', 'model-5'])
 export const BUILD_LIST_COMMAND_DEFINITION = Object.freeze({
   name: BUILD_LIST_COMMAND,
   description: 'Build legal Infinity Army lists for a faction and mission',
   options: [
     { name: BUILD_LIST_FACTION_OPTION, description: 'Start typing a faction or sectorial, then select it', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
     { name: BUILD_LIST_MISSION_OPTION, description: 'Start typing a mission, such as Hardlock', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
-    { name: BUILD_LIST_MUST_INCLUDE_OPTION, description: 'Start typing units, separated by commas', required: false, type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: BUILD_LIST_MUST_INCLUDE_OPTION, description: 'Model 1: start typing to select (commas also work)', required: false, type: ApplicationCommandOptionType.String, autocomplete: true },
+    ...BUILD_LIST_EXTRA_MODEL_OPTIONS.map((name, index) => ({
+      name, description: `Model ${index + 2}: start typing to select`, required: false,
+      type: ApplicationCommandOptionType.String, autocomplete: true,
+    })),
     { name: 'points', description: 'Army points (default: 300)', required: false, type: ApplicationCommandOptionType.Integer,
       choices: [100, 150, 200, 250, 300, 350, 400].map(value => ({ name: String(value), value })) },
   ],
@@ -119,7 +124,9 @@ export function createBuildListAutocompleteHandler({ searchFaction = searchBuild
       const focused = interaction.options.getFocused(true)
       if (focused.name === BUILD_LIST_FACTION_OPTION) await interaction.respond(await searchFaction(focused.value))
       else if (focused.name === BUILD_LIST_MISSION_OPTION) await interaction.respond(await searchMission(focused.value))
-      else if (focused.name === BUILD_LIST_MUST_INCLUDE_OPTION) await interaction.respond(await searchUnit(focused.value, interaction.options.getString(BUILD_LIST_FACTION_OPTION)))
+      else if (focused.name === BUILD_LIST_MUST_INCLUDE_OPTION || BUILD_LIST_EXTRA_MODEL_OPTIONS.includes(focused.name)) {
+        await interaction.respond(await searchUnit(focused.value, interaction.options.getString(BUILD_LIST_FACTION_OPTION)))
+      }
       else return false
     }
     catch (error) {
@@ -156,7 +163,8 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
   const lists = buildArmyListOptions({ ...source, sectorialId: Number(source.faction.id),
     rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)), gunfighterCatalog,
     aroCatalog, closeCombatCatalog, mobilityCatalog,
-    mission, mustInclude: String(mustInclude).split(','), points, teamTypeEvidence })
+    mission, mustInclude: (Array.isArray(mustInclude) ? mustInclude : [mustInclude])
+      .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence })
   for (const list of lists) list.teamTypeEvidence = teamTypeEvidence?.decisiveLists ? teamTypeEvidence : null
   return lists.map((list, index) => ({ allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1) }))
 }
@@ -209,7 +217,8 @@ export function createBuildListInteractionHandler({ build = buildListResponses, 
       const results = await build({
         faction: interaction.options.getString('faction', true),
         mission: interaction.options.getString('mission', true),
-        mustInclude: interaction.options.getString('must-include') || '',
+        mustInclude: [BUILD_LIST_MUST_INCLUDE_OPTION, ...BUILD_LIST_EXTRA_MODEL_OPTIONS]
+          .flatMap(name => (interaction.options.getString(name) || '').split(',').map(value => value.trim()).filter(Boolean)),
         points: interaction.options.getInteger('points') || 300,
       })
       await interaction.editReply(results[0])
@@ -232,7 +241,8 @@ export async function ensureBuildListCommand(client) {
     const existing = commands.find(command => command.name === BUILD_LIST_COMMAND)
     const matches = existing?.description === BUILD_LIST_COMMAND_DEFINITION.description
       && existing.options?.map(option => option.name).join(',') === BUILD_LIST_COMMAND_DEFINITION.options.map(option => option.name).join(',')
-      && existing.options?.slice(0, 3).every(option => option.autocomplete === true)
+      && existing.options?.every((option, index) => Boolean(option.autocomplete) === Boolean(BUILD_LIST_COMMAND_DEFINITION.options[index].autocomplete)
+        && option.description === BUILD_LIST_COMMAND_DEFINITION.options[index].description)
     const command = !existing ? await guild.commands.create(BUILD_LIST_COMMAND_DEFINITION)
       : matches ? existing : await existing.edit(BUILD_LIST_COMMAND_DEFINITION)
     registered.push({ applicationId: command.applicationId, guildId: guild.id, id: command.id })

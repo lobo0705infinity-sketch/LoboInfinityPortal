@@ -142,8 +142,6 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!match) throw new ListBuilderError(`No selectable ${faction.name} profile matches “${name}”.`)
       return match
     })
-  const forcedKeys = new Set(forced.map(item => item.id))
-  if (forcedKeys.size !== forced.length) throw new ListBuilderError('The same required profile was specified twice.')
   const side = forced.some(item => item.slug === 'iguana-squadron') ? 'Surface'
     : forced.some(item => item.slug === 'gator-squadron') ? 'Deepspace' : null
   constraints.side = side

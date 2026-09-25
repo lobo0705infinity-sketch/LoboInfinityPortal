@@ -6,7 +6,7 @@ import { gunzipSync } from 'node:zlib'
 import { buildArmyListOptions, availableProfiles, fireteamUsefulness, ListBuilderError, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
-import { BUILD_LIST_COMMAND_DEFINITION, buildListResponses, createBuildListAutocompleteHandler,
+import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
   createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
   searchBuildListFactions, searchBuildListMissions, searchBuildListUnits } from '../bot/build-list-command.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
@@ -80,6 +80,11 @@ assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 
     >= result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
 'keep Tactical Awareness supported in a capable primary group when it is the better order split')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
+const repeatedModels = buildArmyListOptions({ ...input, mustInclude: ['ALGUACIL', 'ALGUACIL'], count: 1 })
+assert.equal(repeatedModels[0].profiles.filter(profile => profile.id === resolveRequiredProfile(profiles, 'ALGUACIL').id).length, 2,
+  'selecting the same model twice requests two actual copies when its availability allows it')
+assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Jazz'] }), ListBuilderError,
+  'repeated models still obey Army availability')
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
 assert.equal(lowPointLists.length, 3)
@@ -279,18 +284,23 @@ for (const message of messages) {
   assert.match(message.content, /Open in Infinity Army/)
 }
 const calls = []
-const handler = createBuildListInteractionHandler({ build: async () => messages, logger: { error() {} } })
+let selectedModels
+const handler = createBuildListInteractionHandler({ build: async options => { selectedModels = options.mustInclude; return messages }, logger: { error() {} } })
 const handled = await handler({
   isChatInputCommand: () => true, commandName: 'build-list',
-  options: { getString: name => ({ faction: 'Corregidor', mission: 'Hardlock', 'must-include': 'Jazz, Iguana' })[name], getInteger: () => 300 },
+  options: { getString: name => ({ faction: 'Corregidor', mission: 'Hardlock', 'must-include': 'Jazz, Iguana',
+    'model-2': 'ALGUACIL', 'model-3': 'ALGUACIL', 'model-4': 'SOMBRA' })[name], getInteger: () => 300 },
   deferReply: async () => calls.push('defer'), editReply: async result => calls.push(result),
   followUp: async result => calls.push(result),
 })
 assert.equal(handled, true)
 assert.equal(calls.length, 4, 'defer, initial result, and two follow-up list options')
+assert.deepEqual(selectedModels, ['Jazz', 'Iguana', 'ALGUACIL', 'ALGUACIL', 'SOMBRA'],
+  'independent model slots combine with the original comma input and preserve requested copies')
 
 assert.equal(BUILD_LIST_COMMAND_DEFINITION.options[0].autocomplete, true)
-assert.ok(BUILD_LIST_COMMAND_DEFINITION.options.slice(0, 3).every(option => option.autocomplete))
+assert.deepEqual(BUILD_LIST_EXTRA_MODEL_OPTIONS, ['model-2', 'model-3', 'model-4', 'model-5'])
+assert.ok(BUILD_LIST_COMMAND_DEFINITION.options.slice(0, 7).every(option => option.autocomplete))
 const suggestions = await searchBuildListFactions('corr')
 assert.deepEqual(suggestions, [{ name: 'Jurisdictional Command of Corregidor', value: '502' }])
 assert.equal((await searchBuildListFactions('nomads'))[0].value, '501')
@@ -325,6 +335,14 @@ assert.equal(await autocomplete({ isAutocomplete: () => true, commandName: 'buil
   options: { getFocused: () => ({ name: 'must-include', value: 'Jazz, iguana' }), getString: () => '502' },
   respond: async choices => { repliedChoices = choices } }), true)
 assert.equal(repliedChoices[0].value, 'Jazz, IGUANA')
+assert.equal(await autocomplete({ isAutocomplete: () => true, commandName: 'build-list',
+  options: { getFocused: () => ({ name: 'model-2', value: 'iguana' }), getString: () => '502' },
+  respond: async choices => { repliedChoices = choices } }), true)
+assert.equal(repliedChoices[0].value, 'IGUANA', 'an extra slot selects only its own model')
+assert.equal(await autocomplete({ isAutocomplete: () => true, commandName: 'build-list',
+  options: { getFocused: () => ({ name: 'model-3', value: 'iguana' }), getString: () => '502' },
+  respond: async choices => { repliedChoices = choices } }), true)
+assert.equal(repliedChoices[0].value, 'IGUANA', 'the same model may be selected again when Army availability allows')
 
 const chosenFaction = await getCurrentArmySource('502', async url => ({ ok: true,
   json: async () => url.endsWith('/metadata') ? source.metadata : payload }))
