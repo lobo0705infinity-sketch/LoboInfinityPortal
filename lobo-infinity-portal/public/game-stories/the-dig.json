@@ -1482,4 +1482,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Military Orders",
+        "Haqqislam"
+      ],
+      "heroFaction": "Haqqislam",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a desert hospice broke into a tiled chamber containing a copper astrolabe. Military Orders entered from the old foundation, while Haqqislam opened a route from the opposite slope. Neither team had finished bracing its tunnel when sand poured through a split ceiling, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the copper astrolabe. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the copper astrolabe, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the copper astrolabe and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Hassassin Bahram"
+      ],
+      "heroFaction": "Hassassin Bahram",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a mountain caravanserai broke into a tiled chamber containing a coded prayer wheel. Military Orders entered from the old foundation, while Hassassin Bahram opened a route from the opposite slope. Neither team had finished bracing its tunnel when the supporting terrace shifted, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the coded prayer wheel and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the coded prayer wheel, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the coded prayer wheel and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Qapu Khalqi"
+      ],
+      "heroFaction": "Qapu Khalqi",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a silted harbor fort broke into a tiled chamber containing a harbor master's sounding chain. Military Orders entered from the old foundation, while Qapu Khalqi opened a route from the opposite slope. Neither team had finished bracing its tunnel when seawater forced open a lower gate, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the harbor master's sounding chain. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the harbor master's sounding chain, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the harbor master's sounding chain and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ramah Taskforce"
+      ],
+      "heroFaction": "Ramah Taskforce",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a field surgery compound broke into a tiled chamber containing a glass medicine case. Military Orders entered from the old foundation, while Ramah Taskforce opened a route from the opposite slope. Neither team had finished bracing its tunnel when an oxygen line ruptured, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the glass medicine case. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the glass medicine case, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the glass medicine case and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Nomads"
+      ],
+      "heroFaction": "Nomads",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a derelict orbital-elevator station broke into a tiled chamber containing a vacuum-rated dispatch box. Military Orders entered from the old foundation, while Nomads opened a route from the opposite slope. Neither team had finished bracing its tunnel when the elevator cable began descending, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the vacuum-rated dispatch box and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the vacuum-rated dispatch box, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the vacuum-rated dispatch box and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Bakunin Jurisdictional Command"
+      ],
+      "heroFaction": "Bakunin Jurisdictional Command",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a subterranean artists' quarter broke into a tiled chamber containing a kinetic sculpture core. Military Orders entered from the old foundation, while Bakunin Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when hidden projectors flooded the tunnels with moving shadows, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the kinetic sculpture core. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the kinetic sculpture core, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the kinetic sculpture core and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Corregidor Jurisdictional Command"
+      ],
+      "heroFaction": "Corregidor Jurisdictional Command",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a dry-docked freighter broke into a tiled chamber containing a engraved docking plate. Military Orders entered from the old foundation, while Corregidor Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when the hull groaned against its cradle, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the engraved docking plate. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the engraved docking plate, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the engraved docking plate and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tunguska Jurisdictional Command"
+      ],
+      "heroFaction": "Tunguska Jurisdictional Command",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a abandoned financial exchange broke into a tiled chamber containing a cold-storage account key. Military Orders entered from the old foundation, while Tunguska Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when security shutters divided the vault, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the cold-storage account key and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the cold-storage account key, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the cold-storage account key and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Combined Army"
+      ],
+      "heroFaction": "Combined Army",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a cratered xenology lab broke into a tiled chamber containing a hexagonal specimen cradle. Military Orders entered from the old foundation, while Combined Army opened a route from the opposite slope. Neither team had finished bracing its tunnel when a dormant specimen enclosure warmed, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the hexagonal specimen cradle. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the hexagonal specimen cradle, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the hexagonal specimen cradle and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Morat Aggression Force"
+      ],
+      "heroFaction": "Morat Aggression Force",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a basalt quarry broke into a tiled chamber containing a obsidian drilling crown. Military Orders entered from the old foundation, while Morat Aggression Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when blasting charges armed themselves, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the obsidian drilling crown. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the obsidian drilling crown, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the obsidian drilling crown and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Onyx Contact Force"
+      ],
+      "heroFaction": "Onyx Contact Force",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a sealed antenna farm broke into a tiled chamber containing a phase-locked signal prism. Military Orders entered from the old foundation, while Onyx Contact Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when every antenna turned toward the excavation, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the phase-locked signal prism and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the phase-locked signal prism, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the phase-locked signal prism and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Shasvastii Expeditionary Force"
+      ],
+      "heroFaction": "Shasvastii Expeditionary Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a overgrown seed bank broke into a tiled chamber containing a spore catalog etched in crystal. Military Orders entered from the old foundation, while Shasvastii Expeditionary Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when roots burst through the archive floor, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the spore catalog etched in crystal. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the spore catalog etched in crystal, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the spore catalog etched in crystal and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "ALEPH"
+      ],
+      "heroFaction": "ALEPH",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a buried philosophy archive broke into a tiled chamber containing a bronze mnemonic cylinder. Military Orders entered from the old foundation, while ALEPH opened a route from the opposite slope. Neither team had finished bracing its tunnel when recorded voices began answering questions, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the bronze mnemonic cylinder. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the bronze mnemonic cylinder, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the bronze mnemonic cylinder and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Operations Subsection"
+      ],
+      "heroFaction": "Operations Subsection",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a collapsed transit nexus broke into a tiled chamber containing a ceramic route token. Military Orders entered from the old foundation, while Operations Subsection opened a route from the opposite slope. Neither team had finished bracing its tunnel when an empty tram rolled into the station, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the ceramic route token and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the ceramic route token, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the ceramic route token and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Steel Phalanx"
+      ],
+      "heroFaction": "Steel Phalanx",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a marble athletic precinct broke into a tiled chamber containing a laurel-shaped timing device. Military Orders entered from the old foundation, while Steel Phalanx opened a route from the opposite slope. Neither team had finished bracing its tunnel when the arena's buried clock started counting backward, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the laurel-shaped timing device. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the laurel-shaped timing device, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the laurel-shaped timing device and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "O-12"
+      ],
+      "heroFaction": "O-12",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a quarantined courthouse broke into a tiled chamber containing a witness seal with three faces. Military Orders entered from the old foundation, while O-12 opened a route from the opposite slope. Neither team had finished bracing its tunnel when locked evidence drawers sprang open, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the witness seal with three faces. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the witness seal with three faces, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the witness seal with three faces and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Starmada"
+      ],
+      "heroFaction": "Starmada",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a storm-battered lighthouse broke into a tiled chamber containing a tide clock built without hands. Military Orders entered from the old foundation, while Starmada opened a route from the opposite slope. Neither team had finished bracing its tunnel when a storm surge struck the sea wall, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the tide clock built without hands and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the tide clock built without hands, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the tide clock built without hands and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Torchlight Brigade"
+      ],
+      "heroFaction": "Torchlight Brigade",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a unfinished pilgrimage station broke into a tiled chamber containing a unfinished reliquary frame. Military Orders entered from the old foundation, while Torchlight Brigade opened a route from the opposite slope. Neither team had finished bracing its tunnel when the foundation crane started lifting by itself, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the unfinished reliquary frame. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the unfinished reliquary frame, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the unfinished reliquary frame and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Japanese Secessionist Army"
+      ],
+      "heroFaction": "Japanese Secessionist Army",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a cedar-shored shrine broke into a tiled chamber containing a lacquered survey tablet. Military Orders entered from the old foundation, while Japanese Secessionist Army opened a route from the opposite slope. Neither team had finished bracing its tunnel when bells sounded beneath the lake, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the lacquered survey tablet. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the lacquered survey tablet, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the lacquered survey tablet and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Oban"
+      ],
+      "heroFaction": "Oban",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a terraced monastery broke into a tiled chamber containing a stone counterweight marked with stars. Military Orders entered from the old foundation, while Oban opened a route from the opposite slope. Neither team had finished bracing its tunnel when the counterweight pulled against its buried chain, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the stone counterweight marked with stars and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the stone counterweight marked with stars, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the stone counterweight marked with stars and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    }
 ]
