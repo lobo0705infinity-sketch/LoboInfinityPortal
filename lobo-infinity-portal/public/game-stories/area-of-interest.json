@@ -14058,5 +14058,385 @@
       "heroLoses": "{{otherPlayer}}’s search party recovered the capsule and cleared the transport stop.",
       "draw": "The transport departed without the capsule while its sender remained unknown."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An old freight vessel carried a great warning bell beneath its keel, silent since its retirement. The bell began sounding after the ship was lifted into a repair cradle, although no water touched it. {{heroPlayer}}’s boarding party climbed from the dry dock; {{otherPlayer}}’s mechanics held the keel scaffold with the vessel’s original plans.",
+      "{{hero}} forced through the cramped ballast passage, driving a defender from the locked bell compartment. The fighter held the door for a companion who found its clapper tied to a live line running up into the ship. Each toll tugged a different line above, moving a row of numbered markers behind the bridge console.",
+      "The boarding party could cut the clapper free and silence the bell, or follow the moving markers to whatever message the old vessel carried. The mechanics feared another pull would disturb the repair cradle. The fighter held the taut line between gloved hands as one more slow toll shook the hull."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s boarding party secured the bell and followed its numbered signal.",
+      "heroLoses": "{{otherPlayer}}’s mechanics stabilized the cradle and decoded the moving markers.",
+      "draw": "The bell was silenced while both parties checked the vessel’s hidden lines."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "A communal workshop built a small machine to sort damaged seeds from healthy ones. On its first day, it rejected every packet but one brought by a stranger. {{heroPlayer}}’s botanists requested the surviving packet; {{otherPlayer}}’s makers guarded the sorter and demanded to know why its test results differed from the printed labels.",
+      "{{hero}} opened the sorter’s sampling chamber and found a strip of soil from a distant valley tucked beneath its sensor. The specialist matched that soil to the surviving seeds and discovered they had been collected from the same abandoned farm. Its packet held a note asking whoever planted them to contact someone still living in the valley.",
+      "The botanists could try the seeds under controlled conditions or return the packet unopened to its sender. The makers wanted to repair the sorter before any more people relied on it. The specialist held the note beside the machine as another rejected packet rattled into the tray."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists identified the farm and preserved the surviving seeds.",
+      "heroLoses": "{{otherPlayer}}’s makers repaired the sorter and traced its planted soil sample.",
+      "draw": "The packet remained sealed until the stranger’s contact could be found."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "At a scrap sorting station, a conveyor began delivering parts labeled with tomorrow’s collection date. One broken helmet bore the name of a worker still on shift. {{heroPlayer}}’s retrieval team came through the salvage yard; {{otherPlayer}}’s stewards kept the workers away from the belt and its strange labels.",
+      "{{hero}} held the sorting gantry as fire struck the stacks of metal below. The fighter gave a technician time to stop the belt, and a sealed panel opened beneath it. Inside sat a clock wired to an inventory printer, running one day fast; the worker’s helmet had been placed beside it before the shift began.",
+      "The retrieval team could seize the printer and learn who staged the labels, or warn the named worker that someone had chosen their equipment. The stewards already knew where the worker had been assigned. The fighter watched the stopped belt while the printer slowly fed out another sheet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s retrieval team secured the printer and protected the named worker.",
+      "heroLoses": "{{otherPlayer}}’s stewards took the gantry and identified who planted the helmet.",
+      "draw": "The belt stayed stopped while the worker’s assignment was changed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A vessel’s public portrait booth began printing pictures of passengers against a background showing a closed maintenance deck. In each print, the same door stood slightly more open. {{heroPlayer}}’s surveyors reached the booth to inspect its camera; {{otherPlayer}}’s ship stewards searched the closed deck and asked passengers to keep their portraits.",
+      "{{hero}} followed a hidden optical cable from the booth to the maintenance door and discovered a lens installed behind its lock. The specialist focused it on the printed scene and saw a stretcher wheel just inside. Someone had used the portraits to ask for help without sending a message over the ship’s monitored network.",
+      "The surveyors could open the door from the cable side, but the stewards had the deck’s emergency code and a safer route. A fresh portrait emerged from the booth with the door completely open. The specialist folded it around the image of the wheel before carrying it to the deck."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s surveyors traced the camera and reached the person inside the deck.",
+      "heroLoses": "{{otherPlayer}}’s stewards opened the maintenance door and secured the hidden camera.",
+      "draw": "The deck was sealed for a careful search while the portraits were preserved."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A vessel’s communal archive announced a time capsule from its founding crew, then identified the depositor as a person who had not yet been born. The capsule was due to open at a public ceremony. {{heroPlayer}}’s historians came to verify the seal; {{otherPlayer}}’s archivists held the exhibit room and the original founding log.",
+      "{{hero}} inspected the capsule’s hinge and found a layer of fresh wax laid over a much older engraving. The specialist warmed the wax until a second name appeared: the depositor’s grandmother. Inside the hinge was a thin strip of film showing a route to a room sealed during the vessel’s earliest crossing.",
+      "The historians could disclose the film at the ceremony or visit the sealed room first to learn why the grandmother hid it. The archivists worried opening the room might damage a structural bulkhead. The specialist replaced the warm wax and faced the waiting families beyond the exhibit door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s historians authenticated the capsule and revealed its intended family history.",
+      "heroLoses": "{{otherPlayer}}’s archivists secured the exhibit and checked the old sealed room.",
+      "draw": "The ceremony paused while both groups examined the film and the bulkhead."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A communal kitchen’s scheduling display assigned tomorrow’s meals to a deck that had been sealed after a fire. The cook recognized the recipes as favorites of the people who once lived there. {{heroPlayer}}’s investigators entered the serving hall; {{otherPlayer}}’s volunteers kept cooking for the present residents while they checked the old deck roster.",
+      "{{hero}} traced the meal orders to a battered terminal hidden behind the ovens. The specialist found a recording made during the fire, showing a survivor carried through an access shaft that did not appear on the deck plan. The final frame caught a mark scratched into the shaft wall, directly opposite today’s kitchen.",
+      "The investigators could open the wall and follow the shaft, though the cooks needed their ovens to feed everyone that evening. The volunteers had found the survivor’s name but no record of where they went. The specialist held the paused image next to the warm brick and listened for movement beyond it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s investigators found the hidden shaft and traced the survivor’s route.",
+      "heroLoses": "{{otherPlayer}}’s volunteers recovered the fire records and kept the kitchen open.",
+      "draw": "The wall remained sealed while the former residents were contacted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A rehearsal ship for spacewalk crews drifted away from its berth during a safety demonstration. An instructor still inside reported that a student was caught in the mock airlock. {{heroPlayer}}’s rescuers approached from a small transfer pod; {{otherPlayer}}’s maintenance crew held a guide line to the drifting hull.",
+      "{{hero}} forced past a defender at the practice airlock and wedged the pressure door open with a training bar. Behind it, the student was conscious but pinned beneath a fallen suit rack. The fighter lifted one end while an instructor reached the release wheel, only to find its handle missing from the assembly.",
+      "The rescuers could carry the student back through the pod or wait for the maintenance crew to stabilize the ship and free the rack. Each shift of the hull pressed the door harder against the training bar. The fighter held the weight steady while the student explained where the missing handle had been left."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers freed the student and brought the practice ship home.",
+      "heroLoses": "{{otherPlayer}}’s maintenance crew secured the hull and cleared the airlock.",
+      "draw": "The student was stabilized while both crews rigged a safe transfer."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A memorial wall aboard a migrating fleet displayed hundreds of names under small removable lights. Overnight, one light moved to a blank panel and a living passenger received a condolence notice. {{heroPlayer}}’s inquiry team took the service corridor; {{otherPlayer}}’s stewards stayed with the passenger and checked the public visitor log.",
+      "{{hero}} removed the blank panel and found a hand-operated switch wired to a narrow compartment behind the wall. The specialist opened it to find a folded uniform with the passenger’s old identification number inside. A written message asked the wearer to come alone to the memorial before the fleet’s next departure.",
+      "The inquiry team could wait at the compartment and watch who came for the uniform, but the stewards wanted to warn the passenger before the message spread. The passenger had not worn that number in years. The specialist restored the panel while the displaced light shone through its seam."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inquiry team traced the hidden compartment and protected the passenger.",
+      "heroLoses": "{{otherPlayer}}’s stewards secured the memorial and identified who moved the light.",
+      "draw": "The condolence notice was withdrawn while the old identification was investigated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A transport platform lost contact with a shuttle carrying emergency oxygen tanks. The shuttle appeared in a maintenance berth with its crew absent and one tank disconnected. {{heroPlayer}}’s security unit reached the boarding bridge; {{otherPlayer}}’s loaders brought spare masks and compared the arrival with the scheduled manifest.",
+      "{{hero}} held the bridge as fire struck the berth’s warning panel. The fighter kept a clear lane for a technician to enter the shuttle, where every tank gauge showed full except one hidden beneath a bench. That empty tank was connected to a breathing line leading through a service hatch into the platform itself.",
+      "The security unit could follow the line at once or secure the remaining oxygen before another shipment arrived. The loaders recognized the hatch as the route to a sealed emergency room. The fighter watched the technician test the line for pressure while someone on the other side knocked against the metal."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s security unit followed the line and recovered the shuttle crew.",
+      "heroLoses": "{{otherPlayer}}’s loaders secured the tanks and opened the emergency room.",
+      "draw": "The oxygen was protected while both teams checked the sealed hatch."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A construction crew discovered an old pressure chamber behind the wall of a vessel’s new daycare. Its gauge climbed each time children ran across the floor. {{heroPlayer}}’s engineers reached the service corridor; {{otherPlayer}}’s caretakers moved the children into an adjoining room and brought the original building plans.",
+      "{{hero}} tested the wall and found the chamber’s relief pipe joined to a ventilation duct beneath the play area. The specialist isolated the duct, then noticed the gauge still rising with the rhythm of music from the adjoining room. A hidden membrane beneath the floor was vibrating, with a small sealed message lodged against its frame.",
+      "The engineers could vent the chamber to remove the message or leave it intact until the caretakers found another safe room for the children. The music had stopped, but the needle continued to climb. The specialist held a listening device to the floor and counted the remaining pressure pulses."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s engineers vented the chamber and secured the daycare floor.",
+      "heroLoses": "{{otherPlayer}}’s caretakers protected the children and identified the hidden message.",
+      "draw": "The daycare stayed closed while the chamber was inspected and reinforced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A small shrine aboard a settlement vessel displayed a wooden mask carved by its first migrants. At dawn a fresh mask hung beside it, still wet with paint, while the shrine’s keeper was missing. {{heroPlayer}}’s guardians searched the prayer corridor; {{otherPlayer}}’s residents checked the painting workshops and brought the keeper’s spare key.",
+      "{{hero}} pushed past a defender in the narrow alcove behind the shrine and held its door as a companion found a paint-stained cloak. The cloak’s inner pocket held a ticket for the vessel’s next docking. Beneath the new mask lay a note from the keeper saying the first mask had been replaced long before today.",
+      "The guardians could follow the docking ticket and leave both masks in place, or test the older carving before it was displayed again. The residents were already gathering for morning prayers. The fighter kept the alcove clear while the companion examined the note’s familiar handwriting against the keeper’s old ledger."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians found the keeper and restored the shrine’s true mask.",
+      "heroLoses": "{{otherPlayer}}’s residents secured the carving and traced the docking ticket.",
+      "draw": "The shrine stayed closed until both masks could be properly dated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A vessel’s insect garden supplied pollinators to hundreds of small food plots. Its glass hive began producing a faint blue glow, and the insects stopped leaving it. {{heroPlayer}}’s keepers came to inspect the queen chamber; {{otherPlayer}}’s growers gathered beside the garden with blossoms that needed pollinating before morning.",
+      "{{hero}} lifted a panel beneath the hive and found a cooling tube routed through the queen chamber. The specialist shut its valve, and the glow faded, but a tiny bead of the same blue liquid clung to the queen’s wing. A laboratory label inside the panel identified the tube as part of another experiment aboard the vessel.",
+      "The keepers could move the hive to isolation and miss the blossom window, or let the insects fly after testing the residue. The growers offered a spare garden where the plants could wait one more day. The specialist watched the queen climb toward the entrance as the first workers began to follow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s keepers isolated the tube and saved the vessel’s pollinators.",
+      "heroLoses": "{{otherPlayer}}’s growers secured the hive and protected the waiting food plots.",
+      "draw": "The insects remained under observation while blossoms were moved into the spare garden."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A repair market strung between two aging hulls lost its lighting just as a storm-warning drill began. The bridge between the hulls was full of vendors carrying battery lanterns. {{heroPlayer}}’s patrol reached the upper gantry; {{otherPlayer}}’s electricians held the lower junction box and guided the crowd toward sheltered doors.",
+      "{{hero}} took a position above the bridge as a shot broke one of its support lamps. The fighter kept the span clear while an electrician opened a panel and found the power cut deliberately at the drill switch. The switch also controlled a locked storage deck where the market kept emergency shelter blankets.",
+      "The patrol could restore the lighting first, but the electricians needed to know whether people were waiting in the dark storage deck. The drill siren drowned out calls across the bridge. The fighter followed a moving lantern below while the electrician reached for the severed switch wire."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol restored the lights and brought the vendors across safely.",
+      "heroLoses": "{{otherPlayer}}’s electricians secured the junction and opened the blanket store.",
+      "draw": "The market emptied safely while repairs to the drill switch continued."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A shipboard fermentation hall produced a batch of bread that smelled like a flower no one had grown aboard for decades. The old garden’s keeper asked the crew to hold the dough for inspection. {{heroPlayer}}’s biologists took a sample; {{otherPlayer}}’s bakers kept the morning loaves from being served until they understood the change.",
+      "{{hero}} studied the starter culture and found a pale filament leading into the flour feed. The specialist followed it through a service wall to an unused seed room, where one flower had sprouted inside a sealed jar. The jar’s date matched a final entry in the departed gardener’s notes, describing a recipe she hoped someone would finish.",
+      "The biologists could isolate the flower to keep it alive, or let the bakers use the culture and see whether the recipe was safe. The morning meal was approaching, and the other kitchens had begun preparing substitutes. The specialist held the jar beside the notes while the dough slowly rose."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists protected the flower and tested the unusual starter.",
+      "heroLoses": "{{otherPlayer}}’s bakers secured the kitchen and recovered the gardener’s unfinished recipe.",
+      "draw": "The loaves stayed unserved while both groups examined the starter culture."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A credit union aboard a freight vessel evacuated after its cash room reported a coolant leak. One clerk stayed behind to lock the community’s emergency fund. {{heroPlayer}}’s guards approached the vault passage; {{otherPlayer}}’s account holders waited near the safe exit with a list of people who needed immediate payments.",
+      "{{hero}} held the corridor as shots struck a glass alarm panel. The fighter kept the vault entrance clear while a technician tested the air and found no coolant. The alarm came from a sealed box inside the cash room, rigged to sound whenever the clerk touched the emergency fund. A folded withdrawal slip named someone still waiting outside.",
+      "The guards could open the box and trace the false alarm or move the fund to another safe before the crowd lost confidence. The account holders recognized the name but said that person had already received their payment. The fighter watched the clerk compare the slip with the vault ledger."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the fund and uncovered the false coolant alarm.",
+      "heroLoses": "{{otherPlayer}}’s account holders protected the clerk and reconciled the ledger.",
+      "draw": "The fund remained sealed while the suspicious withdrawal was investigated."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A vessel’s public aquarium received an invoice for the removal of its oldest reef tank. Nobody had approved the work, but the crew listed on the invoice arrived with lifting gear. {{heroPlayer}}’s inspectors checked the service bay; {{otherPlayer}}’s aquarists stayed beside the tank with photographs showing its growth over three generations.",
+      "{{hero}} compared the invoice to the gear tag and found that the crane had been ordered for a different tank, one hidden behind an opaque screen. The specialist lifted the screen to reveal a newly built habitat with the old reef’s stones arranged inside it. A handwritten plan described a move meant to keep both habitats alive.",
+      "The inspectors could stop the removal and verify who signed the plan, but the crane crew was on a narrow schedule. The aquarists wanted time to compare each stone with their photographs before either tank moved. The specialist held the plan under the service lights while the lifting hook descended."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors verified the plan and kept both reef habitats safe.",
+      "heroLoses": "{{otherPlayer}}’s aquarists secured the stones and halted the unauthorized move.",
+      "draw": "The crane stopped while both teams checked the reef’s ownership records."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A neighborhood boxing club lost its lease after a redevelopment vote nobody remembered taking. Its founder had left the deed in a locked trophy case before retiring. {{heroPlayer}}’s supporters arrived to retrieve it; {{otherPlayer}}’s residents guarded the gym floor, where children were finishing their evening practice.",
+      "{{hero}} grappled with a defender at the cramped trophy alcove and held the case open while a coach looked for the deed. Beneath a cracked cup lay a photograph of the founding vote, with the deed’s signature visible on its back. The coach recognized a name there belonging to a resident who still lived upstairs.",
+      "The supporters could take the photograph to court or wake the resident for an account of the original agreement. The residents wanted the gym open for one more practice before any closure. The fighter kept the alcove clear as a training bell rang and the coach turned the old photograph over."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s supporters secured the deed and defended the club’s lease.",
+      "heroLoses": "{{otherPlayer}}’s residents preserved the gym and located the original signer.",
+      "draw": "Practice continued while the old photograph and the new vote were examined."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile printshop distributed invitations to a reunion that no one had organized. Every invitation listed the same room and a different hour, including one for a person long believed to have left the vessel. {{heroPlayer}}’s outreach workers followed the paper trail; {{otherPlayer}}’s printers held the presses and counted the missing invitations.",
+      "{{hero}} inspected the type tray and found the reunion notices assembled from letters donated by former crew members. The specialist pressed the worn type against an old crew photograph and recognized a distinctive mark on a badge there. In the unused room, a table had been set for everyone invited, including the person who had disappeared.",
+      "The outreach workers could meet the earliest invitee and learn who planned the gathering, or warn the others that the reunion might be a trap. The printers had seen no organizer enter the shop. The specialist held the photograph beside the first invitation as footsteps approached the unused room."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s outreach workers found the organizer and reunited the missing crew.",
+      "heroLoses": "{{otherPlayer}}’s printers secured the type and identified who issued the invitations.",
+      "draw": "The invitees gathered safely, but one chair remained empty."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Nomads",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A fuel transfer station powering a traveling community reported two deliveries of the same shipment. The second carrier arrived with a seal that matched the first one exactly. {{heroPlayer}}’s guards took the pumping gantry; {{otherPlayer}}’s mechanics held the transfer hose and refused to connect it before the duplicate load was checked.",
+      "{{hero}} covered the gantry as fire came from behind the spare tanks. The fighter held the line while a mechanic tested the second carrier and found clean fuel laced with a harmless fluorescent marker. Under ultraviolet light, the marker revealed an inscription painted inside its valve: a warning that the first delivery had gone to the wrong station.",
+      "The guards could escort the second carrier to the traveling community, or follow the first delivery and find who received it. The mechanics needed fuel before the next departure. The fighter watched the marked valve while the station’s pumps stood still and the first carrier’s route loaded on a display."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the correct shipment and traced the misdirected carrier.",
+      "heroLoses": "{{otherPlayer}}’s mechanics verified the fuel and restarted the community pumps.",
+      "draw": "Both carriers remained under seal while their route records were checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Two restoration crews reached a mural hall after rain seeped beneath a painted wall. Both carried a commission from the artist, who had died years before. {{heroPlayer}}’s restorers protected the damp colors; {{otherPlayer}}’s restorers brought archival photographs showing a door that had disappeared behind the mural.",
+      "{{hero}} tested the plaster and found the door’s outline without touching the painted figures. The specialist lifted a loose corner of backing paper to uncover the artist’s note: a small empty frame should be filled only when a missing neighbor returned. Beyond the frame came a faint tapping from the old doorway.",
+      "The first crew could open the door and risk the wet mural, or stabilize the paint while the other crew sought a way around. The photographs showed a corridor once connected to a nearby courtyard. The specialist kept a hand near the damaged corner as the tapping repeated, slower than before."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s restorers saved the mural and traced the sound beyond the door.",
+      "heroLoses": "{{otherPlayer}}’s restorers found the old corridor and preserved the artist’s note.",
+      "draw": "The mural was braced while both crews searched for the missing neighbor."
+    }
   }
 ]
