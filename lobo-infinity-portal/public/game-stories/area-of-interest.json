@@ -18618,5 +18618,325 @@
       "draw": "The passenger reached the viewing deck while both teams investigated the message."
     },
     "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Torchlight Brigade"],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "Two Torchlight rescue columns reached a collapsed maglev station from opposite tunnels, each following a distress beacon assigned to the same stranded survey crew. {{heroPlayer}}'s column carried lifting gear; {{otherPlayer}}'s column had the only working air monitor. Between them, a suspended carriage shifted whenever either tunnel team crossed the broken platform.",
+      "{{hero}} crawled beneath the carriage and found both beacons wired to a survey case wedged against its underframe. The crew had moved into a service recess before the collapse, leaving the doubled signal to mark their equipment. The specialist braced the case and passed its recorder out without disturbing the carriage's cracked support.",
+      "A voice answered from behind a tiled wall, too faint to place from either tunnel. {{heroPlayer}}'s rescuers mapped the recess from the recorder while {{otherPlayer}}'s team tested the air through a drilled opening. The carriage settled another centimeter, revealing a painted arrow that pointed away from the voice and toward an older escape shaft."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s column opened the escape shaft and brought the survey crew out safely.",
+      "heroLoses": "{{otherPlayer}}'s column stabilized the station and reached the trapped crew first.",
+      "draw": "Both columns freed the crew as the abandoned carriage settled onto the platform."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Japanese Secessionist Army"],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A mountain relay sheltered families during an electrical storm, but its emergency door recognized neither the Torchlight rescue code nor the Japanese caretakers' old mechanical key. Both teams entered through separate maintenance galleries as lightning erased the path markers outside. Someone inside rang a hand bell in groups of four.",
+      "{{hero}} met an armed looter where the galleries narrowed around the relay batteries and drove the attacker away from the manual linkage. A caretaker fitted the old key while a rescuer matched the four-bell rhythm to the pauses in the current. Together they turned the lock only when the batteries fell quiet.",
+      "The shelter opened, and the families reported a child missing in the storm. {{heroPlayer}}'s caretakers followed wet footprints toward the shrine path while {{otherPlayer}}'s rescuers raised a directional mast. The hand bell sounded once from outside, well beyond the last visible marker, just before lightning illuminated a red coat beside the ridge."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s caretakers found the child and kept the mountain shelter open.",
+      "heroLoses": "{{otherPlayer}}'s rescuers located the child and restored the relay's emergency system.",
+      "draw": "The child returned as both teams guided the families down from the ridge."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Oban"],
+    "heroFaction": "Torchlight Brigade",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Floodwater surrounded a riverside clinic after its automated levee closed on the wrong side of the building. Torchlight responders approached by rescue skiff while Oban wardens crossed the rooftops to protect the medicine store. A hijacked maintenance drone hovered over the levee controls, firing whenever anyone entered the courtyard.",
+      "{{hero}} drew the drone's fire into an empty ambulance bay and shattered its targeting lens while a responder reached the control pedestal. The damaged machine kept circling by sound, forcing the gunfighter to strike metal shutters away from the clinic windows. Behind the pedestal, a warden found the levee sensor packed with river reeds.",
+      "Opening the barrier would drain the clinic but send a fast current through the evacuation route. {{heroPlayer}}'s responders loaded patients into the skiff while {{otherPlayer}}'s wardens cleared the rooftops. The blinded drone descended toward the ringing shutters, and the waterline revealed a second control box chained beneath the courtyard steps."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s responders disabled the drone and evacuated the flooded clinic.",
+      "heroLoses": "{{otherPlayer}}'s wardens secured the medicine store and opened a safe drainage route.",
+      "draw": "The patients crossed to safety while both teams kept the changing current under control."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A volcanic monitoring camp transmitted an evacuation order, then immediately canceled it with the same authorization. Torchlight crews came to move the scientists; Shindenbutai scouts climbed through an ash channel to inspect the transmitter. Every instrument pointed toward a harmless northern vent except one portable gauge aimed beneath the sleeping quarters.",
+      "{{hero}} opened the gauge without breaking its calibration seal and found a strip of photographic film threaded through the needle assembly. Its exposed frames recorded a figure changing the camp's warning threshold during the night. The specialist projected the final frame against a tent wall while ash began rattling on the roof.",
+      "The photograph showed a scientist who was no longer on the camp roster. {{heroPlayer}}'s scouts searched the southern trail as {{otherPlayer}}'s rescuers prepared the remaining crew to leave. Beneath the sleeping quarters, a buried sensor started counting upward, and footprints in fresh ash ended beside its locked access hatch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts exposed the false cancellation and secured the hidden sensor.",
+      "heroLoses": "{{otherPlayer}}'s crews evacuated the scientists before the volcanic readings worsened.",
+      "draw": "The camp was cleared while both teams carried evidence of the altered warning."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A living Tohaa bridge began curling away from a canyon wall while a freight convoy was halfway across. Torchlight engineers anchored the near span; Tohaa envoys reached the far root chamber to learn why the structure was retreating. Pale blossoms opened along the handrail wherever frightened passengers touched it.",
+      "{{hero}} sampled a blossom and found traces of solvent from fresh cargo paint. The bridge was recoiling from fumes leaking out of a damaged freight pod, not from the canyon rock. The specialist coaxed the root chamber open while rescuers rolled the pod toward a section where the wind could carry the vapor away.",
+      "Moving the pod steadied the span, but its manifest listed seedlings that were nowhere inside. {{heroPlayer}}'s delegation tended the burned handrail while {{otherPlayer}}'s engineers escorted passengers to solid ground. In the root chamber, a new tendril wound around the empty manifest tube and formed a blossom the same color as the missing cargo."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s delegation healed the bridge and identified the harmful cargo.",
+      "heroLoses": "{{otherPlayer}}'s engineers stabilized the span and cleared the stranded convoy.",
+      "draw": "The bridge held until every passenger crossed and the leaking pod was isolated."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Dashat Company"],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A desert water train stopped between settlements when its lead tanker reported a pressure rise. Dashat guards protected the contracted shipment while Torchlight responders ordered the crews clear. Before either side could inspect the coupling, raiders opened fire from a row of abandoned condensation towers and punctured the train's shadow canopy.",
+      "{{hero}} crossed the exposed service walk, driving the raiders off the nearest tower while a mechanic reached the pressure valve. The gauge was rising because compressed air had entered an empty compartment, not because the water was heating. A false weight reading in the manifest had concealed that half the tanker was dry.",
+      "The missing water could strand the next settlement by nightfall. {{heroPlayer}}'s guards followed wet tire marks away from the rails while {{otherPlayer}}'s responders patched the canopy and tested the remaining tanks. Inside the empty compartment, droplets formed an arrow on the cold wall, pointing toward a tower no raider had used."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards saved the train and traced the stolen water from the tracks.",
+      "heroLoses": "{{otherPlayer}}'s responders stabilized the tanker and preserved the remaining supply.",
+      "draw": "The train continued with reduced water as both teams pursued the missing shipment."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Druze Bayram Security"],
+    "heroFaction": "Torchlight Brigade",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An orbital nursery lost rotation with dozens of children sealed inside its central playroom. Druze contractors held the docking collar under an evacuation bond; Torchlight rescuers arrived through a tumbling service craft. Both teams needed the same handwheel, but an armed saboteur had chained it inside the narrow transfer tube.",
+      "{{hero}} entered the tube as it rolled and forced the saboteur away from the wheel without striking the fragile pressure seals. A responder cut the chain at each slow turn, catching the links before they floated into the fan grille. The recovered wheel fit the nursery drive, though one spoke bore a recently engraved docking number.",
+      "Rotation returned gradually, letting teachers guide the children toward the collar. {{heroPlayer}}'s rescuers steadied the playroom while {{otherPlayer}}'s contractors checked the numbered dock and found it empty. A child's paper star remained suspended near the ceiling, turning against the new gravity as if the station were still spinning the other way."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s rescuers restored rotation and brought the children through the collar.",
+      "heroLoses": "{{otherPlayer}}'s contractors secured the nursery and completed the bonded evacuation.",
+      "draw": "Every child escaped while both teams investigated the marked handwheel."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "Ikari Company"],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A storm drove an Ikari salvage barge onto a reef beside a coastal signal tower. Torchlight crews answered the tower keeper's distress call while the salvagers claimed their cargo could not be abandoned. One sealed crate knocked against the hull in time with a light flashing from the supposedly empty tower.",
+      "{{hero}} synchronized the crate's locator with the tower lamp and discovered both were responding to an older maritime code. The specialist opened the signal cabinet, finding a paper strip that listed the barge under a name retired decades ago. The current keeper insisted the strip had not been there before the storm.",
+      "A second hull shape appeared on the reef scanner beneath the barge. {{heroPlayer}}'s rescuers led the crew toward high ground while {{otherPlayer}}'s salvagers rigged the crate above the rising water. The tower lamp stopped answering the crate and began flashing a depth, exactly matching the buried wreck below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crews rescued the barge crew and identified the submerged wreck.",
+      "heroLoses": "{{otherPlayer}}'s salvagers saved the cargo and secured the reef claim.",
+      "draw": "The crew and crate reached shore while both teams recorded the tower's strange signal."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A vertical farm's harvest lift stalled between floors during a citywide ration alert. StarCo guards escorted the seed vault above; Torchlight responders climbed from the market below to free workers trapped in the lift. Armed thieves cut the emergency cables and began hauling the car toward an unfinished floor.",
+      "{{hero}} fired through hanging irrigation mist, breaking the thieves' winch housing without striking the strained lift line. A responder secured the car while a guard pulled the cut cable around a support. Among the thieves' tools lay a genuine farm access card issued to a worker still trapped inside the lift.",
+      "The worker said the card had vanished before the alert began. {{heroPlayer}}'s guards swept the unfinished floor as {{otherPlayer}}'s responders lowered the car to the market. One empty seed drawer arrived with it, packed with damp soil that left a trail upward along the outside of the shaft."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards stopped the theft and recovered the compromised access card.",
+      "heroLoses": "{{otherPlayer}}'s responders freed the workers and secured the damaged lift.",
+      "draw": "The workers reached the market while both teams followed the soil trail toward the vault."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Torchlight Brigade", "White Company"],
+    "heroFaction": "White Company",
+    "role": "objective",
+    "paragraphs": [
+      "A polar research convoy found its navigation stakes rearranged into a circle around an empty camp. White Company escorts guarded the expedition's climate cores; Torchlight search teams followed a missing driver's emergency signal. Snow had filled every vehicle track except a single line leading into the circle and stopping abruptly.",
+      "{{hero}} compared the stakes with shadows preserved inside the ice cores and proved they had been moved before the latest storm. Beneath the central stake, the specialist found a warm locator wrapped in the missing driver's glove. Its signal was being relayed from somewhere below the convoy rather than across the surface.",
+      "A maintenance tunnel lay under the camp, omitted from the current maps. {{heroPlayer}}'s escorts moved the climate cores away from its thin roof while {{otherPlayer}}'s searchers opened a vent. The driver answered from below, warning them not to start the lead crawler because its engine was resting on the tunnel hatch."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s escorts protected the cores and uncovered the hidden tunnel safely.",
+      "heroLoses": "{{otherPlayer}}'s searchers reached the missing driver and secured the unstable camp.",
+      "draw": "The driver emerged as both teams moved the convoy clear of the buried passage."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Japanese Secessionist Army"],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Two Japanese patrols arrived at a memorial garden after receiving orders to recover the same regimental banner. One order named the banner a stolen artifact; the other said it must be moved before construction began. At the garden's center, a masked intruder was already cutting the cords that held it above a reflecting pool.",
+      "{{hero}} crossed the narrow stones and fought the intruder without letting the banner fall into the water. When a cord snapped, the fighter caught its wooden bar and passed it to a caretaker on the bank. Sewn inside the hem was a second, smaller banner bearing neither patrol's crest.",
+      "The caretaker recognized it as a civilian rescue standard hidden during an earlier siege. {{heroPlayer}}'s patrol protected the cloth while {{otherPlayer}}'s patrol detained the intruder. Reflected lanterns revealed names written under the pool's surface, including one that matched the officer who had signed both contradictory orders."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s patrol preserved both banners and exposed the false recovery order.",
+      "heroLoses": "{{otherPlayer}}'s patrol secured the memorial garden and took the intruder into custody.",
+      "draw": "The banners remained with the caretaker while both patrols investigated their orders."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Oban"],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "Terraced tea fields began receiving salt water from a new irrigation gate. Oban wardens climbed from the lower farms while Japanese engineers followed the channel down from a hilltop reservoir. The gate's control tablet showed no command to open, yet a line of wet stones marked each place the water had paused overnight.",
+      "{{hero}} tasted mineral deposits at the pauses and traced them to a concealed sampling pipe, not the reservoir. The specialist closed it by threading a tool through the gate's old wooden lattice, preserving the mechanism the engineers needed to inspect. A glass vial surfaced downstream with a handwritten date inside.",
+      "The date matched the last harvest before the lower terraces were abandoned. {{heroPlayer}}'s wardens flushed the fields with fresh water while {{otherPlayer}}'s engineers followed the sampling pipe into the hill. Each recovered vial held less salt than the last, as though someone had been testing how quickly the land could be restored."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s wardens stopped the salt flow and saved the lower terraces.",
+      "heroLoses": "{{otherPlayer}}'s engineers secured the reservoir and mapped the hidden sampling line.",
+      "draw": "Fresh water returned while both teams preserved the dated vials as evidence."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Shindenbutai"],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A night ferry reached an island checkpoint with its passenger deck empty and every meal still warm. Japanese security troops closed the pier; Shindenbutai scouts boarded along the anchor chain. From the dark vehicle deck, an automated sentry fired at any light while the ferry continued announcing an ordinary arrival.",
+      "{{hero}} used the announcement chimes to mask each shot, destroying the sentry's rangefinder before scouts opened the stairwell. The passengers were sheltering below after a crew message warned of contamination. A security officer tested the air and found it clean, but the message carried the captain's genuine voice.",
+      "The bridge was locked from inside and the ferry had begun backing away from the pier. {{heroPlayer}}'s scouts led passengers ashore while {{otherPlayer}}'s troops reached the engine controls. Through the bridge glass they saw the captain's chair empty and a portable recorder repeating new commands in the same trusted voice."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts disabled the sentry and exposed the false contamination warning.",
+      "heroLoses": "{{otherPlayer}}'s troops secured the ferry and brought every passenger to the pier.",
+      "draw": "The ferry was stopped as both teams searched for whoever had copied the captain's voice."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Tohaa"],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A temple conservatory housed an off-world vine grown around a centuries-old wooden screen. Tohaa botanists came when the vine stopped flowering; Japanese custodians refused to let anyone cut it away from the painted panels. At sunset, its leaves folded into characters resembling part of an unfinished inscription.",
+      "{{hero}} redirected the conservatory lamps one by one and discovered the vine was following faded gold beneath the paint. The specialist mapped its growth without touching the screen, revealing a repair made with metallic resin after an old fire. A loose root had reached a hidden cavity behind that repaired panel.",
+      "Inside the cavity rested a packet of seeds and a note asking that they be planted only when the screen was whole. {{heroPlayer}}'s delegation stabilized the root while {{otherPlayer}}'s custodians lifted the panel in its frame. The vine opened a single flower above the note, though every lamp in the room had gone dark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s delegation restored the vine and recovered the hidden seeds intact.",
+      "heroLoses": "{{otherPlayer}}'s custodians preserved the screen and secured its concealed message.",
+      "draw": "The screen and vine remained together while both teams prepared the seeds for safekeeping."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Dashat Company"],
+    "heroFaction": "Dashat Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A Dashat payroll courier took refuge in a crowded rail shrine after attackers blocked the mountain line. Japanese guards ordered the platform cleared, but the courier's case was cuffed to a bench beneath the departure bell. Rifle fire from a maintenance shed shattered the timetable and sent travelers into the tunnels.",
+      "{{hero}} pinned the attackers inside the shed while a contractor cut the bench free and moved the case behind a stone basin. A guard recovered the broken timetable, discovering a payment code written across the back. It authorized a withdrawal larger than the money the courier claimed to carry.",
+      "The case contained blank company scrip and a live tracking wafer. {{heroPlayer}}'s contractors used it to mark the attackers' receiver while {{otherPlayer}}'s guards reopened the evacuation tunnel. The departure bell rang without power, and one blank note in the case printed a destination as the delayed train approached."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s contractors protected the courier and traced the ambush receiver.",
+      "heroLoses": "{{otherPlayer}}'s guards secured the shrine platform and evacuated the travelers.",
+      "draw": "The attackers withdrew while both teams retained evidence of the false payroll."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Druze Bayram Security"],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A diplomatic archive arrived for transfer inside a paper-walled reception hall. Druze security held the courier contract; Japanese honor guards protected the receiving clerk. When the archive seal was read aloud, an intruder burst through the inner screen and reached for a narrow box omitted from the cargo record.",
+      "{{hero}} intercepted the intruder in the confined hall, turning each strike away from the archive shelves. The box split during the struggle and released dozens of carved name blocks, none matching the documents in the shipment. The clerk recognized them as printing pieces for identities that had never officially existed.",
+      "Ink on one block was still wet. {{heroPlayer}}'s guards sealed the hall while {{otherPlayer}}'s contractors compared the courier route with the names. Behind the torn screen, a fresh page rested on the floor bearing the clerk's identity in the same type, followed by tomorrow's date."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards protected the archive and secured the forged identity blocks.",
+      "heroLoses": "{{otherPlayer}}'s contractors retained the shipment and traced the compromised route.",
+      "draw": "The archive transfer paused while both teams investigated the page dated tomorrow."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "Ikari Company"],
+    "heroFaction": "Ikari Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An Ikari crew claimed a derelict cargo crawler parked beside a rural school. Japanese civil guards said its reactor made the playground unsafe, while the salvagers insisted the machine had arrived cold. During inspection, the crawler's turret unfolded and tracked a weather balloon drifting over the children.",
+      "{{hero}} shot through the turret's elevation joint, locking its barrel above the schoolyard while a salvager reached the reactor panel. The reactor was indeed cold; a buried cable under the crawler supplied the turret from the school workshop. A guard followed it to a student-built guidance console with no ammunition controls.",
+      "Someone had connected the harmless class project to the abandoned weapon overnight. {{heroPlayer}}'s crew dismounted the turret as {{otherPlayer}}'s guards checked every workshop terminal. The weather balloon descended carrying photographs of the crawler arriving under its own power, hours before either side claimed to have found it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crew disabled the turret and proved the crawler could be salvaged safely.",
+      "heroLoses": "{{otherPlayer}}'s guards protected the school and secured the altered guidance console.",
+      "draw": "The playground reopened while both teams studied the balloon's unexpected photographs."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "StarCo"],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A lunar cultural hall lost pressure moments before an exhibition opened. StarCo security controlled the public concourse; Japanese curators remained inside with a collection of fragile lacquer panels. The leak detector pointed toward the exhibition wall, but dismantling it would destroy the hanging sequence recorded by the artist.",
+      "{{hero}} used the panels' polished surfaces to reflect a narrow inspection beam behind the wall. The specialist spotted frost around a fastener and guided a sealing probe through the existing hanging slot. When pressure stabilized, the reflected beam revealed writing on the back of a panel that the catalog described as blank.",
+      "The hidden text named a different order for the exhibition. {{heroPlayer}}'s security team preserved the pressure seal while {{otherPlayer}}'s curators rotated the panels without removing them. In the corrected sequence, their reflected highlights formed a map of the lunar hall before its public concourse had ever been built."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s team sealed the hall and uncovered the exhibition's intended order.",
+      "heroLoses": "{{otherPlayer}}'s curators preserved the panels and secured the hidden inscription.",
+      "draw": "The exhibition opened safely with both teams guarding the newly revealed map."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Japanese Secessionist Army", "White Company"],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A winter embassy convoy stopped when a ceremonial drum rolled from its trailer into a frozen market. White Company escorts formed a perimeter; Japanese guards moved to recover the drum before its hide split in the cold. A sniper fired from an icehouse whenever anyone approached the open square.",
+      "{{hero}} broke the icehouse sightline by shooting down strings of market lanterns, then covered a guard dragging the drum behind a produce stall. A bullet had pierced only the outer rim, exposing a folded dispatch hidden between layers of wood. Its seal belonged to the embassy convoy, but its route named no market stop.",
+      "The dispatch warned of an attack at the next bridge. {{heroPlayer}}'s guards changed the convoy order while {{otherPlayer}}'s escorts cleared the icehouse. Inside they found a warm firing rest and no shooter, though footprints crossed the frozen wall and continued vertically toward the roof."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guards recovered the drum and used its warning to reroute the convoy.",
+      "heroLoses": "{{otherPlayer}}'s escorts secured the market and protected the embassy vehicles.",
+      "draw": "The convoy departed safely while both teams searched for the vanished sniper."
+    },
+    "mission": "Area of Interest"
+  },
+  {
+    "factions": ["Oban", "Oban"],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "Two Oban circles answered a boundary beacon in an orchard planted over an abandoned village. One carried the current land roll; the other held oral directions from the village's last resident. At the supposed boundary, every tree bore a strip of blue cloth tied at a different height.",
+      "{{hero}} measured the cloth against old flood marks and discovered the heights formed a record of rising water, not a property line. Following the sequence led to a stone well capped beneath the newest tree. The specialist lifted its cover and heard the boundary beacon echoing from a dry chamber below.",
+      "The chamber held seed jars labeled with family names missing from the land roll. {{heroPlayer}}'s circle raised the jars while {{otherPlayer}}'s wardens mapped the buried village walls. The beacon stopped when the last jar reached daylight, and the blue cloth on the youngest tree slipped down to the level of the oldest flood mark."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s circle recovered the village seeds and corrected the boundary record.",
+      "heroLoses": "{{otherPlayer}}'s wardens secured the orchard and mapped the forgotten settlement.",
+      "draw": "Both circles preserved the seed jars and marked the old village together."
+    },
+    "mission": "Area of Interest"
   }
 ]
