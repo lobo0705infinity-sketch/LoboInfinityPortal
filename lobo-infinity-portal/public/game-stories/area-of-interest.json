@@ -4558,5 +4558,385 @@
       "heroLoses": "{{otherPlayer}}’s mechanics retained the lift and completed the recovery from below.",
       "draw": "The passenger returned safely, and both teams kept the gondola idle for repair."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "An alpine star station stopped publishing its nightly sky map after one constellation vanished from its display. {{heroPlayer}}’s instrument team climbed to the dome; {{otherPlayer}}’s mountain guides kept visitors below the wind line. A handwritten chart beside the telescope showed the missing stars exactly where they belonged.",
+      "{{hero}} checked the tracking gears and found the dome’s calibration ring had slipped by a fraction of a degree. The specialist aligned it using the handwritten chart, then watched the missing constellation return to the display. Beneath it appeared a tiny sequence of dots the instrument had rejected as noise.",
+      "An older guide recognized the dots as a signal lamp on a distant ridge, visible on clear nights when she was young. The team turned the telescope that way. Through the glass, one lamp answered from a cabin everyone had believed empty for years."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the dome and restored its sky map.",
+      "heroLoses": "{{otherPlayer}}’s guides retained the station and limited access during the wind.",
+      "draw": "The map was restored, and both groups kept the telescope on the distant lamp."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A snowbound relay station began repeating a distress call from a valley whose settlement had been evacuated years earlier. {{heroPlayer}}’s signal crew came to trace it; {{otherPlayer}}’s patrol had heard faint knocking inside the locked transmitter room. The call included a voice counting backward from ten.",
+      "{{hero}} covered the entrance while a technician opened the transmitter casing. Someone approached across the roof with a cutting tool, and the fighter kept them away from the aerial. Inside the casing was a hand-wound recorder, still playing the same short call each time a loose contact touched.",
+      "The technician stopped the recorder before it reached one. In the silence, the knocking came again from a storage closet behind the transmitter. A former station worker stepped out carrying the key to the evacuated settlement’s final supply cache."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew held the relay and recovered the location of the supply cache.",
+      "heroLoses": "{{otherPlayer}}’s patrol secured the station and took charge of the old call.",
+      "draw": "The transmission was preserved, and both groups followed the worker’s directions."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a mountain race station, a line of sleds waited for a course marker that had toppled in the night. {{heroPlayer}}’s marshals came to reset it; {{otherPlayer}}’s rescue volunteers wanted the course closed until the ice was checked. One racer was already overdue from a practice run.",
+      "{{hero}} reached the marker as a stranger tried to drag its base onto unsafe ice. The fighter seized the pole, pulled the stranger back to firm ground, and planted the bright flag where the volunteers had tested the surface. Far off, a sled appeared, steering toward the new mark.",
+      "The overdue racer arrived exhausted, carrying a lost competitor’s scarf. They had gone off course together; the other racer waited in a sheltered hollow, too tired to move. The volunteers took a rescue sled past the flag while the marshals held the course clear."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s marshals secured the station and guided both racers to safety.",
+      "heroLoses": "{{otherPlayer}}’s volunteers closed the course and directed the rescue.",
+      "draw": "The race was postponed, and both teams followed the flag to the stranded racer."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A border aid depot was giving out blankets when its numbering machine printed the same address on every parcel. {{heroPlayer}}’s inspectors arrived to audit the deliveries; {{otherPlayer}}’s volunteers feared families would receive nothing before the pass closed. One parcel already had a child’s handprint in blue ink.",
+      "{{hero}} traced the fault to a bent plate in the machine and replaced it with the correct route grid. The specialist sorted the parcels by destination, keeping the handprinted one aside until its label could be checked. On its underside was a note asking for two blankets, one for a neighbor.",
+      "The parcels left on separate sleds while the volunteers held the depot doors against the snow. The child who had marked the parcel returned for a receipt. When shown the new address, the child pointed to the neighbor’s house across the lane and smiled."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors repaired the route grid and sent the parcels to their proper homes.",
+      "heroLoses": "{{otherPlayer}}’s volunteers retained the depot and hand-sorted the remaining deliveries.",
+      "draw": "Every parcel received an address, and both parties sent the sleds out before the pass closed."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital ice harvester brought back a clear block containing a moving point of light. {{heroPlayer}}’s watch escorted a technician to the unloading bay; {{otherPlayer}}’s cold-room staff wanted the block sealed before it warmed. A thin crack ran from the light toward the floor.",
+      "{{hero}} covered the bay entrance as a figure tried to cut power to the cooling frame. The fighter held the passage while the technician stabilized the block and moved it under glass. The moving point settled against the crack, revealing itself as a tiny reflection from a warning beacon beyond the window.",
+      "The staff followed the reflected line to an emergency pod drifting beside the harvester. Someone inside tapped the glass in the same rhythm as the warning beacon. The ice was left in the cold room while the watch went to bring the pod aboard."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s watch held the bay and launched the pod recovery.",
+      "heroLoses": "{{otherPlayer}}’s staff retained the cold room and directed the unloading.",
+      "draw": "The pod was found, and both teams kept the ice block stable under glass."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "Deep beneath a glacier, an air-driven warning organ fell silent while meltwater rose toward a drilling camp. {{heroPlayer}}’s tunnel crew went to restart it; {{otherPlayer}}’s drillers were still working beyond the last bend. A low note sounded once, then stopped with a hiss.",
+      "{{hero}} reached the organ’s valves and found ice holding one whistle open, stealing air from the others. The specialist cleared it and played the camp’s warning sequence through the pipes. Up ahead, drill motors fell quiet one by one; the crew there had heard the signal.",
+      "The drillers came back around the bend carrying their logs dry beneath their coats. A wall of meltwater slid across the work face moments later. When everyone reached the upper tunnel, the smallest pipe still hummed a single note on the remaining air."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the warning organ and evacuated the drillers.",
+      "heroLoses": "{{otherPlayer}}’s drillers retained the tunnel and directed its closure.",
+      "draw": "The camp emptied before the flood, and both teams kept the organ ready at the upper passage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A winter bathhouse had closed its hot spring after steam began escaping through a painted folding screen. {{heroPlayer}}’s restorers came for the screen; {{otherPlayer}}’s attendants wanted to keep the building warm for stranded travelers. Behind the painted mountains, a pipe hammered against the wall.",
+      "{{hero}} entered the narrow service room as a stranger tried to force the steam valve open. The fighter seized their arm and pulled them from the scalding pipe while an attendant closed the feed. The screen folded away to reveal an older painting of summer fields on its reverse.",
+      "The attendants moved the screen into a dry room where travelers could see both seasons. A restorer touched the summer painting and found a date beneath the frame: it had been made in the same winter as the bathhouse’s first recorded snowfall."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s restorers secured the screen and helped make the bathhouse safe.",
+      "heroLoses": "{{otherPlayer}}’s attendants retained the building and managed the steam repair.",
+      "draw": "The travelers stayed warm in a safe room while both parties preserved the painted screen."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A snow-covered schoolyard marked the spot where former pupils had buried a time capsule. {{heroPlayer}}’s caretakers came to recover it before a foundation survey; {{otherPlayer}}’s builders had already laid out the new classroom. On an old sketch, the burial mark stood beneath a tree that was gone.",
+      "{{hero}} matched the sketch’s long winter shadows to the remaining wall and located a small iron lid beneath the snow. The specialist lifted it without breaking the foundation markers. Inside the capsule was a stack of predictions, each signed by a child imagining what the school might become.",
+      "The builders read one prediction aloud: a room with windows wide enough to see the whole mountain. They turned their new plan toward the ridge, where afternoon sun was just reaching the yard. The capsule went indoors for the pupils to open together."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s caretakers recovered the capsule and protected the schoolyard site.",
+      "heroLoses": "{{otherPlayer}}’s builders retained the site and scheduled the capsule opening before construction.",
+      "draw": "The capsule was saved, and both groups brought its predictions into the new classroom plan."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An aurora antenna on a high ridge began broadcasting a lullaby into nearby emergency radios. {{heroPlayer}}’s signal guards came to inspect it; {{otherPlayer}}’s mountain technicians feared the broadcast would hide weather calls. The lullaby stopped whenever clouds covered the northern lights.",
+      "{{hero}} covered the antenna platform while a technician adjusted its exposed receiver. A figure at the far cable anchor raised a weapon, and the fighter held that approach until the receiver was isolated. With the radio quiet, the technician heard the lullaby coming faintly from a music box inside the mast.",
+      "The box was wound by a tiny turbine whenever the antenna turned into the aurora wind. Someone had placed it there for a child who waited at the ridge for a parent’s return. The guards carried it down so the child could decide where it belonged."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the antenna and cleared the emergency channel.",
+      "heroLoses": "{{otherPlayer}}’s technicians retained the ridge and isolated the broadcast.",
+      "draw": "The radios worked again, and both teams delivered the music box safely."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A winter botanical station displayed a single living vine in a glass passage linking two dormitories. {{heroPlayer}}’s botanists came when its leaves curled overnight; {{otherPlayer}}’s station crew found frost inside the passage seal. A visitor had tied a red thread to the vine’s lowest leaf.",
+      "{{hero}} tested the passage vents and discovered warm air escaping through a latch that looked closed. The specialist reset the seal and guided a narrow stream of humid air across the plant. Its lowest leaf slowly opened, lifting the red thread clear of the frozen glass.",
+      "A visitor returned at dusk and recognized the thread from a winter when the vine had first taken root. It marked the length of that first fragile stem. The botanists left it in place as the passage warmed and footsteps resumed between the dormitories."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s botanists restored the vine’s growing conditions and kept the passage open.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the station and closed the passage for seal repairs.",
+      "draw": "The vine recovered, and both groups kept watch over the repaired passage."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A winter fair built a mirror maze beside a frozen pond, then lost its lantern keeper inside when snow covered the exits. {{heroPlayer}}’s fair guards entered by the service gate; {{otherPlayer}}’s ice inspectors wanted the pond path closed. Reflections showed the keeper’s lantern in three directions at once.",
+      "{{hero}} rounded a corner as a stranger tried to shove a guard through a mirror panel onto thin ice. The fighter caught the guard, pulled the stranger away, and found the real lantern by watching its flame flicker in the wind. The keeper was behind the next panel, shielding another lost visitor.",
+      "The guards led both visitors out along the dry service path. Once the maze was empty, the keeper turned the lantern around and showed the painted exit arrow on its base. He had been trying to hold it high enough for a reflection to carry it through the maze."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the maze and brought both visitors to the fair.",
+      "heroLoses": "{{otherPlayer}}’s inspectors closed the pond path and directed the rescue.",
+      "draw": "The visitors came out safely, and both parties marked a clear route through the mirrors."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A mountainside mineral store held a stone that rang when the thaw reached its door. {{heroPlayer}}’s security detail accompanied a curator to inspect it; {{otherPlayer}}’s geologists feared the ringing meant the roof supports had shifted. From outside, each note sounded like a different bell.",
+      "{{hero}} covered the narrow gallery while the curator moved the stone away from a cracked support. An intruder stepped between the shelves with a tool raised, and the fighter held them back until the curator reached the exit. The stone fell silent when set on a wooden bench, though the roof kept ticking softly.",
+      "The geologists closed the store and listened from the safe side of the door. The ticking followed drops of meltwater rather than moving rock. When a curator tapped the rescued stone lightly, it rang once, clear enough for everyone to hear through the snow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s detail secured the stone and escorted the curator out.",
+      "heroLoses": "{{otherPlayer}}’s geologists retained the store and sealed it for structural work.",
+      "draw": "The stone was saved, and both teams kept the building closed until its roof was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a geothermal field, a ring of warm ground kept a tiny winter orchard alive. {{heroPlayer}}’s contractors came to mend its broken pressure gate; {{otherPlayer}}’s field crew worried the repair would redirect heat beneath the nearby homes. Steam hid the gate and made every footstep sound close.",
+      "{{hero}} found a welder kneeling at the gate as someone rushed them through the steam. The fighter intercepted the person and held the narrow platform while the welder closed the pressure line. One of the orchard’s trees shook in the gust and dropped a single fruit into the welder’s open kit.",
+      "With the pressure stable, the field crew checked both the houses and the orchard. The welder washed the fruit in a bucket of cold water and offered it to the first resident who came out. The resident broke it in half for a child waiting beside the trees."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s contractors secured the gate and preserved the orchard’s heat.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the field and controlled the pressure repair.",
+      "draw": "The homes stayed warm, and both groups inspected the orchard before leaving."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "An abandoned rail station hosted a winter art installation that projected a different shadow for each visitor. {{heroPlayer}}’s technicians came to repair a failing projector; {{otherPlayer}}’s station stewards kept children away from its hot casing. One shadow appeared even when the hall was empty.",
+      "{{hero}} cooled the projector and aligned its warped mirror without erasing the stored images. The specialist found the extra shadow in a glass slide placed backward in the lens. Turned around, it became the silhouette of a station porter carrying two suitcases, taken on the building’s final day of service.",
+      "An older steward recognized the porter as her grandfather. She stood beneath the image and lifted an arm; for a moment their shadows touched on the wall. Children waited their turn while the technicians lowered the lamp to a safe brightness."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s technicians restored the exhibit and kept the station hall open.",
+      "heroLoses": "{{otherPlayer}}’s stewards retained the hall and suspended projections for repair.",
+      "draw": "The projector ran safely, and both parties preserved the porter’s glass slide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Svalarheima Winter Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A rope bridge above a winter gorge led to a cartographer’s unmanned survey hut. {{heroPlayer}}’s escort came to collect its map; {{otherPlayer}}’s ridge guides warned that the far anchorage had begun to slip. Across the gorge, a bright flag rose briefly from the hut and fell.",
+      "{{hero}} covered the bridge while a guide crossed to secure the anchorage. A figure at the far side reached for the guide’s rope, and the fighter held them away until the guide fixed a new line. Inside the hut, the map had been weighted down by a tin of signal flags.",
+      "The cartographer emerged from a sheltered hollow below the hut, having raised the flag when the bridge moved. She carried a fresh map showing a footpath around the gorge. The escort followed its first landmarks as the bridge swayed behind them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escort secured the hut and brought the cartographer’s new map to the ridge.",
+      "heroLoses": "{{otherPlayer}}’s guides retained the bridge and closed it until the anchorage was replaced.",
+      "draw": "The map was recovered, and both groups used the safer footpath around the gorge."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "Two coastal survey crews reached the same mangrove nursery before a king tide, each convinced their instruments marked the safest channel. {{heroPlayer}}’s crew followed red floats; {{otherPlayer}}’s crew had planted blue ones. A young heron stood between the lines on a patch of exposed root.",
+      "{{hero}} waded to the root and found a current sensor tangled beneath it, its cable pulling the red floats off course. The specialist freed the sensor and rechecked both channels while the bird watched from above. The corrected readings showed a narrow passage neither set of floats had marked.",
+      "The crews moved the floats together before the water rose. The heron stepped into the branches as the tide covered its resting place. From the bank, the new passage looked like a deliberate gap left for boats and birds alike."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s crew secured the nursery channel and guided the survey boats through.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the markers and chose the safe passage.",
+      "draw": "Both crews marked the shared channel before the king tide entered the mangroves."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An island tide station had sent contradictory readings to every ferry on the coast. {{heroPlayer}}’s inspection crew arrived to check its gauge; {{otherPlayer}}’s ferry pilots waited offshore for a safe depth. A caretaker stood beside the gauge, holding its missing brass pointer.",
+      "{{hero}} covered the station ramp while a mechanic reached the caretaker and returned the pointer to its axle. A figure appeared behind the empty gauge housing and tried to break the link to the shore display, but the fighter held the ramp until the mechanic restored the reading. The water was falling fast.",
+      "The pilots altered course to the deeper channel and waved as they passed the station. The caretaker explained that the pointer had come loose during a night storm and had been turning in their hand ever since, following a tide no one else could see."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the station and restored the tide reading for the ferries.",
+      "heroLoses": "{{otherPlayer}}’s pilots retained the channel and directed the gauge repair.",
+      "draw": "The ferries crossed safely, and both crews checked the restored gauge against the waterline."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal warning station displayed an all-clear signal while families were still evacuating the low streets. {{heroPlayer}}’s inspectors came to find the error; {{otherPlayer}}’s flood workers were lifting doors off hinges to make stretchers. A row of names on the shelter board had been rubbed away by rain.",
+      "{{hero}} found the station’s water sensor mounted above the level of the homes it was supposed to protect. The specialist lowered it, corrected the public signal, and copied the faded shelter names from an older paper list. A volunteer read each name aloud while a worker marked the corresponding house.",
+      "By evening, every marked house had been checked. The last resident came out carrying a small chalkboard with a fresh shelter list, dry beneath a coat. The warning signal remained lit until the water began to recede from the first doorstep."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s inspectors secured the station and kept its warning accurate through the flood.",
+      "heroLoses": "{{otherPlayer}}’s workers retained the streets and managed evacuation using their own markers.",
+      "draw": "The households were accounted for, and both groups kept the warning lit until the water fell."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "Invincible Army"
+    ],
+    "heroFaction": "Invincible Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A desalination plant stopped filling its public water tanks during a cyclone. {{heroPlayer}}’s security team brought a repairer to the intake; {{otherPlayer}}’s coastal crew kept residents away from the flooded access road. One tank still dripped, its tap left open beneath a row of empty bottles.",
+      "{{hero}} covered the intake walkway while the repairer cleared debris from a jammed pump. A figure moved toward the power switch, and the fighter held the narrow approach until the pump started. Water ran into the tank, filling the first bottle before anyone thought to close the tap.",
+      "A resident brought more bottles from the shelter and lined them along the dry side of the plant. The coastal crew counted them against the households waiting inland. Between gusts, the renewed pump made a steady sound that people at the shelter could hear."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the plant and restored water to the public tanks.",
+      "heroLoses": "{{otherPlayer}}’s crew retained the intake and directed the repair from the coastal side.",
+      "draw": "The pump held through the storm, and both teams helped fill bottles for the shelter."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Varuna Immediate Reaction Division",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A harbor pilot station kept a row of lanterns lit so small boats could enter during a tropical squall. {{heroPlayer}}’s escorts brought replacement oil; {{otherPlayer}}’s pilots were guiding the last fishing boat around a hidden shoal. The middle lantern went dark while the boat was still outside.",
+      "{{hero}} reached the narrow lantern room as a stranger tried to drag the pilot away from its wheel. The fighter pulled the pilot free and held the doorway while a crew member refilled the lamp. Outside, the boat adjusted course toward the three lights shining together again.",
+      "The fishermen came ashore carrying a wet bundle of hand-painted harbor charts. Their grandparent had drawn the shoal before the station was built, and they had kept the charts aboard for luck. The pilots pinned one beside their modern route display."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts secured the station and helped the fishing boat enter safely.",
+      "heroLoses": "{{otherPlayer}}’s pilots retained the lantern room and guided the boat by their own signals.",
+      "draw": "The boat reached shore, and both groups kept the lanterns burning through the squall."
+    }
   }
 ]
