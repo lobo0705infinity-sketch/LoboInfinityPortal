@@ -16338,5 +16338,385 @@
       "heroLoses": "{{otherPlayer}}’s sentries secured the checkpoint and verified the fort’s seal.",
       "draw": "The wagon waited in shade while both parties checked the old road."
     }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A refrigerated airship touched down beside a plateau fort with its cargo seals still frozen shut. Its pilot said the crates contained emergency blood supplies, but the manifest named a long abandoned base. {{heroPlayer}}’s guards approached the mooring mast; {{otherPlayer}}’s sentries held the fort gate and requested a sample before admitting the ship.",
+      "{{hero}} covered a medic moving across the exposed landing ground as shots struck the mooring cable. The fighter gave the medic time to open a crate and find genuine supplies packed around a second case of old photographs. One image showed the fort’s current gate, freshly painted, with a date from before its rebuilding.",
+      "The guards could carry the blood inside before its cooling failed, but the sentries wanted to know who had hidden the photographs among it. The pilot held the ship against a rising wind. The fighter watched the medic reseal the case while the first patients arrived at the gate."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards delivered the supplies and secured the airship’s cargo.",
+      "heroLoses": "{{otherPlayer}}’s sentries treated the patients and traced the photographs.",
+      "draw": "The medicine went into cold storage while the manifest was checked."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An arena at a desert trading post offered its winner the first draw from a newly repaired well. Before the match, the well’s windlass turned by itself and lifted an empty bucket with a torn sleeve caught on its handle. {{heroPlayer}}’s challengers entered the ring; {{otherPlayer}}’s guards held the well and checked the worker missing from his shift.",
+      "{{hero}} pushed past a defender at the windlass and held its gearing while a friend peered down. The missing worker stood on a repair ledge below, calling that the water had risen above its safe mark. The fighter braced the mechanism as the friend attached a rescue rope to the bucket’s heavy chain.",
+      "The challengers could lower the rope and bring the worker up, but the guards warned that the well’s new gear might fail under another load. The arena crowd had fallen quiet around the ring. The fighter held the windlass while the worker described a ladder on the far side of the shaft."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s challengers rescued the worker and secured the well.",
+      "heroLoses": "{{otherPlayer}}’s guards steadied the gearing and brought the worker above ground.",
+      "draw": "The match was called off while the well was repaired."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "A mobile nursery crossed a frontier with saplings grown for families rebuilding after a fire. Its route was stopped when the trees’ ownership papers listed a child too young to sign them. {{heroPlayer}}’s coordinators met the driver; {{otherPlayer}}’s sentries held the convoy gate and brought a registry of the original planting grounds.",
+      "{{hero}} compared the papers with small wooden labels tied to each tree. The specialist found the child’s name on only one sapling, with a note written by her late grandmother describing where it should be planted. The rest carried labels from different households, carefully bundled together for the long journey.",
+      "The coordinators could distribute the other saplings now, but the sentries wanted the child’s tree held until her family was located. The driver feared the roots would dry if the convoy stayed another day. The specialist tucked the grandmother’s note into a waterproof sleeve and checked the soil around the named tree."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s coordinators delivered the saplings and honored the grandmother’s wish.",
+      "heroLoses": "{{otherPlayer}}’s sentries protected the child’s tree and verified the planting records.",
+      "draw": "The convoy sheltered overnight while the family was contacted."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Morat Aggression Force",
+      "White Company"
+    ],
+    "heroFaction": "White Company",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A glacier crossing used a line of signal poles to guide supply sleds over safe ice. At noon one pole bent toward a route that had been closed after a crevasse opened. {{heroPlayer}}’s guards reached the crossing; {{otherPlayer}}’s patrol held the sled train back and marked its current position.",
+      "{{hero}} covered an ice worker approaching the bent pole when shots cracked off its metal cap. The fighter held the far ridge while the worker discovered a second marker driven into the snow beneath it. Its paint matched the old safe route, and a length of rescue line ran from its base into the open crevasse.",
+      "The guards could follow the line and check who left it, but the patrol needed a safe route for perishable supplies. Wind was lifting snow into the first pole’s lens. The fighter watched the worker anchor the line as a faint tug came from somewhere below the ice."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the crossing and reached the person below.",
+      "heroLoses": "{{otherPlayer}}’s patrol guided the sleds and recovered the old marker.",
+      "draw": "The train waited while both groups tested the ice and rescue line."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "objective",
+    "paragraphs": [
+      "Two research teams arrived at a thermal spring after its measured temperature changed overnight. Each had a valid permit to take the first sample, but the spring’s stone lip had begun crumbling. {{heroPlayer}}’s researchers set up their instruments upstream; {{otherPlayer}}’s researchers held the lower platform and asked for a joint safety reading.",
+      "{{hero}} lowered a probe and found a pocket of cold water flowing into the spring through an unmarked fissure. The specialist marked it just as the lip broke away, exposing a narrow pool beneath the platform. In its clear water lay an old sampling vial with both teams’ institution stamped on the glass.",
+      "The first team could retrieve the vial and compare the older reading, but the other researchers warned the platform was shifting. Neither team had a record of the vial. The specialist held the probe against the fissure while warm water and cold water met beneath the broken stone."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team secured the vial and mapped the changed spring.",
+      "heroLoses": "{{otherPlayer}}’s team stabilized the platform and preserved the lower pool.",
+      "draw": "Both teams sampled from safe ground while the stone lip was reinforced."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "Onyx Contact Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A laboratory received a damaged sample capsule from a falling satellite, its protective foam scattered across an empty field. The capsule’s seal showed an address for a research site that had closed. {{heroPlayer}}’s intercept party reached the impact zone; {{otherPlayer}}’s technicians held a portable clean tent and prepared to collect the fragments.",
+      "{{hero}} covered a collector crossing the field as shots struck the tent frame. The fighter held the approach while the collector opened the capsule and found a small reel of film, unharmed inside its cracked holder. Its first image showed a technician fastening the capsule shut at the closed site only days earlier.",
+      "The intercept party could follow the film’s location or deliver the capsule intact for analysis. The technicians wanted the reel kept clean until its other images could be read. The fighter watched the collector reseal the holder while another fragment glinted in the grass beyond the tent."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s party secured the capsule and traced its recent launch.",
+      "heroLoses": "{{otherPlayer}}’s technicians recovered the reel and protected the remaining fragments.",
+      "draw": "The impact field stayed closed while both groups inspected the film."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A remote seed farm found a row of seedlings growing in the pattern of a distress signal. The farmer had planted a straight line and claimed no one else had entered the field. {{heroPlayer}}’s trackers arrived with a soil sampler; {{otherPlayer}}’s researchers held the irrigation shed and checked the planting log.",
+      "{{hero}} tested the patterned row and found its seeds had been set at a different depth from the others. The specialist followed a shallow groove to a buried water bottle containing a folded field note. It named a researcher missing from the farm since the previous harvest and marked a location beyond the boundary fence.",
+      "The trackers could follow the location immediately, but the researchers wanted the bottle and seeds preserved to identify who had planted the message. The farmer recalled a stranger asking for water the week before. The specialist sheltered the note from the wind as the young leaves bent together."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s trackers followed the note and found the missing researcher’s trail.",
+      "heroLoses": "{{otherPlayer}}’s researchers protected the crop and traced the planted signal.",
+      "draw": "The field was marked off while both teams checked the boundary location."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A small gallery displayed pictures made by an experimental camera that recorded light from behind solid walls. Its newest image showed a ladder inside a neighboring research lab, where no ladder was normally kept. {{heroPlayer}}’s analysts studied the image; {{otherPlayer}}’s lab staff held the adjacent corridor and checked its equipment inventory.",
+      "{{hero}} compared the camera’s exposure with the lab’s floor plan and found the ladder belonged to a service shaft one room farther away. The specialist opened its inspection panel and found a worker repainting the shaft numbers after a renovation. The new numbering had sent a delivery of delicate glassware to the wrong level.",
+      "The analysts could correct the delivery route, but the staff wanted the glassware located before another worker moved it. The camera’s image began to fade in the gallery light. The specialist copied the old shaft number while the painter called down which level had received the crate."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts corrected the shaft map and recovered the glassware.",
+      "heroLoses": "{{otherPlayer}}’s staff secured the deliveries and identified the misnumbered level.",
+      "draw": "The service shaft closed briefly while its numbers were verified."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "objective",
+    "paragraphs": [
+      "A heritage loom reproducing ancient weaving patterns suddenly added a long blank space to every cloth. Its operator insisted the machine was running correctly, thread after thread. {{heroPlayer}}’s analysts checked the program; {{otherPlayer}}’s textile researchers held the fabric and compared it with the only surviving original sample.",
+      "{{hero}} measured the blank spaces and found they matched the width of a missing panel in the original cloth. The specialist searched the loom’s lower cabinet and found the panel rolled around a spindle, its colored threads protected by paper. A narrow woven address in the border named the workshop where it had been made.",
+      "The analysts could return the panel to the collection, but the textile researchers wanted its maker’s descendants contacted before another copy was woven. The loom still worked steadily around its empty space. The specialist held the older colors next to the new fabric and saw where they would fit."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s analysts restored the missing pattern and located its workshop.",
+      "heroLoses": "{{otherPlayer}}’s researchers preserved the original panel and traced its maker.",
+      "draw": "The loom stopped while both groups documented the recovered cloth."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A cliffside laboratory collected soil from a nesting ledge to help protect a threatened bird colony. A narrow lift stranded one collector between the lab and the ledge as rain began. {{heroPlayer}}’s rescuers approached the lift housing; {{otherPlayer}}’s researchers held the lab doorway with dry specimen cases.",
+      "{{hero}} forced past a defender in the cramped lift housing and held its frame while a mechanic unlocked the manual brake. The collector called that a sample bag was caught around the cable below. The fighter kept the housing steady as the mechanic pulled free the bag and found a tiny leg band inside, tagged for a bird missing years earlier.",
+      "The rescuers could bring the collector in first, but the researchers feared the loosened bag would fall over the nesting ledge. Rain had turned the cable slick. The fighter held the brake while the collector reached for the bag and the birds wheeled through the mist below."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s rescuers freed the collector and recovered the old leg band.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the lift and protected the nesting ledge.",
+      "draw": "The collector waited safely while both parties steadied the cable."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A village approved a new water filter after seeing a demonstration that left one glass clear and the other cloudy. A researcher then admitted the cloudy glass had come from a different well. {{heroPlayer}}’s observers arrived for a fresh test; {{otherPlayer}}’s technicians held the filter and asked the villagers to witness every sample.",
+      "{{hero}} collected water from both wells and found each was clean until it passed through a cracked storage jar used in the demonstration. The specialist traced the jar’s maker to the village pottery shop, where a replacement had been waiting uncollected. No one could explain why the faulty one had been used again.",
+      "The observers could correct the public claim immediately, but the technicians wanted to test the filter’s long-term performance before dismissing it. Villagers had already raised money for the installation. The specialist set both fresh glasses on the same table while the potter brought out the replacement jar."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s observers established a fair test and protected the village’s decision.",
+      "heroLoses": "{{otherPlayer}}’s technicians verified the filter and replaced the cracked jar.",
+      "draw": "Installation paused while both wells were tested in public."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An orbital garden used recorded rainfall to help new arrivals sleep. Its speakers began broadcasting the sound of running feet instead, along with a distant call for a door to be opened. {{heroPlayer}}’s patrol reached the garden; {{otherPlayer}}’s researchers held the audio cabinet and asked visitors which part of the sound they recognized.",
+      "{{hero}} covered a technician crossing a glass path as fire struck its handrail. The fighter kept the path clear while the technician traced the call to a microphone beneath an empty planting bed. Its cable led through an unused air duct toward an emergency shelter with a door locked from the outside.",
+      "The patrol could open the shelter immediately, but the researchers needed the duct kept quiet to hear whether anyone answered. The garden’s speakers continued filling the room with footsteps. The fighter stood at the glass path while the technician disconnected the recording and a real voice sounded through the cable."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol reached the shelter and freed its occupant.",
+      "heroLoses": "{{otherPlayer}}’s researchers traced the microphone and secured the audio system.",
+      "draw": "The garden fell silent while both groups checked the locked door."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "A zoological field station lost the lift carrying an injured animal between its observation deck and treatment room. The car stopped behind a wall of equipment, with its doors facing neither floor. {{heroPlayer}}’s mechanics reached the lift motor; {{otherPlayer}}’s researchers held a treatment kit and kept the station quiet.",
+      "{{hero}} opened the motor housing and found a torn belt wound around a bracket. The specialist eased it free, then spotted a hand-painted arrow on the stalled car pointing toward a service hatch. Through that hatch came a caretaker’s voice: the animal was breathing steadily, but the car’s light was fading.",
+      "The mechanics could lower the car manually or bring the animal through the hatch with a harness. The researchers worried a sudden drop would worsen its injury. The specialist held the release wheel still while the caretaker described the space around the animal and asked for a lamp."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s mechanics freed the lift and delivered the animal for treatment.",
+      "heroLoses": "{{otherPlayer}}’s researchers reached the hatch and stabilized the animal.",
+      "draw": "The car stayed supported while both groups rigged a gentle transfer."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "At a spring planting ceremony, two families presented the same heirloom seed jar, each claiming theirs was the original. One jar had a fresh crack and the other smelled of rain. {{heroPlayer}}’s guardians approached the shrine table; {{otherPlayer}}’s botanists held the seed trays and offered to test both without breaking their seals.",
+      "{{hero}} forced an intruder away from the narrow table and caught the cracked jar before it fell. The fighter held it steady while an elder recognized a tiny repair in its rim, made years before either family had arrived. Inside the other jar was a folded planting calendar, protected against damp by a layer of wax.",
+      "The guardians could return the repaired jar to the elder, but the botanists wanted the calendar read before any seed was planted. The families waited in the garden with their tools. The fighter set the jars side by side while the elder traced the old repair with a fingertip."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guardians secured the true jar and restored the planting ceremony.",
+      "heroLoses": "{{otherPlayer}}’s botanists verified the seeds and interpreted the calendar.",
+      "draw": "Both jars stayed under care while the families compared their histories."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal lantern festival used insect-safe lights to guide a migrating species past the harbor. One pier switched to a color that drew the insects into an active shipping lane. {{heroPlayer}}’s wardens reached its control box; {{otherPlayer}}’s researchers set up nets farther inland to check whether the migration could be redirected.",
+      "{{hero}} opened the box and found a color filter installed backward after routine cleaning. The specialist corrected it, but the insects still circled a small light on an unattended fishing boat. A message taped beneath the boat’s lamp asked someone to wait there after the festival, with a name the harbor keeper recognized.",
+      "The wardens could tow the boat away and clear the migration, but the researchers wanted its light left visible long enough to learn who had arranged the meeting. The first insects began turning back toward the safe route. The specialist held the filter in place as the harbor keeper called the named person."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s wardens restored the lantern route and protected the insects.",
+      "heroLoses": "{{otherPlayer}}’s researchers guided the migration and traced the boat’s message.",
+      "draw": "The boat stayed dark while both groups watched the harbor."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A research station’s fuel line ran beneath a small town on its way to a hillside generator. When the generator stopped, the town’s streetlights lit one after another in the wrong order. {{heroPlayer}}’s patrol approached the generator house; {{otherPlayer}}’s researchers held the valve station and measured pressure at each junction.",
+      "{{hero}} covered a mechanic crossing to the generator as fire struck the roof vent. The fighter held the approach while the mechanic found the fuel line intact but the ignition cable redirected toward an old warning siren. Its timer had been set for the moment a school bus passed beneath the hill.",
+      "The patrol could shut the timer off at the generator, but the researchers wanted the valve station checked for a second connection. The bus was already in town. The fighter watched the mechanic cut the siren wire as the last streetlight came on beside the school road."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol disabled the false warning and restored the generator.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the fuel line and cleared the school road.",
+      "draw": "The bus waited while both groups checked the timer and valves."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A coastal lab restored a patch of sea grass that had vanished after a shipping accident. Its first growth formed a hollow circle around a buried metal case. {{heroPlayer}}’s biologists entered the shallow water; {{otherPlayer}}’s researchers held the shore station and checked what had been carried by the old ship.",
+      "{{hero}} felt along the case without disturbing the roots and found a release catch sheltered beneath the grass. The specialist opened it to reveal an old water sample, still sealed, and a note naming a second patch farther down the coast. The sample’s label had been signed by someone now helping to restore the shoreline.",
+      "The biologists could test the old sample, but the researchers wanted the signer present before its seal was broken. The tide was rising toward the case. The specialist closed its catch and marked the circle with a float while the surviving sea grass moved gently in the current."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s biologists preserved the roots and located the second patch.",
+      "heroLoses": "{{otherPlayer}}’s researchers secured the case and verified the water sample.",
+      "draw": "The sample remained sealed while both groups watched the rising tide."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A research caravan stopped at a checkpoint after a container of prototype shelter fabric began inflating inside its case. The case was lodged against the only gate. {{heroPlayer}}’s escorts approached from the road; {{otherPlayer}}’s technicians held the checkpoint building with a diagram showing how the fabric should release.",
+      "{{hero}} pushed a defender back from the gate mechanism and caught its falling locking bar while a technician opened the case. The fabric unfolded into a small canopy, sheltering the people crowded beside the road. Its frame, however, had pinned a package to the gate, addressed to a researcher still traveling with the caravan.",
+      "The escorts could cut away the canopy and open the road, but the technicians wanted to fold it properly to preserve the prototype. Rain began to strike its new roof. The fighter held the locking bar while the caravan researcher came forward to claim the pinned package."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s escorts cleared the gate and returned the research package.",
+      "heroLoses": "{{otherPlayer}}’s technicians secured the fabric and opened the checkpoint safely.",
+      "draw": "The caravan sheltered under the canopy while both teams freed the gate."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Druze Bayram Security"
+    ],
+    "heroFaction": "Druze Bayram Security",
+    "role": "objective",
+    "paragraphs": [
+      "A company filed an insurance claim for a field microscope lost in a storm. The instrument then appeared on a public research table, still wet but working. {{heroPlayer}}’s adjusters arrived to check its serial; {{otherPlayer}}’s scientists held the table and said a student had carried it to safety during the storm.",
+      "{{hero}} traced a second number beneath the microscope’s base and found it belonged to a different instrument stored in the same field case. The specialist opened the case and found a tiny camera recording the table, aimed at a particular page in the students’ lab notebook. That page described an unexpected result from the storm samples.",
+      "The adjusters could secure the camera and ask who planted it, but the scientists wanted the student’s result protected before it was made public. The student was due back from the field at dusk. The specialist held the microscope above the notebook while fresh water dripped from its strap."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s adjusters verified the instruments and protected the student’s work.",
+      "heroLoses": "{{otherPlayer}}’s scientists secured the notebook and traced the hidden camera.",
+      "draw": "The claim was held while both groups waited for the student."
+    }
+  },
+  {
+    "mission": "Area of Interest",
+    "factions": [
+      "Next Wave",
+      "Ikari Company"
+    ],
+    "heroFaction": "Ikari Company",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A trial of self-driving quarry carts stopped when one cart rolled toward a closed mine entrance carrying a visitor’s coat. The visitor had been last seen at the testing stand. {{heroPlayer}}’s guards reached the mine gate; {{otherPlayer}}’s engineers held the cart controller and called for everyone to step clear of its track.",
+      "{{hero}} fought past a defender beside the gate and caught the cart before it struck the old rails. The fighter held its brake while an engineer lifted the coat and found a folded test schedule inside. Its final trial was assigned to a person who had not yet arrived at the stand, with the mine entrance marked as a safe destination.",
+      "The guards could follow the tracks into the mine, but the engineers wanted the cart’s instructions reviewed before anybody trusted its route. The missing visitor’s voice came over a radio left on the controller table. The fighter kept a hand on the brake while the engineer asked where the visitor was calling from."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s guards secured the cart and located the missing visitor.",
+      "heroLoses": "{{otherPlayer}}’s engineers stopped the test and traced the false destination.",
+      "draw": "The cart remained parked while both groups checked the mine entrance."
+    }
   }
 ]
