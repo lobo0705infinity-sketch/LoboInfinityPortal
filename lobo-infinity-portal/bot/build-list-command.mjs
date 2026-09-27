@@ -184,15 +184,19 @@ export function formatBuiltList(list, number) {
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')
     : '• No legal Level 2 Fireteam found in this roster.'
   const quality = list.quality
-    ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}/${list.quality.specialistTarget}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}\n`
+    ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}\n`
     : ''
-  const intro = `**${list.faction} · ${list.mission} · option ${number}**\n`
+  const introBase = `**${list.faction} · ${list.mission} · option ${number}**\n`
     + `${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC · ${list.legality.totals.troopers}/15 troopers · ${list.specialistCount} specialists\n`
     + `**Proposed fireteams**\n${fireteams}\n${quality}`
   const evidenceNote = list.teamTypeEvidence
     ? ` Portal type prior: ${list.teamTypeEvidence.decisiveLists} decisive lists; compatible teams inferred, not observed.` : ''
   const baseEnding = `${groupText}\n[Open in Infinity Army](${list.url})\n`
     + `-# Army profiles ${list.payloadVersion}; verify fireteams during deployment.`
+  const missionNote = list.missionSummary ? `**Mission plan** ${list.missionSummary}\n` : ''
+  const shortMissionNote = list.missionPlan?.focus ? `**Mission plan** ${list.missionPlan.focus}\n` : ''
+  const intro = introBase + (introBase.length + baseEnding.length + missionNote.length <= 1990
+    ? missionNote : introBase.length + baseEnding.length + shortMissionNote.length <= 1990 ? shortMissionNote : '')
   let ending = baseEnding
   if (intro.length + baseEnding.length + evidenceNote.length <= 1990) ending += evidenceNote
   const links = rosterConnections(list.profiles)

@@ -13,6 +13,8 @@ import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
 import { deriveTeamTypeEvidence, loadTeamTypeEvidence, possibleFireteamTypes } from '../bot/build-list-team-evidence.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
+import { missionPlan } from '../bot/build-list-missions.mjs'
+import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 
 const loadArchive = async name => JSON.parse(gunzipSync(Buffer.from(await readFile(new URL(`../data/infinity-army/${name}.json.gz.b64`, import.meta.url), 'utf8'), 'base64')))
 const source = await loadArchive('benchmark-official-source')
@@ -118,6 +120,32 @@ assert.ok(nomadsList.legality.status === 'legal' && nomadsList.quality.gunfighte
   && nomadsList.quality.aro >= 2 && nomadsList.quality.cc >= 2
   && nomadsList.profiles.filter(item => item.regular).length >= 13,
   'the expensive models must not displace the order base or separate combat coverage')
+assert.ok(nomadsProfiles.some(item => item.slug === 'salyut-zonds' && item.baggage),
+  'Army equipment identifies Baggage for zone scoring and item carriage')
+assert.ok(!transductor.civEvacEligible && nomadsProfiles.some(item => item.civEvacEligible),
+  'a Flash Pulse REM is an order source, not an eligible CivEvac escort')
+assert.ok(nomadsProfiles.some(item => item.slug === 'perseus-rogue-myrmidon' && item.essentialPersonnel),
+  'a Character can fulfill Panic Room Essential Personnel requirements')
+const outbreakList = buildArmyListOptions({ ...nomadsInput, mission: 'Outbreak', count: 1 })[0]
+const annihilationList = buildArmyListOptions({ ...nomadsInput, mission: 'Annihilation', count: 1 })[0]
+const outbreakMedics = outbreakList.profiles.filter(item => item.doctor || item.paramedic || item.specialistOperative)
+assert.ok(outbreakList.legality.status === 'legal' && outbreakMedics.length >= 2
+  && outbreakMedics.length > annihilationList.profiles.filter(item => item.doctor || item.paramedic || item.specialistOperative).length,
+  'Outbreak should select capable scanning and stabilizing models over the combat mission roster')
+assert.equal(annihilationList.quality.specialistTarget, 0,
+  'Annihilation has no compulsory specialist target')
+assert.match(formatBuiltList(outbreakList, 1), /Mission plan.*scan and stabilize.*medical specialists/,
+  'Discord lists explain the selected mission plan and its available models')
+const doubleBind = buildArmyListOptions({ ...nomadsInput, mission: 'Double Bind' })
+assert.deepEqual(doubleBind.map(list => list.missionPlan.variant), [0, 1, 2],
+  'Double Bind offers a distinct list for each of its three selectable objectives')
+assert.ok(doubleBind.every(list => list.legality.status === 'legal')
+  && doubleBind[1].profiles.some(item => item.demolition),
+  'the Sabotage plan has an eligible way to attack an Antenna')
+assert.equal(missionPlan("Dead Man's Switch").verified, false,
+  'unverified scenarios must not claim invented mission objectives')
+assert.deepEqual(CANONICAL_MISSIONS.filter(mission => !missionPlan(mission).verified), ["Dead Man's Switch"],
+  'every other selectable mission has a verified scoring plan')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
 const repeatedModels = buildArmyListOptions({ ...input, mustInclude: ['ALGUACIL', 'ALGUACIL'], count: 1 })
 assert.equal(repeatedModels[0].profiles.filter(profile => profile.id === resolveRequiredProfile(profiles, 'ALGUACIL').id).length, 2,
