@@ -7,6 +7,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { buildSubmittedProfiles, classifyTacticalBrief, renderTacticalBrief } from '../bot/inf-list-tactical.mjs'
+import { assessInfListClassifieds } from '../bot/inf-list-classifieds.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
@@ -344,6 +345,14 @@ export async function renderInfListPng({ input, outputPath, mobileGunfighter = f
       metadata,
       officialPayloads,
     })
+    const classifiedCoverage = assessInfListClassifieds(buildSubmittedProfiles({
+      armyCode,
+      cards: rendered.cards,
+      canonicalDataset,
+      metadata,
+      officialPayloads,
+      expandComposite: true,
+    }))
     const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
     const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4 }) : []
     const aroCatalog = await loadAroBenchmarkCatalog()
@@ -374,6 +383,7 @@ export async function renderInfListPng({ input, outputPath, mobileGunfighter = f
       bytes: profilePages[0].imageBuffer.length,
       height: profilePages[0].height,
       imageBuffer: profilePages[0].imageBuffer,
+      classifiedCoverage,
       legality,
       officialArmyUrl: buildOfficialArmyUrl(armyCode),
       outputPath: finalOutputPath,

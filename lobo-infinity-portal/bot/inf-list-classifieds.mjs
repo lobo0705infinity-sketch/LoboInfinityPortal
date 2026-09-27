@@ -1,0 +1,116 @@
+// ITS Season 18 uses the 20-card Operations/Classified Deck. Card requirements:
+// https://downloads.corvusbelli.com/infinity/organized-play/classified-deck-en.pdf
+// Season 18 selection, CivEvac, Casevac, and Secure HVT:
+// https://experience.corvusbelli.com/en/infinity/its
+export const CLASSIFIED_DECK_URL = 'https://downloads.corvusbelli.com/infinity/organized-play/classified-deck-en.pdf'
+
+const classifiedCards = [
+  ['Follow-Up', 'Medium or Heavy Infantry', p => [2, 3].includes(p.troopType)],
+  ['Net-Undermine', 'Veteran/Elite Troop or Chain of Command', veteranOrElite],
+  ['HVT: Identity Check', 'Biometric Visor, Multispectral Visor, or Sensor', p => equipment(p, 'Biometric Visor') || equipment(p, 'Multispectral Visor') || skill(p, 'Sensor')],
+  ['Capture', 'Veteran/Elite Troop or Chain of Command', veteranOrElite],
+  ['HVT: Kidnapping', 'Veteran/Elite Troop or Chain of Command able to CivEvac', p => veteranOrElite(p) && canCivEvac(p)],
+  ['HVT: Inoculation', 'Doctor or Paramedic', medic],
+  ['Sabotage', 'D-Charges', p => (p.weapons || []).some(w => token(w.name, 'D-Charges')) || equipment(p, 'D-Charges')],
+  ['Experimental Drug', 'Doctor/Paramedic and another allied VITA trooper', null],
+  ['HVT: Espionage', 'Hacker', hacker],
+  ['HVT: Retrongineering', 'Engineer', p => skill(p, 'Engineer')],
+  ['Test Run', 'Engineer and another allied STR trooper', null],
+  ['Nanoespionage', 'Engineer, Doctor, or Paramedic', p => skill(p, 'Engineer') || medic(p)],
+  ['Mapping', 'Forward Observer or Hacker', p => skill(p, 'Forward Observer') || hacker(p)],
+  ['Data Scan', 'Hacker', hacker],
+  ['HVT: Designation', 'Forward Observer or Spotlight', observerOrSpotlight],
+  ['Telemetry', 'Forward Observer or Spotlight', observerOrSpotlight],
+  ['Predator', 'Two enemy troopers killed in CC', activeTrooper],
+  ['Rescue', 'Casevac carrier and a second allied trooper', null],
+  ['In Extremis Recovery', 'Engage an Unconscious enemy', activeTrooper],
+  ['Extreme Prejudice', 'Coup de Grâce an Unconscious enemy', activeTrooper],
+]
+
+export function assessInfListClassifieds(profiles = []) {
+  const cards = classifiedCards.map(([name, requirement, predicate], index) => {
+    let eligible = predicate ? profiles.filter(predicate) : []
+    let detail = ''
+    if (index === 7) {
+      eligible = profiles.filter((p, i) => medic(p) && profiles.some((ally, j) => j !== i && ally.vita === true))
+      if (eligible.length) detail = 'Needs an allied VITA trooper to become Unconscious.'
+    } else if (index === 10) {
+      eligible = profiles.filter((p, i) => skill(p, 'Engineer') && profiles.some((ally, j) => j !== i && ally.structure === true))
+      if (eligible.length) detail = 'Needs an allied STR trooper to lose a Structure point.'
+    } else if (index === 17) {
+      eligible = profiles.filter((p, i) => activeTrooper(p) && profiles.some((ally, j) =>
+        j !== i && Number.isFinite(p.ph) && Number.isFinite(ally.ph)
+        && (p.ph >= ally.ph || equipment(p, 'Baggage'))))
+      eligible.sort((a, b) => (b.ph || 0) - (a.ph || 0))
+      if (eligible.length) detail = 'Needs a qualifying ally in Stunned, Immobilized, or Unconscious State.'
+    }
+    if (index === 16) eligible.sort((a, b) => (b.cc || 0) - (a.cc || 0))
+    if (!detail && [16, 18, 19].includes(index)) detail = requirement + '; depends on the enemy and game state.'
+    return {
+      number: index + 1,
+      name,
+      requirement,
+      eligible: uniqueProfiles(eligible),
+      detail,
+      possible: eligible.length > 0,
+    }
+  })
+  const secureHvt = uniqueProfiles(profiles.filter(activeTrooper))
+  return {
+    cards,
+    possible: cards.filter(card => card.possible).length,
+    total: cards.length,
+    secureHvt,
+  }
+}
+
+export function formatInfListClassifiedEmbeds(coverage) {
+  if (!coverage?.cards?.length) return []
+  const header = `Profile capability: ${coverage.possible}/${coverage.total} deck cards. A checkmark means the list has the required tools; mission rules, target availability, position and successful actions still matter.`
+  return [0, 10].map((offset, page) => ({
+    title: `ITS 18 · Classified coverage (${page + 1}/2)`,
+    url: CLASSIFIED_DECK_URL,
+    color: 0xa91e27,
+    description: page ? 'Optional substitute: Secure HVT may replace one drawn Classified when the scenario allows it.' : header,
+    fields: coverage.cards.slice(offset, offset + 10).map(card => ({
+      name: `${card.possible ? '✓' : '—'} ${card.number}. ${card.name}`,
+      value: card.possible
+        ? `${profileLabels(card.eligible)}${card.detail ? `\n${card.detail}` : ''}`.slice(0, 320)
+        : `No qualifying profile: ${card.requirement}.`.slice(0, 320),
+      inline: false,
+    })).concat(page ? [{
+      name: `${coverage.secureHvt.length ? '✓' : '—'} Optional · Secure HVT`,
+      value: coverage.secureHvt.length
+        ? `${profileLabels(coverage.secureHvt)}\nAt game end, cover the enemy HVT and keep enemies away from your own HVT.`.slice(0, 320)
+        : 'No active trooper identified.',
+      inline: false,
+    }] : []),
+  }))
+}
+
+function profileLabels(profiles) {
+  const unique = [...new Set(profiles.map(p => {
+    const unit = p.unitName || p.profileName || 'Unknown profile'
+    return p.profileName && !token(p.profileName, unit) ? `${unit} (${p.profileName})` : unit
+  }))]
+  return `${unique.slice(0, 3).join(' · ')}${unique.length > 3 ? ` · +${unique.length - 3} more` : ''}`
+}
+
+function uniqueProfiles(profiles) {
+  return [...new Map(profiles.map(p => [p.combinedId || `${p.unitName}:${p.profileName}`, p])).values()]
+}
+
+function norm(value) {
+  return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+}
+function token(value, wanted) { return norm(value) === norm(wanted) }
+function named(values, wanted) { return (values || []).some(value => token(value, wanted) || norm(value).startsWith(`${norm(wanted)} `)) }
+function skill(p, wanted) { return named(p.skills, wanted) }
+function equipment(p, wanted) { return named(p.equipment, wanted) }
+function medic(p) { return skill(p, 'Doctor') || skill(p, 'Paramedic') }
+function hacker(p) { return skill(p, 'Hacker') || (p.equipment || []).some(value => /^(?:evo |killer |white |assault |defensive )?hacking device(?: |$)/.test(norm(value))) }
+// ITS 18 Long Service grants every Character the Veteran Troop classification.
+function veteranOrElite(p) { return [4, 5, 10].includes(p.troopClassification) || skill(p, 'Chain of Command') }
+function activeTrooper(p) { return Number.isFinite(p.cc) && p.cc > 0 && !skill(p, 'Peripheral') }
+function canCivEvac(p) { return ![5, 8].includes(p.troopType) && !skill(p, 'Impetuous') && !skill(p, 'Peripheral') }
+function observerOrSpotlight(p) { return skill(p, 'Forward Observer') || (p.hackingPrograms || []).some(name => token(name, 'Spotlight')) }

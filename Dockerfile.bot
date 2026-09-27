@@ -9,5 +9,6 @@ RUN npx playwright install --with-deps chromium
 COPY lobo-infinity-portal/ .
 RUN npm run test:build-list
 RUN npm run test:random-list
+RUN npm run test:inf-list-classifieds
 
 CMD ["node", "bot/lobos-little-helper.mjs"]
