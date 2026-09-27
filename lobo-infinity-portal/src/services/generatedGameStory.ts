@@ -2,8 +2,9 @@ import { CANONICAL_ARMY_REGISTRY } from '../config/armies.ts'
 import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
+import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
-import { AREA_LOCATIONS, AREA_METHODS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
+import { AREA_LOCATIONS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
 import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
@@ -20,6 +21,41 @@ const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   covert: { approach: 'slipped along the edge of', defense: 'concealed a watch post beside' },
   technical: { approach: 'mapped the exposed routes toward', defense: 'tracked movement around' },
   contract: { approach: 'moved to secure', defense: 'watched' },
+}
+
+const areaRoleActions: Record<ArmyStoryStyle, { gunfighting: string; closeCombat: string }> = {
+  assault: {
+    gunfighting: 'fired across the guard’s position and covered the specialist at the communication antenna',
+    closeCombat: 'forced a guard from the relay base and held the space for the specialist',
+  },
+  armored: {
+    gunfighting: 'fired through return fire to keep the operator at the communication antenna',
+    closeCombat: 'pushed a defender from the switch and stood between the specialist and the counterattack',
+  },
+  flanking: {
+    gunfighting: 'fired from the side approach to draw the guard away from the relay',
+    closeCombat: 'caught the guard beside the antenna and cleared the specialist’s flank',
+  },
+  guard: {
+    gunfighting: 'held a firing lane to the communication antenna while the operator crossed',
+    closeCombat: 'intercepted the guard at the relay base and kept the approach open',
+  },
+  rescue: {
+    gunfighting: 'covered the specialist at the communication antenna and kept a way back open',
+    closeCombat: 'drove the guard away from the operator and protected the route back',
+  },
+  covert: {
+    gunfighting: 'fired from the blind side of the mast and drew the guard off the controls',
+    closeCombat: 'struck at the guard beside the relay and opened a quiet path to the switch',
+  },
+  technical: {
+    gunfighting: 'pinned the guard beside the communication antenna while the specialist checked the panel',
+    closeCombat: 'shoved a guard from the relay housing and held access to its controls',
+  },
+  contract: {
+    gunfighting: 'traded shots with the guard and covered the specialist at the switch',
+    closeCombat: 'forced the guard off the panel and held the route for the operator',
+  },
 }
 
 function stableHash(value: string): number {
@@ -72,11 +108,12 @@ export function composeGameStory(
     const weatherId = sceneTags?.weather ?? weatherIds[stableHash(key + ':' + String(gameId) + ':weather') % weatherIds.length]
     if (!Object.hasOwn(AREA_WEATHER, weatherId) || !weatherIds.includes(weatherId)) return null
     const weather = AREA_WEATHER[weatherId]
-    const method = AREA_METHODS[heroVoice.style]
-    const response = AREA_METHODS[otherVoice.style]
+    const method = AREA_ARMY_METHODS[hero.id]
+    const response = AREA_ARMY_METHODS[opponent.id]
+    if (!method || !response) return null
     const heroAction = role === 'objective' ? seed.objectiveAction : role === 'gunfighting'
-      ? 'fired at the guard above the communication antenna and covered the specialist at its controls'
-      : 'drove the guard from the communication antenna base and held the approach for the specialist'
+      ? areaRoleActions[heroVoice.style].gunfighting
+      : areaRoleActions[heroVoice.style].closeCombat
     return {
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
@@ -90,9 +127,15 @@ export function composeGameStory(
           method.followThrough + ' ' + weather.closing,
       ],
       endings: {
-        heroWins: '{{heroPlayer}}’s squad brought the communication antenna online and held ' + location.scoringGround + ' until the enemy withdrew.',
-        heroLoses: '{{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} back to ' + location.retreat + '.',
-        draw: 'Neither squad kept the communication antenna and ' + location.scoringGround + ' together when the shooting stopped.',
+        heroWins: '{{heroPlayer}}’s squad ' + method.winBeat +
+          ', bringing the communication antenna online with ' + location.scoringGround + ' under its control.',
+        heroLoses: '{{otherPlayer}}’s squad ' + response.winBeat +
+          ', bringing the communication antenna online with ' + location.scoringGround +
+          ' under its control as {{heroPlayer}} fell back to ' + location.retreat + '.',
+        draw: hero.id === opponent.id
+          ? 'Both crews ' + method.drawBeat + ', leaving neither in control of the communication antenna and ' + location.scoringGround + '.'
+          : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
+            ', leaving neither in control of the communication antenna and ' + location.scoringGround + '.',
       },
     }
   }

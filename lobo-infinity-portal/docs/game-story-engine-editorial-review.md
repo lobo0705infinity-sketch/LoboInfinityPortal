@@ -25,7 +25,7 @@ rules versions. These plots avoid disputed point totals between editions.
 | Rendering | 792 synthetic roster, role, and result variants render without unresolved placeholders; authored stories still take priority. | Pass for synthetic behavior; real recorded moves remain untested. |
 | Mission premise | All 22 families refer to source objectives in plot and endings. The Dig orders analysis before neutralization; B-Pong uses tracking beacon and consoles. | Improved; still needs mission-version and fine rules review. |
 | Setup fidelity | Critical Intervention needs attacker/defender assignment; Double Bind needs chosen mode. Neither is recorded in public games. | Runtime fallback withheld for these two missions; examples below are previews only. |
-| Variety and voice | 89 distinct middle paragraphs among 110 scenes; 40–68 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Area of Interest has seven locations, five weather choices (including none), and eight broad tactical methods. The other mission frames still repeat across army pairings, and shared methods cannot establish 45 distinct faction voices. | Hold for a blinded comparison with authored stories. |
+| Variety and voice | 89 distinct middle paragraphs among 110 scenes; 40–68 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Area of Interest has seven locations, five weather choices (including none), and 45 distinct faction maneuver, defense, continuation, and outcome sets. Eight role-action patterns and the four relay incidents still repeat, as do the other mission frames. | Hold for a blinded comparison with authored stories. |
 | Actual-game fidelity | No game record proves these shots, object movements, or model actions occurred. | Generated scenes must not be described as a factual match transcript. |
 
 An independent editor should rate a randomized, unlabeled set against
@@ -35,12 +35,13 @@ acceptance threshold before any release decision. The authored count stays
 **1,300 of 22,770**, and the authored-completeness gate is unchanged.
 
 **Reversal check:** The original Next Wave/Tohaa preview changed only two
-phrases in paragraph one. Area of Interest now changes the contest and
-aftermath when their roles reverse, including across all seven locations,
-30 compatible location/weather combinations, four incidents, and three hero
-roles. This is a focused
-pilot, not evidence that the other 21 missions or all faction pairings have
-strong character. Weather and location are fictional narrative settings;
+phrases in paragraph one. Area of Interest now changes each army's maneuver,
+defense, continuation, win/loss outcome, and draw outcome when their roles
+reverse. All 45 armies have distinct sets; Tohaa/Next Wave was checked across
+all seven locations, 30 compatible location/weather combinations, four
+incidents, and three hero roles. This is a focused pilot, not evidence that
+the other 21 missions or all pairings have original plots or strong voice.
+Weather and location are fictional narrative settings;
 the game record does not confirm conditions on the played table.
 
 ## Ten calibration examples
@@ -60,13 +61,13 @@ can be recorded.
 
 A relay mast rose between abandoned freight carriers at a depot. Rain ran through the seams of its exposed control housing. {{heroPlayer}}’s armored survey troops mapped the exposed routes toward a parked cargo carrier, while {{otherPlayer}}’s field medics and escorts kept a withdrawal route open beside the raised loading platform. The relay indicator blinked once before the panel went dark, leaving the contested ground without a clear signal.
 
-A fallen brace trapped the antenna switch against the base of the mast. Water pooled beneath the panel, so a loose cable spat sparks whenever anyone reached for the switch. A scout traced the active lead while the specialist followed the safer route to the controls. The defenders moved around the mast in short bounds, keeping an escape route through the fire.
+A fallen brace trapped the antenna switch against the base of the mast. Water pooled beneath the panel, so a loose cable spat sparks whenever anyone reached for the switch. A surveyor marked the safest shot across the mast before the specialist left cover. The defenders left room to recover their operator while contesting the antenna.
 
-A burst of gunfire shifted the brace and briefly exposed the control face. {{hero}} pulled the brace aside and keyed an activation request into the communication antenna. The activation light spread across the empty loading rails. The squad watched the indicator change while its specialist waited for confirmation. Rain hissed against the exposed wires while the relay clicked between channels.
+A burst of gunfire shifted the brace and briefly exposed the control face. {{hero}} pulled the brace aside and keyed an activation request into the communication antenna. The activation light spread across the empty loading rails. The covering shots tracked each guard who tried to interrupt the specialist. Rain hissed against the exposed wires while the relay clicked between channels.
 
-- Hero wins: {{heroPlayer}}’s squad brought the communication antenna online and held the loading lanes until the enemy withdrew.
-- Hero loses: {{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} back to the parked carriers.
-- Draw: Neither squad kept the communication antenna and the loading lanes together when the shooting stopped.
+- Hero wins: {{heroPlayer}}’s squad cleared a precise firing lane to the switch, bringing the communication antenna online with the loading lanes under its control.
+- Hero loses: {{otherPlayer}}’s squad held the switch without closing its withdrawal route, bringing the communication antenna online with the loading lanes under its control as {{heroPlayer}} fell back to the parked carriers.
+- Draw: {{heroPlayer}}’s crew held the surveyed lane under fire while {{otherPlayer}}’s crew kept an escort ready beside the controls, leaving neither in control of the communication antenna and the loading lanes.
 
 ### 12. B-Pong — Haqqislam vs. Yu Jing (objective)
 

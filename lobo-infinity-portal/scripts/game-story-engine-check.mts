@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
+import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
@@ -16,6 +17,11 @@ const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 assert.equal(armies.length, 45)
 assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
+for (const field of ['initiative', 'response', 'followThrough', 'winBeat', 'drawBeat'] as const) {
+  assert.equal(new Set(Object.values(AREA_ARMY_METHODS).map((method) => method[field])).size,
+    armies.length, `Area of Interest ${field} must distinguish all active armies`)
+}
 assert.deepEqual(Object.keys(SOURCED_STORY_SCENARIOS).sort(), [...CANONICAL_MISSIONS].sort())
 for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
   assert.ok(scenario)
@@ -89,6 +95,34 @@ for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
 assert.deepEqual(Object.keys(AREA_WEATHER).sort(), ['crosswind', 'fog', 'none', 'rain', 'snow'])
 assert.deepEqual(Object.keys(AREA_LOCATIONS).sort(),
   ['desert', 'forest', 'freightDepot', 'jungle', 'mountain', 'relayCourtyard', 'rooftopTerrace'])
+// A fixed incident and setting isolate the faction layer: every army has a
+// different maneuver, defense, continuation, and outcome at the same relay.
+const tohaaArmy = armies.find((army) => army.id === 'tohaa')
+assert.ok(tohaaArmy)
+const draws = new Set<string>()
+for (const opponent of armies) {
+  const tags = { location: 'forest', weather: 'none' } as const
+  const first = composeGameStory('Area of Interest', tohaaArmy.name, opponent.name,
+    tohaaArmy.name, 'objective', 0, tags)
+  assert.ok(first)
+  assertGameStoryQuality(first, `Area of Interest: Tohaa / ${opponent.name}`)
+  assert.ok(first.paragraphs[1].includes(AREA_ARMY_METHODS.tohaa.initiative))
+  assert.ok(first.paragraphs[1].includes(AREA_ARMY_METHODS[opponent.id].response))
+  assert.ok(first.paragraphs[2].includes(AREA_ARMY_METHODS.tohaa.followThrough))
+  assert.ok(first.endings.heroWins.includes(AREA_ARMY_METHODS.tohaa.winBeat))
+  assert.ok(first.endings.draw.includes(AREA_ARMY_METHODS.tohaa.drawBeat))
+  draws.add(first.endings.draw)
+  if (opponent.id === 'tohaa') continue
+  assert.ok(first.endings.draw.includes(AREA_ARMY_METHODS[opponent.id].drawBeat))
+  const reversed = composeGameStory('Area of Interest', opponent.name, tohaaArmy.name,
+    opponent.name, 'objective', 0, tags)
+  assert.ok(reversed)
+  assertGameStoryQuality(reversed, `Area of Interest: ${opponent.name} / Tohaa`)
+  assert.notEqual(first.paragraphs[1], reversed.paragraphs[1], `${opponent.name}: distinct contest on reversal`)
+  assert.notEqual(first.paragraphs[2], reversed.paragraphs[2], `${opponent.name}: distinct continuation on reversal`)
+  assert.notEqual(first.endings.draw, reversed.endings.draw, `${opponent.name}: draw reflects direction`)
+}
+assert.equal(draws.size, armies.length, 'the same location and incident yield faction-specific draws')
 for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
   for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
     const tags = { location, weather }
