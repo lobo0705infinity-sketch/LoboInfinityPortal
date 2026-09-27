@@ -3006,4 +3006,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Force de Réponse Rapide Merovingienne"
+      ],
+      "heroFaction": "Force de Réponse Rapide Merovingienne",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the chalk quarry telegraph office found a maintenance court centered on an enameled signal comb. Neoterra Capitaline Army surveyors entered from a municipal bore, while Force de Réponse Rapide Merovingienne followed an older utility line. Their competing claims became secondary when telegraph keys began typing, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the enameled signal comb from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the enameled signal comb and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Kosmoflot"
+      ],
+      "heroFaction": "Kosmoflot",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A dig below the polar seed repository found a maintenance court centered on an vacuum-preserved grain clock. Neoterra Capitaline Army surveyors entered from a municipal bore, while Kosmoflot followed an older utility line. Their competing claims became secondary when the cold room warmed from below, proving that the buried complex still had power.",
+        "{{hero}} grappled with an attacker in the buried service rooms and forced the opponent away from the vacuum-preserved grain clock. A shoulder struck fresh mortar behind the artifact, opening a narrow speaking tube. The trooper listened and heard careful breathing rising from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the vacuum-preserved grain clock and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Tartary Army Corps"
+      ],
+      "heroFaction": "Tartary Army Corps",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A dig below the steppe locomotive turntable found a maintenance court centered on an iron route selector. Neoterra Capitaline Army surveyors entered from a municipal bore, while Tartary Army Corps followed an older utility line. Their competing claims became secondary when the turntable rotated under packed earth, proving that the buried complex still had power.",
+        "{{hero}} held the buried service rooms with controlled rifle fire while engineers reached the iron route selector. A shot chipped fresh mortar behind the artifact and exposed a narrow speaking tube. The trooper covered the engineers as careful breathing rose from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the iron route selector and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "USAriadna Ranger Force"
+      ],
+      "heroFaction": "USAriadna Ranger Force",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the canyon ranger courthouse found a maintenance court centered on an leather evidence satchel. Neoterra Capitaline Army surveyors entered from a municipal bore, while USAriadna Ranger Force followed an older utility line. Their competing claims became secondary when a witness bell rang behind a wall, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the leather evidence satchel from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the leather evidence satchel and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Haqqislam"
+      ],
+      "heroFaction": "Haqqislam",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the desert astronomical clinic found a maintenance court centered on an brass eclipse calculator. Neoterra Capitaline Army surveyors entered from a municipal bore, while Haqqislam followed an older utility line. Their competing claims became secondary when the calculator projected tomorrow's eclipse, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the brass eclipse calculator from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the brass eclipse calculator and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Hassassin Bahram"
+      ],
+      "heroFaction": "Hassassin Bahram",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A dig below the mountain falconry station found a maintenance court centered on an silver jess engraved with coordinates. Neoterra Capitaline Army surveyors entered from a municipal bore, while Hassassin Bahram followed an older utility line. Their competing claims became secondary when an empty perch snapped shut, proving that the buried complex still had power.",
+        "{{hero}} grappled with an attacker in the buried service rooms and forced the opponent away from the silver jess engraved with coordinates. A shoulder struck fresh mortar behind the artifact, opening a narrow speaking tube. The trooper listened and heard careful breathing rising from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the silver jess engraved with coordinates and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Qapu Khalqi"
+      ],
+      "heroFaction": "Qapu Khalqi",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A dig below the silt-buried bonded warehouse found a maintenance court centered on an customs bell cast around a key. Neoterra Capitaline Army surveyors entered from a municipal bore, while Qapu Khalqi followed an older utility line. Their competing claims became secondary when sealed crates knocked from inside, proving that the buried complex still had power.",
+        "{{hero}} held the buried service rooms with controlled rifle fire while engineers reached the customs bell cast around a key. A shot chipped fresh mortar behind the artifact and exposed a narrow speaking tube. The trooper covered the engineers as careful breathing rose from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the customs bell cast around a key and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Ramah Taskforce"
+      ],
+      "heroFaction": "Ramah Taskforce",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the field hospital laundry found a maintenance court centered on an linen sterilizer register. Neoterra Capitaline Army surveyors entered from a municipal bore, while Ramah Taskforce followed an older utility line. Their competing claims became secondary when the laundry rollers pulled in dry bandages, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the linen sterilizer register from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the linen sterilizer register and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Nomads"
+      ],
+      "heroFaction": "Nomads",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the zero-gravity training cellar found a maintenance court centered on an gyroscopic balance rail. Neoterra Capitaline Army surveyors entered from a municipal bore, while Nomads followed an older utility line. Their competing claims became secondary when gravity shifted toward the west wall, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the gyroscopic balance rail from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the gyroscopic balance rail and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Bakunin Jurisdictional Command"
+      ],
+      "heroFaction": "Bakunin Jurisdictional Command",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A dig below the underground performance kitchen found a maintenance court centered on an copper recipe cylinder. Neoterra Capitaline Army surveyors entered from a municipal bore, while Bakunin Jurisdictional Command followed an older utility line. Their competing claims became secondary when ovens ignited beneath the stone floor, proving that the buried complex still had power.",
+        "{{hero}} grappled with an attacker in the buried service rooms and forced the opponent away from the copper recipe cylinder. A shoulder struck fresh mortar behind the artifact, opening a narrow speaking tube. The trooper listened and heard careful breathing rising from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the copper recipe cylinder and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Corregidor Jurisdictional Command"
+      ],
+      "heroFaction": "Corregidor Jurisdictional Command",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A dig below the flooded shipwright guildhall found a maintenance court centered on an teak keel template. Neoterra Capitaline Army surveyors entered from a municipal bore, while Corregidor Jurisdictional Command followed an older utility line. Their competing claims became secondary when the floodwater revealed a fresh keel mark, proving that the buried complex still had power.",
+        "{{hero}} held the buried service rooms with controlled rifle fire while engineers reached the teak keel template. A shot chipped fresh mortar behind the artifact and exposed a narrow speaking tube. The trooper covered the engineers as careful breathing rose from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the teak keel template and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Tunguska Jurisdictional Command"
+      ],
+      "heroFaction": "Tunguska Jurisdictional Command",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the abandoned quantum bank found a maintenance court centered on an black credit prism. Neoterra Capitaline Army surveyors entered from a municipal bore, while Tunguska Jurisdictional Command followed an older utility line. Their competing claims became secondary when account balances appeared on the walls, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the black credit prism from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the black credit prism and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Combined Army"
+      ],
+      "heroFaction": "Combined Army",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the xenological memorial crypt found a maintenance court centered on an six-sided remembrance tablet. Neoterra Capitaline Army surveyors entered from a municipal bore, while Combined Army followed an older utility line. Their competing claims became secondary when the tablet recited names absent from the memorial, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the six-sided remembrance tablet from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the six-sided remembrance tablet and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Morat Aggression Force"
+      ],
+      "heroFaction": "Morat Aggression Force",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A dig below the basalt artillery foundry found a maintenance court centered on an volcanic-glass bore gauge. Neoterra Capitaline Army surveyors entered from a municipal bore, while Morat Aggression Force followed an older utility line. Their competing claims became secondary when the bore gauge climbed out of its cradle, proving that the buried complex still had power.",
+        "{{hero}} grappled with an attacker in the buried service rooms and forced the opponent away from the volcanic-glass bore gauge. A shoulder struck fresh mortar behind the artifact, opening a narrow speaking tube. The trooper listened and heard careful breathing rising from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the volcanic-glass bore gauge and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Next Wave"
+      ],
+      "heroFaction": "Next Wave",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A dig below the experimental weather orchard found a maintenance court centered on an ceramic cloud sampler. Neoterra Capitaline Army surveyors entered from a municipal bore, while Next Wave followed an older utility line. Their competing claims became secondary when rain formed inside every sampler, proving that the buried complex still had power.",
+        "{{hero}} held the buried service rooms with controlled rifle fire while engineers reached the ceramic cloud sampler. A shot chipped fresh mortar behind the artifact and exposed a narrow speaking tube. The trooper covered the engineers as careful breathing rose from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the ceramic cloud sampler and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Onyx Contact Force"
+      ],
+      "heroFaction": "Onyx Contact Force",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the sealed orbital-elevator footing found a maintenance court centered on an counterweight inspection seal. Neoterra Capitaline Army surveyors entered from a municipal bore, while Onyx Contact Force followed an older utility line. Their competing claims became secondary when the buried counterweight rose, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the counterweight inspection seal from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the counterweight inspection seal and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Shasvastii Expeditionary Force"
+      ],
+      "heroFaction": "Shasvastii Expeditionary Force",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the camouflaged botanical nursery found a maintenance court centered on an translucent seed membrane. Neoterra Capitaline Army surveyors entered from a municipal bore, while Shasvastii Expeditionary Force followed an older utility line. Their competing claims became secondary when the membrane opened like an eye, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the translucent seed membrane from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the translucent seed membrane and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "ALEPH"
+      ],
+      "heroFaction": "ALEPH",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A dig below the subterranean ethics tribunal found a maintenance court centered on an marble verdict engine. Neoterra Capitaline Army surveyors entered from a municipal bore, while ALEPH followed an older utility line. Their competing claims became secondary when the verdict engine announced both crews guilty, proving that the buried complex still had power.",
+        "{{hero}} grappled with an attacker in the buried service rooms and forced the opponent away from the marble verdict engine. A shoulder struck fresh mortar behind the artifact, opening a narrow speaking tube. The trooper listened and heard careful breathing rising from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the marble verdict engine and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Operations Subsection"
+      ],
+      "heroFaction": "Operations Subsection",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A dig below the automated civil-defense kitchen found a maintenance court centered on an ration press with no maker's mark. Neoterra Capitaline Army surveyors entered from a municipal bore, while Operations Subsection followed an older utility line. Their competing claims became secondary when the press stamped rations from bare stone, proving that the buried complex still had power.",
+        "{{hero}} held the buried service rooms with controlled rifle fire while engineers reached the ration press with no maker's mark. A shot chipped fresh mortar behind the artifact and exposed a narrow speaking tube. The trooper covered the engineers as careful breathing rose from somewhere below the survey equipment's maximum range.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the ration press with no maker's mark and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Steel Phalanx"
+      ],
+      "heroFaction": "Steel Phalanx",
+      "role": "objective",
+      "paragraphs": [
+        "A dig below the ruined wrestling academy found a maintenance court centered on an bronze grip-strength wheel. Neoterra Capitaline Army surveyors entered from a municipal bore, while Steel Phalanx followed an older utility line. Their competing claims became secondary when the wheel began recording an unseen competitor, proving that the buried complex still had power.",
+        "{{hero}} traced the disturbance through the buried service rooms, checked the old supports, and disconnected the bronze grip-strength wheel from a hidden power line. The specialist found a narrow strip of fresh mortar behind it. Removing one brick exposed a speaking tube descending farther than the survey equipment could measure.",
+        "{{heroPlayer}}'s crew lowered a microphone into the tube while {{otherPlayer}}'s team reinforced the court. The breathing stopped, then a voice accurately described the equipment surrounding both commanders. It asked them to leave the artifact behind and promised to reveal the safest exit only after hearing their answer."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} kept the bronze grip-strength wheel and recorded the voice's impossible survey report.",
+        "heroLoses": "{{otherPlayer}} secured the powered court and forced the rival crew back to its bore.",
+        "draw": "Both crews reached daylight, leaving the artifact beside the silent speaking tube."
+      },
+      "mission": "The Dig"
+    }
 ]
