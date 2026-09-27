@@ -12,7 +12,7 @@ import { composeGameStory, renderGeneratedGameStory } from '../src/services/gene
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
-import { assertGameStoryQuality } from './game-story-quality.mts'
+import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
 
 const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 assert.equal(armies.length, 45)
@@ -74,6 +74,51 @@ for (const mission of CANONICAL_MISSIONS) {
 }
 assert.equal(covered, 22770)
 assert.equal(scenes.size, covered)
+for (const mission of CANONICAL_MISSIONS) {
+  const openingOrders = new Set<string>()
+  for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+    for (const gameId of [0, 1, 2, 3]) {
+      const generated = composeGameStory(mission, 'PanOceania', 'Druze Bayram Security',
+        'PanOceania', role, gameId)
+      assert.ok(generated)
+      assertGameStoryMissionObjective(generated, `${mission}/${role}/${gameId}`)
+      assert.doesNotMatch(generated.paragraphs[0], /, while \{\{otherPlayer\}\}/,
+        `${mission}: old repeated army-introduction scaffold`)
+      openingOrders.add(generated.paragraphs[0].indexOf('{{heroPlayer}}') <
+        generated.paragraphs[0].indexOf('{{otherPlayer}}') ? 'hero' : 'other')
+    }
+  }
+  assert.equal(openingOrders.size, 2, mission + ': test both directions of the opening')
+}
+const offMission = {
+  ...composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security',
+    'PanOceania', 'objective')!,
+  paragraphs: [
+    'An old freight lift carried the guards below the surface while both crews sought an artifact.',
+    '{{hero}} searched the tunnel for a lost key as {{heroPlayer}} waited behind the door.',
+    '{{otherPlayer}} moved toward the abandoned shaft before the last lamp went dark.',
+  ],
+}
+assert.throws(() => assertGameStoryMissionObjective(offMission, 'off-mission The Dig'),
+  /misses the mission objective/, 'new stories cannot use an unrelated buried artifact')
+const noAreaControl = composeGameStory('Area of Interest', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...noAreaControl,
+  endings: { ...noAreaControl.endings, draw: 'The communication antenna blinked without a response.' } },
+  'unresolved Area of Interest draw'), /draw ending misses the mission objective/,
+  'antenna alone does not resolve who controls the area')
+const noHardlockConsole = composeGameStory('Hardlock', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...noHardlockConsole,
+  endings: { ...noHardlockConsole.endings, heroWins: 'The beacon lit as the patrol withdrew.' } },
+  'unresolved Hardlock victory'), /heroWins ending misses the mission objective/,
+  'a beacon alone does not resolve the console objective')
+const oldCrossing = composeGameStory('Crossing Lines', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...oldCrossing,
+  paragraphs: [oldCrossing.paragraphs[0] + ' The classified deck determined the winner.',
+    ...oldCrossing.paragraphs.slice(1)] }, 'old Crossing Lines'),
+  /no HVT or Classified Deck/, 'respect the September 24 ITS 18 hotfix')
 assert.equal(composeGameStory('Unknown mission', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 'Hassassin Bahram', 'objective'), null)
 for (const gameId of [0, 1]) {

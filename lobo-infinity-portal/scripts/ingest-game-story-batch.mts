@@ -5,7 +5,7 @@ import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { GameStoryTemplate } from '../src/services/gameStoryTemplate.ts'
-import { assertGameStoryQuality } from './game-story-quality.mts'
+import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
 
 const position = process.argv.indexOf('--input')
 const input = position >= 0 ? process.argv[position + 1] : ''
@@ -44,6 +44,7 @@ for (const [index, line] of source.trim().split('\n').entries()) {
   assert.equal(key, item.custom_id, `Batch row ${index + 1}: mismatched mission and armies`)
   assert.ok(!existing.has(key) && !incoming.has(key), `Duplicate story: ${key}`)
   assertGameStoryQuality(story, key!)
+  assertGameStoryMissionObjective(story, key!)
   assert.ok(!/\b(?:OP|VP|TP)\b|the record (?:shows|does not)|submitted highlight/i.test(story.paragraphs.join(' ')), `${key}: factual review instead of fiction`)
   incoming.set(key!, story)
 }

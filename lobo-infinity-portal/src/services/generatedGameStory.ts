@@ -16,11 +16,11 @@ const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
 const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   assault: { approach: 'pushed directly toward', defense: 'held the approach to' },
   armored: { approach: 'advanced under covering fire toward', defense: 'set a shielded line beside' },
-  flanking: { approach: 'worked around the exposed side of', defense: 'watched the flanks of' },
+  flanking: { approach: 'skirted', defense: 'watched the flanks of' },
   guard: { approach: 'moved in formation toward', defense: 'guarded' },
   rescue: { approach: 'cleared a passage toward', defense: 'kept a withdrawal route open beside' },
   covert: { approach: 'slipped along the edge of', defense: 'concealed a watch post beside' },
-  technical: { approach: 'mapped the exposed routes toward', defense: 'tracked movement around' },
+  technical: { approach: 'charted a route toward', defense: 'tracked movement around' },
   contract: { approach: 'moved to secure', defense: 'watched' },
 }
 
@@ -77,6 +77,24 @@ function continueEnding(ending: string, clause: string): string {
   return withoutFinalPeriod(ending) + '; ' + clause + '.'
 }
 
+// Rotate independent scene beats by the complete story identity. Repeated
+// matchups keep a stable report, while different factions, roles and incident
+// choices do not all march through the same hero/defender/hero sentence shape.
+function arrangeBeats(first: string, beats: readonly [string, string, string], variant: number): string {
+  const orders = [[0, 1, 2], [1, 2, 0], [0, 2, 1], [2, 0, 1]] as const
+  return [first, ...orders[variant].map((index) => beats[index])].join(' ')
+}
+
+function arrangeClose(turn: string, heroAction: string, status: string, response: string, variant: number): string {
+  return arrangeBeats(turn, [heroAction, status, response], variant)
+}
+
+function arrangeOpening(opening: string, hero: string, opponent: string, stakes: string, variant: number): string {
+  const orders = [[hero, opponent, stakes], [opponent, hero, stakes],
+    [hero, stakes, opponent], [opponent, stakes, hero]]
+  return [opening, ...orders[variant]].join(' ')
+}
+
 // The pair is unordered and canonical. Game ID changes the scene for repeat
 // meetings without allowing a reload to rewrite the same report.
 export function composeGameStory(
@@ -106,6 +124,7 @@ export function composeGameStory(
   if (!scenario) return null
   if (sceneTags && canonical !== 'Area of Interest') return null
   const seed = scenario.incidents[stableHash(key + ':' + String(gameId)) % scenario.incidents.length]
+  const variant = stableHash(key + ':' + String(gameId) + ':' + hero.id + ':' + role + ':prose') % 4
   if (canonical === 'Area of Interest') {
     const requestedWeather = sceneTags?.weather
     const locationIds = (Object.keys(AREA_LOCATIONS) as AreaStoryTags['location'][]).filter((id) =>
@@ -124,17 +143,20 @@ export function composeGameStory(
     const heroAction = role === 'objective' ? seed.objectiveAction : role === 'gunfighting'
       ? areaRoleActions[heroVoice.style].gunfighting
       : areaRoleActions[heroVoice.style].closeCombat
+    const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
+      tactics[heroVoice.style].approach + ' ' + location.approach + '.'
+    const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
+      tactics[otherVoice.style].defense + ' ' + location.position + '.'
     return {
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
       paragraphs: [
-        location.arrival + ' ' + weather.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' +
-          tactics[heroVoice.style].approach + ' ' + location.approach + ', while {{otherPlayer}}’s ' +
-          otherVoice.crew + ' ' + tactics[otherVoice.style].defense + ' ' + location.position +
-          '. ' + seed.opening,
-        seed.complication + ' ' + weather.complication + ' ' + method.initiative + ' ' + response.response,
-        seed.turn + ' {{hero}} ' + heroAction + '. ' + location.signal + ' ' +
-          method.followThrough + ' ' + weather.closing,
+        [location.arrival, weather.opening, ...(
+          variant % 2 ? [otherMove, heroMove] : [heroMove, otherMove]
+        ), seed.opening].join(' '),
+        arrangeBeats(seed.complication, [weather.complication, method.initiative, response.response], variant),
+        arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', location.signal,
+          method.followThrough, variant) + ' ' + weather.closing,
       ],
       endings: {
         heroWins: '{{heroPlayer}}’s squad ' + method.winBeat +
@@ -163,18 +185,21 @@ export function composeGameStory(
     : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
       '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
 
+  const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
+    ' ' + scenario.ground + '.'
+  const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
+    tactics[otherVoice.style].defense + ' ' + scenario.position + '.'
+
   return {
     mission: canonical,
     factions: [first.name, second.name],
     heroFaction: hero.name,
     role,
     paragraphs: [
-      seed.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
-        ' ' + scenario.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-        tactics[otherVoice.style].defense + ' ' + scenario.position + '. ' + scenario.stakes,
-      seed.complication + ' ' + scenario.crossfire + ' ' + method.maneuver + ' ' + response.defense,
-      seed.turn + ' {{hero}} ' + heroAction + '. ' + scenario.afterAction + ' ' +
-        method.followThrough,
+      arrangeOpening(seed.opening, heroMove, otherMove, scenario.stakes, variant),
+      arrangeBeats(seed.complication, [scenario.crossfire, method.maneuver, response.defense], variant),
+      arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', scenario.afterAction,
+        method.followThrough, variant),
     ],
     endings: {
       heroWins: continueEnding(scenario.endings.heroWins, method.winClause),

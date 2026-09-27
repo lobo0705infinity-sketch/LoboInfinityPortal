@@ -145,7 +145,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_corporate_appropriation', season: 'ITS 18',
     anchor: /prototype|panoply/i,
     ground: 'the enemy prototype cradle', position: 'the adjacent panoply',
-    stakes: 'A captured prototype would matter only if its carrier survived the retreat.',
+    stakes: 'A captured prototype would matter only if its carrier survived the exposed retreat.',
     crossfire: 'Rounds hammered the cradle while both teams tried to keep the prototype and panoply in reach.',
     gunfighting: 'fired at the guard covering the prototype and sheltered the carrier near the panoply',
     closeCombat: 'drove a defender from the prototype cradle and opened an escape route for its carrier',
@@ -246,7 +246,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     closing: 'Footsteps sounded beyond the extraction marker while the last person remained under cover.',
     endings: {
       heroWins: '{{heroPlayer}}’s crew extracted its civilians safely across the line.',
-      heroLoses: '{{otherPlayer}}’s crew completed its evacuation while {{heroPlayer}}’s escorts fell back.',
+      heroLoses: '{{otherPlayer}}’s crew extracted the civilians while {{heroPlayer}}’s escorts fell back.',
       draw: 'Both escorts withdrew with civilians still short of the extraction route.',
     },
     incidents: [
@@ -407,7 +407,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     closing: 'Empty cover lay between the last survivors and the officer still moving behind it.',
     endings: {
       heroWins: '{{heroPlayer}}’s force preserved its survivors and broke the opposing line.',
-      heroLoses: '{{otherPlayer}}’s force inflicted heavier losses while {{heroPlayer}} fell back.',
+      heroLoses: '{{otherPlayer}}’s force inflicted heavier losses and preserved its survivors while {{heroPlayer}} fell back.',
       draw: 'Both forces withdrew with costly casualties and their surviving squads intact.',
     },
     incidents: [
@@ -511,6 +511,8 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Double Bind': {
     source: 'https://infinitygeist.com/mission/s18_double_bind', season: 'ITS 18',
+    // The September 24 ITS 18 hotfix requires each side to choose one of three
+    // objective sets when Deployment is chosen. Public games omit that choice.
     requiresUnreportedSetup: true, anchor: /antenna|zone of influence/i,
     ground: 'the antenna and zone-of-influence line', position: 'the contested aerial',
     stakes: 'One force sought antenna control while the other could answer through sabotage or a dominated zone.',
@@ -534,6 +536,8 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'The Dig': {
     source: 'https://infinitygeist.com/mission/s18_the_dig', season: 'ITS 18',
+    // September 24 ITS 18 hotfix: Analyze Hyperthermal Tech is performed in
+    // contact with a Console before any neutralization, with Player Tokens.
     anchor: /hyperthermal tech|analysis console|analy/i,
     ground: 'the buried hyperthermal tech site', position: 'the analysis console',
     stakes: 'The tech could only be neutralized after analysis, with console control still in dispute.',
@@ -549,10 +553,10 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
       draw: 'Both crews withdrew with the hyperthermal tech still active and its analysis unresolved.',
     },
     incidents: [
-      incident('A hyperthermal tech unit emerged from the dig beside a console still covered in stone dust.', 'The console reader skipped during analysis while the rival crew approached the live tech.', 'A buried contact appeared beneath the dust, offering one chance to finish the scan.', 'checked the analysis console and prepared to neutralize the hyperthermal tech after its reading'),
-      incident('A buried tech signal lit the dig before either crew reached its analysis console.', 'A broken cable divided the console from the hyperthermal tech as an enemy squad crossed the shaft.', 'A loose contact emerged from the dust and exposed where the analysis had stopped.', 'located the hyperthermal tech contact and guided a specialist to the analysis console'),
-      incident('Two hyperthermal tech units glowed beneath the dig while the nearest analysis console stayed dark.', 'Fallen stone hid the input face just as rival specialists reached the excavation rim.', 'The stones shifted to reveal an unfinished scan beside the neutralizing command.', 'inspected the analysis console and marked the hyperthermal tech still awaiting its reading'),
-      incident('A hyperthermal tech indicator glowed beneath the dig while both teams disputed the nearest console.', 'Loose rock covered the control face and obscured whether anyone had analyzed the live unit.', 'A stone shifted and revealed an unfinished analysis prompt beside the neutralizing command.', 'checked the analysis console and marked the buried hyperthermal tech for the waiting specialist'),
+      incident('A hyperthermal tech unit emerged from the dig beside a console still covered in stone dust.', 'The console reader skipped during analysis while the rival crew approached the live tech.', 'A buried contact appeared beneath the dust, offering one chance to finish the scan.', 'worked at the analysis console to record the hyperthermal tech reading before any neutralizing command'),
+      incident('A buried tech signal lit the dig before either crew reached its analysis console.', 'A broken cable divided the console from the hyperthermal tech as an enemy squad crossed the shaft.', 'A loose contact emerged from the dust and exposed where the analysis had stopped.', 'reached the analysis console controls and began a reading of the buried hyperthermal tech'),
+      incident('Two hyperthermal tech units glowed beneath the dig while the nearest analysis console stayed dark.', 'Fallen stone hid the input face just as rival specialists reached the excavation rim.', 'The stones shifted to reveal an unfinished scan beside the neutralizing command.', 'cleared the analysis console input and began analyzing the hyperthermal tech before neutralization'),
+      incident('A hyperthermal tech indicator glowed beneath the dig while both teams disputed the nearest console.', 'Loose rock covered the control face and obscured whether anyone had analyzed the live unit.', 'A stone shifted and revealed an unfinished analysis prompt beside the neutralizing command.', 'checked the analysis console controls and began the hyperthermal tech reading before neutralization'),
     ],
   },
   'Data Harvest': {
@@ -568,7 +572,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     closing: 'A single activity lamp shone across the line separating two designated zones.',
     endings: {
       heroWins: '{{heroPlayer}}’s crew kept its data-harvester active in the enemy designated zone.',
-      heroLoses: '{{otherPlayer}}’s crew deactivated the harvester and held {{heroPlayer}} outside its zone.',
+      heroLoses: '{{otherPlayer}}’s crew deactivated the data-harvester and held {{heroPlayer}} outside its designated zone.',
       draw: 'Both crews left a harvester near the boundary, with neither controlling the designated zone.',
     },
     incidents: [

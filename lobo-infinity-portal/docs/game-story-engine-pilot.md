@@ -10,7 +10,12 @@ actual-game fit before generated scenes could count as release coverage.
 This branch experiments with a local, deterministic fallback when a mission
 and army matchup has no individually written story. It does not alter the
 1,300 authored entries, submitted highlights, or the release requirement for
-22,770 individually written stories.
+22,770 individually written stories. The legacy authored entries pass a
+structural gate, but an objective-text audit flagged all 1,300 for editorial
+review: it requires the scenario stake in the scene and all three endings.
+This is triage, **not** proof that every legacy story is incorrect. Existing
+authored stories continue to take priority in routing, so this pilot cannot
+be merged until their treatment is decided.
 
 ## Source and scope
 
@@ -78,8 +83,10 @@ synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including a mirror and all three roles across the sample. It contains 110
-different middle paragraphs, 49–68 words per paragraph, and a maximum
-within-mission middle-paragraph trigram Jaccard overlap of 0.186. That
+different middle paragraphs, 45–67 words per paragraph, and a maximum
+within-mission middle-paragraph trigram Jaccard overlap of 0.193. Sentence
+order now varies across the opening, confrontation, and hero action, removing
+the repeated `heroPlayer ... while otherPlayer` opening from the sample. That
 lexical measure does not prove plot originality. Shared mission openings,
 incidents, and hero actions remain recognizable across a reading session.
 The 45 Area and 45 mission-neutral method sets distinguish army tactics in
@@ -94,23 +101,33 @@ mission-specific stakes and faction-specific resolution beats; the result
 in the game record chooses which one appears.
 See the [review and ten actual samples](game-story-engine-editorial-review.md).
 
-The next editorial gate is an independent, blinded comparison with authored
-stories for natural prose, plot variety, faction voice, version accuracy, and
-whether a generated narrative could be mistaken for a factual account of
-unreported moves. The engine test cannot grant that approval. Keep
+The next editorial gate is an independent generated-only review for natural
+prose, plot variety, faction voice, version accuracy, and whether a generated
+narrative could be mistaken for a factual account of unreported moves. The
+legacy authored stories do not provide a valid mission-fidelity comparison.
+The engine test cannot grant that approval. Keep
 `STORY_CATALOG.md` at 1,300 written stories and keep the draft PR unmerged
 until there is an explicit decision on generated coverage.
 
 The reproducible `scripts/prepare-story-editorial-review.mts` creates a
-source-blind panel of 40 matched pairs (one authored and one generated story
-for the same mission, two factions, hero faction, and role). It samples eight
-cases from each of the five missions with authored shards. An additional
-22-scene panel checks every mission's premise, with Critical Intervention and
-Double Bind explicitly marked as previews. The script writes a review packet,
-scorecard, rubric, and a **separate private answer key** to a directory outside
-the repository. Two independent reviewers should score each pair before the
-key is opened. Neither the sample nor its scores change the authored count or
-establish that a fictional scene occurred in a recorded game.
+110-scene review set: five per mission, including a same-incident faction
+reversal, mirror matchup, all four incidents, and all three hero roles.
+Critical Intervention and Double Bind remain preview-only. The review packet
+openly identifies all scenes as generated; reviewers are blinded to generator
+implementation and configuration. A separate private configuration file makes
+selection reproducible. Two independent readers should score every story.
+The new-story batch ingestion applies an additional mission-objective gate;
+the legacy audit is available via `scripts/audit-legacy-story-objectives.mts`.
+Neither review nor test changes the authored count or establishes that a
+fictional scene occurred in a recorded game.
+
+[Corvus Belli's September 24 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18-hotfix-september)
+is reflected in the Dig's console analysis before neutralization and the
+reviewer's checks for Player Tokens, Double Bind's Engineer/GizmoKit antenna
+repairs, and Crossing Lines. The pilot does not simulate Player Tokens.
+Crossing Lines has no HVT or Classified Deck in the updated scenario. The
+Double Bind runtime remains withheld while the chosen objective set is missing
+from public game records.
 
 ## Verification
 
@@ -122,6 +139,7 @@ npm run test:game-stories
 npm run test:game-center
 node --experimental-strip-types scripts/sample-generated-game-stories.mts
 node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir ../story-editorial-review
+node --experimental-strip-types scripts/audit-legacy-story-objectives.mts --output ../legacy-story-objective-audit.csv
 ```
 
 `npm run test:game-stories:complete` still requires 22,770 individually

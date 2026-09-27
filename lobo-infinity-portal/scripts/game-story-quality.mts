@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
+import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import type { GameStoryTemplate, HeroRole } from '../src/services/gameStoryTemplate.ts'
 
 const activeArmies = new Set(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => army.name))
@@ -74,4 +75,52 @@ export function assertGameStoryQuality(story: GameStoryTemplate, key: string): v
   assert.equal(new Set(endings.map(normalized)).size, 3, `${key}: win, loss, and draw endings must be distinct`)
   const endingTokens = endings.flatMap((ending) => [...ending.matchAll(/\{\{(\w+)\}\}/g)].map((match) => match[1]))
   assert.ok(endingTokens.every((token) => allowedTokens.has(token)), `${key}: ending contains an unsupported placeholder`)
+}
+
+// New writing must carry the actual scenario objective through the plot and
+// every possible outcome. The legacy 1,300-entry catalog is audited separately
+// and cannot be retroactively called mission-verified by its format check.
+export function assertGameStoryMissionObjective(story: GameStoryTemplate, key: string): void {
+  const scenario = SOURCED_STORY_SCENARIOS[story.mission as keyof typeof SOURCED_STORY_SCENARIOS]
+  assert.ok(scenario, `${key}: no sourced mission premise`)
+  const scene = story.paragraphs.join(' ')
+  const specific: Record<string, { scene: readonly RegExp[]; endings: readonly RegExp[] }> = {
+    'Area of Interest': {
+      scene: [/\b(?:communication antenna|relay mast|antenna)\b/i,
+        /\b(?:control|hold|held|claim|dominat|contes|scor|zone|area|ground)\w*\b/i],
+      endings: [/\b(?:communication antenna|relay mast|antenna)\b/i,
+        /\b(?:control|held|hold|claim|dominat|contes|scor|area|ground|zone)\w*\b/i],
+    },
+    'Akial Interference': {
+      scene: [/\bclassified\s+objectives?\b/i],
+      endings: [/\bclassified\s+objectives?\b/i],
+    },
+    "Dead Man's Switch": {
+      scene: [/\b(?:Quantum Core|Objective Room)\b/i, /\b(?:Data Pack|Quantum Resonance)\b/i],
+      endings: [/\b(?:Quantum Core|Objective Room|Data Pack|Quantum Resonance)\b/i],
+    },
+    Hardlock: {
+      scene: [/\b(?:enemy )?beacon\b/i, /\bconsoles?\b/i],
+      endings: [/\bbeacon\b/i, /\bconsoles?\b/i],
+    },
+    'The Dig': {
+      scene: [/\bhyperthermal\s+tech\b/i, /\banaly[sz]\w*\b/i,
+        /\b(?:neutraliz\w*|neutralis\w*)\b/i, /\bconsoles?\b/i],
+      endings: [/\b(?:hyperthermal\s+tech|the tech)\b/i,
+        /\banaly[sz]\w*\b/i],
+    },
+  }
+  const rules = specific[story.mission] ?? { scene: [scenario.anchor], endings: [scenario.anchor] }
+  for (const signal of rules.scene) {
+    assert.match(scene, signal, `${key}: plot misses the mission objective (${signal})`)
+  }
+  for (const [result, ending] of Object.entries(story.endings)) {
+    for (const signal of rules.endings) {
+      assert.match(ending, signal, `${key}: ${result} ending misses the mission objective (${signal})`)
+    }
+  }
+  if (story.mission === 'Crossing Lines') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '), /\b(?:HVT|classified(?:\s+deck|\s+objective)?)\b/i,
+      `${key}: ITS 18 Crossing Lines has no HVT or Classified Deck after the September 24 hotfix`)
+  }
 }
