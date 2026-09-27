@@ -354,15 +354,20 @@ const messages = await buildListResponses({ faction: 'Corregidor', mission: 'Har
   getCatalog: async () => catalog, getAroCatalog: async () => aroCatalog,
   getCloseCombatCatalog: async () => closeCombatCatalog, getMobilityCatalog: async () => mobilityCatalog,
   getTeamEvidence: async () => null })
-assert.equal(messages.length, 3)
+assert.equal(messages.length, 1, '/build-list sends one ranked army')
 for (const message of messages) {
   assert.ok(message.content.length <= 2000)
+  assert.doesNotMatch(message.content, /· option \d+/)
   assert.match(message.content, /Proposed fireteams[\s\S]*Level [2345]/)
   assert.match(message.content, /A\/S coverage.*Guns \d+\/2.*CC \d+\/2.*ARO \d+\/2/)
   assert.match(message.content, /Support links/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
   assert.match(message.content, /Group 1 · \d+ Regular/)
   assert.match(message.content, /Open in Infinity Army/)
+  assert.equal(message.embeds.length, 1)
+  assert.equal(message.embeds[0].fields.length, 20, 'all current Operations Deck cards appear in the reply')
+  assert.match(message.embeds[0].fields[8].value, /JAZZ/i, 'the Jazz component of the required Jazz & Billie team can do HVT: Espionage')
+  assert.ok(message.embeds[0].fields.every(field => !/Secure HVT/i.test(field.name)))
 }
 const calls = []
 let selectedModels
@@ -372,10 +377,10 @@ const handled = await handler({
   options: { getString: name => ({ faction: 'Corregidor', mission: 'Hardlock', 'must-include': 'Jazz, Iguana',
     'model-2': 'ALGUACIL', 'model-3': 'ALGUACIL', 'model-4': 'SOMBRA' })[name], getInteger: () => 300 },
   deferReply: async () => calls.push('defer'), editReply: async result => calls.push(result),
-  followUp: async result => calls.push(result),
+  followUp: async () => { throw Error('a second list must not be sent') },
 })
 assert.equal(handled, true)
-assert.equal(calls.length, 4, 'defer, initial result, and two follow-up list options')
+assert.equal(calls.length, 2, 'defer and the one generated list')
 assert.deepEqual(selectedModels, ['Jazz', 'Iguana', 'ALGUACIL', 'ALGUACIL', 'SOMBRA'],
   'independent model slots combine with the original comma input and preserve requested copies')
 

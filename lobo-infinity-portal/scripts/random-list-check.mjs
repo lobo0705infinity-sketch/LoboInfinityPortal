@@ -90,6 +90,11 @@ const message = await buildRandomListResponse({ faction: '502', points: 300, swc
 assert.equal(generateArgs.sectorialId, 502)
 assert.deepEqual([generateArgs.points, generateArgs.swc], [300, 6])
 assert.equal(message.content, formatRandomArmyList(drawn[0]).content)
+assert.equal(message.embeds.length, 1)
+assert.equal(message.embeds[0].fields.length, 20, 'every random list includes the current classified deck')
+assert.equal(message.embeds[0].fields[0].name.endsWith('HVT: Follow-Up'), true)
+assert.equal(message.embeds[0].fields[19].name.endsWith('HVT: Assassination'), true)
+assert.ok(message.embeds[0].fields.every(field => !/Secure HVT/i.test(field.name)))
 
 let interactionArgs, replied
 const handler = createRandomListInteractionHandler({ build: async args => { interactionArgs = args; return message }, logger: { error() {} } })
@@ -100,6 +105,7 @@ assert.equal(await handler({
 }), true)
 assert.deepEqual(interactionArgs, { faction: '502', points: 300, swc: 5.5 })
 assert.equal(replied.content, message.content)
+assert.deepEqual(replied.embeds, message.embeds, 'slash command sends the classification with its random list')
 
 let created = false, edited = false
 const existing = { ...RANDOM_LIST_COMMAND_DEFINITION, id: 'command-id', applicationId: 'app-id',
