@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { buildArmyListOptions, availableProfiles, fireteamUsefulness, ListBuilderError, optimizeCombatGroups,
+import { buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
@@ -90,6 +90,26 @@ assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 
   && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0)
     >= result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
 'keep Tactical Awareness supported in a capable primary group when it is the better order split')
+const nomadsPayload = source.payloads.find(item => item.url?.endsWith('/units/en/501'))
+const nomadsInput = { ...input, payload: nomadsPayload, sectorialId: 501,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(501), mission: 'Crossing Lines', mustInclude: [] }
+const nomadsProfiles = availableProfiles(nomadsInput)
+const taskmaster = nomadsProfiles.find(item => item.optionName === 'TASKMASTER'
+  && item.label.includes('Heavy Machine Gun') && item.points === 40)
+assert.ok(impactAnchorValue([taskmaster]) > 0, 'a proven 40-point attacker is a useful investment')
+assert.equal(impactAnchorValue([{ ...taskmaster, gunfighterGrade: 'F', aroGrade: 'F', ccGrade: 'F' }]), 0,
+  'a high price alone must not earn an impact bonus')
+assert.equal(impactAnchorValue([taskmaster, taskmaster]), impactAnchorValue([taskmaster]),
+  'duplicates do not become better just because they cost more')
+const nomadsList = buildArmyListOptions({ ...nomadsInput, count: 1 })[0]
+assert.ok(nomadsList.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30),
+  'a 300-point Nomads roster should consider at least one capable expensive model')
+assert.ok(nomadsList.profiles.some(item => item.points === 7 && item.flashPulse && item.regular),
+  'a cheap Regular order can support the expensive role pieces')
+assert.ok(nomadsList.legality.status === 'legal' && nomadsList.quality.gunfighters >= 2
+  && nomadsList.quality.aro >= 2 && nomadsList.quality.cc >= 2
+  && nomadsList.profiles.filter(item => item.regular).length >= 13,
+  'the expensive models must not displace the order base or separate combat coverage')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
 const repeatedModels = buildArmyListOptions({ ...input, mustInclude: ['ALGUACIL', 'ALGUACIL'], count: 1 })
 assert.equal(repeatedModels[0].profiles.filter(profile => profile.id === resolveRequiredProfile(profiles, 'ALGUACIL').id).length, 2,

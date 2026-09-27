@@ -287,6 +287,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const currentSynergy = rosterSynergy(selected)
   const currentRedundancy = rosterRedundancy(selected)
   const currentQuality = rosterQuality(selected, [], constraints.mission, constraints.points)
+  const currentAnchors = constraints.points >= 300 ? impactAnchorValue(selected) : 0
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -322,6 +323,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + spend - item.points * .075 - existing * .35 - affordable + variation
       + (rosterSynergy([...selected, item]) - currentSynergy) * .9
       + (rosterQuality([...selected, item], [], constraints.mission, constraints.points) - currentQuality) * 1.2
+      + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
     candidates.push({ ...item, combatGroup: group, value })
   }
@@ -437,6 +439,24 @@ export function rosterQuality(profiles, fireteams = [], mission = '', points = 3
     + Math.min(2, quality.aro) * 6
     + (quality.distinctGunfighters >= 2 ? 2 : 0)
     + (quality.distinctAro >= 2 ? 1.5 : 0)
+}
+
+// A costly profile only gets this budget priority when its benchmarked combat
+// or specialist role justifies it. Distinct units and diminishing returns
+// favor one or two useful anchors over expensive copies or an arbitrary TAG.
+export function impactAnchorValue(profiles) {
+  const byUnit = new Map()
+  for (const item of profiles) {
+    if (item.points < 30 || item.slots !== 1) continue
+    const bestGrade = Math.max(gradeRank(item.gunfighterGrade), gradeRank(item.aroGrade), gradeRank(item.ccGrade))
+    const role = bestGrade >= gradeRank('S') ? 1.15 : bestGrade >= gradeRank('A') ? 1
+      : item.specialist && bestGrade >= gradeRank('B') ? .55 : 0
+    if (!role) continue
+    const value = Math.min(1.25, role * (1 + Math.min(20, item.points - 30) / 100))
+    byUnit.set(item.unitId, Math.max(byUnit.get(item.unitId) || 0, value))
+  }
+  const [first = 0, second = 0] = [...byUnit.values()].sort((a, b) => b - a)
+  return first * 5 + second * 2
 }
 
 // Level 2 unlocks the linked benchmark. Higher purity still matters, but
@@ -778,6 +798,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}) {
     + Math.min(15, troopers) * 4
     + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
+    + (points >= 300 ? impactAnchorValue(profiles) : 0)
     - rosterRedundancy(profiles) * 1.5
 }
 
