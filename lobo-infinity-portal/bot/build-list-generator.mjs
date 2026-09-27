@@ -291,7 +291,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     const combatGroups = [1, 2].map(group => ({ members: option.profiles.filter(item => item.combatGroup === group)
       .map(({ unitId, groupId, optionId }) => ({ unitId, groupId, optionId })) })).filter(group => group.members.length)
     const code = encodeArmyCode({ sectorialId: Number(sectorialId), sectorialSlug: faction.slug,
-      listName: `Lobo ${mission || 'mission'} ${index + 1}`, maxPoints: points, combatGroups })
+      listName: `Lobo ${mission || 'mission'}${count === 1 ? '' : ` ${index + 1}`}`, maxPoints: points, combatGroups })
     return { ...option, code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}` }
   })
 }

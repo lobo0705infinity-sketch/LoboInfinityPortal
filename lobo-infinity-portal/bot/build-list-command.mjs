@@ -10,6 +10,8 @@ import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 import { availableProfiles, buildArmyListOptions, ListBuilderError, projectedRegularOrders, rosterConnections,
   resolveRequiredProfile } from './build-list-generator.mjs'
 import { loadTeamTypeEvidence } from './build-list-team-evidence.mjs'
+import { assessGeneratedListClassifieds } from './generated-list-classifieds.mjs'
+import { formatInfListClassifiedEmbeds } from './inf-list-classifieds.mjs'
 
 export const BUILD_LIST_COMMAND = 'build-list'
 export const BUILD_LIST_FACTION_OPTION = 'faction'
@@ -164,12 +166,15 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
     rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)), gunfighterCatalog,
     aroCatalog, closeCombatCatalog, mobilityCatalog,
     mission, mustInclude: (Array.isArray(mustInclude) ? mustInclude : [mustInclude])
-      .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence })
-  for (const list of lists) list.teamTypeEvidence = teamTypeEvidence?.decisiveLists ? teamTypeEvidence : null
-  return lists.map((list, index) => ({ allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1) }))
+      .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence, count: 1 })
+  const list = lists[0]
+  list.teamTypeEvidence = teamTypeEvidence?.decisiveLists ? teamTypeEvidence : null
+  const classifiedCoverage = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
+  return [{ allowedMentions: { parse: [] }, content: formatBuiltList(list),
+    embeds: formatInfListClassifiedEmbeds(classifiedCoverage) }]
 }
 
-export function formatBuiltList(list, number) {
+export function formatBuiltList(list) {
   const groupText = [1, 2].map(group => {
     const members = list.profiles.filter(item => item.combatGroup === group)
     if (!members.length) return ''
@@ -186,7 +191,7 @@ export function formatBuiltList(list, number) {
   const quality = list.quality
     ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}\n`
     : ''
-  const introBase = `**${list.faction} · ${list.mission} · option ${number}**\n`
+  const introBase = `**${list.faction} · ${list.mission}**\n`
     + `${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC · ${list.legality.totals.troopers}/15 troopers · ${list.specialistCount} specialists\n`
     + `**Proposed fireteams**\n${fireteams}\n${quality}`
   const evidenceNote = list.teamTypeEvidence
@@ -226,7 +231,6 @@ export function createBuildListInteractionHandler({ build = buildListResponses, 
         points: interaction.options.getInteger('points') || 300,
       })
       await interaction.editReply(results[0])
-      for (const result of results.slice(1)) await interaction.followUp(result)
     } catch (error) {
       logger.error?.('Army list generation failed:', error)
       const content = error instanceof ListBuilderError ? error.message : 'I could not build a verified list right now.'

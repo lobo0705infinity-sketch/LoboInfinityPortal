@@ -3,6 +3,8 @@ import { getCurrentArmySource, searchBuildListFactions } from './build-list-comm
 import { ListBuilderError } from './build-list-generator.mjs'
 import { LIVE_ROSTER_UNIT_SLUGS } from './official-army-rosters.mjs'
 import { formatRandomArmyList, generateRandomArmyList } from './random-list-generator.mjs'
+import { assessGeneratedListClassifieds } from './generated-list-classifieds.mjs'
+import { formatInfListClassifiedEmbeds } from './inf-list-classifieds.mjs'
 
 export const RANDOM_LIST_COMMAND = 'random-list'
 export const RANDOM_LIST_COMMAND_DEFINITION = Object.freeze({
@@ -29,7 +31,8 @@ export async function buildRandomListResponse({ faction, points, swc, getSource 
   const list = generate({ payload: source.payload, metadata: source.metadata,
     sectorialId: Number(source.faction.id), rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)),
     points, swc })
-  return formatRandomArmyList(list)
+  const classifiedCoverage = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
+  return { ...formatRandomArmyList(list), embeds: formatInfListClassifiedEmbeds(classifiedCoverage) }
 }
 
 export function createRandomListAutocompleteHandler({ searchFaction = searchRandomListFactions, logger = console } = {}) {

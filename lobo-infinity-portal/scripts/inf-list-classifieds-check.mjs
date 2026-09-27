@@ -4,6 +4,8 @@ import { gunzipSync } from 'node:zlib'
 import { assessInfListClassifieds, formatInfListClassifiedEmbeds } from '../bot/inf-list-classifieds.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 import { buildSubmittedProfiles } from '../bot/inf-list-tactical.mjs'
+import { assessGeneratedListClassifieds } from '../bot/generated-list-classifieds.mjs'
+import { encodeArmyCode } from './infinity-army-encode.mjs'
 
 const p = (id, overrides = {}) => ({
   combinedId: id, unitName: id, profileName: id, troopType: 1, troopClassification: 2,
@@ -90,6 +92,22 @@ assert.deepEqual(exactCoverage.cards.filter(card => !card.possible).map(card => 
 assert.ok(byName(exactCoverage, 'Combat Support').eligible.some(profile => profile.profileName === 'TERRITORIAL'))
 assert.ok(byName(exactCoverage, 'Nanoespionage').eligible.some(profile => profile.profileName === 'TERRITORIAL'))
 assert.ok(byName(exactCoverage, 'HVT: Assassination').eligible.some(profile => profile.skills.includes('Lieutenant')))
+
+const generatedCoverage = assessGeneratedListClassifieds({ code: combinedCode,
+  payload: source.payloads.find(payload => payload.url?.endsWith('/502')), metadata: source.metadata })
+assert.equal(generatedCoverage.possible, 19, 'generated list coverage agrees with the submitted list for the same Army code')
+assert.deepEqual(generatedCoverage.cards.filter(card => !card.possible).map(card => card.name), ['HVT: Inoculation'])
+assert.ok(byName(generatedCoverage, 'HVT: Espionage').eligible.some(profile => profile.profileName === 'JAZZ'),
+  'Jazz keeps her Hacker skill when a generated list encodes the Jazz & Billie composite option')
+assert.ok(!byName(generatedCoverage, 'Net-Undermine').eligible.some(profile => profile.profileName === 'BILLIE'),
+  'Billie does not inherit Jazz’s Veteran Troop classification')
+
+const scyllaCode = encodeArmyCode({ sectorialId: 102, sectorialSlug: 'steel-phalanx',
+  combatGroups: [{ members: [{ unitId: 721, groupId: 0, optionId: 1 }] }] })
+const scyllaCoverage = assessGeneratedListClassifieds({ code: scyllaCode,
+  payload: source.payloads.find(payload => payload.url?.endsWith('/102')), metadata: source.metadata })
+assert.ok(byName(scyllaCoverage, 'HVT: Espionage').eligible.some(profile => profile.profileName === 'SCYLLA FTO'),
+  'an included profile may have a different option ID from its parent option')
 
 const embeds = formatInfListClassifiedEmbeds(coverage)
 assert.equal(embeds.length, 1, 'all cards must be in one continuous, visible embed')
