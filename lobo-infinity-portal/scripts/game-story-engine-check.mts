@@ -46,8 +46,9 @@ for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
 }
 for (const army of armies) {
   const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
-    MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
-  assert.equal(new Set(decisions).size, 4, army.name + ': four distinct authored decisions')
+    MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id],
+    ...MISSION_ARMY_CLOSE_ALTERNATES[army.id]]
+  assert.equal(new Set(decisions).size, 6, army.name + ': six distinct authored decisions')
   assert.ok(decisions.every((decision) => /\{(?:ground|position)\}/.test(decision)),
     army.name + ': each maneuver must respond to the contested site')
   const closeChoices = [MISSION_ARMY_METHODS[army.id].followThrough,
@@ -376,7 +377,8 @@ function sceneForIncident(mission: string, first: string, other: string,
 for (const army of armies) {
   for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
     const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
-      MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
+      MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id],
+      ...MISSION_ARMY_CLOSE_ALTERNATES[army.id]]
     const referents = MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
     const incidentDecisions = new Set<number>()
     for (let incident = 0; incident < 4; incident++) {

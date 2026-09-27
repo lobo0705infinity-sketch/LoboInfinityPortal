@@ -464,7 +464,7 @@ export const MISSION_ARMY_PIVOT_MANEUVERS: Record<string, readonly [string, stri
     'A second operative challenged the watch at {position} while the first moved toward {ground}.' ],
   tohaa: [
     'The trio rotated its exposed lead at {position} before one fighter crossed toward {ground}.',
-    'A protected member drew back while the other two kept a route open toward {ground}.' ],
+    'A protected member pulled back from {position}, and the other two kept a route open toward {ground}.' ],
   'dashat-company': [
     'Hired guns traded positions at {position}, giving the forward group another angle into {ground}.',
     'The second contract team held the escape lane while the first pressed toward {ground}.' ],

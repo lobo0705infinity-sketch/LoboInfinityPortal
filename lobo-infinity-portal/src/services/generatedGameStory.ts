@@ -56,8 +56,8 @@ const missionIntroAlternates: Record<ArmyStoryStyle,
     defense: ['anchored their forward guard near', 'sheltered their watch behind', 'held an armored screen by'],
   },
   flanking: {
-    approach: ['probed a side route toward', 'crossed behind cover on the way to', 'found a screened angle toward'],
-    defense: ['held the side approach near', 'kept a scout watching', 'shifted a guard to the edge of'],
+    approach: ['probed a side route toward', 'traced a sheltered path toward', 'found a screened angle toward'],
+    defense: ['held the side approach near', 'kept a scout watching', 'repositioned a guard near'],
   },
   guard: {
     approach: ['kept ranks while advancing toward', 'sent a guarded lead toward', 'crossed in an orderly line toward'],
@@ -274,7 +274,8 @@ export function composeGameStory(
   const response = MISSION_ARMY_METHODS[opponent.id]
   const alternateManeuver = MISSION_ARMY_ALTERNATE_MANEUVERS[hero.id]
   const heroPivots = MISSION_ARMY_PIVOT_MANEUVERS[hero.id]
-  if (!method || !response || !alternateManeuver || !heroPivots) return null
+  const closeAlternates = MISSION_ARMY_CLOSE_ALTERNATES[hero.id]
+  if (!method || !response || !alternateManeuver || !heroPivots || !closeAlternates) return null
   const referents = MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
   if (!referents) throw new Error('Missing tactical referents for ' + canonical)
   const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
@@ -292,20 +293,25 @@ export function composeGameStory(
   const situate = (beat: string, focus: string, distraction: string) =>
     beat.replaceAll('{ground}', focus).replaceAll('{position}', distraction)
   const opposingPivots = MISSION_ARMY_PIVOT_MANEUVERS[opponent.id]
-  if (!opposingPivots) {
+  const opposingShortMoves = MISSION_ARMY_CLOSE_ALTERNATES[opponent.id]
+  if (!opposingPivots || !opposingShortMoves) {
     throw new Error('Missing tactical choices for ' + hero.id + ' / ' + opponent.id)
   }
   // The second crew can counterattack or change its watch instead of always
   // reciting the same static defense. Mirror matchups use a different choice
   // for each side so one scene does not repeat the same tactical sentence.
   // In a mirror the same follow-through can also close the hero's paragraph.
-  // Keep that sentence out of the opposing response to avoid echoing it.
+  // Keep that sentence out of the opposing response to avoid echoing it; the
+  // short moves can counter here but cannot recur in the close of that scene.
   const counters = hero.id === opponent.id
-    ? [response.defense, opposingPivots[0], opposingPivots[1]]
-    : [response.defense, opposingPivots[0], opposingPivots[1], response.followThrough]
+    ? [response.defense, ...opposingPivots, ...opposingShortMoves]
+    : [response.defense, ...opposingPivots, response.followThrough, ...opposingShortMoves]
   const counterIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex * 2 + 2) % counters.length
   const orderedCounters = counters.slice(counterIndex).concat(counters.slice(0, counterIndex))
-  const maneuvers = [method.maneuver, alternateManeuver, ...heroPivots]
+  // These shorter, faction-specific decisions also work while the crew is
+  // fighting for access. Six choices spread a force's recurring tactic across
+  // the campaign; never repeat one in the same scene's closing paragraph.
+  const maneuvers = [method.maneuver, alternateManeuver, ...heroPivots, ...closeAlternates]
   const maneuverIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex + stableHash(hero.id)) % maneuvers.length
   const orderedManeuvers = maneuvers.slice(maneuverIndex).concat(maneuvers.slice(0, maneuverIndex))
   const middle = (maneuver: string, counter: string | null, withCrossfire: boolean) => {
@@ -325,9 +331,8 @@ export function composeGameStory(
   }
   const incidentMiddle = orderedManeuvers.flatMap(candidates).find(fitsPreview)
   if (!incidentMiddle) throw new Error('No readable faction tactic for ' + canonical + ' #' + incidentIndex)
-  const closeAlternates = MISSION_ARMY_CLOSE_ALTERNATES[hero.id]
-  if (!closeAlternates) throw new Error('Missing closing choices for ' + hero.id)
-  const followChoices = [method.followThrough, ...closeAlternates]
+  const followChoices = [method.followThrough, ...closeAlternates].filter((follow) =>
+    !incidentMiddle.includes(situate(follow, referents.advance, referents.defend)))
   const followIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex +
     stableHash(hero.id + ':' + role)) % followChoices.length
   const orderedFollowChoices = followChoices.slice(followIndex).concat(followChoices.slice(0, followIndex))
@@ -341,8 +346,9 @@ export function composeGameStory(
       editorial.aftermath.slice(0, -1) + '; {{heroPlayer}}’s crew ' + method.drawBeat + '.'),
   ].find(fitsPreview)
   if (!incidentClose) throw new Error('No readable faction follow-through for ' + canonical + ' #' + incidentIndex)
-  const heroIntro = stableHash(key + ':' + gameId + ':' + hero.id + ':approach') % 4
-  const otherIntro = stableHash(key + ':' + gameId + ':' + opponent.id + ':defense') % 4
+  const missionIndex = CANONICAL_MISSIONS.indexOf(canonical)
+  const heroIntro = (missionIndex + incidentIndex + stableHash(hero.id + ':' + role)) % 4
+  const otherIntro = (missionIndex + incidentIndex + stableHash(opponent.id + ':defense')) % 4
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + missionIntro(heroVoice.style, 'approach', heroIntro) +
     ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +

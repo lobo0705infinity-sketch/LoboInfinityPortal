@@ -42,7 +42,7 @@ differ. Older game records do not identify which edition was played.
   a diversion, a defensive position and a continuation. The referents for
   diversions and defensive positions are now *places*, so a guard cannot be
   described as standing "at the guard." Missions involving a moving objective
-  rotate four authored tactical decisions for each army. The opposing crew
+  rotate six authored tactical decisions for each army. The opposing crew
   can defend or counterattack; later incidents also use alternate gunfighting
   and close-combat actions tied to the mission. Each army now has three
   authored closing choices, while broad tactical styles have four ways to
@@ -111,7 +111,7 @@ The reproducible 110-scene editorial sample has five scenes per mission,
 including one deliberate faction reversal, a mirror and all three roles.
 Sentence order varies for independent opening and confrontation beats; an
 incident's turn precedes the hero action and consequence. The current tests
-check four distinct tactical decisions for each of the 45 armies outside
+check four distinct tactical decisions per mission from each of the 45 armies’ six choices outside
 Area of Interest, three endings, the objective hero's active attempt, and
 four environmental observations for each Area of Interest weather tag.
 The generator still composes reusable phrases; tactical ideas and short
