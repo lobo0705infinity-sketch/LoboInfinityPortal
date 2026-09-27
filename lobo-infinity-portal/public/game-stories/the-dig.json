@@ -3387,4 +3387,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "O-12"
+      ],
+      "heroFaction": "O-12",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a buried arbitration chamber reached a lower gallery built around a three-colored evidence lamp. Neoterra Capitaline Army descended through a fresh drill shaft, while O-12 reopened a stair from the original complex. Both crews paused when the evidence lamps changed color, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the three-colored evidence lamp. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the three-colored evidence lamp and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Starmada"
+      ],
+      "heroFaction": "Starmada",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a submerged patrol chapel reached a lower gallery built around a salt-stained patrol sextant. Neoterra Capitaline Army descended through a fresh drill shaft, while Starmada reopened a stair from the original complex. Both crews paused when a submerged bell sounded, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the salt-stained patrol sextant. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the salt-stained patrol sextant and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Torchlight Brigade"
+      ],
+      "heroFaction": "Torchlight Brigade",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a unfinished disaster bunker reached a lower gallery built around a rescue whistle carved from glass. Neoterra Capitaline Army descended through a fresh drill shaft, while Torchlight Brigade reopened a stair from the original complex. Both crews paused when the bunker map erased its exits, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the rescue whistle carved from glass. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the rescue whistle carved from glass and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Japanese Secessionist Army"
+      ],
+      "heroFaction": "Japanese Secessionist Army",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a earthquake-split bathhouse reached a lower gallery built around a cedar bath token. Neoterra Capitaline Army descended through a fresh drill shaft, while Japanese Secessionist Army reopened a stair from the original complex. Both crews paused when warm water flooded the cold tiles, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the cedar bath token. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the cedar bath token and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Oban"
+      ],
+      "heroFaction": "Oban",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a mountain archive pagoda reached a lower gallery built around a stone genealogy fan. Neoterra Capitaline Army descended through a fresh drill shaft, while Oban reopened a stair from the original complex. Both crews paused when paper charms lifted in still air, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the stone genealogy fan. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the stone genealogy fan and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Shindenbutai"
+      ],
+      "heroFaction": "Shindenbutai",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a abandoned shadow theater reached a lower gallery built around a clockwork silhouette projector. Neoterra Capitaline Army descended through a fresh drill shaft, while Shindenbutai reopened a stair from the original complex. Both crews paused when every silhouette turned toward the crews, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the clockwork silhouette projector. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the clockwork silhouette projector and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Tohaa"
+      ],
+      "heroFaction": "Tohaa",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a living coral greenhouse reached a lower gallery built around a braided root index. Neoterra Capitaline Army descended through a fresh drill shaft, while Tohaa reopened a stair from the original complex. Both crews paused when the root index tightened around its stand, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the braided root index. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the braided root index and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Dashat Company"
+      ],
+      "heroFaction": "Dashat Company",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a dry reservoir exchange reached a lower gallery built around a clay water-share marker. Neoterra Capitaline Army descended through a fresh drill shaft, while Dashat Company reopened a stair from the original complex. Both crews paused when water dripped upward into the ceiling, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the clay water-share marker. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the clay water-share marker and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a collapsed contract court reached a lower gallery built around a notary engine with brass teeth. Neoterra Capitaline Army descended through a fresh drill shaft, while Druze Bayram Security reopened a stair from the original complex. Both crews paused when the engine stamped a contract with no names, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the notary engine with brass teeth. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the notary engine with brass teeth and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a scrapyard signal tower reached a lower gallery built around a folding antenna crown. Neoterra Capitaline Army descended through a fresh drill shaft, while Ikari Company reopened a stair from the original complex. Both crews paused when the antenna unfolded underground, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the folding antenna crown. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the folding antenna crown and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a desert mercenary hostel reached a lower gallery built around a ceramic paymaster's die. Neoterra Capitaline Army descended through a fresh drill shaft, while StarCo reopened a stair from the original complex. Both crews paused when the pay die rolled against gravity, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the ceramic paymaster's die. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the ceramic paymaster's die and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a glacial logistics depot reached a lower gallery built around a ice-clear cargo abacus. Neoterra Capitaline Army descended through a fresh drill shaft, while White Company reopened a stair from the original complex. Both crews paused when the abacus counted missing containers, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the ice-clear cargo abacus. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the ice-clear cargo abacus and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a rainforest radio school reached a lower gallery built around a bakelite tuning fork. Shock Army of Acontecimento descended through a fresh drill shaft, while Shock Army of Acontecimento reopened a stair from the original complex. Both crews paused when the tuning fork answered distant static, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the bakelite tuning fork. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the bakelite tuning fork and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a frozen turbine hall reached a lower gallery built around a frost-coated turbine key. Shock Army of Acontecimento descended through a fresh drill shaft, while Svalarheima Winter Force reopened a stair from the original complex. Both crews paused when the turbine key began to thaw, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the frost-coated turbine key. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the frost-coated turbine key and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a mangrove radar station reached a lower gallery built around a barnacled radar vane. Shock Army of Acontecimento descended through a fresh drill shaft, while Varuna Immediate Reaction Division reopened a stair from the original complex. Both crews paused when the radar vane tracked something beneath them, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the barnacled radar vane. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the barnacled radar vane and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a river-island mint reached a lower gallery built around a square coin struck on both faces. Shock Army of Acontecimento descended through a fresh drill shaft, while Yu Jing reopened a stair from the original complex. Both crews paused when fresh coins spilled from a sealed press, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the square coin struck on both faces. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the square coin struck on both faces and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a sealed provincial records vault reached a lower gallery built around a lacquered census spindle. Shock Army of Acontecimento descended through a fresh drill shaft, while Imperial Service reopened a stair from the original complex. Both crews paused when the spindle listed people not yet born, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the lacquered census spindle. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the lacquered census spindle and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The excavation under a armored bridge workshop reached a lower gallery built around a hinged bridge rivet. Shock Army of Acontecimento descended through a fresh drill shaft, while Invincible Army reopened a stair from the original complex. Both crews paused when the rivet opened like a hinge, suggesting the chamber recognized their arrival.",
+        "{{hero}} fought an opponent across the lower gallery and drove the attacker away from the hinged bridge rivet. Their struggle smeared magnetic dust across a blank wall, outlining a concealed compartment. The trooper forced it open and caught a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the hinged bridge rivet and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "objective",
+      "paragraphs": [
+        "The excavation under a highland avalanche shrine reached a lower gallery built around a silver snow gauge. Shock Army of Acontecimento descended through a fresh drill shaft, while White Banner reopened a stair from the original complex. Both crews paused when the gauge filled with black snow, suggesting the chamber recognized their arrival.",
+        "{{hero}} mapped the lower gallery, checked its cracked columns, and used a portable scanner on the silver snow gauge. The specialist found a line of magnetic dust leading to a blank section of wall. Behind it, a shallow compartment held a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the silver snow gauge and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Shock Army of Acontecimento",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The excavation under a frontier coffee plantation reached a lower gallery built around a brass roasting calendar. Shock Army of Acontecimento descended through a fresh drill shaft, while Ariadna reopened a stair from the original complex. Both crews paused when the calendar advanced one harvest, suggesting the chamber recognized their arrival.",
+        "{{hero}} pinned the rival advance with rifle fire while engineers crossed the lower gallery toward the brass roasting calendar. A muzzle flash revealed magnetic dust along a blank wall. The trooper covered the search as a shallow compartment opened, exposing a key warm enough to steam in the cool air.",
+        "{{heroPlayer}}'s crew carried the key to a door beneath the gallery as {{otherPlayer}}'s team secured the failing columns. The key opened nothing, but every instrument registered a room on the other side. A child's handwriting appeared in condensation on the door, warning them not to knock twice."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} retained the brass roasting calendar and the warm key for a controlled second excavation.",
+        "heroLoses": "{{otherPlayer}} held the lower gallery and buried the unreachable door behind new supports.",
+        "draw": "Both crews withdrew after one knock, leaving the warning and the unseen room intact."
+      },
+      "mission": "The Dig"
+    }
 ]
