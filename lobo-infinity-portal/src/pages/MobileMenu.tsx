@@ -23,9 +23,9 @@ function MobileMenu() {
   const selectedEvent = eventOptions.find((event) => event.id === selectedEventId)
   const joinCommunityItem = getJoinCommunityNavigationItem(settings?.joinCommunityFormUrl ?? '')
   const discordLink = getDiscordCommunityLink(settings)
-  const resolvedCommunityItems = discordLink
-    ? [...communityItems, { external: true, icon: 'discord' as const, label: discordLink.label, to: discordLink.url }]
-    : communityItems
+  const communityLinks = discordLink
+    ? [{ external: true, icon: 'discord' as const, label: discordLink.label, to: discordLink.url }]
+    : []
   const playItems = [
     ...topLevelItems,
     ...(joinCommunityItem ? [joinCommunityItem] : []),
@@ -44,7 +44,7 @@ function MobileMenu() {
       <header className="page-header mobile-navigation-page-header">
         <p className="eyebrow">Portal Navigation</p>
         <h1>More</h1>
-        <p>Every league, event, community, and Commissioner destination in one place.</p>
+        <p>Every event, directory, and community destination in one place.</p>
       </header>
 
       <SponsorCredit placement="mobile-menu" />
@@ -53,7 +53,8 @@ function MobileMenu() {
         <MenuSection items={playItems} label="Play" />
 
         <section className="mobile-navigation-section" aria-labelledby="mobile-menu-events">
-          <h2 id="mobile-menu-events">My Events</h2>
+          <h2 id="mobile-menu-events">Selected Event</h2>
+          <Link className="mobile-navigation-link" to="/events">Browse all events</Link>
           {eventOptions.length > 1 ? (
             <EventSelector
               eventOptions={eventOptions}
@@ -67,7 +68,8 @@ function MobileMenu() {
           ) : selectedEvent ? <EventGroup event={selectedEvent} /> : null}
         </section>
 
-        <MenuSection items={resolvedCommunityItems} label="Community" />
+        <MenuSection items={communityItems} label="Explore" />
+        {communityLinks.length ? <MenuSection items={communityLinks} label="Community" /> : null}
         <MenuSection items={commissionerNavigation} label="Commissioner" />
       </nav>
     </main>
@@ -149,7 +151,7 @@ function NoEventsNavigation({ commissioner }: { commissioner: boolean }) {
     <div className="mobile-navigation-links">
       <Link className="mobile-navigation-link" to="/players">Browse Community</Link>
       {commissioner ? <Link className="mobile-navigation-link" to="/commissioner/events">Create Event</Link> : null}
-      <Link className="mobile-navigation-link" to="/events">View Past Events</Link>
+      <Link className="mobile-navigation-link" to="/events">All Events</Link>
     </div>
   )
 }

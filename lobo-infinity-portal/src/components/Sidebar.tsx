@@ -33,17 +33,9 @@ function Sidebar() {
   const joinCommunityItem = getJoinCommunityNavigationItem(
     settings?.joinCommunityFormUrl ?? '',
   )
-  const resolvedCommunityItems = discordLink
-    ? [
-        ...communityItems,
-        {
-          external: true,
-          icon: 'discord' as const,
-          label: discordLink.label,
-          to: discordLink.url,
-        },
-      ]
-    : communityItems
+  const communityLinks = discordLink
+    ? [{ external: true, icon: 'discord' as const, label: discordLink.label, to: discordLink.url }]
+    : []
 
   function changeSelectedEvent(eventId: string) {
     selectEvent(eventId)
@@ -75,8 +67,8 @@ function Sidebar() {
             ))
           : null}
 
-        <section className="sidebar-section" aria-labelledby="sidebar-my-events">
-          <p className="sidebar-section-label" id="sidebar-my-events">My Events</p>
+        <section className="sidebar-section" aria-labelledby="sidebar-events">
+          <p className="sidebar-section-label" id="sidebar-events">Events</p>
           {eventOptions.length > 1 ? (
             <EventSelector
               eventOptions={eventOptions}
@@ -91,9 +83,10 @@ function Sidebar() {
         </section>
 
         <SidebarSection
-          items={resolvedCommunityItems}
-          label="Community"
+          items={communityItems}
+          label="Explore"
         />
+        {communityLinks.length ? <SidebarSection items={communityLinks} label="Community" /> : null}
         <SidebarSection
           items={auth.isAtLeastRole('Commissioner')
             ? commissionerItems
@@ -200,7 +193,7 @@ function NoEventsNavigation({ commissioner }: { commissioner: boolean }) {
       <div className="sidebar-subnav">
         <Link to="/players">Browse Community</Link>
         {commissioner ? <Link to="/commissioner/events">Create Event</Link> : null}
-        <Link to="/events">View Past Events</Link>
+        <Link to="/events">All Events</Link>
       </div>
     </div>
   )

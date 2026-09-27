@@ -19,9 +19,9 @@ assert.doesNotMatch(app, /MobileNavigationDrawer/)
 
 for (const [label, route] of [
   ['Home', '/'],
-  ['Players', '/players'],
+  ['Explore', '/explore'],
+  ['Events', '/events'],
   ['Submit', '/submit-game'],
-  ['Intelligence', '/army-intelligence'],
   ['More', '/menu'],
 ]) {
   assert.ok(bottom.includes(`label: '${label}'`) || bottom.includes(`<span>${label}</span>`), `${label} bottom item must exist`)
@@ -44,7 +44,7 @@ assert.match(css, /env\(safe-area-inset-bottom, 0px\)/)
 assert.match(css, /padding-bottom: calc\(var\(--mobile-nav-height\) \+ var\(--mobile-safe-bottom\) \+ 18px\)/)
 assert.doesNotMatch(css, /@media \(min-width: 921px\)[\s\S]*?\.mobile-bottom-navigation[\s\S]*?display: (?:grid|flex)/)
 
-for (const route of ['/', '/submit-game', '/league-operations', '/players', '/factions', '/missions', '/streams', '/army-intelligence']) {
+for (const route of ['/', '/events', '/games', '/submit-game', '/league-operations', '/players', '/factions', '/missions', '/streams', '/army-intelligence']) {
   assert.ok(sidebar.includes(`to: '${route}'`), `${route} must remain canonical navigation metadata`)
 }
 

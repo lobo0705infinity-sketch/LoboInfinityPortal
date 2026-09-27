@@ -1,0 +1,22 @@
+.portal-explore-page { display: grid; gap: 1rem; }
+.portal-explore-page .page-header { min-height: 0; }
+.portal-explore-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.portal-explore-feature { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .8rem; min-height: 116px; border: 1px solid rgba(76, 201, 240, .32); border-radius: 14px; padding: 1rem; color: var(--text); background: linear-gradient(125deg, rgba(26, 52, 69, .84), rgba(9, 17, 26, .97)); text-decoration: none; }
+.portal-explore-feature:nth-child(2) { border-color: rgba(210, 49, 65, .46); background: linear-gradient(125deg, rgba(69, 24, 35, .74), rgba(9, 17, 26, .97)); }
+.portal-explore-feature:hover, .portal-explore-feature:focus-visible { border-color: var(--blue); }
+.portal-explore-feature-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 10px; background: rgba(76, 201, 240, .12); color: #91e8ff; }
+.portal-explore-feature strong, .portal-explore-feature small { display: block; }
+.portal-explore-feature strong { font-size: 1.12rem; }
+.portal-explore-feature small { margin-top: .25rem; color: var(--text-soft); font-size: .84rem; line-height: 1.4; }
+.portal-explore-directory { padding: 1rem; border: 1px solid rgba(76, 201, 240, .16); border-radius: 14px; background: rgba(9, 17, 26, .86); }
+.portal-explore-directory h2 { margin: 0 0 .75rem; color: var(--text); font-size: 1.08rem; }
+.portal-explore-directory nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.portal-explore-directory a { display: flex; align-items: center; gap: .6rem; min-height: 48px; border: 1px solid rgba(255, 255, 255, .09); border-radius: 10px; padding: .55rem .75rem; color: var(--text); background: rgba(255, 255, 255, .035); text-decoration: none; }
+.portal-explore-directory a span:last-child { margin-left: auto; }
+.portal-explore-directory a:hover, .portal-explore-directory a:focus-visible { border-color: rgba(76, 201, 240, .55); background: rgba(76, 201, 240, .1); }
+.portal-explore-directory svg, .portal-explore-feature-icon svg { width: 22px; height: 22px; flex: none; }
+@media (max-width: 640px) {
+  .portal-explore-features, .portal-explore-directory nav { grid-template-columns: 1fr; }
+  .portal-explore-feature { min-height: 84px; padding: .75rem; }
+  .portal-explore-directory { padding: .75rem; }
+}

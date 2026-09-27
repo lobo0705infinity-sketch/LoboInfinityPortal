@@ -109,7 +109,7 @@ function GameDetails() {
           <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
             <Link to="/">Dashboard</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/#recent-games">Battle Reports</Link>
+            <Link to="/games">Battle Reports</Link>
           </nav>
           <section className="battle-report-hero">
             <Skeleton label="Battle report loading" rows={8} />
@@ -209,7 +209,7 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
         <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
           <Link to="/">Dashboard</Link>
           <span aria-hidden="true">/</span>
-          <Link to="/#recent-games">Battle Reports</Link>
+          <Link to="/games">Battle Reports</Link>
           {game.division ? (
             <>
               <span aria-hidden="true">/</span>
@@ -335,7 +335,7 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
 
         <nav className="battle-report-footer-nav" aria-label="Battle report footer navigation">
           <EntityPreviousNext current={game.id} type="match" />
-          <Link to="/#recent-games">Back to Battle Reports</Link>
+          <Link to="/games">Back to Battle Reports</Link>
         </nav>
       </article>
     </main>
@@ -655,7 +655,7 @@ function GameNotFound() {
         <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
           <Link to="/">Dashboard</Link>
           <span aria-hidden="true">/</span>
-          <Link to="/#recent-games">Battle Reports</Link>
+          <Link to="/games">Battle Reports</Link>
         </nav>
         <section className="dashboard-state" aria-label="Game not found">
           <p role="alert">Game not found.</p>

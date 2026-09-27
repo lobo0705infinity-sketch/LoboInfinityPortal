@@ -11,9 +11,15 @@ type MobilePrimaryItem = {
 
 const mobilePrimaryItems: MobilePrimaryItem[] = [
   { icon: 'dashboard', label: 'Home', to: '/', matches: (path) => path === '/' || path === '/dashboard' },
-  { icon: 'players', label: 'Players', to: '/players', matches: (path) => path === '/players' || path.startsWith('/players/') || path.startsWith('/player/') },
+  {
+    icon: 'army', label: 'Explore', to: '/explore',
+    matches: (path) => ['/explore', '/army-intelligence', '/intelligence', '/games', '/game', '/players', '/player', '/compare', '/rivalries', '/factions', '/faction', '/missions', '/mission', '/army-lists', '/streams', '/analytics', '/hall-of-fame'].some((route) => path === route || path.startsWith(`${route}/`)),
+  },
+  {
+    icon: 'standings', label: 'Events', to: '/events',
+    matches: (path) => path === '/events' || path.startsWith('/event/') || path === '/league-operations' || path === '/standings' || path === '/schedule' || path === '/rules',
+  },
   { icon: 'submit', label: 'Submit', to: '/submit-game', matches: (path) => path === '/submit-game' },
-  { icon: 'army', label: 'Intelligence', to: '/army-intelligence', matches: (path) => path === '/army-intelligence' || path === '/intelligence' },
 ]
 
 function MobileBottomNavigation() {

@@ -14,6 +14,11 @@ export const topLevelItems: NavigationItem[] = [
     to: '/',
   },
   {
+    icon: 'standings',
+    label: 'All Events',
+    to: '/events',
+  },
+  {
     icon: 'submit',
     label: 'Submit Game',
     to: '/submit-game',
@@ -44,9 +49,29 @@ export function getJoinCommunityNavigationItem(
 
 export const communityItems: NavigationItem[] = [
   {
+    icon: 'army',
+    label: 'Army Intelligence',
+    to: '/army-intelligence',
+  },
+  {
+    icon: 'rules',
+    label: 'Battle Reports',
+    to: '/games',
+  },
+  {
     icon: 'players',
     label: 'Players',
     to: '/players',
+  },
+  {
+    icon: 'compare',
+    label: 'Compare Players',
+    to: '/compare',
+  },
+  {
+    icon: 'players',
+    label: 'Rivalries',
+    to: '/rivalries',
   },
   {
     icon: 'factions',
@@ -65,8 +90,18 @@ export const communityItems: NavigationItem[] = [
   },
   {
     icon: 'army',
-    label: 'Army Intelligence',
-    to: '/army-intelligence',
+    label: 'Army Lists',
+    to: '/army-lists',
+  },
+  {
+    icon: 'analytics',
+    label: 'Statistics',
+    to: '/analytics',
+  },
+  {
+    icon: 'hall',
+    label: 'Hall of Fame',
+    to: '/hall-of-fame',
   },
 ]
 

@@ -11,7 +11,9 @@ const routeLabels: Record<string, string> = {
   '/army-intelligence': 'Army Intelligence',
   '/army-lists': 'Army Lists',
   '/community': 'Community',
-  '/events': 'Past Events',
+  '/events': 'All Events',
+  '/explore': 'Explore',
+  '/games': 'Battle Reports',
   '/hall-of-fame': 'Hall of Fame',
   '/integrity': 'Audit',
   '/league-operations': 'Mission & Map',
@@ -64,6 +66,7 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
   const routeEventMatch = pathname.match(/^\/event\/([^/?#]+)/)
 
   if (routeEventMatch) {
+    breadcrumbs.push({ label: 'All Events', to: '/events' })
     const eventId = decodeSegment(routeEventMatch[1])
     const event = getEventNavigationConfig(eventId)
     const eventLabel = event?.label ?? eventId
@@ -84,6 +87,7 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
   if (queryEventId) {
     const event = getEventNavigationConfig(queryEventId)
     if (event) {
+      breadcrumbs.push({ label: 'All Events', to: '/events' })
       breadcrumbs.push({
         label: event.label,
         to: `/event/${encodeURIComponent(event.id)}`,
@@ -94,13 +98,14 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
   }
 
   if (pathname === '/army-intelligence') {
+    breadcrumbs.push({ label: 'Explore', to: '/explore' })
     breadcrumbs.push({ label: 'Army Intelligence' })
     return breadcrumbs
   }
 
   const communityItem = communityItems.find((item) => item.to === pathname)
   if (communityItem) {
-    breadcrumbs.push({ label: 'Community', to: communityItems[0]?.to ?? '/players' })
+    breadcrumbs.push({ label: 'Explore', to: '/explore' })
     breadcrumbs.push({ label: communityItem.label })
     return breadcrumbs
   }
