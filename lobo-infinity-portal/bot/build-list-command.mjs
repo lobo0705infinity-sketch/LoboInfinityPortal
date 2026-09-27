@@ -178,7 +178,7 @@ export function formatBuiltList(list, number) {
     const lieutenantOrders = list.profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
     const nco = lieutenantOrders && members.some(item => item.nco) ? ` · NCO (${lieutenantOrders} Lt, shared)` : ''
     const delayed = members.filter(item => item.regular && item.startsOffTable).length
-    return `**Group ${group} · ${regular} Regular${tactical ? ` +${tactical} Tactical` : ''}${nco}${delayed ? ` · ${delayed} off table` : ''}**\n${members.map(item => `• ${item.label} — ${item.points} pts`).join('\n')}`
+    return `**Group ${group} · ${regular} Regular${tactical ? ` +${tactical} Tactical` : ''}${nco}${delayed ? ` · ${delayed} off table` : ''}**\n${members.map(item => `• ${item.label}${item.irregular ? ' · Irregular' : ''} — ${item.points} pts`).join('\n')}`
   }).filter(Boolean).join('\n')
   const fireteams = list.fireteams.length
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')

@@ -82,6 +82,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       ava, avaKey: `${unit.id}:${group.id}:${base.id}`, slots,
       lieutenant, side,
       regular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'REGULAR'),
+      irregular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'IRREGULAR'),
       startsOffTable: skills.some(skill => /\b(combat jump|parachutist|hidden deployment)\b/i.test(skill)),
       tacticalOrders: orderCount('TACTICAL') || (skills.some(skill => /\btactical awareness\b/i.test(skill)) ? 1 : 0),
       lieutenantOrders: lieutenant ? orderCount('LIEUTENANT') || 1 : 0,
@@ -94,6 +95,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       hacker: /\bhacker\b|hacking device/i.test(roleText),
       smoke: /smoke|eclipse|disco baller|mirroball/i.test(toolkit),
       repeater: /repeater|pitcher|fastpanda/i.test(toolkit),
+      flashPulse: weapons.some(weapon => /\bflash pulse\b/i.test(weapon)),
       aro: /sniper|feuerbach|missile launcher|rocket launcher|flash pulse|panzerfaust|thunderbolt/i.test(toolkit),
       closeThreat: /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit),
       defensive: /camouflage|minelayer|decoy/i.test(roleText),
@@ -147,11 +149,16 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   constraints.side = side
   const teamPreference = teamTypeEvidence?.preferences?.[Number(sectorialId)] || teamTypeEvidence?.preferences?.global || {}
   const seeds = starterTeams(profiles, payload.fireteamChart, constraints, side, teamPreference)
+  const support = profiles.filter(item => item.slots === 1 && item.flashPulse && !item.specialist
+    && !item.lieutenant && (item.regular && item.repairable && item.points <= 9
+      || /warcor/i.test(item.slug) && item.points <= 5))
+    .sort((a, b) => a.points - b.points || Number(b.regular) - Number(a.regular))
   const options = []
   const seen = new Set()
-  for (let attempt = 0; attempt < 48 && options.length < 48; attempt++) {
+  for (let attempt = 0; attempt < 96 && options.length < 96; attempt++) {
     const selected = []
-    const seed = seeds[attempt % Math.max(1, seeds.length)]
+    const baseAttempt = attempt < 48 ? attempt : attempt - 48
+    const seed = seeds[baseAttempt % Math.max(1, seeds.length)]
     const buildConstraints = { ...constraints, side: side || (/\bSurface\b/i.test(seed?.name || '') ? 'Surface'
       : /\bDeepspace\b/i.test(seed?.name || '') ? 'Deepspace' : null) }
     for (const item of forced) {
@@ -162,19 +169,33 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (canAdd(selected, item, 1, buildConstraints)) selected.push({ ...item, combatGroup: 1 })
     }
     const lieutenant = profiles.filter(item => item.lieutenant && !selected.some(entry => entry.lieutenant) && canAdd(selected, item, 1, buildConstraints))
-      .sort((a, b) => (a.points - b.points) || b.regular - a.regular)[attempt % 3 === 2 ? 1 : 0]
+      .sort((a, b) => (a.points - b.points) || b.regular - a.regular)[baseAttempt % 3 === 2 ? 1 : 0]
     if (lieutenant) selected.push({ ...lieutenant, combatGroup: 1 })
     if (!selected.some(item => item.lieutenant)) continue
 
     const targetSpecialists = /hardlock/i.test(mission) ? 4 : 3
     for (let i = 0; i < targetSpecialists; i++) {
       if (selected.filter(item => item.specialist).length >= targetSpecialists) break
-      const specialist = bestNext(profiles.filter(item => item.specialist), selected, buildConstraints, attempt, 'specialist')
+      const specialist = bestNext(profiles.filter(item => item.specialist), selected, buildConstraints, baseAttempt, 'specialist')
       if (!specialist) break
       selected.push(specialist)
     }
+    // Vary the order base before the greedy fill. A cheap Regular Flash Pulse
+    // trooper can finance better specialists and attackers; a Warcor may do
+    // the same when the roster already has enough Regular orders. They are
+    // alternatives for scoring, not compulsory picks or A/S ARO coverage.
+    const supportMode = attempt < 48 ? 0 : 1 + (baseAttempt + 2) % 3
+    if (supportMode === 1 || supportMode === 3) {
+      const remote = support.find(item => item.regular && canAdd(selected, item, 1, buildConstraints))
+      if (remote) selected.push({ ...remote, combatGroup: 1 })
+    }
+    if (supportMode === 2 || supportMode === 3) {
+      const warcor = support.find(item => !item.regular && /warcor/i.test(item.slug)
+        && !selected.some(entry => /warcor/i.test(entry.slug)) && canAdd(selected, item, 1, buildConstraints))
+      if (warcor) selected.push({ ...warcor, combatGroup: 1 })
+    }
     for (let i = 0; i < 15; i++) {
-      const next = bestNext(profiles, selected, buildConstraints, attempt, 'general')
+      const next = bestNext(profiles, selected, buildConstraints, baseAttempt, 'general')
       if (!next) break
       selected.push(next)
     }
@@ -271,6 +292,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
     if (!canAdd(selected, item, group, constraints)) continue
     if (item.lieutenant || item.slots > 1 && count > 8) continue
+    if (/warcor/i.test(item.slug) && selected.some(profile => /warcor/i.test(profile.slug))) continue
     const regular = item.regular ? 2.1 : 0.1
     const missionValue = item.specialist && specialists < (/hardlock/i.test(constraints.mission) ? 4 : 3) ? 5.5
       : item.specialist && specialists >= 5 ? -2.5 : item.specialist ? .5 : 0

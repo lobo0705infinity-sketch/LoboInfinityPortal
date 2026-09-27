@@ -32,12 +32,23 @@ assert.ok(profiles.every(item => roster.includes(item.slug)))
 assert.ok(profiles.some(item => item.aroRating > 0 && item.ccRating > 0 && item.mobility > 0), 'existing ARO, CC, and mobility benchmarks contribute')
 assert.ok(profiles.some(item => item.tacticalOrders > 0) && profiles.some(item => item.nco)
   && profiles.some(item => item.lieutenantOrders > 0), 'Tactical Awareness, NCO and Lieutenant orders are identified')
+const transductor = profiles.find(item => item.slug === 'transductor-zonds' && item.points === 7)
+const warcor = profiles.find(item => /warcor/i.test(item.slug))
+assert.ok(transductor?.regular && transductor.flashPulse && transductor.repairable,
+  'the 7-point Flash Pulse remote provides a Regular order')
+assert.ok(warcor && warcor.irregular && !warcor.regular && warcor.flashPulse,
+  'a Warcor provides cheap ARO utility but no Regular order')
 
 const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
   mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const results = buildArmyListOptions(input)
 assert.equal(results.length, 3)
+assert.ok(results.some(result => result.points >= 298 && result.profiles.some(item => item.id === transductor.id)
+  && result.quality.gunfighters >= 2 && result.quality.aro >= 2),
+'a cheap Regular Flash Pulse remote can release points for a strong, nearly full roster')
+assert.ok(results.every(result => result.profiles.filter(item => /warcor/i.test(item.slug)).length <= 1),
+  'do not fill spare slots with multiple Irregular Warcors')
 assert.equal(new Set(results.map(item => item.profiles.map(profile => `${profile.combatGroup}:${profile.id}`).sort().join('|'))).size, 3)
 assert.ok(results.some(result => result.legality.totals.troopers === 15), 'prefer 15 models when the roster can support them')
 for (const result of results) {
@@ -85,6 +96,11 @@ assert.equal(repeatedModels[0].profiles.filter(profile => profile.id === resolve
   'selecting the same model twice requests two actual copies when its availability allows it')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Jazz'] }), ListBuilderError,
   'repeated models still obey Army availability')
+const warcorList = buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Warcor'], count: 1 })[0]
+assert.equal(warcorList.legality.status, 'legal')
+assert.equal(warcorList.profiles.filter(item => /warcor/i.test(item.slug)).length, 1)
+assert.match(formatBuiltList(warcorList, 1), /WARCOR[^\n]*Irregular/,
+  'show the Warcor as Irregular even though it fills a trooper slot')
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
 assert.equal(lowPointLists.length, 3)
