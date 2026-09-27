@@ -102,6 +102,14 @@ assert.equal(impactAnchorValue([{ ...taskmaster, gunfighterGrade: 'F', aroGrade:
 assert.equal(impactAnchorValue([taskmaster, taskmaster]), impactAnchorValue([taskmaster]),
   'duplicates do not become better just because they cost more')
 const nomadsList = buildArmyListOptions({ ...nomadsInput, count: 1 })[0]
+const nomadsFlashBots = nomadsList.profiles.filter(item => item.slug === 'transductor-zonds'
+  && item.points === 7 && item.regular && item.flashPulse)
+assert.equal(nomadsFlashBots.length, 2,
+  'the standard 300-point Nomads list should compare both legal cheap orders with basic Securitate filler')
+assert.ok(nomadsFlashBots.length <= nomadsProfiles.find(item => item.slug === 'transductor-zonds')?.ava,
+  'the second Flash Pulse remote still obeys its official availability')
+assert.ok(nomadsList.profiles.filter(item => item.optionName === 'SECURITATE' && /Combi Rifle/i.test(item.label)).length < 2,
+  'do not preserve a pair of basic Securitate Combi orders solely for a weak Duo')
 assert.ok(nomadsList.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30),
   'a 300-point Nomads roster should consider at least one capable expensive model')
 assert.ok(nomadsList.profiles.some(item => item.points === 7 && item.flashPulse && item.regular),
@@ -211,6 +219,8 @@ assert.ok(shasLists[0].fireteams.some(team => ['DUO', 'HARIS'].includes(team.typ
 assert.match(formatBuiltList(shasLists[0], 1), /\*\*A\/S coverage \(separate Guns\/ARO\)\*\* Guns \d+\/2 · CC \d+\/2 · ARO \d+\/2 · Specialists \d+\/3/)
 assert.ok(formatBuiltList(shasLists[0], 1).length <= 1990)
 const cheapTeam = Array.from({ length: 5 }, () => ({ specialist: false, gunfighterGrade: 'D', aroGrade: 'C' }))
+assert.equal(fireteamUsefulness({ type: 'DUO', level: 2 }, cheapTeam.slice(0, 2)), 0,
+  'two low-impact line infantry do not earn a Fireteam usefulness bonus')
 const workingDuo = [{ gunfighterGrade: 'A', specialist: true }, cheapTeam[0]]
 const workingCore = [
   { gunfighterGrade: 'A', specialist: true }, { gunfighterGrade: 'A', ccGrade: 'S' },
@@ -293,7 +303,9 @@ assert.ok(evidence.preferences[777].CORE > 0 && evidence.preferences[777].CORE <
   'a modest type preference is earned from the within-sectorial result difference')
 const evidenceMembers = Array.from({ length: 3 }, (_, index) => ({ id: `line-${index}`, unitId: 1,
   slug: 'line', unitName: 'LINE', optionName: 'LINE Rifle', label: `LINE Rifle ${index}`,
-  combatGroup: 1, slots: 1, points: 10, specialist: false, gunfighter: 0 }))
+  combatGroup: 1, slots: 1, points: 10, specialist: index === 0, gunfighter: 0 }))
+assert.deepEqual(proposedFireteams(evidenceMembers.map(member => ({ ...member, specialist: false })),
+  evidencePayload.fireteamChart), [], 'a Fireteam of basic order providers is not proposed just for its composition')
 assert.equal(proposedFireteams(evidenceMembers, evidencePayload.fireteamChart)[0]?.type, 'HARIS')
 assert.equal(proposedFireteams(evidenceMembers, evidencePayload.fireteamChart, null,
   { CORE: -20, DUO: 20 })[0]?.type, 'DUO', 'type evidence can change which overlapping legal team is selected')

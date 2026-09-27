@@ -184,12 +184,15 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     // trooper can finance better specialists and attackers; a Warcor may do
     // the same when the roster already has enough Regular orders. They are
     // alternatives for scoring, not compulsory picks or A/S ARO coverage.
-    const supportMode = attempt < 48 ? 0 : 1 + (baseAttempt + 2) % 3
-    if (supportMode === 1 || supportMode === 3) {
-      const remote = support.find(item => item.regular && canAdd(selected, item, 1, buildConstraints))
-      if (remote) selected.push({ ...remote, combatGroup: 1 })
+    const supportMode = attempt < 48 ? 0 : 1 + (baseAttempt + 2) % 4
+    if (supportMode === 1 || supportMode === 3 || supportMode === 4) {
+      const remoteCount = supportMode === 3 ? 2 : 1
+      for (let i = 0; i < remoteCount; i++) {
+        const remote = support.find(item => item.regular && canAdd(selected, item, 1, buildConstraints))
+        if (remote) selected.push({ ...remote, combatGroup: 1 })
+      }
     }
-    if (supportMode === 2 || supportMode === 3) {
+    if (supportMode === 2 || supportMode === 4) {
       const warcor = support.find(item => !item.regular && /warcor/i.test(item.slug)
         && !selected.some(entry => /warcor/i.test(entry.slug)) && canAdd(selected, item, 1, buildConstraints))
       if (warcor) selected.push({ ...warcor, combatGroup: 1 })
@@ -474,8 +477,8 @@ export function fireteamUsefulness(team, members, teamPreference = {}) {
   ) || (
     gradeRank(item.aroGrade) < gradeRank('A') && gradeRank(item.linkedAroGrade) >= gradeRank('A')
   )).length
-  const useful = shooters + defenders + fighters + specialists > 0
-  const compact = useful ? { DUO: 3, HARIS: 3.5, CORE: 0 }[team.type] || 0 : 0
+  if (shooters + defenders + fighters + specialists === 0) return 0
+  const compact = { DUO: 3, HARIS: 3.5, CORE: 0 }[team.type] || 0
   return 6 + Math.max(0, team.level - 2) * .65 + compact
     + Math.min(2, shooters) * 1.8 + Math.min(2, defenders) * 1.1
     + Math.min(2, fighters) * .55 + Math.min(2, specialists) * .6
@@ -651,7 +654,8 @@ function starterTeams(profiles, chart, constraints, side, teamPreference = {}) {
                 const seed = choices.map(choice => ({ ...choice, combatGroup: 1 }))
                 if (seed.some((choice, index) => !canAdd(seed.slice(0, index), choice, 1, constraints))) continue
                 const teamPlan = validTeam(seed, team, type, chart)
-                if (!teamPlan || teamPlan.level < 2) continue
+                if (!teamPlan || teamPlan.level < 2
+                  || constraints.points >= 300 && fireteamUsefulness(teamPlan, choices, teamPreference) <= 0) continue
                 const teamValue = constraints.points < 300
                   ? 12 + (type === 'HARIS' ? 1 : 0) + choices.filter(choice => choice.specialist).length * 1.5
                     + Math.max(...choices.map(choice => choice.gunfighter)) / 17
@@ -696,7 +700,7 @@ export function proposedFireteams(profiles, chart, side = null, teamPreference =
           .filter(item => item.combatGroup === group && item.fireteamEligible !== false && item.slots === 1 && membershipRows(item, team, chart).length)
         for (const size of sizes) for (const members of combinations(eligible, size)) {
           const plan = validTeam(members, team, type, chart)
-          if (plan?.level >= 2) choices.push({ ...plan, members, combatGroup: group,
+          if (plan?.level >= 2 && fireteamUsefulness(plan, members, teamPreference) > 0) choices.push({ ...plan, members, combatGroup: group,
             value: fireteamUsefulness(plan, members, teamPreference)
             - members.reduce((n, item) => n + item.points, 0) * .015
             - Math.max(0, members.length - plan.level) * 1.4 })
@@ -777,6 +781,11 @@ function membersInTeam(profiles, team, used) {
 function scoreList(profiles, fireteams, mission, points, teamPreference = {}) {
   const specialists = profiles.filter(item => item.specialist).length
   const regular = profiles.filter(item => item.regular).length
+  // Flash Pulse remotes supply a Regular order and a disposable defense for
+  // fewer points than ordinary line infantry. Reward that economy modestly;
+  // role coverage and the rest of the roster still decide the list.
+  const cheapFlashOrders = Math.min(2, profiles.filter(item => item.regular && item.repairable
+    && item.flashPulse && item.points <= 9).length)
   const distinctShooters = new Map()
   for (const item of profiles) distinctShooters.set(item.unitId,
     Math.max(distinctShooters.get(item.unitId) || 0, item.gunfighter || 0))
@@ -789,6 +798,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}) {
   const teamGroups = [1, 2].map(group => resolvedTeams.filter(team => team.combatGroup === group))
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, /hardlock/i.test(mission) ? 4 : 3) * 6) + regular * 2
+    + cheapFlashOrders * 1.5
     + (bestShooter + secondShooter * .6) / 8
     + resolvedTeams.reduce((n, item) => n + fireteamUsefulness(item, item.members, teamPreference), 0)
     + Math.max(0, ...profiles.map(item => item.aroRating)) / 4
