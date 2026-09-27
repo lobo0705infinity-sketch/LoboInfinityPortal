@@ -5,6 +5,8 @@ const root = process.cwd()
 const recentGamesApi = read('backend/RecentGames.gs')
 const factionApi = read('backend/FactionApi.gs')
 const dashboard = read('src/pages/Dashboard.tsx')
+const publicDashboard = read('src/public/SnapshotPublicApp.tsx')
+const publicArmyIntelligence = read('src/public/SnapshotArmyIntelligence.tsx')
 const gameDetails = read('src/pages/GameDetails.tsx')
 const recentGames = read('src/components/RecentGames.tsx')
 const playerProfile = read('src/pages/PlayerProfile.tsx')
@@ -38,7 +40,8 @@ const checks = [
   {
     label: 'Featured battle report links to the same public report as search content',
     pass:
-      dashboard.includes('to="/games/109"') &&
+      publicDashboard.includes('to="/games/109"') &&
+      publicArmyIntelligence.includes('to="/games/109"') &&
       read('shared/public-search-content.mjs').includes("href: '/games/109'"),
   },
   {

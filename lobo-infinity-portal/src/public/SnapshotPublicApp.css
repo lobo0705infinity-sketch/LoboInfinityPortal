@@ -3361,6 +3361,41 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid 
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { margin: .15rem 0 .3rem; border-left: 3px solid rgba(76, 201, 240, .6); padding: .6rem .8rem; color: #c9d9e4; background: rgba(11, 25, 35, .8); font-size: .9rem; line-height: 1.5; }
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note strong { color: #f7fbff; }
 
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, .6fr);
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgba(227, 182, 87, .46);
+  border-left: 4px solid #e3b657;
+  border-radius: 12px;
+  padding: clamp(.9rem, 2vw, 1.4rem);
+  background: linear-gradient(110deg, rgba(227, 182, 87, .12), rgba(9, 17, 26, .97) 60%);
+}
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report h2,
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report p { margin: 0; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report .eyebrow { margin-bottom: .25rem; color: #e3b657; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report h2 { color: #f7fbff; font-size: clamp(1.3rem, 2vw, 1.75rem); }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report p:last-child { margin-top: .25rem; color: #c9d9e4; line-height: 1.5; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report nav { display: grid; gap: .45rem; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report a {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  border: 1px solid rgba(76, 201, 240, .38);
+  border-radius: 7px;
+  padding: .55rem .8rem;
+  color: #e7f6ff;
+  font-size: .85rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report a:hover,
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report a:focus-visible { border-color: #e3b657; color: #fff; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report .snapshot-dashboard-featured-primary { border-color: #e3b657; color: #0c1118; background: #e3b657; }
+
 .snapshot-mobile-game-list { display: none; }
 .snapshot-casual-play-card { display: grid; align-content: start; gap: .7rem; }
 .snapshot-casual-play-card h2, .snapshot-casual-play-card p { margin: 0; }
@@ -3369,6 +3404,7 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note
 .snapshot-casual-play-card a:hover, .snapshot-casual-play-card a:focus-visible { background: rgba(76, 201, 240, .14); }
 
 @media (max-width: 760px) {
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-report { grid-template-columns: 1fr; }
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid { grid-template-columns: 1fr; }
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a { min-height: 64px; gap: .1rem; padding: .55rem .8rem; }
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a strong { font-size: 1rem; }

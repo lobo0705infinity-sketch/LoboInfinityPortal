@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes, useLocation, useParams, useSearchParams 
 import { buildCapabilityNavigationItem, getEventNavigationConfig } from '../config/eventNavigation'
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
+import { buildArmyIntelligenceFactionPath } from '../services/armyIntelligenceNavigation'
 import { useSnapshotData } from './useSnapshotData'
 import { sortPublicStreamsByDate } from './streamOrdering'
 import type { MissionGeistCatalog, MissionGeistCatalogMission } from '../services/publicSnapshot'
@@ -116,6 +117,18 @@ function Dashboard() {
           <Link to="/events"><span>03 / Play</span><strong>Join a game or event</strong><small>Find an event or connect for casual play.</small></Link>
         </nav>
         <p className="snapshot-dashboard-public-note"><strong>What can I use without joining the league?</strong> Browse Army Intelligence, battle reports, players, factions, missions, streams, and public event results. Register for an event when you want to participate; casual games have a separate submission form.</p>
+      </section>
+      <section className="snapshot-dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
+        <div>
+          <p className="eyebrow">Featured battle report · BR-109</p>
+          <h2 id="dashboard-featured-report-title">Dead Man&apos;s Switch</h2>
+          <p>Corregidor Jurisdictional Command vs Torchlight Brigade. A Raveneye nearly swung the result in the final orders.</p>
+        </div>
+        <nav aria-label="Explore the featured report">
+          <Link className="snapshot-dashboard-featured-primary" to="/games/109">Read the battle report <span aria-hidden="true">→</span></Link>
+          <Link to={buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')}>Explore Corregidor army lists</Link>
+          <Link to="/missions/Dead%20Man's%20Switch">Explore Dead Man&apos;s Switch results</Link>
+        </nav>
       </section>
       <section className="snapshot-dashboard-section snapshot-dashboard-programs" aria-labelledby="dashboard-programs-title">
         <div className="snapshot-dashboard-section-heading snapshot-dashboard-section-heading--action">

@@ -17,7 +17,6 @@ import type { DashboardDeferredKey } from '../contexts/DashboardDataContext'
 import type { LeagueOverview } from '../types/dashboard'
 import { formatObjectiveScore } from '../services/formatting'
 import { getGameHeadline, isDrawGame } from '../services/gameResults'
-import { buildArmyIntelligenceFactionPath } from '../services/armyIntelligenceNavigation'
 import { resolvePlayerLeagueModel } from '../services/playerLeagueModel'
 import loboCrest from '../assets/lobo-crest.svg'
 import {
@@ -72,7 +71,6 @@ function DashboardContent({
     return (
       <main className="portal-shell dashboard-facelift">
         <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
-        <DashboardFeaturedReport />
         <DashboardLoadingContent />
       </main>
     )
@@ -82,7 +80,6 @@ function DashboardContent({
     return (
       <main className="portal-shell dashboard-facelift">
         <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
-        <DashboardFeaturedReport />
         <section className="dashboard-state" aria-label="Dashboard error">
           <p role="alert">{homeError}</p>
         </section>
@@ -128,7 +125,6 @@ function DashboardContent({
   return (
     <main className="portal-shell dashboard-facelift">
       <DashboardCommandHero currentSeason={currentSeason} lastUpdated={lastUpdated} />
-      <DashboardFeaturedReport />
 
       <section className="dashboard-status-grid" aria-label="Dashboard summary">
         <DashboardStatusTile
@@ -273,22 +269,6 @@ function DashboardCommandHero({
           <span>Updated {lastUpdated}</span>
         </div>
       </div>
-    </section>
-  )
-}
-
-function DashboardFeaturedReport() {
-  return (
-    <section className="dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
-      <div>
-        <p className="eyebrow">Featured battle report · BR-109</p>
-        <h2 id="dashboard-featured-report-title">Dead Man&apos;s Switch</h2>
-        <p>Corregidor vs Torchlight Brigade. Read the match result, submitted highlight, and game review.</p>
-      </div>
-      <nav aria-label="Explore the featured battle report">
-        <Link className="dashboard-featured-report-primary" to="/games/109">Read the battle report <span aria-hidden="true">→</span></Link>
-        <Link to={buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')}>Explore Corregidor army lists</Link>
-      </nav>
     </section>
   )
 }

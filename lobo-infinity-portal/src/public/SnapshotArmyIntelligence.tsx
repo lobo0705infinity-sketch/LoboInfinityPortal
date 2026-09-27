@@ -1,6 +1,6 @@
 import { repairArmyList } from '../../bot/profile-audit.mjs'
 import { type ReactNode, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import type { ArmyIntelligenceArmyList, ArmyIntelligenceList } from '../services/api'
@@ -129,11 +129,15 @@ export default function SnapshotArmyIntelligence() {
         <h2 id="intelligence-start-title">Corregidor Jurisdictional Command</h2>
         <p>See which models appear in submitted lists, what specialist and support roles they cover, and how the recorded gunfighters and close combat profiles rank. Then choose any other faction or sectorial below.</p>
       </div>
-      <button type="button" onClick={() => {
-        const next = new URLSearchParams(params)
-        next.set('faction', 'Corregidor Jurisdictional Command')
-        setParams(next)
-      }}>Explore Corregidor</button>
+      <nav className="snapshot-intelligence-start-actions" aria-label="Explore Corregidor">
+        <button type="button" onClick={() => {
+          const next = new URLSearchParams(params)
+          next.set('faction', 'Corregidor Jurisdictional Command')
+          setParams(next)
+        }}>Explore Corregidor lists</button>
+        <Link to="/factions/Corregidor%20Jurisdictional%20Command">See Corregidor results</Link>
+        <Link to="/games/109">Read the battle report</Link>
+      </nav>
     </section> : null}
 
     <section className="panel snapshot-intelligence-selector" aria-label="Army Intelligence analysis controls">
