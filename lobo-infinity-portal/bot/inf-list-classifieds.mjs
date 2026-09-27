@@ -1,51 +1,46 @@
-// ITS Season 18 uses the 20-card Operations/Classified Deck. Card requirements:
-// https://downloads.corvusbelli.com/infinity/organized-play/classified-deck-en.pdf
-// Season 18 selection, CivEvac, Casevac, and Secure HVT:
+// The current 20-card Operations Deck, as shown on the physical cards. The older
+// classified-deck-en.pdf predates this deck and must not be used for its objectives.
+// Season 18 selection, Long Service, CivEvac, and Secure HVT:
 // https://experience.corvusbelli.com/en/infinity/its
-export const CLASSIFIED_DECK_URL = 'https://downloads.corvusbelli.com/infinity/organized-play/classified-deck-en.pdf'
+export const CLASSIFIED_DECK_URL = 'https://store.corvusbelli.com/en/organized-play/infinity/all/operations-deck'
 
 const classifiedCards = [
-  ['Follow-Up', 'Medium or Heavy Infantry', p => [2, 3].includes(p.troopType)],
+  ['HVT: Follow-Up', 'Medium or Heavy Infantry', mediumOrHeavy],
   ['Net-Undermine', 'Veteran/Elite Troop or Chain of Command', veteranOrElite],
   ['HVT: Identity Check', 'Biometric Visor, Multispectral Visor, or Sensor', p => equipment(p, 'Biometric Visor') || equipment(p, 'Multispectral Visor') || skill(p, 'Sensor')],
   ['Capture', 'Veteran/Elite Troop or Chain of Command', veteranOrElite],
   ['HVT: Kidnapping', 'Veteran/Elite Troop or Chain of Command able to CivEvac', p => veteranOrElite(p) && canCivEvac(p)],
   ['HVT: Inoculation', 'Doctor or Paramedic', medic],
   ['Sabotage', 'D-Charges', p => (p.weapons || []).some(w => token(w.name, 'D-Charges')) || equipment(p, 'D-Charges')],
-  ['Experimental Drug', 'Doctor/Paramedic and another allied VITA trooper', null],
+  ['Combat Support', 'Doctor/Paramedic with an allied VITA trooper, or Engineer with an allied STR trooper', combatSupport,
+    'Needs an allied trooper to regain a VITA/STR point; a Peripheral (Servant) cannot complete it.'],
   ['HVT: Espionage', 'Hacker', hacker],
-  ['HVT: Retrongineering', 'Engineer', p => skill(p, 'Engineer')],
-  ['Test Run', 'Engineer and another allied STR trooper', null],
-  ['Nanoespionage', 'Engineer, Doctor, or Paramedic', p => skill(p, 'Engineer') || medic(p)],
+  ['HVT: Reverse Engineering', 'Engineer', engineer],
+  ['Industrial Espionage', 'Engineer, Forward Observer, Veteran Troop, or Elite Troop',
+    p => engineer(p) || skill(p, 'Forward Observer') || veteranOrEliteTroop(p), 'Needs an enemy HI, REM, TAG, or Engineer.'],
+  ['Nanoespionage', 'Engineer, Doctor, or Paramedic with MediKit or GizmoKit',
+    p => (engineer(p) || medic(p)) && (equipment(p, 'MediKit') || equipment(p, 'GizmoKit') || skill(p, 'MediKit') || skill(p, 'GizmoKit')),
+    'Requires a BS Attack with MediKit/GizmoKit against an enemy Specialist Troop.'],
   ['Mapping', 'Forward Observer or Hacker', p => skill(p, 'Forward Observer') || hacker(p)],
   ['Data Scan', 'Hacker', hacker],
-  ['HVT: Designation', 'Forward Observer or Spotlight', observerOrSpotlight],
+  ['HVT: Designation', 'Forward Observer or Spotlight', observerOrSpotlight,
+    'Requires two successful rolls against the same enemy HVT.'],
   ['Telemetry', 'Forward Observer or Spotlight', observerOrSpotlight],
-  ['Predator', 'Two enemy troopers killed in CC', activeTrooper],
-  ['Rescue', 'Casevac carrier and a second allied trooper', null],
-  ['In Extremis Recovery', 'Engage an Unconscious enemy', activeTrooper],
-  ['Extreme Prejudice', 'Coup de Grâce an Unconscious enemy', activeTrooper],
+  ['Predator', 'Two enemy troopers put into Unconscious or Dead State by CC Attack', activeTrooper,
+    'Needs two enemy troopers put into Unconscious or Dead State by CC Attack.'],
+  ['Suspected Infiltration', 'Doctor, Hacker, Veteran Troop, or Elite Troop',
+    p => skill(p, 'Doctor') || hacker(p) || veteranOrEliteTroop(p), 'Needs an enemy trooper that is not a REM or TAG.'],
+  ['Vigilance', 'Medium or Heavy Infantry', mediumOrHeavy,
+    'Needs any enemy trooper wholly in the enemy half of the table and within ZoC.'],
+  ['HVT: Assassination', 'Lieutenant, NCO, or Chain of Command',
+    p => skill(p, 'Lieutenant') || skill(p, 'NCO') || skill(p, 'Chain of Command'),
+    'Needs the enemy HVT in LoF and ZoC; Silhouette contact gives +3 to the WIP roll.'],
 ]
 
 export function assessInfListClassifieds(profiles = []) {
-  const cards = classifiedCards.map(([name, requirement, predicate], index) => {
-    let eligible = predicate ? profiles.filter(predicate) : []
-    let detail = ''
-    if (index === 7) {
-      eligible = profiles.filter((p, i) => medic(p) && profiles.some((ally, j) => j !== i && ally.vita === true))
-      if (eligible.length) detail = 'Needs an allied VITA trooper to become Unconscious.'
-    } else if (index === 10) {
-      eligible = profiles.filter((p, i) => skill(p, 'Engineer') && profiles.some((ally, j) => j !== i && ally.structure === true))
-      if (eligible.length) detail = 'Needs an allied STR trooper to lose a Structure point.'
-    } else if (index === 17) {
-      eligible = profiles.filter((p, i) => activeTrooper(p) && profiles.some((ally, j) =>
-        j !== i && Number.isFinite(p.ph) && Number.isFinite(ally.ph)
-        && (p.ph >= ally.ph || equipment(p, 'Baggage'))))
-      eligible.sort((a, b) => (b.ph || 0) - (a.ph || 0))
-      if (eligible.length) detail = 'Needs a qualifying ally in Stunned, Immobilized, or Unconscious State.'
-    }
+  const cards = classifiedCards.map(([name, requirement, predicate, detail = ''], index) => {
+    const eligible = profiles.filter((p, i) => predicate(p, profiles, i))
     if (index === 16) eligible.sort((a, b) => (b.cc || 0) - (a.cc || 0))
-    if (!detail && [16, 18, 19].includes(index)) detail = requirement + '; depends on the enemy and game state.'
     return {
       number: index + 1,
       name,
@@ -112,9 +107,17 @@ function named(values, wanted) { return (values || []).some(value => token(value
 function skill(p, wanted) { return named(p.skills, wanted) }
 function equipment(p, wanted) { return named(p.equipment, wanted) }
 function medic(p) { return skill(p, 'Doctor') || skill(p, 'Paramedic') }
+function engineer(p) { return skill(p, 'Engineer') }
 function hacker(p) { return skill(p, 'Hacker') || (p.equipment || []).some(value => /^(?:evo |killer |white |assault |defensive )?hacking device(?: |$)/.test(norm(value))) }
 // ITS 18 Long Service grants every Character the Veteran Troop classification.
-function veteranOrElite(p) { return [4, 5, 10].includes(p.troopClassification) || skill(p, 'Chain of Command') }
+function veteranOrEliteTroop(p) { return [4, 5, 10].includes(p.troopClassification) }
+function veteranOrElite(p) { return veteranOrEliteTroop(p) || skill(p, 'Chain of Command') }
+function mediumOrHeavy(p) { return [2, 3].includes(p.troopType) }
+function combatSupport(p, profiles, index) {
+  if (skill(p, 'Peripheral')) return false
+  return profiles.some((ally, allyIndex) => allyIndex !== index
+    && ((medic(p) && ally.vita === true) || (engineer(p) && ally.structure === true)))
+}
 function activeTrooper(p) { return Number.isFinite(p.cc) && p.cc > 0 && !skill(p, 'Peripheral') }
 function canCivEvac(p) { return ![5, 8].includes(p.troopType) && !skill(p, 'Impetuous') && !skill(p, 'Peripheral') }
 function observerOrSpotlight(p) { return skill(p, 'Forward Observer') || (p.hackingPrograms || []).some(name => token(name, 'Spotlight')) }

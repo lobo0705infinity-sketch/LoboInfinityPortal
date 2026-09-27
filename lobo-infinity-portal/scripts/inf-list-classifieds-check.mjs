@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { gunzipSync } from 'node:zlib'
 import { assessInfListClassifieds, formatInfListClassifiedEmbeds } from '../bot/inf-list-classifieds.mjs'
 import { createInfListResponse } from '../bot/inf-list-command.mjs'
 import { buildSubmittedProfiles } from '../bot/inf-list-tactical.mjs'
@@ -14,38 +16,48 @@ const profiles = [
   p('Veteran MI', { troopType: 2, troopClassification: 4 }),
   p('Killer Hacker', { skills: ['Hacker'], equipment: ['Killer Hacking Device'] }),
   p('FO', { skills: ['Forward Observer'] }),
-  p('Engineer', { skills: ['Engineer'], ph: 12 }),
+  p('Engineer', { skills: ['Engineer'], equipment: ['GizmoKit'], ph: 12 }),
   p('STR REM', { troopType: 5, ph: 8, vita: false, structure: true }),
-  p('Doctor', { skills: ['Doctor'], ph: 9 }),
+  p('Doctor', { skills: ['Doctor'], equipment: ['MediKit'], ph: 9 }),
   p('D-Charges profile', { weapons: [{ name: 'D-Charges' }] }),
   p('Impetuous CoC', { troopClassification: 2, skills: ['Chain of Command', 'Impetuous'] }),
   p('Character', { troopClassification: 10 }),
+  p('Lieutenant', { skills: ['Lieutenant'] }),
+  p('NCO', { skills: ['NCO'] }),
 ]
 const coverage = assessInfListClassifieds(profiles)
-assert.equal(coverage.total, 20, 'audit every card in the official standard deck')
-assert.deepEqual(byName(coverage, 'Follow-Up').eligible.map(p => p.unitName), ['Veteran MI'])
+assert.deepEqual(coverage.cards.map(card => card.name), [
+  'HVT: Follow-Up', 'Net-Undermine', 'HVT: Identity Check', 'Capture', 'HVT: Kidnapping',
+  'HVT: Inoculation', 'Sabotage', 'Combat Support', 'HVT: Espionage', 'HVT: Reverse Engineering',
+  'Industrial Espionage', 'Nanoespionage', 'Mapping', 'Data Scan', 'HVT: Designation',
+  'Telemetry', 'Predator', 'Suspected Infiltration', 'Vigilance', 'HVT: Assassination',
+], 'the current Operations Deck cards appear in their printed order')
+assert.equal(coverage.total, 20)
+assert.deepEqual(byName(coverage, 'HVT: Follow-Up').eligible.map(p => p.unitName), ['Veteran MI'])
 assert.deepEqual(byName(coverage, 'HVT: Kidnapping').eligible.map(p => p.unitName), ['Veteran MI', 'Character'], 'Impetuous Chain of Command cannot CivEvac')
 assert.deepEqual(byName(coverage, 'Net-Undermine').eligible.map(p => p.unitName), ['Veteran MI', 'Impetuous CoC', 'Character'], 'ITS 18 Long Service makes Characters Veteran Troops')
 assert.deepEqual(byName(coverage, 'Sabotage').eligible.map(p => p.unitName), ['D-Charges profile'])
-assert.deepEqual(byName(coverage, 'Test Run').eligible.map(p => p.unitName), ['Engineer'])
-assert.deepEqual(byName(coverage, 'Experimental Drug').eligible.map(p => p.unitName), ['Doctor'])
+assert.deepEqual(byName(coverage, 'Combat Support').eligible.map(p => p.unitName), ['Engineer', 'Doctor'])
+assert.deepEqual(byName(coverage, 'Nanoespionage').eligible.map(p => p.unitName), ['Engineer', 'Doctor'])
+assert.deepEqual(byName(coverage, 'Industrial Espionage').eligible.map(p => p.unitName), ['Veteran MI', 'FO', 'Engineer', 'Character'], 'Chain of Command alone does not qualify for Industrial Espionage')
+assert.deepEqual(byName(coverage, 'Suspected Infiltration').eligible.map(p => p.unitName), ['Veteran MI', 'Killer Hacker', 'Doctor', 'Character'], 'Chain of Command alone does not qualify for Suspected Infiltration')
+assert.deepEqual(byName(coverage, 'Vigilance').eligible.map(p => p.unitName), ['Veteran MI'])
+assert.deepEqual(byName(coverage, 'HVT: Assassination').eligible.map(p => p.unitName), ['Impetuous CoC', 'Lieutenant', 'NCO'])
 assert.deepEqual(byName(coverage, 'HVT: Designation').eligible.map(p => p.unitName), ['FO'], 'Killer Hacking Device has no Spotlight')
 assert.deepEqual(byName(coverage, 'Data Scan').eligible.map(p => p.unitName), ['Killer Hacker'])
-assert.ok(byName(coverage, 'Rescue').eligible.some(p => p.unitName === 'Engineer'))
 assert.ok(coverage.secureHvt.length)
 
 const spotlight = assessInfListClassifieds([p('HD Hacker', { equipment: ['Hacking Device'], hackingPrograms: ['Spotlight'] })])
 assert.equal(byName(spotlight, 'Telemetry').possible, true)
 assert.equal(byName(spotlight, 'HVT: Designation').possible, true)
-assert.equal(byName(spotlight, 'Experimental Drug').possible, false)
-assert.equal(byName(spotlight, 'Rescue').possible, false, 'a model cannot Casevac itself')
+assert.equal(byName(spotlight, 'Combat Support').possible, false)
+assert.equal(byName(spotlight, 'Nanoespionage').possible, false, 'a Hacker alone lacks both the designated support skill and kit')
 
 const noTarget = assessInfListClassifieds([p('Engineer only', { skills: ['Engineer'], ph: 9 })])
-assert.equal(byName(noTarget, 'Test Run').possible, false, 'an Engineer alone has no allied STR target')
-const unableToCarry = assessInfListClassifieds([p('Low PH', { ph: 8 }), p('High PH', { ph: 12, cc: 0 })])
-assert.equal(byName(unableToCarry, 'Rescue').possible, false, 'carrier PH must reach target PH')
-const baggage = assessInfListClassifieds([p('Baggage', { ph: 8, equipment: ['Baggage'] }), p('High PH', { ph: 12, cc: 0 })])
-assert.equal(byName(baggage, 'Rescue').possible, true, 'Baggage bypasses the PH comparison')
+assert.equal(byName(noTarget, 'Combat Support').possible, false, 'an Engineer alone has no allied STR target')
+assert.equal(byName(noTarget, 'Nanoespionage').possible, false, 'the attack requires a MediKit or GizmoKit')
+const servant = assessInfListClassifieds([p('Servant', { skills: ['Engineer', 'Peripheral'] }), p('STR ally', { vita: false, structure: true })])
+assert.equal(byName(servant, 'Combat Support').possible, false, 'a Peripheral (Servant) cannot score Combat Support')
 
 const combinedCode = 'gfYKY29ycmVnaWRvcgxORSBUb3VybmV5IDGBLAIBAQAJAIGlAQQAAACBpQEEAAAAh2gBCQAAAIEoAQEAAACGDwABAAAAgYsBBgAAAIGUAQEAAACBlAEDAAAAgRsBAQAAAgEABQCBqgEBAAAAgX8BAgAAAIdlAQEAAACBKAEKAAAAgZoBAQAA'
 const compositeProfiles = buildSubmittedProfiles({
@@ -61,8 +73,23 @@ const compositeProfiles = buildSubmittedProfiles({
 assert.deepEqual(compositeProfiles.map(profile => profile.profileName), ['JAZZ', 'BILLIE'], 'combined Army entries expose both selected models for classified coverage')
 assert.equal(compositeProfiles[0].skills.includes('Hacker'), true)
 assert.equal(compositeProfiles[1].skills.includes('Hacker'), false, 'Billie does not inherit Jazz’s Hacker skill')
-assert.equal(compositeProfiles[1].structure, true, 'Billie provides an allied STR target for Test Run')
+assert.equal(compositeProfiles[1].structure, true, 'Billie provides an allied STR target for Combat Support')
 assert.equal(byName(assessInfListClassifieds(compositeProfiles), 'Net-Undermine').eligible.length, 1, 'Long Service applies to Jazz, not Billie')
+
+const source = JSON.parse(gunzipSync(Buffer.from(readFileSync(new URL('../data/infinity-army/benchmark-official-source.json.gz.b64', import.meta.url), 'utf8'), 'base64')))
+const exactProfiles = buildSubmittedProfiles({
+  armyCode: combinedCode,
+  cards: [{ combinedId: '502-1551-0-1-1', profileName: 'JAZZ' }],
+  expandComposite: true,
+  metadata: source.metadata,
+  officialPayloads: [source.payloads.find(payload => payload.url?.endsWith('/502'))],
+})
+const exactCoverage = assessInfListClassifieds(exactProfiles)
+assert.equal(exactCoverage.possible, 19, 'the supplied Corregidor list covers 19 of the current 20 cards')
+assert.deepEqual(exactCoverage.cards.filter(card => !card.possible).map(card => card.name), ['HVT: Inoculation'])
+assert.ok(byName(exactCoverage, 'Combat Support').eligible.some(profile => profile.profileName === 'TERRITORIAL'))
+assert.ok(byName(exactCoverage, 'Nanoespionage').eligible.some(profile => profile.profileName === 'TERRITORIAL'))
+assert.ok(byName(exactCoverage, 'HVT: Assassination').eligible.some(profile => profile.skills.includes('Lieutenant')))
 
 const embeds = formatInfListClassifiedEmbeds(coverage)
 assert.equal(embeds.length, 1, 'all cards must be in one continuous, visible embed')
@@ -81,6 +108,7 @@ const reply = await createInfListResponse({
   render: async () => ({ classifiedCoverage: coverage, officialArmyUrl: 'https://example.test/army', tacticalPages: [] }),
 })
 assert.equal(reply.embeds.length, 1, 'both text and slash /inf-list responses show all cards in one embed')
-assert.equal(reply.embeds[0].fields[0].name, '✓ 1. Follow-Up')
-assert.equal(reply.embeds[0].fields[19].name, '✓ 20. Extreme Prejudice')
+assert.equal(reply.embeds[0].fields[0].name, '✓ 1. HVT: Follow-Up')
+assert.equal(reply.embeds[0].fields[19].name, '✓ 20. HVT: Assassination')
+assert.doesNotMatch(reply.embeds[0].url, /classified-deck-en\.pdf/, 'never link players to the obsolete printable deck')
 console.log('ITS 18 /inf-list classified coverage passed.')
