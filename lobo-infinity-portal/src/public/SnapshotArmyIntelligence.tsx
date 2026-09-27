@@ -1,6 +1,7 @@
 import { repairArmyList } from '../../bot/profile-audit.mjs'
 import { type ReactNode, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import type { ArmyIntelligenceArmyList, ArmyIntelligenceList } from '../services/api'
@@ -106,7 +107,7 @@ type RoleRow = {
 export default function SnapshotArmyIntelligence() {
   const summary = useSnapshotData<Summary[]>('army-intelligence-summary')
   const [params, setParams] = useSearchParams()
-  const selected = params.get('faction') ?? ''
+  const selected = readArmyIntelligenceFactionParam(params)
 
   if (summary.error) return <PageState title="Army Intelligence unavailable" message={summary.error} error />
   if (!summary.data) return <PageState title="Loading Army Intelligence" message="Loading public coverage and faction options..." />
