@@ -9,12 +9,15 @@ type Incident = {
   complication: string
   turn: string
   objectiveAction: string
+  ground?: string
+  position?: string
 }
 
 export type SourcedStoryScenario = {
   source: string
   season: 'ITS 18' | 'ITS 16' | 'Lobo League'
   requiresUnreportedSetup?: boolean
+  objectiveSkill?: 'infectedCare'
   anchor: RegExp
   ground: string
   position: string
@@ -24,8 +27,9 @@ export type SourcedStoryScenario = {
   incidents: readonly [Incident, Incident, Incident, Incident]
 }
 
-function incident(opening: string, complication: string, turn: string, objectiveAction: string): Incident {
-  return { opening, complication, turn, objectiveAction }
+function incident(opening: string, complication: string, turn: string, objectiveAction: string,
+  setting: Pick<Incident, 'ground' | 'position'> = {}): Incident {
+  return { opening, complication, turn, objectiveAction, ...setting }
 }
 
 // Reviewed against the linked Mission Geist rules. The pages are live;
@@ -38,9 +42,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the gunner above the mast and covered the specialist crossing the broken paving',
     closeCombat: 'drove a defender from the base of the mast and held the courtyard for the specialist',
     endings: {
-      heroWins: '{{heroPlayer}}’s squad brought the communication antenna online and held the courtyard until the enemy withdrew.',
-      heroLoses: '{{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} behind the broken wall.',
-      draw: 'The signal died with both squads still fighting among the fallen masonry.',
+      heroWins: '{{heroPlayer}}’s squad prevailed in the fight around the communication antenna and its scoring ground.',
+      heroLoses: '{{otherPlayer}}’s squad prevailed over {{heroPlayer}} in the fight around the communication antenna and its scoring ground.',
+      draw: 'The fight for the communication antenna and its surrounding ground ended level.',
     },
     incidents: [
       { opening: 'The relay indicator blinked once before the panel went dark, leaving the contested ground without a clear signal.',
@@ -68,19 +72,19 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard beside the Akial Antenna and covered the operator watching the Common cards',
     closeCombat: 'drove a defender from the Akial Antenna and held the approach for the operator',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew completed its classified objective before the round closed.',
-      heroLoses: '{{otherPlayer}}’s crew denied {{heroPlayer}}’s classified objective and completed its own.',
-      draw: 'Both crews withdrew with incomplete classified objectives and no clear advantage.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest for classified objectives at the Akial Antenna.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest for classified objectives at the Akial Antenna.',
+      draw: 'The contest for classified objectives at the Akial Antenna ended level.',
     },
     incidents: [
       { opening: 'At the start of the round, both crews saw two new Common Classified cards as they approached the Akial Antenna.',
-        complication: 'A specialist could see the public cards, but gunfire blocked the antenna needed to disrupt the rival plan.',
+        complication: 'A specialist could see the public cards, but gunfire blocked the antenna controls used to filter one of them.',
         turn: 'A gap in the firing lane briefly opened access to the antenna controls.',
-        objectiveAction: 'checked the public Common Classified cards and prepared an interference request at the Akial Antenna' },
-      { opening: 'A disputed Common Classified card drew both operators toward the Akial Antenna.',
-        complication: 'The rival operator guarded the aerial as interference threatened a card that might already have been accomplished.',
+        objectiveAction: 'checked the public Common Classified cards and prepared to filter one at the Akial Antenna' },
+      { opening: 'An operator who had accomplished a Common Classified card with the matching symbol approached the Akial Antenna.',
+        complication: 'The rival operator guarded the aerial while an accomplished public card remained vulnerable to interference.',
         turn: 'Static broke over the antenna screen just as the guard shifted from its controls.',
-        objectiveAction: 'reviewed the public Common Classified card and prepared to emit Akial interference' },
+        objectiveAction: 'compared the accomplished Common Classified symbols and prepared to emit Akial interference' },
       { opening: 'The public Common Classified cards remained in view while an operator tried to reach the Akial Antenna.',
         complication: 'A defender held the antenna base, preventing the specialist from filtering an unfavorable card.',
         turn: 'The defender moved into cover and left the filter controls exposed for a moment.',
@@ -98,9 +102,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard beside the tracking beacon and sheltered the specialist by the console',
     closeCombat: 'drove a guard from the tracking beacon and opened a route toward the console',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew relocated the tracking beacon into the enemy half and held its console when the round closed.',
-      heroLoses: '{{otherPlayer}}’s crew relocated the tracking beacon into {{heroPlayer}}’s half and held its console at the round’s end.',
-      draw: 'The tracking beacon remained near the center and neither crew secured a console as the round closed.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the struggle over the tracking beacon and consoles.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the struggle over the tracking beacon and consoles.',
+      draw: 'The struggle over the tracking beacon and consoles ended level.',
     },
     incidents: [
       { opening: 'The tracking beacon sat at the centerline as a console flickered behind an abandoned barricade.',
@@ -128,9 +132,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the prototype and sheltered the carrier near the panoply',
     closeCombat: 'drove a defender from the prototype cradle and opened an escape route for its carrier',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew captured the enemy prototype and extracted its carrier.',
-      heroLoses: '{{otherPlayer}}’s crew retained the prototype while {{heroPlayer}} left the panoply behind.',
-      draw: 'Neither crew brought a captured prototype safely out of the bay.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the fight over the prototype and panoplies.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the fight over the prototype and panoplies.',
+      draw: 'The contest for the prototype and panoplies ended level.',
     },
     incidents: [
       incident('An enemy prototype rolled from a damaged cradle as both crews entered the equipment bay.', 'A failed brake sent the prototype toward a service lift beneath the rival firing lane.', 'The lift began descending with the restraint open and its carrier still a step away.', 'checked the prototype restraint and prepared a safe capture before the lift dropped'),
@@ -146,9 +150,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the data console and shielded the specialist near the server racks',
     closeCombat: 'forced a defender from the data console and held the route out of the server room',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew carried the data pack clear of the server room.',
-      heroLoses: '{{otherPlayer}}’s crew locked the console and held {{heroPlayer}} outside the server room.',
-      draw: 'The data pack remained near the console while neither crew retained the server room.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest for the server room and its data pack.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest for the server room and its data pack.',
+      draw: 'The fight for the server room and its data pack ended level.',
     },
     incidents: [
       incident('The data console reported an unlocked pack, but its cradle stayed shut inside the server room.', 'A bent release bar caught the pack carrier’s glove while defenders closed on the doorway.', 'The bar gave a little under pressure, exposing the data pack without freeing it from the cradle.', 'checked the data console release bar and prepared to extract the data pack'),
@@ -164,9 +168,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard overlooking the dead zone and covered the specialist reaching the antenna',
     closeCombat: 'drove a defender from the antenna approach and held the dead zone for the squad',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew dominated the dead zones and activated an antenna.',
-      heroLoses: '{{otherPlayer}}’s crew held the dead zones as {{heroPlayer}} lost the antenna.',
-      draw: 'The dead zones remained divided with neither crew holding the antenna advantage.',
+      heroWins: '{{heroPlayer}}’s crew prevailed in the contest across the dead zones and antennas.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} in the contest across the dead zones and antennas.',
+      draw: 'The contest across the dead zones and antennas ended level.',
     },
     incidents: [
       incident('A fallen sign blocked the antenna overlooking one of the two dead zones.', 'Its metal frame rolled into the scoring area and exposed the specialist trying to cross behind it.', 'A gap opened beneath the frame just as rival troops reached the other side of the zone.', 'located the antenna behind the fallen sign and marked a path into the dead zone'),
@@ -182,9 +186,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard near the Objective Room and covered a specialist approaching the Core',
     closeCombat: 'drove a bodyguard away from the Quantum Core and protected the specialist approaching it',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew controlled the Quantum Core inside the Objective Room.',
-      heroLoses: '{{otherPlayer}}’s crew held the Quantum Core as {{heroPlayer}} fell back from the room.',
-      draw: 'The Quantum Core remained unclaimed while both crews contested the Objective Room.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the fight for the Quantum Core and Objective Room.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the fight for the Quantum Core and Objective Room.',
+      draw: 'The fight over the Quantum Core and Objective Room ended level.',
     },
     incidents: [
       incident('The Quantum Core lay unattended in the Objective Room after its bearer slipped away under fire.', 'A loose floor plate hid the Core from the nearest specialist while rival fighters reached the room entrance.', 'The plate rocked and exposed its glow just as a Data Pack carrier came within sight.', 'found the Quantum Core beneath the plate and prepared a specialist to claim it safely'),
@@ -195,20 +199,20 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Evacuation: {
     source: 'https://infinitygeist.com/mission/s18_evacuation', season: 'ITS 18',
-    anchor: /civilian|HVT|extract/i,
-    ground: 'the civilian extraction route', position: 'the waiting civilian group',
-    gunfighting: 'fired at the weapon threatening the civilian route and covered the next person moving to safety',
-    closeCombat: 'forced a defender from the civilian route and kept the extraction line clear',
+    anchor: /civilian|HVT|Extraction Console/i,
+    ground: 'the approach to the Extraction Console', position: 'the waiting civilian escort',
+    gunfighting: 'fired at the guard covering the Extraction Console and sheltered the specialist escorting a civilian',
+    closeCombat: 'forced a defender from the Extraction Console and shielded the specialist escorting a civilian',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew extracted its civilians safely across the line.',
-      heroLoses: '{{otherPlayer}}’s crew extracted the civilians while {{heroPlayer}}’s escorts fell back.',
-      draw: 'Both escorts withdrew with civilians still short of the extraction route.',
+      heroWins: '{{heroPlayer}}’s crew prevailed amid the struggle to bring civilians or enemy HVTs to the Extraction Consoles.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} amid the struggle to bring civilians or enemy HVTs to the Extraction Consoles.',
+      draw: 'The struggle to bring civilians or enemy HVTs to the Extraction Consoles ended level.',
     },
     incidents: [
-      incident('A civilian group waited by the extraction marker when a fallen barrier divided the lane.', 'The barrier began to slide under incoming fire, closing the gap between the civilians and their escort.', 'A person on the far side signaled a second opening before rival troops reached the marker.', 'checked the civilian extraction route and guided the waiting group toward the opening'),
-      incident('Civilians took shelter beside a narrow evacuation path while patrols traded fire across it.', 'A damaged handrail blocked the nearest passage and forced the escort to turn into open ground.', 'The rail dropped away to expose a sheltered route that the other team had not yet covered.', 'found a path for the civilians through the extraction lane and called the escort forward'),
-      incident('The enemy HVT waited near an extraction point as both escorts reached the same crossing.', 'A smoke cloud hid the HVT while an opposing patrol tried to cut the route to safety.', 'The smoke lifted and revealed a short protected approach for the nearest specialist.', 'located the enemy HVT and prepared the extraction route before the rival escort closed'),
-      incident('A civilian reached the last covered station before the extraction line as shooting resumed.', 'An overturned cart split the escort and left the civilian exposed to the next volley.', 'The cart rolled aside and offered one clear crossing before the opposing squad could advance.', 'guided the civilian across the extraction marker while the escort held the passage'),
+      incident('After the first round, a specialist CivEvacing a civilian approached an Extraction Console behind a fallen barrier.', 'The barrier slid into the firing lane and kept the specialist from reaching the console in contact.', 'A gap opened below the barrier as the rival squad moved to cover the controls.', 'checked the Extraction Console and guided the CivEvaced civilian toward its contact point'),
+      incident('A specialist CivEvacing a civilian sheltered behind a damaged handrail near the second Extraction Console.', 'The handrail pinned the escort short of the controls while patrols traded fire across the open passage.', 'The rail dropped away and briefly exposed a sheltered route to the console face.', 'found a path for the specialist and civilian to reach the Extraction Console together'),
+      incident('An enemy HVT waited near the central corridor while both crews fought for an Extraction Console.', 'Smoke hid the HVT as a specialist tried to reach it and begin CivEvac before approaching the controls.', 'The smoke lifted and exposed the HVT, but a rival patrol still watched the console.', 'located the enemy HVT and mapped a route for CivEvac to the Extraction Console', { position: 'the enemy HVT beside the corridor' }),
+      incident('A specialist CivEvacing a civilian stopped short of an Extraction Console when shooting resumed.', 'An overturned cart split the escort from the console and left both in the opposing squad’s firing lane.', 'The cart rolled aside and offered one brief opening at the console controls.', 'guided the CivEvaced civilian into contact with the Extraction Console and prepared its activation'),
     ],
   },
   Hardlock: {
@@ -218,9 +222,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the defender watching the enemy beacon and covered the console specialist',
     closeCombat: 'drove a guard from the enemy beacon and held its position for the advancing specialist',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew controlled the enemy beacon and kept its activated consoles.',
-      heroLoses: '{{otherPlayer}}’s crew reclaimed the beacon and denied {{heroPlayer}} the console line.',
-      draw: 'Both crews contested the beacon while the consoles showed rival activations.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest for the enemy beacon and consoles.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest for the enemy beacon and consoles.',
+      draw: 'The contest for the enemy beacon and consoles ended level.',
     },
     incidents: [
       incident('The enemy beacon stood beyond three consoles whose activation lights changed out of sequence.', 'A shattered display hid which console still answered the specialist approaching from the beacon side.', 'The nearest light settled for one breath as rival troops moved onto the beacon base.', 'read the activated console and marked an approach to the enemy beacon'),
@@ -231,56 +235,57 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Last Launch': {
     source: 'https://infinitygeist.com/mission/s18_last_launch', season: 'ITS 18',
-    anchor: /launching tower|extract/i,
-    ground: 'the launching tower approach', position: 'the extraction line',
-    gunfighting: 'fired at the guard overlooking the launching tower and covered the specialist withdrawing',
-    closeCombat: 'drove a defender from the launching tower exit and held the route for the specialists',
+    anchor: /launching tower|ID Scanner|ID Checker|extract/i,
+    ground: 'the ID Scanner approach', position: 'the ID Checker inside the Launching Tower',
+    gunfighting: 'fired at the guard covering the Launching Tower and sheltered the bearer of an ID Token',
+    closeCombat: 'drove a guard off the route to the ID Checker and covered the bearer’s next move',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew extracted its specialists and held the launching tower.',
-      heroLoses: '{{otherPlayer}}’s crew secured the launching tower as {{heroPlayer}} lost the extraction route.',
-      draw: 'Both forces withdrew from the launching tower with specialists stranded on the approach.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest to carry an ID to the Launching Tower checker.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest to carry an ID to the Launching Tower checker.',
+      draw: 'The contest to bring an ID to the Launching Tower checker ended level.',
     },
     incidents: [
-      incident('The launching tower shook under distant engines while two specialists waited beside its extraction marker.', 'A fallen stair rail kept one specialist on the exposed platform as the opposing crew climbed toward it.', 'The rail pulled loose, creating a path down just as a withdrawal signal began repeating.', 'checked the launching tower exit and guided the trapped specialist toward extraction'),
-      incident('A launching tower beacon blinked through the smoke as the last specialists left cover.', 'A rival patrol reached the lower stair and cut off the quickest extraction route.', 'A damaged ladder swung free, exposing another path around the patrol toward the marker.', 'mapped the launching tower ladder and signaled the specialist along the extraction line'),
-      incident('The launching tower lights went out as the final extraction group crossed beneath its gantry.', 'A guard held the walkway while the group searched for the marker beyond the dark stairwell.', 'An emergency lamp lit the far landing and showed the nearest safe route for the specialists.', 'found the extraction marker and guided the specialists past the launching tower'),
-      incident('A wounded specialist sheltered below the launching tower with the withdrawal call already sounding.', 'The route down from the tower passed a broken handrail under a rival squad’s firing lane.', 'A smoke trail hid the landing briefly enough to bring the specialist to the rail.', 'checked the specialist’s route and prepared a covered move to the extraction line'),
+      incident('A specialist approached an ID Scanner while an escort waited outside the Launching Tower.', 'A fallen stair rail exposed the scanner to the opposing crew and delayed the WIP download needed for an ID Token.', 'The rail pulled loose and offered a narrow approach before the patrol reached the scanner.', 'checked the ID Scanner and prepared to download an ID for the tower crossing'),
+      incident('A trooper carrying an ID Token reached a Launching Tower gate with the ID Checker still across the room.', 'A rival patrol entered by the next gate and cut off the direct route to the checker.', 'A damaged inner partition shifted and exposed another path between the bearer and the tower center.', 'mapped the Launching Tower passage and guided the ID bearer toward the checker', { ground: 'the Launching Tower gate' }),
+      incident('An ID Scanner flickered below the Launching Tower while the checker stood beyond its dark central gate.', 'A guard covered the scanner and forced a specialist to shelter before downloading an ID.', 'Emergency lighting revealed the scanner face as the opposing crew moved toward the tower.', 'found the ID Scanner controls and prepared a download before anyone approached the ID Checker'),
+      incident('A wounded trooper carrying an ID Token took cover at the Launching Tower threshold.', 'A broken handrail and a rival guard separated the bearer from the ID Checker at the tower center.', 'A smoke trail briefly concealed the route inside without settling who could reach the checker.', 'checked the ID Token and marked a covered route into contact with the ID Checker', { ground: 'the Launching Tower threshold' }),
     ],
   },
   Neutralization: {
     source: 'https://infinitygeist.com/mission/s18_neutralization', season: 'ITS 18',
-    anchor: /hyperthermal tech|neutralizing antenna/i,
-    ground: 'the hyperthermal tech site', position: 'the neutralizing antenna',
-    gunfighting: 'fired at the guard beside the hyperthermal tech and covered the specialist approaching its controls',
-    closeCombat: 'drove a defender from the hyperthermal tech and guarded the technician beside the antenna',
+    anchor: /hyperthermal tech|Neutralization Area|neutralizing antenna/i,
+    ground: 'the Hyperthermal Tech Box passage', position: 'the nearest Neutralization Area',
+    gunfighting: 'fired at the guard between the Hyperthermal Tech Box and the Neutralization Area',
+    closeCombat: 'drove a defender from the Neutralization Area and sheltered the tech bearer',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew neutralized the hyperthermal tech and held the antenna.',
-      heroLoses: '{{otherPlayer}}’s crew held the neutralizing antenna as {{heroPlayer}} withdrew from the tech.',
-      draw: 'Both crews left the hyperthermal tech active while disputing the antenna.',
+      heroWins: '{{heroPlayer}}’s crew prevailed in the struggle to carry Hyperthermal Tech into a Neutralization Area.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} in the struggle to carry Hyperthermal Tech into a Neutralization Area.',
+      draw: 'The struggle over Hyperthermal Tech and the Neutralization Areas ended level.',
     },
     incidents: [
-      incident('A hyperthermal tech unit flickered beside a neutralizing antenna whose signal had begun to fade.', 'A loose connector crossed the tech housing and forced the specialist to work beneath an exposed firing lane.', 'The antenna recovered briefly as rival troops closed around the still-active tech.', 'checked the hyperthermal tech feed and prepared to neutralize it through the antenna'),
-      incident('The nearest neutralizing antenna fell behind a barricade with two hyperthermal tech units in view.', 'A rival patrol activated the far aerial while the specialist searching for the first found its cable severed.', 'The broken cable sparked, revealing a repair point beside the tech unit closest to the road.', 'found the neutralizing antenna repair point and marked the hyperthermal tech for isolation'),
-      incident('A hyperthermal tech unit began venting heat as both crews reached its neutralizing antenna.', 'The vent drove the first specialist backward and briefly masked the rival trooper approaching the antenna.', 'A pause in the heat exposed the control socket before another venting cycle started.', 'inspected the hyperthermal tech socket and prepared the neutralizing antenna command'),
-      incident('An active hyperthermal tech indicator remained lit after a neutralizing antenna registered a failed attempt.', 'A scorched lead prevented the specialist from repeating the command while an opposing squad crossed the site.', 'A spare lead appeared beneath the control tray as the tech warning reached its highest pitch.', 'replaced the neutralizing antenna lead and checked the hyperthermal tech status'),
+      incident('A specialist reached a Hyperthermal Tech Box while a Neutralization Area lay beyond the exposed crossing.', 'Fire struck the box housing and delayed the WIP extraction needed before anyone could carry the tech.', 'A damaged panel opened enough to reach the box as rival troops entered the lane.', 'checked the Hyperthermal Tech Box and marked a route for its bearer into the Neutralization Area'),
+      incident('A trooper carrying Hyperthermal Tech stopped just outside a Neutralization Area beside an antenna.', 'A rival patrol held the area boundary, while the antenna offered a separate fight for control.', 'The patrol changed cover and left a narrow passage into the circular zone.', 'measured the Neutralization Area boundary and guided the Hyperthermal Tech bearer toward it', { ground: 'the Neutralization Area boundary' }),
+      incident('A Hyperthermal Tech Box lay behind a barricade while a carrier waited for the extracted token.', 'A rival fighter watched the box as the specialist tried to reach it in contact for an extraction attempt.', 'The barricade shifted and exposed the box latch without clearing the route to the Neutralization Area.', 'inspected the Hyperthermal Tech Box and prepared an extraction before the carrier crossed the zone'),
+      incident('A Hyperthermal Tech bearer took cover near a Neutralization Area whose edge lay under fire.', 'The bearer could not neutralize the token while outside the area, and a rival squad watched the crossing.', 'A fallen rail opened a path into the circular zone before the guard could move closer.', 'checked the Hyperthermal Tech bearer’s route and marked where they could enter the Neutralization Area', { ground: 'the Neutralization Area boundary' }),
     ],
   },
   Outbreak: {
     source: 'https://infinitygeist.com/mission/s18_outbreak', season: 'ITS 18',
+    objectiveSkill: 'infectedCare',
     anchor: /infected|alpha infected/i,
     ground: 'the infected containment lane', position: 'the Alpha Infected position',
     gunfighting: 'fired at the guard threatening the medics and covered a scan of the Infected',
     closeCombat: 'drove a defender away from the Infected and held the path open for a medic',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew scanned and stabilized the Infected before securing the escort.',
-      heroLoses: '{{otherPlayer}}’s crew secured the stabilized Infected while {{heroPlayer}} withdrew.',
-      draw: 'Both crews completed scans, but the Infected remained beyond either escort’s control.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest to scan and stabilize the Infected.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest to scan and stabilize the Infected.',
+      draw: 'The contest to scan and stabilize the Infected ended level.',
     },
     incidents: [
-      incident('An Infected patient moved behind a broken screen as both crews arrived with scanners.', 'A fallen stretcher blocked the safe approach, and a medic needed a clear scan before stabilizing the patient.', 'The screen slipped aside, showing the patient still close enough for the waiting medic to reach.', 'checked the Infected patient’s scan and prepared a stabilization route past the stretcher'),
-      incident('The Alpha Infected stood in a dim corridor beyond a toppled examination cart.', 'The cart hid the Alpha’s position whenever the scanning light passed across the doorway.', 'A handprint appeared against the glass as an opposing escort moved toward the corridor.', 'located the Alpha Infected and checked the scanner before directing a medic forward'),
-      incident('Two Infected patients waited beside a narrow extraction lane as a stabilizer alarm sounded.', 'The alarm drowned the medic’s instructions while a rival escort tried to take the nearest patient.', 'The alarm paused, leaving a moment to scan the farther patient before the lane closed.', 'scanned the Infected and identified which patient could move first'),
-      incident('The Alpha Infected reached the edge of the containment area while its escort stopped under fire.', 'A damaged scanner left the nearest medic unable to confirm stabilization before crossing the open lane.', 'The screen cleared long enough for the medic to read the patient’s condition from cover.', 'checked the Alpha Infected scan and marked a protected route for stabilization and escort'),
+      incident('An Infected patient moved behind a broken screen as both crews arrived with scanners.', 'A fallen stretcher blocked the medic’s path to contact for stabilization, while scanning remained a separate opportunity.', 'The screen slipped aside, showing the patient still close enough for the waiting medic to reach.', 'checked the Infected patient’s position and prepared to stabilize them beyond the stretcher', { position: 'the patient behind the screen' }),
+      incident('The Alpha Infected stood in a dim corridor beyond a toppled examination cart.', 'The cart hid the Alpha’s position whenever the scanning light passed across the doorway.', 'A handprint appeared against the glass as an opposing escort moved toward the corridor.', 'located the Alpha Infected and prepared to stabilize the patient in contact while the scan remained open'),
+      incident('Two Infected patients waited beside a narrow corridor as a stabilizer alarm sounded.', 'The alarm drowned the medic’s instructions while a rival escort tried to take the nearest patient.', 'The alarm paused, leaving a moment to scan the farther patient without deciding who could stabilize either one.', 'checked the nearer Infected patient and prepared to stabilize them while a teammate watched the farther scan', { position: 'the nearer Infected patient' }),
+      incident('The Alpha Infected reached the edge of the containment area while its escort stopped under fire.', 'A damaged scanner obscured the Alpha while a medic sought a separate route to reach the patient in contact.', 'The screen cleared long enough for the medic to read the patient’s condition from cover.', 'checked the Alpha Infected condition and marked a route into contact to stabilize the patient'),
     ],
   },
   'Panic Room': {
@@ -290,9 +295,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the Panic Room gate and sheltered Essential Personnel moving inside',
     closeCombat: 'forced a defender from the Panic Room entrance and held it for Essential Personnel',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew dominated the Panic Room with Essential Personnel inside.',
-      heroLoses: '{{otherPlayer}}’s crew held the Panic Room as {{heroPlayer}}’s personnel withdrew.',
-      draw: 'Neither force held the Panic Room long enough to secure Essential Personnel.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the fight for the Panic Room and Essential Personnel.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the fight for the Panic Room and Essential Personnel.',
+      draw: 'The fight over the Panic Room and Essential Personnel ended level.',
     },
     incidents: [
       incident('The Panic Room’s four gates stood open as an Essential Personnel officer approached the center.', 'A fallen cabinet blocked one gate while the rival crew entered by the opposite opening.', 'The cabinet shifted against the wall and exposed just enough floor for the officer to step inside.', 'checked the Panic Room entrance and guided Essential Personnel into the contested zone'),
@@ -308,9 +313,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired on the guard watching the supply box and covered its carrier approaching the safe area',
     closeCombat: 'drove a guard from the supply box and protected the carrier moving toward safe ground',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew controlled the supply box inside its safe area.',
-      heroLoses: '{{otherPlayer}}’s crew secured a supply box as {{heroPlayer}}’s carrier withdrew.',
-      draw: 'Both crews left their supply boxes exposed outside their safe areas.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the struggle to move supply boxes into a safe area.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the struggle to move supply boxes into a safe area.',
+      draw: 'The struggle over supply boxes and safe areas ended level.',
     },
     incidents: [
       incident('A supply box emerged from a Tech-Coffin as its door stalled halfway open.', 'The box caught on a bent hinge while rival troops approached the carrier’s route to safety.', 'The hinge gave way and exposed the handles just as the first carrier reached the coffin.', 'checked the Tech-Coffin hinge and guided the supply-box carrier toward the safe area'),
@@ -326,9 +331,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the enemy lieutenant and protected the surviving squad',
     closeCombat: 'drove an attacker from the surviving squad and kept the approach to the lieutenant clear',
     endings: {
-      heroWins: '{{heroPlayer}}’s force preserved its survivors and broke the opposing line.',
-      heroLoses: '{{otherPlayer}}’s force inflicted heavier losses and preserved its survivors while {{heroPlayer}} fell back.',
-      draw: 'Both forces withdrew with costly casualties and their surviving squads intact.',
+      heroWins: '{{heroPlayer}}’s force prevailed after the fight over casualties and surviving Army Points.',
+      heroLoses: '{{otherPlayer}}’s force prevailed over {{heroPlayer}} after the fight over casualties and surviving Army Points.',
+      draw: 'The fight over casualties and surviving Army Points ended level.',
     },
     incidents: [
       incident('The enemy lieutenant crossed an open lane as a shattered barricade exposed the surviving squad.', 'A second volley pinned the squad just as the lieutenant’s guard reached the remaining cover.', 'The guard moved to another position, leaving one narrow shot and one route for the survivors.', 'located the enemy lieutenant’s route and marked cover for the surviving squad'),
@@ -340,19 +345,19 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   Battleground: {
     source: 'https://infinitygeist.com/mission/s18_battleground', season: 'ITS 18',
     anchor: /sector|dominat/i,
-    ground: 'the central scoring sector', position: 'the far sector boundary',
+    ground: 'the contested central scoring sector', position: 'the far sector boundary',
     gunfighting: 'fired at the guard holding the central sector and covered a squad moving inside it',
     closeCombat: 'drove a defender from the central sector and held the boundary for the squad',
     endings: {
-      heroWins: '{{heroPlayer}}’s force dominated the central sector at the end of the fight.',
-      heroLoses: '{{otherPlayer}}’s force held the central sector while {{heroPlayer}} withdrew.',
-      draw: 'Both forces held separate sectors while the central ground stayed contested.',
+      heroWins: '{{heroPlayer}}’s force prevailed after the contest for the three scoring sectors.',
+      heroLoses: '{{otherPlayer}}’s force prevailed over {{heroPlayer}} after the contest for the three scoring sectors.',
+      draw: 'The contest for the three scoring sectors ended level.',
     },
     incidents: [
-      incident('The central sector stood empty after a support beam fell across its closest entrance.', 'A rival patrol reached the far sector first and threatened to occupy the open center from behind.', 'The beam moved under fire and revealed a narrow approach to the sector marker.', 'checked the central sector approach and signaled where the squad could dominate it'),
-      incident('A sector marker flickered beneath debris where both patrols expected to claim the middle ground.', 'A fallen wall concealed the shortest route into the central sector as the rival force occupied its edge.', 'The wall shifted and exposed a passage wide enough for one fighter to cross.', 'located the central sector marker and directed the squad into scored ground'),
-      incident('The far sector fell quiet while gunfire continued around the disputed central zone.', 'A rival squad left its sector to reinforce the center just as a barrier blocked the hero’s approach.', 'The barrier broke open and left a narrow view across the scoring boundary.', 'mapped the center sector boundary and prepared the squad to dominate it'),
-      incident('Dust hid the central sector line while surviving squads advanced from opposite directions.', 'A collapsed railing blocked one team while the other began to occupy the sector.', 'The dust cleared and showed where the railing stopped short of the scored ground.', 'checked the central sector line and guided the squad around the railing'),
+      incident('The ground that would count as the central sector lay empty after a support beam fell across its closest approach.', 'A rival patrol reached the far ground first and threatened to occupy the open center from behind.', 'The beam moved under fire and revealed a narrow approach toward the center.', 'checked the central sector approach and signaled where the squad would need to finish'),
+      incident('Both patrols estimated where the central sector would be measured once the fighting ended.', 'A fallen wall concealed the shortest route into the middle as a rival force occupied its edge.', 'The wall shifted and exposed a passage wide enough for one fighter to cross.', 'compared the expected sector limits and directed the squad into the middle ground'),
+      incident('The far ground fell quiet while gunfire continued around the disputed center.', 'A rival squad left its position to reinforce the center just as a barrier blocked the hero’s approach.', 'The barrier broke open and revealed a route toward the area that would become the central sector.', 'mapped the expected sector boundary and prepared the squad to hold it at the end'),
+      incident('Dust obscured the center while surviving squads advanced from opposite directions.', 'A collapsed railing blocked one team while the other moved toward the expected central sector.', 'The dust cleared and showed where the railing stopped short of the middle ground.', 'estimated the central sector’s limits and guided the squad around the railing'),
     ],
   },
   Cutthroat: {
@@ -362,9 +367,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the enemy lieutenant and sheltered the friendly command route',
     closeCombat: 'drove a defender from the opposing lieutenant’s flank and protected the friendly officer',
     endings: {
-      heroWins: '{{heroPlayer}}’s fighters protected their lieutenant and broke the opposing force.',
-      heroLoses: '{{otherPlayer}}’s fighters kept their lieutenant safe as {{heroPlayer}} fell back.',
-      draw: 'Both lieutenants survived while the battered forces withdrew from the field.',
+      heroWins: '{{heroPlayer}}’s fighters prevailed after the clash between the rival lieutenants.',
+      heroLoses: '{{otherPlayer}}’s fighters prevailed over {{heroPlayer}} after the clash between the rival lieutenants.',
+      draw: 'The clash between the rival lieutenants ended level.',
     },
     incidents: [
       incident('An enemy lieutenant moved between two guards as fire swept across a narrow street.', 'A broken vehicle hid the officer while the friendly squad searched for a clear attack.', 'The officer stepped out to signal another patrol, briefly exposing the gap beneath the wreck.', 'identified the enemy lieutenant’s route and marked cover for the surviving squad'),
@@ -380,13 +385,13 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the defender watching the console and covered the squad moving into the quadrant',
     closeCombat: 'drove a guard from the quadrant center and held the console approach',
     endings: {
-      heroWins: '{{heroPlayer}}’s force dominated the quadrant and hacked the console.',
-      heroLoses: '{{otherPlayer}}’s force held the quadrant as {{heroPlayer}} lost the console.',
-      draw: 'Both forces held a quadrant, with the console still contested.',
+      heroWins: '{{heroPlayer}}’s force prevailed after the contest for the quadrants and consoles.',
+      heroLoses: '{{otherPlayer}}’s force prevailed over {{heroPlayer}} after the contest for the quadrants and consoles.',
+      draw: 'The contest for the quadrants and consoles ended level.',
     },
     incidents: [
       incident('A console stood between two quadrants whose defenders had fallen back behind cover.', 'A broken panel hid the console input while rival fighters moved across the nearer sector boundary.', 'The panel swung clear just as a specialist reached the console from the far quadrant.', 'checked the console input and directed the squad to dominate the contested quadrant'),
-      incident('A squad entered the central quadrant while the console there showed a failed hacking attempt.', 'The console alarm revealed the specialist’s position before the squad could establish a secure perimeter.', 'A second input prompt appeared as the rival squad crossed the opposite quadrant line.', 'read the console prompt and guided fighters into the quadrant around the specialist'),
+      incident('A squad entered a quadrant near the center while its console showed a failed hacking attempt.', 'The console alarm revealed the specialist’s position before the squad could establish a secure perimeter.', 'A second input prompt appeared as the rival squad crossed the opposite quadrant line.', 'read the console prompt and guided fighters into the quadrant around the specialist'),
       incident('The far quadrant emptied when a console signal drew both patrols toward its boundary.', 'The nearest specialist found the console blocked by a fallen shutter under the opposing force’s fire.', 'The shutter lifted with the next burst and exposed a narrow space at the control face.', 'located the console access and marked the route to dominate the adjacent quadrant'),
       incident('A hacked console flashed from an open quadrant as a second squad arrived to challenge its hold.', 'An overturned crate hid the scoring line and left both commanders unsure where their fighters stood.', 'The crate shifted away, revealing the sector edge as the opposing specialist approached the console.', 'checked the quadrant boundary and confirmed the console status before calling reserves forward'),
     ],
@@ -394,19 +399,19 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   'Uplink Center': {
     source: 'https://infinitygeist.com/mission/s18_uplink_center', season: 'ITS 18',
     anchor: /communication antenna|tech-coffin/i,
-    ground: 'the communication-antenna line', position: 'the contested Tech-Coffin',
-    gunfighting: 'fired at the guard covering the communication antenna and sheltered the Tech-Coffin specialist',
+    ground: 'the contested line between the communication antennas', position: 'the contested Tech-Coffin',
+    gunfighting: 'fired at the guard covering the communication antenna and sheltered the fighter approaching the Tech-Coffin',
     closeCombat: 'drove a defender from the communication antenna base and held the Tech-Coffin approach',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew activated the communication antenna and held the Tech-Coffin.',
-      heroLoses: '{{otherPlayer}}’s crew controlled the antenna and denied {{heroPlayer}} the Tech-Coffin.',
-      draw: 'Both crews disputed the communication antenna and left the Tech-Coffin unclaimed.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the fight over the communication antennas and Tech-Coffin.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the fight over the communication antennas and Tech-Coffin.',
+      draw: 'The fight over the communication antennas and Tech-Coffin ended level.',
     },
     incidents: [
-      incident('A communication antenna came alive beside a Tech-Coffin whose lid stood open by a handspan.', 'A bent hinge hid the coffin contents while the rival specialist approached the antenna controls.', 'The lid moved again, revealing a narrow space that either crew could reach from cover.', 'checked the communication antenna status and directed a specialist toward the Tech-Coffin'),
-      incident('A Tech-Coffin alarm sounded beneath an antenna awaiting its next activation.', 'A fallen shutter concealed the coffin latch while both squads converged on the aerial.', 'The shutter shifted and exposed a path between the coffin and the antenna base.', 'located the Tech-Coffin latch and checked the communication antenna activation'),
-      incident('Two communication antennas flashed beside a Tech-Coffin locked under a broken rail.', 'A rival specialist reached the farther antenna while the nearest crew searched for a way beneath the rail.', 'The rail moved under fire and briefly exposed the coffin and the active control panel.', 'inspected the Tech-Coffin beneath the rail and marked the communication antenna approach'),
-      incident('An antenna transmitted above a Tech-Coffin whose status light had failed in the first exchange.', 'The specialist could not see whether the coffin was claimed as rival fighters approached its lid.', 'A backup lamp flickered to life and revealed the coffin latch beside the aerial.', 'read the Tech-Coffin status and guided the squad toward the communication antenna'),
+      incident('A communication antenna came alive beside the central Tech-Coffin as rival squads approached from opposite sides.', 'A fallen brace blocked the space needed to make sole contact with the coffin while an opposing specialist reached for the antenna.', 'The brace moved and exposed a narrow route to the coffin base.', 'checked the communication antenna status and guided a fighter into contact with the Tech-Coffin'),
+      incident('A Tech-Coffin stood beneath an antenna awaiting its next activation.', 'A fallen shutter blocked the route to coffin contact while both squads converged on the aerial.', 'The shutter shifted and exposed a passage between the coffin and antenna base.', 'located a clear contact point at the Tech-Coffin and checked the communication antenna activation'),
+      incident('Two communication antennas flashed beside a Tech-Coffin screened by a broken rail.', 'A rival specialist reached the farther antenna while the nearest squad sought contact with the coffin.', 'The rail moved under fire and briefly exposed the coffin base and active antenna panel.', 'inspected the Tech-Coffin approach and marked the communication antenna route'),
+      incident('An antenna transmitted above the central Tech-Coffin as rival fighters closed on its base.', 'The specialist could not reach the antenna controls while an enemy model disputed contact with the coffin.', 'A guard shifted cover and briefly exposed separate routes to the antenna and coffin.', 'checked the communication antenna approach and guided a fighter toward sole Tech-Coffin contact'),
     ],
   },
   'Double Bind': {
@@ -418,9 +423,9 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the antenna and sheltered a specialist near the contested zone',
     closeCombat: 'drove a defender from the antenna base and held the adjacent zone for the squad',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew secured its chosen antenna or zone objective.',
-      heroLoses: '{{otherPlayer}}’s crew secured its chosen antenna or zone objective as {{heroPlayer}} fell back.',
-      draw: 'Neither crew secured its antenna or zone objective before the contest ended.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest around the antennas and zones of influence.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest around the antennas and zones of influence.',
+      draw: 'The contest around the antennas and zones of influence ended level.',
     },
     incidents: [
       incident('An antenna stood at the edge of a zone of influence where both squads had taken cover.', 'A specialist approached the aerial while the rival force shifted enough bodies into the scoring zone.', 'A broken barrier opened a narrow path between the antenna base and the contested zone.', 'checked the antenna signal and marked the route across the zone of influence'),
@@ -438,15 +443,15 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the analysis console and sheltered the specialist approaching the buried tech',
     closeCombat: 'drove a defender away from the analysis console and held the path to the buried tech',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew analyzed and neutralized the hyperthermal tech.',
-      heroLoses: '{{otherPlayer}}’s crew analyzed and neutralized the tech as {{heroPlayer}} withdrew.',
-      draw: 'Both crews withdrew with the hyperthermal tech still active and its analysis unresolved.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the fight to analyze the hyperthermal tech at the consoles.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the fight to analyze the hyperthermal tech at the consoles.',
+      draw: 'The fight to analyze the hyperthermal tech at the consoles ended level.',
     },
     incidents: [
-      incident('A hyperthermal tech unit emerged from the dig beside a console still covered in stone dust.', 'The console reader skipped during analysis while the rival crew approached the live tech.', 'A buried contact appeared beneath the dust, offering one chance to finish the scan.', 'worked at the analysis console to record the hyperthermal tech reading before any neutralizing command'),
+      incident('A hyperthermal tech unit emerged from the dig beside a console still covered in stone dust.', 'The console reader skipped during analysis while the rival crew approached the live tech.', 'A buried contact appeared beneath the dust, offering one chance to finish the analysis.', 'worked at the analysis console to prepare a WIP roll before any trooper reached a marked hyperthermal tech unit'),
       incident('A buried tech signal lit the dig before either crew reached its analysis console.', 'A broken cable divided the console from the hyperthermal tech as an enemy squad crossed the shaft.', 'A loose contact emerged from the dust and exposed where the analysis had stopped.', 'reached the analysis console controls and began a reading of the buried hyperthermal tech'),
-      incident('Two hyperthermal tech units glowed beneath the dig while the nearest analysis console stayed dark.', 'Fallen stone hid the input face just as rival specialists reached the excavation rim.', 'The stones shifted to reveal an unfinished scan beside the neutralizing command.', 'cleared the analysis console input and began analyzing the hyperthermal tech before neutralization'),
-      incident('A hyperthermal tech indicator glowed beneath the dig while both teams disputed the nearest console.', 'Loose rock covered the control face and obscured whether anyone had analyzed the live unit.', 'A stone shifted and revealed an unfinished analysis prompt beside the neutralizing command.', 'checked the analysis console controls and began the hyperthermal tech reading before neutralization'),
+      incident('Two hyperthermal tech units glowed beneath the dig while the nearest analysis console stayed dark.', 'Fallen stone hid the input face just as rival specialists reached the excavation rim.', 'The stones shifted to reveal an unfinished analysis prompt, with neither unit marked for a contact neutralization.', 'cleared the analysis console input and prepared to analyze a hyperthermal tech before approaching it in contact'),
+      incident('A hyperthermal tech indicator glowed beneath the dig while both teams disputed the nearest console.', 'Loose rock covered the control face and obscured whether anyone had analyzed the live unit.', 'A stone shifted and revealed an unfinished analysis prompt beside an unmarked tech indicator.', 'checked the analysis console controls and prepared the WIP reading before a trooper approached the hyperthermal tech'),
     ],
   },
   'Data Harvest': {
@@ -456,14 +461,14 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     gunfighting: 'fired at the guard covering the data-harvester and protected its route into the enemy zone',
     closeCombat: 'drove a defender from the designated zone and held space for the data-harvester carrier',
     endings: {
-      heroWins: '{{heroPlayer}}’s crew kept its data-harvester active in the enemy designated zone.',
-      heroLoses: '{{otherPlayer}}’s crew deactivated the data-harvester and held {{heroPlayer}} outside its designated zone.',
-      draw: 'Both crews left a harvester near the boundary, with neither controlling the designated zone.',
+      heroWins: '{{heroPlayer}}’s crew prevailed after the contest for active data-harvesters in the designated zones.',
+      heroLoses: '{{otherPlayer}}’s crew prevailed over {{heroPlayer}} after the contest for active data-harvesters in the designated zones.',
+      draw: 'The contest for active data-harvesters in the designated zones ended level.',
     },
     incidents: [
       incident('A data-harvester reached the enemy designated zone after its carrier crossed a damaged bridge.', 'The harvester’s activity light flickered while a rival patrol approached from the far side.', 'A short signal returned when the carrier placed it behind cover inside the zone.', 'checked the data-harvester connection and marked a protected position in the designated zone'),
-      incident('Two data-harvesters stood near opposite designated zones with one control light fading.', 'The dim unit sat beyond a broken railing where a specialist could reach it only under fire.', 'The railing shifted and revealed a narrow maintenance path to the active device.', 'inspected the data-harvester light and guided a specialist into the enemy designated zone'),
-      incident('A data-harvester carried into the enemy half stopped transmitting at the designated zone boundary.', 'A damaged power cell caught beneath its casing as the rival squad moved to deny the zone.', 'A replacement cell slid out of the carrier’s kit just as the defenders reached the device.', 'replaced the data-harvester power cell and checked its position inside the designated zone'),
+      incident('Two data-harvesters stood near opposite designated zones as rival fighters converged on one active device.', 'The active unit sat beyond a broken railing where a specialist could reach it only under fire.', 'The railing shifted and revealed a narrow path to the harvester inside the zone.', 'checked the active data-harvester’s position and guided a fighter into the designated zone'),
+      incident('A data-harvester carrier reached the enemy half while defenders held the designated zone.', 'The rival squad guarded the zone boundary and denied a clear place to deposit the inactive harvester.', 'A gap opened beside their cover, exposing ground wholly inside the designated zone.', 'checked the designated zone and guided the carrier toward a place to deposit the data-harvester'),
       incident('An active data-harvester remained alone in a designated zone after both escorts withdrew.', 'A patrol closed on its exposed casing while the nearest friendly specialist searched for a return route.', 'Smoke shifted across the zone marker and left the unit briefly hidden from the approaching patrol.', 'located the data-harvester and mapped a route to keep it active in the designated zone'),
     ],
   },

@@ -64,7 +64,8 @@ explicit previews and automatic selection. The `none` tag is not treated as
 sunshine or another weather effect.
 - Rendering requires both decoded lists linked unambiguously to that game,
   an eligible roster model for the hero role, and the actual player/result
-  fields. **Akial Interference** needs the two drawn public Common Classified
+  fields. For an Outbreak objective action, the selected model must be an
+  eligible Doctor, Paramedic, or Specialist Operative. **Akial Interference** needs the two drawn public Common Classified
   cards; **Critical Intervention** needs attacker/defender assignment; and
   **Double Bind** needs the chosen objective set. Those three mission templates
   remain available for editorial inspection, but the
@@ -85,14 +86,14 @@ synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including a mirror and all three roles across the sample. It contains 110
-different middle paragraphs, 40–67 words per paragraph, and a maximum
+different middle paragraphs, 42–67 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.184. Sentence
 order varies for independent opening and confrontation beats; the incident
-turn now precedes the hero action and its consequence. In a separate fixed
-110-scene review packet, exact repeated sentence appearances dropped from
-60.5% to 46.3%, or from 48.1% to 24.4% excluding one of each paired
-reversal. This count includes deliberate reuse of army methods and shared
-incidents; it does not prove plot originality or editorial quality.
+turn precedes the hero action and its consequence. In a fresh seeded
+110-scene review packet, 156 of 1,064 sentence appearances are exact repeats
+after excluding one deliberately reversed case per mission. The fraction
+changes with the seed; faction methods still recur. These figures do not
+establish plot originality or editorial quality.
 The 45 Area and 45 mission-neutral method sets distinguish army tactics in
 every mission, but neither set establishes original plots for every pair.
 The methods are fictional extrapolations from broad faction themes described by
@@ -102,7 +103,10 @@ and [Next Wave sabotage](https://infinityuniverse.com/en/factions/combined-army/
 They must not imply that a particular unit or action occurred in a recorded
 match. Every mission template has hero-win, hero-loss and draw endings with
 mission-specific stakes and faction-specific resolution beats; the result
-in the game record chooses which one appears.
+in the game record chooses which one appears. Since game records expose
+aggregate points without an objective-by-objective ledger, the ending does
+not claim a particular console, token, or patient was secured solely because
+the side won.
 See the [review and eleven actual samples](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent generated-only review for natural

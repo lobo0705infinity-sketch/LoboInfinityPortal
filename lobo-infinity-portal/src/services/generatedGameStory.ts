@@ -164,14 +164,13 @@ export function composeGameStory(
       ],
       endings: {
         heroWins: '{{heroPlayer}}’s squad ' + method.winBeat +
-          ', bringing the communication antenna online with ' + location.scoringGround + ' under its control.',
+          ', prevailing in the contest for the communication antenna and ' + location.scoringGround + '.',
         heroLoses: '{{otherPlayer}}’s squad ' + response.winBeat +
-          ', bringing the communication antenna online with ' + location.scoringGround +
-          ' under its control as {{heroPlayer}} fell back to ' + location.retreat + '.',
+          ', prevailing over {{heroPlayer}} in the contest for the communication antenna and ' + location.scoringGround + '.',
         draw: hero.id === opponent.id
-          ? 'Both crews ' + method.drawBeat + ', leaving neither in control of the communication antenna and ' + location.scoringGround + '.'
+          ? 'Each crew ' + method.drawBeat + ', and the contest over the communication antenna and ' + location.scoringGround + ' ended level.'
           : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
-            ', leaving neither in control of the communication antenna and ' + location.scoringGround + '.',
+            ', and the contest over the communication antenna and ' + location.scoringGround + ' ended level.',
       },
     }
   }
@@ -189,20 +188,21 @@ export function composeGameStory(
   if (!consequence || !crossfire || !stakes) throw new Error('Missing incident beats for ' + canonical + ' #' + incidentIndex)
   const drawnMission = withoutFinalPeriod(scenario.endings.draw)
   const draw = hero.id === opponent.id
-    ? 'Both crews ' + method.drawBeat + '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
+    ? 'Each crew ' + method.drawBeat + '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
     : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
       '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
 
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
-    ' ' + scenario.ground + '.'
+    ' ' + (seed.ground ?? scenario.ground) + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-    tactics[otherVoice.style].defense + ' ' + scenario.position + '.'
+    tactics[otherVoice.style].defense + ' ' + (seed.position ?? scenario.position) + '.'
 
   return {
     mission: canonical,
     factions: [first.name, second.name],
     heroFaction: hero.name,
     role,
+    objectiveSkill: scenario.objectiveSkill,
     paragraphs: [
       arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
       arrangeBeats(seed.complication, [crossfire, method.maneuver, response.defense], variant),

@@ -6,12 +6,14 @@ import { getGameIntelligenceLists } from './gameIntelligenceLinks.ts'
 import { getGameSides, isDrawGame } from './gameResults.ts'
 
 export type HeroRole = 'gunfighting' | 'closeCombat' | 'objective'
+export type ObjectiveSkill = 'infectedCare'
 
 export type GameStoryTemplate = {
   mission: string
   factions: readonly [string, string]
   heroFaction: string
   role: HeroRole
+  objectiveSkill?: ObjectiveSkill
   sceneTags?: { location: string; weather: string }
   paragraphs: readonly string[]
   endings: { heroWins: string; heroLoses: string; draw: string }
@@ -42,10 +44,13 @@ export function storyModelReference(entry: ArmyIntelligenceDecodedEntry): string
   return `the ${display || 'trooper'}`
 }
 
-export function selectStoryHero(list: ArmyIntelligenceList | undefined, role: HeroRole): ArmyIntelligenceDecodedEntry | null {
+export function selectStoryHero(list: ArmyIntelligenceList | undefined, role: HeroRole,
+  objectiveSkill?: ObjectiveSkill): ArmyIntelligenceDecodedEntry | null {
   if (list?.status !== 'decoded' || !list.decoded) return null
   const eligible = list.decoded.combatGroups.flatMap((group) => group.entries).filter((entry) =>
-    Number.isFinite(entry.points) && entry.points >= 0 && qualifiesForRole(entry, role),
+    Number.isFinite(entry.points) && entry.points >= 0 && qualifiesForRole(entry, role) &&
+    (role !== 'objective' || objectiveSkill !== 'infectedCare' || entry.doctor ||
+      entry.skills.some((skill) => /^(?:Doctor|Paramedic|Specialist Operative)(?:\b|\s*\[)/i.test(skill))),
   )
   return eligible.sort((a, b) => b.points - a.points || String(a.combinedId).localeCompare(String(b.combinedId)))[0] ?? null
 }
@@ -80,7 +85,7 @@ export function renderGameStoryTemplate(template: GameStoryTemplate, game: Recen
   if (matched.some((list) => !list)) return null
   const index = sides.findIndex((side) => sameArmy(side.faction, template.heroFaction))
   if (index < 0) return null
-  const hero = selectStoryHero(matched[index] ?? undefined, template.role)
+  const hero = selectStoryHero(matched[index] ?? undefined, template.role, template.objectiveSkill)
   if (!hero) return null
   const allyGunfighter = selectStoryHeroExcluding(matched[index] ?? undefined, 'gunfighting', hero.canonicalUnitId)
   const enemyGunfighter = selectStoryHero(matched[1 - index] ?? undefined, 'gunfighting')

@@ -11,7 +11,7 @@ import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
-import { renderGameStoryTemplate, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
+import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
 
@@ -38,6 +38,14 @@ for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
   assert.equal(new Set(scenario.incidents.map((seed) => seed.complication)).size, 4, mission + ': distinct complications')
   for (const seed of scenario.incidents) {
     assert.match(seed.objectiveAction, scenario.anchor, mission + ': action must name a mission objective')
+  }
+  // The game feed has aggregate points, not individual mission objectives.
+  // A winner cannot be reported as having extracted, hacked or neutralized a
+  // particular item solely because their total score was higher.
+  for (const ending of Object.values(scenario.endings)) {
+    assert.doesNotMatch(ending,
+      /\b(?:activated|analy[sz]ed|neutralized|extracted|captured|hacked|dominated|scanned|stabilized|destroyed|controlled)\b/i,
+      mission + ': ending must not invent an accomplished objective')
   }
 }
 
@@ -132,6 +140,50 @@ assert.throws(() => assertGameStoryMissionObjective({ ...akial,
   paragraphs: [akial.paragraphs[0] + ' The classified objective evidence lay under the mast.',
     ...akial.paragraphs.slice(1)] }, 'invented Akial evidence'),
   /do not establish a fixed physical evidence marker/, 'public cards cannot imply physical evidence')
+for (const [mission, required, unsupported] of [
+  ['Evacuation', /Extraction Console.*CivEvac|CivEvac.*Extraction Console/i, /extraction (?:line|marker)/i],
+  ['Last Launch', /ID Scanner/i, /extraction (?:line|marker)/i],
+  ['Neutralization', /Hyperthermal Tech Box.*Neutralization Area|Neutralization Area.*Hyperthermal Tech Box/i,
+    /antenna command|neutraliz\w* tech through the antenna/i],
+] as const) {
+  const scenario = SOURCED_STORY_SCENARIOS[mission]!
+  for (const incident of scenario.incidents) {
+    const text = [scenario.ground, scenario.position, ...Object.values(incident)].join(' ')
+    assert.match(text, required, `${mission}: incident needs the actual mission mechanism`)
+    assert.doesNotMatch(text, unsupported, `${mission}: incident uses an invented mechanism`)
+  }
+  for (const ending of Object.values(scenario.endings)) {
+    assert.doesNotMatch(ending, unsupported, `${mission}: ending uses an invented mechanism`)
+  }
+}
+assert.throws(() => assertGameStoryMissionObjective({ ...composeGameStory('Last Launch',
+  'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective')!, paragraphs: [
+  'The specialist prepared to leave the tower across an extraction line.',
+  'Fighters traded shots at the ID Scanner while the bearer moved.',
+  '{{hero}} watched the ID Checker as {{heroPlayer}} and {{otherPlayer}} closed in.',
+] }, 'invalid Last Launch'), /not an extraction line or marker/)
+assert.throws(() => assertGameStoryMissionObjective({ ...composeGameStory('Neutralization',
+  'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective')!, paragraphs: [
+  'The box stood open beside the Neutralization Area.',
+  'The antenna command would neutralize the tech without a bearer.',
+  '{{hero}} watched {{heroPlayer}} and {{otherPlayer}} from cover.',
+] }, 'invalid Neutralization'), /not by antenna command/)
+assert.throws(() => assertGameStoryMissionObjective({ ...composeGameStory('The Dig',
+  'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective')!, paragraphs: [
+  'The specialist worked at the console beside the hyperthermal tech.',
+  'The neutralizing command waited on the console screen.',
+  '{{hero}} checked the analyzed tech as {{heroPlayer}} and {{otherPlayer}} approached.',
+] }, 'invalid The Dig'), /not by console command/)
+for (const [mission, fragment, message] of [
+  ['Uplink Center', 'Opening the Tech-Coffin lid scored the objective.', /not by opening it/],
+  ['Battleground', 'The sector marker lit up before the final round.', /marked out only when the game ends/],
+  ['Data Harvest', 'The specialist replaced the power cell to activate the harvester.', /not an objective skill/],
+] as const) {
+  const template = composeGameStory(mission, 'PanOceania', 'Druze Bayram Security',
+    'PanOceania', 'objective')!
+  assert.throws(() => assertGameStoryMissionObjective({ ...template,
+    paragraphs: [template.paragraphs[0] + ' ' + fragment, ...template.paragraphs.slice(1)] }, mission), message)
+}
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const consequences = INCIDENT_CONSEQUENCES[mission as keyof typeof INCIDENT_CONSEQUENCES]
   assert.equal(consequences?.length, SOURCED_STORY_SCENARIOS[mission]?.incidents.length,
@@ -297,9 +349,9 @@ const game = {
 } as RecentGame
 const entry = {
   unit: 'TEST TROOPER', profile: 'TEST TROOPER', canonicalUnitId: 0, combinedId: 'test-1',
-  points: 30, specialist: true, hacker: false, engineer: false, doctor: false,
+  points: 30, specialist: true, hacker: false, engineer: false, doctor: true,
   forwardObserver: false, bs: 13, weapons: ['AP Heavy Machine Gun', 'CC Weapon'],
-  skills: ['Martial Arts'], equipment: [],
+  skills: ['Martial Arts', 'Doctor'], equipment: [],
 }
 const list = (player: string, opponent: string, sectorial: string): ArmyIntelligenceList => ({
   player, opponent, sectorial, mission: game.mission, date: '2026-09-26',
@@ -309,6 +361,33 @@ const lists = [
   list('Winner', 'Loser', 'PanOceania'),
   list('Loser', 'Winner', 'Druze Bayram Security'),
 ]
+const outbreakList = {
+  ...list('Winner', 'Loser', 'PanOceania'), mission: 'Outbreak',
+  decoded: { combatGroups: [{ entries: [
+    { ...entry, unit: 'EXPENSIVE HACKER', combinedId: 'hacker', points: 60, doctor: false,
+      hacker: true, skills: ['Hacker'] },
+    { ...entry, unit: 'FIELD MEDIC', combinedId: 'medic', points: 18, doctor: true,
+      hacker: false, skills: ['Doctor'] },
+  ] }] },
+} as ArmyIntelligenceList
+assert.equal(selectStoryHero(outbreakList, 'objective')?.combinedId, 'hacker')
+assert.equal(selectStoryHero(outbreakList, 'objective', 'infectedCare')?.combinedId, 'medic')
+for (const seed of SOURCED_STORY_SCENARIOS.Outbreak!.incidents) {
+  assert.match(seed.objectiveAction, /stabili[sz]/i,
+    'the eligible Outbreak clinician must prepare care in each incident')
+}
+const outbreakTemplate = composeGameStory('Outbreak', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective', 9081)!
+const outbreakRendered = renderGameStoryTemplate(outbreakTemplate, { ...game, mission: 'Outbreak' },
+  [outbreakList, { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'Outbreak' }])
+assert.match(outbreakRendered ?? '', /the Field Medic/i, 'Outbreak clinician must perform the objective action')
+assert.doesNotMatch(outbreakRendered ?? '', /the Expensive Hacker/i)
+const hackerOnlyList = { ...outbreakList, decoded: {
+  combatGroups: [{ entries: outbreakList.decoded!.combatGroups[0].entries.slice(0, 1) }],
+} } as ArmyIntelligenceList
+assert.equal(renderGameStoryTemplate(outbreakTemplate, { ...game, mission: 'Outbreak' },
+  [hackerOnlyList, { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'Outbreak' }]), null,
+  'an Outbreak objective story must wait when its hero side has no eligible clinician')
 for (const mission of ['Akial Interference', 'Critical Intervention', 'Double Bind']) {
   const setupGame = { ...game, mission } as RecentGame
   const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]

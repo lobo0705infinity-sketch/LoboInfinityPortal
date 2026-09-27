@@ -137,4 +137,39 @@ export function assertGameStoryMissionObjective(story: GameStoryTemplate, key: s
       /\b(?:classified\s+objective\s+(?:marker|site|evidence)|objective\s+(?:marker|evidence)|evidence\s+marker)\b/i,
       `${key}: Akial public cards do not establish a fixed physical evidence marker`)
   }
+  if (story.mission === 'Evacuation' || story.mission === 'Last Launch') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\bextraction\s+(?:line|marker)\b/i,
+      `${key}: ${story.mission} uses a console or ID Checker, not an extraction line or marker`)
+  }
+  if (story.mission === 'Neutralization') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:neutraliz\w*\s+antenna\s+command|antenna\s+command|neutraliz\w*\s+(?:the\s+)?tech\s+(?:through|with)\s+(?:the\s+)?antenna)\b/i,
+      `${key}: carried tech neutralizes inside a Neutralization Area, not by antenna command`)
+  }
+  if (story.mission === 'The Dig') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:neutraliz\w*\s+command|command\s+to\s+neutraliz\w*)\b/i,
+      `${key}: The Dig neutralizes an analyzed tech in contact, not by console command`)
+  }
+  if (story.mission === 'Outbreak') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:scan(?:ned|ning)?\s+(?:is\s+)?(?:needed|required|before)|(?:clear\s+)?scan\s+before)\s+stabili[sz]/i,
+      `${key}: scanning is not a prerequisite to stabilizing an Infected`)
+  }
+  if (story.mission === 'Uplink Center') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\bTech-Coffin(?:'s)?\s+(?:lid|latch|contents|lock)\b|\b(?:opening|unlocking)\s+(?:the\s+)?Tech-Coffin\b/i,
+      `${key}: Uplink Center controls the Tech-Coffin by sole contact, not by opening it`)
+  }
+  if (story.mission === 'Battleground') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\bsector\s+marker\b/i,
+      `${key}: Battleground sectors are marked out only when the game ends`)
+  }
+  if (story.mission === 'Data Harvest') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:replac\w*\s+(?:the\s+)?power\s+cell|harvester\s+stopped\s+transmitting\s+at\s+the\s+designated\s+zone\s+boundary)\b/i,
+      `${key}: deposited harvesters activate inside a zone; cell replacement is not an objective skill`)
+  }
 }

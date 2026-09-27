@@ -65,13 +65,17 @@ type ReviewCase = { mission: string; hero: string; other: string; role: HeroRole
   incident: number; gameId: number; story: GameStoryTemplate }
 const groups: Array<{ mission: string; cases: ReviewCase[] }> = []
 for (const [index, mission] of CANONICAL_MISSIONS.entries()) {
-  const a = armies[(index * 2) % armies.length].name
-  const b = armies[(index * 2 + 1) % armies.length].name
-  const mirror = armies[(index * 2 + 2) % armies.length].name
-  const c = armies[(index * 2 + 4) % armies.length].name
-  const d = armies[(index * 2 + 5) % armies.length].name
-  const e = armies[(index * 2 + 6) % armies.length].name
-  const f = armies[(index * 2 + 7) % armies.length].name
+  // Change the matchups as well as their display order when reviewers receive
+  // a new seed; otherwise every revision reuses the same 110 example stories.
+  const offset = Number.parseInt(rank(mission + ':factions').slice(0, 8), 16) % armies.length
+  const armyAt = (shift: number) => armies[(offset + index * 2 + shift) % armies.length].name
+  const a = armyAt(0)
+  const b = armyAt(1)
+  const mirror = armyAt(2)
+  const c = armyAt(4)
+  const d = armyAt(5)
+  const e = armyAt(6)
+  const f = armyAt(7)
   const firstRole = roles[index % roles.length]
   const selections: Array<[string, string, string, HeroRole, number]> = [
     [a, b, a, firstRole, 0],
@@ -103,7 +107,7 @@ const packet: string[] = [
 ]
 const privateConfig = { status: 'generated-only pilot; previous authored answer key superseded',
   seed, sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
-  selection: '22 missions × five cases (one reversed, one mirror, four distinct incidents, three roles); seeded mission order',
+  selection: '22 missions × five cases (one reversed, one mirror, four distinct incidents, three roles); seeded factions and mission order',
   cases: [] as unknown[] }
 const scores = ['case_id,mission,role,reviewer,prose_1_5,mission_1_5,faction_1_5,incident_1_5,endings_1_5,repetition_1_5,critical_issue,major_issue,notes']
 let total = 0
@@ -133,9 +137,9 @@ const guide = `# Generated story pilot · editorial rubric
 
 ## How to review the 110 generated scenes
 
-1. Give the packet and a blank scorecard to **two independent readers** who have not seen the generator. Both readers score each case 1–5: natural prose, correct mission and edition, faction-specific choices, causal incident and role action, three objective-resolving endings, and variety compared with the other four stories in that mission group.
+1. Give the packet and a blank scorecard to **two independent readers** who have not seen the generator. Both readers score each case 1–5: natural prose, correct mission and edition, faction-specific choices, causal incident and role action, three result-consistent endings tied to the mission stakes, and variety compared with the other four stories in that mission group.
 2. Check the linked mission rules. Each group has one reversed matchup (cases 1 and 2), a mirror (case 3), and all four incidents and three hero roles. Note verbatim phrases repeated across groups, generic faction swaps, endings inconsistent with the winner, and any action that pretends to record actual play. “The operative” is a shared illustrative stand-in; recorded games need an eligible named roster actor.
-3. Flag **critical** for a false mission objective, an invalid setup, a contradictory outcome, or fictional details presented as observed match events. Flag **major** for repetitive sentence scaffolds, interchangeable armies, unmotivated scene events, or an ending that omits the mission stake. Record a sentence or case ID for every flag.
+3. Game records contain the winner and aggregate points, not a breakdown of accomplished objectives. Flag **critical** for a false mission mechanism, an invalid setup, a claimed objective completion that the record cannot establish, or a contradictory outcome. Flag **major** for repetitive sentence scaffolds, interchangeable armies, unmotivated scene events, or an ending that omits the mission stake. Record a sentence or case ID for every flag.
 4. Freeze both scorecards before reading the configuration file. Resolve rule disagreements using the relevant mission edition. Separately test actual games with linked decoded rosters: player/army assignment, eligible hero, result, and clear labeling of invented setting and actions.
 
 ## Predeclared threshold
