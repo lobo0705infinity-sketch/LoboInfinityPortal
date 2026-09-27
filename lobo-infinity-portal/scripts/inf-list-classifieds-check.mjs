@@ -45,7 +45,7 @@ assert.deepEqual(byName(coverage, 'Vigilance').eligible.map(p => p.unitName), ['
 assert.deepEqual(byName(coverage, 'HVT: Assassination').eligible.map(p => p.unitName), ['Impetuous CoC', 'Lieutenant', 'NCO'])
 assert.deepEqual(byName(coverage, 'HVT: Designation').eligible.map(p => p.unitName), ['FO'], 'Killer Hacking Device has no Spotlight')
 assert.deepEqual(byName(coverage, 'Data Scan').eligible.map(p => p.unitName), ['Killer Hacker'])
-assert.ok(coverage.secureHvt.length)
+assert.equal('secureHvt' in coverage, false, 'the coverage response contains only the 20 Operations Deck cards')
 
 const spotlight = assessInfListClassifieds([p('HD Hacker', { equipment: ['Hacking Device'], hackingPrograms: ['Spotlight'] })])
 assert.equal(byName(spotlight, 'Telemetry').possible, true)
@@ -93,13 +93,13 @@ assert.ok(byName(exactCoverage, 'HVT: Assassination').eligible.some(profile => p
 
 const embeds = formatInfListClassifiedEmbeds(coverage)
 assert.equal(embeds.length, 1, 'all cards must be in one continuous, visible embed')
-assert.equal(embeds[0].fields.length, 21, 'all 20 deck cards and optional Secure HVT fit within Discord’s 25-field limit')
-assert.deepEqual(embeds[0].fields.slice(0, 20).map(field => Number(field.name.match(/\d+/)?.[0])), Array.from({ length: 20 }, (_, i) => i + 1))
-assert.match(embeds[0].fields[20].name, /Secure HVT/)
+assert.equal(embeds[0].fields.length, 20, 'the embed includes exactly the 20 Operations Deck cards')
+assert.deepEqual(embeds[0].fields.map(field => Number(field.name.match(/\d+/)?.[0])), Array.from({ length: 20 }, (_, i) => i + 1))
+assert.ok(embeds[0].fields.every(field => !/Secure HVT/i.test(field.name + field.value)))
 assert.ok(embeds[0].fields.every(field => field.name.length < 256 && field.value.length <= 1024))
 const crowded = formatInfListClassifiedEmbeds({ ...coverage, cards: coverage.cards.map(card => ({
   ...card, possible: true, eligible: Array.from({ length: 4 }, (_, i) => p(`${'Very Long Unit Name '.repeat(8)}${i}`)), detail: 'A long note about target availability and game conditions.',
-})), secureHvt: Array.from({ length: 4 }, (_, i) => p(`${'Very Long Unit Name '.repeat(8)}${i}`)) })[0]
+})) })[0]
 const embedCharacters = embed => embed.title.length + embed.description.length + embed.fields.reduce((total, field) => total + field.name.length + field.value.length, 0)
 assert.ok(embedCharacters(crowded) <= 6000, 'one-embed output stays under Discord’s 6000-character limit with long unit names')
 const reply = await createInfListResponse({
