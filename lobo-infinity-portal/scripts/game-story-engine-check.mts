@@ -6,6 +6,7 @@ import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
+import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
@@ -119,6 +120,33 @@ assert.throws(() => assertGameStoryMissionObjective({ ...oldCrossing,
   paragraphs: [oldCrossing.paragraphs[0] + ' The classified deck determined the winner.',
     ...oldCrossing.paragraphs.slice(1)] }, 'old Crossing Lines'),
   /no HVT or Classified Deck/, 'respect the September 24 ITS 18 hotfix')
+const pong = composeGameStory('B-Pong', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...pong,
+  paragraphs: [pong.paragraphs[0] + ' The beacon had to be controlled before anyone could move it.',
+    ...pong.paragraphs.slice(1)] }, 'invalid B-Pong rule'),
+  /permits a specialist in contact to relocate/, 'contact relocation needs no prior beacon control')
+const akial = composeGameStory('Akial Interference', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...akial,
+  paragraphs: [akial.paragraphs[0] + ' The classified objective evidence lay under the mast.',
+    ...akial.paragraphs.slice(1)] }, 'invented Akial evidence'),
+  /do not establish a fixed physical evidence marker/, 'public cards cannot imply physical evidence')
+for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+  const consequences = INCIDENT_CONSEQUENCES[mission as keyof typeof INCIDENT_CONSEQUENCES]
+  assert.equal(consequences?.length, SOURCED_STORY_SCENARIOS[mission]?.incidents.length,
+    `${mission}: each incident needs its own consequence`)
+  assert.equal(new Set(consequences).size, consequences.length,
+    `${mission}: consequences must not repeat within the mission`)
+  const crossfire = INCIDENT_CROSSFIRE[mission as keyof typeof INCIDENT_CROSSFIRE]
+  assert.equal(crossfire?.length, consequences.length, `${mission}: each incident needs its own firefight`)
+  assert.equal(new Set(crossfire).size, crossfire.length,
+    `${mission}: firefights must not repeat within the mission`)
+  const stakes = INCIDENT_STAKES[mission as keyof typeof INCIDENT_STAKES]
+  assert.equal(stakes?.length, consequences.length, `${mission}: each incident needs its own stakes`)
+  assert.equal(new Set(stakes).size, stakes.length,
+    `${mission}: stakes must not repeat within the mission`)
+}
 assert.equal(composeGameStory('Unknown mission', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 'Hassassin Bahram', 'objective'), null)
 for (const gameId of [0, 1]) {
@@ -281,11 +309,12 @@ const lists = [
   list('Winner', 'Loser', 'PanOceania'),
   list('Loser', 'Winner', 'Druze Bayram Security'),
 ]
-for (const mission of ['Critical Intervention', 'Double Bind']) {
+for (const mission of ['Akial Interference', 'Critical Intervention', 'Double Bind']) {
   const setupGame = { ...game, mission } as RecentGame
   const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
   assert.equal(renderGeneratedGameStory(setupGame, setupLists), null,
-    mission + ': do not invent the unreported attacker side or selected mode')
+    mission + ': do not invent an unreported mission setup or card draw')
+  if (mission === 'Akial Interference') continue // Its authored shard is tested below with a mocked browser fetch.
   assert.equal(await loadAuthoredBattleStory(setupGame, setupLists), MISSING_MISSION_SETUP_BATTLE_STORY,
     mission + ': do not falsely tell the player their already linked lists are missing')
 }
@@ -406,6 +435,22 @@ try {
   assert.equal(await loadAuthoredBattleStory(missingGame, missingLists),
     renderGeneratedGameStory(missingGame, missingLists))
   assert.equal(fetchCount, 2, 'read the authored mission shard before generating a fallback')
+  const akialRows = JSON.parse(await readFile('public/game-stories/akial-interference.json', 'utf8')) as typeof template[]
+  const akialKeys = new Set([...GAME_STORY_CATALOG, ...akialRows].map((row) =>
+    storyTemplateKey(row.mission, ...row.factions)))
+  const missingAkialPair = armies.flatMap((first, i) => armies.slice(i).map((second) =>
+    [first.name, second.name] as const))
+    .find(([first, second]) => !akialKeys.has(storyTemplateKey('Akial Interference', first, second)))
+  assert.ok(missingAkialPair)
+  const missingAkialGame = { ...game, mission: 'Akial Interference',
+    winnerFaction: missingAkialPair[0], loserFaction: missingAkialPair[1] } as RecentGame
+  const missingAkialLists = [
+    { ...lists[0], mission: 'Akial Interference', sectorial: missingAkialPair[0] },
+    { ...lists[1], mission: 'Akial Interference', sectorial: missingAkialPair[1] },
+  ] as ArmyIntelligenceList[]
+  globalThis.fetch = async () => Response.json(akialRows)
+  assert.equal(await loadAuthoredBattleStory(missingAkialGame, missingAkialLists),
+    MISSING_MISSION_SETUP_BATTLE_STORY, 'an unwritten Akial pair needs card data before runtime generation')
 } finally {
   globalThis.fetch = originalFetch
 }

@@ -33,7 +33,8 @@ differ. Older game records do not identify which edition was played.
 - The browser first checks a submitted highlight, the inline catalog, and
   the appropriate mission shard. A missing matchup can use the engine.
 - Four concrete incidents per mission establish the opening, complication,
-  turn, and mission objective action. A mission frame supplies crossfire,
+  turn and mission objective action. Incident-specific beats supply the stake,
+  firefight and open-ended consequence. A mission frame supplies
   role actions, and alternative win, loss, and draw endings; each army
   supplies a crew description, maneuver, defensive response, follow-through,
   and outcome beat. The 21 other mission frames use mission-neutral army
@@ -63,9 +64,10 @@ explicit previews and automatic selection. The `none` tag is not treated as
 sunshine or another weather effect.
 - Rendering requires both decoded lists linked unambiguously to that game,
   an eligible roster model for the hero role, and the actual player/result
-  fields. For **Critical Intervention** and **Double Bind**, the game record
-  does not store attacker/defender assignment or selected mode. Those two
-  mission templates remain available for editorial inspection, but the
+  fields. **Akial Interference** needs the two drawn public Common Classified
+  cards; **Critical Intervention** needs attacker/defender assignment; and
+  **Double Bind** needs the chosen objective set. Those three mission templates
+  remain available for editorial inspection, but the
   runtime refuses to invent setup and explains that limitation to the user.
 - The engine runs in local TypeScript without paid model APIs or a deploy.
 
@@ -77,18 +79,20 @@ verifies mission-objective anchors, authored precedence, list linkage,
 ambiguous lists, mirror matchups, and 792 synthetic
 mission/incident/role/result renders. These are *possible template
 compositions*, not 273,240 approved or individually written stories. Because
-two missions need unreported setup, only 20 mission families are eligible for
+three missions need unreported setup, only 19 mission families are eligible for
 runtime generation with the current game records; all 22 remain in the
 synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including a mirror and all three roles across the sample. It contains 110
-different middle paragraphs, 45–67 words per paragraph, and a maximum
-within-mission middle-paragraph trigram Jaccard overlap of 0.193. Sentence
-order now varies across the opening, confrontation, and hero action, removing
-the repeated `heroPlayer ... while otherPlayer` opening from the sample. That
-lexical measure does not prove plot originality. Shared mission openings,
-incidents, and hero actions remain recognizable across a reading session.
+different middle paragraphs, 40–67 words per paragraph, and a maximum
+within-mission middle-paragraph trigram Jaccard overlap of 0.184. Sentence
+order varies for independent opening and confrontation beats; the incident
+turn now precedes the hero action and its consequence. In a separate fixed
+110-scene review packet, exact repeated sentence appearances dropped from
+60.5% to 46.3%, or from 48.1% to 24.4% excluding one of each paired
+reversal. This count includes deliberate reuse of army methods and shared
+incidents; it does not prove plot originality or editorial quality.
 The 45 Area and 45 mission-neutral method sets distinguish army tactics in
 every mission, but neither set establishes original plots for every pair.
 The methods are fictional extrapolations from broad faction themes described by
@@ -99,7 +103,7 @@ They must not imply that a particular unit or action occurred in a recorded
 match. Every mission template has hero-win, hero-loss and draw endings with
 mission-specific stakes and faction-specific resolution beats; the result
 in the game record chooses which one appears.
-See the [review and ten actual samples](game-story-engine-editorial-review.md).
+See the [review and eleven actual samples](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent generated-only review for natural
 prose, plot variety, faction voice, version accuracy, and whether a generated
@@ -112,7 +116,7 @@ until there is an explicit decision on generated coverage.
 The reproducible `scripts/prepare-story-editorial-review.mts` creates a
 110-scene review set: five per mission, including a same-incident faction
 reversal, mirror matchup, all four incidents, and all three hero roles.
-Critical Intervention and Double Bind remain preview-only. The review packet
+Akial Interference, Critical Intervention and Double Bind remain preview-only. The review packet
 openly identifies all scenes as generated; reviewers are blinded to generator
 implementation and configuration. A separate private configuration file makes
 selection reproducible. Two independent readers should score every story.
@@ -127,7 +131,7 @@ reviewer's checks for Player Tokens, Double Bind's Engineer/GizmoKit antenna
 repairs, and Crossing Lines. The pilot does not simulate Player Tokens.
 Crossing Lines has no HVT or Classified Deck in the updated scenario. The
 Double Bind runtime remains withheld while the chosen objective set is missing
-from public game records.
+from public game records; Akial remains withheld without the drawn cards.
 
 ## Verification
 

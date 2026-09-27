@@ -92,8 +92,12 @@ export function assertGameStoryMissionObjective(story: GameStoryTemplate, key: s
         /\b(?:control|held|hold|claim|dominat|contes|scor|area|ground|zone)\w*\b/i],
     },
     'Akial Interference': {
-      scene: [/\bclassified\s+objectives?\b/i],
+      scene: [/\bclassified\s+(?:objectives?|cards?)\b/i],
       endings: [/\bclassified\s+objectives?\b/i],
+    },
+    'B-Pong': {
+      scene: [/\btracking\s+beacon\b/i, /\bconsoles?\b/i],
+      endings: [/\btracking\s+beacon\b/i, /\bconsoles?\b/i],
     },
     "Dead Man's Switch": {
       scene: [/\b(?:Quantum Core|Objective Room)\b/i, /\b(?:Data Pack|Quantum Resonance)\b/i],
@@ -122,5 +126,15 @@ export function assertGameStoryMissionObjective(story: GameStoryTemplate, key: s
   if (story.mission === 'Crossing Lines') {
     assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '), /\b(?:HVT|classified(?:\s+deck|\s+objective)?)\b/i,
       `${key}: ITS 18 Crossing Lines has no HVT or Classified Deck after the September 24 hotfix`)
+  }
+  if (story.mission === 'B-Pong') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:beacon\s+(?:had|has|must)\s+to\s+be\s+controlled\s+before|(?:must|has|had|needed)\s+(?:to\s+)?control\s+(?:the\s+)?(?:tracking\s+)?beacon\s+before\s+(?:it|anyone|they)\s+(?:can|could)\s+(?:move|relocat))/i,
+      `${key}: B-Pong permits a specialist in contact to relocate the beacon without prior control`)
+  }
+  if (story.mission === 'Akial Interference') {
+    assert.doesNotMatch(scene + ' ' + Object.values(story.endings).join(' '),
+      /\b(?:classified\s+objective\s+(?:marker|site|evidence)|objective\s+(?:marker|evidence)|evidence\s+marker)\b/i,
+      `${key}: Akial public cards do not establish a fixed physical evidence marker`)
   }
 }

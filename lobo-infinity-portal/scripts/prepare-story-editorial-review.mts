@@ -140,7 +140,7 @@ const guide = `# Generated story pilot · editorial rubric
 
 ## Predeclared threshold
 
-- All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. Critical Intervention and Double Bind stay preview-only until the recorded mission setup is available.
+- All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. Akial Interference, Critical Intervention and Double Bind stay preview-only until the drawn Common Classified cards, attacker assignment, or selected objective set is recorded as applicable.
 - At least 80% of generated scenes need an average of **4/5 or better in every rated dimension** across two reviewers. No mission group should have an unaddressed repetition or faction-swap complaint. Revise weak groups, then review new, unseen scenes rather than scoring the same examples until they pass.
 - Passing this review does not change the 22,770 individually authored target, prove fictional moves happened in a match, or authorize merging/deploying the pilot.
 

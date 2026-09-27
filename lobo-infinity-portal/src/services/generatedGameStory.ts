@@ -4,6 +4,7 @@ import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
 import { MISSION_ARMY_METHODS } from '../data/generatedStoryMissionArmies.ts'
+import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
 import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
@@ -85,8 +86,10 @@ function arrangeBeats(first: string, beats: readonly [string, string, string], v
   return [first, ...orders[variant].map((index) => beats[index])].join(' ')
 }
 
-function arrangeClose(turn: string, heroAction: string, status: string, response: string, variant: number): string {
-  return arrangeBeats(turn, [heroAction, status, response], variant)
+function arrangeClose(turn: string, heroAction: string, status: string, response: string): string {
+  // The incident opens access; the hero acts; only then does the scene react.
+  // Permuting these sentences made consequences precede their causes.
+  return [turn, heroAction, status, response].join(' ')
 }
 
 function arrangeOpening(opening: string, hero: string, opponent: string, stakes: string, variant: number): string {
@@ -123,7 +126,8 @@ export function composeGameStory(
   const scenario = SOURCED_STORY_SCENARIOS[canonical]
   if (!scenario) return null
   if (sceneTags && canonical !== 'Area of Interest') return null
-  const seed = scenario.incidents[stableHash(key + ':' + String(gameId)) % scenario.incidents.length]
+  const incidentIndex = stableHash(key + ':' + String(gameId)) % scenario.incidents.length
+  const seed = scenario.incidents[incidentIndex]
   const variant = stableHash(key + ':' + String(gameId) + ':' + hero.id + ':' + role + ':prose') % 4
   if (canonical === 'Area of Interest') {
     const requestedWeather = sceneTags?.weather
@@ -156,7 +160,7 @@ export function composeGameStory(
         ), seed.opening].join(' '),
         arrangeBeats(seed.complication, [weather.complication, method.initiative, response.response], variant),
         arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', location.signal,
-          method.followThrough, variant) + ' ' + weather.closing,
+          method.followThrough) + ' ' + weather.closing,
       ],
       endings: {
         heroWins: '{{heroPlayer}}’s squad ' + method.winBeat +
@@ -179,6 +183,10 @@ export function composeGameStory(
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
   if (!method || !response) return null
+  const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
+  const crossfire = INCIDENT_CROSSFIRE[canonical as keyof typeof INCIDENT_CROSSFIRE]?.[incidentIndex]
+  const stakes = INCIDENT_STAKES[canonical as keyof typeof INCIDENT_STAKES]?.[incidentIndex]
+  if (!consequence || !crossfire || !stakes) throw new Error('Missing incident beats for ' + canonical + ' #' + incidentIndex)
   const drawnMission = withoutFinalPeriod(scenario.endings.draw)
   const draw = hero.id === opponent.id
     ? 'Both crews ' + method.drawBeat + '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
@@ -196,10 +204,10 @@ export function composeGameStory(
     heroFaction: hero.name,
     role,
     paragraphs: [
-      arrangeOpening(seed.opening, heroMove, otherMove, scenario.stakes, variant),
-      arrangeBeats(seed.complication, [scenario.crossfire, method.maneuver, response.defense], variant),
-      arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', scenario.afterAction,
-        method.followThrough, variant),
+      arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
+      arrangeBeats(seed.complication, [crossfire, method.maneuver, response.defense], variant),
+      arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
+        method.followThrough),
     ],
     endings: {
       heroWins: continueEnding(scenario.endings.heroWins, method.winClause),
@@ -212,8 +220,8 @@ export function composeGameStory(
 export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligenceList[]): string | null {
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)
   if (!key) return null
-  // Attacker/defender assignment and selected mode are not in the public
-  // record. Do not invent either side's objective in these two missions.
+  // Common Classified cards, attacker assignment, and selected objective
+  // mode are absent from public games for three respective missions.
   const canonical = getCanonicalMissionName(game.mission)
   if (!canonical || SOURCED_STORY_SCENARIOS[canonical]?.requiresUnreportedSetup) return null
   const [, firstId, secondId] = key.split('|')
