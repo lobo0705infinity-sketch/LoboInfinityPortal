@@ -4,7 +4,7 @@
 // Panic Room uses its archived ITS 16 rules. Dead Man's Switch has no verified
 // rules in either catalog, so it deliberately uses the general-purpose plan.
 const plans = {
-  'akial interference': { target: 3, focus: 'diverse specialists for repeated Classifieds', weights: { classified: 8, objectives: 2 } },
+  'akial interference': { target: 5, focus: 'diverse specialists for repeated Classifieds', weights: { classified: 8, objectives: 2 } },
   annihilation: { target: 0, focus: 'killing power and surviving Army Points', weights: { combat: 8, survive: 6 } },
   'area of interest': { target: 2, focus: 'area presence and Antenna activation', weights: { zones: 6, objectives: 5, classified: 2 } },
   battleground: { target: 0, focus: 'central and far sector control with capable attackers', weights: { zones: 8, combat: 5 } },

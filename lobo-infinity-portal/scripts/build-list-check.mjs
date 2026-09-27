@@ -128,6 +128,11 @@ assert.ok(nomadsProfiles.some(item => item.slug === 'perseus-rogue-myrmidon' && 
   'a Character can fulfill Panic Room Essential Personnel requirements')
 const outbreakList = buildArmyListOptions({ ...nomadsInput, mission: 'Outbreak', count: 1 })[0]
 const annihilationList = buildArmyListOptions({ ...nomadsInput, mission: 'Annihilation', count: 1 })[0]
+const akialList = buildArmyListOptions({ ...nomadsInput, mission: 'Akial Interference', count: 1 })[0]
+assert.ok(akialList.legality.status === 'legal' && akialList.quality.specialistTarget === 5
+  && akialList.specialistCount >= 5 && akialList.quality.gunfighters >= 2
+  && akialList.quality.aro >= 2 && akialList.quality.cc >= 2,
+  'Akial requires at least five specialists while retaining separate combat roles')
 const outbreakMedics = outbreakList.profiles.filter(item => item.doctor || item.paramedic || item.specialistOperative)
 assert.ok(outbreakList.legality.status === 'legal' && outbreakMedics.length >= 2
   && outbreakMedics.length > annihilationList.profiles.filter(item => item.doctor || item.paramedic || item.specialistOperative).length,
