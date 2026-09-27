@@ -4911,6 +4911,29 @@
   gap: 1.05rem;
 }
 
+.army-intelligence-page .army-intelligence-example-intro {
+  max-width: 66ch;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.army-intelligence-example-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .army-intelligence-example-links,
+  .army-intelligence-example-links a {
+    width: 100%;
+  }
+}
+
 .army-intelligence-summary {
   box-sizing: border-box;
   display: grid;

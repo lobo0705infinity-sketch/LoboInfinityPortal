@@ -186,6 +186,16 @@
   text-transform: uppercase;
 }
 
+.battle-report-facts dd a {
+  color: #4cc9f0;
+  text-underline-offset: 3px;
+}
+
+.battle-report-facts dd a:hover,
+.battle-report-facts dd a:focus-visible {
+  color: #f4f6f8;
+}
+
 .battle-report-versus {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(250px, 0.62fr) minmax(0, 1fr);

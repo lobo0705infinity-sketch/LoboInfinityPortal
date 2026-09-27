@@ -29,17 +29,17 @@ const checks = [
     pass: !factionApi.includes('buildRecentGameResponse(game, index + 1)'),
   },
   {
-    label: 'Dashboard headlines link with the same RecentGame.id used for headline text',
+    label: 'Live transmissions link with the same RecentGame.id used for headline text',
     pass:
-      dashboard.includes('data.communityActivity.latestResults.slice(0, 2).forEach((game)') &&
-      dashboard.includes('title: `${formatPlayerName(game.winner, game.winnerDisplayName)} defeated ${formatPlayerName(game.loser, game.loserDisplayName)}`') &&
+      dashboard.includes('games.slice(0, 4).map((game)') &&
+      dashboard.includes('title: getGameHeadline(game)') &&
       dashboard.includes('to: `/games/${game.id}`'),
   },
   {
-    label: 'Dashboard featured/recent links use RecentGame.id',
+    label: 'Featured battle report links to the same public report as search content',
     pass:
-      dashboard.includes('<Link className="featured-match-hero" to={`/games/${game.id}`}>') &&
-      dashboard.includes('to: `/games/${latest.id}`'),
+      dashboard.includes('to="/games/109"') &&
+      read('shared/public-search-content.mjs').includes("href: '/games/109'"),
   },
   {
     label: 'Battle report resolves by immutable RecentGame.id',

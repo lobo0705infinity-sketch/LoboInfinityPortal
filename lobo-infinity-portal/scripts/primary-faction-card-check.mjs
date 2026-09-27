@@ -58,8 +58,8 @@ const checks = [
       files.navigation.includes("export const armyIntelligenceFactionParam = 'faction'") &&
       files.navigation.includes('URLSearchParams') &&
       files.navigation.includes('readArmyIntelligenceFactionParam') &&
-      files.armyIntelligence.includes("import { useSearchParams } from 'react-router-dom'") &&
-      files.armyIntelligence.includes("import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'") &&
+      /import \{[^}]*\buseSearchParams\b[^}]*\} from 'react-router-dom'/.test(files.armyIntelligence) &&
+      /import \{[^}]*\breadArmyIntelligenceFactionParam\b[^}]*\} from '\.\.\/services\/armyIntelligenceNavigation'/.test(files.armyIntelligence) &&
       files.armyIntelligence.includes('const [searchParams] = useSearchParams()') &&
       files.armyIntelligence.includes('const requestedFaction = readArmyIntelligenceFactionParam(searchParams)') &&
       files.armyIntelligence.includes("const [selectedSectorial, setSelectedSectorial] = useState(requestedFaction)") &&
