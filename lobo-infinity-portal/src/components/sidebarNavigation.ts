@@ -14,6 +14,11 @@ export const topLevelItems: NavigationItem[] = [
     to: '/',
   },
   {
+    icon: 'army',
+    label: 'Explore',
+    to: '/explore',
+  },
+  {
     icon: 'standings',
     label: 'All Events',
     to: '/events',

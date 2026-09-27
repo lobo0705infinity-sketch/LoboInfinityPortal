@@ -118,18 +118,20 @@ function Dashboard() {
         <p className="snapshot-dashboard-public-note"><strong>What can I use without joining the league?</strong> Browse Army Intelligence, battle reports, players, factions, missions, streams, and public event results. Register for an event when you want to participate; casual games have a separate submission form.</p>
       </section>
       <section className="snapshot-dashboard-section snapshot-dashboard-programs" aria-labelledby="dashboard-programs-title">
-        <div className="snapshot-dashboard-section-heading">
+        <div className="snapshot-dashboard-section-heading snapshot-dashboard-section-heading--action">
           <p className="eyebrow">Portal programs</p>
           <h2 id="dashboard-programs-title">What&apos;s Happening</h2>
+          <Link className="snapshot-dashboard-section-link" to="/events">See all events <span aria-hidden="true">→</span></Link>
         </div>
         <div className="snapshot-dashboard-program-grid">
           {programs.map(program => <DashboardProgramCard key={program.tone} {...program} />)}
         </div>
       </section>
       <section className="snapshot-dashboard-section snapshot-dashboard-activity" aria-labelledby="dashboard-activity-title">
-        <div className="snapshot-dashboard-section-heading">
+        <div className="snapshot-dashboard-section-heading snapshot-dashboard-section-heading--action">
           <p className="eyebrow">Across the portal</p>
-          <h2 id="dashboard-activity-title">Recent Activity</h2>
+          <h2 id="dashboard-activity-title">Latest Battle Reports</h2>
+          <Link className="snapshot-dashboard-section-link" to="/games">Browse all reports <span aria-hidden="true">→</span></Link>
         </div>
         <Panel title="Recent Games Across the Portal"><DashboardGameTable games={[...games.data!].slice(-8).reverse()} /></Panel>
       </section>

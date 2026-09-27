@@ -1049,6 +1049,45 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-hea
   letter-spacing: 0.015em;
 }
 
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-heading--action {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-heading--action .eyebrow {
+  grid-column: 1 / -1;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  border: 1px solid rgba(76, 201, 240, .3);
+  border-radius: 8px;
+  padding: .45rem .7rem;
+  color: #d9f4fb;
+  background: rgba(14, 35, 47, .74);
+  font-size: .78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-link:hover,
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-link:focus-visible {
+  border-color: #7dddf4;
+  background: rgba(76, 201, 240, .16);
+}
+
+@media (max-width: 480px) {
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-heading--action {
+    grid-template-columns: 1fr;
+  }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-section-heading--action .eyebrow {
+    grid-column: 1;
+  }
+}
+
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-program-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3318,8 +3357,8 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid 
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:hover, main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:focus-visible { border-color: #8ee5ff; background: rgba(42, 76, 96, .78); }
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid span { color: #7dddf4; font-size: .68rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid strong { font-size: clamp(1rem, 1.75vw, 1.22rem); line-height: 1.15; }
-main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid small { color: #b9c9d5; font-size: .82rem; line-height: 1.4; }
-main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { margin: .15rem 0 .3rem; border-left: 3px solid rgba(76, 201, 240, .6); padding: .45rem .8rem; color: #c9d9e4; background: rgba(11, 25, 35, .8); font-size: .85rem; line-height: 1.5; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid small { color: #b9c9d5; font-size: .88rem; line-height: 1.4; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { margin: .15rem 0 .3rem; border-left: 3px solid rgba(76, 201, 240, .6); padding: .6rem .8rem; color: #c9d9e4; background: rgba(11, 25, 35, .8); font-size: .9rem; line-height: 1.5; }
 main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note strong { color: #f7fbff; }
 
 .snapshot-mobile-game-list { display: none; }
@@ -3333,8 +3372,8 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid { grid-template-columns: 1fr; }
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a { min-height: 64px; gap: .1rem; padding: .55rem .8rem; }
   main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a strong { font-size: 1rem; }
-  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a small { font-size: .75rem; }
-  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { font-size: .8rem; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a small { font-size: .85rem; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { font-size: .875rem; }
 
   main.snapshot-event-page > .snapshot-tabs,
   main.snapshot-event-page[data-event] > .snapshot-tabs,
