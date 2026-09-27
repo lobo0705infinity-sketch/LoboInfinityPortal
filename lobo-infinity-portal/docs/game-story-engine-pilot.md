@@ -116,7 +116,7 @@ before mission-specific tactical referents were introduced. The remaining
 shared lines involved repeated role actions and reused Area of Interest
 settings. The latest matched-seed and separate fresh-seed samples each had
 **zero** exact repeats across 1,064 sentences on the same 88-scene basis, but
-short references to objectives still recur. The matched seed counted 437
+short references to objectives still recur. The matched seed counted 438
 repeated three-word sequences within stories, up from 430 before the latest
 changes; the previous revision had 425 on a different seed, versus 352 before
 its referent rewrite. Neither count establishes plot originality or editorial
