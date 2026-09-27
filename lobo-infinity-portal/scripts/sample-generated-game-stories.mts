@@ -1,7 +1,6 @@
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
-import { MISSION_STORY_ADDITIONAL_SEEDS } from '../src/data/generatedStoryAdditionalSeeds.ts'
-import { MISSION_STORY_SEEDS } from '../src/data/generatedStorySeeds.ts'
+import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { composeGameStory } from '../src/services/generatedGameStory.ts'
 import type { HeroRole } from '../src/services/gameStoryTemplate.ts'
 
@@ -26,7 +25,8 @@ function overlap(first: string, second: string): number {
 }
 
 for (const [missionIndex, mission] of CANONICAL_MISSIONS.entries()) {
-  const incidents = [...MISSION_STORY_SEEDS[mission], ...MISSION_STORY_ADDITIONAL_SEEDS[mission]]
+  const incidents = SOURCED_STORY_SCENARIOS[mission]?.incidents
+  if (!incidents) throw new Error('Missing scenario source: ' + mission)
   const missionMiddles: string[] = []
   for (let offset = 0; offset < 5; offset++) {
     const heroFaction = armies[(missionIndex * 7 + offset * 3) % armies.length].name

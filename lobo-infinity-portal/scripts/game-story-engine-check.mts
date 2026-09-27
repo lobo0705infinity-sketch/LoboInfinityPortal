@@ -3,12 +3,10 @@ import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
-import { MISSION_STORY_ADDITIONAL_SEEDS } from '../src/data/generatedStoryAdditionalSeeds.ts'
-import { MISSION_STORY_FRAMES } from '../src/data/generatedStoryFrames.ts'
-import { MISSION_STORY_SEEDS } from '../src/data/generatedStorySeeds.ts'
+import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
-import { loadAuthoredBattleStory, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
+import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import { assertGameStoryQuality } from './game-story-quality.mts'
@@ -17,10 +15,17 @@ const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 assert.equal(armies.length, 45)
 assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
-assert.deepEqual(Object.keys(MISSION_STORY_SEEDS).sort(), [...CANONICAL_MISSIONS].sort())
-assert.deepEqual(Object.keys(MISSION_STORY_ADDITIONAL_SEEDS).sort(), [...CANONICAL_MISSIONS].sort())
-assert.deepEqual(Object.keys(MISSION_STORY_FRAMES).sort(), [...CANONICAL_MISSIONS].sort())
-assert.ok(Object.values(MISSION_STORY_ADDITIONAL_SEEDS).every((seeds) => seeds.length === 2))
+assert.deepEqual(Object.keys(SOURCED_STORY_SCENARIOS).sort(), [...CANONICAL_MISSIONS].sort())
+for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
+  assert.ok(scenario)
+  assert.match(scenario.source, /^https:\/\/infinitygeist\.com\/mission\//)
+  assert.equal(scenario.incidents.length, 4, mission + ': four incidents')
+  assert.equal(new Set(scenario.incidents.map((seed) => seed.opening)).size, 4, mission + ': distinct openings')
+  assert.equal(new Set(scenario.incidents.map((seed) => seed.complication)).size, 4, mission + ': distinct complications')
+  for (const seed of scenario.incidents) {
+    assert.match(seed.objectiveAction, scenario.anchor, mission + ': action must name a mission objective')
+  }
+}
 
 const seen = new Set<string>()
 const scenes = new Set<string>()
@@ -61,9 +66,10 @@ assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 
 for (const gameId of [0, 1]) {
   const court = composeGameStory('B-Pong', 'Nomads', 'Military Orders', 'Nomads', 'objective', gameId)
   assert.ok(court)
-  assert.match(court.paragraphs.join(' '), /ball|court/i)
+  assert.match(court.paragraphs.join(' '), /tracking beacon/i)
+  assert.match(court.paragraphs.join(' '), /console/i)
   assert.doesNotMatch(court.paragraphs.join(' '), /network trace|cargo markings|gantry/i,
-    'army tactics must belong to the court rather than a different mission')
+    'army tactics must belong to the beacon scenario rather than a different mission')
 }
 
 const game = {
@@ -86,6 +92,14 @@ const lists = [
   list('Winner', 'Loser', 'PanOceania'),
   list('Loser', 'Winner', 'Druze Bayram Security'),
 ]
+for (const mission of ['Critical Intervention', 'Double Bind']) {
+  const setupGame = { ...game, mission } as RecentGame
+  const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
+  assert.equal(renderGeneratedGameStory(setupGame, setupLists), null,
+    mission + ': do not invent the unreported attacker side or selected mode')
+  assert.equal(await loadAuthoredBattleStory(setupGame, setupLists), MISSING_MISSION_SETUP_BATTLE_STORY,
+    mission + ': do not falsely tell the player their already linked lists are missing')
+}
 assert.equal(renderGeneratedGameStory(game, []), null, 'wait for both game-linked decoded lists')
 assert.equal(renderGeneratedGameStory(game, [lists[0]]), null)
 assert.equal(renderGeneratedGameStory(game, lists.map((item) => ({ ...item, date: '2026-09-27' }))), null,

@@ -2,10 +2,7 @@ import { CANONICAL_ARMY_REGISTRY } from '../config/armies.ts'
 import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
-import { MISSION_STORY_ADDITIONAL_SEEDS } from '../data/generatedStoryAdditionalSeeds.ts'
-import { MISSION_STORY_FRAMES } from '../data/generatedStoryFrames.ts'
-import { MISSION_STORY_SEEDS } from '../data/generatedStorySeeds.ts'
-import { MISSION_STORY_TEXTURES } from '../data/generatedStoryTextures.ts'
+import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
@@ -56,15 +53,14 @@ export function composeGameStory(
   const heroVoice = ARMY_STORY_VOICES[hero.id]
   const otherVoice = ARMY_STORY_VOICES[opponent.id]
   if (!heroVoice || !otherVoice) return null
-  const seedList = [...MISSION_STORY_SEEDS[canonical], ...MISSION_STORY_ADDITIONAL_SEEDS[canonical]]
-  const seed = seedList[stableHash(key + ':' + String(gameId)) % seedList.length]
-  const frame = MISSION_STORY_FRAMES[canonical]
-  const texture = MISSION_STORY_TEXTURES[canonical]
+  const scenario = SOURCED_STORY_SCENARIOS[canonical]
+  if (!scenario) return null
+  const seed = scenario.incidents[stableHash(key + ':' + String(gameId)) % scenario.incidents.length]
   const heroAction = role === 'objective'
     ? seed.objectiveAction
     : role === 'gunfighting'
-      ? seed.gunfightingAction ?? frame.gunfighting
-      : seed.closeCombatAction ?? frame.closeCombat
+      ? scenario.gunfighting
+      : scenario.closeCombat
 
   return {
     mission: canonical,
@@ -73,19 +69,23 @@ export function composeGameStory(
     role,
     paragraphs: [
       seed.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
-        ' ' + frame.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-        tactics[otherVoice.style].defense + ' ' + frame.position + '. ' + frame.stakes,
-      seed.complication + ' ' + frame.crossfire + ' ' + seed.turn,
-      '{{hero}} ' + heroAction + '. ' + (seed.afterAction ?? texture.afterAction) + ' ' +
-        (seed.reaction ?? frame.reaction) + ' ' + (seed.closing ?? texture.closing),
+        ' ' + scenario.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
+        tactics[otherVoice.style].defense + ' ' + scenario.position + '. ' + scenario.stakes,
+      seed.complication + ' ' + scenario.crossfire + ' ' + seed.turn,
+      '{{hero}} ' + heroAction + '. ' + scenario.afterAction + ' ' +
+        scenario.reaction + ' ' + scenario.closing,
     ],
-    endings: seed.endings ?? frame.endings,
+    endings: scenario.endings,
   }
 }
 
 export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligenceList[]): string | null {
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)
   if (!key) return null
+  // Attacker/defender assignment and selected mode are not in the public
+  // record. Do not invent either side's objective in these two missions.
+  const canonical = getCanonicalMissionName(game.mission)
+  if (!canonical || SOURCED_STORY_SCENARIOS[canonical]?.requiresUnreportedSetup) return null
   const [, firstId, secondId] = key.split('|')
   const first = activeById.get(firstId)
   const second = activeById.get(secondId)

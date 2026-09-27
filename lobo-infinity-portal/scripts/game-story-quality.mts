@@ -9,17 +9,17 @@ const allowedTokens = new Set(['hero', 'heroPlayer', 'otherPlayer', 'allyGunfigh
 const roleActionTerms: Record<HeroRole, RegExp> = {
   gunfighting: /\b(?:aim|attack|barrel|cover|driv|drove|fire|fired|gun|held|kept|muzzle|pin|pinned|raider|rifle|shot|shoot|sniper|suppress|target|turret|weapon)\w*\b/i,
   closeCombat: /\b(?:armed|attacker|blade|caught|close|drove|duel|fight|fought|forced|grapple|intercept|melee|opponent|parr|push|shov|strike|struck|struggle|sword|wrestl)\w*\b/i,
-  objective: /\b(?:access|analy|calibrat|check|compar|connect|control|copy|cut|decode|discover|examin|find|fit|follow|found|guid|hack|identif|inspect|isolat|listen|map|measur|open|place|read|repair|retriev|scanner|secur|sensor|specialist|trace|traced|work)\w*\b/i,
+  objective: /\b(?:access|analy|calibrat|check|compar|connect|control|copy|cut|decode|direct|discover|examin|find|fit|follow|found|guid|hack|identif|inspect|isolat|listen|locat|map|measur|open|place|read|repair|retriev|scanner|secur|sensor|specialist|trace|traced|work)\w*\b/i,
 }
 
 const missionPlotTerms: Record<string, RegExp> = {
   'Area of Interest': /\b(?:approach|arriv|area|boundary|came|claim|converg|control|disput|enter|follow|guard|had|held|hold|insist|move|needed|occup|order|perimeter|plan|prepar|protect|reach|refus|secure|site|sought|territory|tried|wanted|zone)\w*\b/i,
   'Akial Interference': /\b(?:akial|interference|signal|static|echo|pulse|broadcast|carrier|frequency|transmi|relay)\w*\b/i,
   'B-Pong': /\b(?:ball|beacon|goal|court|paddle|score|serve|rebound)\w*\b/i,
-  'Corporate Appropriation': /\b(?:asset|cargo|company|contract|corporat|ownership|repossess|vault)\w*\b/i,
-  'Critical Intervention': /\b(?:critical|intervention|emergency|rescue|stabiliz|triage)\w*\b/i,
-  'Crossing Lines': /\b(?:border|crossing|line|checkpoint|corridor|passage|route)\w*\b/i,
-  "Dead Man's Switch": /\b(?:dead man|switch|trigger|detonat|device|failsafe|signal|timer|transmitter)\w*\b/i,
+  'Corporate Appropriation': /\b(?:asset|cargo|company|contract|corporat|ownership|repossess|vault|prototype|panoply)\w*\b/i,
+  'Critical Intervention': /\b(?:critical|intervention|emergency|rescue|stabiliz|triage|data pack|data console|server room)\w*\b/i,
+  'Crossing Lines': /\b(?:border|crossing|line|checkpoint|corridor|passage|route|dead zone|antenna)\w*\b/i,
+  "Dead Man's Switch": /\b(?:dead man|switch|trigger|detonat|device|failsafe|signal|timer|transmitter|quantum core|data pack|objective room|resonance)\w*\b/i,
   Evacuation: /\b(?:evacuat|escape|extract|refugee|rescue|shelter)\w*\b/i,
   Hardlock: /\b(?:hardlock|lock|access|console|control|crossroad|door|gate|hatch|held|hold|middle|network|point|seal|system|terminal)\w*\b/i,
   'Last Launch': /\b(?:launch|rocket|shuttle|countdown|gantry|pad|liftoff)\w*\b/i,
@@ -28,11 +28,11 @@ const missionPlotTerms: Record<string, RegExp> = {
   'Panic Room': /\b(?:panic room|safe room|shelter|bunker|sealed room|refuge)\w*\b/i,
   Provisioning: /\b(?:provision|supply|ration|cargo|delivery|stockpile)\w*\b/i,
   Annihilation: /\b(?:annihilat|destroy|eliminat|firefight|weapon|surviv)\w*\b/i,
-  Battleground: /\b(?:battleground|battlefield|front|position|trench|stronghold)\w*\b/i,
-  Cutthroat: /\b(?:cutthroat|betray|ambush|rival|treach|double-cross)\w*\b/i,
+  Battleground: /\b(?:battleground|battlefield|front|position|trench|stronghold|sector)\w*\b/i,
+  Cutthroat: /\b(?:cutthroat|betray|ambush|rival|treach|double-cross|lieutenant|army points)\w*\b/i,
   Superiority: /\b(?:superior|dominat|control|sector|position|territory)\w*\b/i,
   'Uplink Center': /\b(?:uplink|antenna|data|network|relay|signal|transmission)\w*\b/i,
-  'Double Bind': /\b(?:double bind|choice|dilemma|linked|simultaneous|two)\w*\b/i,
+  'Double Bind': /\b(?:double bind|choice|dilemma|linked|simultaneous|two|antenna|zone of influence)\w*\b/i,
   'The Dig': /\b(?:dig|dug|excavat|buried|below|chamber|earth|miner|quarry|shaft|soil|stone|tunnel|underground)\w*\b/i,
   'Data Harvest': /\b(?:data|harvest|archive|download|record|server|storage)\w*\b/i,
 }
