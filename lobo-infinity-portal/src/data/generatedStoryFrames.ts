@@ -43,7 +43,7 @@ export const MISSION_STORY_FRAMES: Record<CanonicalMission, MissionStoryFrame> =
   'B-Pong': {
     ground: 'the damaged court', position: 'the rebound barrier',
     stakes: 'The ball was still live, and the broken barrier made its next bounce impossible to call.',
-    crossfire: 'Both teams broke for opposite sides of the rebound, leaving no safe line across the tiles.',
+    crossfire: 'Both teams broke for opposite sides of the ball, leaving no safe line across the tiles.',
     gunfighting: 'fired at the weapon covering the sideline and gave a teammate room to chase the rebound',
     closeCombat: 'shoved a defender off the sideline and cleared space for a teammate to reach the ball',
     reaction: 'A second rush toward the ball left the next possession undecided.',
@@ -199,7 +199,7 @@ export const MISSION_STORY_FRAMES: Record<CanonicalMission, MissionStoryFrame> =
   Annihilation: {
     ground: 'the broken front', position: 'the last firing lane',
     stakes: 'The next assault would decide whether either squad could leave the block intact.',
-    crossfire: 'A second burst broke the last shelter, forcing the defenders toward the exposed passage.',
+    crossfire: 'A burst broke the last shelter, forcing the defenders toward the exposed passage.',
     gunfighting: 'fired through the smoke at the attacking weapon and covered the last fighters withdrawing',
     closeCombat: 'caught an attacker at the barricade and drove them back from the wounded',
     reaction: 'The opposing fighters regrouped where the smoke concealed the last approach.',

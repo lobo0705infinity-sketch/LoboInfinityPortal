@@ -6,6 +6,12 @@ export type MissionStorySeed = {
   turn: string
   objectiveAction: string
   prize: string
+  gunfightingAction?: string
+  closeCombatAction?: string
+  afterAction?: string
+  reaction?: string
+  closing?: string
+  endings?: { heroWins: string; heroLoses: string; draw: string }
 }
 
 // These are fictional situations, not reconstructions of unreported turns or

@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
+import { MISSION_STORY_ADDITIONAL_SEEDS } from '../src/data/generatedStoryAdditionalSeeds.ts'
 import { MISSION_STORY_FRAMES } from '../src/data/generatedStoryFrames.ts'
 import { MISSION_STORY_SEEDS } from '../src/data/generatedStorySeeds.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
@@ -17,7 +18,9 @@ assert.equal(armies.length, 45)
 assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_STORY_SEEDS).sort(), [...CANONICAL_MISSIONS].sort())
+assert.deepEqual(Object.keys(MISSION_STORY_ADDITIONAL_SEEDS).sort(), [...CANONICAL_MISSIONS].sort())
 assert.deepEqual(Object.keys(MISSION_STORY_FRAMES).sort(), [...CANONICAL_MISSIONS].sort())
+assert.ok(Object.values(MISSION_STORY_ADDITIONAL_SEEDS).every((seeds) => seeds.length === 2))
 
 const seen = new Set<string>()
 const scenes = new Set<string>()
@@ -29,13 +32,15 @@ for (const mission of CANONICAL_MISSIONS) {
       assert.equal(key, storyTemplateKey(mission, armies[j].name, armies[i].name))
       assert.ok(key && !seen.has(key))
       seen.add(key)
+      const incidents = new Set<string>()
       for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
-        // Both incident variants must pass the existing structural quality
-        // gate; this does not establish editorial originality.
-        for (const gameId of [0, 1]) {
+        // Each of the four complete incidents must pass the existing
+        // structural gate; this does not establish editorial originality.
+        for (const gameId of [0, 1, 2, 3]) {
           const story = composeGameStory(mission, armies[i].name, armies[j].name, armies[i].name, role, gameId)
           assert.ok(story, key + ': no generated story')
           assertGameStoryQuality(story, key)
+          if (role === 'objective') incidents.add(story.paragraphs[1])
           if (role === 'objective' && gameId === 0) {
             const scene = story.paragraphs.join(' ').replaceAll(/\{\{\w+\}\}/g, 'HERO')
             assert.ok(!scenes.has(scene), key + ': duplicate full scene')
@@ -44,6 +49,7 @@ for (const mission of CANONICAL_MISSIONS) {
           assert.deepEqual(story, composeGameStory(mission, armies[j].name, armies[i].name, armies[i].name, role, gameId))
         }
       }
+      assert.equal(incidents.size, 4, key + ': incident coverage')
       covered++
     }
   }
@@ -84,6 +90,8 @@ assert.equal(renderGeneratedGameStory(game, []), null, 'wait for both game-linke
 assert.equal(renderGeneratedGameStory(game, [lists[0]]), null)
 assert.equal(renderGeneratedGameStory(game, lists.map((item) => ({ ...item, date: '2026-09-27' }))), null,
   'never select a similarly named list from another game day')
+assert.equal(renderGeneratedGameStory(game, [...lists, { ...lists[0] }]), null,
+  'an ambiguous game-linked list cannot supply a model')
 const rendered = renderGeneratedGameStory(game, lists)
 assert.ok(rendered && rendered.includes('Winner') && rendered.includes('Loser'))
 assert.equal(rendered, renderGeneratedGameStory(game, lists), 'a report must be stable across reloads')
@@ -104,6 +112,24 @@ assert.ok(winnerText?.endsWith(template.endings.heroWins
 assert.ok(loserText?.endsWith(template.endings.heroLoses
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
 assert.ok(drawText?.endsWith(template.endings.draw))
+
+const mirrorGame = {
+  ...game, winnerFaction: 'Nomads', loserFaction: 'Nomads',
+} as RecentGame
+const mirrorLists = [
+  list('Winner', 'Loser', 'Nomads'),
+  list('Loser', 'Winner', 'Nomads'),
+]
+const mirrorTemplate = composeGameStory(game.mission, 'Nomads', 'Nomads', 'Nomads', 'objective', game.id)
+assert.ok(mirrorTemplate)
+const mirrorWin = renderGeneratedGameStory(mirrorGame, mirrorLists)
+const mirrorDraw = renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, mirrorLists)
+const mirrorExpected = renderGameStoryTemplate(mirrorTemplate, mirrorGame, mirrorLists)
+assert.ok(mirrorExpected)
+assert.ok(mirrorWin?.includes('Winner') && mirrorWin.includes('Loser'))
+assert.equal(mirrorWin.split('\n\n').at(-1), mirrorExpected.split('\n\n').at(-1))
+assert.ok(mirrorDraw?.endsWith(mirrorTemplate.endings.draw))
+assert.doesNotMatch(mirrorWin, /\{\{\w+\}\}/)
 
 // Authored scenes keep priority even when a generated scene exists for that
 // pair. Missing pairs inside an authored mission shard use the engine.
@@ -146,4 +172,4 @@ try {
 }
 
 console.log('Generated story engine: ' + covered + '/' + covered +
-  ' canonical matchups have structurally valid scenes for both incident variants and all hero roles.')
+  ' canonical matchups have structurally valid scenes for four incidents and all hero roles.')

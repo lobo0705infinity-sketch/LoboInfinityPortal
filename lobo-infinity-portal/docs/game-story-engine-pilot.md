@@ -9,22 +9,26 @@ roster-linked hero selector, or the authored-completeness release gate.
 
 - The browser checks a submitted highlight, the inline catalog, and the
   appropriate mission shard before composing a missing matchup.
-- A missing matchup draws from two linked incidents per mission, a physical
+- A missing matchup draws from four linked incidents per mission, a physical
   scene frame for that mission, and a crew and tactical style for each of the
   45 active armies. Mission frames set the approach, crossfire, distinct role
-  actions, and endings. Game ID chooses an incident; a hero role is selected
+  actions, and endings. The two original incidents use that frame for their
+  action and aftermath; the two new incidents include their own role actions,
+  aftermath, reaction, closing, and outcome-specific endings. Game ID chooses
+  an incident deterministically; a hero role is selected
   only when a decoded, game-linked roster has an eligible model.
 - The existing renderer supplies player names, the actual roster-selected
   model, and the appropriate win, loss, or draw ending.
 - It runs entirely in local TypeScript. There is no model call, API key,
   external fee, or deploy step.
 - The engine test validates all 22,770 canonical combinations for each of
-  three hero roles and both incidents with the existing structural quality
-  checker; it also checks remote-authored precedence and roster linkage.
+  three hero roles and four incidents (273,240 scenes) with the existing
+  structural quality checker. It also checks authored precedence, roster
+  linkage and ambiguity, and rendered mirror games and outcomes.
 
 ## Editorial limit
 
-**This is a pilot, not 22,770 independently written stories.** Forty-four
+**This is a pilot, not 22,770 independently written stories.** Eighty-eight
 curated incident seeds are recombined with army descriptions and mission
 frames. The automated check catches malformed stories, but it cannot prove
 that a combination has a fresh plot, accurate faction character, or natural
@@ -36,8 +40,8 @@ written-story count.
 `node --experimental-strip-types scripts/sample-generated-game-stories.mts`
 emits 110 reproducible JSONL scenes across all 22 missions: 22 mirror
 matchups, 37 objective, 37 gunfighting, and 36 close-combat roles, with all
-three endings attached to each. Both incident variants appear for each mission.
-The scene paragraphs in this sample run from 42 to 63 words.
+  three endings attached to each. All four incident variants appear for each
+mission. The scene paragraphs in this sample run from 42 to 64 words.
 
 The mission frames remove several sampled setting clashes, including a
 network trace across the B-Pong court, checkpoint signs on a bridge, and a
@@ -45,16 +49,24 @@ loading platform inside a ration corridor. Some objectives now stop at the
 critical decision so a loss or draw can follow without reversing an already
 completed rescue or transmission. Compared with individually authored scenes
 in the mission shards, the prose still lacks distinct turns for most pairs.
-Only **44 of the 110 middle paragraphs are distinct**; the incident library is
-the editorial bottleneck. This sample is a reproducible review aid, not a
-statistical proof of acceptable story quality.
+**88 of 110 middle paragraphs are distinct**: each mission contributes four
+different incident complications, with the fifth sample reusing one. All 110
+openings vary by incident and army, while all 110 final paragraphs vary by
+incident, role, and army. The highest within-mission Jaccard overlap for
+three-word runs in the four sampled middle paragraphs is 0.240, for Dead
+Man's Switch. This lexical measure catches shared phrasing but cannot detect
+two incidents with the same underlying plot. Read all three possible endings
+against each incident: a tentative hero action can lead coherently to a win,
+loss, or draw. The sample is a reproducible review aid, not a statistical proof
+of acceptable story quality.
 
-Before changing the release gate or using this in production, expand the
-incident library, review a blinded sample with a human editor against the
-authored stories, and measure near-duplicate plots within each mission.
-Review rendered mirror games, all three outcomes, and games with incomplete
-or ambiguous lists. The draft PR and authored-completeness release gate stay
-in place through that review.
+The next decision needs a human editor to compare a blinded selection of
+generated scenes with individually written ones for natural prose, faction
+voice, mission evidence, and plot originality. The structural checker and
+word overlap cannot make that judgment. If generated coverage becomes an
+accepted release criterion, specify and approve a separate gate; leave the
+current authored-completeness gate intact. The pilot remains a draft PR until
+that decision.
 
 ## Verification
 

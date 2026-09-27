@@ -2,6 +2,7 @@ import { CANONICAL_ARMY_REGISTRY } from '../config/armies.ts'
 import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
+import { MISSION_STORY_ADDITIONAL_SEEDS } from '../data/generatedStoryAdditionalSeeds.ts'
 import { MISSION_STORY_FRAMES } from '../data/generatedStoryFrames.ts'
 import { MISSION_STORY_SEEDS } from '../data/generatedStorySeeds.ts'
 import { MISSION_STORY_TEXTURES } from '../data/generatedStoryTextures.ts'
@@ -55,15 +56,15 @@ export function composeGameStory(
   const heroVoice = ARMY_STORY_VOICES[hero.id]
   const otherVoice = ARMY_STORY_VOICES[opponent.id]
   if (!heroVoice || !otherVoice) return null
-  const seedList = MISSION_STORY_SEEDS[canonical]
+  const seedList = [...MISSION_STORY_SEEDS[canonical], ...MISSION_STORY_ADDITIONAL_SEEDS[canonical]]
   const seed = seedList[stableHash(key + ':' + String(gameId)) % seedList.length]
   const frame = MISSION_STORY_FRAMES[canonical]
   const texture = MISSION_STORY_TEXTURES[canonical]
   const heroAction = role === 'objective'
     ? seed.objectiveAction
     : role === 'gunfighting'
-      ? frame.gunfighting
-      : frame.closeCombat
+      ? seed.gunfightingAction ?? frame.gunfighting
+      : seed.closeCombatAction ?? frame.closeCombat
 
   return {
     mission: canonical,
@@ -75,10 +76,10 @@ export function composeGameStory(
         ' ' + frame.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
         tactics[otherVoice.style].defense + ' ' + frame.position + '. ' + frame.stakes,
       seed.complication + ' ' + frame.crossfire + ' ' + seed.turn,
-      '{{hero}} ' + heroAction + '. ' + texture.afterAction + ' ' + frame.reaction +
-        ' ' + texture.closing,
+      '{{hero}} ' + heroAction + '. ' + (seed.afterAction ?? texture.afterAction) + ' ' +
+        (seed.reaction ?? frame.reaction) + ' ' + (seed.closing ?? texture.closing),
     ],
-    endings: frame.endings,
+    endings: seed.endings ?? frame.endings,
   }
 }
 
