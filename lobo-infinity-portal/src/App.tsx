@@ -45,7 +45,6 @@ const EventHome = lazyRoute('EventHome', () => import('./pages/EventHome'))
 const FactionProfile = lazyRoute('FactionProfile', () => import('./pages/FactionProfile'))
 const Factions = lazyRoute('Factions', () => import('./pages/Factions'))
 const GameDetails = lazyRoute('GameDetails', () => import('./pages/GameDetails'))
-const HallOfFame = lazyRoute('HallOfFame', () => import('./pages/HallOfFame'))
 const LeagueIntegrity = lazyRoute('LeagueIntegrity', () => import('./pages/LeagueIntegrity'))
 const LeagueOperations = lazyRoute('LeagueOperations', () => import('./pages/LeagueOperations'))
 const MissionProfile = lazyRoute('MissionProfile', () => import('./pages/MissionProfile'))
@@ -55,7 +54,6 @@ const PastEvents = lazyRoute('PastEvents', () => import('./pages/PastEvents'))
 const PlayerComparison = lazyRoute('PlayerComparison', () => import('./pages/PlayerComparison'))
 const PlayerProfile = lazyRoute('PlayerProfile', () => import('./pages/PlayerProfile'))
 const Players = lazyRoute('Players', () => import('./pages/Players'))
-const Rivalries = lazyRoute('Rivalries', () => import('./pages/Rivalries'))
 const Rules = lazyRoute('Rules', () => import('./pages/Rules'))
 const Schedule = lazyRoute('Schedule', () => import('./pages/Schedule'))
 const Standings = lazyRoute('Standings', () => import('./pages/Standings'))
@@ -116,7 +114,7 @@ function AuthShell() {
                 <Route path="/league-operations" element={<MeasuredRoute name="LeagueOperations"><LeagueOperations /></MeasuredRoute>} />
                 <Route path="/community" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
                 <Route path="/players" element={<MeasuredRoute name="Players"><Players /></MeasuredRoute>} />
-                <Route path="/rivalries" element={<MeasuredRoute name="Rivalries"><Rivalries /></MeasuredRoute>} />
+                <Route path="/rivalries" element={<Navigate replace to="/compare" />} />
                 <Route path="/match-finder" element={<Navigate replace to="/event/event-current-league" />} />
                 <Route path="/compare" element={<MeasuredRoute name="PlayerComparison"><PlayerComparison /></MeasuredRoute>} />
                 <Route path="/players/:playerName" element={<MeasuredRoute name="PlayerProfile"><PlayerProfile /></MeasuredRoute>} />
@@ -137,7 +135,7 @@ function AuthShell() {
                 <Route path="/dashboard" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
                 <Route path="/intelligence" element={<Navigate replace to="/army-intelligence" />} />
                 <Route path="/army-intelligence" element={<MeasuredRoute name="ArmyIntelligence"><ArmyIntelligence /></MeasuredRoute>} />
-                <Route path="/hall-of-fame" element={<MeasuredRoute name="HallOfFame"><HallOfFame /></MeasuredRoute>} />
+                <Route path="/hall-of-fame" element={<Navigate replace to="/analytics" />} />
                 <Route path="/news" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/news/:id" element={<Navigate replace to="/dashboard" />} />
                 <Route path="/events" element={<MeasuredRoute name="PastEvents"><PastEvents /></MeasuredRoute>} />

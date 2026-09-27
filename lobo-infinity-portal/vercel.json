@@ -27,6 +27,18 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/hall-of-fame",
+      "destination": "/analytics",
+      "permanent": true
+    },
+    {
+      "source": "/rivalries",
+      "destination": "/compare",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/sitemap.xml",
@@ -37,7 +49,7 @@
       "destination": "/api/public-search-page?page=/"
     },
     {
-      "source": "/:page(explore|army-intelligence|games|events|players|factions|missions|streams|army-lists|analytics|hall-of-fame|rivalries|compare|standings|schedule|league-operations|community|rules)",
+      "source": "/:page(explore|army-intelligence|games|events|players|factions|missions|streams|army-lists|analytics|compare|standings|schedule|league-operations|community|rules)",
       "destination": "/api/public-search-page?page=/:page"
     },
     {

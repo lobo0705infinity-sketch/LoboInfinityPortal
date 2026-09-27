@@ -13,7 +13,7 @@ const mobilePrimaryItems: MobilePrimaryItem[] = [
   { icon: 'dashboard', label: 'Home', to: '/', matches: (path) => path === '/' || path === '/dashboard' },
   {
     icon: 'army', label: 'Explore', to: '/explore',
-    matches: (path) => ['/explore', '/army-intelligence', '/intelligence', '/games', '/game', '/players', '/player', '/compare', '/rivalries', '/factions', '/faction', '/missions', '/mission', '/army-lists', '/streams', '/analytics', '/hall-of-fame'].some((route) => path === route || path.startsWith(`${route}/`)),
+    matches: (path) => ['/explore', '/army-intelligence', '/intelligence', '/games', '/game', '/players', '/player', '/compare', '/factions', '/faction', '/missions', '/mission', '/army-lists', '/streams', '/analytics'].some((route) => path === route || path.startsWith(`${route}/`)),
   },
   {
     icon: 'standings', label: 'Events', to: '/events',

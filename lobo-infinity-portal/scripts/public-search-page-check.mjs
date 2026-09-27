@@ -15,6 +15,8 @@ assert.ok(army.links.some(link => link.href === '/games/109'))
 assert.equal(publicDatasetForPath('/'), 'games')
 assert.equal(publicDatasetForPath('/games/117'), 'games')
 assert.equal(publicDatasetForPath('/commissioner'), null)
+assert.equal(describePublicSearchPage('/hall-of-fame'), null)
+assert.equal(describePublicSearchPage('/rivalries'), null)
 
 const reports = [
   { id: 118, mission: "Dead Man's Switch", player1Faction: 'Corregidor Jurisdictional Command', player2Faction: 'Torchlight Brigade', bestMoment: '' },

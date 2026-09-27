@@ -87,18 +87,6 @@ const publicPages = {
     heading: 'League analytics', intro: 'Explore recorded game statistics and trends across the portal.',
     links: [{ label: 'Browse factions', href: '/factions' }],
   },
-  '/hall-of-fame': {
-    title: 'Infinity N5 Hall of Fame | Lobo Infinity Portal',
-    description: 'Browse Lobo Infinity player achievements, historic results, and league records.',
-    heading: 'Hall of Fame', intro: 'See the people and records that shaped the league.',
-    links: [{ label: 'See standings', href: '/standings' }],
-  },
-  '/rivalries': {
-    title: 'Infinity N5 Player Rivalries | Lobo Infinity Portal',
-    description: 'Explore head-to-head matchups and past results between Lobo Infinity players.',
-    heading: 'Rivalries', intro: 'Follow head-to-head matchups built from recorded games.',
-    links: [{ label: 'Read battle reports', href: '/games' }],
-  },
   '/compare': {
     title: 'Compare Infinity N5 Players | Lobo Infinity Portal',
     description: 'Compare Lobo Infinity player records and head-to-head results from public games.',

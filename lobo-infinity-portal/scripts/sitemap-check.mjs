@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { buildSitemap } from '../api/sitemap.mjs'
+
+const { redirects, rewrites } = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
+for (const [source, destination] of [['/hall-of-fame', '/analytics'], ['/rivalries', '/compare']]) {
+  assert.ok(redirects.some(redirect => redirect.source === source && redirect.destination === destination && redirect.permanent === true))
+  assert.ok(!rewrites.some(rewrite => rewrite.source.includes(source.slice(1))))
+}
 
 const snapshotId = '20260927T160000Z'
 const payloads = {
@@ -18,11 +25,13 @@ for (const path of ['/', '/army-intelligence', '/games/117', '/event/event-curre
   assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app${path}</loc>`), path)
 }
 assert.doesNotMatch(xml, /commissioner/)
-assert.equal((xml.match(/<loc>https:\/\/lobo-infinity-portal.vercel.app\//g) ?? []).length, 23)
+assert.doesNotMatch(xml, /\/hall-of-fame|\/rivalries/)
+assert.equal((xml.match(/<loc>https:\/\/lobo-infinity-portal.vercel.app\//g) ?? []).length, 21)
 
 const fallback = await buildSitemap({ fetchObject: async () => ({ ok: false, status: 503 }) })
 assert.equal(fallback.snapshotAvailable, false)
 assert.match(fallback.xml, /<loc>https:\/\/lobo-infinity-portal.vercel.app\/army-intelligence<\/loc>/)
 assert.doesNotMatch(fallback.xml, /\/games\/117/)
+assert.doesNotMatch(fallback.xml, /\/hall-of-fame|\/rivalries/)
 
 console.log('Sitemap public URL generation and fallback passed.')

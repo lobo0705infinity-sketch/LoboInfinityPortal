@@ -44,8 +44,7 @@ assert.equal(getGameParticipants(legacyDraw).includes('Draw'), false)
 const publicApp = readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 assert.match(publicApp, /function DashboardGameTable[\s\S]*?<GameParticipants game=\{game\}/)
 assert.match(publicApp, /function GameTable[\s\S]*?<GameParticipants game=\{g\}/)
-assert.match(publicApp, /function GameDetail[\s\S]*?getGameParticipants\(g\)/)
-assert.match(publicApp, /function Rivalries[\s\S]*?getGameParticipants\(g\)/)
+assert.match(publicApp, /function GameParticipants[\s\S]*?getGameParticipants\(game\)/)
 
 console.log('Draw participant display regression passed.')
 
