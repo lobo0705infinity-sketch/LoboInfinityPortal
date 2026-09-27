@@ -2244,4 +2244,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Tartary Army Corps"
+      ],
+      "heroFaction": "Tartary Army Corps",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a wind-scoured tractor factory exposed a circular room containing a steel seed drill. Kestrel Colonial Force engineers descended through a construction bore, while Tartary Army Corps approached along an older tunnel. The crews were still comparing their incompatible surveys when a buried flywheel began turning, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the steel seed drill from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the steel seed drill and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "USAriadna Ranger Force"
+      ],
+      "heroFaction": "USAriadna Ranger Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a mesa fire-watch station exposed a circular room containing a ranger's fire map. Kestrel Colonial Force engineers descended through a construction bore, while USAriadna Ranger Force approached along an older tunnel. The crews were still comparing their incompatible surveys when smoke rose from a shaft with no fire, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the ranger's fire map. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the ranger's fire map and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Haqqislam"
+      ],
+      "heroFaction": "Haqqislam",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A foundation dig beside a date orchard infirmary exposed a circular room containing a ivory dosage wheel. Kestrel Colonial Force engineers descended through a construction bore, while Haqqislam approached along an older tunnel. The crews were still comparing their incompatible surveys when the irrigation channels reversed, turning a disputed recovery into an urgent escape.",
+        "{{hero}} intercepted an attacker at the chamber entrance and fought along a ledge above the ivory dosage wheel. The trooper forced the opponent back, caught the artifact before it fell, and discovered coordinates engraved underneath. They outlined a hatch disguised so carefully that the surrounding floor appeared to be natural bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the ivory dosage wheel and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Hassassin Bahram"
+      ],
+      "heroFaction": "Hassassin Bahram",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a cliffside observatory garden exposed a circular room containing a black-glass star dial. Kestrel Colonial Force engineers descended through a construction bore, while Hassassin Bahram approached along an older tunnel. The crews were still comparing their incompatible surveys when the garden's stone shutters opened, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the black-glass star dial from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the black-glass star dial and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Qapu Khalqi"
+      ],
+      "heroFaction": "Qapu Khalqi",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a mud-brick river customs house exposed a circular room containing a corroded cargo seal. Kestrel Colonial Force engineers descended through a construction bore, while Qapu Khalqi approached along an older tunnel. The crews were still comparing their incompatible surveys when the river undercut the entry ramp, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the corroded cargo seal. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the corroded cargo seal and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Ramah Taskforce"
+      ],
+      "heroFaction": "Ramah Taskforce",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a mobile desert clinic exposed a circular room containing a folding surgical lantern. Kestrel Colonial Force engineers descended through a construction bore, while Ramah Taskforce approached along an older tunnel. The crews were still comparing their incompatible surveys when a surgical alarm called an absent team, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the folding surgical lantern from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the folding surgical lantern and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Nomads"
+      ],
+      "heroFaction": "Nomads",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a decommissioned fusion carnival exposed a circular room containing a magnetic ride token. Kestrel Colonial Force engineers descended through a construction bore, while Nomads approached along an older tunnel. The crews were still comparing their incompatible surveys when the dormant rides lit in sequence, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the magnetic ride token. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the magnetic ride token and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Bakunin Jurisdictional Command"
+      ],
+      "heroFaction": "Bakunin Jurisdictional Command",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A foundation dig beside a painted cavern commune exposed a circular room containing a mosaic memory plate. Kestrel Colonial Force engineers descended through a construction bore, while Bakunin Jurisdictional Command approached along an older tunnel. The crews were still comparing their incompatible surveys when paint flaked away to reveal fresh arrows, turning a disputed recovery into an urgent escape.",
+        "{{hero}} intercepted an attacker at the chamber entrance and fought along a ledge above the mosaic memory plate. The trooper forced the opponent back, caught the artifact before it fell, and discovered coordinates engraved underneath. They outlined a hatch disguised so carefully that the surrounding floor appeared to be natural bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the mosaic memory plate and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Corregidor Jurisdictional Command"
+      ],
+      "heroFaction": "Corregidor Jurisdictional Command",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a wrecked orbital cargo lift exposed a circular room containing a counterweighted cargo manifest. Kestrel Colonial Force engineers descended through a construction bore, while Corregidor Jurisdictional Command approached along an older tunnel. The crews were still comparing their incompatible surveys when the lift counterweight dropped deeper, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the counterweighted cargo manifest from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the counterweighted cargo manifest and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Tunguska Jurisdictional Command"
+      ],
+      "heroFaction": "Tunguska Jurisdictional Command",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a underground securities exchange exposed a circular room containing a diamond data wafer. Kestrel Colonial Force engineers descended through a construction bore, while Tunguska Jurisdictional Command approached along an older tunnel. The crews were still comparing their incompatible surveys when vault doors locked behind both crews, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the diamond data wafer. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the diamond data wafer and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Combined Army"
+      ],
+      "heroFaction": "Combined Army",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a meteorite assay trench exposed a circular room containing a three-pronged mineral key. Kestrel Colonial Force engineers descended through a construction bore, while Combined Army approached along an older tunnel. The crews were still comparing their incompatible surveys when the meteorite fragments started humming, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the three-pronged mineral key from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the three-pronged mineral key and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Morat Aggression Force"
+      ],
+      "heroFaction": "Morat Aggression Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a volcanic prison workshop exposed a circular room containing a basalt restraint mold. Kestrel Colonial Force engineers descended through a construction bore, while Morat Aggression Force approached along an older tunnel. The crews were still comparing their incompatible surveys when chains tightened around empty benches, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the basalt restraint mold. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the basalt restraint mold and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Next Wave"
+      ],
+      "heroFaction": "Next Wave",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A foundation dig beside a prototype irrigation dome exposed a circular room containing a transparent root scanner. Kestrel Colonial Force engineers descended through a construction bore, while Next Wave approached along an older tunnel. The crews were still comparing their incompatible surveys when roots punched through the pressure floor, turning a disputed recovery into an urgent escape.",
+        "{{hero}} intercepted an attacker at the chamber entrance and fought along a ledge above the transparent root scanner. The trooper forced the opponent back, caught the artifact before it fell, and discovered coordinates engraved underneath. They outlined a hatch disguised so carefully that the surrounding floor appeared to be natural bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the transparent root scanner and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Onyx Contact Force"
+      ],
+      "heroFaction": "Onyx Contact Force",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a alien quarantine bunker exposed a circular room containing a sealed violet ampoule. Kestrel Colonial Force engineers descended through a construction bore, while Onyx Contact Force approached along an older tunnel. The crews were still comparing their incompatible surveys when the ampoule rack began to frost, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the sealed violet ampoule from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the sealed violet ampoule and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Shasvastii Expeditionary Force"
+      ],
+      "heroFaction": "Shasvastii Expeditionary Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a fungal research terrace exposed a circular room containing a spore-stained field notebook. Kestrel Colonial Force engineers descended through a construction bore, while Shasvastii Expeditionary Force approached along an older tunnel. The crews were still comparing their incompatible surveys when a warm mist climbed from the lower beds, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the spore-stained field notebook. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the spore-stained field notebook and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "ALEPH"
+      ],
+      "heroFaction": "ALEPH",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a subsurface logic institute exposed a circular room containing a silver proof engine. Kestrel Colonial Force engineers descended through a construction bore, while ALEPH approached along an older tunnel. The crews were still comparing their incompatible surveys when the proof engine rejected every known axiom, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the silver proof engine from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the silver proof engine and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Operations Subsection"
+      ],
+      "heroFaction": "Operations Subsection",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a automated metro depot exposed a circular room containing a porcelain transit baton. Kestrel Colonial Force engineers descended through a construction bore, while Operations Subsection approached along an older tunnel. The crews were still comparing their incompatible surveys when an empty train announced its arrival, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the porcelain transit baton. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the porcelain transit baton and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Steel Phalanx"
+      ],
+      "heroFaction": "Steel Phalanx",
+      "role": "closeCombat",
+      "paragraphs": [
+        "A foundation dig beside a ruined amphitheater exposed a circular room containing a bronze chorus mask. Kestrel Colonial Force engineers descended through a construction bore, while Steel Phalanx approached along an older tunnel. The crews were still comparing their incompatible surveys when recorded applause shook dust from the roof, turning a disputed recovery into an urgent escape.",
+        "{{hero}} intercepted an attacker at the chamber entrance and fought along a ledge above the bronze chorus mask. The trooper forced the opponent back, caught the artifact before it fell, and discovered coordinates engraved underneath. They outlined a hatch disguised so carefully that the surrounding floor appeared to be natural bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the bronze chorus mask and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "O-12"
+      ],
+      "heroFaction": "O-12",
+      "role": "objective",
+      "paragraphs": [
+        "A foundation dig beside a buried treaty archive exposed a circular room containing a multilingual boundary codex. Kestrel Colonial Force engineers descended through a construction bore, while O-12 approached along an older tunnel. The crews were still comparing their incompatible surveys when the codex translated a voice beneath them, turning a disputed recovery into an urgent escape.",
+        "{{hero}} inspected the old braces, traced a live conduit, and isolated the multilingual boundary codex from the failing machinery. The specialist copied a ring of tiny coordinates before lifting it free. Those marks described a second excavation directly below the room, although the floor showed no hatch or seam.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the multilingual boundary codex and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Starmada"
+      ],
+      "heroFaction": "Starmada",
+      "role": "gunfighting",
+      "paragraphs": [
+        "A foundation dig beside a tidal navigation school exposed a circular room containing a gyroscopic tide compass. Kestrel Colonial Force engineers descended through a construction bore, while Starmada approached along an older tunnel. The crews were still comparing their incompatible surveys when the compass spun toward the seaward wall, turning a disputed recovery into an urgent escape.",
+        "{{hero}} held the chamber entrance with measured rifle fire while surveyors reached the gyroscopic tide compass. A ricochet exposed metal beneath the floor, and the trooper shifted aim to protect the find instead of pursuing the retreating rival. Surveyors uncovered coordinates stamped around a hatch disguised as bedrock.",
+        "{{heroPlayer}}'s crew opened the hidden hatch and lowered a camera into darkness. {{otherPlayer}}'s team stabilized the original room, preserving the only route back to daylight. The camera returned images of neatly stacked equipment bearing tomorrow's date, then showed a fresh footprint crossing the dust toward the lens."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the gyroscopic tide compass and the first images from the hidden level.",
+        "heroLoses": "{{otherPlayer}} stabilized the excavation and closed the disguised hatch around the rival crew.",
+        "draw": "Both crews escaped with evidence, but the dated equipment and its owner remained below."
+      },
+      "mission": "The Dig"
+    }
 ]
