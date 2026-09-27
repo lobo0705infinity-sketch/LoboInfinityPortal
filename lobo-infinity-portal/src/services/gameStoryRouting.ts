@@ -1,7 +1,9 @@
 import { GAME_STORY_CATALOG } from '../data/gameStoryCatalog.ts'
 import { renderSubmittedHighlightStory } from '../data/gameHighlightStories.ts'
+import { getCanonicalMissionName } from '../config/missions.ts'
 import storyManifest from '../data/storyManifest.json' with { type: 'json' }
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
+import { renderGeneratedGameStory } from './generatedGameStory.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate } from './gameStoryTemplate.ts'
 
@@ -22,13 +24,19 @@ export function getAuthoredBattleStory(game: RecentGame, lists: ArmyIntelligence
 export async function loadAuthoredBattleStory(game: RecentGame, lists: ArmyIntelligenceList[], signal?: AbortSignal): Promise<string | null> {
   const immediate = getAuthoredBattleStory(game, lists)
   if (immediate) return immediate
-  const mission = game.mission
+  const mission = getCanonicalMissionName(game.mission)
   const key = storyTemplateKey(mission, game.winnerFaction, game.loserFaction)
-  if (!key || !(storyManifest.missions as string[]).includes(mission)) return null
+  if (!key) return null
+  if (!(storyManifest.missions as string[]).includes(mission)) {
+    return renderGeneratedGameStory(game, lists) ?? PENDING_BATTLE_STORY
+  }
   const filename = mission.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   const result = await fetch(`/game-stories/${filename}.json`, { signal })
-  if (!result.ok) return null
+  if (!result.ok) {
+    return result.status === 404 ? renderGeneratedGameStory(game, lists) ?? PENDING_BATTLE_STORY : null
+  }
   const stories = await result.json() as GameStoryTemplate[]
   const template = stories.find((story) => storyTemplateKey(story.mission, ...story.factions) === key)
-  return template ? renderGameStoryTemplate(template, game, lists) ?? PENDING_BATTLE_STORY : null
+  if (template) return renderGameStoryTemplate(template, game, lists) ?? PENDING_BATTLE_STORY
+  return renderGeneratedGameStory(game, lists) ?? PENDING_BATTLE_STORY
 }
