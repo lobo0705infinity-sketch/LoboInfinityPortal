@@ -30,8 +30,10 @@ differ. Older game records do not identify which edition was played.
 - Four concrete incidents per mission establish the opening, complication,
   turn, and mission objective action. A mission frame supplies crossfire,
   role actions, and alternative win, loss, and draw endings; each army
-  supplies a crew description and tactical approach. Game ID chooses an
-  incident deterministically.
+  supplies a crew description, maneuver, defensive response, follow-through,
+  and outcome beat. The 21 other mission frames use mission-neutral army
+  methods while retaining their own incident turns, objective actions and
+  endings. Game ID chooses an incident deterministically.
 - The Area of Interest pilot additionally accepts `location` and `weather`
   tags. It selects tags deterministically when omitted and rejects explicit
   incompatible combinations. No weather effects (`none`) is valid everywhere.
@@ -40,9 +42,10 @@ differ. Older game records do not identify which edition was played.
   exposed approach and opposing fire without describing weather. A distinct
   maneuver, defense, continuation, win beat, and draw beat for each of the 45
   active armies now changes the contest and all three endings. Eight role-action
-  patterns still group armies by broad tactical style. Other
-  mission families do not yet use these tags. Game records do not contain
-  table location or weather; these are fictional scene settings.
+  patterns still group armies by broad tactical style. Other missions use
+  army-specific tactics without inheriting the relay's panel or switch.
+  They do not use these location and weather tags. Game records do not
+  contain table location or weather; these are fictional scene settings.
 
 | Area of Interest location | Allowed weather tags |
 | --- | --- |
@@ -74,21 +77,21 @@ runtime generation with the current game records; all 22 remain in the
 synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
-including a mirror and all three roles across the sample. It contains 89
-different middle paragraphs, 40–68 words per paragraph, and a maximum
-within-mission middle-paragraph trigram Jaccard overlap of 0.236. That
-lexical measure does not prove plot originality. Repeated mission frames and
-faction descriptions remain easy to recognize across a reading session.
-These 45 method sets distinguish faction actions at one relay, but the shared
-mast, four incidents, eight role-action patterns, and generic scenes for the
-other missions still do not establish original pair-specific plots. The
-methods are fictional extrapolations from broad faction themes described by
+including a mirror and all three roles across the sample. It contains 110
+different middle paragraphs, 49–68 words per paragraph, and a maximum
+within-mission middle-paragraph trigram Jaccard overlap of 0.186. That
+lexical measure does not prove plot originality. Shared mission openings,
+incidents, and hero actions remain recognizable across a reading session.
+The 45 Area and 45 mission-neutral method sets distinguish army tactics in
+every mission, but neither set establishes original plots for every pair.
+The methods are fictional extrapolations from broad faction themes described by
 [Corvus Belli](https://infinityuniverse.com/en), including its descriptions of
 [Tohaa coordination](https://infinityuniverse.com/en/news/tohaa-combat-force-repack-alpha)
 and [Next Wave sabotage](https://infinityuniverse.com/en/factions/combined-army/next-wave).
 They must not imply that a particular unit or action occurred in a recorded
-match. Every Area of Interest template has distinct hero-win, hero-loss and
-draw endings; the result in the game record chooses which one appears.
+match. Every mission template has hero-win, hero-loss and draw endings with
+mission-specific stakes and faction-specific resolution beats; the result
+in the game record chooses which one appears.
 See the [review and ten actual samples](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent, blinded comparison with authored

@@ -3,6 +3,7 @@ import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
+import { MISSION_ARMY_METHODS } from '../data/generatedStoryMissionArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
 import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
@@ -65,6 +66,15 @@ function stableHash(value: string): number {
     hash = Math.imul(hash, 16777619)
   }
   return hash >>> 0
+}
+
+function withoutFinalPeriod(ending: string): string {
+  if (!ending.endsWith('.')) throw new Error('A mission ending must end with a period')
+  return ending.slice(0, -1)
+}
+
+function continueEnding(ending: string, clause: string): string {
+  return withoutFinalPeriod(ending) + '; ' + clause + '.'
 }
 
 // The pair is unordered and canonical. Game ID changes the scene for repeat
@@ -144,6 +154,14 @@ export function composeGameStory(
     : role === 'gunfighting'
       ? scenario.gunfighting
       : scenario.closeCombat
+  const method = MISSION_ARMY_METHODS[hero.id]
+  const response = MISSION_ARMY_METHODS[opponent.id]
+  if (!method || !response) return null
+  const drawnMission = withoutFinalPeriod(scenario.endings.draw)
+  const draw = hero.id === opponent.id
+    ? 'Both crews ' + method.drawBeat + '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
+    : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
+      '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
 
   return {
     mission: canonical,
@@ -154,11 +172,15 @@ export function composeGameStory(
       seed.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
         ' ' + scenario.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
         tactics[otherVoice.style].defense + ' ' + scenario.position + '. ' + scenario.stakes,
-      seed.complication + ' ' + scenario.crossfire + ' ' + seed.turn,
-      '{{hero}} ' + heroAction + '. ' + scenario.afterAction + ' ' +
-        scenario.reaction + ' ' + scenario.closing,
+      seed.complication + ' ' + scenario.crossfire + ' ' + method.maneuver + ' ' + response.defense,
+      seed.turn + ' {{hero}} ' + heroAction + '. ' + scenario.afterAction + ' ' +
+        method.followThrough,
     ],
-    endings: scenario.endings,
+    endings: {
+      heroWins: continueEnding(scenario.endings.heroWins, method.winClause),
+      heroLoses: continueEnding(scenario.endings.heroLoses, response.winClause),
+      draw,
+    },
   }
 }
 

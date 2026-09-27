@@ -4,6 +4,7 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
+import { MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
@@ -18,9 +19,14 @@ assert.equal(armies.length, 45)
 assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 for (const field of ['initiative', 'response', 'followThrough', 'winBeat', 'drawBeat'] as const) {
   assert.equal(new Set(Object.values(AREA_ARMY_METHODS).map((method) => method[field])).size,
     armies.length, `Area of Interest ${field} must distinguish all active armies`)
+}
+for (const field of ['maneuver', 'defense', 'followThrough', 'winClause', 'drawBeat'] as const) {
+  assert.equal(new Set(Object.values(MISSION_ARMY_METHODS).map((method) => method[field])).size,
+    armies.length, `other missions' ${field} must distinguish all active armies`)
 }
 assert.deepEqual(Object.keys(SOURCED_STORY_SCENARIOS).sort(), [...CANONICAL_MISSIONS].sort())
 for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
@@ -123,6 +129,39 @@ for (const opponent of armies) {
   assert.notEqual(first.endings.draw, reversed.endings.draw, `${opponent.name}: draw reflects direction`)
 }
 assert.equal(draws.size, armies.length, 'the same location and incident yield faction-specific draws')
+
+// Every other mission retains its own incident and objective, but the side
+// that leads changes the middle, continuation, and all three endings.
+for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+  const scenario = SOURCED_STORY_SCENARIOS[mission]
+  assert.ok(scenario)
+  for (const opponent of armies) {
+    const tohaa = composeGameStory(mission, tohaaArmy.name, opponent.name,
+      tohaaArmy.name, 'objective', 0)
+    assert.ok(tohaa)
+    assertGameStoryQuality(tohaa, `${mission}: Tohaa / ${opponent.name}`)
+    assert.ok(tohaa.paragraphs[1].includes(MISSION_ARMY_METHODS.tohaa.maneuver))
+    assert.ok(tohaa.paragraphs[1].includes(MISSION_ARMY_METHODS[opponent.id].defense))
+    assert.ok(tohaa.paragraphs[2].includes(MISSION_ARMY_METHODS.tohaa.followThrough))
+    assert.match(tohaa.paragraphs.join(' '), scenario.anchor)
+    assert.ok(tohaa.endings.heroWins.includes(MISSION_ARMY_METHODS.tohaa.winClause))
+    assert.ok(tohaa.endings.heroLoses.includes(MISSION_ARMY_METHODS[opponent.id].winClause))
+    assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS.tohaa.drawBeat))
+    const missionDraw = scenario.endings.draw.slice(0, -1)
+    assert.ok(tohaa.endings.draw.includes(missionDraw[0].toLowerCase() + missionDraw.slice(1)))
+    if (opponent.id === 'tohaa') continue
+    assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS[opponent.id].drawBeat))
+    const reversed = composeGameStory(mission, tohaaArmy.name, opponent.name,
+      opponent.name, 'objective', 0)
+    assert.ok(reversed)
+    assertGameStoryQuality(reversed, `${mission}: ${opponent.name} / Tohaa`)
+    assert.notEqual(tohaa.paragraphs[1], reversed.paragraphs[1])
+    assert.notEqual(tohaa.paragraphs[2], reversed.paragraphs[2])
+    assert.notEqual(tohaa.endings.heroWins, reversed.endings.heroWins)
+    assert.notEqual(tohaa.endings.heroLoses, reversed.endings.heroLoses)
+    assert.notEqual(tohaa.endings.draw, reversed.endings.draw)
+  }
+}
 for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
   for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
     const tags = { location, weather }
@@ -230,7 +269,8 @@ assert.ok(winnerText?.endsWith(template.endings.heroWins
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{hero}}', 'the Test Trooper')))
 assert.ok(loserText?.endsWith(template.endings.heroLoses
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
-assert.ok(drawText?.endsWith(template.endings.draw))
+assert.ok(drawText?.endsWith(template.endings.draw
+  .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
 
 // Exercise every mission incident and role through the real renderer with
 // linked synthetic rosters. A structurally valid template may still fail at
