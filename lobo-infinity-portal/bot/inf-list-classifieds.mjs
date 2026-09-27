@@ -1,6 +1,6 @@
 // The current 20-card Operations Deck, as shown on the physical cards. The older
 // classified-deck-en.pdf predates this deck and must not be used for its objectives.
-// Season 18 selection, Long Service, CivEvac, and Secure HVT:
+// Season 18 selection, Long Service, and CivEvac:
 // https://experience.corvusbelli.com/en/infinity/its
 export const CLASSIFIED_DECK_URL = 'https://store.corvusbelli.com/en/organized-play/infinity/all/operations-deck'
 
@@ -50,12 +50,10 @@ export function assessInfListClassifieds(profiles = []) {
       possible: eligible.length > 0,
     }
   })
-  const secureHvt = uniqueProfiles(profiles.filter(activeTrooper))
   return {
     cards,
     possible: cards.filter(card => card.possible).length,
     total: cards.length,
-    secureHvt,
   }
 }
 
@@ -73,13 +71,7 @@ export function formatInfListClassifiedEmbeds(coverage) {
         ? `${shorten(profileLabels(card.eligible), 220 - (card.detail ? card.detail.length + 1 : 0))}${card.detail ? `\n${card.detail}` : ''}`
         : shorten(`No qualifying profile: ${card.requirement}.`, 220),
       inline: false,
-    })).concat([{
-      name: `${coverage.secureHvt.length ? '✓' : '—'} Optional · Secure HVT`,
-      value: coverage.secureHvt.length
-        ? `${shorten(profileLabels(coverage.secureHvt), 135)}\nAt game end, cover the enemy HVT and keep enemies away from your own HVT. Optional substitute when the scenario allows it.`
-        : 'No active trooper identified.',
-      inline: false,
-    }]),
+    })),
   }]
 }
 
