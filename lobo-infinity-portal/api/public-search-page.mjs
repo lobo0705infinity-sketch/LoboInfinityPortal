@@ -38,7 +38,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    const html = renderPublicSearchHtml(await readTemplate(), page)
+    const html = renderPublicSearchHtml(await readTemplate(request), page)
     response.setHeader('content-type', 'text/html; charset=utf-8')
     response.setHeader('x-content-type-options', 'nosniff')
     response.setHeader('cache-control', snapshotAvailable
@@ -89,8 +89,32 @@ function renderInitialContent(page) {
   return `<main style="box-sizing:border-box;max-width:72rem;margin:0 auto;padding:3rem 1.5rem;color:#f5f2ea;font-family:system-ui,sans-serif;line-height:1.5"><p style="color:#f2c35a;text-transform:uppercase;letter-spacing:.12em">Lobo Infinity Portal</p><h1 style="font-size:clamp(2rem,5vw,3.5rem);line-height:1.1">${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.intro)}</p><nav aria-label="Explore this public page"><ul>${links}</ul></nav></main>`
 }
 
-async function readTemplate() {
-  if (!templatePromise) templatePromise = readFile(join(process.cwd(), 'dist', 'app-shell.html'), 'utf8')
+async function readTemplate(request) {
+  if (!templatePromise) {
+    templatePromise = (async () => {
+      for (const location of [
+        join(process.cwd(), 'dist', 'app-shell.html'),
+        new URL('../dist/app-shell.html', import.meta.url),
+      ]) {
+        try { return await readFile(location, 'utf8') } catch (error) {
+          if (error?.code !== 'ENOENT') throw error
+        }
+      }
+
+      // The built shell is also a static route. Some Vercel function bundles do
+      // not mount build output next to their source even with includeFiles.
+      const host = String(request.headers?.host || '').toLowerCase()
+      const canonicalHost = new URL(SITE_ORIGIN).host
+      const deploymentHost = String(process.env.VERCEL_URL || '').toLowerCase()
+      const trustedHost = host === canonicalHost || (deploymentHost && host === deploymentHost) ? host : canonicalHost
+      const response = await fetch(`https://${trustedHost}/app-shell.html`, {
+        signal: AbortSignal.timeout(8_000),
+        headers: host === trustedHost && request.headers?.cookie ? { cookie: request.headers.cookie } : {},
+      })
+      if (!response.ok) throw new Error(`Built portal shell returned HTTP ${response.status}`)
+      return response.text()
+    })().catch(error => { templatePromise = null; throw error })
+  }
   return templatePromise
 }
 
