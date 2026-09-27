@@ -6,7 +6,7 @@ import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
-  MISSION_ARMY_PIVOT_MANEUVERS, MISSION_ARMY_TACTICAL_OPENERS } from '../src/data/generatedStoryMissionArmies.ts'
+  MISSION_ARMY_PIVOT_MANEUVERS } from '../src/data/generatedStoryMissionArmies.ts'
 import { MISSION_ROLE_ALTERNATES } from '../src/data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
@@ -28,7 +28,6 @@ assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
-assert.deepEqual(Object.keys(MISSION_ARMY_TACTICAL_OPENERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_ALTERNATE_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_PIVOT_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
@@ -44,8 +43,6 @@ for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
     mission + ': a defensive position must be a place, not another guard')
 }
 for (const army of armies) {
-  assert.ok(MISSION_ARMY_TACTICAL_OPENERS[army.id].split(/\s+/).length >= 4,
-    army.name + ': tactical opener must make a substantive choice')
   const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
     MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
   assert.equal(new Set(decisions).size, 4, army.name + ': four distinct authored decisions')
@@ -160,6 +157,12 @@ for (const mission of CANONICAL_MISSIONS) {
         'PanOceania', role, gameId)
       assert.ok(generated)
       assertGameStoryMissionObjective(generated, `${mission}/${role}/${gameId}`)
+      for (const paragraph of generated.paragraphs) {
+        const visible = paragraph.replaceAll('{{heroPlayer}}', 'Player A')
+          .replaceAll('{{otherPlayer}}', 'Player B').replaceAll('{{hero}}', 'the operative')
+        assert.ok(visible.trim().split(/\s+/).length <= 75,
+          `${mission}/${role}/${gameId}: preview must count expanded names`)
+      }
       assert.doesNotMatch(generated.paragraphs[0], /, while \{\{otherPlayer\}\}/,
         `${mission}: old repeated army-introduction scaffold`)
       openingOrders.add(generated.paragraphs[0].indexOf('{{heroPlayer}}') <
@@ -167,6 +170,26 @@ for (const mission of CANONICAL_MISSIONS) {
     }
   }
   assert.equal(openingOrders.size, 2, mission + ': test both directions of the opening')
+}
+for (const [mission, first, second, role, gameId] of [
+  ['Crossing Lines', 'ALEPH', 'ALEPH', 'objective', 3],
+  ['Evacuation', 'Japanese Secessionist Army', 'Torchlight Brigade', 'gunfighting', 1],
+] as const) {
+  const story = composeGameStory(mission, first, second, first, role, gameId)
+  assert.ok(story)
+  for (const paragraph of story.paragraphs) {
+    const visible = paragraph.replaceAll('{{heroPlayer}}', 'Player A')
+      .replaceAll('{{otherPlayer}}', 'Player B').replaceAll('{{hero}}', 'the operative')
+    assert.ok(visible.trim().split(/\s+/).length <= 75,
+      `${mission}/${first}/${gameId}: previously overlong visible scene`)
+  }
+}
+for (const faction of ['ALEPH', 'Starmada']) {
+  const story = composeGameStory('B-Pong', faction, 'Next Wave', faction, 'gunfighting', 1)
+  assert.ok(story)
+  assert.doesNotMatch(story.paragraphs.join(' '),
+    /teams (?:timed its crossing|posted a rear watch for its forward team)/,
+    `${faction}: plural crews must not take the old singular possessive`)
 }
 const offMission = {
   ...composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security',
@@ -343,6 +366,31 @@ function sceneForIncident(mission: string, first: string, other: string,
   }
   throw new Error('Could not select ' + mission + ' incident ' + index)
 }
+for (const army of armies) {
+  for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+    const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
+      MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
+    const referents = MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
+    const incidentDecisions = new Set<number>()
+    for (let incident = 0; incident < 4; incident++) {
+      const opponent = army.id === 'druze-bayram-security' ? 'Tohaa' : 'Druze Bayram Security'
+      const story = sceneForIncident(mission, army.name, opponent, 'objective', incident)
+      const index = decisions.findIndex((decision) => story.paragraphs[1].includes(decision
+        .replaceAll('{ground}', referents.advance).replaceAll('{position}', referents.defend)))
+      assert.ok(index >= 0, `${army.name}/${mission}/${incident}: faction decision must survive editing`)
+      incidentDecisions.add(index)
+    }
+    assert.equal(incidentDecisions.size, 4, `${army.name}/${mission}: four incidents must vary the army's tactic`)
+  }
+}
+for (const index of [1, 3]) {
+  const neutralization = sceneForIncident('Neutralization', 'Tohaa', 'Next Wave', 'objective', index)
+  assert.match(neutralization.paragraphs[2],
+    /\{\{hero\}\} tried to carry the Hyperthermal Tech.*into the Neutralization Area/,
+    'the tech bearer must try to enter the area, not stop at its edge')
+  assert.match(neutralization.paragraphs[2], /The bearer (?:stayed outside|remained on the outer edge)/,
+    'the attempted crossing must remain unresolved until the selected outcome')
+}
 for (const mission of ['Provisioning', 'Uplink Center', 'Annihilation']) {
   const story = sceneForIncident(mission, 'Nomads', 'Military Orders', 'gunfighting', 2)
   assert.doesNotMatch(story.paragraphs.join(' '), /guard at the (?:coffin-side guard|antenna-side guards|lieutenant’s guard)/i,
@@ -444,8 +492,8 @@ for (const opponent of armies) {
 }
 assert.equal(draws.size, armies.length, 'the same location and incident yield faction-specific draws')
 
-// Reversing a matchup changes both armies' tactical actions and outcomes;
-// the shared incident and its unresolved physical aftermath remain the same.
+// Reversing a matchup keeps the same physical incident and unresolved
+// consequence, but the chosen army must shape both its decision and its close.
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const scenario = SOURCED_STORY_SCENARIOS[mission]
   assert.ok(scenario)
@@ -459,7 +507,7 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
       `${mission}: army movement needs its objective`)
     const incidentIndex = scenario.incidents.findIndex((seed) => tohaa.paragraphs[0].startsWith(seed.opening))
     assert.ok(incidentIndex >= 0)
-    assert.ok(tohaa.paragraphs[2].includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].aftermath),
+    assert.ok(tohaa.paragraphs[2].includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].aftermath.slice(0, -1)),
       `${mission}: the follow-through must remain tied to the incident`)
     assert.doesNotMatch(tohaa.paragraphs.join(' '), /\{(?:ground|position)\}/,
       `${mission}: no raw tactical placeholders`)
@@ -475,8 +523,14 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
     assert.ok(reversed)
     assertGameStoryQuality(reversed, `${mission}: ${opponent.name} / Tohaa`)
     assert.notEqual(tohaa.paragraphs[1], reversed.paragraphs[1])
-    assert.equal(tohaa.paragraphs[2], reversed.paragraphs[2],
-      'reversing factions must not rewrite the physical incident')
+    assert.notEqual(tohaa.paragraphs[2], reversed.paragraphs[2],
+      'reversing factions must change the closing response to the same incident')
+    const seed = scenario.incidents[incidentIndex]
+    const consequence = INCIDENT_CONSEQUENCES[mission][incidentIndex]
+    for (const paragraph of [tohaa.paragraphs[2], reversed.paragraphs[2]]) {
+      assert.ok(paragraph.startsWith(seed.turn), 'reversed heroes encounter the same event')
+      assert.ok(paragraph.includes(consequence), 'reversed heroes do not rewrite the unresolved result')
+    }
     assert.notEqual(tohaa.endings.heroWins, reversed.endings.heroWins)
     assert.notEqual(tohaa.endings.heroLoses, reversed.endings.heroLoses)
     assert.notEqual(tohaa.endings.draw, reversed.endings.draw)

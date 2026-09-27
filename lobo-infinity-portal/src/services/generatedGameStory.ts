@@ -4,8 +4,8 @@ import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
 import { INCIDENT_EDITORIAL_BEATS } from '../data/generatedStoryEditorialBeats.ts'
-import { MISSION_ARMY_METHODS, MISSION_ARMY_PIVOT_MANEUVERS,
-  MISSION_ARMY_TACTICAL_OPENERS } from '../data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
+  MISSION_ARMY_PIVOT_MANEUVERS } from '../data/generatedStoryMissionArmies.ts'
 import { MISSION_ROLE_ALTERNATES } from '../data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../data/generatedStoryTacticalReferents.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
@@ -114,6 +114,19 @@ function arrangeOpening(opening: string, hero: string, opponent: string, stakes:
   return [opening, ...orders[variant]].join(' ')
 }
 
+// The review packet expands these to two-word stand-ins. Count that visible
+// text before choosing a beat, not just the one-word template tokens.
+function previewWords(paragraph: string): number {
+  return paragraph.replaceAll('{{heroPlayer}}', 'Player A')
+    .replaceAll('{{otherPlayer}}', 'Player B')
+    .replaceAll('{{hero}}', 'the operative').trim().split(/\s+/).length
+}
+
+// A real unnamed model can render as "the Test Trooper" or a longer unit
+// name. Leave room beyond the two-word review stand-in for that identity.
+const fitsPreview = (paragraph: string) => previewWords(paragraph) <=
+  (paragraph.includes('{{hero}}') ? 72 : 75)
+
 // The pair is unordered and canonical. Game ID changes the scene for repeat
 // meetings without allowing a reload to rewrite the same report.
 export function composeGameStory(
@@ -204,8 +217,9 @@ export function composeGameStory(
       : scenario[role]
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
-  const tacticalOpener = MISSION_ARMY_TACTICAL_OPENERS[hero.id]
-  if (!method || !response || !tacticalOpener) return null
+  const alternateManeuver = MISSION_ARMY_ALTERNATE_MANEUVERS[hero.id]
+  const heroPivots = MISSION_ARMY_PIVOT_MANEUVERS[hero.id]
+  if (!method || !response || !alternateManeuver || !heroPivots) return null
   const referents = MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
   if (!referents) throw new Error('Missing tactical referents for ' + canonical)
   const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
@@ -229,19 +243,44 @@ export function composeGameStory(
   // The second crew can counterattack or change its watch instead of always
   // reciting the same static defense. Mirror matchups use a different choice
   // for each side so one scene does not repeat the same tactical sentence.
-  const counters = [response.defense, opposingPivots[0], opposingPivots[1], response.followThrough]
+  // In a mirror the same follow-through can also close the hero's paragraph.
+  // Keep that sentence out of the opposing response to avoid echoing it.
+  const counters = hero.id === opponent.id
+    ? [response.defense, opposingPivots[0], opposingPivots[1]]
+    : [response.defense, opposingPivots[0], opposingPivots[1], response.followThrough]
   const counterIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex * 2 + 2) % counters.length
   const orderedCounters = counters.slice(counterIndex).concat(counters.slice(0, counterIndex))
-  const middle = (counter: string, showArmyTactic: boolean) => arrangeBeats(seed.complication, [crossfire,
-    '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
-      (showArmyTactic ? tacticalOpener + ', then ' : '') + editorial.move,
-    situate(counter, referents.advance, referents.defend)], variant)
-  // Some crews and mission complications are longer than others. Prefer a
-  // shorter authored counter before shortening the hero's compound move.
-  const fits = (paragraph: string) => paragraph.trim().split(/\s+/).length <= 75
-  const fullMiddle = orderedCounters.map((counter) => middle(counter, true)).find(fits)
-  const incidentMiddle = fullMiddle ??
-    orderedCounters.map((counter) => middle(counter, false)).find(fits) ?? middle(orderedCounters[0], false)
+  const maneuvers = [method.maneuver, alternateManeuver, ...heroPivots]
+  const maneuverIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex + stableHash(hero.id)) % maneuvers.length
+  const orderedManeuvers = maneuvers.slice(maneuverIndex).concat(maneuvers.slice(0, maneuverIndex))
+  const middle = (maneuver: string, counter: string | null, withCrossfire: boolean) => {
+    const armyMove = situate(maneuver, referents.advance, referents.defend)
+    const reply = counter ? situate(counter, referents.advance, referents.defend) : null
+    return [seed.complication, ...(withCrossfire ? [crossfire] : []),
+      ...(reply ? variant % 2 ? [reply, armyMove] : [armyMove, reply] : [armyMove]),
+      '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + editorial.move].join(' ')
+  }
+  // Preserve the incident's chosen faction decision. If it is long, omit a
+  // counter before falling back to a different maneuver for this incident.
+  const candidates = (maneuver: string) => {
+    const replies = orderedCounters.filter((counter) => hero.id !== opponent.id || counter !== maneuver)
+    return [...replies.map((counter) => middle(maneuver, counter, true)),
+      ...replies.map((counter) => middle(maneuver, counter, false)),
+      middle(maneuver, null, true), middle(maneuver, null, false)]
+  }
+  const incidentMiddle = orderedManeuvers.flatMap(candidates).find(fitsPreview)
+  if (!incidentMiddle) throw new Error('No readable faction tactic for ' + canonical + ' #' + incidentIndex)
+  const followThrough = situate(method.followThrough, referents.advance, referents.defend)
+  const incidentClose = [
+    arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
+      editorial.aftermath + ' ' + followThrough),
+    arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
+      editorial.aftermath + ' {{heroPlayer}}’s crew ' + method.drawBeat +
+        ' near ' + referents.continuation + '.'),
+    arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
+      editorial.aftermath.slice(0, -1) + '; {{heroPlayer}}’s crew ' + method.drawBeat + '.'),
+  ].find(fitsPreview)
+  if (!incidentClose) throw new Error('No readable faction follow-through for ' + canonical + ' #' + incidentIndex)
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
     ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
@@ -256,8 +295,7 @@ export function composeGameStory(
     paragraphs: [
       arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
       incidentMiddle,
-      arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
-        editorial.aftermath),
+      incidentClose,
     ],
     endings: {
       heroWins: continueEnding(scenario.endings.heroWins,

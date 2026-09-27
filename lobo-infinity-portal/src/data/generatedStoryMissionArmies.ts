@@ -1,58 +1,7 @@
 // Fictional tactical choices for mission stories outside Area of Interest.
 // These describe an unnamed force, not verified moves, gear, or units in a
-// submitted roster. {ground} and {position} bind the choice to the mission's
-// contested ground and defended position without inventing a completed goal.
+// submitted roster. {ground} and {position} bind each decision to the mission.
 // Broad faction inspiration: https://infinityuniverse.com/en
-// A concrete first move precedes the incident-specific choice. Keeping this
-// separate from the mission beat makes a reversed matchup change the tactic,
-// rather than just changing the army name in front of the same action.
-export const MISSION_ARMY_TACTICAL_OPENERS: Record<string, string> = {
-  panoceania: 'opened a measured firing lane',
-  'military-orders': 'sent an armored escort into the return fire',
-  'kestrel-colonial-force': 'sent a scout around the far watch',
-  'neoterra-capitaline-army': 'tightened a cordon around the outer approach',
-  'shock-army-of-acontecimento': 'crossed successive pockets of broken cover',
-  'svalarheima-winter-force': 'kept a patient advance behind cover',
-  'varuna-immediate-reaction-division': 'marked a sheltered route back',
-  'yu-jing': 'alternated covering volleys with the advance',
-  'imperial-service': 'read the opposing patrol’s change of watch',
-  'invincible-army': 'absorbed the first volley with a heavy screen',
-  'white-banner': 'tested both the high and low approaches',
-  ariadna: 'sent scouts across the quiet ground',
-  'caledonian-highlander-army': 'drew the nearest guard into a hard charge',
-  'force-de-reponse-rapide-merovingienne': 'left a reserve beside the escape lane',
-  kosmoflot: 'tested the off-angle crossing first',
-  'tartary-army-corps': 'pinned the closest defender with steady fire',
-  'usariadna-ranger-force': 'sent a ranger patrol around the far side',
-  haqqislam: 'kept an escort on the return route',
-  'hassassin-bahram': 'fed the guard a false movement',
-  'qapu-khalqi': 'split the paid guards between approach and exit',
-  'ramah-taskforce': 'cleared a way for the support crew',
-  nomads: 'sent a quiet operator behind a loud feint',
-  'bakunin-jurisdictional-command': 'sent one conspicuous fighter ahead of the others',
-  'corregidor-jurisdictional-command': 'anchored a work crew behind a covering gun',
-  'tunguska-jurisdictional-command': 'probed the watch before committing a reserve',
-  'combined-army': 'pressed from two routes at once',
-  'morat-aggression-force': 'drew fire onto the unyielding front',
-  'next-wave': 'used a raider to pull the watch aside',
-  'onyx-contact-force': 'kept a second group behind the exposed lead',
-  'shasvastii-expeditionary-force': 'concealed the crossing until the guard turned',
-  aleph: 'timed its crossing between enemy volleys',
-  'operations-subsection': 'sent an advance operative around the first guard',
-  'steel-phalanx': 'let a veteran absorb the nearest challenge',
-  'o-12': 'closed the outer gap with a security detail',
-  starmada: 'posted a rear watch for its forward team',
-  'torchlight-brigade': 'sent a relief group through the breach',
-  'japanese-secessionist-army': 'drew the guard toward a close threat',
-  oban: 'sent two scouts along separate paths',
-  shindenbutai: 'slipped an advance fighter into the gap',
-  tohaa: 'rotated the exposed lead within the trio',
-  'dashat-company': 'traded the forward and rear hired guns',
-  'druze-bayram-security': 'fixed the guard with a contract gunner',
-  'ikari-company': 'rushed a fighter across the watched lane',
-  starco: 'held a retrieval team back near the exit',
-  'white-company': 'kept the quietest lane under a guard detail',
-}
 
 export type MissionArmyMethod = {
   maneuver: string

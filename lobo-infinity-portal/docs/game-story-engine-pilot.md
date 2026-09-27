@@ -123,7 +123,7 @@ in the game record chooses which one appears. Since game records expose
 aggregate points without an objective-by-objective ledger, the ending does
 not claim a particular console, token, or patient was secured solely because
 the side won.
-See the [review and eleven actual samples](game-story-engine-editorial-review.md).
+See the [review and three generated examples](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent generated-only review for natural
 prose, plot variety, faction voice, version accuracy, and whether a generated
