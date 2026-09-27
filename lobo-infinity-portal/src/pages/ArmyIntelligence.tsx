@@ -1,13 +1,13 @@
 import { repairArmyList } from '../../bot/profile-audit.mjs'
 import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import InteractiveMetricCard from '../components/InteractiveMetricCard'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import lieutenantOrderReference from '../../docs/mockups/lieutenant-order-reference.png'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
-import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
+import { buildArmyIntelligenceFactionPath, readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
 import { publicArmyWorkspace } from '../services/publicArmyWorkspaceProjection'
 import { getCanonicalArmyListForIntelligenceSource } from '../services/armyIntelligenceExplorer'
 import { getArmyParentFaction, normalizeArmyForDisplay } from '../services/armyIdentity'
@@ -778,7 +778,12 @@ function PageHeader() {
     <section className="page-header" aria-labelledby="army-intelligence-title">
       <p className="eyebrow">Intelligence</p>
       <h1 id="army-intelligence-title">Army Intelligence</h1>
-      <p>Sectorial list-building analysis from decoded submitted army codes</p>
+      <p className="army-intelligence-example-intro">Start with Corregidor to see which gunfighters, ARO defenders, hackers, and specialists appear in submitted armies.</p>
+      <nav className="army-intelligence-example-links" aria-label="Explore the Corregidor example">
+        <Link className="page-header-action" to={buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')}>Analyze Corregidor lists</Link>
+        <Link className="page-header-action" to="/factions/Corregidor%20Jurisdictional%20Command">See Corregidor results</Link>
+        <Link className="page-header-action" to="/games/109">Read a Corregidor battle report</Link>
+      </nav>
     </section>
   )
 }

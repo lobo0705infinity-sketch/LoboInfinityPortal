@@ -12,7 +12,10 @@ const publicPages = {
     description: 'Explore Infinity N5 faction intelligence, community battle reports, and upcoming games and events at the Lobo Infinity Portal.',
     heading: 'Lobo Infinity Portal',
     intro: 'Explore Infinity N5 army intelligence, read community battle reports, and find a game or event. You can browse public results without joining the league.',
-    links: starterLinks,
+    links: [
+      ...starterLinks,
+      { label: "Featured battle report: Dead Man's Switch — Corregidor vs Torchlight Brigade", href: '/games/109' },
+    ],
   },
   '/explore': {
     title: 'Explore Infinity N5 Armies and Games | Lobo Infinity Portal',
@@ -28,6 +31,7 @@ const publicPages = {
     intro: 'Start with Corregidor to explore gunfighters, ARO defenders, close combat specialists, hacking, and control tools. Compare what submitted armies can bring to a game.',
     links: [
       { label: 'Explore Corregidor', href: '/factions/Corregidor%20Jurisdictional%20Command' },
+      { label: "Read a Corregidor battle report: Dead Man's Switch", href: '/games/109' },
       { label: 'Browse all factions', href: '/factions' },
       { label: 'Read battle reports', href: '/games' },
     ],
@@ -183,6 +187,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       heading: `${mission}: ${faction1} vs ${faction2}`,
       intro: `Battle report #${gameId}. ${result}${highlight ? ` Submitted highlight: ${shorten(highlight, 230)}` : ''}`,
       links: [
+        ...(text(game.mission) ? [{ label: `Explore ${mission} mission results`, href: `/missions/${encodeURIComponent(mission)}` }] : []),
         { label: `${faction1} faction profile`, href: `/factions/${encodeURIComponent(faction1)}` },
         { label: `${faction2} faction profile`, href: `/factions/${encodeURIComponent(faction2)}` },
         { label: 'All battle reports', href: '/games' },

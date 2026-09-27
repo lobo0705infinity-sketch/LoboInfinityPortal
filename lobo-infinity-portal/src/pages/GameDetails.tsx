@@ -267,7 +267,9 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
               <Fact label="Game Type" value={reportType} />
               <Fact label="Division" value={game.division || 'Not recorded'} />
               <Fact label="First Turn" value={formatGameParticipant(game, game.firstTurn) || 'Not recorded'} />
-              <Fact label="Mission" value={mission || 'Mission not recorded'} />
+              <Fact label="Mission" value={mission
+                ? <Link to={`/missions/${encodeURIComponent(mission)}`}>Explore {mission} mission results</Link>
+                : 'Mission not recorded'} />
             </dl>
           </BattleCard>
 
@@ -487,7 +489,7 @@ function StreamPanel({ game, stream }: { game: RecentGame; stream: StreamedGame 
   )
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+function Fact({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div>
       <dt>{label}</dt>
