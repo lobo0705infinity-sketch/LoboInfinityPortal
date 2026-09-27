@@ -103,20 +103,6 @@ function getRouteMeta(pathname: string) {
     }
   }
 
-  if (pathname.startsWith('/hall-of-fame')) {
-    return {
-      title: 'Hall of Fame | Lobo Infinity League',
-      description: 'Open the lifetime portal history and record book.',
-    }
-  }
-
-  if (pathname.startsWith('/rivalries')) {
-    return {
-      title: 'Rivalry Room | Lobo Infinity League',
-      description: 'Open league head-to-head stories built from submitted games.',
-    }
-  }
-
   return {
     title: 'Lobo Infinity League Portal',
     description: 'The Lobo Infinity League Operating System.',

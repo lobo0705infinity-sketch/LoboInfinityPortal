@@ -15,8 +15,6 @@ const publicPaths = [
   '/streams',
   '/army-lists',
   '/analytics',
-  '/hall-of-fame',
-  '/rivalries',
   '/compare',
   '/standings',
   '/schedule',

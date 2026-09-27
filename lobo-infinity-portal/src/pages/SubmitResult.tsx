@@ -1901,7 +1901,7 @@ function inferSubmitGameContext(route: string): {
   }
 
   if (
-    /^\/(?:analytics|compare|factions|hall-of-fame|intelligence|match-finder|missions|players|rivalries|rules|schedule|standings)(?:\/|$)/.test(pathname)
+    /^\/(?:analytics|compare|factions|intelligence|match-finder|missions|players|rules|schedule|standings)(?:\/|$)/.test(pathname)
   ) {
     return {
       eventId: 'event-current-league',

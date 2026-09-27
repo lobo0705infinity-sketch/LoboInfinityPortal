@@ -10,7 +10,7 @@ const quickAccessSource = publicApp.match(/const quickAccess = \[([\s\S]*?)\]\s+
 const quickAccessEntries = [...quickAccessSource.matchAll(/\['([^']+)', '([^']+)'\]/g)].map((match) => `${match[1]}:${match[2]}`)
 const expectedQuickAccess = ['Players:/players', 'Standings:/standings?eventId=event-current-league', 'Games:/games', 'Factions:/factions', 'Missions:/missions', 'Schedule:/event/event-current-league/schedule', 'Streams:/streams', 'Submit Game:/submit-game']
 
-const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/standings', '/factions', '/missions', '/compare', '/rivalries', '/analytics', '/hall-of-fame', '/army-lists', '/army-intelligence', '/schedule', '/community', '/events', '/event/:eventId', '/submit-game', '/army-lists/submit']
+const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/standings', '/factions', '/missions', '/compare', '/analytics', '/army-lists', '/army-intelligence', '/schedule', '/community', '/events', '/event/:eventId', '/submit-game', '/army-lists/submit']
 const checks = [
   [app.includes('!commissionerRoute ? <SnapshotPublicApp />'), 'public/Commissioner route separation'],
   [!publicApp.includes("../services/api") && !publicApp.includes('apiClient'), 'no legacy public API controller'],
@@ -25,6 +25,8 @@ const checks = [
   [JSON.stringify(quickAccessEntries) === JSON.stringify(expectedQuickAccess), 'Dashboard Quick Access has exactly the approved eight destinations'],
   [!quickAccessEntries.some((entry) => entry.startsWith('Community:') || entry.startsWith('Events:')), 'Dashboard Quick Access excludes Community and Events'],
   ...requiredRoutes.map((route) => [publicApp.includes(`path=\"${route}\"`), `route ${route}`]),
+  [publicApp.includes('<Route path="/hall-of-fame" element={<Navigate replace to="/analytics" />} />'), 'Hall of Fame redirects to statistics'],
+  [publicApp.includes('<Route path="/rivalries" element={<Navigate replace to="/compare" />} />'), 'Rivalries redirects to player comparison'],
 ]
 
 for (const [passed, label] of checks) if (!passed) throw new Error(`Snapshot-native public app check failed: ${label}`)

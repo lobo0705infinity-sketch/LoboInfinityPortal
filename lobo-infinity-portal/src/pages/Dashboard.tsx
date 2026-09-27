@@ -562,7 +562,7 @@ function CommunityIntelligence({
       title: latestAchievement?.title || 'Live data pending',
       to: latestAchievement?.relatedPlayer
         ? `/players/${encodeURIComponent(latestAchievement.relatedPlayer)}`
-        : '/hall-of-fame',
+        : '/analytics',
       tone: 'amber',
     },
   ]
