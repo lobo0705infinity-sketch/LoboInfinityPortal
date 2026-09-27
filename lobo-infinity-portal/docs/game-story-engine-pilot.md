@@ -101,6 +101,17 @@ unreported moves. The engine test cannot grant that approval. Keep
 `STORY_CATALOG.md` at 1,300 written stories and keep the draft PR unmerged
 until there is an explicit decision on generated coverage.
 
+The reproducible `scripts/prepare-story-editorial-review.mts` creates a
+source-blind panel of 40 matched pairs (one authored and one generated story
+for the same mission, two factions, hero faction, and role). It samples eight
+cases from each of the five missions with authored shards. An additional
+22-scene panel checks every mission's premise, with Critical Intervention and
+Double Bind explicitly marked as previews. The script writes a review packet,
+scorecard, rubric, and a **separate private answer key** to a directory outside
+the repository. Two independent reviewers should score each pair before the
+key is opened. Neither the sample nor its scores change the authored count or
+establish that a fictional scene occurred in a recorded game.
+
 ## Verification
 
 From `lobo-infinity-portal`:
@@ -110,6 +121,7 @@ npm run test:game-story-engine
 npm run test:game-stories
 npm run test:game-center
 node --experimental-strip-types scripts/sample-generated-game-stories.mts
+node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir ../story-editorial-review
 ```
 
 `npm run test:game-stories:complete` still requires 22,770 individually
