@@ -125,7 +125,7 @@ export const ARMY_STORY_VOICES: Record<string, ArmyStoryVoice> = {
     style: 'armored',
   },
   'shasvastii-expeditionary-force': {
-    crew: 'concealed expeditionary scouts',
+    crew: 'expeditionary scouts',
     style: 'covert',
   },
   'aleph': {
