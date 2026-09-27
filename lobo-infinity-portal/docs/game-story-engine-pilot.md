@@ -38,8 +38,12 @@ differ. Older game records do not identify which edition was played.
   role actions, and alternative win, loss, and draw endings; each army
   supplies a crew description, maneuver, defensive response, follow-through,
   and outcome beat. The 21 other mission frames use mission-neutral army
-  methods while retaining their own incident turns, objective actions and
-  endings. Game ID chooses an incident deterministically.
+  methods bound to four short mission-specific tactical referents: an advance,
+  a diversion, a defensive position and a continuation. This keeps the army's
+  choice attached to the contested location while avoiding a verbatim ranger,
+  escort or cordon sentence in every scenario. The incident turns, objective
+  actions and endings remain mission-specific. Game ID chooses an incident
+  deterministically.
 - The Area of Interest pilot additionally accepts `location` and `weather`
   tags. It selects tags deterministically when omitted and rejects explicit
   incompatible combinations. No weather effects (`none`) is valid everywhere.
@@ -99,13 +103,17 @@ different middle paragraphs, 42–67 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.184. Sentence
 order varies for independent opening and confrontation beats; the incident
 turn precedes the hero action and its consequence. In a fresh seeded
-110-scene review packet, 156 of 1,064 sentence appearances are exact repeats
+110-scene review packet, 19 of 1,064 sentence appearances are exact repeats
 after excluding one deliberately reversed case per mission; a second seed
-showed 145 of 1,064 repeated occurrences. The ending rewrite removed the
-stock “prevailed” and “ended level” lines but did not change these scene
-sentence counts. The fraction changes with the seed; faction methods still
-recur across missions. These figures do not
-establish plot originality or editorial quality.
+also showed 19 of 1,064. The same first seed had 159 repeats before the
+mission-specific tactical referents were introduced. The remaining shared
+lines occur mainly when a mission reuses a role action or when Area of Interest
+samples happen to select the same setting and weather. Short references to
+the objective can still repeat within an individual story; the 88 included
+scenes had 425 repeated three-word sequences within scenes, compared with 352
+before this change. Neither count establishes plot originality or editorial
+quality. The ending rewrite removed the stock “prevailed” and “ended level”
+lines, but mission and faction distinctions still require human review.
 The 45 Area and 45 mission-neutral method sets distinguish army tactics in
 every mission, but neither set establishes original plots for every pair.
 The methods are fictional extrapolations from broad faction themes described by

@@ -5,6 +5,7 @@ import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
+import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
@@ -22,6 +23,8 @@ assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
+  CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 for (const field of ['initiative', 'response', 'followThrough', 'winBeat', 'drawBeat'] as const) {
   assert.equal(new Set(Object.values(AREA_ARMY_METHODS).map((method) => method[field])).size,
     armies.length, `Area of Interest ${field} must distinguish all active armies`)
@@ -31,6 +34,25 @@ for (const field of ['maneuver', 'defense', 'followThrough', 'winClause', 'drawB
     armies.length, `other missions' ${field} must distinguish all active armies`)
 }
 assert.deepEqual(Object.keys(SOURCED_STORY_SCENARIOS).sort(), [...CANONICAL_MISSIONS].sort())
+
+// One faction appearing across the calendar must not repeat its entire
+// tactical sentences verbatim just because the mission changed. Inspect
+// completed prose, independent of which method supplied each sentence.
+for (const army of armies) {
+  const seenSentences = new Map<string, string>()
+  for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+    const story = composeGameStory(mission, army.name, 'Druze Bayram Security', army.name, 'objective')
+    assert.ok(story)
+    for (const sentence of story.paragraphs.flatMap((paragraph) =>
+      paragraph.split(/(?<=[.!?])\s+(?=[A-Z{])/))) {
+      const earlier = seenSentences.get(sentence)
+      assert.equal(earlier, undefined,
+        `${army.name}: a whole sentence repeats in ${earlier} and ${mission}: ${sentence}`)
+      seenSentences.set(sentence, mission)
+    }
+  }
+}
+
 for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
   assert.ok(scenario)
   assert.match(scenario.source, /^https:\/\/infinitygeist\.com\/mission\//)
@@ -269,14 +291,18 @@ assert.equal(draws.size, armies.length, 'the same location and incident yield fa
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const scenario = SOURCED_STORY_SCENARIOS[mission]
   assert.ok(scenario)
+  const referents = MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
   for (const opponent of armies) {
     const tohaa = composeGameStory(mission, tohaaArmy.name, opponent.name,
       tohaaArmy.name, 'objective', 0)
     assert.ok(tohaa)
     assertGameStoryQuality(tohaa, `${mission}: Tohaa / ${opponent.name}`)
-    assert.ok(tohaa.paragraphs[1].includes(MISSION_ARMY_METHODS.tohaa.maneuver))
-    assert.ok(tohaa.paragraphs[1].includes(MISSION_ARMY_METHODS[opponent.id].defense))
-    assert.ok(tohaa.paragraphs[2].includes(MISSION_ARMY_METHODS.tohaa.followThrough))
+    assert.ok(tohaa.paragraphs[1].includes(referents.advance), `${mission}: army movement needs its objective`)
+    assert.ok(tohaa.paragraphs[1].includes(referents.defend), `${mission}: defending army needs a position`)
+    assert.ok(tohaa.paragraphs[2].includes(referents.continuation),
+      `${mission}: army follow-through needs a local destination`)
+    assert.doesNotMatch(tohaa.paragraphs.join(' '), /\{(?:ground|position)\}/,
+      `${mission}: no raw tactical placeholders`)
     assert.match(tohaa.paragraphs.join(' '), scenario.anchor)
     assert.ok(tohaa.endings.heroWins.includes(MISSION_ARMY_METHODS.tohaa.winClause))
     assert.ok(tohaa.endings.heroLoses.includes(MISSION_ARMY_METHODS[opponent.id].winClause))

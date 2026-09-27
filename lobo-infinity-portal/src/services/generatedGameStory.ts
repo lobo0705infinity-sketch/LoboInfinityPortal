@@ -4,6 +4,7 @@ import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
 import { MISSION_ARMY_METHODS } from '../data/generatedStoryMissionArmies.ts'
+import { MISSION_TACTICAL_REFERENTS } from '../data/generatedStoryTacticalReferents.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
@@ -192,6 +193,8 @@ export function composeGameStory(
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
   if (!method || !response) return null
+  const referents = MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
+  if (!referents) throw new Error('Missing tactical referents for ' + canonical)
   const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
   const crossfire = INCIDENT_CROSSFIRE[canonical as keyof typeof INCIDENT_CROSSFIRE]?.[incidentIndex]
   const stakes = INCIDENT_STAKES[canonical as keyof typeof INCIDENT_STAKES]?.[incidentIndex]
@@ -202,10 +205,17 @@ export function composeGameStory(
     : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
       '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + '.'
 
+  // The incident names the full objective. These shorter references tie an
+  // army's move, counter, and continuation to different parts of that scene;
+  // repeating the same full mission name in every beat drowns out the plot.
+  const ground = seed.ground ?? scenario.ground
+  const position = seed.position ?? scenario.position
+  const situate = (beat: string, focus: string, distraction: string) =>
+    beat.replaceAll('{ground}', focus).replaceAll('{position}', distraction)
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
-    ' ' + (seed.ground ?? scenario.ground) + '.'
+    ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-    tactics[otherVoice.style].defense + ' ' + (seed.position ?? scenario.position) + '.'
+    tactics[otherVoice.style].defense + ' ' + position + '.'
 
   return {
     mission: canonical,
@@ -215,9 +225,11 @@ export function composeGameStory(
     objectiveSkill: scenario.objectiveSkill,
     paragraphs: [
       arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
-      arrangeBeats(seed.complication, [crossfire, method.maneuver, response.defense], variant),
+      arrangeBeats(seed.complication, [crossfire,
+        situate(method.maneuver, referents.advance, referents.feint),
+        situate(response.defense, referents.advance, referents.defend)], variant),
       arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
-        method.followThrough),
+        situate(method.followThrough, referents.continuation, referents.defend)),
     ],
     endings: {
       heroWins: continueEnding(scenario.endings.heroWins, method.winClause),
