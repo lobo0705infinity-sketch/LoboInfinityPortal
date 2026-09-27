@@ -66,26 +66,30 @@ export function assessInfListClassifieds(profiles = []) {
 
 export function formatInfListClassifiedEmbeds(coverage) {
   if (!coverage?.cards?.length) return []
-  const header = `Profile capability: ${coverage.possible}/${coverage.total} deck cards. A checkmark means the list has the required tools; mission rules, target availability, position and successful actions still matter.`
-  return [0, 10].map((offset, page) => ({
-    title: `ITS 18 · Classified coverage (${page + 1}/2)`,
+  const header = `Profile capability: ${coverage.possible}/${coverage.total} deck cards. All 20 cards are listed below; scroll down for the rest. A checkmark means the list has the required tools; mission rules, targets, positioning and successful actions still matter.`
+  return [{
+    title: 'ITS 18 · Classified coverage',
     url: CLASSIFIED_DECK_URL,
     color: 0xa91e27,
-    description: page ? 'Optional substitute: Secure HVT may replace one drawn Classified when the scenario allows it.' : header,
-    fields: coverage.cards.slice(offset, offset + 10).map(card => ({
+    description: header,
+    fields: coverage.cards.map(card => ({
       name: `${card.possible ? '✓' : '—'} ${card.number}. ${card.name}`,
       value: card.possible
-        ? `${profileLabels(card.eligible)}${card.detail ? `\n${card.detail}` : ''}`.slice(0, 320)
-        : `No qualifying profile: ${card.requirement}.`.slice(0, 320),
+        ? `${shorten(profileLabels(card.eligible), 220 - (card.detail ? card.detail.length + 1 : 0))}${card.detail ? `\n${card.detail}` : ''}`
+        : shorten(`No qualifying profile: ${card.requirement}.`, 220),
       inline: false,
-    })).concat(page ? [{
+    })).concat([{
       name: `${coverage.secureHvt.length ? '✓' : '—'} Optional · Secure HVT`,
       value: coverage.secureHvt.length
-        ? `${profileLabels(coverage.secureHvt)}\nAt game end, cover the enemy HVT and keep enemies away from your own HVT.`.slice(0, 320)
+        ? `${shorten(profileLabels(coverage.secureHvt), 135)}\nAt game end, cover the enemy HVT and keep enemies away from your own HVT. Optional substitute when the scenario allows it.`
         : 'No active trooper identified.',
       inline: false,
-    }] : []),
-  }))
+    }]),
+  }]
+}
+
+function shorten(value, limit) {
+  return value.length > limit ? `${value.slice(0, limit - 1).trimEnd()}…` : value
 }
 
 function profileLabels(profiles) {
