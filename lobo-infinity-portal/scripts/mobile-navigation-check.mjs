@@ -9,6 +9,7 @@ const header = read('src/components/Header.tsx')
 const bottom = read('src/components/MobileBottomNavigation.tsx')
 const menu = read('src/pages/MobileMenu.tsx')
 const sidebar = read('src/components/sidebarNavigation.ts')
+const explore = read('src/pages/Explore.tsx')
 
 assert.match(app, /path="\/menu"[\s\S]*?<MobileMenu/)
 assert.match(snapshotApp, /const MobileMenu = lazy\(\(\) => import\('\.\.\/pages\/MobileMenu'\)\)/)
@@ -32,6 +33,8 @@ for (const sharedExport of ['topLevelItems', 'authenticatedTopLevelItems', 'comm
   assert.ok(sidebar.includes(`export const ${sharedExport}`) || sidebar.includes(`export function ${sharedExport}`))
   assert.ok(menu.includes(sharedExport), `More must reuse ${sharedExport}`)
 }
+assert.doesNotMatch(sidebar, /to: '\/(?:rivalries|hall-of-fame)'/, 'Retired sections must not appear in the shared desktop and mobile navigation')
+assert.match(explore, /const directory = communityItems\.filter/, 'Explore must reuse the shared navigation list')
 assert.match(menu, /useSelectedEventNavigation/)
 assert.match(menu, /buildCapabilityNavigation\(event\)/)
 assert.match(menu, /auth\.isAtLeastRole\('Commissioner'\)/)

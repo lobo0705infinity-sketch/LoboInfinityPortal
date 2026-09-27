@@ -74,11 +74,6 @@ export const communityItems: NavigationItem[] = [
     to: '/compare',
   },
   {
-    icon: 'players',
-    label: 'Rivalries',
-    to: '/rivalries',
-  },
-  {
     icon: 'factions',
     label: 'Factions',
     to: '/factions',
@@ -102,11 +97,6 @@ export const communityItems: NavigationItem[] = [
     icon: 'analytics',
     label: 'Statistics',
     to: '/analytics',
-  },
-  {
-    icon: 'hall',
-    label: 'Hall of Fame',
-    to: '/hall-of-fame',
   },
 ]
 
