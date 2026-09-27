@@ -35,8 +35,11 @@ for (const [missionIndex, mission] of CANONICAL_MISSIONS.entries()) {
     const role = roles[(missionIndex + offset) % roles.length]
     const incidentIndex = Math.min(offset, 3)
     const gameId = [0, 1, 2, 3].find((candidate) =>
-      composeGameStory(mission, heroFaction, otherFaction, heroFaction, role, candidate)
-        ?.paragraphs[0].startsWith(incidents[incidentIndex].opening))
+      (mission === 'Area of Interest'
+        ? composeGameStory(mission, heroFaction, otherFaction, heroFaction, role, candidate)
+          ?.paragraphs[1].startsWith(incidents[incidentIndex].complication)
+        : composeGameStory(mission, heroFaction, otherFaction, heroFaction, role, candidate)
+          ?.paragraphs[0].startsWith(incidents[incidentIndex].opening)))
     if (gameId === undefined) throw new Error('Incident was not selectable: ' + mission)
     const story = composeGameStory(mission, heroFaction, otherFaction, heroFaction, role, gameId)
     if (!story) throw new Error('Missing editorial sample: ' + mission)
@@ -45,7 +48,7 @@ for (const [missionIndex, mission] of CANONICAL_MISSIONS.entries()) {
     // factions is an unordered catalog key; these two fields bind the
     // placeholders in narrative order for human-facing samples.
     console.log(JSON.stringify({ mission, factions: story.factions, heroFaction,
-      otherFaction, role,
+      otherFaction, role, sceneTags: story.sceneTags,
       mirror: heroFaction === otherFaction, gameId, incidentIndex,
       paragraphs: story.paragraphs, endings: story.endings }))
   }

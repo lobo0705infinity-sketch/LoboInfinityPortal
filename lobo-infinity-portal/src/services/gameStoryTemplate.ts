@@ -12,6 +12,7 @@ export type GameStoryTemplate = {
   factions: readonly [string, string]
   heroFaction: string
   role: HeroRole
+  sceneTags?: { location: string; weather: string }
   paragraphs: readonly string[]
   endings: { heroWins: string; heroLoses: string; draw: string }
 }

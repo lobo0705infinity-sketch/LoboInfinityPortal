@@ -4,6 +4,7 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
+import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
@@ -82,6 +83,36 @@ for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
     assert.match(scene.paragraphs.join(' '), /antenna|relay/i)
   }
 }
+
+// Setting tags have plot consequences, and reversing these two factions
+// changes both the contest and its immediate aftermath, not just the names.
+for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
+  for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
+    for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+      for (const gameId of [0, 1, 2, 3]) {
+        const tags = { location, weather }
+        const tohaa = composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', role, gameId, tags)
+        const nextWave = composeGameStory('Area of Interest', 'Next Wave', 'Tohaa', 'Next Wave', role, gameId, tags)
+        assert.ok(tohaa && nextWave)
+        for (const story of [tohaa, nextWave]) {
+          assert.deepEqual(story.sceneTags, tags)
+          assertGameStoryQuality(story, storyTemplateKey(story.mission, ...story.factions) ?? '')
+          assert.ok(story.paragraphs[0].includes(AREA_LOCATIONS[location].arrival))
+          assert.ok(story.paragraphs[0].includes(AREA_WEATHER[weather].opening))
+          assert.ok(story.paragraphs[1].includes(AREA_WEATHER[weather].complication))
+          assert.ok(story.paragraphs[2].includes(AREA_WEATHER[weather].closing))
+          assert.ok(story.endings.heroWins.includes(AREA_LOCATIONS[location].scoringGround))
+        }
+        assert.notEqual(tohaa.paragraphs[1], nextWave.paragraphs[1], 'faction reversal must change the contest')
+        assert.notEqual(tohaa.paragraphs[2], nextWave.paragraphs[2], 'faction reversal must change the aftermath')
+      }
+    }
+  }
+}
+assert.equal(composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', 0,
+  { location: 'unknown' as never }), null, 'unknown location is rejected')
+assert.equal(composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', 0,
+  { weather: 'unknown' as never }), null, 'unknown weather is rejected')
 
 const game = {
   id: 9081, date: '2026-09-26T12:00:00.000Z', mission: 'B-Pong',

@@ -3,6 +3,8 @@ import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
+import { AREA_LOCATIONS, AREA_METHODS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
+import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
@@ -38,6 +40,7 @@ export function composeGameStory(
   heroFaction: string,
   role: HeroRole,
   gameId = 0,
+  sceneTags?: Partial<AreaStoryTags>,
 ): GameStoryTemplate | null {
   const canonical = getCanonicalMissionName(mission)
   const key = storyTemplateKey(mission, factionA, factionB)
@@ -55,7 +58,40 @@ export function composeGameStory(
   if (!heroVoice || !otherVoice) return null
   const scenario = SOURCED_STORY_SCENARIOS[canonical]
   if (!scenario) return null
+  if (sceneTags && canonical !== 'Area of Interest') return null
   const seed = scenario.incidents[stableHash(key + ':' + String(gameId)) % scenario.incidents.length]
+  if (canonical === 'Area of Interest') {
+    const locationIds = Object.keys(AREA_LOCATIONS) as AreaStoryTags['location'][]
+    const weatherIds = Object.keys(AREA_WEATHER) as AreaStoryTags['weather'][]
+    const locationId = sceneTags?.location ?? locationIds[stableHash(key + ':' + String(gameId) + ':location') % locationIds.length]
+    const weatherId = sceneTags?.weather ?? weatherIds[stableHash(key + ':' + String(gameId) + ':weather') % weatherIds.length]
+    if (!Object.hasOwn(AREA_LOCATIONS, locationId) || !Object.hasOwn(AREA_WEATHER, weatherId)) return null
+    const location = AREA_LOCATIONS[locationId]
+    const weather = AREA_WEATHER[weatherId]
+    const method = AREA_METHODS[heroVoice.style]
+    const response = AREA_METHODS[otherVoice.style]
+    const heroAction = role === 'objective' ? seed.objectiveAction : role === 'gunfighting'
+      ? 'fired at the guard above the communication antenna and covered the specialist at its controls'
+      : 'drove the guard from the communication antenna base and held the approach for the specialist'
+    return {
+      mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
+      sceneTags: { location: locationId, weather: weatherId },
+      paragraphs: [
+        location.arrival + ' ' + weather.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' +
+          tactics[heroVoice.style].approach + ' ' + location.approach + ', while {{otherPlayer}}’s ' +
+          otherVoice.crew + ' ' + tactics[otherVoice.style].defense + ' ' + location.position +
+          '. ' + seed.opening,
+        seed.complication + ' ' + weather.complication + ' ' + method.initiative + ' ' + response.response,
+        seed.turn + ' {{hero}} ' + heroAction + '. ' + location.signal + ' ' +
+          method.followThrough + ' ' + weather.closing,
+      ],
+      endings: {
+        heroWins: '{{heroPlayer}}’s squad brought the communication antenna online and held ' + location.scoringGround + ' until the enemy withdrew.',
+        heroLoses: '{{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} back to ' + location.retreat + '.',
+        draw: 'Neither squad kept the communication antenna and ' + location.scoringGround + ' together when the shooting stopped.',
+      },
+    }
+  }
   const heroAction = role === 'objective'
     ? seed.objectiveAction
     : role === 'gunfighting'

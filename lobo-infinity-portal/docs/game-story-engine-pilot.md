@@ -32,6 +32,14 @@ differ. Older game records do not identify which edition was played.
   role actions, and alternative win, loss, and draw endings; each army
   supplies a crew description and tactical approach. Game ID chooses an
   incident deterministically.
+- The Area of Interest pilot additionally accepts `location` and `weather`
+  tags: relay courtyard, freight depot, or rooftop terrace, combined with
+  rain, fog, or crosswind. It selects tags deterministically when omitted.
+  The location changes cover, approach and scored ground; the weather changes
+  the opening, obstruction and closing beat. Eight broad tactical methods
+  alter the middle and last paragraphs when the hero faction changes. Other
+  mission families do not yet use these tags. Game records do not contain
+  table location or weather; these are fictional scene settings.
 - Rendering requires both decoded lists linked unambiguously to that game,
   an eligible roster model for the hero role, and the actual player/result
   fields. For **Critical Intervention** and **Double Bind**, the game record
@@ -53,11 +61,13 @@ runtime generation with the current game records; all 22 remain in the
 synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
-including a mirror and all three roles across the sample. It contains 88
-different middle paragraphs, 40–63 words per paragraph, and a maximum
+including a mirror and all three roles across the sample. It contains 89
+different middle paragraphs, 40–69 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.236. That
 lexical measure does not prove plot originality. Repeated mission frames and
 faction descriptions remain easy to recognize across a reading session.
+The eight broad methods group several armies together; these setting tags
+do not establish 45 distinct faction voices or original pair-specific plots.
 See the [review and ten actual samples](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent, blinded comparison with authored

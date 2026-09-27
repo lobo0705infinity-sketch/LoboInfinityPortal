@@ -25,7 +25,7 @@ rules versions. These plots avoid disputed point totals between editions.
 | Rendering | 792 synthetic roster, role, and result variants render without unresolved placeholders; authored stories still take priority. | Pass for synthetic behavior; real recorded moves remain untested. |
 | Mission premise | All 22 families refer to source objectives in plot and endings. The Dig orders analysis before neutralization; B-Pong uses tracking beacon and consoles. | Improved; still needs mission-version and fine rules review. |
 | Setup fidelity | Critical Intervention needs attacker/defender assignment; Double Bind needs chosen mode. Neither is recorded in public games. | Runtime fallback withheld for these two missions; examples below are previews only. |
-| Variety and voice | 88 distinct middle paragraphs among 110 scenes; 40–63 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Four incidents per mission repeat across 1,035 army pairings, with repeated frames and brief crew descriptions. | Hold for a blinded comparison with authored stories. |
+| Variety and voice | 89 distinct middle paragraphs among 110 scenes; 40–69 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Area of Interest now has location and weather tags and eight broad tactical methods. The other mission frames still repeat across army pairings, and shared methods cannot establish 45 distinct faction voices. | Hold for a blinded comparison with authored stories. |
 | Actual-game fidelity | No game record proves these shots, object movements, or model actions occurred. | Generated scenes must not be described as a factual match transcript. |
 
 An independent editor should rate a randomized, unlabeled set against
@@ -33,6 +33,14 @@ individually written stories for natural prose, plot variety, faction voice,
 scenario-version accuracy, and coherence under all three outcomes. Set an
 acceptance threshold before any release decision. The authored count stays
 **1,300 of 22,770**, and the authored-completeness gate is unchanged.
+
+**Reversal check:** The original Next Wave/Tohaa preview changed only two
+phrases in paragraph one. Area of Interest now changes the contest and
+aftermath when their roles reverse, including across all three locations,
+three weather tags, four incidents, and three hero roles. This is a focused
+pilot, not evidence that the other 21 missions or all faction pairings have
+strong character. Weather and location are fictional narrative settings;
+the game record does not confirm conditions on the played table.
 
 ## Ten calibration examples
 
@@ -47,17 +55,17 @@ can be recorded.
 
 **Actors:** `{{heroPlayer}}` = PanOceania; `{{otherPlayer}}` = Haqqislam.
 
-**Editorial note:** The antenna and contested ground drive the plot without repeating the mission title; the specialist now attempts activation under fire.
+**Editorial note:** Location `rooftopTerrace` and weather `crosswind` affect the approach, the relay controls, and the closing beat. The mission title stays out of the prose.
 
-The relay mast rose from a courtyard strewn with masonry after a retaining wall collapsed overnight. {{heroPlayer}}’s armored survey troops mapped the exposed routes toward the collapsed arcade, while {{otherPlayer}}’s field medics and escorts kept a withdrawal route open beside the breach in the far wall. A clean activation would count for little if the enemy drove them off the ground beneath it.
+A relay mast stood on a rooftop terrace above the transit lines. A crosswind dragged dust across the open approach to its controls. {{heroPlayer}}’s armored survey troops mapped the exposed routes toward a concrete planter, while {{otherPlayer}}’s field medics and escorts kept a withdrawal route open beside the maintenance stair. The relay indicator blinked once before the panel went dark, leaving the contested ground without a clear signal.
 
-A concrete slab pinned its access panel against the base, leaving the activation switch exposed to crossfire. Tracer fire splintered the stone plinth while both specialists fought for a clear route to the switch. A second burst broke the slab’s edge and opened a narrow gap as a rival specialist reached the far wall.
+A fallen brace trapped the antenna switch against the base of the mast. A loose access cover swung in the gusts and slammed shut whenever a specialist tried to read the panel. A scout traced the active lead while the specialist followed the safer route to the controls. The defenders moved around the mast in short bounds, keeping an escape route through the fire.
 
-{{hero}} wedged the slab aside, found the communication antenna controls, and keyed an activation request under fire. The display glowed amber without confirming which code it had accepted. The opposing force broke cover and rushed the control plinth before the signal settled. Rain hissed against the exposed wires as the relay clicked between channels.
+A burst of gunfire shifted the brace and briefly exposed the control face. {{hero}} pulled the brace aside and keyed an activation request into the communication antenna. The activation light caught the low parapet overlooking the tracks. The squad watched the indicator change while its specialist waited for confirmation. The wind caught the cover once more and drowned out the relay’s final click.
 
-- Hero wins: {{heroPlayer}}’s squad brought the communication antenna online and held the courtyard until the enemy withdrew.
-- Hero loses: {{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} behind the broken wall.
-- Draw: The signal died with both squads still fighting among the fallen masonry.
+- Hero wins: {{heroPlayer}}’s squad brought the communication antenna online and held the rooftop until the enemy withdrew.
+- Hero loses: {{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} back to the stairwell.
+- Draw: Neither squad kept the communication antenna and the rooftop together when the shooting stopped.
 
 ### 12. B-Pong — Haqqislam vs. Yu Jing (objective)
 
