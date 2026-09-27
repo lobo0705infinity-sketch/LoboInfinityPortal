@@ -67,8 +67,8 @@ function Sidebar() {
             ))
           : null}
 
-        <section className="sidebar-section" aria-labelledby="sidebar-events">
-          <p className="sidebar-section-label" id="sidebar-events">Events</p>
+        <section className="sidebar-section" aria-labelledby="sidebar-selected-event">
+          <p className="sidebar-section-label" id="sidebar-selected-event">Selected Event</p>
           {eventOptions.length > 1 ? (
             <EventSelector
               eventOptions={eventOptions}

@@ -61,6 +61,8 @@ function Breadcrumbs() {
 
 function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
   const breadcrumbs: Breadcrumb[] = [{ label: 'Dashboard', to: '/' }]
+  if (pathname === '/' || pathname === '/dashboard') return breadcrumbs
+
   const searchParams = new URLSearchParams(search)
   const queryEventId = searchParams.get('eventId') || ''
   const routeEventMatch = pathname.match(/^\/event\/([^/?#]+)/)
