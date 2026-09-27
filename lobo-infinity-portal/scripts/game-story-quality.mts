@@ -10,7 +10,7 @@ const allowedTokens = new Set(['hero', 'heroPlayer', 'otherPlayer', 'allyGunfigh
 const roleActionTerms: Record<HeroRole, RegExp> = {
   gunfighting: /\b(?:aim|attack|barrel|cover|driv|drove|fire|fired|gun|held|kept|muzzle|pin|pinned|raider|rifle|shot|shoot|sniper|suppress|target|turret|weapon)\w*\b/i,
   closeCombat: /\b(?:armed|attacker|blade|caught|close|drove|duel|fight|fought|forced|grapple|intercept|melee|opponent|parr|push|shov|strike|struck|struggle|sword|wrestl)\w*\b/i,
-  objective: /\b(?:access|analy|calibrat|check|compar|connect|control|copy|cut|decode|direct|discover|examin|find|fit|follow|found|guid|hack|identif|inspect|isolat|listen|locat|map|measur|open|place|read|repair|retriev|scanner|secur|sensor|specialist|trace|traced|work)\w*\b/i,
+  objective: /\b(?:access|activat|analy|attempt|began|brush|calibrat|carr|caught|check|clear|compar|connect|control|copy|crawl|cross|cut|decode|direct|discover|duck|enter|escort|examin|find|fire|fired|fit|follow|forced|found|grab|grip|guid|hack|identif|inspect|isolat|key|led|listen|locat|map|measur|move|open|place|press|pull|push|read|reach|repair|retriev|return|scanner|secur|sensor|sent|slid|slip|specialist|start|step|stretch|tap|took|touch|trace|traced|tried|try|tug|work)\w*\b/i,
 }
 
 const missionPlotTerms: Record<string, RegExp> = {

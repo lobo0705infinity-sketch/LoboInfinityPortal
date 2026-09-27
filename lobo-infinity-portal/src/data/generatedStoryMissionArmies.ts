@@ -339,3 +339,145 @@ export const MISSION_ARMY_ALTERNATE_MANEUVERS: Record<string, string> = {
   starco: 'The retrieval team marked the return route at {position}, then sent its lead to secure an approach to {ground}.',
   'white-company': 'One guard covered the lane at {position} as a second chose the quieter approach to {ground}.',
 }
+
+// Two more decisions for each force. A mission and incident rotate the four
+// authored choices, so the same crew does not use the same noun-swapped move
+// each time it appears near a different objective. The incident's obstruction
+// and the opposing defense supply the immediate reason for the choice.
+export const MISSION_ARMY_PIVOT_MANEUVERS: Record<string, readonly [string, string]> = {
+  panoceania: [
+    'Survey troops shifted a firing lane away from {position} to screen a closer approach to {ground}.',
+    'An observer called the advance back from {ground} until a second gunner covered its blind side.' ],
+  'military-orders': [
+    'One knight held the exposed crossing near {position} while the escort turned toward {ground}.',
+    'The armored lead yielded its place to a fresh escort before pressing closer to {ground}.' ],
+  'kestrel-colonial-force': [
+    'A scout left a false trail by {position}; the patrol followed the unseen path toward {ground}.',
+    'The colonial patrol pulled back from the obvious gap and tested a farther route into {ground}.' ],
+  'neoterra-capitaline-army': [
+    'The security detail closed an outer gap before sending a small unit toward {ground}.',
+    'Instead of pursuing the first movement at {position}, the cordon screened the route into {ground}.' ],
+  'shock-army-of-acontecimento': [
+    'Veterans cut across the broken cover near {position} to reach the blind side of {ground}.',
+    'One fighter drew the near watch while another bounded between shelters toward {ground}.' ],
+  'svalarheima-winter-force': [
+    'The patrol abandoned an unstable crossing by {position} and followed firmer ground toward {ground}.',
+    'A rear fighter took the forward watch as the first patrol withdrew from the exposed route to {ground}.' ],
+  'varuna-immediate-reaction-division': [
+    'Marines cleared a route back from {ground} before their forward detail crossed the open lane.',
+    'A relief element took over at {position}, freeing the first response team to advance toward {ground}.' ],
+  'yu-jing': [
+    'A second firing element took over the volley as the first team moved toward {ground}.',
+    'The assault line paused at {position} to draw the enemy response before shifting fire toward {ground}.' ],
+  'imperial-service': [
+    'An investigator followed the change of watch at {position} and sent guards along the quiet side of {ground}.',
+    'The detail held back its reserve until the guard near {position} exposed a route into {ground}.' ],
+  'invincible-army': [
+    'The heavy column tightened around its exposed lead and pressed toward {ground} under fire.',
+    'A shielded fighter took the last vulnerable step while the rest held the approach to {ground}.' ],
+  'white-banner': [
+    'The high patrol drew fire by {position}, allowing the lower group to close on {ground}.',
+    'After testing the low route, a scout took the steeper flank toward {ground} instead.' ],
+  ariadna: [
+    'Scouts used the noise at {position} to slip another patrol across toward {ground}.',
+    'The lead vanished into cover, leaving the guard unsure which trail led to {ground}.' ],
+  'caledonian-highlander-army': [
+    'A charging fighter held the nearest gun at {position} while comrades made for {ground}.',
+    'The first rush broke off and drew pursuit away from the second strike toward {ground}.' ],
+  'force-de-reponse-rapide-merovingienne': [
+    'A reserve kept the route back from {ground} open while the response patrol probed ahead.',
+    'The patrol exchanged places with its sheltered relief squad before testing the gap at {position}.' ],
+  kosmoflot: [
+    'A distant raider held the watch at {position} as another crossed toward {ground} from the side.',
+    'The outside fighter shifted its angle instead of following the crowded approach into {ground}.' ],
+  'tartary-army-corps': [
+    'A veteran drew return fire near {position}; the rest closed on {ground} during the reload.',
+    'The patrol refused to chase the retreating guard and held its lane into {ground}.' ],
+  'usariadna-ranger-force': [
+    'Rangers moved their wider patrol behind {position} while the lead kept pressure on {ground}.',
+    'The nearest fighter yielded ground to pull a guard away from the side route into {ground}.' ],
+  haqqislam: [
+    'The escort recovered a pinned fighter before sending its relief group toward {ground}.',
+    'A field team held shelter near {position} while its protected lead crossed toward {ground}.' ],
+  'hassassin-bahram': [
+    'A concealed fighter waited for the guard at {position} to chase the visible decoy.',
+    'The false approach ended at {position}; another shadow reached for the route toward {ground}.' ],
+  'qapu-khalqi': [
+    'A contract gunner fixed the pursuit at {position} while an escort tested the exit from {ground}.',
+    'The contract team held a return lane behind {position} and sent a new lead toward {ground}.' ],
+  'ramah-taskforce': [
+    'Relief fighters took the exposed place from the first escort near {position} before approaching {ground}.',
+    'The rescue detail doubled back for its pinned lead, then reopened a route to {ground}.' ],
+  nomads: [
+    'An operator masked the movement near {position} while a second group crossed toward {ground}.',
+    'The team cut its visible approach and waited for the watch at {position} to turn elsewhere.' ],
+  'bakunin-jurisdictional-command': [
+    'A loud feint at {position} drew the watch; a quiet operative used the gap toward {ground}.',
+    'The diversion crossed ahead of the main group and forced the guard away from {ground}.' ],
+  'corregidor-jurisdictional-command': [
+    'A work crew hauled cover beside {position} while its lead crossed toward {ground}.',
+    'The crew left a decoy barricade at {position} and moved its real shield toward {ground}.' ],
+  'tunguska-jurisdictional-command': [
+    'A security operator tested the line at {position} before exposing anyone on the route to {ground}.',
+    'The team withdrew its first approach when a second observer found a safer entry to {ground}.' ],
+  'combined-army': [
+    'An alien element pressed the front at {position} while another closed on {ground} from the side.',
+    'The first wave drew the guard into the open, leaving a second element a route toward {ground}.' ],
+  'morat-aggression-force': [
+    'A shock fighter drove into the fire at {position}, forcing the defenders to look away from {ground}.',
+    'The formation refused the side exit and pushed its weight across the approach to {ground}.' ],
+  'next-wave': [
+    'A raider crossed in sight at {position} while the hidden group made for {ground}.',
+    'The feint fell back from {position}, drawing pursuit off the approach to {ground}.' ],
+  'onyx-contact-force': [
+    'The assault line focused its fire on {position} before a second element crossed to {ground}.',
+    'One alien element held the defender in place as the main line changed angle toward {ground}.' ],
+  'shasvastii-expeditionary-force': [
+    'A concealed scout let the patrol pass {position} before reaching toward {ground}.',
+    'A false movement by {position} drew the search away from the hidden route into {ground}.' ],
+  aleph: [
+    'An observer anticipated the next volley at {position} and sent the team through its pause toward {ground}.',
+    'The force broke its advance into timed crossings rather than crowding the route to {ground}.' ],
+  'operations-subsection': [
+    'An advance operative cut back from {position} to open a different approach toward {ground}.',
+    'The reserve waited at the fallback point while its lead tested the guarded route into {ground}.' ],
+  'steel-phalanx': [
+    'A veteran took the near watch at {position} while another fighter drove toward {ground}.',
+    'The forward fighter held the exposed step and dared the guard to abandon {ground}.' ],
+  'o-12': [
+    'The cordon closed an outer gap beside {position} before a detail advanced toward {ground}.',
+    'An inspection team challenged the movement at {position} while a guarded group crossed toward {ground}.' ],
+  starmada: [
+    'A fleet detail posted a rear watch and sent its front through the gap toward {ground}.',
+    'The first team yielded the exposed route at {position} to a fresh guard moving toward {ground}.' ],
+  'torchlight-brigade': [
+    'Relief fighters crossed the threatened lane at {position} to replace the stalled front near {ground}.',
+    'The rescue detail pulled a wounded fighter clear before returning to the route into {ground}.' ],
+  'japanese-secessionist-army': [
+    'A close threat at {position} made the guard turn as the main group pressed toward {ground}.',
+    'The forward fighter shortened the distance at {position} while another took the uncovered route to {ground}.' ],
+  oban: [
+    'Two scouts split at {position}, leaving the challenged route to the noisier fighter.',
+    'A hidden patrol waited for the guard to follow the wrong trail before closing on {ground}.' ],
+  shindenbutai: [
+    'An advance fighter slipped through the gap beside {position} before the guard could reset.',
+    'A second operative challenged the watch at {position} while the first moved toward {ground}.' ],
+  tohaa: [
+    'The trio rotated its exposed lead at {position} before one fighter crossed toward {ground}.',
+    'A protected member drew back while the other two kept a route open toward {ground}.' ],
+  'dashat-company': [
+    'Hired guns traded positions at {position}, giving the forward group another angle into {ground}.',
+    'The second contract team held the escape lane while the first pressed toward {ground}.' ],
+  'druze-bayram-security': [
+    'A contract gunner fixed the guard by {position} while a second fighter crossed toward {ground}.',
+    'The team shifted its paid guns to the return lane before exposing the lead near {ground}.' ],
+  'ikari-company': [
+    'A reckless dash past {position} dragged the watch away from the route into {ground}.',
+    'Another fighter rushed the opening while the guard pursued the first toward {position}.' ],
+  starco: [
+    'A retrieval team held its exit by {position} while the lead tested the approach to {ground}.',
+    'The second team covered the withdrawal before the first crossed the last lane into {ground}.' ],
+  'white-company': [
+    'A guard detail exchanged places by {position}, holding both approaches while one crossed toward {ground}.',
+    'The team left its quietest lane covered and sent a reserve around the other side of {ground}.' ],
+}

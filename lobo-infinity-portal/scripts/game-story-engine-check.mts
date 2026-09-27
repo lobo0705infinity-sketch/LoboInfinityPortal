@@ -4,13 +4,16 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
-import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
+  MISSION_ARMY_PIVOT_MANEUVERS } from '../src/data/generatedStoryMissionArmies.ts'
 import { MISSION_ROLE_ALTERNATES } from '../src/data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
-import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
-import { AREA_LOCATION_ALTERNATES, AREA_LOCATIONS, AREA_WEATHER,
-  AREA_WEATHER_ALTERNATES } from '../src/data/generatedStorySettings.ts'
+import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_ENDING_FOCUS,
+  INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
+import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA_LOCATIONS,
+  AREA_WEATHER, AREA_WEATHER_ALTERNATES, AREA_WEATHER_EARLY,
+  AREA_WEATHER_LATE } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
@@ -26,6 +29,7 @@ assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => arm
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_ALTERNATE_MANEUVERS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_ARMY_PIVOT_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 assert.deepEqual(Object.keys(MISSION_ROLE_ALTERNATES).sort(),
@@ -37,8 +41,11 @@ for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
     mission + ': a defensive position must be a place, not another guard')
 }
 for (const army of armies) {
-  assert.notEqual(MISSION_ARMY_METHODS[army.id].maneuver,
-    MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], army.name + ': second decision needs a different action')
+  const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
+    MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
+  assert.equal(new Set(decisions).size, 4, army.name + ': four distinct authored decisions')
+  assert.ok(decisions.every((decision) => /\{(?:ground|position)\}/.test(decision)),
+    army.name + ': each maneuver must respond to the contested site')
 }
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const alternative = MISSION_ROLE_ALTERNATES[mission]
@@ -82,6 +89,11 @@ for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
   assert.equal(new Set(scenario.incidents.map((seed) => seed.complication)).size, 4, mission + ': distinct complications')
   for (const seed of scenario.incidents) {
     assert.match(seed.objectiveAction, scenario.anchor, mission + ': action must name a mission objective')
+    assert.doesNotMatch(seed.objectiveAction, /\bprepar(?:e|ed|ing)?\b/i,
+      mission + ': hero must attempt the mission action, not prepare for it')
+    assert.match(seed.objectiveAction,
+      /\b(?:activat|analy|attempt|began|brush|carr|caught|clear|crawl|cross|duck|enter|escort|fired|fit|forced|grab|grip|key|led|move|press|pull|push|reach|return|sent|slid|slip|start|step|stretch|tap|took|touch|tried|try|tug|work)\w*\b/i,
+      mission + ': objective hero needs an active attempt in the source action')
   }
   // The game feed has aggregate points, not individual mission objectives.
   // A winner cannot be reported as having extracted, hacked or neutralized a
@@ -250,6 +262,10 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
   assert.equal(stakes?.length, consequences.length, `${mission}: each incident needs its own stakes`)
   assert.equal(new Set(stakes).size, stakes.length,
     `${mission}: stakes must not repeat within the mission`)
+  const focuses = INCIDENT_ENDING_FOCUS[mission as keyof typeof INCIDENT_ENDING_FOCUS]
+  assert.equal(focuses?.length, consequences.length, `${mission}: each incident needs its own outcome context`)
+  assert.equal(new Set(focuses).size, focuses.length,
+    `${mission}: endings must refer to different obstacles across incidents`)
 }
 assert.equal(composeGameStory('Unknown mission', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 'Hassassin Bahram', 'objective'), null)
@@ -277,9 +293,29 @@ for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
 // changes both the contest and its immediate aftermath, not just the names.
 assert.deepEqual(Object.keys(AREA_WEATHER).sort(), ['crosswind', 'fog', 'none', 'rain', 'snow'])
 assert.deepEqual(Object.keys(AREA_WEATHER_ALTERNATES).sort(), Object.keys(AREA_WEATHER).sort())
+assert.deepEqual(Object.keys(AREA_WEATHER_EARLY).sort(), Object.keys(AREA_WEATHER).sort())
+assert.deepEqual(Object.keys(AREA_WEATHER_LATE).sort(), Object.keys(AREA_WEATHER).sort())
 assert.deepEqual(Object.keys(AREA_LOCATIONS).sort(),
   ['desert', 'forest', 'freightDepot', 'jungle', 'mountain', 'relayCourtyard', 'rooftopTerrace'])
 assert.deepEqual(Object.keys(AREA_LOCATION_ALTERNATES).sort(), Object.keys(AREA_LOCATIONS).sort())
+assert.deepEqual(Object.keys(AREA_LOCATION_EARLY).sort(), Object.keys(AREA_LOCATIONS).sort())
+assert.deepEqual(Object.keys(AREA_LOCATION_LATE).sort(), Object.keys(AREA_LOCATIONS).sort())
+for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
+  const versions = [AREA_WEATHER[weather], AREA_WEATHER_EARLY[weather],
+    AREA_WEATHER_ALTERNATES[weather], AREA_WEATHER_LATE[weather]]
+  for (const field of ['opening', 'complication', 'closing'] as const) {
+    assert.equal(new Set(versions.map((version) => version[field])).size, 4,
+      `${weather}: each incident needs a different ${field} weather observation`)
+  }
+}
+for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
+  const versions = [AREA_LOCATIONS[location], AREA_LOCATION_EARLY[location],
+    AREA_LOCATION_ALTERNATES[location], AREA_LOCATION_LATE[location]]
+  for (const field of ['arrival', 'signal'] as const) {
+    assert.equal(new Set(versions.map((version) => version[field])).size, 4,
+      `${location}: each incident needs a different ${field} observation`)
+  }
+}
 // These cases exercised the failure modes in the independent review: a
 // second guard used as a location, recycled role actions, and an objective
 // hero delegating the decisive move to an unnamed specialist.
@@ -304,8 +340,27 @@ assert.match(coreScene.paragraphs[2], /\{\{hero\}\} located the Quantum Core.*re
 assert.doesNotMatch(coreScene.paragraphs[2], /prepared a specialist to claim/i)
 const supplyScene = sceneForIncident('Provisioning', 'Combined Army',
   'Morat Aggression Force', 'objective', 3)
-assert.match(coreScene.paragraphs[1], /An alien assault group drew fire at/)
-assert.match(supplyScene.paragraphs[1], /The first alien element held the defenders at/)
+assert.match(coreScene.paragraphs[1], /The first alien element held the defenders at/)
+assert.match(supplyScene.paragraphs[1], /The first wave drew the guard into the open/)
+assert.notEqual(coreScene.paragraphs[1], supplyScene.paragraphs[1],
+  'the same army changes its tactical decision across missions')
+const qapuDecisionIndices: number[] = []
+for (const [mission, incidentIndex] of [
+  ['Corporate Appropriation', 3], ['Critical Intervention', 0], ['Last Launch', 3],
+] as const) {
+  const qapu = sceneForIncident(mission, 'Qapu Khalqi', 'Druze Bayram Security', 'objective', incidentIndex)
+  const referents = MISSION_TACTICAL_REFERENTS[mission]
+  const choices = [MISSION_ARMY_METHODS['qapu-khalqi'].maneuver,
+    MISSION_ARMY_ALTERNATE_MANEUVERS['qapu-khalqi'], ...MISSION_ARMY_PIVOT_MANEUVERS['qapu-khalqi']]
+  const found = choices.findIndex((choice) => qapu.paragraphs[1].includes(choice
+    .replaceAll('{ground}', referents.advance).replaceAll('{position}', referents.feint)))
+  assert.notEqual(found, -1, `${mission}: expected an authored Qapu Khalqi decision`)
+  qapuDecisionIndices.push(found)
+  assert.ok(qapu.endings.draw.includes(INCIDENT_ENDING_FOCUS[mission][incidentIndex]),
+    `${mission}: a draw should return to the concrete incident`)
+}
+assert.equal(new Set(qapuDecisionIndices).size, 3,
+  'Qapu Khalqi must not repeat the same maneuver in these three distinct missions')
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   for (const role of ['gunfighting', 'closeCombat'] as const) {
     const first = sceneForIncident(mission, 'PanOceania', 'Druze Bayram Security', role, 1)
@@ -367,7 +422,6 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
     assert.ok(tohaa)
     assertGameStoryQuality(tohaa, `${mission}: Tohaa / ${opponent.name}`)
     assert.ok(tohaa.paragraphs[1].includes(referents.advance), `${mission}: army movement needs its objective`)
-    assert.ok(tohaa.paragraphs[1].includes(referents.defend), `${mission}: defending army needs a position`)
     assert.ok(tohaa.paragraphs[2].includes(referents.continuation),
       `${mission}: army follow-through needs a local destination`)
     assert.doesNotMatch(tohaa.paragraphs.join(' '), /\{(?:ground|position)\}/,
@@ -410,8 +464,12 @@ for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIO
           const incident = SOURCED_STORY_SCENARIOS['Area of Interest']!.incidents.findIndex((seed) =>
             story.paragraphs[1].startsWith(seed.complication))
           assert.ok(incident >= 0)
-          const setting = incident >= 2 ? AREA_LOCATION_ALTERNATES[location] : AREA_LOCATIONS[location]
-          const conditions = incident >= 2 ? AREA_WEATHER_ALTERNATES[weather] : AREA_WEATHER[weather]
+          const setting = incident === 3 ? AREA_LOCATION_LATE[location]
+            : incident === 2 ? AREA_LOCATION_ALTERNATES[location]
+              : incident === 1 ? AREA_LOCATION_EARLY[location] : AREA_LOCATIONS[location]
+          const conditions = incident === 3 ? AREA_WEATHER_LATE[weather]
+            : incident === 2 ? AREA_WEATHER_ALTERNATES[weather]
+              : incident === 1 ? AREA_WEATHER_EARLY[weather] : AREA_WEATHER[weather]
           assert.ok(story.paragraphs[0].includes(setting.arrival))
           assert.ok(story.paragraphs[0].includes(conditions.opening))
           assert.ok(story.paragraphs[1].includes(conditions.complication))

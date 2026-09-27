@@ -43,8 +43,8 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
   Evacuation: [
     'The barrier slid again, leaving the CivEvacing specialist short of the console.',
     'The handrail fell across the route while the civilian remained in contact with the escort.',
-    'The enemy HVT stood between rival escorts, still beyond CivEvac and the console.',
-    'The cart rolled farther from cover, leaving the specialist short of console contact.',
+    'The enemy HVT remained by the corridor as the rival escorts disputed the route to the console.',
+    'The cart rolled toward the controls again before the extraction request was resolved.',
   ],
   Hardlock: [
     'The console display steadied, but rival boots remained at the enemy beacon.',
@@ -56,7 +56,7 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
     'The stair rail dropped behind the specialist before an ID could be downloaded.',
     'The partition shifted again with the bearer still short of the ID Checker.',
     'The emergency lamp faltered before the specialist could finish the ID download.',
-    'The ID bearer stopped at the broken rail while boots sounded inside the tower.',
+    'The ID bearer paused at the checker approach while boots sounded inside the tower.',
   ],
   Neutralization: [
     'The box remained unopened while the Neutralization Area was still out of reach.',
@@ -65,10 +65,10 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
     'The bearer remained on the outer edge, with the tech still unneutralized.',
   ],
   Outbreak: [
-    'The stretcher rolled back toward the patient before the medic reached contact.',
+    'The stretcher rolled toward the patient again while the medic worked to stabilize them.',
     'The Alpha moved behind the cart again as the scanning light crossed the doorway.',
     'The rival escort reached the nearer patient while the farther scan remained open.',
-    'The damaged scanner dimmed again while the medic sought a direct path to the Alpha.',
+    'The damaged scanner dimmed again while the medic worked to stabilize the Alpha.',
   ],
   'Panic Room': [
     'The cabinet stopped against the gate, leaving the officer inside a disputed room.',
@@ -126,8 +126,8 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
   ],
   'Data Harvest': [
     'The activity light blinked again as the rival patrol reached the damaged bridge.',
-    'The railing still separated the active harvester from its waiting escort.',
-    'The carrier waited outside the zone while defenders converged on the open passage.',
+    'The railing still separated the active harvester from the rest of its waiting escort.',
+    'The harvester remained short of a confirmed deposit as defenders converged on the open passage.',
     'Smoke shifted off the casing, leaving the harvester exposed to the approaching patrol.',
   ],
 }
@@ -393,5 +393,95 @@ export const INCIDENT_STAKES: typeof INCIDENT_CONSEQUENCES = {
     'The active harvester would score in the designated zone unless an eligible rival neutralized it.',
     'Depositing the inactive harvester wholly inside the designated zone would make it active.',
     'The exposed harvester could be disabled before its operators returned to the designated zone.',
+  ],
+}
+
+// Outcome context already visible in the scene. These fragments add the
+// incident's actual hazard to each possible result without inferring that a
+// specific objective was completed from the game's aggregate score.
+export const INCIDENT_ENDING_FOCUS: typeof INCIDENT_CONSEQUENCES = {
+  'Akial Interference': [
+    'the newly revealed Common cards', 'the disrupted symbol display',
+    'the blocked filter controls', 'the imminent card rotation',
+  ],
+  'B-Pong': [
+    'the disconnected console', 'the smoke over the contact ring',
+    'the cracked console screen', 'the gantry above the beacon',
+  ],
+  'Corporate Appropriation': [
+    'the descending service lift', 'the swinging panoply door',
+    'the overturned transport', 'the failing prototype clamp',
+  ],
+  'Critical Intervention': [
+    'the jammed pack cradle', 'the closing server-room partition',
+    'the last active console connection', 'the console lock sequence',
+  ],
+  'Crossing Lines': [
+    'the fallen sign across a dead zone', 'the smoke at the far antenna',
+    'the severed antenna connector', 'the dropping shutter',
+  ],
+  "Dead Man's Switch": [
+    'the loose plate over the Quantum Core', 'the contested Objective Room doorway',
+    'the Stunned fighters beside the Core', 'the dropped pack at the threshold',
+  ],
+  Evacuation: [
+    'the sliding barrier before the Extraction Console', 'the broken handrail',
+    'the smoke hiding the enemy HVT', 'the cart blocking the escort',
+  ],
+  Hardlock: [
+    'the shattered console display', 'the fallen panel over the switch',
+    'the sparking backup connector', 'the broken barricade beside the beacon',
+  ],
+  'Last Launch': [
+    'the stair rail below the ID Scanner', 'the split passage inside the Launching Tower',
+    'the scanner under the guard’s fire', 'the broken rail at the tower threshold',
+  ],
+  Neutralization: [
+    'the damaged Tech Box housing', 'the guarded Neutralization Area boundary',
+    'the jammed Tech Box latch', 'the fallen rail across the circular zone',
+  ],
+  Outbreak: [
+    'the overturned stretcher by the Infected', 'the examination cart before the Alpha Infected',
+    'the alarm between the two patients', 'the failing scanner at the containment edge',
+  ],
+  'Panic Room': [
+    'the cabinet blocking one gate', 'the jammed east gate',
+    'the broken table across the floor', 'the smoke at the officer’s entrance',
+  ],
+  Provisioning: [
+    'the bent Tech-Coffin hinge', 'the falling loading rack',
+    'the scattered gear before the safe area', 'the torn packing around the supply box',
+  ],
+  Annihilation: [
+    'the lieutenant’s exposed crossing', 'the collapsing shelter around the survivors',
+    'the revealed command position', 'the disabled gun in the street',
+  ],
+  Battleground: [
+    'the beam before the future central sector', 'the wall dividing the middle ground',
+    'the barrier across the center', 'the dust over the future sector boundary',
+  ],
+  Cutthroat: [
+    'the wreck sheltering the enemy lieutenant', 'the falling beam near the friendly officer',
+    'the broken rail above the command group', 'the shutter between the lieutenants',
+  ],
+  Superiority: [
+    'the broken console panel', 'the failed hack alarm',
+    'the shutter across the far quadrant', 'the crate hiding the sector edge',
+  ],
+  'Uplink Center': [
+    'the brace across the Tech-Coffin base', 'the shutter below the antenna',
+    'the broken rail above the coffin', 'the disputed contact at the coffin',
+  ],
+  'Double Bind': [
+    'the barrier between antenna and zone', 'the panel over the aerial controls',
+    'the disabled carrier at the antenna', 'the divided ground below the mast',
+  ],
+  'The Dig': [
+    'the dust over the analysis console', 'the broken cable beside the buried tech',
+    'the stones covering the analysis input', 'the unmarked tech below the dig',
+  ],
+  'Data Harvest': [
+    'the flickering harvester in the enemy zone', 'the broken rail beside the active device',
+    'the guarded zone boundary', 'the smoke around the exposed harvester',
   ],
 }
