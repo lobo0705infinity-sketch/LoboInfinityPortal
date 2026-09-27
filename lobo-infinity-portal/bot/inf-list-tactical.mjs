@@ -25,17 +25,43 @@ const emptyMessage = 'None detected in this submitted list'
 const maxImageHeight = 7_500
 const imageWidth = 1_440
 
-export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {}, canonicalDataset = null }) {
+export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads = [], metadata = {}, canonicalDataset = null, expandComposite = false }) {
   const decoded = decodeArmyCode(armyCode)
-  const members = decoded.combatGroups.flatMap((group) => group.members.map(member => ({ ...member, combatGroup: group.combatGroup })))
+  const units = officialPayloads.flatMap((payload) => payload?.units || [])
+  const unitById = new Map(units.map((unit) => [Number(unit.id), unit]))
+  const decodedMembers = decoded.combatGroups.flatMap((group) => group.members.map(member => ({ ...member, combatGroup: group.combatGroup })))
+  const members = expandComposite ? decodedMembers.flatMap((member) => {
+    if (Number(member.groupId) !== 0) return [member]
+    const unit = unitById.get(Number(member.unitId))
+    const parentOption = (unit?.options || []).find(option => Number(option.id) === Number(member.optionId))
+    const includes = parentOption?.includes || []
+    if (!includes.length) return [member]
+    const cardName = cards.find(card => card.combinedId === member.combinedId)?.profileName
+    const selectedGroup = resolveExactProfileGroup(unit, member, { profileName: cardName, allowAmbiguousLegacy: true })
+    if (!selectedGroup) return [member]
+    const selectedOption = includes.find(item => Number(item.group) === Number(selectedGroup.id) && Number(item.option) === Number(member.optionId))
+    if (!selectedOption) return [member]
+    return [member, ...includes.flatMap(item => {
+      const quantity = Math.max(0, (Number(item.q) || 1) - Number(item === selectedOption))
+      if (!quantity) return []
+      const group = (unit.profileGroups || []).find(candidate => Number(candidate.id) === Number(item.group))
+      if (group?.profiles?.length !== 1 || !(group.options || []).some(option => Number(option.id) === Number(item.option))) return []
+      const child = {
+        ...member,
+        groupId: Number(item.group),
+        optionId: Number(item.option),
+        combinedId: `${decoded.sectorialId}-${member.unitId}-${item.group}-${item.option}-${group.profiles[0].id}`,
+        compositeComponent: true,
+      }
+      return Array.from({ length: quantity }, () => child)
+    })]
+  }) : decodedMembers
   const cardQueues = new Map()
   for (const card of cards) {
     const queue = cardQueues.get(card.combinedId) || []
     queue.push(card)
     cardQueues.set(card.combinedId, queue)
   }
-  const units = officialPayloads.flatMap((payload) => payload?.units || [])
-  const unitById = new Map(units.map((unit) => [Number(unit.id), unit]))
   const dataset = canonicalDataset || buildCanonicalDataset({ metadata, payloads: officialPayloads })
   const names = {
     equipment: new Map((metadata.equips || []).map((item) => [Number(item.id), item.name])),
@@ -45,7 +71,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   const fireteamMembershipsByUnitId = canonicalFireteamMembershipsByUnitId(officialPayloads)
 
   return members.map((member) => {
-    const card = cardQueues.get(member.combinedId)?.shift() || {}
+    const card = member.compositeComponent ? {} : cardQueues.get(member.combinedId)?.shift() || {}
     const unit = unitById.get(Number(member.unitId))
     const group = resolveExactProfileGroup(unit, member, { profileName: card.profileName })
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
@@ -58,6 +84,7 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
     const skills = mergeNamedRefs(base?.skills, option?.skills, names.skills, card.skills, names.extras)
     if (skills.some(s => /^Peripheral(?:\s*\(|$)/i.test(s))) fireteamMemberships = []
     const equipmentRefs = [...(unit?.equip || unit?.equipment || []), ...(group?.equip || group?.equipment || []), ...(base?.equip || base?.equipment || []), ...(option?.equip || option?.equipment || [])]
+    const equipmentIds = new Set(equipmentRefs.map(ref => Number(ref.id)))
     const verifiedEquipment = base && option && names.equipment.size && equipmentRefs.every((ref) => names.equipment.has(Number(ref.id)))
     const equipment = verifiedEquipment
       ? mergeNamedRefs(equipmentRefs, [], names.equipment, [], names.extras)
@@ -87,14 +114,20 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       cc: finiteNumber(base?.cc ?? card.cc),
       combinedId: member.combinedId,
       equipment,
+      hackingPrograms: (metadata.hack || []).filter(program => (program.devices || []).some(id => equipmentIds.has(Number(id)))).map(program => program.name),
       fireteamMemberships,
       fireteamTeams: unique(fireteamMemberships.map((item) => item.team)),
       linkability: officialPayloads.length ? (fireteamMemberships.length ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
       profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
+      ph: finiteNumber(base?.ph),
       points: finiteNumber(option?.points ?? card.points),
       skills,
+      structure: base?.str === true,
+      troopClassification: Number.isInteger(Number(group?.category)) ? Number(group.category) : null,
+      troopType: Number.isInteger(Number(base?.type)) ? Number(base.type) : null,
       unitId: Number(member.unitId),
-      unitName: unit?.isc || unit?.name || card.unitName || card.profileName || 'Unit unavailable',
+      unitName: (member.compositeComponent ? group?.isc : null) || unit?.isc || unit?.name || card.unitName || card.profileName || 'Unit unavailable',
+      vita: base?.str === false,
       weapons,
     }
   })
