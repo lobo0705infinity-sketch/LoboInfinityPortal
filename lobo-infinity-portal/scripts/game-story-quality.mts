@@ -9,7 +9,7 @@ const allowedTokens = new Set(['hero', 'heroPlayer', 'otherPlayer', 'allyGunfigh
 const roleActionTerms: Record<HeroRole, RegExp> = {
   gunfighting: /\b(?:aim|attack|barrel|cover|driv|drove|fire|fired|gun|held|kept|muzzle|pin|pinned|raider|rifle|shot|shoot|sniper|suppress|target|turret|weapon)\w*\b/i,
   closeCombat: /\b(?:armed|attacker|blade|caught|close|drove|duel|fight|fought|forced|grapple|intercept|melee|opponent|parr|push|shov|strike|struck|struggle|sword|wrestl)\w*\b/i,
-  objective: /\b(?:access|analy|calibrat|check|compar|connect|control|copy|cut|decode|discover|examin|find|fit|follow|found|hack|inspect|isolat|listen|map|measur|open|place|read|repair|retriev|scanner|secur|sensor|specialist|trace|traced|work)\w*\b/i,
+  objective: /\b(?:access|analy|calibrat|check|compar|connect|control|copy|cut|decode|discover|examin|find|fit|follow|found|guid|hack|identif|inspect|isolat|listen|map|measur|open|place|read|repair|retriev|scanner|secur|sensor|specialist|trace|traced|work)\w*\b/i,
 }
 
 const missionPlotTerms: Record<string, RegExp> = {

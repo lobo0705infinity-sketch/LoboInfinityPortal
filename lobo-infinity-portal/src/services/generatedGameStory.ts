@@ -1,6 +1,8 @@
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies.ts'
 import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
+import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
+import { MISSION_STORY_FRAMES } from '../data/generatedStoryFrames.ts'
 import { MISSION_STORY_SEEDS } from '../data/generatedStorySeeds.ts'
 import { MISSION_STORY_TEXTURES } from '../data/generatedStoryTextures.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
@@ -9,16 +11,16 @@ import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
 
 const activeById = new Map(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => [army.id, army]))
 const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
-const openingTurns = [
-  'The first shots cut across the route they needed most.',
-  'The nearest cover stood on the wrong side of the contested ground.',
-  'They could still retreat, but the chance to reach the site would be gone.',
-  'Every useful path now led through the same exposed stretch.',
-  'A single clear approach remained, and both teams had already seen it.',
-  'Neither side had time to search for another way through.',
-  'The exchange forced a decision before either team could settle in.',
-  'The gap between the positions narrowed with every cautious step.',
-] as const
+const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
+  assault: { approach: 'pushed directly toward', defense: 'held the approach to' },
+  armored: { approach: 'advanced under covering fire toward', defense: 'set a shielded line beside' },
+  flanking: { approach: 'worked around the exposed side of', defense: 'watched the flanks of' },
+  guard: { approach: 'moved in formation toward', defense: 'guarded' },
+  rescue: { approach: 'cleared a passage toward', defense: 'kept a withdrawal route open beside' },
+  covert: { approach: 'slipped along the edge of', defense: 'concealed a watch post beside' },
+  technical: { approach: 'mapped the exposed routes toward', defense: 'tracked movement around' },
+  contract: { approach: 'moved to secure', defense: 'watched' },
+}
 
 function stableHash(value: string): number {
   let hash = 2166136261
@@ -55,13 +57,13 @@ export function composeGameStory(
   if (!heroVoice || !otherVoice) return null
   const seedList = MISSION_STORY_SEEDS[canonical]
   const seed = seedList[stableHash(key + ':' + String(gameId)) % seedList.length]
+  const frame = MISSION_STORY_FRAMES[canonical]
   const texture = MISSION_STORY_TEXTURES[canonical]
-  const openingTurn = openingTurns[stableHash(key + ':' + String(gameId) + ':opening') % openingTurns.length]
   const heroAction = role === 'objective'
     ? seed.objectiveAction
     : role === 'gunfighting'
-      ? 'fired across the exposed lane, pinned the nearest weapon, and cleared a path toward ' + seed.prize
-      : 'closed the distance through the noise, drove a defender off the narrow approach, and opened a passage toward ' + seed.prize
+      ? frame.gunfighting
+      : frame.closeCombat
 
   return {
     mission: canonical,
@@ -69,23 +71,14 @@ export function composeGameStory(
     heroFaction: hero.name,
     role,
     paragraphs: [
-      seed.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' + heroVoice.approach +
-        ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' + otherVoice.counter +
-        '. ' + openingTurn,
-      seed.complication + ' {{hero}} ' + heroAction +
-        '. ' + texture.afterAction,
-      seed.turn + ' {{otherPlayer}}’s ' + otherVoice.crew + ' ' + otherVoice.approach +
-        ', and {{heroPlayer}}’s ' + heroVoice.crew + ' ' + heroVoice.counter +
-        '. ' + texture.closing,
+      seed.opening + ' {{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
+        ' ' + frame.ground + ', while {{otherPlayer}}’s ' + otherVoice.crew + ' ' +
+        tactics[otherVoice.style].defense + ' ' + frame.position + '. ' + frame.stakes,
+      seed.complication + ' ' + frame.crossfire + ' ' + seed.turn,
+      '{{hero}} ' + heroAction + '. ' + texture.afterAction + ' ' + frame.reaction +
+        ' ' + texture.closing,
     ],
-    endings: {
-      heroWins: '{{heroPlayer}}’s ' + heroVoice.crew + ' secured ' + seed.prize +
-        ' while {{hero}} helped the last fighter clear the route.',
-      heroLoses: '{{otherPlayer}}’s ' + otherVoice.crew + ' kept ' + seed.prize +
-        ' while {{heroPlayer}}’s team withdrew under pressure.',
-      draw: 'Both teams withdrew with fragments of the effort, leaving ' + seed.prize +
-        ' beyond either commander’s reach.',
-    },
+    endings: frame.endings,
   }
 }
 

@@ -3,7 +3,7 @@ import type { CanonicalMission } from '../config/missions.ts'
 export const MISSION_STORY_TEXTURES: Record<CanonicalMission, { afterAction: string; closing: string }> = {
   'Area of Interest': {
     afterAction: 'One of the survey lamps blinked behind them, warning that the line was still shifting.',
-    closing: 'The missing marker lay somewhere between the two positions, and the dust concealed its final resting place.',
+    closing: 'The last marker cast a broken shadow between the positions while dust obscured the line.',
   },
   'Akial Interference': {
     afterAction: 'A clear syllable escaped the static before the carrier swallowed it again.',
@@ -18,11 +18,11 @@ export const MISSION_STORY_TEXTURES: Record<CanonicalMission, { afterAction: str
     closing: 'The disputed numbers remained visible on the tag even after the bay fell quiet.',
   },
   'Critical Intervention': {
-    afterAction: 'The shelter lights fluttered, and a voice inside called for the power to hold.',
+    afterAction: 'The emergency lights fluttered, and a voice inside called for the power to hold.',
     closing: 'A single monitor continued beeping beyond the door, counting seconds neither team could spare.',
   },
   'Crossing Lines': {
-    afterAction: 'The old checkpoint sign shook under the exchange, pointing toward two incompatible routes.',
+    afterAction: 'The old route sign shook under the exchange, pointing toward two incompatible paths.',
     closing: 'Across the passage, the far route marker still pointed into uncertain ground.',
   },
   "Dead Man's Switch": {
@@ -47,7 +47,7 @@ export const MISSION_STORY_TEXTURES: Record<CanonicalMission, { afterAction: str
   },
   Outbreak: {
     afterAction: 'The isolation alarm changed pitch, drawing every glance back toward the sealed room.',
-    closing: 'The warning repeated through the corridor while the uncertain air moved between the doors.',
+    closing: 'A strip of emergency light under the door caught dust moving against the airflow.',
   },
   'Panic Room': {
     afterAction: 'A faint sound came from the safe side of the shelter door and stopped.',
@@ -55,7 +55,7 @@ export const MISSION_STORY_TEXTURES: Record<CanonicalMission, { afterAction: str
   },
   Provisioning: {
     afterAction: 'One battered crate slid against the others, reminding the crew how little room remained.',
-    closing: 'A loose ration packet lay under the loading rail as both teams measured their losses.',
+    closing: 'A loose ration packet lay beneath the damaged crates as both teams measured their losses.',
   },
   Annihilation: {
     afterAction: 'The shots came back from an unfamiliar angle, making the old cover dangerous.',
@@ -63,7 +63,7 @@ export const MISSION_STORY_TEXTURES: Record<CanonicalMission, { afterAction: str
   },
   Battleground: {
     afterAction: 'A shout crossed the broken ground, answered at once by fire from the far position.',
-    closing: 'The damaged post remained visible through the dust, though its entrance kept disappearing.',
+    closing: 'The damaged position remained visible through the dust, though its entrance kept disappearing.',
   },
   Cutthroat: {
     afterAction: 'A second set of footsteps gave away how many people had expected this exchange to fail.',

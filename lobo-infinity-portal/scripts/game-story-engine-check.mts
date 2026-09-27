@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
+import { MISSION_STORY_FRAMES } from '../src/data/generatedStoryFrames.ts'
 import { MISSION_STORY_SEEDS } from '../src/data/generatedStorySeeds.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
@@ -16,6 +17,7 @@ assert.equal(armies.length, 45)
 assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_STORY_SEEDS).sort(), [...CANONICAL_MISSIONS].sort())
+assert.deepEqual(Object.keys(MISSION_STORY_FRAMES).sort(), [...CANONICAL_MISSIONS].sort())
 
 const seen = new Set<string>()
 const scenes = new Set<string>()
@@ -50,6 +52,13 @@ assert.equal(covered, 22770)
 assert.equal(scenes.size, covered)
 assert.equal(composeGameStory('Unknown mission', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 'Hassassin Bahram', 'objective'), null)
+for (const gameId of [0, 1]) {
+  const court = composeGameStory('B-Pong', 'Nomads', 'Military Orders', 'Nomads', 'objective', gameId)
+  assert.ok(court)
+  assert.match(court.paragraphs.join(' '), /ball|court/i)
+  assert.doesNotMatch(court.paragraphs.join(' '), /network trace|cargo markings|gantry/i,
+    'army tactics must belong to the court rather than a different mission')
+}
 
 const game = {
   id: 9081, date: '2026-09-26T12:00:00.000Z', mission: 'B-Pong',
@@ -92,7 +101,8 @@ const loserText = renderGameStoryTemplate(template, {
 const drawText = renderGameStoryTemplate(template, { ...game, gameResult: 'draw' } as RecentGame, lists)
 assert.ok(winnerText?.endsWith(template.endings.heroWins
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{hero}}', 'the Test Trooper')))
-assert.ok(loserText?.includes('while Winner’s team withdrew under pressure.'))
+assert.ok(loserText?.endsWith(template.endings.heroLoses
+  .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
 assert.ok(drawText?.endsWith(template.endings.draw))
 
 // Authored scenes keep priority even when a generated scene exists for that
