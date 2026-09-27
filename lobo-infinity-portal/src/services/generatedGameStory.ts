@@ -3,12 +3,12 @@ import { CANONICAL_MISSIONS, getCanonicalMissionName } from '../config/missions.
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
-import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
-  MISSION_ARMY_PIVOT_MANEUVERS } from '../data/generatedStoryMissionArmies.ts'
+import { INCIDENT_EDITORIAL_BEATS } from '../data/generatedStoryEditorialBeats.ts'
+import { MISSION_ARMY_METHODS, MISSION_ARMY_PIVOT_MANEUVERS,
+  MISSION_ARMY_TACTICAL_OPENERS } from '../data/generatedStoryMissionArmies.ts'
 import { MISSION_ROLE_ALTERNATES } from '../data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../data/generatedStoryTacticalReferents.ts'
-import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_ENDING_FOCUS,
-  INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
+import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA_LOCATIONS,
   AREA_WEATHER, AREA_WEATHER_ALTERNATES, AREA_WEATHER_EARLY,
@@ -30,13 +30,6 @@ export function hasUnsupportedStoryMissionVersion(game: RecentGame): boolean {
 
 const activeById = new Map(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => [army.id, army]))
 const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
-// A carrier or patient needs an escort route, while a fixed position needs a
-// defended approach. Both types rotate four distinct choices per army.
-const mobileObjectiveMissions = new Set([
-  'B-Pong', 'Corporate Appropriation', 'Critical Intervention', 'Crossing Lines',
-  'Evacuation', 'Last Launch', 'Neutralization', 'Outbreak', 'Provisioning',
-  'Uplink Center', 'The Dig', 'Data Harvest',
-])
 const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   assault: { approach: 'pushed directly toward', defense: 'held the approach to' },
   armored: { approach: 'advanced under covering fire toward', defense: 'set a shielded line beside' },
@@ -211,51 +204,44 @@ export function composeGameStory(
       : scenario[role]
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
-  if (!method || !response) return null
+  const tacticalOpener = MISSION_ARMY_TACTICAL_OPENERS[hero.id]
+  if (!method || !response || !tacticalOpener) return null
   const referents = MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
   if (!referents) throw new Error('Missing tactical referents for ' + canonical)
   const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
   const crossfire = INCIDENT_CROSSFIRE[canonical as keyof typeof INCIDENT_CROSSFIRE]?.[incidentIndex]
   const stakes = INCIDENT_STAKES[canonical as keyof typeof INCIDENT_STAKES]?.[incidentIndex]
-  const endingFocus = INCIDENT_ENDING_FOCUS[canonical as keyof typeof INCIDENT_ENDING_FOCUS]?.[incidentIndex]
-  if (!consequence || !crossfire || !stakes || !endingFocus) {
+  const editorial = INCIDENT_EDITORIAL_BEATS[canonical as keyof typeof INCIDENT_EDITORIAL_BEATS]?.[incidentIndex]
+  if (!consequence || !crossfire || !stakes || !editorial) {
     throw new Error('Missing incident beats for ' + canonical + ' #' + incidentIndex)
   }
-  const drawnMission = withoutFinalPeriod(scenario.endings.draw)
-  const draw = hero.id === opponent.id
-    ? 'Each crew ' + method.drawBeat + '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) +
-      ' amid ' + endingFocus + '.'
-    : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
-      '; ' + drawnMission[0].toLowerCase() + drawnMission.slice(1) + ' amid ' + endingFocus + '.'
 
-  // The incident names the full objective. These shorter references tie an
-  // army's move, counter, and continuation to different parts of that scene;
-  // repeating the same full mission name in every beat drowns out the plot.
+  // The incident names the full objective; these shorter references let the
+  // opposing army's counter answer a specific part of the same scene.
   const ground = seed.ground ?? scenario.ground
   const position = seed.position ?? scenario.position
   const situate = (beat: string, focus: string, distraction: string) =>
     beat.replaceAll('{ground}', focus).replaceAll('{position}', distraction)
-  const alternateManeuver = MISSION_ARMY_ALTERNATE_MANEUVERS[hero.id]
-  const pivots = MISSION_ARMY_PIVOT_MANEUVERS[hero.id]
   const opposingPivots = MISSION_ARMY_PIVOT_MANEUVERS[opponent.id]
-  if (!alternateManeuver || !pivots || !opposingPivots) {
+  if (!opposingPivots) {
     throw new Error('Missing tactical choices for ' + hero.id + ' / ' + opponent.id)
   }
-  const familiar = mobileObjectiveMissions.has(canonical)
-    ? [alternateManeuver, pivots[0], method.maneuver, pivots[1]]
-    : [method.maneuver, pivots[0], alternateManeuver, pivots[1]]
-  // The mission changes the kind of choice; the incident changes when that
-  // choice is taken. A faction recurring across several missions no longer
-  // repeats a single sentence with only {ground}/{position} exchanged.
-  const decision = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex * 2) % familiar.length
-  const maneuver = familiar[decision]
   // The second crew can counterattack or change its watch instead of always
   // reciting the same static defense. Mirror matchups use a different choice
   // for each side so one scene does not repeat the same tactical sentence.
   const counters = [response.defense, opposingPivots[0], opposingPivots[1], response.followThrough]
-  const counter = counters[(decision + 2) % counters.length]
-  const followThrough = incidentIndex === 0 ? method.followThrough
-    : familiar[(decision + incidentIndex) % familiar.length]
+  const counterIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex * 2 + 2) % counters.length
+  const orderedCounters = counters.slice(counterIndex).concat(counters.slice(0, counterIndex))
+  const middle = (counter: string, showArmyTactic: boolean) => arrangeBeats(seed.complication, [crossfire,
+    '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
+      (showArmyTactic ? tacticalOpener + ', then ' : '') + editorial.move,
+    situate(counter, referents.advance, referents.defend)], variant)
+  // Some crews and mission complications are longer than others. Prefer a
+  // shorter authored counter before shortening the hero's compound move.
+  const fits = (paragraph: string) => paragraph.trim().split(/\s+/).length <= 75
+  const fullMiddle = orderedCounters.map((counter) => middle(counter, true)).find(fits)
+  const incidentMiddle = fullMiddle ??
+    orderedCounters.map((counter) => middle(counter, false)).find(fits) ?? middle(orderedCounters[0], false)
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
     ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
@@ -269,16 +255,19 @@ export function composeGameStory(
     objectiveSkill: scenario.objectiveSkill,
     paragraphs: [
       arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
-      arrangeBeats(seed.complication, [crossfire,
-        situate(maneuver, referents.advance, referents.feint),
-        situate(counter, referents.advance, referents.defend)], variant),
+      incidentMiddle,
       arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
-        situate(followThrough, referents.continuation, referents.defend)),
+        editorial.aftermath),
     ],
     endings: {
-      heroWins: continueEnding(scenario.endings.heroWins, method.winClause + ' amid ' + endingFocus),
-      heroLoses: continueEnding(scenario.endings.heroLoses, response.winClause + ' amid ' + endingFocus),
-      draw,
+      heroWins: continueEnding(scenario.endings.heroWins,
+        editorial.winner.replaceAll('{winner}', '{{heroPlayer}}’s crew') + ', while ' + method.winClause),
+      heroLoses: continueEnding(scenario.endings.heroLoses,
+        editorial.winner.replaceAll('{winner}', '{{otherPlayer}}’s crew') + ', while ' + response.winClause),
+      draw: continueEnding(scenario.endings.draw, editorial.draw + (hero.id === opponent.id
+        ? ' while each crew ' + method.drawBeat
+        : ' while {{heroPlayer}}’s crew ' + method.drawBeat +
+          ' and {{otherPlayer}}’s crew ' + response.drawBeat)),
     },
   }
 }

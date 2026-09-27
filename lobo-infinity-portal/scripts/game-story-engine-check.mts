@@ -4,13 +4,13 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
+import { INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
-  MISSION_ARMY_PIVOT_MANEUVERS } from '../src/data/generatedStoryMissionArmies.ts'
+  MISSION_ARMY_PIVOT_MANEUVERS, MISSION_ARMY_TACTICAL_OPENERS } from '../src/data/generatedStoryMissionArmies.ts'
 import { MISSION_ROLE_ALTERNATES } from '../src/data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
-import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_ENDING_FOCUS,
-  INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
+import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
 import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA_LOCATIONS,
   AREA_WEATHER, AREA_WEATHER_ALTERNATES, AREA_WEATHER_EARLY,
   AREA_WEATHER_LATE } from '../src/data/generatedStorySettings.ts'
@@ -28,9 +28,12 @@ assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_ARMY_TACTICAL_OPENERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_ALTERNATE_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_PIVOT_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
+  CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
+assert.deepEqual(Object.keys(INCIDENT_EDITORIAL_BEATS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 assert.deepEqual(Object.keys(MISSION_ROLE_ALTERNATES).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
@@ -41,6 +44,8 @@ for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
     mission + ': a defensive position must be a place, not another guard')
 }
 for (const army of armies) {
+  assert.ok(MISSION_ARMY_TACTICAL_OPENERS[army.id].split(/\s+/).length >= 4,
+    army.name + ': tactical opener must make a substantive choice')
   const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
     MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id]]
   assert.equal(new Set(decisions).size, 4, army.name + ': four distinct authored decisions')
@@ -125,6 +130,12 @@ for (const mission of CANONICAL_MISSIONS) {
           const story = composeGameStory(mission, armies[i].name, armies[j].name, armies[i].name, role, gameId)
           assert.ok(story, key + ': no generated story')
           assertGameStoryQuality(story, key)
+          if (role === 'objective' && i !== j) {
+            const reverseHero = composeGameStory(mission, armies[i].name, armies[j].name,
+              armies[j].name, role, gameId)
+            assert.ok(reverseHero, key + ': missing reversed hero story')
+            assertGameStoryQuality(reverseHero, key + ': reversed hero story')
+          }
           if (role === 'objective') incidents.add(story.paragraphs[1])
           if (role === 'objective' && gameId === 0) {
             const scene = story.paragraphs.join(' ').replaceAll(/\{\{\w+\}\}/g, 'HERO')
@@ -262,10 +273,13 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
   assert.equal(stakes?.length, consequences.length, `${mission}: each incident needs its own stakes`)
   assert.equal(new Set(stakes).size, stakes.length,
     `${mission}: stakes must not repeat within the mission`)
-  const focuses = INCIDENT_ENDING_FOCUS[mission as keyof typeof INCIDENT_ENDING_FOCUS]
-  assert.equal(focuses?.length, consequences.length, `${mission}: each incident needs its own outcome context`)
-  assert.equal(new Set(focuses).size, focuses.length,
-    `${mission}: endings must refer to different obstacles across incidents`)
+  const editorial = INCIDENT_EDITORIAL_BEATS[mission as keyof typeof INCIDENT_EDITORIAL_BEATS]
+  assert.equal(editorial?.length, consequences.length,
+    `${mission}: each incident needs its own tactical choice and outcome`)
+  for (const field of ['move', 'aftermath', 'winner', 'draw'] as const) {
+    assert.equal(new Set(editorial.map((beat) => beat[field])).size, editorial.length,
+      `${mission}: incident ${field} beats must differ`)
+  }
 }
 assert.equal(composeGameStory('Unknown mission', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 assert.equal(composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security', 'Hassassin Bahram', 'objective'), null)
@@ -340,27 +354,47 @@ assert.match(coreScene.paragraphs[2], /\{\{hero\}\} located the Quantum Core.*re
 assert.doesNotMatch(coreScene.paragraphs[2], /prepared a specialist to claim/i)
 const supplyScene = sceneForIncident('Provisioning', 'Combined Army',
   'Morat Aggression Force', 'objective', 3)
-assert.match(coreScene.paragraphs[1], /The first alien element held the defenders at/)
-assert.match(supplyScene.paragraphs[1], /The first wave drew the guard into the open/)
+assert.match(coreScene.paragraphs[1], /watched the floor plate while keeping the room entrance clear/)
+assert.match(supplyScene.paragraphs[1], /used the torn packing sheet to screen a reach into the Tech-Coffin/)
 assert.notEqual(coreScene.paragraphs[1], supplyScene.paragraphs[1],
   'the same army changes its tactical decision across missions')
-const qapuDecisionIndices: number[] = []
+const qapuDecisions = new Set<string>()
 for (const [mission, incidentIndex] of [
   ['Corporate Appropriation', 3], ['Critical Intervention', 0], ['Last Launch', 3],
 ] as const) {
   const qapu = sceneForIncident(mission, 'Qapu Khalqi', 'Druze Bayram Security', 'objective', incidentIndex)
-  const referents = MISSION_TACTICAL_REFERENTS[mission]
-  const choices = [MISSION_ARMY_METHODS['qapu-khalqi'].maneuver,
-    MISSION_ARMY_ALTERNATE_MANEUVERS['qapu-khalqi'], ...MISSION_ARMY_PIVOT_MANEUVERS['qapu-khalqi']]
-  const found = choices.findIndex((choice) => qapu.paragraphs[1].includes(choice
-    .replaceAll('{ground}', referents.advance).replaceAll('{position}', referents.feint)))
-  assert.notEqual(found, -1, `${mission}: expected an authored Qapu Khalqi decision`)
-  qapuDecisionIndices.push(found)
-  assert.ok(qapu.endings.draw.includes(INCIDENT_ENDING_FOCUS[mission][incidentIndex]),
-    `${mission}: a draw should return to the concrete incident`)
+  const move = INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].move
+  assert.ok(qapu.paragraphs[1].includes(move), `${mission}: incident action must enter the scene`)
+  qapuDecisions.add(move)
+  assert.ok(qapu.endings.draw.includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].draw),
+    `${mission}: a draw should explain the concrete incident`)
 }
-assert.equal(new Set(qapuDecisionIndices).size, 3,
+assert.equal(qapuDecisions.size, 3,
   'Qapu Khalqi must not repeat the same maneuver in these three distinct missions')
+const distinctTurns = new Set<string>()
+for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+  const incidentWins = new Set<string>()
+  const incidentDraws = new Set<string>()
+  for (let incidentIndex = 0; incidentIndex < 4; incidentIndex++) {
+    const story = sceneForIncident(mission, 'White Company', 'Druze Bayram Security', 'objective', incidentIndex)
+    const action = story.paragraphs[1].split(/(?<=[.!?])\s+/)
+      .find((sentence) => sentence.includes('{{heroPlayer}}'))
+    assert.ok(action, `${mission}: hero army must make an incident-specific tactical choice`)
+    assert.ok(!distinctTurns.has(action), `${mission}: same faction reused a maneuver from another mission`)
+    distinctTurns.add(action)
+    assert.doesNotMatch(story.endings.heroWins, /\samid\s+[^.]+\.$/,
+      `${mission}: result must change more than an obstacle suffix`)
+    incidentWins.add(story.endings.heroWins.replace(/, while its [^.]+\.$/, '.'))
+    incidentDraws.add(story.endings.draw)
+  }
+  assert.equal(incidentWins.size, 4, `${mission}: four incidents need distinct winning explanations`)
+  assert.equal(incidentDraws.size, 4, `${mission}: four incidents need distinct drawn explanations`)
+}
+const guardedHarvester = sceneForIncident('Data Harvest', 'PanOceania',
+  'Druze Bayram Security', 'objective', 1)
+assert.match(guardedHarvester.paragraphs[2],
+  /\{\{hero\}\} slipped past the railing and guarded the active data-harvester against the rival specialist/,
+  'the objective hero must defend the harvester, not merely approach it')
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   for (const role of ['gunfighting', 'closeCombat'] as const) {
     const first = sceneForIncident(mission, 'PanOceania', 'Druze Bayram Security', role, 1)
@@ -410,8 +444,8 @@ for (const opponent of armies) {
 }
 assert.equal(draws.size, armies.length, 'the same location and incident yield faction-specific draws')
 
-// Every other mission retains its own incident and objective, but the side
-// that leads changes the middle, continuation, and all three endings.
+// Reversing a matchup changes both armies' tactical actions and outcomes;
+// the shared incident and its unresolved physical aftermath remain the same.
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const scenario = SOURCED_STORY_SCENARIOS[mission]
   assert.ok(scenario)
@@ -421,17 +455,19 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
       tohaaArmy.name, 'objective', 0)
     assert.ok(tohaa)
     assertGameStoryQuality(tohaa, `${mission}: Tohaa / ${opponent.name}`)
-    assert.ok(tohaa.paragraphs[1].includes(referents.advance), `${mission}: army movement needs its objective`)
-    assert.ok(tohaa.paragraphs[2].includes(referents.continuation),
-      `${mission}: army follow-through needs a local destination`)
+    assert.ok([referents.advance, referents.defend].some((place) => tohaa.paragraphs[1].includes(place)),
+      `${mission}: army movement needs its objective`)
+    const incidentIndex = scenario.incidents.findIndex((seed) => tohaa.paragraphs[0].startsWith(seed.opening))
+    assert.ok(incidentIndex >= 0)
+    assert.ok(tohaa.paragraphs[2].includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].aftermath),
+      `${mission}: the follow-through must remain tied to the incident`)
     assert.doesNotMatch(tohaa.paragraphs.join(' '), /\{(?:ground|position)\}/,
       `${mission}: no raw tactical placeholders`)
     assert.match(tohaa.paragraphs.join(' '), scenario.anchor)
     assert.ok(tohaa.endings.heroWins.includes(MISSION_ARMY_METHODS.tohaa.winClause))
     assert.ok(tohaa.endings.heroLoses.includes(MISSION_ARMY_METHODS[opponent.id].winClause))
     assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS.tohaa.drawBeat))
-    const missionDraw = scenario.endings.draw.slice(0, -1)
-    assert.ok(tohaa.endings.draw.includes(missionDraw[0].toLowerCase() + missionDraw.slice(1)))
+    assert.ok(tohaa.endings.draw.includes(scenario.endings.draw.slice(0, -1)))
     if (opponent.id === 'tohaa') continue
     assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS[opponent.id].drawBeat))
     const reversed = composeGameStory(mission, tohaaArmy.name, opponent.name,
@@ -439,7 +475,8 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
     assert.ok(reversed)
     assertGameStoryQuality(reversed, `${mission}: ${opponent.name} / Tohaa`)
     assert.notEqual(tohaa.paragraphs[1], reversed.paragraphs[1])
-    assert.notEqual(tohaa.paragraphs[2], reversed.paragraphs[2])
+    assert.equal(tohaa.paragraphs[2], reversed.paragraphs[2],
+      'reversing factions must not rewrite the physical incident')
     assert.notEqual(tohaa.endings.heroWins, reversed.endings.heroWins)
     assert.notEqual(tohaa.endings.heroLoses, reversed.endings.heroLoses)
     assert.notEqual(tohaa.endings.draw, reversed.endings.draw)
