@@ -32,6 +32,38 @@ export const AREA_WEATHER = {
 
 export type AreaWeatherTag = keyof typeof AREA_WEATHER
 
+// Later incidents encounter a different part of the same setting. Swapping
+// complete observations avoids recycling five identical environment lines
+// when two games happen to share their location and weather tags.
+export const AREA_WEATHER_ALTERNATES: Record<AreaWeatherTag,
+  { opening: string; complication: string; closing: string }> = {
+  none: {
+    opening: 'The guard could see the switch clearly, though broken cover still lined its approach.',
+    complication: 'With no obstruction on the crossing, an operator had to wait for covering fire before reading the panel.',
+    closing: 'The relay gave a dry click as the rival squad returned to the switch.',
+  },
+  rain: {
+    opening: 'Rain dripped from the switch housing onto the contested approach.',
+    complication: 'A soaked control face blurred the signal whenever a specialist tried to read its damaged contacts.',
+    closing: 'Water tracked over the panel as a fresh burst rattled the relay.',
+  },
+  fog: {
+    opening: 'Fog blurred the guard posted on the other side of the mast.',
+    complication: 'The specialist could see the relay light but lost the far approach each time the mist thickened.',
+    closing: 'A shape emerged from the fog as the relay answered with a faint click.',
+  },
+  crosswind: {
+    opening: 'Wind pushed grit against the switch and stripped dust from the bare crossing.',
+    complication: 'Each gust blew grit into the open housing and made its indicator difficult to read under fire.',
+    closing: 'Another gust lifted dust over the relay before either patrol could inspect the light.',
+  },
+  snow: {
+    opening: 'Fresh snow hid the footprints that led to the relay controls.',
+    complication: 'The specialist brushed ice from the signal lamp while the other patrol watched the exposed approach.',
+    closing: 'New prints converged on the mast as the relay flickered beneath falling snow.',
+  },
+}
+
 export const AREA_LOCATIONS = {
   relayCourtyard: {
     arrival: 'A relay mast stood in a walled courtyard beside a collapsed arcade.',
@@ -87,4 +119,36 @@ export const AREA_LOCATIONS = {
 export type AreaStoryTags = {
   location: keyof typeof AREA_LOCATIONS
   weather: AreaWeatherTag
+}
+
+export const AREA_LOCATION_ALTERNATES: Record<AreaStoryTags['location'],
+  { arrival: string; signal: string }> = {
+  relayCourtyard: {
+    arrival: 'A relay mast rose above broken paving inside a courtyard with two exposed entrances.',
+    signal: 'The indicator flashed across the arcade stones as a fighter moved by the wall.',
+  },
+  freightDepot: {
+    arrival: 'A relay mast overlooked the empty tracks between two freight platforms.',
+    signal: 'The indicator lit the abandoned cargo rails beneath the guarded platform.',
+  },
+  rooftopTerrace: {
+    arrival: 'The rooftop relay mast stood between a low parapet and a maintenance hatch.',
+    signal: 'The indicator cast a line over the terrace parapet as the watch shifted.',
+  },
+  forest: {
+    arrival: 'Pines screened one edge of a clearing where the relay mast stood exposed.',
+    signal: 'The indicator picked out a fallen branch as fighters crossed the clearing.',
+  },
+  desert: {
+    arrival: 'A relay mast overlooked the empty service trench of a desert waystation.',
+    signal: 'The indicator flashed across the dry pavement and vanished behind a shade wall.',
+  },
+  mountain: {
+    arrival: 'The relay mast stood above a mountain switchback with loose shale beneath the guard’s boots.',
+    signal: 'The indicator glowed across the shale while fighters edged along the pass.',
+  },
+  jungle: {
+    arrival: 'A relay mast rose over an outpost clearing where roots broke the approach.',
+    signal: 'The indicator showed through the leaves beside the outpost wall.',
+  },
 }

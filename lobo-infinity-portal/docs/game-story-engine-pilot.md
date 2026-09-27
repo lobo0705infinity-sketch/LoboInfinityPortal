@@ -39,16 +39,21 @@ differ. Older game records do not identify which edition was played.
   supplies a crew description, maneuver, defensive response, follow-through,
   and outcome beat. The 21 other mission frames use mission-neutral army
   methods bound to four short mission-specific tactical referents: an advance,
-  a diversion, a defensive position and a continuation. This keeps the army's
-  choice attached to the contested location while avoiding a verbatim ranger,
-  escort or cordon sentence in every scenario. The incident turns, objective
+  a diversion, a defensive position and a continuation. The referents for
+  diversions and defensive positions are now *places*, so a guard cannot be
+  described as standing "at the guard." Missions involving a moving objective
+  use a second authored maneuver for each army; later incidents use alternate
+  gunfighting and close-combat actions tied to their mission. This varies the
+  action rather than only the noun at its end. Incident turns, objective
   actions and endings remain mission-specific. Game ID chooses an incident
   deterministically.
 - The Area of Interest pilot additionally accepts `location` and `weather`
   tags. It selects tags deterministically when omitted and rejects explicit
   incompatible combinations. No weather effects (`none`) is valid everywhere.
   The location changes cover, approach and scored ground; the weather changes
-  the opening, obstruction and closing beat. With `none`, these beats use the
+  the opening, obstruction and closing beat. Later incidents use a second set
+  of complete setting and weather observations, so sharing the same tags need
+  not repeat five identical sentences. With `none`, these beats use the
   exposed approach and opposing fire without describing weather. A distinct
   maneuver, defense, continuation, win beat, and draw beat for each of the 45
   active armies now changes the contest and all three endings. Eight role-action
@@ -103,19 +108,22 @@ different middle paragraphs, 42–67 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.184. Sentence
 order varies for independent opening and confrontation beats; the incident
 turn precedes the hero action and its consequence. In a fresh seeded
-110-scene review packet, 19 of 1,064 sentence appearances are exact repeats
-after excluding one deliberately reversed case per mission; a second seed
-also showed 19 of 1,064. The same first seed had 159 repeats before the
-mission-specific tactical referents were introduced. The remaining shared
-lines occur mainly when a mission reuses a role action or when Area of Interest
-samples happen to select the same setting and weather. Short references to
-the objective can still repeat within an individual story; the 88 included
-scenes had 425 repeated three-word sequences within scenes, compared with 352
-before this change. Neither count establishes plot originality or editorial
+110-scene review packet, 19 *extra occurrences* of exact sentences appeared
+across 1,064 sentence appearances after excluding one deliberately reversed
+case per mission; 38 appearances were involved in those pairs. A second seed
+also had 19 extra occurrences. The same first seed had 159 extra occurrences
+before mission-specific tactical referents were introduced. The remaining
+shared lines involved repeated role actions and reused Area of Interest
+settings. The latest matched-seed and separate fresh-seed samples each had
+**zero** exact repeats across 1,064 sentences on the same 88-scene basis, but
+short references to objectives still recur. The matched seed counted 437
+repeated three-word sequences within stories, up from 430 before the latest
+changes; the previous revision had 425 on a different seed, versus 352 before
+its referent rewrite. Neither count establishes plot originality or editorial
 quality. The ending rewrite removed the stock “prevailed” and “ended level”
 lines, but mission and faction distinctions still require human review.
-The 45 Area and 45 mission-neutral method sets distinguish army tactics in
-every mission, but neither set establishes original plots for every pair.
+The 45 Area methods and two choices of maneuver for each of the other 45
+armies distinguish tactics, but they do not establish original plots for every pair.
 The methods are fictional extrapolations from broad faction themes described by
 [Corvus Belli](https://infinityuniverse.com/en), including its descriptions of
 [Tohaa coordination](https://infinityuniverse.com/en/news/tohaa-combat-force-repack-alpha)

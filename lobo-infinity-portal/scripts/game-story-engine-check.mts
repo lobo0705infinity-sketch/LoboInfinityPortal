@@ -4,11 +4,13 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
-import { MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS } from '../src/data/generatedStoryMissionArmies.ts'
+import { MISSION_ROLE_ALTERNATES } from '../src/data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
-import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
+import { AREA_LOCATION_ALTERNATES, AREA_LOCATIONS, AREA_WEATHER,
+  AREA_WEATHER_ALTERNATES } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
@@ -23,8 +25,27 @@ assert.equal(CANONICAL_MISSIONS.length, 22)
 assert.deepEqual(Object.keys(ARMY_STORY_VOICES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_ARMY_ALTERNATE_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
+assert.deepEqual(Object.keys(MISSION_ROLE_ALTERNATES).sort(),
+  CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
+for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
+  assert.doesNotMatch(referents.feint, /\bguards?\b/i,
+    mission + ': an action like "guard at {position}" requires a place, not another guard')
+  assert.doesNotMatch(referents.defend, /\bguards?\b/i,
+    mission + ': a defensive position must be a place, not another guard')
+}
+for (const army of armies) {
+  assert.notEqual(MISSION_ARMY_METHODS[army.id].maneuver,
+    MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], army.name + ': second decision needs a different action')
+}
+for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+  const alternative = MISSION_ROLE_ALTERNATES[mission]
+  const scenario = SOURCED_STORY_SCENARIOS[mission]!
+  assert.notEqual(alternative.gunfighting, scenario.gunfighting, mission + ': second gunfighting action')
+  assert.notEqual(alternative.closeCombat, scenario.closeCombat, mission + ': second closeCombat action')
+}
 for (const field of ['initiative', 'response', 'followThrough', 'winBeat', 'drawBeat'] as const) {
   assert.equal(new Set(Object.values(AREA_ARMY_METHODS).map((method) => method[field])).size,
     armies.length, `Area of Interest ${field} must distinguish all active armies`)
@@ -255,8 +276,56 @@ for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
 // Setting tags have plot consequences, and reversing these two factions
 // changes both the contest and its immediate aftermath, not just the names.
 assert.deepEqual(Object.keys(AREA_WEATHER).sort(), ['crosswind', 'fog', 'none', 'rain', 'snow'])
+assert.deepEqual(Object.keys(AREA_WEATHER_ALTERNATES).sort(), Object.keys(AREA_WEATHER).sort())
 assert.deepEqual(Object.keys(AREA_LOCATIONS).sort(),
   ['desert', 'forest', 'freightDepot', 'jungle', 'mountain', 'relayCourtyard', 'rooftopTerrace'])
+assert.deepEqual(Object.keys(AREA_LOCATION_ALTERNATES).sort(), Object.keys(AREA_LOCATIONS).sort())
+// These cases exercised the failure modes in the independent review: a
+// second guard used as a location, recycled role actions, and an objective
+// hero delegating the decisive move to an unnamed specialist.
+function sceneForIncident(mission: string, first: string, other: string,
+  role: 'objective' | 'gunfighting' | 'closeCombat', index: number) {
+  const incident = SOURCED_STORY_SCENARIOS[mission]!.incidents[index]
+  for (const id of [0, 1, 2, 3]) {
+    const story = composeGameStory(mission, first, other, first, role, id)
+    if ((mission === 'Area of Interest' ? story?.paragraphs[1].startsWith(incident.complication)
+      : story?.paragraphs[0].startsWith(incident.opening))) return story!
+  }
+  throw new Error('Could not select ' + mission + ' incident ' + index)
+}
+for (const mission of ['Provisioning', 'Uplink Center', 'Annihilation']) {
+  const story = sceneForIncident(mission, 'Nomads', 'Military Orders', 'gunfighting', 2)
+  assert.doesNotMatch(story.paragraphs.join(' '), /guard at the (?:coffin-side guard|antenna-side guards|lieutenant’s guard)/i,
+    mission + ': a guard cannot stand at another guard')
+}
+const coreScene = sceneForIncident("Dead Man's Switch", 'Combined Army',
+  'Morat Aggression Force', 'objective', 0)
+assert.match(coreScene.paragraphs[2], /\{\{hero\}\} located the Quantum Core.*reached for it/)
+assert.doesNotMatch(coreScene.paragraphs[2], /prepared a specialist to claim/i)
+const supplyScene = sceneForIncident('Provisioning', 'Combined Army',
+  'Morat Aggression Force', 'objective', 3)
+assert.match(coreScene.paragraphs[1], /An alien assault group drew fire at/)
+assert.match(supplyScene.paragraphs[1], /The first alien element held the defenders at/)
+for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
+  for (const role of ['gunfighting', 'closeCombat'] as const) {
+    const first = sceneForIncident(mission, 'PanOceania', 'Druze Bayram Security', role, 1)
+    const later = sceneForIncident(mission, 'PanOceania', 'Druze Bayram Security', role, 3)
+    assert.notEqual(first.paragraphs[2].match(/\{\{hero\}\}[^.]+\./)?.[0],
+      later.paragraphs[2].match(/\{\{hero\}\}[^.]+\./)?.[0],
+      mission + ': role action must change when a new incident changes the stakes')
+  }
+}
+const areaFirst = sceneForIncident('Area of Interest', 'Corregidor Jurisdictional Command',
+  'Tunguska Jurisdictional Command', 'objective', 0)
+const areaLater = [0, 1, 2, 3].map((id) => composeGameStory('Area of Interest',
+  'Next Wave', 'Onyx Contact Force', 'Next Wave', 'closeCombat', id,
+  { location: areaFirst.sceneTags!.location, weather: areaFirst.sceneTags!.weather }))
+  .find((story) => story?.paragraphs[1].startsWith(SOURCED_STORY_SCENARIOS['Area of Interest']!.incidents[2].complication))!
+assert.ok(areaLater)
+assert.ok(!areaLater.paragraphs[0].includes(AREA_LOCATIONS[areaFirst.sceneTags!.location].arrival))
+assert.ok(areaLater.paragraphs[0].includes(AREA_LOCATION_ALTERNATES[areaFirst.sceneTags!.location].arrival))
+assert.ok(areaLater.paragraphs[1].includes(AREA_WEATHER_ALTERNATES[areaFirst.sceneTags!.weather].complication))
+assert.ok(!areaLater.paragraphs[2].includes(AREA_WEATHER[areaFirst.sceneTags!.weather].closing))
 // A fixed incident and setting isolate the faction layer: every army has a
 // different maneuver, defense, continuation, and outcome at the same relay.
 const tohaaArmy = armies.find((army) => army.id === 'tohaa')
@@ -338,10 +407,15 @@ for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIO
         for (const story of [tohaa, nextWave]) {
           assert.deepEqual(story.sceneTags, tags)
           assertGameStoryQuality(story, storyTemplateKey(story.mission, ...story.factions) ?? '')
-          assert.ok(story.paragraphs[0].includes(AREA_LOCATIONS[location].arrival))
-          assert.ok(story.paragraphs[0].includes(AREA_WEATHER[weather].opening))
-          assert.ok(story.paragraphs[1].includes(AREA_WEATHER[weather].complication))
-          assert.ok(story.paragraphs[2].includes(AREA_WEATHER[weather].closing))
+          const incident = SOURCED_STORY_SCENARIOS['Area of Interest']!.incidents.findIndex((seed) =>
+            story.paragraphs[1].startsWith(seed.complication))
+          assert.ok(incident >= 0)
+          const setting = incident >= 2 ? AREA_LOCATION_ALTERNATES[location] : AREA_LOCATIONS[location]
+          const conditions = incident >= 2 ? AREA_WEATHER_ALTERNATES[weather] : AREA_WEATHER[weather]
+          assert.ok(story.paragraphs[0].includes(setting.arrival))
+          assert.ok(story.paragraphs[0].includes(conditions.opening))
+          assert.ok(story.paragraphs[1].includes(conditions.complication))
+          assert.ok(story.paragraphs[2].includes(conditions.closing))
           assert.ok(story.endings.heroWins.includes(AREA_LOCATIONS[location].scoringGround))
           if (weather === 'none') assert.doesNotMatch(story.paragraphs.join(' '),
             /\b(?:rain|snow|fog|mist|wind|gusts|ice)\b/i, 'no-weather tag must not imply weather effects')

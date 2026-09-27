@@ -1,6 +1,8 @@
 import type { CanonicalMission } from '../config/missions.ts'
 
-// Short, mission-specific references for the factions' tactical choices.
+// Short, mission-specific places for the factions' tactical choices. In
+// particular, feint must be a place: several methods say "the guard at
+// {position}", which becomes nonsense if {position} is itself a guard.
 // The full objective and its rules remain in the incident; these referents
 // let each force react to a different part of that same contest instead of
 // naming the mission's primary object in every sentence.
@@ -29,9 +31,9 @@ export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area 
   'Crossing Lines': referents(
     'the scored ground', 'the aerial approach', 'the control panel', 'the far-zone crossing'),
   "Dead Man's Switch": referents(
-    'the disputed room', 'the Core’s guard', 'the room threshold', 'the open doorway'),
+    'the disputed room', 'the room’s side entrance', 'the room threshold', 'the open doorway'),
   Evacuation: referents(
-    'the extraction controls', 'the console-side cover', 'the waiting civilian', 'the console face'),
+    'the extraction controls', 'the console-side cover', 'the civilian’s shelter', 'the console face'),
   Hardlock: referents(
     'the beacon’s flank', 'the console-side cover', 'the disputed switch', 'the beacon base'),
   'Last Launch': referents(
@@ -39,25 +41,25 @@ export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area 
   Neutralization: referents(
     'the area boundary', 'the box approach', 'the exposed box', 'the circular zone'),
   Outbreak: referents(
-    'the containment corridor', 'the escort’s flank', 'the waiting patient', 'the corridor entrance'),
+    'the containment corridor', 'the escort’s cover', 'the patient’s shelter', 'the corridor entrance'),
   'Panic Room': referents(
     'the room threshold', 'the side entrance', 'the defended gate', 'the room’s open floor'),
   Provisioning: referents(
-    'the waiting Tech-Coffin', 'the coffin-side guard', 'the loading exit', 'the safety boundary'),
+    'the waiting Tech-Coffin', 'the coffin-side cover', 'the loading exit', 'the safety boundary'),
   Annihilation: referents(
-    'the survivors’ cover', 'the lieutenant’s guard', 'the guarded officer', 'the battered squad'),
+    'the survivors’ cover', 'the lieutenant’s position', 'the officer’s cover', 'the battered squad'),
   Battleground: referents(
-    'the middle sector', 'the far-side patrol', 'the sector’s outer edge', 'the open center'),
+    'the middle sector', 'the far-side cover', 'the sector’s outer edge', 'the open center'),
   Cutthroat: referents(
-    'the rival officer', 'the command escort', 'the lieutenant’s cover', 'the exposed flank'),
+    'the rival officer', 'the command post', 'the lieutenant’s cover', 'the exposed flank'),
   Superiority: referents(
     'the open quadrant', 'the central crossing', 'the contested switch', 'the quadrant’s edge'),
   'Uplink Center': referents(
-    'the Tech-Coffin', 'the antenna-side guards', 'the disputed uplink', 'the open crossing'),
+    'the Tech-Coffin', 'the antenna-side cover', 'the disputed uplink', 'the open crossing'),
   'Double Bind': referents(
     'the scoring zone', 'the rival aerial', 'the antenna controls', 'the scored ground'),
   'The Dig': referents(
-    'the excavated tech', 'the excavation’s far side', 'the analysis console', 'the exposed reader'),
+    'the excavated tech', 'the excavation rim', 'the analysis console', 'the exposed reader'),
   'Data Harvest': referents(
-    'the enemy zone', 'the harvester’s escort', 'the live device', 'the marked boundary'),
+    'the enemy zone', 'the harvester-side cover', 'the live device', 'the marked boundary'),
 }

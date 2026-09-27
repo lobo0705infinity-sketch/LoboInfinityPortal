@@ -3,11 +3,13 @@ import { getCanonicalMissionName } from '../config/missions.ts'
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
-import { MISSION_ARMY_METHODS } from '../data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS } from '../data/generatedStoryMissionArmies.ts'
+import { MISSION_ROLE_ALTERNATES } from '../data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../data/generatedStoryTacticalReferents.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
 import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
-import { AREA_LOCATIONS, AREA_WEATHER } from '../data/generatedStorySettings.ts'
+import { AREA_LOCATION_ALTERNATES, AREA_LOCATIONS, AREA_WEATHER,
+  AREA_WEATHER_ALTERNATES } from '../data/generatedStorySettings.ts'
 import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
@@ -25,6 +27,15 @@ export function hasUnsupportedStoryMissionVersion(game: RecentGame): boolean {
 
 const activeById = new Map(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => [army.id, army]))
 const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
+// Moving a box, patient, prototype, data pack, or harvester poses a different
+// tactical problem from holding a fixed sector or command point. The second
+// set of faction maneuvers commits a reserve, changes a firing angle, or opens
+// an escort route rather than restating the original approach with new nouns.
+const mobileObjectiveMissions = new Set([
+  'B-Pong', 'Corporate Appropriation', 'Critical Intervention', 'Crossing Lines',
+  'Evacuation', 'Last Launch', 'Neutralization', 'Outbreak', 'Provisioning',
+  'Uplink Center', 'The Dig', 'Data Harvest',
+])
 const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   assault: { approach: 'pushed directly toward', defense: 'held the approach to' },
   armored: { approach: 'advanced under covering fire toward', defense: 'set a shielded line beside' },
@@ -151,7 +162,8 @@ export function composeGameStory(
     const weatherIds = location.allowedWeather as readonly AreaStoryTags['weather'][]
     const weatherId = sceneTags?.weather ?? weatherIds[stableHash(key + ':' + String(gameId) + ':weather') % weatherIds.length]
     if (!Object.hasOwn(AREA_WEATHER, weatherId) || !weatherIds.includes(weatherId)) return null
-    const weather = AREA_WEATHER[weatherId]
+    const weather = incidentIndex >= 2 ? AREA_WEATHER_ALTERNATES[weatherId] : AREA_WEATHER[weatherId]
+    const setting = incidentIndex >= 2 ? AREA_LOCATION_ALTERNATES[locationId] : location
     const method = AREA_ARMY_METHODS[hero.id]
     const response = AREA_ARMY_METHODS[opponent.id]
     if (!method || !response) return null
@@ -166,11 +178,11 @@ export function composeGameStory(
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
       paragraphs: [
-        [location.arrival, weather.opening, ...(
+        [setting.arrival, weather.opening, ...(
           variant % 2 ? [otherMove, heroMove] : [heroMove, otherMove]
         ), seed.opening].join(' '),
         arrangeBeats(seed.complication, [weather.complication, method.initiative, response.response], variant),
-        arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', location.signal,
+        arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', setting.signal,
           method.followThrough) + ' ' + weather.closing,
       ],
       endings: {
@@ -185,11 +197,13 @@ export function composeGameStory(
       },
     }
   }
+  const alternateRoleAction = MISSION_ROLE_ALTERNATES[canonical as keyof typeof MISSION_ROLE_ALTERNATES]
+  if (!alternateRoleAction) throw new Error('Missing role alternates for ' + canonical)
   const heroAction = role === 'objective'
     ? seed.objectiveAction
-    : role === 'gunfighting'
-      ? scenario.gunfighting
-      : scenario.closeCombat
+    : incidentIndex >= 2
+      ? alternateRoleAction[role]
+      : scenario[role]
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
   if (!method || !response) return null
@@ -212,6 +226,9 @@ export function composeGameStory(
   const position = seed.position ?? scenario.position
   const situate = (beat: string, focus: string, distraction: string) =>
     beat.replaceAll('{ground}', focus).replaceAll('{position}', distraction)
+  const alternateManeuver = MISSION_ARMY_ALTERNATE_MANEUVERS[hero.id]
+  if (!alternateManeuver) throw new Error('Missing alternative maneuver for ' + hero.id)
+  const maneuver = mobileObjectiveMissions.has(canonical) ? alternateManeuver : method.maneuver
   const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
     ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
@@ -226,7 +243,7 @@ export function composeGameStory(
     paragraphs: [
       arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
       arrangeBeats(seed.complication, [crossfire,
-        situate(method.maneuver, referents.advance, referents.feint),
+        situate(maneuver, referents.advance, referents.feint),
         situate(response.defense, referents.advance, referents.defend)], variant),
       arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
         situate(method.followThrough, referents.continuation, referents.defend)),
