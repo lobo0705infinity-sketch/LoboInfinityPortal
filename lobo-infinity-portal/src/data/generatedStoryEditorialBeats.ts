@@ -29,7 +29,7 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
     beat('pressed the defender from the base instead of chasing the unwanted card.',
       'The card stayed public as the filter panel drew the opposing guard back.',
       'pressure at the base gave {winner} room to contest the filter panel',
-      'both crews held the antenna approach while the unwanted card remained in view'),
+      'both crews held the antenna approach with the unwanted card still in view'),
     beat('held the walkway while a separate fighter approached the card controls.',
       'The walkway remained under fire as the next card rotation drew near.',
       'the covered walkway kept {winner} in reach of the filter before the rotation',

@@ -11,7 +11,7 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
     'The filter request waited beside the public cards as the other crew closed in.',
   ],
   'B-Pong': [
-    'The beacon stayed at the center while the severed console offered no reliable nudge.',
+    'The rival specialist reached the restored console with the unattended beacon still in play.',
     'The exposed beacon remained within reach of either specialist after the smoke shifted.',
     'The cracked display could not tell either crew where the next nudge would finish.',
     'The rival specialist crossed beneath the gantry before either side secured the beacon.',

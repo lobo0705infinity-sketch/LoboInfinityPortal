@@ -129,7 +129,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_corporate_appropriation', season: 'ITS 18',
     anchor: /prototype|panoply/i,
     ground: 'the enemy prototype cradle', position: 'the adjacent panoply',
-    gunfighting: 'fired at the guard covering the prototype and sheltered the carrier near the panoply',
+    gunfighting: 'laid fire across the bay sentry’s position while its carrier approached the prototype',
     closeCombat: 'drove a defender from the prototype cradle and opened an escape route for its carrier',
     endings: {
       heroWins: '{{heroPlayer}}’s crew edged the opposition in the fight over the prototype and panoplies.',
@@ -147,7 +147,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_critical_intervention', season: 'ITS 18',
     requiresUnreportedSetup: true, anchor: /data console|data pack|server room/i,
     ground: 'the server room', position: 'the data console',
-    gunfighting: 'fired at the guard covering the data console and shielded the specialist near the server racks',
+    gunfighting: 'traded shots with a defender at the server racks and shielded the pack carrier',
     closeCombat: 'forced a defender from the data console and held the route out of the server room',
     endings: {
       heroWins: '{{heroPlayer}}’s crew held the overall advantage in the fight for the server room and its data pack.',
@@ -202,7 +202,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     objectiveSkill: 'civilianEscort',
     anchor: /civilian|HVT|Extraction Console/i,
     ground: 'the approach to the Extraction Console', position: 'the waiting civilian escort',
-    gunfighting: 'fired at the guard covering the Extraction Console and sheltered the specialist escorting a civilian',
+    gunfighting: 'returned fire from the extraction corridor while the civilian escort reached for console contact',
     closeCombat: 'forced a defender from the Extraction Console and shielded the specialist escorting a civilian',
     endings: {
       heroWins: '{{heroPlayer}}’s crew gained the advantage in the race to bring civilians or enemy HVTs to the Extraction Consoles.',
@@ -238,7 +238,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_last_launch', season: 'ITS 18',
     anchor: /launching tower|ID Scanner|ID Checker|extract/i,
     ground: 'the ID Scanner approach', position: 'the ID Checker inside the Launching Tower',
-    gunfighting: 'fired at the guard covering the Launching Tower and sheltered the bearer of an ID Token',
+    gunfighting: 'laid covering fire across the tower stairwell to shelter the ID bearer',
     closeCombat: 'drove a guard off the route to the ID Checker and covered the bearer’s next move',
     endings: {
       heroWins: '{{heroPlayer}}’s crew finished ahead in the contest for ID downloads and access to the Launching Tower checker.',
@@ -293,7 +293,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s16_panic_room', season: 'ITS 16',
     anchor: /panic room|essential personnel/i,
     ground: 'the contested Panic Room', position: 'its open central gate',
-    gunfighting: 'fired at the guard covering the Panic Room gate and sheltered Essential Personnel moving inside',
+    gunfighting: 'traded fire through the Panic Room gate to shelter Essential Personnel entering it',
     closeCombat: 'forced a defender from the Panic Room entrance and held it for Essential Personnel',
     endings: {
       heroWins: '{{heroPlayer}}’s crew gained the edge in the fight for the Panic Room and Essential Personnel.',
@@ -329,7 +329,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_annihilation', season: 'ITS 18',
     anchor: /lieutenant|surviv|army point|casualt/i,
     ground: 'the broken battle line', position: 'the enemy lieutenant’s cover',
-    gunfighting: 'fired at the guard covering the enemy lieutenant and protected the surviving squad',
+    gunfighting: 'challenged the lieutenant’s guard with sustained fire while the surviving squad regrouped',
     closeCombat: 'drove an attacker from the surviving squad and kept the approach to the lieutenant clear',
     endings: {
       heroWins: '{{heroPlayer}}’s force emerged ahead after the fight over casualties and surviving Army Points.',
@@ -365,7 +365,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_cutthroat', season: 'ITS 18',
     anchor: /lieutenant|army point|casualt/i,
     ground: 'the lieutenant’s exposed flank', position: 'the opposing lieutenant’s guarded position',
-    gunfighting: 'fired at the guard covering the enemy lieutenant and sheltered the friendly command route',
+    gunfighting: 'traded shots with the bodyguard by the rival officer while holding the friendly command route',
     closeCombat: 'drove a defender from the opposing lieutenant’s flank and protected the friendly officer',
     endings: {
       heroWins: '{{heroPlayer}}’s fighters took the lead after the clash between the rival lieutenants.',
@@ -401,7 +401,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_uplink_center', season: 'ITS 18',
     anchor: /communication antenna|tech-coffin/i,
     ground: 'the contested line between the communication antennas', position: 'the contested Tech-Coffin',
-    gunfighting: 'fired at the guard covering the communication antenna and sheltered the fighter approaching the Tech-Coffin',
+    gunfighting: 'laid fire on the antenna approach to screen a fighter nearing the Tech-Coffin',
     closeCombat: 'drove a defender from the communication antenna base and held the Tech-Coffin approach',
     endings: {
       heroWins: '{{heroPlayer}}’s crew pulled ahead in the fight over the communication antennas and Tech-Coffin.',
@@ -421,7 +421,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     // objective sets when Deployment is chosen. Public games omit that choice.
     requiresUnreportedSetup: true, anchor: /antenna|zone of influence/i,
     ground: 'the antenna and zone-of-influence line', position: 'the contested aerial',
-    gunfighting: 'fired at the guard covering the antenna and sheltered a specialist near the contested zone',
+    gunfighting: 'traded shots at the antenna base while a specialist crossed toward the scoring zone',
     closeCombat: 'drove a defender from the antenna base and held the adjacent zone for the squad',
     endings: {
       heroWins: '{{heroPlayer}}’s crew earned the advantage around the antennas and zones of influence.',
@@ -441,7 +441,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     // contact with a Console before any neutralization, with Player Tokens.
     anchor: /hyperthermal tech|analysis console|analy/i,
     ground: 'the buried hyperthermal tech site', position: 'the analysis console',
-    gunfighting: 'fired at the guard covering the analysis console and sheltered the specialist approaching the buried tech',
+    gunfighting: 'covered the excavation rim with fire while a specialist reached the analysis console',
     closeCombat: 'drove a defender away from the analysis console and held the path to the buried tech',
     endings: {
       heroWins: '{{heroPlayer}}’s crew gained the edge in the struggle to analyze hyperthermal tech at the consoles and neutralize marked tech in contact.',
@@ -459,7 +459,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     source: 'https://infinitygeist.com/mission/s18_data_harvest', season: 'ITS 18',
     anchor: /data-harvester|designated zone/i,
     ground: 'the enemy designated zone', position: 'the active data-harvester',
-    gunfighting: 'fired at the guard covering the data-harvester and protected its route into the enemy zone',
+    gunfighting: 'fired through the guard’s lane beside the active harvester and protected its route into the enemy zone',
     closeCombat: 'drove a defender from the designated zone and held space for the data-harvester carrier',
     endings: {
       heroWins: '{{heroPlayer}}’s crew gained the advantage in the contest for active data-harvesters in the designated zones.',

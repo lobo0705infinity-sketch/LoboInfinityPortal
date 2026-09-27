@@ -44,7 +44,12 @@ differ. Older game records do not identify which edition was played.
   described as standing "at the guard." Missions involving a moving objective
   rotate four authored tactical decisions for each army. The opposing crew
   can defend or counterattack; later incidents also use alternate gunfighting
-  and close-combat actions tied to the mission. The selected objective hero
+  and close-combat actions tied to the mission. Each army now has three
+  authored closing choices, while broad tactical styles have four ways to
+  introduce the advance and defense. The mission outcome can lead with the
+  specific incident rather than opening every report with the same mission
+  claim; eleven gunfighting lines that reused the same guard-covering phrase
+  were revised for their scenarios. The selected objective hero
   directly attempts its mission action. Win, loss and draw endings return to
   the incident's obstacle without claiming a specific unreported objective
   succeeded. Game ID chooses an incident deterministically.

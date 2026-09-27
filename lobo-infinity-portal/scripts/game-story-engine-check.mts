@@ -7,6 +7,7 @@ import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
   MISSION_ARMY_PIVOT_MANEUVERS } from '../src/data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_CLOSE_ALTERNATES } from '../src/data/generatedStoryMissionClosings.ts'
 import { MISSION_ROLE_ALTERNATES } from '../src/data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../src/data/generatedStoryTacticalReferents.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
@@ -30,6 +31,7 @@ assert.deepEqual(Object.keys(AREA_ARMY_METHODS).sort(), armies.map((army) => arm
 assert.deepEqual(Object.keys(MISSION_ARMY_METHODS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_ALTERNATE_MANEUVERS).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_ARMY_PIVOT_MANEUVERS).sort(), armies.map((army) => army.id).sort())
+assert.deepEqual(Object.keys(MISSION_ARMY_CLOSE_ALTERNATES).sort(), armies.map((army) => army.id).sort())
 assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 assert.deepEqual(Object.keys(INCIDENT_EDITORIAL_BEATS).sort(),
@@ -48,6 +50,11 @@ for (const army of armies) {
   assert.equal(new Set(decisions).size, 4, army.name + ': four distinct authored decisions')
   assert.ok(decisions.every((decision) => /\{(?:ground|position)\}/.test(decision)),
     army.name + ': each maneuver must respond to the contested site')
+  const closeChoices = [MISSION_ARMY_METHODS[army.id].followThrough,
+    ...MISSION_ARMY_CLOSE_ALTERNATES[army.id]]
+  assert.equal(new Set(closeChoices).size, 3, army.name + ': distinct closing maneuvers')
+  assert.ok(closeChoices.every((choice) => /\{(?:ground|position)\}/.test(choice)),
+    army.name + ': every closing maneuver must refer to the contested site')
 }
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const alternative = MISSION_ROLE_ALTERNATES[mission]
@@ -414,7 +421,7 @@ for (const [mission, incidentIndex] of [
   const move = INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].move
   assert.ok(qapu.paragraphs[1].includes(move), `${mission}: incident action must enter the scene`)
   qapuDecisions.add(move)
-  assert.ok(qapu.endings.draw.includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].draw),
+  assert.ok(qapu.endings.draw.toLowerCase().includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].draw.toLowerCase()),
     `${mission}: a draw should explain the concrete incident`)
 }
 assert.equal(qapuDecisions.size, 3,
@@ -423,6 +430,7 @@ const distinctTurns = new Set<string>()
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const incidentWins = new Set<string>()
   const incidentDraws = new Set<string>()
+  const firstWinClauses = new Set<string>()
   for (let incidentIndex = 0; incidentIndex < 4; incidentIndex++) {
     const story = sceneForIncident(mission, 'White Company', 'Druze Bayram Security', 'objective', incidentIndex)
     const action = story.paragraphs[1].split(/(?<=[.!?])\s+/)
@@ -434,10 +442,18 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
       `${mission}: result must change more than an obstacle suffix`)
     incidentWins.add(story.endings.heroWins.replace(/, while its [^.]+\.$/, '.'))
     incidentDraws.add(story.endings.draw)
+    firstWinClauses.add(story.endings.heroWins.split(';')[0])
+    assert.doesNotMatch(story.endings.draw, /\bwhile\b[^.]*\bwhile\b/i,
+      `${mission}: draw should not repeat a connector`)
   }
   assert.equal(incidentWins.size, 4, `${mission}: four incidents need distinct winning explanations`)
   assert.equal(incidentDraws.size, 4, `${mission}: four incidents need distinct drawn explanations`)
+  assert.ok(firstWinClauses.size >= 3, `${mission}: winners need incident-specific leads`)
 }
+const reconnectedBeacon = sceneForIncident('B-Pong', 'Next Wave', 'Onyx Contact Force', 'objective', 0)
+assert.match(reconnectedBeacon.paragraphs[2], /console reconnected/)
+assert.doesNotMatch(reconnectedBeacon.paragraphs[2], /severed console|no reliable nudge/i,
+  'the B-Pong consequence must agree with the restored console')
 const guardedHarvester = sceneForIncident('Data Harvest', 'PanOceania',
   'Druze Bayram Security', 'objective', 1)
 assert.match(guardedHarvester.paragraphs[2],
@@ -515,7 +531,7 @@ for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Inte
     assert.ok(tohaa.endings.heroWins.includes(MISSION_ARMY_METHODS.tohaa.winClause))
     assert.ok(tohaa.endings.heroLoses.includes(MISSION_ARMY_METHODS[opponent.id].winClause))
     assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS.tohaa.drawBeat))
-    assert.ok(tohaa.endings.draw.includes(scenario.endings.draw.slice(0, -1)))
+    assert.ok(tohaa.endings.draw.toLowerCase().includes(scenario.endings.draw.slice(0, -1).toLowerCase()))
     if (opponent.id === 'tohaa') continue
     assert.ok(tohaa.endings.draw.includes(MISSION_ARMY_METHODS[opponent.id].drawBeat))
     const reversed = composeGameStory(mission, tohaaArmy.name, opponent.name,

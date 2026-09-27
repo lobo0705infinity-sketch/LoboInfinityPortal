@@ -6,6 +6,7 @@ import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
 import { INCIDENT_EDITORIAL_BEATS } from '../data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
   MISSION_ARMY_PIVOT_MANEUVERS } from '../data/generatedStoryMissionArmies.ts'
+import { MISSION_ARMY_CLOSE_ALTERNATES } from '../data/generatedStoryMissionClosings.ts'
 import { MISSION_ROLE_ALTERNATES } from '../data/generatedStoryRoleAlternates.ts'
 import { MISSION_TACTICAL_REFERENTS } from '../data/generatedStoryTacticalReferents.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../data/generatedStoryIncidentBeats.ts'
@@ -39,6 +40,49 @@ const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   covert: { approach: 'slipped along the edge of', defense: 'concealed a watch post beside' },
   technical: { approach: 'charted a route toward', defense: 'tracked movement around' },
   contract: { approach: 'moved to secure', defense: 'watched' },
+}
+
+// The Area of Interest openings describe a particular site. Other missions
+// rotate several ways of approaching or guarding it so a recurring army does
+// not enter every report with the same sentence and a new objective noun.
+const missionIntroAlternates: Record<ArmyStoryStyle,
+  { approach: readonly [string, string, string]; defense: readonly [string, string, string] }> = {
+  assault: {
+    approach: ['advanced in short rushes toward', 'broke from forward cover toward', 'pressed through incoming fire toward'],
+    defense: ['contested the lane beside', 'positioned a forward guard near', 'kept fire trained on'],
+  },
+  armored: {
+    approach: ['kept an armored escort moving toward', 'crossed the exposed lane under fire toward', 'moved behind their lead armor toward'],
+    defense: ['anchored their forward guard near', 'sheltered their watch behind', 'held an armored screen by'],
+  },
+  flanking: {
+    approach: ['probed a side route toward', 'crossed behind cover on the way to', 'found a screened angle toward'],
+    defense: ['held the side approach near', 'kept a scout watching', 'shifted a guard to the edge of'],
+  },
+  guard: {
+    approach: ['kept ranks while advancing toward', 'sent a guarded lead toward', 'crossed in an orderly line toward'],
+    defense: ['held the approach to', 'set a watch over', 'kept fighters at the edge of'],
+  },
+  rescue: {
+    approach: ['made space for an escort approaching', 'sent a relief pair toward', 'protected a return route from'],
+    defense: ['posted an escort near', 'covered a return lane from', 'held a relief team behind'],
+  },
+  covert: {
+    approach: ['approached unseen behind', 'tested an unguarded line toward', 'sent a quiet lead past cover near'],
+    defense: ['observed the approach to', 'hid a guard near', 'kept sight of the route past'],
+  },
+  technical: {
+    approach: ['mapped a covered approach to', 'sent an observer ahead toward', 'measured the crossing into'],
+    defense: ['placed a watch over', 'kept an operator watching', 'checked for movement beside'],
+  },
+  contract: {
+    approach: ['sent a paid guard ahead toward', 'advanced behind a hired gun toward', 'shifted their escort toward'],
+    defense: ['kept a guard on', 'held a firing angle over', 'kept the return lane beside'],
+  },
+}
+
+function missionIntro(style: ArmyStoryStyle, side: 'approach' | 'defense', index: number): string {
+  return index === 0 ? tactics[style][side] : missionIntroAlternates[style][side][index - 1]
 }
 
 const areaRoleActions: Record<ArmyStoryStyle, { gunfighting: string; closeCombat: string }> = {
@@ -92,6 +136,17 @@ function withoutFinalPeriod(ending: string): string {
 
 function continueEnding(ending: string, clause: string): string {
   return withoutFinalPeriod(ending) + '; ' + clause + '.'
+}
+
+function incidentFirstEnding(ending: string, incident: string, clause: string): string {
+  const start = incident.charAt(0).toUpperCase() + incident.slice(1)
+  // The incident has already named the winning crew. Refer back to it rather
+  // than saying the player's name twice across the semicolon.
+  const result = withoutFinalPeriod(ending)
+    .replace(/^\{\{(?:heroPlayer|otherPlayer)\}\}’s (crew|squad|force|fighters)\b/,
+      (_, group: string) => group === 'fighters' ? 'those fighters' : 'that ' + group)
+    .replace(/^[A-Z]/, (letter) => letter.toLowerCase())
+  return start + '; ' + result + ' while ' + clause + '.'
 }
 
 // Rotate independent scene beats by the complete story identity. Repeated
@@ -270,10 +325,15 @@ export function composeGameStory(
   }
   const incidentMiddle = orderedManeuvers.flatMap(candidates).find(fitsPreview)
   if (!incidentMiddle) throw new Error('No readable faction tactic for ' + canonical + ' #' + incidentIndex)
-  const followThrough = situate(method.followThrough, referents.advance, referents.defend)
+  const closeAlternates = MISSION_ARMY_CLOSE_ALTERNATES[hero.id]
+  if (!closeAlternates) throw new Error('Missing closing choices for ' + hero.id)
+  const followChoices = [method.followThrough, ...closeAlternates]
+  const followIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex +
+    stableHash(hero.id + ':' + role)) % followChoices.length
+  const orderedFollowChoices = followChoices.slice(followIndex).concat(followChoices.slice(0, followIndex))
   const incidentClose = [
-    arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
-      editorial.aftermath + ' ' + followThrough),
+    ...orderedFollowChoices.map((follow) => arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
+      editorial.aftermath + ' ' + situate(follow, referents.advance, referents.defend))),
     arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
       editorial.aftermath + ' {{heroPlayer}}’s crew ' + method.drawBeat +
         ' near ' + referents.continuation + '.'),
@@ -281,10 +341,23 @@ export function composeGameStory(
       editorial.aftermath.slice(0, -1) + '; {{heroPlayer}}’s crew ' + method.drawBeat + '.'),
   ].find(fitsPreview)
   if (!incidentClose) throw new Error('No readable faction follow-through for ' + canonical + ' #' + incidentIndex)
-  const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + tactics[heroVoice.style].approach +
+  const heroIntro = stableHash(key + ':' + gameId + ':' + hero.id + ':approach') % 4
+  const otherIntro = stableHash(key + ':' + gameId + ':' + opponent.id + ':defense') % 4
+  const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + missionIntro(heroVoice.style, 'approach', heroIntro) +
     ' ' + ground + '.'
   const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-    tactics[otherVoice.style].defense + ' ' + position + '.'
+    missionIntro(otherVoice.style, 'defense', otherIntro) + ' ' + position + '.'
+
+  const winnerBeat = editorial.winner.replaceAll('{winner}', '{{heroPlayer}}’s crew')
+  const loserBeat = editorial.winner.replaceAll('{winner}', '{{otherPlayer}}’s crew')
+  const drawBeat = editorial.draw + (hero.id === opponent.id
+    ? ' while each crew ' + method.drawBeat
+    : ' while {{heroPlayer}}’s crew ' + method.drawBeat +
+      ' and {{otherPlayer}}’s crew ' + response.drawBeat)
+  // Starting with the incident on alternating plots prevents all encounters
+  // in one mission from repeating the same result lead-in. Keep the original
+  // mission claim in every ending; only the recorded winner selects a result.
+  const incidentLead = incidentIndex % 2 === 0
 
   return {
     mission: canonical,
@@ -298,14 +371,17 @@ export function composeGameStory(
       incidentClose,
     ],
     endings: {
-      heroWins: continueEnding(scenario.endings.heroWins,
-        editorial.winner.replaceAll('{winner}', '{{heroPlayer}}’s crew') + ', while ' + method.winClause),
-      heroLoses: continueEnding(scenario.endings.heroLoses,
-        editorial.winner.replaceAll('{winner}', '{{otherPlayer}}’s crew') + ', while ' + response.winClause),
-      draw: continueEnding(scenario.endings.draw, editorial.draw + (hero.id === opponent.id
-        ? ' while each crew ' + method.drawBeat
-        : ' while {{heroPlayer}}’s crew ' + method.drawBeat +
-          ' and {{otherPlayer}}’s crew ' + response.drawBeat)),
+      heroWins: incidentLead
+        ? incidentFirstEnding(scenario.endings.heroWins, winnerBeat, method.winClause)
+        : continueEnding(scenario.endings.heroWins, winnerBeat + ', while ' + method.winClause),
+      heroLoses: incidentLead
+        ? incidentFirstEnding(scenario.endings.heroLoses, loserBeat, response.winClause)
+        : continueEnding(scenario.endings.heroLoses, loserBeat + ', while ' + response.winClause),
+      draw: incidentLead
+        ? incidentFirstEnding(scenario.endings.draw, editorial.draw,
+          hero.id === opponent.id ? 'each crew ' + method.drawBeat
+            : '{{heroPlayer}}’s crew ' + method.drawBeat + ' and {{otherPlayer}}’s crew ' + response.drawBeat)
+        : continueEnding(scenario.endings.draw, drawBeat),
     },
   }
 }
