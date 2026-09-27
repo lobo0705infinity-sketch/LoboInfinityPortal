@@ -33,13 +33,24 @@ differ. Older game records do not identify which edition was played.
   supplies a crew description and tactical approach. Game ID chooses an
   incident deterministically.
 - The Area of Interest pilot additionally accepts `location` and `weather`
-  tags: relay courtyard, freight depot, or rooftop terrace, combined with
-  rain, fog, or crosswind. It selects tags deterministically when omitted.
+  tags. It selects tags deterministically when omitted and rejects explicit
+  incompatible combinations. No weather effects (`none`) is valid everywhere.
   The location changes cover, approach and scored ground; the weather changes
-  the opening, obstruction and closing beat. Eight broad tactical methods
+  the opening, obstruction and closing beat. With `none`, these beats use the
+  exposed approach and opposing fire without describing weather. Eight broad tactical methods
   alter the middle and last paragraphs when the hero faction changes. Other
   mission families do not yet use these tags. Game records do not contain
   table location or weather; these are fictional scene settings.
+
+| Area of Interest location | Allowed weather tags |
+| --- | --- |
+| Relay courtyard, freight depot, rooftop terrace, forest, mountain | None, rain, fog, crosswind, snow |
+| Desert | None, crosswind |
+| Jungle | None, rain, fog |
+
+The 30 compatible combinations rule out desert rain and jungle snow in both
+explicit previews and automatic selection. The `none` tag is not treated as
+sunshine or another weather effect.
 - Rendering requires both decoded lists linked unambiguously to that game,
   an eligible roster model for the hero role, and the actual player/result
   fields. For **Critical Intervention** and **Double Bind**, the game record
@@ -62,7 +73,7 @@ synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including a mirror and all three roles across the sample. It contains 89
-different middle paragraphs, 40–69 words per paragraph, and a maximum
+different middle paragraphs, 40–68 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.236. That
 lexical measure does not prove plot originality. Repeated mission frames and
 faction descriptions remain easy to recognize across a reading session.

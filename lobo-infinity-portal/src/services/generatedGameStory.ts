@@ -61,12 +61,16 @@ export function composeGameStory(
   if (sceneTags && canonical !== 'Area of Interest') return null
   const seed = scenario.incidents[stableHash(key + ':' + String(gameId)) % scenario.incidents.length]
   if (canonical === 'Area of Interest') {
-    const locationIds = Object.keys(AREA_LOCATIONS) as AreaStoryTags['location'][]
-    const weatherIds = Object.keys(AREA_WEATHER) as AreaStoryTags['weather'][]
+    const requestedWeather = sceneTags?.weather
+    const locationIds = (Object.keys(AREA_LOCATIONS) as AreaStoryTags['location'][]).filter((id) =>
+      !requestedWeather || (AREA_LOCATIONS[id].allowedWeather as readonly string[]).includes(requestedWeather))
+    if (!locationIds.length) return null
     const locationId = sceneTags?.location ?? locationIds[stableHash(key + ':' + String(gameId) + ':location') % locationIds.length]
-    const weatherId = sceneTags?.weather ?? weatherIds[stableHash(key + ':' + String(gameId) + ':weather') % weatherIds.length]
-    if (!Object.hasOwn(AREA_LOCATIONS, locationId) || !Object.hasOwn(AREA_WEATHER, weatherId)) return null
+    if (!Object.hasOwn(AREA_LOCATIONS, locationId)) return null
     const location = AREA_LOCATIONS[locationId]
+    const weatherIds = location.allowedWeather as readonly AreaStoryTags['weather'][]
+    const weatherId = sceneTags?.weather ?? weatherIds[stableHash(key + ':' + String(gameId) + ':weather') % weatherIds.length]
+    if (!Object.hasOwn(AREA_WEATHER, weatherId) || !weatherIds.includes(weatherId)) return null
     const weather = AREA_WEATHER[weatherId]
     const method = AREA_METHODS[heroVoice.style]
     const response = AREA_METHODS[otherVoice.style]

@@ -86,11 +86,19 @@ for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
 
 // Setting tags have plot consequences, and reversing these two factions
 // changes both the contest and its immediate aftermath, not just the names.
+assert.deepEqual(Object.keys(AREA_WEATHER).sort(), ['crosswind', 'fog', 'none', 'rain', 'snow'])
+assert.deepEqual(Object.keys(AREA_LOCATIONS).sort(),
+  ['desert', 'forest', 'freightDepot', 'jungle', 'mountain', 'relayCourtyard', 'rooftopTerrace'])
 for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
   for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
+    const tags = { location, weather }
+    if (!(AREA_LOCATIONS[location].allowedWeather as readonly string[]).includes(weather)) {
+      assert.equal(composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', 0, tags), null,
+        `${location} must reject incompatible ${weather}`)
+      continue
+    }
     for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
       for (const gameId of [0, 1, 2, 3]) {
-        const tags = { location, weather }
         const tohaa = composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', role, gameId, tags)
         const nextWave = composeGameStory('Area of Interest', 'Next Wave', 'Tohaa', 'Next Wave', role, gameId, tags)
         assert.ok(tohaa && nextWave)
@@ -102,11 +110,32 @@ for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIO
           assert.ok(story.paragraphs[1].includes(AREA_WEATHER[weather].complication))
           assert.ok(story.paragraphs[2].includes(AREA_WEATHER[weather].closing))
           assert.ok(story.endings.heroWins.includes(AREA_LOCATIONS[location].scoringGround))
+          if (weather === 'none') assert.doesNotMatch(story.paragraphs.join(' '),
+            /\b(?:rain|snow|fog|mist|wind|gusts|ice)\b/i, 'no-weather tag must not imply weather effects')
         }
         assert.notEqual(tohaa.paragraphs[1], nextWave.paragraphs[1], 'faction reversal must change the contest')
         assert.notEqual(tohaa.paragraphs[2], nextWave.paragraphs[2], 'faction reversal must change the aftermath')
       }
     }
+  }
+}
+for (const location of Object.keys(AREA_LOCATIONS) as (keyof typeof AREA_LOCATIONS)[]) {
+  for (let gameId = 0; gameId < 32; gameId++) {
+    const story = composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', gameId,
+      { location })
+    assert.ok(story && story.sceneTags)
+    assert.ok((AREA_LOCATIONS[location].allowedWeather as readonly string[]).includes(story.sceneTags.weather),
+      `automatic weather must fit ${location}`)
+  }
+}
+for (const weather of Object.keys(AREA_WEATHER) as (keyof typeof AREA_WEATHER)[]) {
+  for (let gameId = 0; gameId < 32; gameId++) {
+    const story = composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', gameId,
+      { weather })
+    assert.ok(story && story.sceneTags)
+    assert.equal(story.sceneTags.weather, weather)
+    assert.ok((AREA_LOCATIONS[story.sceneTags.location as keyof typeof AREA_LOCATIONS]
+      .allowedWeather as readonly string[]).includes(weather), `automatic location must allow ${weather}`)
   }
 }
 assert.equal(composeGameStory('Area of Interest', 'Tohaa', 'Next Wave', 'Tohaa', 'objective', 0,
