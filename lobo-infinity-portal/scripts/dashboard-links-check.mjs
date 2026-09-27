@@ -42,6 +42,8 @@ const checks = [
     pass:
       publicDashboard.includes('to="/games/109"') &&
       publicArmyIntelligence.includes('to="/games/109"') &&
+      publicDashboard.includes("buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')") &&
+      publicArmyIntelligence.includes('const selected = readArmyIntelligenceFactionParam(params)') &&
       read('shared/public-search-content.mjs').includes("href: '/games/109'"),
   },
   {
