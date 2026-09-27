@@ -167,7 +167,7 @@ export const MISSION_STORY_ADDITIONAL_SEEDS: Record<CanonicalMission, readonly [
       },
     },
     {
-      opening: 'An ambulance stalled at the emergency compound with a patient inside and its stretcher lift jammed halfway down.',
+      opening: 'An ambulance stalled at the emergency compound with its stretcher lift jammed halfway down and a patient strapped to it.',
       complication: 'The lift began tilting toward the exposed corridor while the patient slipped against its safety strap.',
       turn: 'A loose retaining pin fell from the lift, leaving only the safety strap between the stretcher and the ground.',
       objectiveAction: 'found the missing pin, braced the stretcher lift, and called the receiving medics forward',

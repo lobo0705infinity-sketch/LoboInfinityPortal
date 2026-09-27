@@ -113,6 +113,41 @@ assert.ok(loserText?.endsWith(template.endings.heroLoses
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
 assert.ok(drawText?.endsWith(template.endings.draw))
 
+// Exercise every mission incident and role through the real renderer with
+// linked synthetic rosters. A structurally valid template may still fail at
+// the roster substitution or outcome branch.
+let renderedVariants = 0
+for (const mission of CANONICAL_MISSIONS) {
+  const scenarioGame = { ...game, mission } as RecentGame
+  const scenarioLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
+  for (const gameId of [0, 1, 2, 3]) {
+    for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+      const scenario = composeGameStory(mission, 'PanOceania', 'Druze Bayram Security',
+        'PanOceania', role, gameId)
+      assert.ok(scenario)
+      const outcomes = [
+        { game: { ...scenarioGame, id: gameId }, ending: scenario.endings.heroWins },
+        { game: {
+          ...scenarioGame, id: gameId, winner: 'Loser', winnerDisplayName: 'Loser',
+          winnerFaction: 'Druze Bayram Security', loser: 'Winner',
+          loserDisplayName: 'Winner', loserFaction: 'PanOceania',
+        }, ending: scenario.endings.heroLoses },
+        { game: { ...scenarioGame, id: gameId, gameResult: 'draw' }, ending: scenario.endings.draw },
+      ]
+      for (const { game: outcome, ending } of outcomes) {
+        const actual = renderGameStoryTemplate(scenario, outcome as RecentGame, scenarioLists)
+        assert.match(actual ?? '', /\b[Tt]he Test Trooper\b/, mission + ': model substitution')
+        assert.ok(actual.endsWith(ending.replaceAll('{{heroPlayer}}', 'Winner')
+          .replaceAll('{{otherPlayer}}', 'Loser')
+          .replaceAll('{{hero}}', 'the Test Trooper')), mission + ': ending selection')
+        assert.doesNotMatch(actual, /\{\{\w+\}\}/, mission + ': unresolved placeholder')
+        renderedVariants++
+      }
+    }
+  }
+}
+assert.equal(renderedVariants, 22 * 4 * 3 * 3)
+
 const mirrorGame = {
   ...game, winnerFaction: 'Nomads', loserFaction: 'Nomads',
 } as RecentGame

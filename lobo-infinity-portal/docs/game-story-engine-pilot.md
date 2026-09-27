@@ -1,5 +1,10 @@
 # Composed battle-story pilot
 
+**Editorial status: hold for mission-premise repairs.** The
+[110-scene review and ten examples](game-story-engine-editorial-review.md)
+identify multiple scenes whose central objective does not match the official
+scenario. The passing structural gate cannot approve generated coverage.
+
 This branch experiments with a local, deterministic fallback for mission and
 matchup combinations that do not have an individually written story. It does
 not change the existing 1,300 written entries, the highlight-first rule, the
@@ -24,7 +29,8 @@ roster-linked hero selector, or the authored-completeness release gate.
 - The engine test validates all 22,770 canonical combinations for each of
   three hero roles and four incidents (273,240 scenes) with the existing
   structural quality checker. It also checks authored precedence, roster
-  linkage and ambiguity, and rendered mirror games and outcomes.
+  linkage and ambiguity, rendered mirror games and outcomes, and 792
+  mission/incident/role/outcome renderings with linked synthetic rosters.
 
 ## Editorial limit
 
@@ -43,12 +49,14 @@ matchups, 37 objective, 37 gunfighting, and 36 close-combat roles, with all
   three endings attached to each. All four incident variants appear for each
 mission. The scene paragraphs in this sample run from 42 to 64 words.
 
-The mission frames remove several sampled setting clashes, including a
-network trace across the B-Pong court, checkpoint signs on a bridge, and a
-loading platform inside a ration corridor. Some objectives now stop at the
-critical decision so a loss or draw can follow without reversing an already
-completed rescue or transmission. Compared with individually authored scenes
-in the mission shards, the prose still lacks distinct turns for most pairs.
+The mission frames make their scenes internally recognizable, but the review
+found that several frames choose a different plot from their named scenarios.
+For example, the B-Pong court and ball have no counterpart in its tracking
+beacon and console objectives; the Hardlock gate replaces beacon and console
+control. Eight discovered opening/action contradictions have been edited to
+leave the outcome unresolved until the ending. More editorial repair is needed.
+Compared with individually authored scenes in the mission shards, the prose
+still lacks distinct turns for most pairs.
 **88 of 110 middle paragraphs are distinct**: each mission contributes four
 different incident complications, with the fifth sample reusing one. All 110
 openings vary by incident and army, while all 110 final paragraphs vary by
@@ -58,15 +66,16 @@ Man's Switch. This lexical measure catches shared phrasing but cannot detect
 two incidents with the same underlying plot. Read all three possible endings
 against each incident: a tentative hero action can lead coherently to a win,
 loss, or draw. The sample is a reproducible review aid, not a statistical proof
-of acceptable story quality.
+of acceptable story quality. The full editorial notes and actual samples are
+in [the review](game-story-engine-editorial-review.md).
 
-The next decision needs a human editor to compare a blinded selection of
-generated scenes with individually written ones for natural prose, faction
-voice, mission evidence, and plot originality. The structural checker and
-word overlap cannot make that judgment. If generated coverage becomes an
-accepted release criterion, specify and approve a separate gate; leave the
-current authored-completeness gate intact. The pilot remains a draft PR until
-that decision.
+The next step is to pin the relevant scenario version, rebuild mission frames
+and incidents around actual objectives, then repeat this editorial review and
+run a blinded comparison against written scenes for natural prose, faction
+voice, and plot originality. The structural checker and word overlap cannot
+make that judgment. If generated coverage becomes an accepted release
+criterion, specify a separate editorial gate; leave the current
+authored-completeness gate intact. The pilot remains a draft PR.
 
 ## Verification
 
