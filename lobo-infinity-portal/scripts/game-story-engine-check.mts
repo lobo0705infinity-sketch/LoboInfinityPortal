@@ -72,6 +72,17 @@ for (const gameId of [0, 1]) {
     'army tactics must belong to the beacon scenario rather than a different mission')
 }
 
+for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+  for (const gameId of [0, 1, 2, 3]) {
+    const scene = composeGameStory('Area of Interest', 'Next Wave', 'Tohaa', 'Next Wave', role, gameId)
+    assert.ok(scene)
+    assert.equal(scene.heroFaction, 'Next Wave')
+    assert.doesNotMatch(scene.paragraphs.join(' '), /area of interest/i,
+      'mission names belong in headings, not repeated in the prose')
+    assert.match(scene.paragraphs.join(' '), /antenna|relay/i)
+  }
+}
+
 const game = {
   id: 9081, date: '2026-09-26T12:00:00.000Z', mission: 'B-Pong',
   winner: 'Winner', winnerDisplayName: 'Winner', winnerFaction: 'PanOceania',

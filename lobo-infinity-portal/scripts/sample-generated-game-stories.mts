@@ -42,7 +42,10 @@ for (const [missionIndex, mission] of CANONICAL_MISSIONS.entries()) {
     if (!story) throw new Error('Missing editorial sample: ' + mission)
     middleParagraphs.add(story.paragraphs[1])
     if (offset < 4) missionMiddles.push(story.paragraphs[1])
-    console.log(JSON.stringify({ mission, factions: story.factions, heroFaction, role,
+    // factions is an unordered catalog key; these two fields bind the
+    // placeholders in narrative order for human-facing samples.
+    console.log(JSON.stringify({ mission, factions: story.factions, heroFaction,
+      otherFaction, role,
       mirror: heroFaction === otherFaction, gameId, incidentIndex,
       paragraphs: story.paragraphs, endings: story.endings }))
   }

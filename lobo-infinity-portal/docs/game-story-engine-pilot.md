@@ -54,7 +54,7 @@ synthetic template check.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including a mirror and all three roles across the sample. It contains 88
-different middle paragraphs, 40–61 words per paragraph, and a maximum
+different middle paragraphs, 40–63 words per paragraph, and a maximum
 within-mission middle-paragraph trigram Jaccard overlap of 0.236. That
 lexical measure does not prove plot originality. Repeated mission frames and
 faction descriptions remain easy to recognize across a reading session.

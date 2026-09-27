@@ -117,7 +117,7 @@ export const ARMY_STORY_VOICES: Record<string, ArmyStoryVoice> = {
     style: 'assault',
   },
   'next-wave': {
-    crew: 'strange forward elements',
+    crew: 'Next Wave raiders',
     style: 'covert',
   },
   'onyx-contact-force': {

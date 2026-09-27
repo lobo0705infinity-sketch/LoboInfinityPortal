@@ -25,7 +25,7 @@ rules versions. These plots avoid disputed point totals between editions.
 | Rendering | 792 synthetic roster, role, and result variants render without unresolved placeholders; authored stories still take priority. | Pass for synthetic behavior; real recorded moves remain untested. |
 | Mission premise | All 22 families refer to source objectives in plot and endings. The Dig orders analysis before neutralization; B-Pong uses tracking beacon and consoles. | Improved; still needs mission-version and fine rules review. |
 | Setup fidelity | Critical Intervention needs attacker/defender assignment; Double Bind needs chosen mode. Neither is recorded in public games. | Runtime fallback withheld for these two missions; examples below are previews only. |
-| Variety and voice | 88 distinct middle paragraphs among 110 scenes; 40–61 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Four incidents per mission repeat across 1,035 army pairings, with repeated frames and brief crew descriptions. | Hold for a blinded comparison with authored stories. |
+| Variety and voice | 88 distinct middle paragraphs among 110 scenes; 40–63 words per paragraph; highest within-mission middle-paragraph trigram Jaccard overlap 0.236. Four incidents per mission repeat across 1,035 army pairings, with repeated frames and brief crew descriptions. | Hold for a blinded comparison with authored stories. |
 | Actual-game fidelity | No game record proves these shots, object movements, or model actions occurred. | Generated scenes must not be described as a factual match transcript. |
 
 An independent editor should rate a randomized, unlabeled set against
@@ -38,204 +38,166 @@ acceptance threshold before any release decision. The authored count stays
 
 These are literal templates from the fixed 110-scene sample. Placeholders show
 which actors the renderer substitutes; only one ending is appended per match.
-Critical Intervention and Double Bind are editorial previews: runtime
-rendering is blocked until their missing setup can be recorded.
+Headings show the hero’s faction first; the catalog stores army pairs in
+a canonical order that can differ. Critical Intervention and Double Bind are
+editorial previews: runtime rendering is blocked until their missing setup
+can be recorded.
 
+### 1. Area of Interest — PanOceania vs. Haqqislam (objective)
 
-### 1. Area of Interest — Haqqislam vs. PanOceania (objective)
+**Actors:** `{{heroPlayer}}` = PanOceania; `{{otherPlayer}}` = Haqqislam.
 
+**Editorial note:** The antenna and contested ground drive the plot without repeating the mission title; the specialist now attempts activation under fire.
 
-**Editorial note:** Antenna activation and control of the area now drive the plot; the specialist’s attempt stays open until the outcome.
+The relay mast rose from a courtyard strewn with masonry after a retaining wall collapsed overnight. {{heroPlayer}}’s armored survey troops mapped the exposed routes toward the collapsed arcade, while {{otherPlayer}}’s field medics and escorts kept a withdrawal route open beside the breach in the far wall. A clean activation would count for little if the enemy drove them off the ground beneath it.
 
+A concrete slab pinned its access panel against the base, leaving the activation switch exposed to crossfire. Tracer fire splintered the stone plinth while both specialists fought for a clear route to the switch. A second burst broke the slab’s edge and opened a narrow gap as a rival specialist reached the far wall.
 
-An antenna stood inside an area of interest whose nearest cover had collapsed overnight. {{heroPlayer}}’s armored survey troops mapped the exposed routes toward the contested area of interest, while {{otherPlayer}}’s field medics and escorts kept a withdrawal route open beside the communication antenna. Holding the ground would matter little if the other crew activated the antenna first.
+{{hero}} wedged the slab aside, found the communication antenna controls, and keyed an activation request under fire. The display glowed amber without confirming which code it had accepted. The opposing force broke cover and rushed the control plinth before the signal settled. Rain hissed against the exposed wires as the relay clicked between channels.
 
-
-A fallen slab blocked the antenna base, forcing a specialist into the open to reach its controls. Rounds chipped the antenna housing while both teams sought cover inside the scored area of interest. The slab shifted again, exposing a narrow gap as another squad entered the area from the opposite side.
-
-
-{{hero}} checked the communication antenna beneath the slab and prepared its activation while the squad held the area. The antenna light blinked as another fighter entered the contested area behind the smoke. The other crew pushed toward the antenna before control of the area could be settled. One signal remained unanswered while boots scraped against the boundary of the scoring zone.
-
-
-- Hero wins: {{heroPlayer}}’s crew activated the antenna and held the contested area.
-- Hero loses: {{otherPlayer}}’s crew claimed the antenna and pushed {{heroPlayer}} out of the area.
-- Draw: Neither crew kept the antenna and the area together when the shooting stopped.
-
+- Hero wins: {{heroPlayer}}’s squad brought the communication antenna online and held the courtyard until the enemy withdrew.
+- Hero loses: {{otherPlayer}}’s squad took the controls and forced {{heroPlayer}} behind the broken wall.
+- Draw: The signal died with both squads still fighting among the fallen masonry.
 
 ### 12. B-Pong — Haqqislam vs. Yu Jing (objective)
 
+**Actors:** `{{heroPlayer}}` = Haqqislam; `{{otherPlayer}}` = Yu Jing.
 
 **Editorial note:** Tracking beacon and consoles replace the former ball and court. Its movement detail needs another rules read before approval.
 
-
 A tracking beacon stood between two consoles as fresh smoke rolled over the central lane. {{heroPlayer}}’s field medics and escorts cleared a passage toward the tracking beacon lane, while {{otherPlayer}}’s disciplined assault teams set a shielded line beside the nearest console. The beacon had to be controlled before anyone could move it toward the enemy half.
-
 
 The far console showed the beacon under rival control, though its position light had not yet changed. Shots cut across the beacon lane as both squads tried to keep a specialist beside its controls. A gust exposed the beacon base and the specialist already halfway across the lane to reclaim it.
 
-
 {{hero}} read the tracking beacon status and prepared to retake control through the near console. The beacon indicator shifted a fraction while the console still showed a contested command. The rival squad closed on the beacon before either team could secure the next move. A small tracking light crept toward the center with both control signals still active.
-
 
 - Hero wins: {{heroPlayer}}’s crew controlled the tracking beacon and moved it into the enemy half.
 - Hero loses: {{otherPlayer}}’s crew seized the tracking beacon and kept {{heroPlayer}} from its console.
 - Draw: The tracking beacon stopped near the center while both consoles remained contested.
 
-
 ### 21. Critical Intervention — Onyx Contact Force vs. Tunguska Jurisdictional Command (gunfighting)
 
+**Actors:** `{{heroPlayer}}` = Onyx Contact Force; `{{otherPlayer}}` = Tunguska Jurisdictional Command.
 
 **Editorial note:** The server-room data pack fits the source, but the public game record does not identify the attacker; this is a preview only.
 
-
 The data console reported an unlocked pack, but its cradle stayed shut inside the server room. {{heroPlayer}}’s Onyx assault teams advanced under covering fire toward the server room, while {{otherPlayer}}’s network security teams tracked movement around the data console. The attacker needed the data pack out of the room; the defender needed the console locked.
-
 
 A bent release bar caught the pack carrier’s glove while defenders closed on the doorway. Gunfire struck the server racks as the attacker’s specialist approached the protected data console. The bar gave a little under pressure, exposing the data pack without freeing it from the cradle.
 
-
 {{hero}} fired at the guard covering the data console and shielded the specialist near the server racks. The data pack indicator glowed inside its cradle while the corridor grew louder. The defender advanced on the server-room entrance before the data pack could leave. The console lock flashed between states as the carrier measured the route back to safety.
-
 
 - Hero wins: {{heroPlayer}}’s crew carried the data pack clear of the server room.
 - Hero loses: {{otherPlayer}}’s crew locked the console and held {{heroPlayer}} outside the server room.
 - Draw: The data pack remained near the console while neither crew retained the server room.
 
-
 ### 33. Dead Man's Switch — Neoterra Capitaline Army vs. Neoterra Capitaline Army (closeCombat, mirror)
 
+**Actors:** `{{heroPlayer}}` = Neoterra Capitaline Army; `{{otherPlayer}}` = Neoterra Capitaline Army.
 
 **Editorial note:** Uses the Quantum Core, Data Pack consoles, and the bearer movement restriction from Lobo’s custom mission; a mirror tests actor binding.
 
-
 The Quantum Core lay between two Stunned fighters near the Objective Room entrance. {{heroPlayer}}’s capital security troops moved in formation toward the Objective Room, while {{otherPlayer}}’s capital security troops guarded the Quantum Core. A carried Data Pack could enable Quantum Resonance, but controlling the Core remained the immediate prize.
-
 
 The next bearer could not fire or take a second Move while carrying the unstable payload. Fire struck the room entrance while specialists eyed the Quantum Core and the two Data Pack consoles. A bodyguard stepped away from the room door and opened a slow route toward the Core.
 
-
 {{hero}} drove a bodyguard away from the Quantum Core and protected the specialist approaching it. The Quantum Core pulsed as another fighter came into the Objective Room behind the smoke. The rival crew prepared to contest the Core before the carrier could get clear. The Core glowed inside the room while a Data Pack console flickered outside.
-
 
 - Hero wins: {{heroPlayer}}’s crew controlled the Quantum Core inside the Objective Room.
 - Hero loses: {{otherPlayer}}’s crew held the Quantum Core as {{heroPlayer}} fell back from the room.
 - Draw: The Quantum Core remained unclaimed while both crews contested the Objective Room.
 
+### 44. Hardlock — Ramah Taskforce vs. Force de Réponse Rapide Merovingienne (closeCombat)
 
-### 44. Hardlock — Force de Réponse Rapide Merovingienne vs. Ramah Taskforce (closeCombat)
-
+**Actors:** `{{heroPlayer}}` = Ramah Taskforce; `{{otherPlayer}}` = Force de Réponse Rapide Merovingienne.
 
 **Editorial note:** Enemy beacon control and console activations both affect the stakes; army style remains mostly a shared approach sentence.
 
-
 Two consoles stayed active after their beacon guard retreated into the central lane. {{heroPlayer}}’s rescue-trained assault troops cleared a passage toward the enemy beacon position, while {{otherPlayer}}’s Merovingian response teams watched the flanks of the activated-console line. Controlling the enemy beacon would fail if the rival squad activated more consoles behind it.
-
 
 A broken barricade blocked the route to the enemy beacon while the other crew rebuilt its line. Shots crossed the beacon approach while specialists traded access to the center consoles. The barricade shifted under fire and opened a gap beside the nearer console.
 
-
 {{hero}} drove a guard from the enemy beacon and held its position for the advancing specialist. A console indicator changed color as fresh fighters reached the beacon through the smoke. The opposing crew moved to retake the beacon before the round closed. The console lights stayed uneven while neither crew could safely turn away from the beacon.
-
 
 - Hero wins: {{heroPlayer}}’s crew controlled the enemy beacon and kept its activated consoles.
 - Hero loses: {{otherPlayer}}’s crew reclaimed the beacon and denied {{heroPlayer}} the console line.
 - Draw: Both crews contested the beacon while the consoles showed rival activations.
 
-
 ### 54. Neutralization — Starmada vs. Tohaa (gunfighting)
 
+**Actors:** `{{heroPlayer}}` = Starmada; `{{otherPlayer}}` = Tohaa.
 
 **Editorial note:** The hyperthermal tech and neutralizing antenna create a failed-command incident; gunfighting protects the specialist.
 
-
 An active hyperthermal tech indicator remained lit after a neutralizing antenna registered a failed attempt. {{heroPlayer}}’s fleet security teams cleared a passage toward the hyperthermal tech site, while {{otherPlayer}}’s Tohaa envoys and guards kept a withdrawal route open beside the neutralizing antenna. Destroying tech alone would not decide the fight while the rival crew controlled the neutralizing antennas.
-
 
 A scorched lead prevented the specialist from repeating the command while an opposing squad crossed the site. Fire struck the hyperthermal tech housing as each specialist sought control of a neutralizing antenna. A spare lead appeared beneath the control tray as the tech warning reached its highest pitch.
 
-
 {{hero}} fired at the guard beside the hyperthermal tech and covered the specialist approaching its controls. The hyperthermal warning light remained on while the antenna status shifted under fire. The opposing crew moved to retain the tech before another neutralizing signal could reach it. The antenna blinked above a tech housing that had not yet gone dark.
-
 
 - Hero wins: {{heroPlayer}}’s crew neutralized the hyperthermal tech and held the antenna.
 - Hero loses: {{otherPlayer}}’s crew held the neutralizing antenna as {{heroPlayer}} withdrew from the tech.
 - Draw: Both crews left the hyperthermal tech active while disputing the antenna.
 
-
 ### 58. Outbreak — Shindenbutai vs. Shindenbutai (gunfighting, mirror)
 
+**Actors:** `{{heroPlayer}}` = Shindenbutai; `{{otherPlayer}}` = Shindenbutai.
 
 **Editorial note:** Scanning and escorting an Infected now drive the plot. This mirror gives both sides the same crew description.
 
-
 Two Infected patients waited beside a narrow extraction lane as a stabilizer alarm sounded. {{heroPlayer}}’s Shindenbutai fighters worked around the exposed side of the infected containment lane, while {{otherPlayer}}’s Shindenbutai fighters watched the flanks of the Alpha Infected position. Scanning and stabilizing the Infected mattered before anyone could escort them safely away.
-
 
 The alarm drowned the medic’s instructions while a rival escort tried to take the nearest patient. Shots crossed the containment lane while medics approached the Infected with scanners raised. The alarm paused, leaving a moment to scan the farther patient before the lane closed.
 
-
 {{hero}} fired at the guard threatening the medics and covered a scan of the Infected. The scanner kept reading as the Infected shifted and another medic stepped closer. The opposing crew tried to take the Infected before the escort could leave. A medical light blinked over the empty route that both teams still needed.
-
 
 - Hero wins: {{heroPlayer}}’s crew scanned and stabilized the Infected before securing the escort.
 - Hero loses: {{otherPlayer}}’s crew secured the stabilized Infected while {{heroPlayer}} withdrew.
 - Draw: Both crews completed scans, but the Infected remained beyond either escort’s control.
 
+### 76. Battleground — Tartary Army Corps vs. Steel Phalanx (objective)
 
-### 76. Battleground — Steel Phalanx vs. Tartary Army Corps (objective)
-
+**Actors:** `{{heroPlayer}}` = Tartary Army Corps; `{{otherPlayer}}` = Steel Phalanx.
 
 **Editorial note:** Sector domination drives the plot; the event expresses little distinct identity for either army.
 
-
 The central sector stood empty after a support beam fell across its closest entrance. {{heroPlayer}}’s Tartary veterans moved in formation toward the central scoring sector, while {{otherPlayer}}’s phalanx veterans set a shielded line beside the far sector boundary. The far sector would be worth little if the enemy held the center at the end.
-
 
 A rival patrol reached the far sector first and threatened to occupy the open center from behind. Shots passed between the sectors as both forces tried to leave enough fighters on scoring ground. The beam moved under fire and revealed a narrow approach to the sector marker.
 
-
 {{hero}} checked the central sector approach and signaled where the squad could dominate it. Another fighter crossed the center line while the far sector remained under fire. The opposing force repositioned to retake the sector before the final check. The sector boundary remained in sight beneath the dust kicked up by both patrols.
-
 
 - Hero wins: {{heroPlayer}}’s force dominated the central sector at the end of the fight.
 - Hero loses: {{otherPlayer}}’s force held the central sector while {{heroPlayer}} withdrew.
 - Draw: Both forces held separate sectors while the central ground stayed contested.
 
-
 ### 98. Double Bind — Shock Army of Acontecimento vs. Shock Army of Acontecimento (objective, mirror)
 
+**Actors:** `{{heroPlayer}}` = Shock Army of Acontecimento; `{{otherPlayer}}` = Shock Army of Acontecimento.
 
 **Editorial note:** Antennas and a zone of influence appear, but the selected mode is absent from the game record; this is a preview only.
 
-
 A zone of influence emptied as both sides tried to reach the antenna beyond it. {{heroPlayer}}’s jungle campaign veterans worked around the exposed side of the antenna and zone-of-influence line, while {{otherPlayer}}’s jungle campaign veterans watched the flanks of the contested aerial. One force sought antenna control while the other could answer through sabotage or a dominated zone.
-
 
 A disabled carrier blocked the aerial base while a rival squad returned to the scored zone. Shots crossed the antenna approach and the adjacent zone of influence as both plans collided. The carrier shifted and exposed the controls at the moment both squads crossed the boundary.
 
-
 {{hero}} located the antenna controls and prepared to contest the zone of influence. The antenna flickered while the opposing force still occupied part of the adjacent zone. The other crew pressed toward the aerial before either plan could be completed. Smoke covered the aerial and zone marker together, leaving their control unsettled.
-
 
 - Hero wins: {{heroPlayer}}’s crew secured its chosen antenna or zone objective.
 - Hero loses: {{otherPlayer}}’s crew secured its chosen antenna or zone objective as {{heroPlayer}} fell back.
 - Draw: Neither crew secured its antenna or zone objective before the contest ended.
 
-
 ### 104. The Dig — Kosmoflot vs. Starmada (closeCombat)
 
+**Actors:** `{{heroPlayer}}` = Kosmoflot; `{{otherPlayer}}` = Starmada.
 
 **Editorial note:** The buried tech must be analyzed before neutralization. The close-combat hero secures access without declaring a winner.
 
-
 A hyperthermal tech indicator glowed beneath the dig while both teams disputed the nearest console. {{heroPlayer}}’s cold-weather raiders worked around the exposed side of the buried hyperthermal tech site, while {{otherPlayer}}’s fleet security teams kept a withdrawal route open beside the analysis console. The tech could only be neutralized after analysis, with console control still in dispute.
-
 
 Loose rock covered the control face and obscured whether anyone had analyzed the live unit. Fire struck the excavation rim while specialists approached the hyperthermal tech and analysis console. A stone shifted and revealed an unfinished analysis prompt beside the neutralizing command.
 
-
 {{hero}} drove a defender away from the analysis console and held the path to the buried tech. The hyperthermal unit remained active while the console still awaited an analysis record. The other crew reached the dig before the neutralizing order could be completed. Dust settled across the console as the tech light pulsed from beneath the shaft.
-
 
 - Hero wins: {{heroPlayer}}’s crew analyzed and neutralized the hyperthermal tech.
 - Hero loses: {{otherPlayer}}’s crew analyzed and neutralized the tech as {{heroPlayer}} withdrew.
