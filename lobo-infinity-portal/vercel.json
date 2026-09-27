@@ -2,6 +2,11 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
+  "functions": {
+    "api/public-search-page.mjs": {
+      "includeFiles": "dist/app-shell.html"
+    }
+  },
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -28,8 +33,32 @@
       "destination": "/api/sitemap"
     },
     {
+      "source": "/",
+      "destination": "/api/public-search-page?page=/"
+    },
+    {
+      "source": "/:page(explore|army-intelligence|games|events|players|factions|missions|streams|army-lists|analytics|hall-of-fame|rivalries|compare|standings|schedule|league-operations|community|rules)",
+      "destination": "/api/public-search-page?page=/:page"
+    },
+    {
+      "source": "/games/:id",
+      "destination": "/api/public-search-page?page=/games/:id"
+    },
+    {
+      "source": "/event/:id",
+      "destination": "/api/public-search-page?page=/event/:id"
+    },
+    {
+      "source": "/factions/:name",
+      "destination": "/api/public-search-page?page=/factions/:name"
+    },
+    {
+      "source": "/missions/:name",
+      "destination": "/api/public-search-page?page=/missions/:name"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/app-shell.html"
     }
   ]
 }

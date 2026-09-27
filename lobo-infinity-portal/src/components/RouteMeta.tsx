@@ -1,27 +1,59 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { describePublicSearchPage, publicDatasetForPath, SITE_ORIGIN } from '../../shared/public-search-content.mjs'
+import { getPublicSnapshotDataset } from '../services/publicSnapshot'
 
-const baseUrl = 'https://lobo-infinity-portal.vercel.app'
-const previewImage = `${baseUrl}/favicon.svg`
+const previewImage = `${SITE_ORIGIN}/favicon.svg`
+type EmbeddedSearchMeta = { pathname: string; title: string; description: string; canonicalPath: string }
 
 function RouteMeta() {
   const location = useLocation()
 
   useEffect(() => {
-    const meta = getRouteMeta(location.pathname)
+    let active = true
+    const embedded = document.getElementById('public-search-meta')
+    let initialMeta: EmbeddedSearchMeta | null = null
+    if (embedded?.textContent) {
+      try {
+        initialMeta = JSON.parse(embedded.textContent) as EmbeddedSearchMeta
+      } catch {
+        initialMeta = null
+      }
+    }
+    const meta = initialMeta?.pathname === location.pathname
+      ? initialMeta
+      : getRouteMeta(location.pathname)
 
-    document.title = meta.title
-    setMetaTag('description', meta.description)
-    setMetaTag('og:title', meta.title, 'property')
-    setMetaTag('og:description', meta.description, 'property')
-    setMetaTag('og:image', previewImage, 'property')
-    setCanonical(`${baseUrl}${location.pathname}`)
+    applyMeta(meta, location.pathname)
+
+    const dataset = publicDatasetForPath(location.pathname)
+    if (dataset && location.pathname !== `/${dataset}` && location.pathname !== '/events') {
+      getPublicSnapshotDataset<unknown[]>(dataset).then(items => {
+        if (!active) return
+        const updated = describePublicSearchPage(location.pathname, { [dataset]: items })
+        if (updated) applyMeta(updated, location.pathname)
+      }).catch(() => { /* Initial metadata stays available if the snapshot is offline. */ })
+    }
+
+    return () => { active = false }
   }, [location.pathname])
 
   return null
 }
 
+function applyMeta(meta: { title: string; description: string; canonicalPath?: string }, pathname: string) {
+  document.title = meta.title
+  setMetaTag('description', meta.description)
+  setMetaTag('og:title', meta.title, 'property')
+  setMetaTag('og:description', meta.description, 'property')
+  setMetaTag('og:image', previewImage, 'property')
+  setCanonical(`${SITE_ORIGIN}${meta.canonicalPath ?? pathname}`)
+}
+
 function getRouteMeta(pathname: string) {
+  const publicPage = describePublicSearchPage(pathname)
+  if (publicPage) return publicPage
+
   if (pathname.startsWith('/game/')) {
     return {
       title: 'Match Details | Lobo Infinity League',
