@@ -8,7 +8,7 @@ const immutable = 'public, max-age=31536000, immutable'
 const bySource = new Map(headers.map((entry) => [entry.source, entry.headers]))
 
 if (config.routes) failures.push('Legacy Vercel routes must not suppress the scoped cache headers.')
-if (!config.rewrites?.some((rewrite) => rewrite.source === '/(.*)' && rewrite.destination === '/index.html')) {
+if (!config.rewrites?.some((rewrite) => rewrite.source === '/(.*)' && rewrite.destination === '/app-shell.html')) {
   failures.push('SPA fallback rewrite must remain configured.')
 }
 

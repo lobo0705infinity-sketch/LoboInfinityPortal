@@ -6,6 +6,7 @@ const requiredFunctions = [
   'api/army-intelligence-refresh-worker',
   'api/automation-queue-worker',
   'api/commissioner-login',
+  'api/public-search-page',
 ]
 
 const failures = []
@@ -23,7 +24,7 @@ if (!existsSync(outputConfigPath)) {
   const config = JSON.parse(readFileSync(outputConfigPath, 'utf8'))
   const routes = Array.isArray(config.routes) ? config.routes : []
   const filesystemIndex = routes.findIndex((route) => route?.handle === 'filesystem')
-  const fallbackIndex = routes.findIndex((route) => route?.dest === '/index.html')
+  const fallbackIndex = routes.findIndex((route) => route?.dest === '/app-shell.html')
   if (filesystemIndex < 0) failures.push('missing filesystem/function routing stage')
   if (fallbackIndex < 0) failures.push('missing SPA fallback')
   if (filesystemIndex >= 0 && fallbackIndex >= 0 && filesystemIndex > fallbackIndex) {
