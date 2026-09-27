@@ -2625,4 +2625,385 @@
       },
       "mission": "The Dig"
     }
+,
+  {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Torchlight Brigade"
+      ],
+      "heroFaction": "Torchlight Brigade",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a half-built orbital chapel uncovered a reception hall centered on a lantern-shaped survey drone. Kestrel Colonial Force entered through the utility shaft, and Torchlight Brigade breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the unfinished dome rotated, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the lantern-shaped survey drone. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the lantern-shaped survey drone and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Japanese Secessionist Army"
+      ],
+      "heroFaction": "Japanese Secessionist Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a earthquake-damaged dojo uncovered a reception hall centered on a folded steel dueling screen. Kestrel Colonial Force entered through the utility shaft, and Japanese Secessionist Army breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the floor mats sank into mud, exposing another layer below.",
+        "{{hero}} examined the folded steel dueling screen, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the folded steel dueling screen and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Oban"
+      ],
+      "heroFaction": "Oban",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a mountainside rice mill uncovered a reception hall centered on a cedar water gauge. Kestrel Colonial Force entered through the utility shaft, and Oban breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the millrace began flowing uphill, exposing another layer below.",
+        "{{hero}} caught an attacker beside the cedar water gauge and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the cedar water gauge and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Shindenbutai"
+      ],
+      "heroFaction": "Shindenbutai",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a abandoned puppet theater uncovered a reception hall centered on a wooden automaton heart. Kestrel Colonial Force entered through the utility shaft, and Shindenbutai breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the stage trapdoors opened together, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the wooden automaton heart. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the wooden automaton heart and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Tohaa"
+      ],
+      "heroFaction": "Tohaa",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a terraced biofarm uncovered a reception hall centered on a living soil sampler. Kestrel Colonial Force entered through the utility shaft, and Tohaa breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the irrigation mist turned red, exposing another layer below.",
+        "{{hero}} examined the living soil sampler, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the living soil sampler and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Dashat Company"
+      ],
+      "heroFaction": "Dashat Company",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a dry river market uncovered a reception hall centered on a merchant's balance with one pan. Kestrel Colonial Force entered through the utility shaft, and Dashat Company breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when coins rattled beneath the paving, exposing another layer below.",
+        "{{hero}} caught an attacker beside the merchant's balance with one pan and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the merchant's balance with one pan and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a burned freight office uncovered a reception hall centered on a heat-blackened bond register. Kestrel Colonial Force entered through the utility shaft, and Druze Bayram Security breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when a freight elevator arrived empty, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the heat-blackened bond register. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the heat-blackened bond register and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a scrap-metal monastery uncovered a reception hall centered on a bell cast from mismatched alloys. Kestrel Colonial Force entered through the utility shaft, and Ikari Company breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the bell rang without moving, exposing another layer below.",
+        "{{hero}} examined the bell cast from mismatched alloys, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the bell cast from mismatched alloys and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a desert film archive uncovered a reception hall centered on a silver reel of undeveloped film. Kestrel Colonial Force entered through the utility shaft, and StarCo breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the film unspooled toward a wall, exposing another layer below.",
+        "{{hero}} caught an attacker beside the silver reel of undeveloped film and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the silver reel of undeveloped film and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a alpine insurance vault uncovered a reception hall centered on a crystal risk calculator. Kestrel Colonial Force entered through the utility shaft, and White Company breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when warning lights priced every exit, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the crystal risk calculator. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the crystal risk calculator and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Neoterra Capitaline Army"
+      ],
+      "heroFaction": "Neoterra Capitaline Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a submerged executive plaza uncovered a reception hall centered on a holographic building deed. Neoterra Capitaline Army entered through the utility shaft, and Neoterra Capitaline Army breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the plaza fountains drained belowground, exposing another layer below.",
+        "{{hero}} examined the holographic building deed, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the holographic building deed and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a jungle embassy annex uncovered a reception hall centered on a ceremonial rain meter. Neoterra Capitaline Army entered through the utility shaft, and Shock Army of Acontecimento breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when rain fell inside the sealed annex, exposing another layer below.",
+        "{{hero}} caught an attacker beside the ceremonial rain meter and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the ceremonial rain meter and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a glacier hotel basement uncovered a reception hall centered on a frosted guest registry. Neoterra Capitaline Army entered through the utility shaft, and Svalarheima Winter Force breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when room numbers appeared under the ice, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the frosted guest registry. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the frosted guest registry and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a storm-drain command post uncovered a reception hall centered on a waterproof operations slate. Neoterra Capitaline Army entered through the utility shaft, and Varuna Immediate Reaction Division breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when storm water surged through dry pipes, exposing another layer below.",
+        "{{hero}} examined the waterproof operations slate, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the waterproof operations slate and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a buried maglev museum uncovered a reception hall centered on a levitating rail segment. Neoterra Capitaline Army entered through the utility shaft, and Yu Jing breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the rail segment accelerated in place, exposing another layer below.",
+        "{{hero}} caught an attacker beside the levitating rail segment and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the levitating rail segment and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a sealed licensing bureau uncovered a reception hall centered on a jade permit cylinder. Neoterra Capitaline Army entered through the utility shaft, and Imperial Service breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when permit drawers sorted themselves, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the jade permit cylinder. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the jade permit cylinder and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a armored vehicle showroom uncovered a reception hall centered on a miniature reactive-armor panel. Neoterra Capitaline Army entered through the utility shaft, and Invincible Army breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the armor panel locked onto a distant signal, exposing another layer below.",
+        "{{hero}} examined the miniature reactive-armor panel, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the miniature reactive-armor panel and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Excavators beneath a avalanche observatory uncovered a reception hall centered on a barometric memory globe. Neoterra Capitaline Army entered through the utility shaft, and White Banner breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the globe displayed a storm from decades earlier, exposing another layer below.",
+        "{{hero}} caught an attacker beside the barometric memory globe and fought through the excavation corridor. The trooper drove the opponent away from an unmarked arch, where falling plaster exposed a narrow passage. Fresh boot prints crossed its dust, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the barometric memory globe and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Excavators beneath a frontier hydroelectric dam uncovered a reception hall centered on a hand-cranked turbine governor. Neoterra Capitaline Army entered through the utility shaft, and Ariadna breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the governor began turning against the current, exposing another layer below.",
+        "{{hero}} kept the excavation corridor open with short bursts of rifle fire while engineers reached the hand-cranked turbine governor. A shot dislodged plaster from an unmarked arch, revealing a narrow passage. The trooper shifted cover to protect the engineers as they found fresh boot prints leading inward.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the hand-cranked turbine governor and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Neoterra Capitaline Army",
+        "Caledonian Highlander Army"
+      ],
+      "heroFaction": "Caledonian Highlander Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavators beneath a collapsed stone viaduct uncovered a reception hall centered on a granite bridge model. Neoterra Capitaline Army entered through the utility shaft, and Caledonian Highlander Army breached an older stairwell. Each crew claimed its route established ownership, but the dispute stopped when the model bridge cracked exactly like the viaduct, exposing another layer below.",
+        "{{hero}} examined the granite bridge model, isolated its power feed, and compared it with the excavation plans. The specialist found an unmarked arch behind a false wall and opened a narrow passage. Fresh boot prints crossed the dust inside, heading inward from a door that had supposedly remained sealed.",
+        "{{heroPlayer}}'s team followed the prints to a room furnished for a meeting that had never happened. {{otherPlayer}}'s crew stayed behind to secure the unstable hall. Twenty chairs faced a blank stone wall; when the artifact entered, the wall displayed both commanders' names and marked one chair as still unoccupied."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the granite bridge model and recorded the impossible meeting room.",
+        "heroLoses": "{{otherPlayer}} sealed the inner passage and retained control of the reception hall.",
+        "draw": "The crews divided the record while the final chair waited for an unnamed guest."
+      },
+      "mission": "The Dig"
+    }
 ]
