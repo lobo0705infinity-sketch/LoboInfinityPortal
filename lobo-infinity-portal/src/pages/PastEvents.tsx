@@ -7,8 +7,8 @@ function PastEvents() {
   return (
     <main className="portal-shell" data-page="past-events">
       <section className="page-header" aria-labelledby="past-events-title">
-        <p className="eyebrow">Event Archive</p>
-        <h1 id="past-events-title">Past Events</h1>
+        <p className="eyebrow">Event Network</p>
+        <h1 id="past-events-title">All Events</h1>
         <p>Browse current, upcoming, and archived event workspaces.</p>
       </section>
 

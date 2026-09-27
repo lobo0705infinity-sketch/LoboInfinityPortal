@@ -3308,3 +3308,50 @@ main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operat
     grid-template-columns: 1fr;
   }
 }
+
+/* Entry routes share the portal artwork and give phones readable targets below it. */
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start { display: grid; gap: .65rem; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a { display: grid; align-content: start; gap: .3rem; min-height: 128px; border: 1px solid rgba(76, 201, 240, .42); border-top: 3px solid #61d6f6; border-radius: 12px; padding: .9rem 1rem; color: #f7fbff; background: linear-gradient(145deg, rgba(21, 42, 56, .98), rgba(7, 12, 18, .98)); text-decoration: none; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:nth-child(2) { border-top-color: #d43d4a; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:nth-child(3) { border-top-color: #e3b657; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:hover, main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a:focus-visible { border-color: #8ee5ff; background: rgba(42, 76, 96, .78); }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid span { color: #7dddf4; font-size: .68rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid strong { font-size: clamp(1rem, 1.75vw, 1.22rem); line-height: 1.15; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid small { color: #b9c9d5; font-size: .82rem; line-height: 1.4; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { margin: .15rem 0 .3rem; border-left: 3px solid rgba(76, 201, 240, .6); padding: .45rem .8rem; color: #c9d9e4; background: rgba(11, 25, 35, .8); font-size: .85rem; line-height: 1.5; }
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note strong { color: #f7fbff; }
+
+.snapshot-mobile-game-list { display: none; }
+.snapshot-casual-play-card { display: grid; align-content: start; gap: .7rem; }
+.snapshot-casual-play-card h2, .snapshot-casual-play-card p { margin: 0; }
+.snapshot-casual-play-card > div { display: flex; flex-wrap: wrap; gap: .5rem; }
+.snapshot-casual-play-card a { display: inline-flex; align-items: center; min-height: 44px; border: 1px solid rgba(76, 201, 240, .44); border-radius: 8px; padding: .55rem .75rem; color: #e3f9ff; text-decoration: none; }
+.snapshot-casual-play-card a:hover, .snapshot-casual-play-card a:focus-visible { background: rgba(76, 201, 240, .14); }
+
+@media (max-width: 760px) {
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid { grid-template-columns: 1fr; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a { min-height: 64px; gap: .1rem; padding: .55rem .8rem; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a strong { font-size: 1rem; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-start-grid a small { font-size: .75rem; }
+  main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-public-note { font-size: .8rem; }
+
+  main.snapshot-event-page > .snapshot-tabs,
+  main.snapshot-event-page[data-event] > .snapshot-tabs,
+  main.snapshot-current-league-standings > .snapshot-tabs { flex-wrap: wrap; overflow-x: visible; }
+  main.snapshot-event-page > .snapshot-tabs a,
+  main.snapshot-event-page[data-event] > .snapshot-tabs a,
+  main.snapshot-current-league-standings > .snapshot-tabs a { display: inline-flex; align-items: center; justify-content: center; flex: 1 1 29%; min-height: 44px; padding: .55rem .65rem; text-align: center; }
+}
+
+@media (max-width: 640px) {
+  .snapshot-desktop-game-table { display: none; }
+  .snapshot-mobile-game-list { display: grid; gap: .55rem; }
+  .snapshot-mobile-game { display: grid; gap: .3rem; min-height: 116px; border: 1px solid rgba(76, 201, 240, .22); border-radius: 11px; padding: .7rem .8rem; color: #e8f3fa; background: linear-gradient(135deg, rgba(15, 29, 41, .98), rgba(8, 14, 22, .98)); text-decoration: none; }
+  .snapshot-mobile-game:hover, .snapshot-mobile-game:focus-visible { border-color: #7dddf4; }
+  .snapshot-mobile-game-meta { color: #8cdcf0; font-size: .73rem; font-weight: 900; text-transform: uppercase; }
+  .snapshot-mobile-game-players { font-size: 1rem; line-height: 1.3; }
+  .snapshot-mobile-game-players strong { color: #fff; }
+  .snapshot-mobile-game-mission { color: #b9cbd7; font-size: .82rem; }
+  .snapshot-mobile-game-score { color: #f7fbff; font-size: .78rem; font-weight: 800; }
+}

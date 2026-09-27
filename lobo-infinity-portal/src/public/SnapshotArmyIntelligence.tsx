@@ -121,29 +121,41 @@ export default function SnapshotArmyIntelligence() {
         <h1>Know the Field</h1>
         <p>Explore public submitted-list patterns, common profiles, specialist coverage, and force composition.</p>
       </div>
-      <div className="snapshot-intelligence-coverage" aria-label="Snapshot intelligence coverage">
-        <span><strong>{data.decodedLists}</strong> decoded lists</span>
-        <span><strong>{data.options.length}</strong> armies indexed</span>
-        <span><strong>{data.pendingLists}</strong> pending</span>
-        <span><strong>{data.failedLists}</strong> failed</span>
-      </div>
     </header>
+
+    {!selected ? <section className="snapshot-intelligence-start" aria-labelledby="intelligence-start-title">
+      <div>
+        <p className="eyebrow">Try an example</p>
+        <h2 id="intelligence-start-title">Corregidor Jurisdictional Command</h2>
+        <p>See which models appear in submitted lists, what specialist and support roles they cover, and how the recorded gunfighters and close combat profiles rank. Then choose any other faction or sectorial below.</p>
+      </div>
+      <button type="button" onClick={() => {
+        const next = new URLSearchParams(params)
+        next.set('faction', 'Corregidor Jurisdictional Command')
+        setParams(next)
+      }}>Explore Corregidor</button>
+    </section> : null}
 
     <section className="panel snapshot-intelligence-selector" aria-label="Army Intelligence analysis controls">
       <label>
-        <span>Select sectorial</span>
+        <span>Choose a faction or sectorial</span>
         <select value={selected} onChange={(event) => {
           const next = new URLSearchParams(params)
           if (event.target.value) next.set('faction', event.target.value)
           else next.delete('faction')
           setParams(next)
         }}>
-          <option value="">Choose a sectorial</option>
+          <option value="">Choose an army</option>
           {data.options.map((option) => <option key={option} value={option}>{option}</option>)}
         </select>
       </label>
       <p>Select a faction or sectorial to load its persisted intelligence detail from this immutable public snapshot.</p>
     </section>
+
+    <details className="snapshot-intelligence-data-status" id="data-status">
+      <summary>Data status and methodology</summary>
+      <p>{data.decodedLists} decoded lists across {data.options.length} indexed armies. {data.pendingLists} pending; {data.failedLists} could not be decoded and are excluded from the analysis. These are patterns in submitted lists, not a complete picture of every army.</p>
+    </details>
 
     {selected
       ? <ArmyIntelligenceDetail selected={selected} />
