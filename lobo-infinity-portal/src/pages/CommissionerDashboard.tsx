@@ -20,6 +20,10 @@ import {
   type PortalSettings,
 } from '../services/api'
 import { formatPlayerName } from '../services/formatting'
+import { getActiveNativeSessionToken } from '../services/apiCore'
+import { getPublicSnapshotDataset } from '../services/publicSnapshot'
+import { isSelectableFeaturedReport, selectFeaturedReport } from '../../shared/featured-report.mjs'
+import type { PublicGame } from '../public/snapshotTypes'
 
 type OperationsState =
   | {
@@ -299,6 +303,7 @@ function CommissionerDashboard() {
             onAction={runAction}
             settings={data.settings}
           />
+          <FeaturedReportPanel canManage={auth.hasPermission('manageSettings')} />
         </main>
       )
     }
@@ -458,6 +463,7 @@ function CommissionerDashboard() {
           settings={data.settings}
           showLegacyFields={showLegacyTools}
         />
+        <FeaturedReportPanel canManage={auth.hasPermission('manageSettings')} />
         <PermissionMatrix />
       </section>
     </main>
@@ -801,6 +807,7 @@ function CompactCommandCenter() {
     ['Games & Army Lists', 'Game search, score corrections, historical Army List links, and Army Code Validation.', '/commissioner/game-center'],
     ['Players & Access', 'Identity management, account access, display-name corrections, and safe player cleanup.', '/commissioner/players'],
     ['Community', 'Streams, Discord, and automation administration.', '/commissioner/community-manager'],
+    ['Homepage Feature', 'Choose the battle report shown on the homepage.', '/commissioner?section=settings'],
     ['System & Recovery', 'System status, diagnostics, and exceptional recovery tools.', '/commissioner/system'],
   ] as const
 
@@ -2188,6 +2195,77 @@ function SettingsPanel({
       </form>
     </section>
   )
+}
+
+function FeaturedReportPanel({ canManage }: { canManage: boolean }) {
+  const [games, setGames] = useState<PublicGame[]>([])
+  const [selected, setSelected] = useState('')
+  const [savedPin, setSavedPin] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let active = true
+    Promise.all([
+      getPublicSnapshotDataset<PublicGame[]>('games'),
+      fetch('/api/featured-report', { cache: 'no-store' }).then(async response => {
+        if (!response.ok) throw new Error('Could not load the featured report setting.')
+        return response.json() as Promise<{ pinnedId: number | null }>
+      }),
+    ]).then(([reports, pin]) => {
+      if (!active) return
+      setGames(reports.filter(isSelectableFeaturedReport).sort((a, b) => b.id - a.id))
+      setSavedPin(pin.pinnedId)
+      setSelected(pin.pinnedId === null ? '' : String(pin.pinnedId))
+    }).catch(() => { if (active) setError('Could not load the report choices. Try reopening Settings.') })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [])
+
+  const current = selectFeaturedReport(games, savedPin)
+
+  async function save(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const token = getActiveNativeSessionToken()
+    if (!canManage || !token) return
+    setSaving(true)
+    setError('')
+    setMessage('')
+    try {
+      const response = await fetch('/api/featured-report', {
+        method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+        body: JSON.stringify({ pinnedId: selected ? Number(selected) : null }),
+      })
+      const result = await response.json() as { pinnedId?: number | null; error?: string }
+      if (!response.ok) throw new Error(result.error || 'Could not save the featured report.')
+      setSavedPin(result.pinnedId ?? null)
+      setMessage(selected ? `Report #${selected} is featured.` : 'Automatic selection is on.')
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save the featured report.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return <section className="panel operations-panel" aria-label="Featured Battle Report">
+    <PanelTitle eyebrow="Homepage" title="Featured Battle Report" />
+    <p className="operations-empty">Choose a published report to keep in the homepage spotlight. Automatic selection uses the newest report with a submitted highlight.</p>
+    {current ? <p className="operations-empty">Currently featured: <Link to={`/games/${current.id}`}>#{current.id} · {current.mission}</Link></p> : null}
+    <form className="operations-form" onSubmit={save}>
+      <label className="operations-form-wide" htmlFor="featured-report-choice">
+        <span>Homepage feature</span>
+        <select id="featured-report-choice" disabled={!canManage || loading || saving || Boolean(error && !games.length)} value={selected} onChange={event => { setSelected(event.target.value); setMessage('') }}>
+          <option value="">Automatic · newest highlighted report</option>
+          {games.map(game => <option key={game.id} value={game.id}>#{game.id} · {game.mission} · {game.player1Faction} vs {game.player2Faction}</option>)}
+        </select>
+      </label>
+      <button disabled={!canManage || loading || saving || !games.length} type="submit">{saving ? 'Saving…' : 'Save Homepage Feature'}</button>
+      {message ? <p className="operations-form-wide" role="status">{message}</p> : null}
+      {error ? <p className="operations-form-wide" role="alert">{error}</p> : null}
+    </form>
+  </section>
 }
 
 function PermissionMatrix() {

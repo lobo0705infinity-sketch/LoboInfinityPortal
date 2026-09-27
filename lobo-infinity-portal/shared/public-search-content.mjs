@@ -139,7 +139,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
   if (staticPage) {
     const links = [...staticPage.links]
     if (pathname === '/' && datasets.games) {
-      const featured = selectFeaturedReport(datasets.games)
+      const featured = selectFeaturedReport(datasets.games, datasets.pinnedId)
       if (featured) {
         links.push(
           { label: `Featured battle report: ${featured.mission} — ${featured.player1Faction} vs ${featured.player2Faction}`, href: `/games/${featured.id}` },
@@ -184,6 +184,8 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       title: `${mission}: ${faction1} vs ${faction2} | Infinity N5 Battle Report`,
       description: shorten(`Read Infinity N5 battle report #${gameId}: ${faction1} vs ${faction2} on ${mission}. ${result}`, 170),
       heading: `${mission}: ${faction1} vs ${faction2}`,
+      image: `/api/report-preview?id=${gameId}`,
+      imageAlt: `Battle report #${gameId}: ${faction1} vs ${faction2} on ${mission}`,
       intro: `Battle report #${gameId}. ${result}${highlight ? ` Submitted highlight: ${shorten(highlight, 230)}` : ''}`,
       links: [
         ...(text(game.mission) ? [{ label: `Explore ${mission} mission results`, href: `/missions/${encodeURIComponent(mission)}` }] : []),

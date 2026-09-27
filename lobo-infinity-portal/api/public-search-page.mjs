@@ -1,10 +1,10 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describePublicSearchPage, publicDatasetForPath, SITE_ORIGIN } from '../shared/public-search-content.mjs'
+import { readPublicDataset } from './_lib/public-snapshot.mjs'
+import { readFeaturedReportPin } from './_lib/featured-report-store.mjs'
 
-const snapshotOrigin = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/'
 let templatePromise
-let pointerCache
 
 export default async function handler(request, response) {
   if (request.method !== 'GET' && request.method !== 'HEAD') {
@@ -29,6 +29,10 @@ export default async function handler(request, response) {
       snapshotAvailable = false
       console.error('Public search page snapshot unavailable:', error)
     }
+    if (pathname === '/' && snapshotAvailable) {
+      try { data.pinnedId = await readFeaturedReportPin() }
+      catch (error) { console.error('Featured report setting unavailable:', error) }
+    }
   }
 
   const page = describePublicSearchPage(pathname, data)
@@ -42,7 +46,7 @@ export default async function handler(request, response) {
     response.setHeader('content-type', 'text/html; charset=utf-8')
     response.setHeader('x-content-type-options', 'nosniff')
     response.setHeader('cache-control', snapshotAvailable
-      ? 'public, s-maxage=300, stale-while-revalidate=3600'
+      ? pathname === '/' ? 'public, s-maxage=60, stale-while-revalidate=60' : 'public, s-maxage=300, stale-while-revalidate=3600'
       : 'no-store')
     response.status(200)
     if (request.method === 'HEAD') response.end()
@@ -67,11 +71,24 @@ export function renderPublicSearchHtml(template, page) {
     canonicalPath: page.canonicalPath,
     title: page.title,
     description: page.description,
+    image: page.image,
+    imageAlt: page.imageAlt,
   }).replaceAll('<', '\\u003c').replaceAll('>', '\\u003e').replaceAll('&', '\\u0026')
   const head = [
     `<link rel="canonical" href="${escapeHtml(canonical)}" />`,
+    `<meta property="og:url" content="${escapeHtml(canonical)}" />`,
+    `<meta property="og:type" content="${page.image ? 'article' : 'website'}" />`,
     `<meta property="og:title" content="${escapeHtml(page.title)}" />`,
     `<meta property="og:description" content="${escapeHtml(page.description)}" />`,
+    ...(page.image ? [
+      `<meta property="og:image" content="${escapeHtml(SITE_ORIGIN + page.image)}" />`,
+      `<meta property="og:image:width" content="1200" />`,
+      `<meta property="og:image:height" content="630" />`,
+      `<meta property="og:image:alt" content="${escapeHtml(page.imageAlt)}" />`,
+      `<meta name="twitter:card" content="summary_large_image" />`,
+      `<meta name="twitter:image" content="${escapeHtml(SITE_ORIGIN + page.image)}" />`,
+      `<meta name="twitter:image:alt" content="${escapeHtml(page.imageAlt)}" />`,
+    ] : []),
     `<script id="public-search-meta" type="application/json">${metadata}</script>`,
   ].join('\n    ')
 
@@ -116,29 +133,6 @@ async function readTemplate(request) {
     })().catch(error => { templatePromise = null; throw error })
   }
   return templatePromise
-}
-
-async function readPublicDataset(name, fetchObject = fetch) {
-  if (!pointerCache || pointerCache.expires < Date.now()) {
-    const pointer = await readJson(new URL('public-snapshots/current.json', snapshotOrigin), fetchObject)
-    if (!/^\d{8}T\d{6}Z$/.test(pointer?.snapshotId)
-      || pointer.basePath !== `public-snapshots/${pointer.snapshotId}/`) {
-      throw new Error('Invalid public snapshot pointer')
-    }
-    pointerCache = { pointer, expires: Date.now() + 60_000 }
-  }
-  const { pointer } = pointerCache
-  const envelope = await readJson(new URL(`${pointer.basePath}${name}.json`, snapshotOrigin), fetchObject)
-  if (envelope.snapshotId !== pointer.snapshotId || !Array.isArray(envelope.data)) {
-    throw new Error(`Invalid public ${name} snapshot`)
-  }
-  return envelope.data
-}
-
-async function readJson(url, fetchObject) {
-  const result = await fetchObject(url, { signal: AbortSignal.timeout(7_000) })
-  if (!result.ok) throw new Error(`Public snapshot returned HTTP ${result.status}`)
-  return result.json()
 }
 
 function escapeHtml(value) {
