@@ -38,13 +38,14 @@ const checks = [
       dashboard.includes('to: `/games/${game.id}`'),
   },
   {
-    label: 'Featured battle report links to the same public report as search content',
+    label: 'Featured battle report and search content use the same snapshot selector',
     pass:
-      publicDashboard.includes('to="/games/109"') &&
+      publicDashboard.includes('selectFeaturedReport(games.data!)') &&
+      publicDashboard.includes('to={`/games/${featuredReport.id}`}') &&
       publicArmyIntelligence.includes('to="/games/109"') &&
-      publicDashboard.includes("buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')") &&
+      publicDashboard.includes('buildArmyIntelligenceFactionPath(featuredReport.player1Faction)') &&
       publicArmyIntelligence.includes('const selected = readArmyIntelligenceFactionParam(params)') &&
-      read('shared/public-search-content.mjs').includes("href: '/games/109'"),
+      read('shared/public-search-content.mjs').includes('selectFeaturedReport(datasets.games)'),
   },
   {
     label: 'Battle report resolves by immutable RecentGame.id',

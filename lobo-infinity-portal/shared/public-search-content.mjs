@@ -1,3 +1,5 @@
+import { selectFeaturedReport } from './featured-report.mjs'
+
 export const SITE_ORIGIN = 'https://lobo-infinity-portal.vercel.app'
 
 const starterLinks = [
@@ -12,10 +14,7 @@ const publicPages = {
     description: 'Explore Infinity N5 faction intelligence, community battle reports, and upcoming games and events at the Lobo Infinity Portal.',
     heading: 'Lobo Infinity Portal',
     intro: 'Explore Infinity N5 army intelligence, read community battle reports, and find a game or event. You can browse public results without joining the league.',
-    links: [
-      ...starterLinks,
-      { label: "Featured battle report: Dead Man's Switch — Corregidor vs Torchlight Brigade", href: '/games/109' },
-    ],
+    links: starterLinks,
   },
   '/explore': {
     title: 'Explore Infinity N5 Armies and Games | Lobo Infinity Portal',
@@ -139,6 +138,7 @@ const publicPages = {
 }
 
 export function publicDatasetForPath(pathname) {
+  if (pathname === '/') return 'games'
   if (/^\/games\/\d+$/.test(pathname) || pathname === '/games') return 'games'
   if (/^\/event\/[a-zA-Z0-9_-]+$/.test(pathname) || pathname === '/events') return 'events'
   if (pathname.startsWith('/factions/') || pathname === '/factions') return 'factions'
@@ -150,6 +150,17 @@ export function describePublicSearchPage(pathname, datasets = {}) {
   const staticPage = publicPages[pathname]
   if (staticPage) {
     const links = [...staticPage.links]
+    if (pathname === '/' && datasets.games) {
+      const featured = selectFeaturedReport(datasets.games)
+      if (featured) {
+        links.push(
+          { label: `Featured battle report: ${featured.mission} — ${featured.player1Faction} vs ${featured.player2Faction}`, href: `/games/${featured.id}` },
+          { label: `Explore ${featured.mission} mission results`, href: `/missions/${encodeURIComponent(featured.mission)}` },
+          { label: `Explore ${featured.player1Faction} faction results`, href: `/factions/${encodeURIComponent(featured.player1Faction)}` },
+          { label: `Explore ${featured.player2Faction} faction results`, href: `/factions/${encodeURIComponent(featured.player2Faction)}` },
+        )
+      }
+    }
     if (pathname === '/games' && datasets.games) {
       for (const game of [...datasets.games].slice(-12).reverse()) {
         if (Number.isSafeInteger(Number(game.id))) {

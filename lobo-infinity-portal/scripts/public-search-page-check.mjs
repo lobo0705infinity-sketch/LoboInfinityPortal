@@ -2,16 +2,37 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { describePublicSearchPage, publicDatasetForPath } from '../shared/public-search-content.mjs'
 import { renderPublicSearchHtml } from '../api/public-search-page.mjs'
+import { selectFeaturedReport } from '../shared/featured-report.mjs'
 
 const template = await readFile(new URL('../index.html', import.meta.url), 'utf8')
 const homepage = describePublicSearchPage('/')
 const army = describePublicSearchPage('/army-intelligence')
 assert.notEqual(homepage.title, army.title)
 assert.match(army.intro, /Corregidor/)
-assert.ok(homepage.links.some(link => link.href === '/games/109'))
+assert.ok(homepage.links.some(link => link.href === '/games'))
+assert.ok(!homepage.links.some(link => link.href === '/games/109'))
 assert.ok(army.links.some(link => link.href === '/games/109'))
+assert.equal(publicDatasetForPath('/'), 'games')
 assert.equal(publicDatasetForPath('/games/117'), 'games')
 assert.equal(publicDatasetForPath('/commissioner'), null)
+
+const reports = [
+  { id: 118, mission: "Dead Man's Switch", player1Faction: 'Corregidor Jurisdictional Command', player2Faction: 'Torchlight Brigade', bestMoment: '' },
+  { id: 109, mission: "Dead Man's Switch", player1Faction: 'Corregidor Jurisdictional Command', player2Faction: 'Torchlight Brigade', bestMoment: 'A Raveneye almost turned the game in the final orders.' },
+  { id: 117, mission: 'The Dig', player1Faction: 'Operations Subsection', player2Faction: 'Ramah Taskforce', bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1' },
+]
+assert.equal(selectFeaturedReport(reports)?.id, 117)
+assert.equal(selectFeaturedReport([...reports].reverse())?.id, 117)
+assert.equal(selectFeaturedReport(reports, 109)?.id, 109)
+assert.equal(selectFeaturedReport(reports, 999)?.id, 117)
+assert.equal(selectFeaturedReport(reports.slice(0, 1)), null)
+const currentHomepage = describePublicSearchPage('/', { games: reports })
+assert.ok(currentHomepage.links.some(link => link.href === '/games/117'))
+assert.ok(currentHomepage.links.some(link => link.href === '/missions/The%20Dig'))
+assert.ok(currentHomepage.links.some(link => link.href === '/factions/Operations%20Subsection'))
+assert.ok(currentHomepage.links.some(link => link.href === '/factions/Ramah%20Taskforce'))
+assert.ok(!currentHomepage.links.some(link => link.href === '/games/118'))
+assert.match(renderPublicSearchHtml(template, currentHomepage), /href="\/games\/117"/)
 
 const game = {
   id: 117,

@@ -4,6 +4,7 @@ import { buildCapabilityNavigationItem, getEventNavigationConfig } from '../conf
 import { getDiscordCommunityLink } from '../config/communityLinks'
 import { useSettings } from '../contexts/SettingsContext'
 import { buildArmyIntelligenceFactionPath } from '../services/armyIntelligenceNavigation'
+import { featuredReportHighlight, selectFeaturedReport } from '../../shared/featured-report.mjs'
 import { useSnapshotData } from './useSnapshotData'
 import { sortPublicStreamsByDate } from './streamOrdering'
 import type { MissionGeistCatalog, MissionGeistCatalogMission } from '../services/publicSnapshot'
@@ -104,7 +105,7 @@ function Dashboard() {
       ['Players', '/players'], ['Standings', '/standings?eventId=event-current-league'], ['Games', '/games'], ['Factions', '/factions'], ['Missions', '/missions'],
       ['Schedule', '/event/event-current-league/schedule'], ['Streams', '/streams'], ['Submit Game', '/submit-game']
     ] as const
-    const featuredReport = [...games.data!].reverse().find((game) => game.bestMoment?.trim()) ?? games.data!.at(-1)
+    const featuredReport = selectFeaturedReport(games.data!)
     return <Page title="Lobo Infinity Portal" eyebrow="Current public snapshot" intro="Lobo Infinity Portal community command network.">
       <section className="snapshot-dashboard-start" aria-labelledby="dashboard-start-title">
         <div className="snapshot-dashboard-section-heading">
@@ -118,18 +119,18 @@ function Dashboard() {
         </nav>
         <p className="snapshot-dashboard-public-note"><strong>What can I use without joining the league?</strong> Browse Army Intelligence, battle reports, players, factions, missions, streams, and public event results. Register for an event when you want to participate; casual games have a separate submission form.</p>
       </section>
-      <section className="snapshot-dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
+      {featuredReport ? <section className="snapshot-dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
         <div>
-          <p className="eyebrow">Featured battle report · BR-109</p>
-          <h2 id="dashboard-featured-report-title">Dead Man&apos;s Switch</h2>
-          <p>Corregidor Jurisdictional Command vs Torchlight Brigade. A Raveneye nearly swung the result in the final orders.</p>
+          <p className="eyebrow">Featured battle report · BR-{featuredReport.id}</p>
+          <h2 id="dashboard-featured-report-title">{featuredReport.mission}</h2>
+          <p>{featuredReport.player1Faction} vs {featuredReport.player2Faction}. {featuredReportHighlight(featuredReport.bestMoment)}</p>
         </div>
         <nav aria-label="Explore the featured report">
-          <Link className="snapshot-dashboard-featured-primary" to="/games/109">Read the battle report <span aria-hidden="true">→</span></Link>
-          <Link to={buildArmyIntelligenceFactionPath('Corregidor Jurisdictional Command')}>Explore Corregidor army lists</Link>
-          <Link to="/missions/Dead%20Man's%20Switch">Explore Dead Man&apos;s Switch results</Link>
+          <Link className="snapshot-dashboard-featured-primary" to={`/games/${featuredReport.id}`}>Read the battle report <span aria-hidden="true">→</span></Link>
+          <Link to={buildArmyIntelligenceFactionPath(featuredReport.player1Faction)}>Explore {featuredReport.player1Faction} army lists</Link>
+          <Link to={`/missions/${encodeURIComponent(featuredReport.mission)}`}>Explore {featuredReport.mission} results</Link>
         </nav>
-      </section>
+      </section> : null}
       <section className="snapshot-dashboard-section snapshot-dashboard-programs" aria-labelledby="dashboard-programs-title">
         <div className="snapshot-dashboard-section-heading snapshot-dashboard-section-heading--action">
           <p className="eyebrow">Portal programs</p>
