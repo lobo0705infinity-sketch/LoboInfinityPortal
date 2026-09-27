@@ -111,7 +111,7 @@ export function assertGameStoryMissionObjective(story: GameStoryTemplate, key: s
       scene: [/\bhyperthermal\s+tech\b/i, /\banaly[sz]\w*\b/i,
         /\b(?:neutraliz\w*|neutralis\w*)\b/i, /\bconsoles?\b/i],
       endings: [/\b(?:hyperthermal\s+tech|the tech)\b/i,
-        /\banaly[sz]\w*\b/i],
+        /\banaly[sz]\w*\b/i, /\bneutraliz\w*\b/i],
     },
   }
   const rules = specific[story.mission] ?? { scene: [scenario.anchor], endings: [scenario.anchor] }

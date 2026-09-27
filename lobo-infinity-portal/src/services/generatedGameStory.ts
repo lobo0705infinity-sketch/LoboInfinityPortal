@@ -12,6 +12,16 @@ import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
 
+// The September 24 hotfix does not include an effective hour or prior-edition
+// rules in the public feed. Withhold ambiguous same-day and earlier reports
+// rather than narrating them under the revised Dig/Crossing Lines premises.
+export function hasUnsupportedStoryMissionVersion(game: RecentGame): boolean {
+  const mission = getCanonicalMissionName(game.mission)
+  if (mission !== 'The Dig' && mission !== 'Crossing Lines' && mission !== 'Double Bind') return false
+  const day = /^\d{4}-\d{2}-\d{2}/.exec(String(game.date || ''))?.[0]
+  return !day || day < '2026-09-25'
+}
+
 const activeById = new Map(CANONICAL_ARMY_REGISTRY.filter((army) => army.active).map((army) => [army.id, army]))
 const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
 const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
@@ -164,13 +174,13 @@ export function composeGameStory(
       ],
       endings: {
         heroWins: '{{heroPlayer}}’s squad ' + method.winBeat +
-          ', prevailing in the contest for the communication antenna and ' + location.scoringGround + '.',
+          ', taking the lead in the contest for the communication antenna and ' + location.scoringGround + '.',
         heroLoses: '{{otherPlayer}}’s squad ' + response.winBeat +
-          ', prevailing over {{heroPlayer}} in the contest for the communication antenna and ' + location.scoringGround + '.',
+          ', taking the lead over {{heroPlayer}} in the contest for the communication antenna and ' + location.scoringGround + '.',
         draw: hero.id === opponent.id
-          ? 'Each crew ' + method.drawBeat + ', and the contest over the communication antenna and ' + location.scoringGround + ' ended level.'
+          ? 'Each crew ' + method.drawBeat + ', with neither ahead in the contest for the communication antenna and ' + location.scoringGround + '.'
           : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
-            ', and the contest over the communication antenna and ' + location.scoringGround + ' ended level.',
+            ', leaving neither ahead in the contest for the communication antenna and ' + location.scoringGround + '.',
       },
     }
   }
@@ -219,7 +229,7 @@ export function composeGameStory(
 
 export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligenceList[]): string | null {
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)
-  if (!key) return null
+  if (!key || hasUnsupportedStoryMissionVersion(game)) return null
   // Common Classified cards, attacker assignment, and selected objective
   // mode are absent from public games for three respective missions.
   const canonical = getCanonicalMissionName(game.mission)
@@ -234,12 +244,15 @@ export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligen
   const factions = first.id === second.id ? [first.name] : [first.name, second.name]
   const orderedFactions = factions.slice(start % factions.length).concat(factions.slice(0, start % factions.length))
   const orderedRoles = roles.slice(start % roles.length).concat(roles.slice(0, start % roles.length))
+  const mirrorSides: Array<0 | 1> = [0, 1]
   for (const role of orderedRoles) {
     for (const faction of orderedFactions) {
       const template = composeGameStory(game.mission, first.name, second.name, faction, role, gameId)
       if (!template) continue
-      const rendered = renderGameStoryTemplate(template, game, lists)
-      if (rendered) return rendered
+      for (const side of first.id === second.id ? mirrorSides : [undefined]) {
+        const rendered = renderGameStoryTemplate(template, game, lists, side)
+        if (rendered) return rendered
+      }
     }
   }
   return null

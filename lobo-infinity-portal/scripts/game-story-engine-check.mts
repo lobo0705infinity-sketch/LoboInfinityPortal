@@ -9,8 +9,9 @@ import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { INCIDENT_CONSEQUENCES, INCIDENT_CROSSFIRE, INCIDENT_STAKES } from '../src/data/generatedStoryIncidentBeats.ts'
 import { AREA_LOCATIONS, AREA_WEATHER } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
-import { composeGameStory, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
-import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
+import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
+import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
+  PENDING_BATTLE_STORY, UNSUPPORTED_MISSION_VERSION_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
@@ -46,6 +47,8 @@ for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
     assert.doesNotMatch(ending,
       /\b(?:activated|analy[sz]ed|neutralized|extracted|captured|hacked|dominated|scanned|stabilized|destroyed|controlled)\b/i,
       mission + ': ending must not invent an accomplished objective')
+    assert.doesNotMatch(ending, /\bprevailed\b|\bended level\b/i,
+      mission + ': do not reuse the old stock outcome sentence')
   }
 }
 
@@ -174,6 +177,12 @@ assert.throws(() => assertGameStoryMissionObjective({ ...composeGameStory('The D
   'The neutralizing command waited on the console screen.',
   '{{hero}} checked the analyzed tech as {{heroPlayer}} and {{otherPlayer}} approached.',
 ] }, 'invalid The Dig'), /not by console command/)
+const digForEnding = composeGameStory('The Dig', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective')!
+assert.throws(() => assertGameStoryMissionObjective({ ...digForEnding, endings: {
+  ...digForEnding.endings, draw: 'The crews finished even in their effort to analyze the hyperthermal tech.',
+} }, 'incomplete The Dig'), /draw ending misses the mission objective/,
+'Dig endings must also name contact neutralization of marked tech')
 for (const [mission, fragment, message] of [
   ['Uplink Center', 'Opening the Tech-Coffin lid scored the objective.', /not by opening it/],
   ['Battleground', 'The sector marker lit up before the final round.', /marked out only when the game ends/],
@@ -351,7 +360,7 @@ const entry = {
   unit: 'TEST TROOPER', profile: 'TEST TROOPER', canonicalUnitId: 0, combinedId: 'test-1',
   points: 30, specialist: true, hacker: false, engineer: false, doctor: true,
   forwardObserver: false, bs: 13, weapons: ['AP Heavy Machine Gun', 'CC Weapon'],
-  skills: ['Martial Arts', 'Doctor'], equipment: [],
+  skills: ['Martial Arts', 'Doctor'], equipment: [], troopType: 'LI', orderTypes: ['regular'],
 }
 const list = (player: string, opponent: string, sectorial: string): ArmyIntelligenceList => ({
   player, opponent, sectorial, mission: game.mission, date: '2026-09-26',
@@ -388,6 +397,36 @@ const hackerOnlyList = { ...outbreakList, decoded: {
 assert.equal(renderGameStoryTemplate(outbreakTemplate, { ...game, mission: 'Outbreak' },
   [hackerOnlyList, { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'Outbreak' }]), null,
   'an Outbreak objective story must wait when its hero side has no eligible clinician')
+const evacuationGame = { ...game, mission: 'Evacuation' } as RecentGame
+const evacuationRoster = { ...list('Winner', 'Loser', 'PanOceania'), mission: 'Evacuation',
+  decoded: { combatGroups: [{ entries: [
+    { ...entry, unit: 'TEST REMOTE', profile: 'TEST REMOTE', combinedId: 'remote', points: 60,
+      troopType: 'REM', skills: ['Hacker'] },
+    { ...entry, unit: 'FIELD ESCORT', profile: 'FIELD ESCORT', combinedId: 'escort', points: 18 },
+  ] }] },
+} as ArmyIntelligenceList
+const evacuationOther = { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'Evacuation' }
+assert.equal(selectStoryHero(evacuationRoster, 'objective')?.combinedId, 'remote')
+assert.equal(selectStoryHero(evacuationRoster, 'objective', 'civilianEscort')?.combinedId, 'escort')
+for (const [troopType, skills] of [['VH', ['Doctor']], ['LI', ['Impetuous', 'Doctor']],
+  ['LI', ['Peripheral', 'Doctor']]] as const) {
+  const forbidden = { ...evacuationRoster, decoded: { combatGroups: [{ entries: [
+    { ...entry, troopType, skills },
+  ] }] } } as ArmyIntelligenceList
+  assert.equal(selectStoryHero(forbidden, 'objective', 'civilianEscort'), null,
+    `${troopType}/${skills.join(',')}: cannot CivEvac`)
+}
+const evacuationTemplate = composeGameStory('Evacuation', 'PanOceania', 'Druze Bayram Security',
+  'PanOceania', 'objective', 9081)!
+const evacuationText = renderGameStoryTemplate(evacuationTemplate, evacuationGame,
+  [evacuationRoster, evacuationOther])
+assert.match(evacuationText ?? '', /the Field Escort/i)
+assert.doesNotMatch(evacuationText ?? '', /the Test Remote/i)
+const remOnlyRoster = { ...evacuationRoster, decoded: { combatGroups: [{ entries: [
+  evacuationRoster.decoded!.combatGroups[0].entries[0],
+] }] } } as ArmyIntelligenceList
+assert.equal(renderGameStoryTemplate(evacuationTemplate, evacuationGame, [remOnlyRoster, evacuationOther]),
+  null, 'a remote must never be assigned the CivEvac action')
 for (const mission of ['Akial Interference', 'Critical Intervention', 'Double Bind']) {
   const setupGame = { ...game, mission } as RecentGame
   const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
@@ -477,6 +516,54 @@ assert.ok(mirrorWin?.includes('Winner') && mirrorWin.includes('Loser'))
 assert.equal(mirrorWin.split('\n\n').at(-1), mirrorExpected.split('\n\n').at(-1))
 assert.ok(mirrorDraw?.endsWith(mirrorTemplate.endings.draw))
 assert.doesNotMatch(mirrorWin, /\{\{\w+\}\}/)
+const ineligible = { ...entry, unit: 'UNARMED OBSERVER', profile: 'UNARMED OBSERVER',
+  combinedId: 'observer', specialist: false, hacker: false, engineer: false,
+  doctor: false, forwardObserver: false, bs: 8, weapons: [], skills: [] }
+const oneEligibleMirrorList = [
+  { ...mirrorLists[0], decoded: { combatGroups: [{ entries: [ineligible] }] } }, mirrorLists[1],
+] as ArmyIntelligenceList[]
+const losingSideMirror = renderGeneratedGameStory(mirrorGame, oneEligibleMirrorList)
+assert.ok(losingSideMirror?.includes('Winner') && losingSideMirror.includes('Loser'))
+assert.ok(losingSideMirror.endsWith(mirrorTemplate.endings.heroLoses
+  .replaceAll('{{heroPlayer}}', 'Loser').replaceAll('{{otherPlayer}}', 'Winner')),
+  'the losing mirror side supplies the eligible actor and receives the loss ending')
+assert.equal(renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList),
+  renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList, 1),
+  'authored mirror scenes can also use the second eligible side')
+assert.ok(renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, oneEligibleMirrorList)
+  ?.endsWith(mirrorTemplate.endings.draw.replaceAll('{{heroPlayer}}', 'Loser')
+    .replaceAll('{{otherPlayer}}', 'Winner')), 'mirror draws bind each player to the selected side')
+const bothIneligibleMirror = [oneEligibleMirrorList[0], { ...mirrorLists[1],
+  decoded: { combatGroups: [{ entries: [ineligible] }] } }] as ArmyIntelligenceList[]
+assert.equal(await loadAuthoredBattleStory(mirrorGame, bothIneligibleMirror),
+  NO_ELIGIBLE_HERO_BATTLE_STORY, 'two decoded but ineligible lists are not waiting for decoding')
+
+const longDisplayGame = { ...game, mission: 'Area of Interest',
+  winnerFaction: 'Yu Jing', loserFaction: 'Haqqislam',
+  winnerDisplayName: 'Captain Jake Strangeway', loserDisplayName: 'General Oliver Delta',
+} as RecentGame
+const longDisplayLists = [
+  { ...lists[0], sectorial: 'Yu Jing', mission: 'Area of Interest' },
+  { ...lists[1], sectorial: 'Haqqislam', mission: 'Area of Interest' },
+] as ArmyIntelligenceList[]
+for (let gameId = 0; gameId < 8; gameId++) {
+  const template = composeGameStory('Area of Interest', 'Yu Jing', 'Haqqislam', 'Yu Jing', 'objective', gameId)!
+  const story = renderGameStoryTemplate(template, { ...longDisplayGame, id: gameId }, longDisplayLists)
+  assert.ok(story, 'long display names must not prevent a valid linked story')
+  for (const paragraph of story.split('\n\n').slice(0, 3)) {
+    assert.ok(paragraph.trim().split(/\s+/).length <= 75, 'measure the rendered paragraph, not the placeholders')
+  }
+  if (gameId === 2) {
+    assert.doesNotMatch(story, /Captain Jake Strangeway|General Oliver Delta/,
+      'use the recorded handles when long display names would exceed the paragraph limit')
+  }
+}
+
+for (const mission of ['The Dig', 'Crossing Lines', 'Double Bind']) {
+  assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-23' }), true)
+  assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-24' }), true)
+  assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-26' }), false)
+}
 
 // Authored scenes keep priority even when a generated scene exists for that
 // pair. Missing pairs inside an authored mission shard use the engine.
@@ -514,6 +601,12 @@ try {
   assert.equal(await loadAuthoredBattleStory(missingGame, missingLists),
     renderGeneratedGameStory(missingGame, missingLists))
   assert.equal(fetchCount, 2, 'read the authored mission shard before generating a fallback')
+  const olderGame = { ...missingGame, date: '2026-09-23' } as RecentGame
+  const olderLists = missingLists.map((list) => ({ ...list, date: '2026-09-23' })) as ArmyIntelligenceList[]
+  assert.equal(renderGeneratedGameStory(olderGame, olderLists), null)
+  assert.equal(await loadAuthoredBattleStory(olderGame, olderLists),
+    UNSUPPORTED_MISSION_VERSION_BATTLE_STORY,
+    'an older game cannot use the revised Dig generator without a historical version')
   const akialRows = JSON.parse(await readFile('public/game-stories/akial-interference.json', 'utf8')) as typeof template[]
   const akialKeys = new Set([...GAME_STORY_CATALOG, ...akialRows].map((row) =>
     storyTemplateKey(row.mission, ...row.factions)))

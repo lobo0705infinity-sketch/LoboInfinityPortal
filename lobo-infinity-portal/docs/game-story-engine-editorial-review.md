@@ -36,9 +36,9 @@ A burst of gunfire shifted the brace and briefly exposed the control face. The o
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s squad read the signal and secured the controls, prevailing in the contest for the communication antenna and the courtyard.
-- Player B wins: Player B’s squad turned a diversion into control of the panel, prevailing over Player A in the contest for the communication antenna and the courtyard.
-- Draw: Player A’s crew tracked each change in the relay signal while Player B’s crew kept a decoy between the guard and operator, and the contest over the communication antenna and the courtyard ended level.
+- Player A wins: Player A’s squad read the signal and secured the controls, taking the lead in the contest for the communication antenna and the courtyard.
+- Player B wins: Player B’s squad turned a diversion into control of the panel, taking the lead over Player A in the contest for the communication antenna and the courtyard.
+- Draw: Player A’s crew tracked each change in the relay signal while Player B’s crew kept a decoy between the guard and operator, leaving neither ahead in the contest for the communication antenna and the courtyard.
 
 
 ### 2. Akial Interference — Next Wave vs. Onyx Contact Force (gunfighting)
@@ -55,9 +55,9 @@ A gap in the firing lane briefly opened access to the antenna controls. The oper
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the contest for classified objectives at the Akial Antenna; its diversion drew the last watch away.
-- Player B wins: Player B’s crew prevailed over Player A after the contest for classified objectives at the Akial Antenna; its controlled line held the center.
-- Draw: Player A’s crew kept a second approach in reserve while Player B’s crew maintained pressure along the center; the contest for classified objectives at the Akial Antenna ended level.
+- Player A wins: Player A’s crew came out ahead in the contest for classified objectives at the Akial Antenna; its diversion drew the last watch away.
+- Player B wins: Player B’s crew came out ahead of Player A in the contest for classified objectives at the Akial Antenna; its controlled line held the center.
+- Draw: Player A’s crew kept a second approach in reserve while Player B’s crew maintained pressure along the center; the rival crews finished even in the contest for classified objectives at the Akial Antenna.
 
 
 ### 3. B-Pong — Tartary Army Corps vs. Tartary Army Corps (objective, mirror)
@@ -74,9 +74,9 @@ A gust exposed the beacon base and a clear route to its contact ring. The operat
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the struggle over the tracking beacon and consoles; its steady pressure kept the opposing guard fixed.
-- Player B wins: Player B’s crew prevailed over Player A after the struggle over the tracking beacon and consoles; its steady pressure kept the opposing guard fixed.
-- Draw: Each crew kept the nearest guard occupied; the struggle over the tracking beacon and consoles ended level.
+- Player A wins: Player A’s crew gained the advantage in the struggle over the tracking beacon and consoles; its steady pressure kept the opposing guard fixed.
+- Player B wins: Player B’s crew gained the advantage over Player A in the struggle over the tracking beacon and consoles; its steady pressure kept the opposing guard fixed.
+- Draw: Each crew kept the nearest guard occupied; both crews found openings around the tracking beacon and consoles, but neither finished ahead.
 
 
 ### 4. Evacuation — Ramah Taskforce vs. Nomads (objective)
@@ -93,9 +93,9 @@ The smoke lifted and exposed the HVT, but a rival patrol still watched the conso
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed amid the struggle to bring civilians or enemy HVTs to the Extraction Consoles; its rotating escort preserved the opening.
-- Player B wins: Player B’s crew prevailed over Player A amid the struggle to bring civilians or enemy HVTs to the Extraction Consoles; its timed crossing carried the forward group through.
-- Draw: Player A’s crew held its relief fighters near the front while Player B’s crew tracked each shift in the opposing line; the struggle to bring civilians or enemy HVTs to the Extraction Consoles ended level.
+- Player A wins: Player A’s crew gained the advantage in the race to bring civilians or enemy HVTs to the Extraction Consoles; its rotating escort preserved the opening.
+- Player B wins: Player B’s crew gained the advantage over Player A in the race to bring civilians or enemy HVTs to the Extraction Consoles; its timed crossing carried the forward group through.
+- Draw: Player A’s crew held its relief fighters near the front while Player B’s crew tracked each shift in the opposing line; the rival escorts disputed civilians, enemy HVTs, and Extraction Consoles without either crew pulling ahead.
 
 
 ### 5. Last Launch — Nomads vs. Bakunin Jurisdictional Command (objective)
@@ -112,9 +112,9 @@ The rail pulled loose and offered a narrow approach before the patrol reached th
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the contest to carry an ID to the Launching Tower checker; its timed crossing carried the forward group through.
-- Player B wins: Player B’s crew prevailed over Player A after the contest to carry an ID to the Launching Tower checker; its noisy feint concealed the decisive crossing.
-- Draw: Player A’s crew tracked each shift in the opposing line while Player B’s crew kept a decoy between the front and guard; the contest to bring an ID to the Launching Tower checker ended level.
+- Player A wins: Player A’s crew won the overall contest to bring an ID to the Launching Tower checker; its timed crossing carried the forward group through.
+- Player B wins: Player B’s crew won the overall contest over Player A to bring an ID to the Launching Tower checker; its noisy feint concealed the decisive crossing.
+- Draw: Player A’s crew tracked each shift in the opposing line while Player B’s crew kept a decoy between the front and guard; the contest to bring an ID to the Launching Tower checker left both crews with equal ground.
 
 
 ### 6. Neutralization — Varuna Immediate Reaction Division vs. Yu Jing (gunfighting)
@@ -131,9 +131,9 @@ A damaged panel opened enough to reach the box as rival troops entered the lane.
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed in the struggle to carry Hyperthermal Tech into a Neutralization Area; its protected exit survived the final counterpush.
-- Player B wins: Player B’s crew prevailed over Player A in the struggle to carry Hyperthermal Tech into a Neutralization Area; its staggered line held through the final exchange.
-- Draw: Player A’s crew kept a guarded escape lane within reach while Player B’s crew maintained a disciplined line under pressure; the struggle over Hyperthermal Tech and the Neutralization Areas ended level.
+- Player A wins: Player A’s crew earned the lead in the struggle to carry Hyperthermal Tech into a Neutralization Area; its protected exit survived the final counterpush.
+- Player B wins: Player B’s crew earned the lead over Player A in the struggle to carry Hyperthermal Tech into a Neutralization Area; its staggered line held through the final exchange.
+- Draw: Player A’s crew kept a guarded escape lane within reach while Player B’s crew maintained a disciplined line under pressure; neither crew pulled ahead in the struggle over Hyperthermal Tech and the Neutralization Areas.
 
 
 ### 7. Outbreak — ALEPH vs. ALEPH (objective, mirror)
@@ -150,9 +150,9 @@ A handprint appeared against the glass as an opposing escort moved toward the co
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the contest to scan and stabilize the Infected; its precise timing protected the decisive advance.
-- Player B wins: Player B’s crew prevailed over Player A after the contest to scan and stabilize the Infected; its precise timing protected the decisive advance.
-- Draw: Each crew measured each opening beneath enemy fire; the contest to scan and stabilize the Infected ended level.
+- Player A wins: Player A’s crew came out ahead in the effort to scan and stabilize the Infected; its precise timing protected the decisive advance.
+- Player B wins: Player B’s crew came out ahead of Player A in the effort to scan and stabilize the Infected; its precise timing protected the decisive advance.
+- Draw: Each crew measured each opening beneath enemy fire; the efforts to scan and stabilize the Infected left both crews even.
 
 
 ### 8. Battleground — Ikari Company vs. StarCo (closeCombat)
@@ -169,9 +169,9 @@ The barrier broke open and revealed a route toward the area that would become th
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s force prevailed after the contest for the three scoring sectors; its sudden breach survived the counterattack.
-- Player B wins: Player B’s force prevailed over Player A after the contest for the three scoring sectors; its retrieval route stayed protected to the end.
-- Draw: Player A’s crew pressed ahead despite the exposed crossing while Player B’s crew held a marked path away from the fight; the contest for the three scoring sectors ended level.
+- Player A wins: Player A’s force gained the advantage in the contest for the three scoring sectors; its sudden breach survived the counterattack.
+- Player B wins: Player B’s force gained the advantage over Player A in the contest for the three scoring sectors; its retrieval route stayed protected to the end.
+- Draw: Player A’s crew pressed ahead despite the exposed crossing while Player B’s crew held a marked path away from the fight; neither force finished ahead in the contest for the three scoring sectors.
 
 
 ### 9. Uplink Center — Druze Bayram Security vs. Ikari Company (objective)
@@ -188,9 +188,9 @@ The brace moved and exposed a narrow route to the coffin base. The operative che
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the fight over the communication antennas and Tech-Coffin; its contract line held against the final push.
-- Player B wins: Player B’s crew prevailed over Player A after the fight over the communication antennas and Tech-Coffin; its sudden breach survived the counterattack.
-- Draw: Player A’s crew kept a fixed angle on the approach while Player B’s crew pressed ahead despite the exposed crossing; the fight over the communication antennas and Tech-Coffin ended level.
+- Player A wins: Player A’s crew pulled ahead in the fight over the communication antennas and Tech-Coffin; its contract line held against the final push.
+- Player B wins: Player B’s crew pulled ahead of Player A in the fight over the communication antennas and Tech-Coffin; its sudden breach survived the counterattack.
+- Draw: Player A’s crew kept a fixed angle on the approach while Player B’s crew pressed ahead despite the exposed crossing; neither crew pulled ahead in the fight over the communication antennas and Tech-Coffin.
 
 
 ### 10. The Dig — Neoterra Capitaline Army vs. Neoterra Capitaline Army (objective, mirror)
@@ -207,9 +207,9 @@ A loose contact emerged from the dust and exposed where the analysis had stopped
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the fight to analyze the hyperthermal tech at the consoles; its outer cordon closed around the decisive ground.
-- Player B wins: Player B’s crew prevailed over Player A after the fight to analyze the hyperthermal tech at the consoles; its outer cordon closed around the decisive ground.
-- Draw: Each crew maintained a cordon beyond the fighting; the fight to analyze the hyperthermal tech at the consoles ended level.
+- Player A wins: Player A’s crew gained the edge in the struggle to analyze hyperthermal tech at the consoles and neutralize marked tech in contact; its outer cordon closed around the decisive ground.
+- Player B wins: Player B’s crew gained the edge over Player A in the struggle to analyze hyperthermal tech at the consoles and neutralize marked tech in contact; its outer cordon closed around the decisive ground.
+- Draw: Each crew maintained a cordon beyond the fighting; neither crew gained a lead in the effort to analyze hyperthermal tech at the consoles and neutralize marked tech in contact.
 
 
 ### 11. Data Harvest — Japanese Secessionist Army vs. Oban (closeCombat)
@@ -226,9 +226,9 @@ A gap opened beside their cover, exposing ground wholly inside the designated zo
 
 **Alternative endings** (a game displays only its applicable result):
 
-- Player A wins: Player A’s crew prevailed after the contest for active data-harvesters in the designated zones; its close feint opened a route past the guard.
-- Player B wins: Player B’s crew prevailed over Player A after the contest for active data-harvesters in the designated zones; its split approach outlasted the nearest watch.
-- Draw: Player A’s crew kept a fighter within reach of the guard while Player B’s crew held two approaches just outside the guard’s view; the contest for active data-harvesters in the designated zones ended level.
+- Player A wins: Player A’s crew gained the advantage in the contest for active data-harvesters in the designated zones; its close feint opened a route past the guard.
+- Player B wins: Player B’s crew gained the advantage over Player A in the contest for active data-harvesters in the designated zones; its split approach outlasted the nearest watch.
+- Draw: Player A’s crew kept a fighter within reach of the guard while Player B’s crew held two approaches just outside the guard’s view; neither crew finished ahead in the contest for active data-harvesters in the designated zones.
 
 
 ## Gate to continue

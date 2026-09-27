@@ -6,7 +6,7 @@ import { getGameIntelligenceLists } from './gameIntelligenceLinks.ts'
 import { getGameSides, isDrawGame } from './gameResults.ts'
 
 export type HeroRole = 'gunfighting' | 'closeCombat' | 'objective'
-export type ObjectiveSkill = 'infectedCare'
+export type ObjectiveSkill = 'infectedCare' | 'civilianEscort'
 
 export type GameStoryTemplate = {
   mission: string
@@ -50,9 +50,19 @@ export function selectStoryHero(list: ArmyIntelligenceList | undefined, role: He
   const eligible = list.decoded.combatGroups.flatMap((group) => group.entries).filter((entry) =>
     Number.isFinite(entry.points) && entry.points >= 0 && qualifiesForRole(entry, role) &&
     (role !== 'objective' || objectiveSkill !== 'infectedCare' || entry.doctor ||
-      entry.skills.some((skill) => /^(?:Doctor|Paramedic|Specialist Operative)(?:\b|\s*\[)/i.test(skill))),
+      entry.skills.some((skill) => /^(?:Doctor|Paramedic|Specialist Operative)(?:\b|\s*\[)/i.test(skill))) &&
+    (role !== 'objective' || objectiveSkill !== 'civilianEscort' || canCivEvac(entry)),
   )
   return eligible.sort((a, b) => b.points - a.points || String(a.combinedId).localeCompare(String(b.combinedId)))[0] ?? null
+}
+
+function canCivEvac(entry: ArmyIntelligenceDecodedEntry): boolean {
+  // The decoded list does not record live Fireteam/coordinated-order state.
+  // Exclude the permanent prohibitions that its profile does establish.
+  const type = String(entry.troopType || '').trim().toUpperCase()
+  return Boolean(type && type !== 'REM' && type !== 'VH' &&
+    !entry.skills.some((skill) => /^(?:Impetuous|Peripheral)(?:\b|\s*\[)/i.test(skill)) &&
+    !entry.orderTypes?.some((order) => /impetuous/i.test(order)))
 }
 
 function qualifiesForRole(entry: ArmyIntelligenceDecodedEntry, role: HeroRole): boolean {
@@ -69,7 +79,8 @@ function qualifiesForRole(entry: ArmyIntelligenceDecodedEntry, role: HeroRole): 
   )
 }
 
-export function renderGameStoryTemplate(template: GameStoryTemplate, game: RecentGame, lists: ArmyIntelligenceList[]): string | null {
+export function renderGameStoryTemplate(template: GameStoryTemplate, game: RecentGame,
+  lists: ArmyIntelligenceList[], heroSideIndex?: 0 | 1): string | null {
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)
   if (!key || key !== storyTemplateKey(template.mission, ...template.factions)) return null
   const sides = getGameSides(game)
@@ -83,10 +94,13 @@ export function renderGameStoryTemplate(template: GameStoryTemplate, game: Recen
   // A story with a roster-selected actor must wait until the game has both
   // decoded sides. It must never pull a similarly named model from another game.
   if (matched.some((list) => !list)) return null
-  const index = sides.findIndex((side) => sameArmy(side.faction, template.heroFaction))
-  if (index < 0) return null
-  const hero = selectStoryHero(matched[index] ?? undefined, template.role, template.objectiveSkill)
-  if (!hero) return null
+  const indexes = heroSideIndex === undefined ? [0, 1] : [heroSideIndex]
+  const chosen = indexes.map((index) => ({
+    index, hero: sameArmy(sides[index].faction, template.heroFaction)
+      ? selectStoryHero(matched[index] ?? undefined, template.role, template.objectiveSkill) : null,
+  })).find((choice) => choice.hero)
+  if (!chosen?.hero) return null
+  const { index, hero } = chosen
   const allyGunfighter = selectStoryHeroExcluding(matched[index] ?? undefined, 'gunfighting', hero.canonicalUnitId)
   const enemyGunfighter = selectStoryHero(matched[1 - index] ?? undefined, 'gunfighting')
   const replacements: Record<string, string> = {
@@ -99,10 +113,26 @@ export function renderGameStoryTemplate(template: GameStoryTemplate, game: Recen
     '{{loser}}': sides[1].displayName || sides[1].player,
   }
   const ending = isDrawGame(game) ? template.endings.draw : index === 0 ? template.endings.heroWins : template.endings.heroLoses
-  return [...template.paragraphs, ending].map((paragraph) => Object.entries(replacements).reduce(
-    (value, [token, replacement]) => value.replaceAll(token, replacement), paragraph,
-  ).replace(/(^|[.!?]\s+)(the|a|an)\b/g, (_, lead: string, article: string) =>
-    `${lead}${article[0].toUpperCase()}${article.slice(1)}`)).join('\n\n')
+  const render = (values: Record<string, string>) => [...template.paragraphs, ending].map((paragraph) =>
+    Object.entries(values).reduce((value, [token, replacement]) => value.replaceAll(token, replacement), paragraph,
+    ).replace(/(^|[.!?]\s+)(the|a|an)\b/g, (_, lead: string, article: string) =>
+      `${lead}${article[0].toUpperCase()}${article.slice(1)}`))
+  let parts = render(replacements)
+  if (parts.slice(0, 3).some((paragraph) => paragraph.trim().split(/\s+/).length > 75)) {
+    // A long display name must not push a valid template over the prose gate.
+    // Use the recorded player handles without changing the actor or result.
+    parts = render({ ...replacements,
+      '{{heroPlayer}}': sides[index].player,
+      '{{otherPlayer}}': sides[1 - index].player,
+      '{{winner}}': sides[0].player,
+      '{{loser}}': sides[1].player,
+    })
+  }
+  if (parts.slice(0, 3).some((paragraph) => {
+    const words = paragraph.trim().split(/\s+/).length
+    return words < 40 || words > 75
+  })) return null
+  return parts.join('\n\n')
 }
 
 function selectStoryHeroExcluding(list: ArmyIntelligenceList | undefined, role: HeroRole, unitId: number | null | undefined): ArmyIntelligenceDecodedEntry | null {

@@ -64,8 +64,17 @@ explicit previews and automatic selection. The `none` tag is not treated as
 sunshine or another weather effect.
 - Rendering requires both decoded lists linked unambiguously to that game,
   an eligible roster model for the hero role, and the actual player/result
-  fields. For an Outbreak objective action, the selected model must be an
-  eligible Doctor, Paramedic, or Specialist Operative. **Akial Interference** needs the two drawn public Common Classified
+  fields. Mirror games can select either linked player's eligible actor, with
+  the ending bound to that player's actual result. For an Outbreak objective
+  action, the selected model must be an eligible Doctor, Paramedic, or
+  Specialist Operative. Evacuation selects a Specialist who can CivEvac;
+  permanent restrictions in the decoded profile exclude REMs, VHs,
+  Impetuous troops, and Peripherals. The roster does not establish whether
+  a trooper was in a Fireteam or coordinated order during the game. If no
+  eligible actor exists, the report identifies that limitation instead of
+  claiming the lists are still being decoded. The final rendered paragraphs
+  obey the 40–75 word bound; long display names fall back to player handles.
+  **Akial Interference** needs the two drawn public Common Classified
   cards; **Critical Intervention** needs attacker/defender assignment; and
   **Double Bind** needs the chosen objective set. Those three mission templates
   remain available for editorial inspection, but the
@@ -91,8 +100,11 @@ within-mission middle-paragraph trigram Jaccard overlap of 0.184. Sentence
 order varies for independent opening and confrontation beats; the incident
 turn precedes the hero action and its consequence. In a fresh seeded
 110-scene review packet, 156 of 1,064 sentence appearances are exact repeats
-after excluding one deliberately reversed case per mission. The fraction
-changes with the seed; faction methods still recur. These figures do not
+after excluding one deliberately reversed case per mission; a second seed
+showed 145 of 1,064 repeated occurrences. The ending rewrite removed the
+stock “prevailed” and “ended level” lines but did not change these scene
+sentence counts. The fraction changes with the seed; faction methods still
+recur across missions. These figures do not
 establish plot originality or editorial quality.
 The 45 Area and 45 mission-neutral method sets distinguish army tactics in
 every mission, but neither set establishes original plots for every pair.
@@ -136,6 +148,10 @@ repairs, and Crossing Lines. The pilot does not simulate Player Tokens.
 Crossing Lines has no HVT or Classified Deck in the updated scenario. The
 Double Bind runtime remains withheld while the chosen objective set is missing
 from public game records; Akial remains withheld without the drawn cards.
+The generated Dig and Crossing Lines scenes are also withheld for games
+dated September 24 or earlier, or with no usable date: the public feed does
+not say whether a game on the publication day used the revised rules.
+The older authored catalog and submitted player highlights retain priority.
 
 ## Verification
 
