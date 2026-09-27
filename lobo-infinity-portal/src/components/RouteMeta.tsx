@@ -4,7 +4,7 @@ import { describePublicSearchPage, publicDatasetForPath, SITE_ORIGIN } from '../
 import { getPublicSnapshotDataset } from '../services/publicSnapshot'
 
 const previewImage = `${SITE_ORIGIN}/favicon.svg`
-type EmbeddedSearchMeta = { pathname: string; title: string; description: string; canonicalPath: string }
+type EmbeddedSearchMeta = { pathname: string; title: string; description: string; canonicalPath: string; image?: string; imageAlt?: string }
 
 function RouteMeta() {
   const location = useLocation()
@@ -41,12 +41,25 @@ function RouteMeta() {
   return null
 }
 
-function applyMeta(meta: { title: string; description: string; canonicalPath?: string }, pathname: string) {
+function applyMeta(meta: { title: string; description: string; canonicalPath?: string; image?: string; imageAlt?: string }, pathname: string) {
   document.title = meta.title
   setMetaTag('description', meta.description)
   setMetaTag('og:title', meta.title, 'property')
   setMetaTag('og:description', meta.description, 'property')
-  setMetaTag('og:image', previewImage, 'property')
+  setMetaTag('og:image', meta.image ? `${SITE_ORIGIN}${meta.image}` : previewImage, 'property')
+  setMetaTag('og:url', `${SITE_ORIGIN}${meta.canonicalPath ?? pathname}`, 'property')
+  setMetaTag('og:type', meta.image ? 'article' : 'website', 'property')
+  if (meta.image) {
+    setMetaTag('og:image:alt', meta.imageAlt || meta.title, 'property')
+    setMetaTag('twitter:card', 'summary_large_image')
+    setMetaTag('twitter:image', `${SITE_ORIGIN}${meta.image}`)
+    setMetaTag('twitter:image:alt', meta.imageAlt || meta.title)
+  } else {
+    clearMetaTag('og:image:alt', 'property')
+    clearMetaTag('twitter:card')
+    clearMetaTag('twitter:image')
+    clearMetaTag('twitter:image:alt')
+  }
   setCanonical(`${SITE_ORIGIN}${meta.canonicalPath ?? pathname}`)
 }
 
@@ -121,6 +134,10 @@ function setMetaTag(name: string, content: string, attribute = 'name') {
   }
 
   element.content = content
+}
+
+function clearMetaTag(name: string, attribute = 'name') {
+  document.head.querySelector(`meta[${attribute}="${name}"]`)?.remove()
 }
 
 function setCanonical(href: string) {

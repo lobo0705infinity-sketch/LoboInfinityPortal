@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { buildCapabilityNavigationItem, getEventNavigationConfig } from '../config/eventNavigation'
 import { getDiscordCommunityLink } from '../config/communityLinks'
@@ -95,6 +95,15 @@ function TeamTournamentTeamsRedirect(){const {eventId=''}=useParams();return <Na
 function Dashboard() {
   const games = useSnapshotData<PublicGame[]>('games')
   const events = useSnapshotData<PublicEvent[]>('events')
+  const [pinnedId, setPinnedId] = useState<number | null>(null)
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/featured-report', { cache: 'no-store', signal: controller.signal })
+      .then(response => response.ok ? response.json() : Promise.reject(new Error('Featured report setting unavailable')))
+      .then((result: { pinnedId: number | null }) => setPinnedId(result.pinnedId))
+      .catch(() => { /* Keep automatic selection when the setting is unavailable. */ })
+    return () => controller.abort()
+  }, [])
   return <DataGate states={[games, events]}>{() => {
     const programs = [
       { tone: 'league', event: events.data!.find(event => event.id === 'event-current-league'), to: '/event/event-current-league', action: 'View League' },
@@ -105,7 +114,7 @@ function Dashboard() {
       ['Players', '/players'], ['Standings', '/standings?eventId=event-current-league'], ['Games', '/games'], ['Factions', '/factions'], ['Missions', '/missions'],
       ['Schedule', '/event/event-current-league/schedule'], ['Streams', '/streams'], ['Submit Game', '/submit-game']
     ] as const
-    const featuredReport = selectFeaturedReport(games.data!)
+    const featuredReport = selectFeaturedReport(games.data!, pinnedId)
     return <Page title="Lobo Infinity Portal" eyebrow="Current public snapshot" intro="Lobo Infinity Portal community command network.">
       <section className="snapshot-dashboard-start" aria-labelledby="dashboard-start-title">
         <div className="snapshot-dashboard-section-heading">

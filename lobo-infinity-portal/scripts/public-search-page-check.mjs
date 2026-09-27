@@ -35,6 +35,9 @@ assert.ok(currentHomepage.links.some(link => link.href === '/factions/Operations
 assert.ok(currentHomepage.links.some(link => link.href === '/factions/Ramah%20Taskforce'))
 assert.ok(!currentHomepage.links.some(link => link.href === '/games/118'))
 assert.match(renderPublicSearchHtml(template, currentHomepage), /href="\/games\/117"/)
+const pinnedHomepage = describePublicSearchPage('/', { games: reports, pinnedId: 109 })
+assert.ok(pinnedHomepage.links.some(link => link.href === '/games/109'))
+assert.ok(!pinnedHomepage.links.some(link => link.href === '/games/117'))
 
 const game = {
   id: 117,
@@ -47,6 +50,7 @@ const game = {
 }
 const detail = describePublicSearchPage('/games/117', { games: [game] })
 assert.match(detail.title, /The Dig: Operations Subsection vs Ramah Taskforce/)
+assert.equal(detail.image, '/api/report-preview?id=117')
 assert.ok(detail.links.some(link => link.href === '/missions/The%20Dig'))
 assert.ok(detail.links.some(link => link.href === '/factions/Operations%20Subsection'))
 assert.ok(detail.links.some(link => link.href === '/factions/Ramah%20Taskforce'))
@@ -56,6 +60,9 @@ assert.match(html, /<h1[^>]*>The Dig: Operations Subsection vs Ramah Taskforce<\
 assert.match(html, /href="\/missions\/The%20Dig"/)
 assert.match(html, /<link rel="canonical" href="https:\/\/lobo-infinity-portal\.vercel\.app\/games\/117"/)
 assert.match(html, /name="google-site-verification"/)
+assert.match(html, /property="og:image" content="https:\/\/lobo-infinity-portal\.vercel\.app\/api\/report-preview\?id=117"/)
+assert.match(html, /name="twitter:card" content="summary_large_image"/)
+assert.match(html, /property="og:image:alt" content="Battle report #117: Operations Subsection vs Ramah Taskforce on The Dig"/)
 assert.match(html, /&lt;\/script&gt;&lt;script&gt;alert/)
 assert.doesNotMatch(html, /<script>alert\("oops"\)<\/script>/)
 assert.match(html, /"pathname":"\/games\/117"/)

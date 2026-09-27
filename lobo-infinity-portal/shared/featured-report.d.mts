@@ -6,6 +6,6 @@ export type FeaturedGame = {
   bestMoment: string
 }
 
-export const PINNED_FEATURED_REPORT_ID: number | null
 export function selectFeaturedReport<T extends FeaturedGame>(games: readonly T[] | null | undefined, pinnedId?: number | null): T | null
+export function isSelectableFeaturedReport(game: FeaturedGame): boolean
 export function featuredReportHighlight(moment?: string | null): string
