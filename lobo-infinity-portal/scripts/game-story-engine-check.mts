@@ -931,6 +931,43 @@ for (const { game: outcome, pattern } of groundedDigOutcomes) {
   assert.match(scene?.split('\n\n').at(-1) ?? '', pattern,
     'the Dig closing beat must follow the named confrontation and the recorded result')
 }
+// Exercise the complete prose with distinct rostered specialists, shooters,
+// reaction pieces, and a real vision device for every incident and role.
+// Single-model fixtures cannot reveal a mismatch between the obstacle, the
+// covering fire, the crossing, and the hero's eventual mission attempt.
+let castScenes = 0
+for (const mission of CANONICAL_MISSIONS) {
+  const linkedLists = groundedLists.map((roster) => ({ ...roster, mission })) as ArmyIntelligenceList[]
+  for (const id of [0, 1, 2, 3]) {
+    for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+      const candidate = composeGameStory(mission, 'PanOceania', 'Druze Bayram Security',
+        'PanOceania', role, id)!
+      const fullStory = renderGameStoryTemplate(candidate, { ...groundedGame, mission, id }, linkedLists)
+      assert.ok(fullStory, `${mission}/${id}/${role}: render the complete roster scene`)
+      const [opening, firefight, turn, outcome] = fullStory.split('\n\n')
+      assert.equal(fullStory.split('\n\n').length, 4, `${mission}/${id}/${role}: four narrative beats`)
+      assert.match(opening, /Rocket Sentry/i, `${mission}/${id}/${role}: rostered defender`)
+      assert.match(opening, /Panzerfaust/i, `${mission}/${id}/${role}: defender's actual weapon`)
+      assert.match(firefight, /Disco Baller/i, `${mission}/${id}/${role}: rostered vision action`)
+      assert.match(firefight, /Eclipse/i, `${mission}/${id}/${role}: correct device effect`)
+      assert.match(turn, /Field Engineer/i, `${mission}/${id}/${role}: opposition arrives at the turn`)
+      assert.match(turn, role === 'objective' ? /Field Analyst/i
+        : role === 'gunfighting' ? /Hill Sniper/i : /Breach Duelist/i,
+      `${mission}/${id}/${role}: eligible lead attempts the mission`)
+      assert.match(outcome, /Winner’s crew/, `${mission}/${id}/${role}: result resolves for the right crew`)
+      assertGameStoryMissionObjective({ ...candidate,
+        paragraphs: [opening, firefight, turn], endings: candidate.scene!.endings,
+      }, `${mission}/${id}/${role}: grounded complete scene`)
+      for (const paragraph of [opening, firefight, turn]) {
+        const words = paragraph.trim().split(/\s+/).length
+        assert.ok(words >= 40 && words <= 100,
+          `${mission}/${id}/${role}: rendered paragraph has ${words} words`)
+      }
+      castScenes++
+    }
+  }
+}
+assert.equal(castScenes, 22 * 4 * 3)
 const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
   'closeCombat', groundedGame.id)!, groundedGame, groundedLists)
@@ -948,11 +985,13 @@ for (const [mission, objective, wrongGoal] of [
   const objectiveScene = renderGameStoryTemplate(candidate, { ...groundedGame, mission },
     groundedLists.map((roster) => ({ ...roster, mission })))
   assert.ok(objectiveScene, mission + ': linked cast should have a scene')
-  assert.match(objectiveScene.split('\n\n')[0],
-    new RegExp(`Between .* and the ${objective}, .*Rocket Sentry.*Panzerfaust`, 'i'),
-    mission + ': the lead needs the actual mission objective')
+  const missionOpening = objectiveScene.split('\n\n')[0]
+  for (const expected of [objective, 'Rocket Sentry', 'Panzerfaust']) {
+    assert.match(missionOpening, new RegExp(expected, 'i'),
+      mission + ': the lead needs the mission objective and its rostered obstacle')
+  }
   assert.doesNotMatch(objectiveScene.split('\n\n')[0],
-    new RegExp(`Between .* and the ${wrongGoal},`, 'i'),
+    new RegExp(`(?:Rocket Sentry[^.]*${wrongGoal}|${wrongGoal}[^.]*Rocket Sentry)`, 'i'),
     mission + ': landmark must not replace the objective')
 }
 assert.doesNotMatch(groundedText, /\b(?:unfinished|shifted|specialist)\b/i,
@@ -977,16 +1016,38 @@ const loserText = renderGameStoryTemplate(template, {
   loser: 'Winner', loserDisplayName: 'Winner', loserFaction: 'PanOceania',
 } as RecentGame, lists)
 const drawText = renderGameStoryTemplate(template, { ...game, gameResult: 'draw' } as RecentGame, lists)
-assert.ok(winnerText?.endsWith(template.scene!.endings.heroWins
-  .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{hero}}', 'the Test Trooper')))
-assert.ok(loserText?.endsWith(template.scene!.endings.heroLoses
-  .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
-assert.ok(drawText?.endsWith(template.scene!.endings.draw
-  .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
+assert.match(winnerText?.split('\n\n').at(-1) ?? '', /Winner’s crew[^.]*beacon/i)
+assert.match(loserText?.split('\n\n').at(-1) ?? '', /Loser’s crew[^.]*beacon/i)
+assert.match(drawText?.split('\n\n').at(-1) ?? '', /neither Winner’s crew nor Loser’s crew/i)
+assert.match(drawText?.split('\n\n').at(-1) ?? '', /tracking beacon/i)
 
 // Exercise every mission incident and role through the real renderer with
 // linked synthetic rosters. A structurally valid template may still fail at
 // the roster substitution or outcome branch.
+const resolutionAnchors: Record<string, RegExp> = {
+  'Area of Interest': /mast|switch|courtyard/i,
+  'Akial Interference': /aerial|filter|public cards/i,
+  'B-Pong': /beacon|console/i,
+  'Corporate Appropriation': /prototype/i,
+  'Critical Intervention': /server-room|Data Pack/i,
+  'Crossing Lines': /dead.zone|antenna/i,
+  "Dead Man's Switch": /Quantum Core|Data Pack|Objective Room/i,
+  Evacuation: /Extraction Console|escort/i,
+  Hardlock: /beacon|console/i,
+  'Last Launch': /ID Scanner|checker|tower/i,
+  Neutralization: /Neutralization Area|Hyperthermal Tech Box/i,
+  Outbreak: /Infected|stretcher/i,
+  'Panic Room': /Panic Room|Essential Personnel/i,
+  Provisioning: /supply box|safe area/i,
+  Annihilation: /wreck|street|survivors/i,
+  Battleground: /central sector|barrier/i,
+  Cutthroat: /lieutenant|shutter/i,
+  Superiority: /quadrant|console/i,
+  'Uplink Center': /Tech-Coffin|antenna/i,
+  'Double Bind': /aerial|antenna|zone/i,
+  'The Dig': /buried tech/i,
+  'Data Harvest': /data-harvester|zone/i,
+}
 let renderedVariants = 0
 for (const mission of CANONICAL_MISSIONS) {
   const scenarioGame = { ...game, mission } as RecentGame
@@ -997,30 +1058,27 @@ for (const mission of CANONICAL_MISSIONS) {
         'PanOceania', role, gameId)
       assert.ok(scenario)
       const outcomes = [
-        { game: { ...scenarioGame, id: gameId }, ending: scenario.scene!.endings.heroWins },
+        { game: { ...scenarioGame, id: gameId } },
         { game: {
           ...scenarioGame, id: gameId, winner: 'Loser', winnerDisplayName: 'Loser',
           winnerFaction: 'Druze Bayram Security', loser: 'Winner',
           loserDisplayName: 'Winner', loserFaction: 'PanOceania',
-        }, ending: scenario.scene!.endings.heroLoses },
-        { game: { ...scenarioGame, id: gameId, gameResult: 'draw' }, ending: scenario.scene!.endings.draw },
+        } },
+        { game: { ...scenarioGame, id: gameId, gameResult: 'draw' } },
       ]
-      for (const { game: outcome, ending } of outcomes) {
+      for (const { game: outcome } of outcomes) {
         const actual = renderGameStoryTemplate(scenario, outcome as RecentGame, scenarioLists)
         assert.match(actual ?? '', /\bTest Trooper\b/, mission + ': model substitution')
-        if (mission === 'The Dig') {
-          const closingBeat = actual.split('\n\n').at(-1) ?? ''
-          assert.match(closingBeat, /buried tech/i, 'the Dig resolution stays at the excavation')
-          assert.doesNotMatch(closingBeat, /gained the edge|in the struggle to/i,
-            'a rostered encounter should end with a physical outcome')
-          assert.match(closingBeat, outcome.gameResult === 'draw'
-            ? /neither Winner’s crew nor Loser’s crew/i
-            : new RegExp(`${outcome.winner}’s crew`), 'the Dig resolution follows the result')
-        } else {
-          assert.ok(actual.endsWith(ending.replaceAll('{{heroPlayer}}', 'Winner')
-            .replaceAll('{{otherPlayer}}', 'Loser')
-            .replaceAll('{{hero}}', 'the Test Trooper')), mission + ': ending selection')
-        }
+        const closingBeat = actual.split('\n\n').at(-1) ?? ''
+        assert.match(closingBeat, resolutionAnchors[mission],
+          mission + ': the resolution must stay with the mission scene')
+        assert.doesNotMatch(closingBeat, /gained the edge|gained the advantage|in the struggle to|finished ahead/i,
+          mission + ': a rostered encounter needs a physical outcome')
+        assert.equal((closingBeat.match(/[.!?](?:\s|$)/g) ?? []).length, 1,
+          mission + ': the resolution must be one sentence')
+        assert.match(closingBeat, outcome.gameResult === 'draw'
+          ? /neither Winner’s crew nor Loser’s crew/i
+          : new RegExp(`${outcome.winner}’s crew`), mission + ': the resolution follows the result')
         assert.doesNotMatch(actual, /\{\{\w+\}\}/, mission + ': unresolved placeholder')
         renderedVariants++
       }
@@ -1044,7 +1102,7 @@ const mirrorExpected = renderGameStoryTemplate(mirrorTemplate, mirrorGame, mirro
 assert.ok(mirrorExpected)
 assert.ok(mirrorWin?.includes('Winner') && mirrorWin.includes('Loser'))
 assert.equal(mirrorWin.split('\n\n').at(-1), mirrorExpected.split('\n\n').at(-1))
-assert.ok(mirrorDraw?.endsWith(mirrorTemplate.scene!.endings.draw))
+assert.match(mirrorDraw?.split('\n\n').at(-1) ?? '', /neither Winner’s crew nor Loser’s crew/i)
 assert.doesNotMatch(mirrorWin, /\{\{\w+\}\}/)
 const ineligible = { ...entry, unit: 'UNARMED OBSERVER', profile: 'UNARMED OBSERVER',
   combinedId: 'observer', specialist: false, hacker: false, engineer: false,
@@ -1054,15 +1112,14 @@ const oneEligibleMirrorList = [
 ] as ArmyIntelligenceList[]
 const losingSideMirror = renderGeneratedGameStory(mirrorGame, oneEligibleMirrorList)
 assert.ok(losingSideMirror?.includes('Winner') && losingSideMirror.includes('Loser'))
-assert.ok(losingSideMirror.endsWith(mirrorTemplate.scene!.endings.heroLoses
-  .replaceAll('{{heroPlayer}}', 'Loser').replaceAll('{{otherPlayer}}', 'Winner')),
+assert.match(losingSideMirror.split('\n\n').at(-1) ?? '', /Winner’s crew/,
   'the losing mirror side supplies the eligible actor and receives the loss ending')
 assert.equal(renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList),
   renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList, 1),
   'authored mirror scenes can also use the second eligible side')
-assert.ok(renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, oneEligibleMirrorList)
-  ?.endsWith(mirrorTemplate.scene!.endings.draw.replaceAll('{{heroPlayer}}', 'Loser')
-    .replaceAll('{{otherPlayer}}', 'Winner')), 'mirror draws bind each player to the selected side')
+assert.match(renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, oneEligibleMirrorList)
+  ?.split('\n\n').at(-1) ?? '', /neither Loser’s crew nor Winner’s crew/i,
+  'mirror draws bind each player to the selected side')
 const bothIneligibleMirror = [oneEligibleMirrorList[0], { ...mirrorLists[1],
   decoded: { combatGroups: [{ entries: [ineligible] }] } }] as ArmyIntelligenceList[]
 assert.equal(await loadBattleStory(mirrorGame, bothIneligibleMirror),
