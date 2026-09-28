@@ -2316,6 +2316,84 @@
       ]
     },
     {
+      "id": "new-topic-2-523",
+      "category": "CC_BURST_IN_REACTIVE_TURN",
+      "canonicalQuestion": "Does +1B in Close Combat work in ARO?",
+      "approvedAnswer": "It depends on the source of the +1B. A profile-style CC Attack (+1B) MOD does not apply during the Reactive Turn; it is an Active Turn Burst MOD. Martial Arts is an explicit exception: the Martial Arts Chart's MODs, including its +1B at Levels 4 and 5, apply in both Active and Reactive Turns. Close Combat with Multiple Troopers is also a separate reactive bonus: the selected Reactive Trooper gains +1B for each eligible allied Trooper or Peripheral in Silhouette contact with the target. So the answer is no for CC Attack (+1B), but yes for Martial Arts +1B and the multiple-combatant bonus.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 75,
+          "section": "MODIFIERS EXPLAINED"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 100,
+          "section": "MARTIAL ARTS — MARTIAL ARTS CHART"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 52,
+          "section": "CC DURING THE REACTIVE TURN"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-523-q1",
+          "question": "does +1B in CC work in ARO?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-523-q2",
+          "question": "Does CC Attack (+1B) work in ARO?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-523-q3",
+          "question": "Can I use CC Attack plus one Burst in the Reactive Turn?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-523-q4",
+          "question": "Do I get +1 Burst when making a CC Attack ARO?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-523-q5",
+          "question": "Does Martial Arts +1B apply in ARO?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-523-q6",
+          "question": "Does Martial Arts level 4 give two CC dice in the Reactive Turn?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-523-q7",
+          "question": "Can the reactive model get +1B from an ally in close combat?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-523-q8",
+          "question": "Does the multiple trooper close combat Burst bonus work in ARO?",
+          "style": "RULEBOOK_WORDING"
+        },
+        {
+          "id": "new-topic-2-523-q9",
+          "question": "is cc +1 burst active turn only",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-523-q10",
+          "question": "do i get cc attack +1b when reacting",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
       "id": "new-topic-2-522",
       "category": "WILDPARROT_AND_WAIVED_ARO",
       "canonicalQuestion": "Does a WildParrot trigger when an enemy Camouflaged Marker inside its Trigger Area chooses not to declare an ARO?",
