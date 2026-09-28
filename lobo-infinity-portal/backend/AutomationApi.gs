@@ -836,16 +836,33 @@ function buildAutomationGameStoryPayload_(item) {
 
   const winnerId = String(game.winnerArmyListId || "").trim();
   const loserId = String(game.loserArmyListId || "").trim();
-  if (!winnerId || !loserId || winnerId === loserId)
-    return { ready: false, pending: true, reason: "Waiting for two distinct submitted army-list IDs." };
+  if (winnerId && winnerId === loserId)
+    return { ready: false, pending: true, reason: "Waiting for two distinct submitted army lists." };
 
-  const lists = getDeterministicArmyIntelligenceLists().filter(function(list) {
-    return (String(list.armyListId || "") === winnerId ||
-      String(list.armyListId || "") === loserId) &&
-      list.status === "decoded" && Boolean(list.decoded);
+  const normalize = function(value) {
+    return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+  };
+  const sides = [
+    { player: game.winner, opponent: game.loser, id: winnerId },
+    { player: game.loser, opponent: game.winner, id: loserId }
+  ];
+  const intelligence = readArmyIntelligenceReadModelPayload();
+  const lists = (intelligence && intelligence.lists || []).filter(function(list) {
+    if (list.status !== "decoded" || !list.decoded)
+      return false;
+    return sides.some(function(side) {
+      if (side.id && String(list.armyListId || "") === side.id)
+        return normalize(list.player) === normalize(side.player);
+      // The same unambiguous legacy fallback used by the Battle Report.
+      return !list.armyListId && normalize(list.player) === normalize(side.player) &&
+        normalize(list.opponent) === normalize(side.opponent) &&
+        normalize(list.mission) === normalize(game.mission) &&
+        Boolean(list.date && game.date) &&
+        String(list.date).slice(0, 10) === String(game.date).slice(0, 10);
+    });
   });
-  if (lists.length !== 2)
-    return { ready: false, pending: true, reason: "Waiting for both submitted army lists to be decoded." };
+  if (lists.length < 2 || lists.length > 100)
+    return { ready: false, pending: true, reason: "Waiting for two unambiguous decoded game-linked army lists." };
 
   const token = getArmyIntelligenceSchedulerToken_();
   if (!token)

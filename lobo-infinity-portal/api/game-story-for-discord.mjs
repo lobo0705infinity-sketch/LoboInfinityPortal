@@ -28,8 +28,8 @@ export default async function handler(request, response) {
     const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
     const game = body?.game
     const lists = body?.lists
-    if (!Number.isSafeInteger(game?.id) || game.id <= 0 || !Array.isArray(lists) || lists.length !== 2) {
-      response.status(400).json({ error: 'A canonical game and its two lists are required.', success: false })
+    if (!Number.isSafeInteger(game?.id) || game.id <= 0 || !Array.isArray(lists) || lists.length < 2 || lists.length > 100) {
+      response.status(400).json({ error: 'A canonical game and its candidate decoded lists are required.', success: false })
       return
     }
 

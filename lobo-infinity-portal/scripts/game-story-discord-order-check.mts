@@ -54,6 +54,13 @@ try {
   assert.match(generatedStory, /Winner/)
   assert.match(generatedStory, /Loser/)
   assert.equal(generatedStory.split(/\n\n/).length, 4)
+  const idlessGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
+  const idlessLists = lists.map((list, index) => ({ ...list, armyListId: '',
+    opponent: index ? 'Winner' : 'Loser', mission: game.mission, date: game.date }))
+  assert.equal((await invoke({ game: idlessGame, lists: idlessLists })).body.success, true,
+    'a submitted game without stored list IDs can use the unique report linkage')
+  assert.equal((await invoke({ game: idlessGame, lists: [...idlessLists, { ...idlessLists[0] }] })).body.pending, true,
+    'an ambiguous ID-less list cannot generate a story')
 } finally {
   if (originalToken === undefined) delete process.env.ARMY_INTELLIGENCE_WORKER_TOKEN
   else process.env.ARMY_INTELLIGENCE_WORKER_TOKEN = originalToken
@@ -84,7 +91,7 @@ context.buildAutomationGamePayloadById_ = (id: number) => {
   assert.equal(id, game.id)
   return canonicalGame
 }
-context.getDeterministicArmyIntelligenceLists = () => { steps.push('lists-read'); return decodedLists }
+context.readArmyIntelligenceReadModelPayload = () => { steps.push('lists-read'); return { lists: decodedLists } }
 context.getArmyIntelligenceSchedulerToken_ = () => 'local-story-worker-token'
 context.buildDiscordGamePayload = (_game: typeof game, story: string) => {
   steps.push('discord-payload')
@@ -122,6 +129,13 @@ assert.equal(context.processDiscordQueueItem(item, false).success, true)
 assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
 assert.deepEqual(queueUpdates.map((item) => item.status), ['Waiting', 'Waiting', 'Waiting', 'Waiting', 'Sent'])
 assert.deepEqual(queueUpdates.map((item) => item.attempts), [0, 0, 0, 0, 1])
+
+canonicalGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
+decodedLists = lists.map((list, index) => ({ ...list, armyListId: '',
+  opponent: index ? 'Winner' : 'Loser', mission: game.mission, date: game.date }))
+assert.equal(context.processDiscordQueueItem(item, false).success, true,
+  'an ID-less Google Form game also reaches Discord after both lists decode')
+assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
 
 context.getDiscordConfig = () => ({ retryLimit: 3 })
 context.getAutomationString = (value: unknown) => String(value ?? '').trim()

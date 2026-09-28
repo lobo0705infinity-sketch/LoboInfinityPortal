@@ -128,8 +128,9 @@ sunshine or another weather effect.
 
 The submission handler persists a canonical game and queues its ID. The
 scheduled intelligence worker decodes submitted lists; the Discord queue
-checks that **both distinct army-list IDs** belong to that game and that both
-lists have decoded successfully. Only then does it call the authenticated
+links **both distinct decoded lists** to that game, by army-list ID where
+available or by unambiguous player, opponent, mission and day otherwise.
+Only then does it call the authenticated
 story worker, which checks linkage again and renders the same story engine
 used by the Battle Report. A completed story is placed in the Discord embed,
 clearly marked as fictional, and the webhook is called last. A missing game,

@@ -14,7 +14,7 @@ const checks = [
   ['Shared publisher accepts the exact submitted game', /function publishLatestGameSubmittedAutomationEvent\(game\)[\s\S]*publishGameSubmittedAutomationEvent\(submittedGame\)/.test(gameEngine)],
   ['Game event stores only canonical identity fields', /const payload = JSON\.stringify\(\{[\s\S]*eventId:[\s\S]*gameId:[\s\S]*gameType:[\s\S]*\}\)/.test(automation)],
   ['Discord queue requires the canonical game, decoded lists, and a completed story',
-    /buildAutomationGamePayloadById_\(eventPayload\.gameId[\s\S]*getDeterministicArmyIntelligenceLists\(\)[\s\S]*UrlFetchApp\.fetch\(AUTOMATION_GAME_STORY_WORKER_URL[\s\S]*buildDiscordGamePayload\(game, result\.story\)/.test(automation)],
+    /buildAutomationGamePayloadById_\(eventPayload\.gameId[\s\S]*readArmyIntelligenceReadModelPayload\(\)[\s\S]*UrlFetchApp\.fetch\(AUTOMATION_GAME_STORY_WORKER_URL[\s\S]*buildDiscordGamePayload\(game, result\.story\)/.test(automation)],
   ['Game announcements link to the canonical Battle Report route', /case "gameSubmitted":[\s\S]*return "\/games\/" \+ encodeURIComponent\(getDeepLinkId\(data\.gameId \|\| data\.id\)\)/.test(deepLinks)],
   ['Rebuild itself does not publish game events', !/function rebuildGameEngine\([^]*?publishLatestGameSubmittedAutomationEvent\(/.test(gameEngine.split('function persistGameEngineState')[0])],
   ['Submission enqueue performs no queue processing or Discord delivery', !/function canonicalSubmissionEnqueueGameAutomation_[\s\S]*processAutomationQueueItem|function canonicalSubmissionEnqueueGameAutomation_[\s\S]*sendDiscordAnnouncementPayload/.test(canonical)],
