@@ -4,6 +4,7 @@ import namedCharacters from '../data/storyCharacters.json' with { type: 'json' }
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from './api.ts'
 import { getGameIntelligenceLists } from './gameIntelligenceLinks.ts'
 import { getGameSides, isDrawGame } from './gameResults.ts'
+import { renderRosterStoryScene } from './rosterStoryScene.ts'
 
 export type HeroRole = 'gunfighting' | 'closeCombat' | 'objective'
 export type ObjectiveSkill = 'infectedCare' | 'civilianEscort'
@@ -15,6 +16,20 @@ export type GameStoryTemplate = {
   role: HeroRole
   objectiveSkill?: ObjectiveSkill
   sceneTags?: { location: string; weather: string }
+  // Present only on generated scenes. An authored catalog row retains its
+  // original paragraphs; live scenes use the linked models to narrate action.
+  scene?: {
+    opening: string
+    complication: string
+    turn: string
+    objectiveAction: string
+    gunfighting: string
+    closeCombat: string
+    ground: string
+    position: string
+    setting?: string
+    endings: { heroWins: string; heroLoses: string; draw: string }
+  }
   paragraphs: readonly string[]
   endings: { heroWins: string; heroLoses: string; draw: string }
 }
@@ -101,6 +116,19 @@ export function renderGameStoryTemplate(template: GameStoryTemplate, game: Recen
   })).find((choice) => choice.hero)
   if (!chosen?.hero) return null
   const { index, hero } = chosen
+  if (template.scene) {
+    const ending = isDrawGame(game) ? template.scene.endings.draw
+      : index === 0 ? template.scene.endings.heroWins : template.scene.endings.heroLoses
+    // Long public display names recur beside unit names throughout a scene.
+    // Use the game's recorded handles before they force actors or evidence
+    // out of a paragraph's length budget.
+    const displayNames = [sides[index].displayName || sides[index].player,
+      sides[1 - index].displayName || sides[1 - index].player]
+    const useHandles = displayNames.some((name) => name.length > 30 || name.trim().split(/\s+/).length > 4)
+    return renderRosterStoryScene(template, game, matched[index]!, matched[1 - index]!,
+      hero, useHandles ? sides[index].player : displayNames[0],
+      useHandles ? sides[1 - index].player : displayNames[1], ending, storyModelReference)
+  }
   const allyGunfighter = selectStoryHeroExcluding(matched[index] ?? undefined, 'gunfighting', hero.canonicalUnitId)
   const enemyGunfighter = selectStoryHero(matched[1 - index] ?? undefined, 'gunfighting')
   const replacements: Record<string, string> = {

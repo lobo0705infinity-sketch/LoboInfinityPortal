@@ -779,7 +779,8 @@ const outbreakTemplate = composeGameStory('Outbreak', 'PanOceania', 'Druze Bayra
 const outbreakRendered = renderGameStoryTemplate(outbreakTemplate, { ...game, mission: 'Outbreak' },
   [outbreakList, { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'Outbreak' }])
 assert.match(outbreakRendered ?? '', /the Field Medic/i, 'Outbreak clinician must perform the objective action')
-assert.doesNotMatch(outbreakRendered ?? '', /the Expensive Hacker/i)
+assert.doesNotMatch(outbreakRendered?.split('\n\n')[2] ?? '', /the Expensive Hacker.*stabili[sz]/i,
+  'a hacker may provide fire support but must not perform care without the qualification')
 const hackerOnlyList = { ...outbreakList, decoded: {
   combatGroups: [{ entries: outbreakList.decoded!.combatGroups[0].entries.slice(0, 1) }],
 } } as ArmyIntelligenceList
@@ -810,17 +811,32 @@ const evacuationTemplate = composeGameStory('Evacuation', 'PanOceania', 'Druze B
 const evacuationText = renderGameStoryTemplate(evacuationTemplate, evacuationGame,
   [evacuationRoster, evacuationOther])
 assert.match(evacuationText ?? '', /the Field Escort/i)
-assert.doesNotMatch(evacuationText ?? '', /the Test Remote/i)
+assert.doesNotMatch(evacuationText?.split('\n\n')[2] ?? '', /the Test Remote.*CivEvac/i,
+  'a remote may provide fire support but must not escort a civilian')
 const remOnlyRoster = { ...evacuationRoster, decoded: { combatGroups: [{ entries: [
   evacuationRoster.decoded!.combatGroups[0].entries[0],
 ] }] } } as ArmyIntelligenceList
 assert.equal(renderGameStoryTemplate(evacuationTemplate, evacuationGame, [remOnlyRoster, evacuationOther]),
   null, 'a remote must never be assigned the CivEvac action')
+const liveSentences = new Map<string, string>()
 for (const mission of CANONICAL_MISSIONS) {
   const missionGame = { ...game, mission } as RecentGame
   const missionLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
   const story = renderGeneratedGameStory(missionGame, missionLists)
   assert.ok(story, mission + ': a dated game with linked eligible rosters needs a live story')
+  const runtimeTemplate = composeGameStory(mission, missionGame.winnerFaction,
+    missionGame.loserFaction, missionGame.winnerFaction, 'objective', missionGame.id)
+  assert.ok(runtimeTemplate?.scene)
+  assertGameStoryMissionObjective({ ...runtimeTemplate,
+    paragraphs: story.split('\n\n').slice(0, 3), endings: runtimeTemplate.scene.endings,
+  }, mission + ': live roster scene')
+  for (const sentence of story.split('\n\n').slice(0, 3).flatMap((paragraph) =>
+    paragraph.split(/(?<=[.!?])\s+(?=[A-Z])/u))) {
+    const previous = liveSentences.get(sentence)
+    assert.equal(previous, undefined,
+      `${mission}: a complete runtime sentence repeats from ${previous}: ${sentence}`)
+    liveSentences.set(sentence, mission)
+  }
   assert.equal(await loadBattleStory(missionGame, missionLists), story,
     mission + ': route the live game to the generator')
   if (mission === 'Akial Interference') {
@@ -854,6 +870,49 @@ const rendered = renderGeneratedGameStory(game, lists)
 assert.ok(rendered && rendered.includes('Winner') && rendered.includes('Loser'))
 assert.equal(rendered, renderGeneratedGameStory(game, lists), 'a report must be stable across reloads')
 assert.doesNotMatch(rendered, /\{\{\w+\}\}/)
+
+// Distinct decoded capabilities on both sides must drive distinct actions.
+// A one-model roster cannot satisfy all four roles by inventing equipment.
+const rosterEntry = (unit: string, id: string, points: number,
+  weapons: string[], skills: string[], specialist = false): typeof entry => ({
+  ...entry, unit, profile: unit, canonicalUnitId: 0, combinedId: id, points,
+  weapons, skills, specialist, doctor: false, engineer: false, hacker: false,
+})
+const groundedGame = { ...game, id: 120, mission: 'The Dig' } as RecentGame
+const groundedLists = [
+  { ...list('Winner', 'Loser', 'PanOceania'), mission: 'The Dig', decoded: { combatGroups: [{ entries: [
+    rosterEntry('FIELD ANALYST', 'a-specialist', 42, ['Combi Rifle'], ['Specialist Operative'], true),
+    rosterEntry('HILL SNIPER', 'a-gun', 31, ['MULTI Sniper Rifle'], []),
+    rosterEntry('MISSILE SENTINEL', 'a-aro', 18, ['Missile Launcher'], []),
+    rosterEntry('SCREEN OPERATOR', 'a-vision', 15, ['Disco Baller'], []),
+  ] }] } },
+  { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'The Dig', decoded: { combatGroups: [{ entries: [
+    rosterEntry('FIELD ENGINEER', 'b-specialist', 35, ['Combi Rifle'], ['Engineer'], true),
+    rosterEntry('RAID GUNNER', 'b-gun', 30, ['Spitfire'], []),
+    rosterEntry('ROCKET SENTRY', 'b-aro', 18, ['Panzerfaust'], []),
+    rosterEntry('KNIFE FIGHTER', 'b-melee', 25, ['DA CC Weapon'], ['Martial Arts L3']),
+  ] }] } },
+] as ArmyIntelligenceList[]
+const groundedText = renderGameStoryTemplate(composeGameStory('The Dig',
+  groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
+  'objective', groundedGame.id)!, groundedGame, groundedLists)
+assert.ok(groundedText, 'both game-linked rosters must drive the Dig scene')
+for (const expected of ['Field Analyst', 'Hill Sniper', 'Missile Sentinel', 'Screen Operator',
+  'Field Engineer', 'Raid Gunner', 'Rocket Sentry', 'Knife Fighter',
+  'MULTI Sniper Rifle', 'Missile Launcher', 'Spitfire', 'Panzerfaust', 'Disco Baller']) {
+  assert.match(groundedText, new RegExp(expected, 'i'), `missing qualified cast or gear: ${expected}`)
+}
+assert.doesNotMatch(groundedText, /\b(?:unfinished|shifted|specialist)\b/i,
+  'a live Dig story must not fall back to the repetitive placeholder prose')
+const withoutScreen = groundedLists.map((item, index) => index ? item : ({ ...item, decoded: {
+  combatGroups: [{ entries: item.decoded!.combatGroups[0].entries.filter((model) => model.combinedId !== 'a-vision') }],
+} })) as ArmyIntelligenceList[]
+const sparseText = renderGameStoryTemplate(composeGameStory('The Dig',
+  groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
+  'objective', groundedGame.id)!, groundedGame, withoutScreen)
+assert.ok(sparseText)
+assert.doesNotMatch(sparseText, /\b(?:Disco Baller|Mirrorball|smoke grenade|Eclipse screen)\b/i,
+  'do not create a vision effect when neither list supplies one')
 assert.equal((await loadBattleStory(game, [lists[0]])), PENDING_BATTLE_STORY)
 assert.equal(await loadBattleStory(game, lists), rendered, 'a supported matchup uses the generated story')
 
@@ -865,11 +924,11 @@ const loserText = renderGameStoryTemplate(template, {
   loser: 'Winner', loserDisplayName: 'Winner', loserFaction: 'PanOceania',
 } as RecentGame, lists)
 const drawText = renderGameStoryTemplate(template, { ...game, gameResult: 'draw' } as RecentGame, lists)
-assert.ok(winnerText?.endsWith(template.endings.heroWins
+assert.ok(winnerText?.endsWith(template.scene!.endings.heroWins
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{hero}}', 'the Test Trooper')))
-assert.ok(loserText?.endsWith(template.endings.heroLoses
+assert.ok(loserText?.endsWith(template.scene!.endings.heroLoses
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
-assert.ok(drawText?.endsWith(template.endings.draw
+assert.ok(drawText?.endsWith(template.scene!.endings.draw
   .replaceAll('{{heroPlayer}}', 'Winner').replaceAll('{{otherPlayer}}', 'Loser')))
 
 // Exercise every mission incident and role through the real renderer with
@@ -885,17 +944,17 @@ for (const mission of CANONICAL_MISSIONS) {
         'PanOceania', role, gameId)
       assert.ok(scenario)
       const outcomes = [
-        { game: { ...scenarioGame, id: gameId }, ending: scenario.endings.heroWins },
+        { game: { ...scenarioGame, id: gameId }, ending: scenario.scene!.endings.heroWins },
         { game: {
           ...scenarioGame, id: gameId, winner: 'Loser', winnerDisplayName: 'Loser',
           winnerFaction: 'Druze Bayram Security', loser: 'Winner',
           loserDisplayName: 'Winner', loserFaction: 'PanOceania',
-        }, ending: scenario.endings.heroLoses },
-        { game: { ...scenarioGame, id: gameId, gameResult: 'draw' }, ending: scenario.endings.draw },
+        }, ending: scenario.scene!.endings.heroLoses },
+        { game: { ...scenarioGame, id: gameId, gameResult: 'draw' }, ending: scenario.scene!.endings.draw },
       ]
       for (const { game: outcome, ending } of outcomes) {
         const actual = renderGameStoryTemplate(scenario, outcome as RecentGame, scenarioLists)
-        assert.match(actual ?? '', /\b[Tt]he Test Trooper\b/, mission + ': model substitution')
+        assert.match(actual ?? '', /\bTest Trooper\b/, mission + ': model substitution')
         assert.ok(actual.endsWith(ending.replaceAll('{{heroPlayer}}', 'Winner')
           .replaceAll('{{otherPlayer}}', 'Loser')
           .replaceAll('{{hero}}', 'the Test Trooper')), mission + ': ending selection')
@@ -922,7 +981,7 @@ const mirrorExpected = renderGameStoryTemplate(mirrorTemplate, mirrorGame, mirro
 assert.ok(mirrorExpected)
 assert.ok(mirrorWin?.includes('Winner') && mirrorWin.includes('Loser'))
 assert.equal(mirrorWin.split('\n\n').at(-1), mirrorExpected.split('\n\n').at(-1))
-assert.ok(mirrorDraw?.endsWith(mirrorTemplate.endings.draw))
+assert.ok(mirrorDraw?.endsWith(mirrorTemplate.scene!.endings.draw))
 assert.doesNotMatch(mirrorWin, /\{\{\w+\}\}/)
 const ineligible = { ...entry, unit: 'UNARMED OBSERVER', profile: 'UNARMED OBSERVER',
   combinedId: 'observer', specialist: false, hacker: false, engineer: false,
@@ -932,14 +991,14 @@ const oneEligibleMirrorList = [
 ] as ArmyIntelligenceList[]
 const losingSideMirror = renderGeneratedGameStory(mirrorGame, oneEligibleMirrorList)
 assert.ok(losingSideMirror?.includes('Winner') && losingSideMirror.includes('Loser'))
-assert.ok(losingSideMirror.endsWith(mirrorTemplate.endings.heroLoses
+assert.ok(losingSideMirror.endsWith(mirrorTemplate.scene!.endings.heroLoses
   .replaceAll('{{heroPlayer}}', 'Loser').replaceAll('{{otherPlayer}}', 'Winner')),
   'the losing mirror side supplies the eligible actor and receives the loss ending')
 assert.equal(renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList),
   renderGameStoryTemplate(mirrorTemplate, mirrorGame, oneEligibleMirrorList, 1),
   'authored mirror scenes can also use the second eligible side')
 assert.ok(renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, oneEligibleMirrorList)
-  ?.endsWith(mirrorTemplate.endings.draw.replaceAll('{{heroPlayer}}', 'Loser')
+  ?.endsWith(mirrorTemplate.scene!.endings.draw.replaceAll('{{heroPlayer}}', 'Loser')
     .replaceAll('{{otherPlayer}}', 'Winner')), 'mirror draws bind each player to the selected side')
 const bothIneligibleMirror = [oneEligibleMirrorList[0], { ...mirrorLists[1],
   decoded: { combatGroups: [{ entries: [ineligible] }] } }] as ArmyIntelligenceList[]

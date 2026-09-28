@@ -277,6 +277,15 @@ export function composeGameStory(
     return finish({
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
+      scene: {
+        opening: seed.opening, complication: seed.complication, turn: seed.turn,
+        objectiveAction: seed.objectiveAction,
+        gunfighting: areaRoleActions[heroVoice.style].gunfighting,
+        closeCombat: areaRoleActions[heroVoice.style].closeCombat,
+        ground: location.scoringGround, position: location.position,
+        setting: `${setting.arrival} ${weather.opening}`,
+        endings: scenario.endings,
+      },
       paragraphs: [
         [setting.arrival, weather.opening, ...(
           variant % 2 ? [otherMove, heroMove] : [heroMove, otherMove]
@@ -437,6 +446,14 @@ export function composeGameStory(
     heroFaction: hero.name,
     role,
     objectiveSkill: scenario.objectiveSkill,
+    scene: {
+      opening: seed.opening, complication: seed.complication, turn: seed.turn,
+      objectiveAction: seed.objectiveAction,
+      gunfighting: seed.roleActions?.gunfighting ?? scenario.gunfighting,
+      closeCombat: seed.roleActions?.closeCombat ?? scenario.closeCombat,
+      ground, position,
+      endings: scenario.endings,
+    },
     paragraphs: [
       opening(),
       incidentMiddle,
