@@ -74,6 +74,7 @@ const steps: string[] = []
 let canonicalGame: typeof game | null = null
 let decodedLists: typeof lists = []
 let workerResult: Record<string, unknown> = { success: true, story: generatedStory }
+let discordResult: Record<string, unknown> = { success: true }
 const queueUpdates: Array<{ status: string; attempts: number }> = []
 const context = vm.createContext({ console, Date, JSON,
   UrlFetchApp: { fetch(_url: string, options: { payload: string }) {
@@ -99,10 +100,10 @@ context.buildDiscordGamePayload = (_game: typeof game, story: string) => {
   return { content: story }
 }
 context.sendDiscordAnnouncementPayload = (_event: string, payload: { content: string }, options: { storyGenerated: boolean }) => {
-  steps.push('discord-sent')
+  steps.push(discordResult.skipped === true ? 'discord-skipped' : 'discord-sent')
   assert.equal(payload.content, generatedStory)
   assert.equal(options.storyGenerated, true)
-  return { success: true }
+  return discordResult
 }
 context.updateAutomationQueueItem = (_id: string, status: string, attempts: number) => {
   queueUpdates.push({ status, attempts })
@@ -125,10 +126,16 @@ workerResult = { success: false, pending: true, error: 'Still waiting for a link
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting')
 assert.equal(steps.includes('discord-sent'), false)
 workerResult = { success: true, story: generatedStory }
+discordResult = { success: true, skipped: true }
+assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting',
+  'paused Discord must retain the generated story in the queue for later delivery')
+assert.equal(steps.at(-1), 'discord-skipped')
+assert.deepEqual(queueUpdates.at(-1), { status: 'Waiting', attempts: 0 })
+discordResult = { success: true }
 assert.equal(context.processDiscordQueueItem(item, false).success, true)
 assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
-assert.deepEqual(queueUpdates.map((item) => item.status), ['Waiting', 'Waiting', 'Waiting', 'Waiting', 'Sent'])
-assert.deepEqual(queueUpdates.map((item) => item.attempts), [0, 0, 0, 0, 1])
+assert.deepEqual(queueUpdates.map((item) => item.status), ['Waiting', 'Waiting', 'Waiting', 'Waiting', 'Waiting', 'Sent'])
+assert.deepEqual(queueUpdates.map((item) => item.attempts), [0, 0, 0, 0, 0, 1])
 
 canonicalGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
 decodedLists = lists.map((list, index) => ({ ...list, armyListId: '',

@@ -40,7 +40,7 @@ type MissionLens = {
 }
 
 export function buildGameReviewAnalysis(game: RecentGame, lists: ArmyIntelligenceList[], linkedLists: LinkedGameList[] = []): GameReviewAnalysis {
-  if (game.id === 109) return buildGame109Review(game, lists)
+  if (game.id === 109) return buildGame109Review(game)
 
   const [left, right] = getGameSides(game)
   const winner = formatPlayerName(left.player, left.displayName)
@@ -97,7 +97,7 @@ function selectMissionNarrative(game: RecentGame) {
   return angles[((index % angles.length) + angles.length) % angles.length]
 }
 
-function buildGame109Review(game: RecentGame, lists: ArmyIntelligenceList[]): GameReviewAnalysis {
+function buildGame109Review(game: RecentGame): GameReviewAnalysis {
   const winner = formatPlayerName(game.winner, game.winnerDisplayName) || 'Lobo'
   const loser = formatPlayerName(game.loser, game.loserDisplayName) || 'Chainsaw'
 

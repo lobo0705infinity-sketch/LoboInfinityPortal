@@ -813,6 +813,26 @@ function processDiscordQueueItem(item, force) {
       }
     );
 
+  // A paused Discord webhook has not delivered the story. Keep submitted
+  // games in the queue without consuming a retry; resume can send them later.
+  // A deduplicated prior delivery, by contrast, has already been sent.
+  if (item.eventType === "gameSubmitted" && result.skipped === true && result.duplicate !== true) {
+    updateAutomationQueueItem(
+      item.queueId,
+      "Waiting",
+      Number(item.attempts),
+      "Waiting for Discord automation to resume.",
+      item.rowNumber
+    );
+    return {
+      success: true,
+      deferred: true,
+      destination: "discord",
+      status: "Waiting",
+      reason: "Waiting for Discord automation to resume."
+    };
+  }
+
   updateAutomationQueueItem(
     item.queueId,
     result.success ? "Sent" : "Retry",

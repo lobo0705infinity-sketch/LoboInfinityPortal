@@ -136,7 +136,10 @@ used by the Battle Report. A completed story is placed in the Discord embed,
 clearly marked as fictional, and the webhook is called last. A missing game,
 list, or pending story stays in the queue as `Waiting` without using up retry
 attempts. Waiting items rotate behind untried entries. If the generator
-reports an unsupported mission version or no eligible hero, delivery fails
+returns a completed story while Discord automation is paused, its queue item
+also waits without consuming an attempt; enabling Discord delivers it later.
+An already logged duplicate delivery can still close the queue item. If the
+generator reports an unsupported mission version or no eligible hero, delivery fails
 with a recorded reason and sends no announcement. A worker error follows the
 existing retry policy. Manual `gameSubmitted` announcements cannot bypass
 the story requirement. Submitted player highlights retain precedence in the
