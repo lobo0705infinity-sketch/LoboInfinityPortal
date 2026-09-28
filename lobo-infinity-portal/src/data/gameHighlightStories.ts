@@ -54,7 +54,7 @@ export const GAME_HIGHLIGHT_STORIES: readonly HighlightStory[] = [
     paragraphs: [
       'During {{loser}}’s first turn, Tarik moved toward the excavation. Across the shaft, a Yadu in {{winner}}’s line caught him in the sights of a heavy rocket launcher. The shot tore through the dust and took Tarik out before he could turn that advance into a path for Ramah’s squad.',
       'A Ghulam reached the cover Tarik had been heading for and stopped. The Yadu had not moved; its launcher still faced the route across the shaft. With that lane closed, Ramah’s fighters searched the rim for a second entrance while {{winner}}’s squad edged toward the analysis console below.',
-      'Fire came from the other side of the pit, and the Yadu swung its launcher away from Tarik’s fallen route. That gave {{winner}}’s fighters a narrow crossing toward the reader. Ramah still contested the buried tech, but its first path into the dig had ended in the dust, and the next exchange began on the route the rocket shot had opened.',
+      'Fire came from the other side of the pit, and the Yadu swung its launcher away from Tarik’s fallen route. {{winner}}’s fighters used those seconds to bring the reader down to the exposed machinery. Its screen showed a contact beneath the debris, just as Ramah found a new angle across the shaft. The dig was open; reaching the buried tech would take another push.',
     ],
   },
   {
@@ -64,8 +64,8 @@ export const GAME_HIGHLIGHT_STORIES: readonly HighlightStory[] = [
     notePattern: /ioann\s+bann.+solo run.+(?:unable to kill|no kills|without killing).+immobili[sz]ed/i,
     paragraphs: [
       '{{loser}}’s Tohaa fighters were pressing into the dig when Ioann Bann broke away for a solo run. The analysis console and buried tech lay beyond rubble watched by {{winner}}’s Operations Subsection. Ioann took the exposed line himself. A Dasyu with a MULTI Sniper Rifle held the far rim; Maximus waited nearer the reader.',
-      'Ioann loosed his Viral Tactical Bow toward the Dasyu as he pushed forward, then charged the gap near Maximus. He could not bring either fighter down. Before he could reach cover, his movement stopped and he was immobilized, alone in the open between the two lines. The run had left the reader out of reach.',
-      'Claire Lazhari’s Disco Baller spread Eclipse across the crossing, sheltering {{winner}}’s movement toward the reader. A Kosuil still held the rim for the Tohaa, and {{loser}}’s fighters kept looking for another way through the dig. Ioann could see the gap he had tried to make, but he could not take another step toward it.',
+      'Ioann loosed his Viral Tactical Bow toward the Dasyu as he pushed forward, then charged the gap near Maximus. He could not bring either fighter down. Maximus fired his E/M Carbine across the crossing. Ioann’s movement stopped: immobilized between the two lines, he could see the reader but could no longer reach it.',
+      'Claire Lazhari’s Disco Baller spread Eclipse across the crossing, sheltering {{winner}}’s movement toward the reader. A Kosuil still held the rim for the Tohaa, and {{loser}}’s fighters sought another route. As the screen thinned, the ground Ioann had tried to cross carried {{winner}}’s squad deeper into the dig, with Ioann stranded behind them.',
     ],
   },
 ]

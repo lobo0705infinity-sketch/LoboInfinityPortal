@@ -996,8 +996,8 @@ assert.doesNotMatch(forestReport, /\bcourtyard\b/i,
 const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
   'closeCombat', groundedGame.id)!, groundedGame, groundedLists)
-assert.match(duelScene?.split('\n\n')[2] ?? '', /Breach Duelist grappled the Rocket Sentry/i,
-  'a close combat lead must confront the rostered defender introduced earlier')
+assert.match(duelScene?.split('\n\n')[2] ?? '', /Field Engineer[\s\S]*Breach Duelist grappled the Field Engineer/i,
+  'a close combat lead must confront the nearby defender who entered before the grapple')
 for (const [mission, objective, wrongGoal] of [
   ['Area of Interest', 'antenna switch', 'breach in the far wall'],
   ['Evacuation', 'Extraction Console', 'waiting civilian escort'],

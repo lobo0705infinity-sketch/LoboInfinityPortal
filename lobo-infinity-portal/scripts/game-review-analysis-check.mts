@@ -90,6 +90,36 @@ assert.deepEqual(getGameArmyLists(nextGame, [nextWinnerSubmission, nextLoserSubm
 assert.deepEqual(getGameArmyLists(nextGame, [{ ...nextWinnerSubmission, opponent: 'Somebody else' }]), [])
 assert.deepEqual(getGameArmyLists({ ...nextGame, winnerArmyListId: '', loserArmyListId: '' }, [nextWinnerSubmission, nextLoserSubmission]), [])
 assert.deepEqual(getGameIntelligenceLists(nextGame, [staleSourceId]), [])
+const borrowedCode = 'verified-army-code%3D'
+const submittedCodeGame = { ...linkedGame, winnerArmyCode: borrowedCode }
+const earlierOwner = { ...staleSourceId, armyCode: 'verified-army-code=',
+  player: 'Earlier list owner', opponent: 'Someone else', mission: 'Neutralization' }
+const codeLinked = getGameIntelligenceLists(submittedCodeGame, [earlierOwner])
+assert.equal(codeLinked.length, 1, 'the submitted army code identifies a decoded roster even if its saved owner differs')
+assert.equal(codeLinked[0].player, linkedGame.winner, 'the scene uses the game player, not the earlier list owner')
+assert.equal(earlierOwner.player, 'Earlier list owner', 'rebind only the story copy')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [{ ...earlierOwner, armyCode: 'different-code=' }]), [],
+  'matching the list ID alone cannot override a different submitted code')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [{ ...earlierOwner, sectorial: 'Tohaa' }]), [],
+  'the submitted code still needs the recorded faction')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [earlierOwner, { ...earlierOwner }]), [],
+  'two matching decodes with the same list ID require disambiguation')
+const publicHash = 'a'.repeat(64)
+const publicHashGame = { ...linkedGame, winnerRosterFingerprint: publicHash }
+assert.equal(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
+  armyCode: '', rosterFingerprint: publicHash }])[0]?.player, linkedGame.winner,
+  'the public report can bind the same roster by the submitted code hash without disclosing the code')
+assert.deepEqual(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
+  armyCode: '', rosterFingerprint: 'b'.repeat(64) }]), [],
+  'a list ID cannot override a different game-submitted code hash')
+const starcoCode = { ...nextGame, loserFaction: 'StarCo', loserArmyCode: 'starco-code=' }
+assert.equal(getGameIntelligenceLists(starcoCode, [{ ...earlierOwner, armyCode: 'starco-code=',
+  sectorial: 'Starco Free Company Of The Star', armyListId: nextGame.loserArmyListId }]).length, 1,
+  'a sectorial alias may differ from the game faction label')
+assert.equal(getGameIntelligenceLists({ ...linkedGame,
+  loserFaction: 'Force de Réponse Rapide Merovingienne', loserArmyCode: 'frrm-code=' },
+[{ ...earlierOwner, armyCode: 'frrm-code=', sectorial: 'Force De Reponse Rapide Merovingienne',
+  armyListId: linkedGame.loserArmyListId }]).length, 1, 'faction accents are normalized')
 assert.match(buildGameReviewAnalysis(nextGame, []).decidingFactors, /no decoded roster in this public snapshot yet/)
 assert.doesNotMatch(buildGameReviewAnalysis(nextGame, []).decidingFactors, /Without decoded lists/)
 assert.match(buildGameReviewAnalysis({ ...nextGame, bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1' }, []).turningPoint, /does not establish whether that moment changed the final score/)

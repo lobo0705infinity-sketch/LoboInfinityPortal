@@ -95,7 +95,7 @@ const highlights = [
   { id: 114, mission: "Dead Man's Switch", winnerFaction: 'Shindenbutai', loserFaction: 'Operations Subsection', bestMoment: "Hatamoto used Quantum Resonance and stole the box and then dodged his way back from Sacha's E/M Grenade", fragment: 'the Sāchā’s E/M grenade' },
   { id: 116, mission: 'The Dig', winnerFaction: 'Next Wave', loserFaction: 'StarCo', bestMoment: 'Tuecer killing both a Tsyklon and the engineer that went to pick it up.', fragment: 'Teucer had stayed in position' },
   { id: 117, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Ramah Taskforce', bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1', fragment: 'During B’s first turn, Tarik moved toward the excavation' },
-  { id: 120, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Tohaa', bestMoment: 'Ioann Bann making a solo run but being unable to kill anything and being immobilized in the process', fragment: 'he was immobilized, alone in the open' },
+  { id: 120, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Tohaa', bestMoment: 'Ioann Bann making a solo run but being unable to kill anything and being immobilized in the process', fragment: 'immobilized between the two lines' },
 ]
 assert.equal(GAME_HIGHLIGHT_STORIES.length, highlights.length)
 for (const item of highlights) {

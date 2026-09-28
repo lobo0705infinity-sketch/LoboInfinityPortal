@@ -81,7 +81,9 @@ function aroScore(model: Model): number {
 function buildCast(ally: ArmyIntelligenceList, enemy: ArmyIntelligenceList, hero: Model): Cast {
   const a = entries(ally)
   const b = entries(enemy)
-  const allyGun = choose(a, hasGun, [hero], gunScore)
+  const heroUnit = a.filter((model) => model.canonicalUnitId === hero.canonicalUnitId ||
+    Boolean(model.unit && model.unit === hero.unit))
+  const allyGun = choose(a, hasGun, heroUnit, gunScore)
   const enemyGun = choose(b, hasGun, [], gunScore)
   const allyAro = choose(a, hasAro, [hero, allyGun], aroScore)
   const enemyAro = choose(b, hasAro, [enemyGun], aroScore)
@@ -107,6 +109,7 @@ function namedSeed(sentence: string, ally: string, enemy: string): string {
   // The remaining neutral nouns in a mission prompt describe troops, not a
   // claimed specialist or named member of a player's roster.
   return sentence
+    .replace(/\b[Aa] specialist carrying a Data Pack\b/g, `${ally}, carrying a Data Pack,`)
     .replace(/\b[Aa] specialist CivEvacing a civilian (approached|sheltered|stopped)\b/g,
       (_, verb: string) => `${ally}, who was escorting a civilian, ${verb}`)
     .replace(/\b[Bb]oth specialists\b/g, `${ally} and ${enemy}`)
@@ -116,6 +119,8 @@ function namedSeed(sentence: string, ally: string, enemy: string): string {
     .replace(/\b[Tt]he (?:first |nearest |friendly )?specialist\b/g, ally)
     .replace(/\b[Aa]n operator\b/g, ally)
     .replace(/\b[Tt]he operator\b/g, ally)
+    .replace(/\b[Aa] rival fighter\b/g, enemy)
+    .replace(/\b[Aa] bodyguard\b/g, enemy)
 }
 
 // Every mission and location now carries its own incident aftermath and
@@ -131,7 +136,7 @@ function missionCounter(template: GameStoryTemplate, opponent: string, hero: str
   return [
     `${aftermath}; ${rival} closed on ${hero} at ${crossing}.`,
     `${aftermath}; ${rival} held ${crossing} against ${hero}.`,
-    `${aftermath}. ${opponent} moved between ${hero} and ${crossing}.`,
+    `${aftermath}. ${opponent} pressed ${hero} back at ${crossing}.`,
     `${aftermath}; ${rival} challenged ${hero} along ${crossing}.`,
   ][variant]
 }
@@ -289,7 +294,7 @@ function familiarName(value: string): string {
 }
 
 function joinTurningPoint(turn: string, actor: string, action: string,
-  mission: string, variant: number): string {
+  mission: string, variant: number, properNames: readonly string[] = []): string {
   const event = turn.replace(/[.!?]\s*$/, '')
   if (mission === 'The Dig' && /(?:volley jarred|rock broke loose)/i.test(event)) {
     return `${event} as ${actor} ${action}.`
@@ -297,7 +302,8 @@ function joinTurningPoint(turn: string, actor: string, action: string,
   // A simple physical change is clearer as the cause of the attempt. Longer
   // clauses already contain their own timing and need their own sentence.
   if (count(event) <= 22 && !/\b(?:as|while|when)\b/i.test(event)) {
-    const changed = event.charAt(0).toLowerCase() + event.slice(1)
+    const beginsWithName = properNames.some((name) => name && !/^(?:the|a|an)\s/i.test(name) && event.startsWith(name))
+    const changed = beginsWithName ? event : event.charAt(0).toLowerCase() + event.slice(1)
     if (variant === 0) return `When ${changed}, ${actor} ${action}.`
     if (variant === 1) return `As ${changed}, ${actor} ${action}.`
     if (variant === 2) return `${turn} ${upper(actor)} ${action}.`
@@ -324,7 +330,9 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
       ? `${side === 'ally' ? allyPlayer : enemyPlayer}'s ${display.replace(/^the\s+/i, '')}` : display
   }
   const allyObjective = template.role === 'objective' ? hero
-    : choose(entries(ally), (model) => canWorkObjective(model, template), [hero])
+    : choose(entries(ally), (model) => canWorkObjective(model, template),
+      entries(ally).filter((model) => model.canonicalUnitId === hero.canonicalUnitId ||
+        Boolean(model.unit && model.unit === hero.unit)))
   const opposingObjectiveActor = cast.enemyObjective
   const narrated = (value: string) => cast.allyVision || cast.enemyVision ? value
     : value.replace(/\bsmoke\b/gi, (word) => word === 'Smoke' ? 'Dust' : 'dust')
@@ -439,14 +447,19 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
     : action.replace(/\bthe specialist escorting a civilian\b/gi,
       `${name(allyObjective ?? hero)}, who was escorting a civilian`)
       .replace(/\bthe specialist\b/gi, name(allyObjective ?? hero))
-  // If a role action confronts a guard, use the rostered defender already
-  // holding the lane. This keeps the same conflict alive into the last beat.
-  const encounter = template.role !== 'objective' && threat
-    ? actionText.replace(/\b(?:the|a|an)\s+(?:(?:analysis-console|Akial Antenna|lift|wreck|transport|tower|supply-box|antenna|prototype cradle)\s+)?(?:guard|defender)\b/gi,
-      threatName)
+  // A gunfighter can shoot at the distant firing position; a melee fighter
+  // can only reach the defender who came through the crossing in this scene.
+  const encounter = template.role !== 'objective'
+    ? seed(actionText).replace(/\b(?:the|a|an)\s+(?:(?:analysis-console|Akial Antenna|lift|wreck|transport|tower|supply-box|antenna|prototype cradle)\s+)?(?:guard|defender)\b/gi,
+      template.role === 'closeCombat' ? enemyObjective : threatName)
     : actionText
-  const closing = arrange([joinTurningPoint(seed(turn), heroLater, narrated(encounter), template.mission, variant),
-    enemyMove], [
+  const turningPoint = joinTurningPoint(seed(turn), heroLater, narrated(encounter),
+    template.mission, variant, [enemyObjective, heroName, heroLater])
+  // Give a nearby fighter time to enter before the hero grapples them.
+  // Shooting and objective actions retain their existing cause and response.
+  const closing = arrange(template.role === 'closeCombat'
+    ? [`${seed(turn)} ${enemyMove}`, `${upper(heroLater)} ${narrated(encounter)}.`]
+    : [turningPoint, enemyMove], [
     `Neither side could leave ${ground} undefended while the other force was still approaching.`,
   ])
   if (!opening || !middle || !closing) return null

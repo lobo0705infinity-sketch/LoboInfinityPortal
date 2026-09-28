@@ -540,6 +540,7 @@ export type ArmyIntelligenceDecodedList = {
 export type ArmyIntelligenceList = {
   armyCode: string
   armyCodeHash: string
+  rosterFingerprint?: string
   armyListId?: string
   date: string
   decoded: ArmyIntelligenceDecodedList | null
@@ -807,6 +808,8 @@ export type RecentGame = {
   loserFaction: string
   winnerArmyCode: string
   loserArmyCode: string
+  winnerRosterFingerprint?: string
+  loserRosterFingerprint?: string
   winnerArmyListId: string
   loserArmyListId: string
   mission: string
@@ -8951,6 +8954,8 @@ function normalizeRecentGame(item: unknown): RecentGame {
     loserFaction: getString(record, 'loserFaction'),
     winnerArmyCode: getString(record, 'winnerArmyCode'),
     loserArmyCode: getString(record, 'loserArmyCode'),
+    winnerRosterFingerprint: getString(record, 'winnerRosterFingerprint'),
+    loserRosterFingerprint: getString(record, 'loserRosterFingerprint'),
     winnerArmyListId: getString(record, 'winnerArmyListId'),
     loserArmyListId: getString(record, 'loserArmyListId'),
     mission: getRequiredString(record, 'mission'),

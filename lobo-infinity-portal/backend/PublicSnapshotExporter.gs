@@ -685,6 +685,8 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
     const player2Faction = winnerSide === 2 ? row[FORM.WINNINGFACTION] : row[FORM.LOSINGFACTION];
     const player1ArmyListId = winnerSide === 2 ? row[FORM.LOSER_ARMY_LIST_ID] : row[FORM.WINNER_ARMY_LIST_ID];
     const player2ArmyListId = winnerSide === 2 ? row[FORM.WINNER_ARMY_LIST_ID] : row[FORM.LOSER_ARMY_LIST_ID];
+    const player1ArmyCode = getGameEnginePlayerArmyCode(row, 1);
+    const player2ArmyCode = getGameEnginePlayerArmyCode(row, 2);
     return {
       gameId: sourceRow - 1,
       date: String(row[FORM.DATE] || ""), division: String(row[FORM.DIVISION] || "").trim(),
@@ -695,6 +697,8 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
       player2Faction: String(player2Faction || "").trim(),
       player1ArmyListId: String(player1ArmyListId || "").trim(),
       player2ArmyListId: String(player2ArmyListId || "").trim(),
+      player1RosterFingerprint: player1ArmyCode ? getArmyIntelligenceHash(player1ArmyCode) : "",
+      player2RosterFingerprint: player2ArmyCode ? getArmyIntelligenceHash(player2ArmyCode) : "",
       player1Tp: Number(row[FORM.P1TP]) || 0, player2Tp: Number(row[FORM.P2TP]) || 0,
       player1Op: Number(row[FORM.P1OP]) || 0, player2Op: Number(row[FORM.P2OP]) || 0,
       player1Vp: Number(row[FORM.P1VP]) || 0, player2Vp: Number(row[FORM.P2VP]) || 0,
@@ -859,7 +863,9 @@ function buildPublicSnapshotGames_(games, events) {
       vp: publicSnapshotScore_(source.player1Vp, source.player2Vp, winnerIsPlayer1, draw),
       bestMoment: source.bestMoment, firstTurn: source.firstTurn,
       winnerArmyListId: draw ? source.player1ArmyListId : winnerIsPlayer1 ? source.player1ArmyListId : source.player2ArmyListId,
-      loserArmyListId: draw ? source.player2ArmyListId : winnerIsPlayer1 ? source.player2ArmyListId : source.player1ArmyListId
+      loserArmyListId: draw ? source.player2ArmyListId : winnerIsPlayer1 ? source.player2ArmyListId : source.player1ArmyListId,
+      winnerRosterFingerprint: draw ? source.player1RosterFingerprint : winnerIsPlayer1 ? source.player1RosterFingerprint : source.player2RosterFingerprint,
+      loserRosterFingerprint: draw ? source.player2RosterFingerprint : winnerIsPlayer1 ? source.player2RosterFingerprint : source.player1RosterFingerprint
     };
   });
 }
@@ -1419,6 +1425,7 @@ function buildPublicSnapshotArmyIntelligence_(readModel) {
         const decoded = list.decoded || {};
         return {
           armyListId: String(list.armyListId || ""),
+          rosterFingerprint: String(list.armyCodeHash || ""),
           sourceId: String(list.sourceId || ""), sourceType: String(list.sourceType || ""),
           player: String(list.player || ""), date: String(list.date || ""),
           event: String(list.event || ""), gameType: String(list.gameType || ""),

@@ -61,6 +61,15 @@ try {
     'a submitted game without stored list IDs can use the unique report linkage')
   assert.equal((await invoke({ game: idlessGame, lists: [...idlessLists, { ...idlessLists[0] }] })).body.pending, true,
     'an ambiguous ID-less list cannot generate a story')
+  const sharedCodeGame = { ...game, loserArmyCode: 'roster-from-submission%3D' }
+  const savedByAnotherPlayer = { ...lists[1], player: 'Earlier list owner',
+    armyCode: 'roster-from-submission=' }
+  assert.equal((await invoke({ game: sharedCodeGame,
+    lists: [lists[0], savedByAnotherPlayer] })).body.success, true,
+  'a code submitted in this game may use the same decoded list saved under another name')
+  assert.equal((await invoke({ game: sharedCodeGame,
+    lists: [lists[0], { ...savedByAnotherPlayer, armyCode: 'other=' }] })).body.pending, true,
+  'a different code stays pending even when its list ID matches')
 } finally {
   if (originalToken === undefined) delete process.env.ARMY_INTELLIGENCE_WORKER_TOKEN
   else process.env.ARMY_INTELLIGENCE_WORKER_TOKEN = originalToken
@@ -71,6 +80,7 @@ try {
 const scheduler = readFileSync('backend/ArmyIntelligenceScheduler.gs', 'utf8')
 const automation = readFileSync('backend/AutomationApi.gs', 'utf8')
 const steps: string[] = []
+let lastWorkerLists: Array<{ player: string }> = []
 let canonicalGame: typeof game | null = null
 let decodedLists: typeof lists = []
 let workerResult: Record<string, unknown> = { success: true, story: generatedStory }
@@ -80,12 +90,31 @@ const context = vm.createContext({ console, Date, JSON,
   UrlFetchApp: { fetch(_url: string, options: { payload: string }) {
     steps.push('story-generated')
     const request = JSON.parse(options.payload)
+    lastWorkerLists = request.lists
     assert.equal(request.game.id, game.id)
     assert.equal(request.lists.length, 2)
     return { getResponseCode: () => 200, getContentText: () => JSON.stringify(workerResult) }
   } },
 })
 vm.runInContext(`${scheduler}\n${automation}`, context)
+const buildFromSubmittedRow = context.buildAutomationGamePayloadById_
+context.CONFIG = { SHEETS: { FORM: 'Form Responses' } }
+context.lifGetTargetSpreadsheet_ = () => ({ getSheetByName: () => ({
+  getLastRow: () => game.id + 1,
+  getLastColumn: () => 2,
+  getRange: () => ({ getValues: () => [['first-player-code', 'second-player-code']] }),
+}) })
+context.validateGame = () => true
+context.determineWinner = () => 2
+context.buildAnalyticsRow = () => []
+context.getRecentGameColumns = () => ({})
+context.getGameAnalyticsHeaders = () => [[]]
+context.buildRecentGame = () => ({ ...game, winnerArmyCode: '', loserArmyCode: '' })
+context.getGameEnginePlayerArmyCode = (row: string[], playerNumber: number) => row[playerNumber - 1]
+const gameWithSubmittedCodes = buildFromSubmittedRow(game.id)
+assert.equal(gameWithSubmittedCodes.winnerArmyCode, 'second-player-code',
+  'worker must read the submitted winner code even when an analytics row omits it')
+assert.equal(gameWithSubmittedCodes.loserArmyCode, 'first-player-code')
 context.parseAutomationPayload = (value: string) => typeof value === 'string' ? JSON.parse(value) : value
 context.buildAutomationGamePayloadById_ = (id: number) => {
   steps.push('game-read')
@@ -136,6 +165,17 @@ assert.equal(context.processDiscordQueueItem(item, false).success, true)
 assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
 assert.deepEqual(queueUpdates.map((item) => item.status), ['Waiting', 'Waiting', 'Waiting', 'Waiting', 'Waiting', 'Sent'])
 assert.deepEqual(queueUpdates.map((item) => item.attempts), [0, 0, 0, 0, 0, 1])
+
+canonicalGame = { ...game, loserArmyCode: 'roster-from-submission%3D' }
+decodedLists = [lists[0], { ...lists[1], player: 'Earlier list owner',
+  armyCode: 'roster-from-submission=' }]
+assert.equal(context.processDiscordQueueItem(item, false).success, true,
+  'the queue should pass an exact code match to the story worker regardless of saved owner')
+assert.equal(lastWorkerLists[1]?.player, 'Earlier list owner',
+  'the backend passes decoded contents; the worker binds them to the game player')
+decodedLists = [lists[0], { ...decodedLists[1], armyCode: 'different-code=' }]
+assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting',
+  'the queue must reject a reused list ID if the submitted code differs')
 
 canonicalGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
 decodedLists = lists.map((list, index) => ({ ...list, armyListId: '',

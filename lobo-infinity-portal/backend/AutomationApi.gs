@@ -862,15 +862,27 @@ function buildAutomationGameStoryPayload_(item) {
   const normalize = function(value) {
     return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
   };
+  const normalizeCode = function(value) {
+    const code = String(value || "").trim();
+    try { return decodeURIComponent(code).replace(/\s+/g, ""); }
+    catch (error) { return code.replace(/\s+/g, ""); }
+  };
   const sides = [
-    { player: game.winner, opponent: game.loser, id: winnerId },
-    { player: game.loser, opponent: game.winner, id: loserId }
+    { player: game.winner, opponent: game.loser, faction: game.winnerFaction,
+      id: winnerId, code: game.winnerArmyCode },
+    { player: game.loser, opponent: game.winner, faction: game.loserFaction,
+      id: loserId, code: game.loserArmyCode }
   ];
   const intelligence = readArmyIntelligenceReadModelPayload();
   const lists = (intelligence && intelligence.lists || []).filter(function(list) {
     if (list.status !== "decoded" || !list.decoded)
       return false;
     return sides.some(function(side) {
+      // A game's submitted code identifies its roster regardless of who
+      // originally saved that code. The worker rechecks the canonical army
+      // alias as well as the code, then rebinds its player.
+      if (normalizeCode(side.code))
+        return normalizeCode(list.armyCode) === normalizeCode(side.code);
       if (side.id && String(list.armyListId || "") === side.id)
         return normalize(list.player) === normalize(side.player);
       // The same unambiguous legacy fallback used by the Battle Report.
@@ -996,11 +1008,18 @@ function buildAutomationGamePayloadById_(gameId) {
 
   const winner = determineWinner(row);
   const analyticsRow = buildAnalyticsRow(row, winner);
-  return buildRecentGame(
+  const game = buildRecentGame(
     analyticsRow,
     target,
     getRecentGameColumns(getGameAnalyticsHeaders()[0])
   );
+  // Analytics omits army codes when a submitted list ID is present. The story
+  // worker needs the actual game-submitted codes to check a reused roster.
+  // This private queue payload is never the public game projection.
+  const winnerPlayerNumber = winner === 2 ? 2 : 1;
+  game.winnerArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber);
+  game.loserArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber === 1 ? 2 : 1);
+  return game;
 
 }
 
