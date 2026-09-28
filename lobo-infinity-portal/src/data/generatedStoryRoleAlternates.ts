@@ -38,8 +38,8 @@ export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of 
     closeCombat: 'drove a guard from the enemy beacon and screened the route to its console',
   },
   'Last Launch': {
-    gunfighting: 'covered the Launching Tower approach while the ID Token bearer neared the checker',
-    closeCombat: 'forced the tower guard clear of the ID Checker as its bearer advanced',
+    gunfighting: 'fired across the tower passage to keep the guard off the specialist’s route',
+    closeCombat: 'forced the tower guard back from the approach between scanner and checker',
   },
   Neutralization: {
     gunfighting: 'drew the zone guard’s fire while the marked Hyperthermal Tech Box was carried closer',
@@ -86,7 +86,7 @@ export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of 
     closeCombat: 'shoved the guard from the reader and cleared a path to the buried tech',
   },
   'Data Harvest': {
-    gunfighting: 'covered the harvester carrier as it crossed toward the designated enemy zone',
-    closeCombat: 'forced a guard from the zone boundary while the harvester carrier advanced',
+    gunfighting: 'fired across the designated zone to keep the rival patrol from the data-harvester',
+    closeCombat: 'intercepted the boundary guard while the crew contested a place for its data-harvester',
   },
 }

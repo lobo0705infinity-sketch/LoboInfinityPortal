@@ -109,7 +109,7 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
   'Uplink Center': [
     'The brace shifted back as a rival fighter approached the coffin base.',
     'The shutter began slipping back over the coffin as rival troops crossed below.',
-    'The rail shifted above the Tech-Coffin while the far antenna stayed active.',
+    'The rail shifted above the Tech-Coffin while the far antenna’s status remained uncertain.',
     'The guard moved toward the coffin, threatening the sole contact its rival needed.',
   ],
   'Double Bind': [
@@ -126,7 +126,7 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
   ],
   'Data Harvest': [
     'The activity light blinked again as the rival patrol reached the damaged bridge.',
-    'The railing still separated the active harvester from the rest of its waiting escort.',
+    'The railing still separated the disputed harvester from the rest of its waiting escort.',
     'The harvester remained short of a confirmed deposit as defenders converged on the open passage.',
     'Smoke shifted off the casing, leaving the harvester exposed to the approaching patrol.',
   ],
@@ -182,7 +182,7 @@ export const INCIDENT_CROSSFIRE: typeof INCIDENT_CONSEQUENCES = {
     'A defender fired from the beacon base while a specialist read the shattered display.',
     'The fallen panel drew fire from both squads as the final console became accessible.',
     'Rounds struck the cable housing between the dark console and the enemy beacon.',
-    'A rival gunner covered the broken barricade from the active-console line.',
+    'A rival gunner covered the broken barricade from the disputed console line.',
   ],
   'Last Launch': [
     'Shots struck the scanner housing while a specialist prepared the ID download.',
@@ -258,9 +258,9 @@ export const INCIDENT_CROSSFIRE: typeof INCIDENT_CONSEQUENCES = {
   ],
   'Data Harvest': [
     'The rival patrol fired across the bridge at the harvester’s exposed activity lamp.',
-    'Shots struck the railing as a fighter moved to shield the active device.',
+    'Shots struck the railing as a fighter moved to shield the blinking device.',
     'The defenders fired at the carrier before the inactive harvester reached the zone.',
-    'A guard fired through thinning smoke toward the harvester inside the zone.',
+    'A guard fired through thinning smoke toward the harvester by the zone boundary.',
   ],
 }
 
@@ -314,7 +314,7 @@ export const INCIDENT_STAKES: typeof INCIDENT_CONSEQUENCES = {
     'The three consoles could score separately while control of the enemy beacon stayed in dispute.',
     'The open console offered an activation even as the enemy beacon drew both squads forward.',
     'Without a clear console input, the specialist could not rely on the beacon fight alone.',
-    'Two active consoles gave the squad a claim, but the enemy beacon remained exposed.',
+    'Two console activations could strengthen a claim, but the enemy beacon remained exposed.',
   ],
   'Last Launch': [
     'A specialist needed to download an ID Token at a scanner before its bearer could extract at the tower checker.',
@@ -371,7 +371,7 @@ export const INCIDENT_STAKES: typeof INCIDENT_CONSEQUENCES = {
     'The exposed boundary could affect which crew dominated more quadrants at the round’s end.',
   ],
   'Uplink Center': [
-    'The activated antenna scored separately from sole silhouette contact with the Tech-Coffin.',
+    'Activating the antenna would score separately from sole silhouette contact with the Tech-Coffin.',
     'A specialist could activate the antenna, while any non-Null model alone in contact could control the coffin.',
     'An activated antenna would not settle which side alone touched the Tech-Coffin.',
     'A rival model at the coffin could deny control even if the antenna stayed active.',
@@ -389,8 +389,8 @@ export const INCIDENT_STAKES: typeof INCIDENT_CONSEQUENCES = {
     'Without its own analysis token on the hyperthermal tech, neither side could neutralize that unit in contact.',
   ],
   'Data Harvest': [
-    'The crew needed the harvester wholly inside the enemy designated zone to keep it active.',
-    'The active harvester would score in the designated zone unless an eligible rival neutralized it.',
+    'The crew needed to deposit the harvester wholly inside the enemy designated zone to activate it.',
+    'A harvester wholly inside the designated zone could score unless an eligible rival neutralized it.',
     'Depositing the inactive harvester wholly inside the designated zone would make it active.',
     'The exposed harvester could be disabled before its operators returned to the designated zone.',
   ],

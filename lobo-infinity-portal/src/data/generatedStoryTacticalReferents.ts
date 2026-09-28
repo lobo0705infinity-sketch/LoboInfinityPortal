@@ -61,5 +61,5 @@ export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area 
   'The Dig': referents(
     'the excavated tech', 'the excavation rim', 'the analysis console', 'the exposed reader'),
   'Data Harvest': referents(
-    'the enemy zone', 'the harvester-side cover', 'the live device', 'the marked boundary'),
+    'the enemy zone', 'the harvester-side cover', 'the disputed device', 'the marked boundary'),
 }

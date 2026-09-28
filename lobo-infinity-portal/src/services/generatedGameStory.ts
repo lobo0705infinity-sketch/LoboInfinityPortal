@@ -52,7 +52,7 @@ const missionIntroAlternates: Record<ArmyStoryStyle,
     defense: ['contested the lane beside', 'positioned a forward guard near', 'kept fire trained on'],
   },
   armored: {
-    approach: ['kept an armored escort moving toward', 'crossed the exposed lane under fire toward', 'moved behind their lead armor toward'],
+    approach: ['kept an armored escort moving toward', 'pushed through return fire toward', 'moved behind their lead armor toward'],
     defense: ['anchored their forward guard near', 'sheltered their watch behind', 'held an armored screen by'],
   },
   flanking: {
@@ -267,9 +267,9 @@ export function composeGameStory(
   if (!alternateRoleAction) throw new Error('Missing role alternates for ' + canonical)
   const heroAction = role === 'objective'
     ? seed.objectiveAction
-    : incidentIndex >= 2
+    : seed.roleActions?.[role] ?? (incidentIndex >= 2
       ? alternateRoleAction[role]
-      : scenario[role]
+      : scenario[role])
   const method = MISSION_ARMY_METHODS[hero.id]
   const response = MISSION_ARMY_METHODS[opponent.id]
   const alternateManeuver = MISSION_ARMY_ALTERNATE_MANEUVERS[hero.id]
@@ -333,8 +333,9 @@ export function composeGameStory(
   if (!incidentMiddle) throw new Error('No readable faction tactic for ' + canonical + ' #' + incidentIndex)
   const followChoices = [method.followThrough, ...closeAlternates].filter((follow) =>
     !incidentMiddle.includes(situate(follow, referents.advance, referents.defend)))
-  const followIndex = (CANONICAL_MISSIONS.indexOf(canonical) + incidentIndex +
-    stableHash(hero.id + ':' + role)) % followChoices.length
+  // Vary the continuation by the encounter, not only army and mission index:
+  // adjacent plots used to reuse the same closing tactic across campaigns.
+  const followIndex = stableHash(key + ':' + gameId + ':' + hero.id + ':' + role + ':close') % followChoices.length
   const orderedFollowChoices = followChoices.slice(followIndex).concat(followChoices.slice(0, followIndex))
   const incidentClose = [
     ...orderedFollowChoices.map((follow) => arrangeClose(seed.turn, '{{hero}} ' + heroAction + '.', consequence,
@@ -349,10 +350,24 @@ export function composeGameStory(
   const missionIndex = CANONICAL_MISSIONS.indexOf(canonical)
   const heroIntro = (missionIndex + incidentIndex + stableHash(hero.id + ':' + role)) % 4
   const otherIntro = (missionIndex + incidentIndex + stableHash(opponent.id + ':defense')) % 4
-  const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' + missionIntro(heroVoice.style, 'approach', heroIntro) +
-    ' ' + ground + '.'
-  const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
+  let heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
+    missionIntro(heroVoice.style, 'approach', heroIntro) + ' ' + ground + '.'
+  if (heroVoice.style === 'covert' && heroIntro === 3) {
+    heroMove = 'Near ' + ground + ', {{heroPlayer}}’s ' + heroVoice.crew + ' sent a quiet lead.'
+  } else if (heroVoice.style === 'contract' && heroIntro === 2) {
+    heroMove = 'Toward ' + ground + ', {{heroPlayer}}’s ' + heroVoice.crew + ' advanced behind paid cover.'
+  }
+  let otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
     missionIntro(otherVoice.style, 'defense', otherIntro) + ' ' + position + '.'
+  if (otherVoice.style === 'rescue' && otherIntro === 1) {
+    otherMove = 'Near ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' placed an escort.'
+  } else if (otherVoice.style === 'rescue' && otherIntro === 3) {
+    otherMove = 'Near ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' sent relief.'
+  } else if (otherVoice.style === 'contract' && otherIntro === 2) {
+    otherMove = 'Across from ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' posted hired guns.'
+  } else if (otherVoice.style === 'technical' && otherIntro === 2) {
+    otherMove = 'At ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' assigned a watcher.'
+  }
 
   const winnerBeat = editorial.winner.replaceAll('{winner}', '{{heroPlayer}}’s crew')
   const loserBeat = editorial.winner.replaceAll('{winner}', '{{otherPlayer}}’s crew')

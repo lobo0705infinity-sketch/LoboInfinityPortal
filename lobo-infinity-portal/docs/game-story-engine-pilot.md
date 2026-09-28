@@ -52,7 +52,10 @@ differ. Older game records do not identify which edition was played.
   were revised for their scenarios. The selected objective hero
   directly attempts its mission action. Win, loss and draw endings return to
   the incident's obstacle without claiming a specific unreported objective
-  succeeded. Game ID chooses an incident deterministically.
+  succeeded. Incidents can override a role action when the mission sequence
+  changes its subject: Last Launch, for example, first needs an ID download
+  and only later can describe an ID bearer. Game ID chooses an incident
+  deterministically.
 - The Area of Interest pilot additionally accepts `location` and `weather`
   tags. It selects tags deterministically when omitted and rejects explicit
   incompatible combinations. No weather effects (`none`) is valid everywhere.
@@ -115,8 +118,10 @@ check four distinct tactical decisions per mission from each of the 45 armies’
 Area of Interest, three endings, the objective hero's active attempt, and
 four environmental observations for each Area of Interest weather tag.
 The generator still composes reusable phrases; tactical ideas and short
-word sequences can recur. Automated checks do not establish originality or
-editorial quality.
+word sequences can recur across missions even when the location noun changes.
+Fresh seeded packets and automated checks do not establish originality or
+editorial quality. Objective-status checks also reject some known unsupported
+scoring premises; they cannot infer a complete objective ledger from a match.
 The methods are fictional extrapolations from broad faction themes described by
 [Corvus Belli](https://infinityuniverse.com/en), including its descriptions of
 [Tohaa coordination](https://infinityuniverse.com/en/news/tohaa-combat-force-repack-alpha)
@@ -128,7 +133,7 @@ in the game record chooses which one appears. Since game records expose
 aggregate points without an objective-by-objective ledger, the ending does
 not claim a particular console, token, or patient was secured solely because
 the side won.
-See the [review and three generated examples](game-story-engine-editorial-review.md).
+See the [current editorial review](game-story-engine-editorial-review.md).
 
 The next editorial gate is an independent generated-only review for natural
 prose, plot variety, faction voice, version accuracy, and whether a generated

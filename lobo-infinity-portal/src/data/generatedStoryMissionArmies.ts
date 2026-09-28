@@ -32,7 +32,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   'kestrel-colonial-force': method(
     'A scout drew the watch toward {position} while another fighter crossed toward {ground}.',
     'The defenders watched the route past {position} and sent one guard around its edge.',
-    'The distant scout kept attention from the crossing toward {ground}.',
+    'From {position}, a distant scout drew the guard’s eye away from {ground}.',
     'its second route stayed open after the first drew enemy fire',
     'probed for an unwatched crossing'),
   'neoterra-capitaline-army': method(
@@ -50,7 +50,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   'svalarheima-winter-force': method(
     'A patient patrol checked its footing before crossing toward {ground}.',
     'The defenders guarded the narrowest passage beside {position}.',
-    'The rear guard kept watch on the last exposed step toward {ground}.',
+    'At {ground}, the rear guard watched the last exposed step behind the lead.',
     'its patient advance controlled the narrow route',
     'waited behind hard cover for another opening'),
   'varuna-immediate-reaction-division': method(
@@ -104,13 +104,13 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   kosmoflot: method(
     'A raider marked an off-angle crossing toward {ground} outside the main sightline.',
     'The defenders shifted their watch toward the far edge of {position}.',
-    'The outside fighter held an angle on the route into {ground}.',
+    'At {ground}, the outside fighter kept the flank under watch.',
     'its off-angle route remained open at the end',
     'held a distant approach under fire'),
   'tartary-army-corps': method(
     'Veterans pinned a guard near {position} before moving toward {ground}.',
     'The defenders held their ground at {position} instead of chasing the first fighter.',
-    'The pinned guard stayed occupied while the forward group edged toward {ground}.',
+    'As a veteran reached {ground}, the rear detail kept the guard by {position} under fire.',
     'its steady pressure kept the opposing guard fixed',
     'kept the nearest guard occupied'),
   'usariadna-ranger-force': method(
@@ -194,7 +194,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   'shasvastii-expeditionary-force': method(
     'A scout waited for the watch on {position} to turn before crossing toward {ground}.',
     'The defenders stayed concealed around {position} until the nearest fighter committed.',
-    'The forward scout remained unseen while the others approached {ground}.',
+    'Near {ground}, the advance scout stayed hidden while the escort redirected the guard.',
     'its unseen approach passed the nearest guard',
     'kept a concealed watch on the route'),
   aleph: method(
@@ -350,7 +350,7 @@ export const MISSION_ARMY_PIVOT_MANEUVERS: Record<string, readonly [string, stri
     'An observer called the advance back from {ground} until a second gunner covered its blind side.' ],
   'military-orders': [
     'One knight held the exposed crossing near {position} while the escort turned toward {ground}.',
-    'The armored lead yielded its place to a fresh escort before pressing closer to {ground}.' ],
+    'Beside {position}, a fresh escort replaced the lead before another push toward {ground}.' ],
   'kestrel-colonial-force': [
     'A scout left a false trail by {position}; the patrol followed the unseen path toward {ground}.',
     'The colonial patrol pulled back from the obvious gap and tested a farther route into {ground}.' ],
@@ -476,7 +476,7 @@ export const MISSION_ARMY_PIVOT_MANEUVERS: Record<string, readonly [string, stri
     'Another fighter rushed the opening while the guard pursued the first toward {position}.' ],
   starco: [
     'A retrieval team held its exit by {position} while the lead tested the approach to {ground}.',
-    'The second team covered the withdrawal before the first crossed the last lane into {ground}.' ],
+    'Beyond {position}, a retrieval pair guarded the way back before its lead crossed toward {ground}.' ],
   'white-company': [
     'A guard detail exchanged places by {position}, holding both approaches while one crossed toward {ground}.',
     'The team left its quietest lane covered and sent a reserve around the other side of {ground}.' ],

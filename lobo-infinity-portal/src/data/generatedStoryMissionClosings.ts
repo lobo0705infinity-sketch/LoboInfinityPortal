@@ -4,11 +4,11 @@
 // Neither line asserts that an unreported mission objective was scored.
 export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, string]> = {
   panoceania: [
-    'The rear gunner shifted to hold a second angle into {ground}.',
-    'The front paused under a surveyed line of fire near {ground}.'],
+    'At {ground}, a rear gunner adjusted the team’s angle.',
+    'Near {ground}, the lead paused inside a surveyed line of fire.'],
   'military-orders': [
     'An armored fighter took the exposed place near {ground}.',
-    'The escort closed ranks again as return fire crossed {ground}.'],
+    'Across {ground}, the escort reformed behind armor before another volley hit.'],
   'kestrel-colonial-force': [
     'A second scout watched the far edge of {ground}.',
     'The patrol kept the side crossing in view beside {ground}.'],
@@ -38,25 +38,25 @@ export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, str
     'The lower patrol watched for fire from {position}.'],
   ariadna: [
     'A rear scout crossed quietly within sight of {ground}.',
-    'The patrol followed hand signals past the watch near {position}.'],
+    'Past {position}, scouts followed hand signals around the guard toward {ground}.'],
   'caledonian-highlander-army': [
     'The next rush pressed the guard near {ground}.',
     'The fighters kept the narrow breach open beside {position}.'],
   'force-de-reponse-rapide-merovingienne': [
     'The reserve held its fallback line near {ground}.',
-    'A second patrol covered the response team’s route out of {position}.'],
+    'From {position}, another patrol kept the response team’s retreat in view.'],
   kosmoflot: [
     'The outside fighter held an off-angle view of {ground}.',
-    'The far raider moved when a guard turned toward {position}.'],
+    'At {position}, a distant raider waited for the guard to turn.'],
   'tartary-army-corps': [
     'A veteran kept the nearest guard pinned beside {ground}.',
-    'The forward patrol advanced under its own covering fire toward {ground}.'],
+    'Toward {ground}, a forward patrol advanced under its own covering fire.'],
   'usariadna-ranger-force': [
     'A second patrol watched the flanking cover around {ground}.',
     'The outer scouts closed a route back beside {position}.'],
   haqqislam: [
     'The escort kept a sheltered route back from {ground}.',
-    'A relief fighter watched for anyone cut off near {position}.'],
+    'Near {position}, a medic kept a retrieval route open.'],
   'hassassin-bahram': [
     'The concealed fighter waited beyond the guard near {position}.',
     'A second shadow kept the quiet approach into {ground} open.'],
@@ -67,23 +67,23 @@ export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, str
     'A relief fighter replaced the exposed escort near {ground}.',
     'The front held a protected route out from {position}.'],
   nomads: [
-    'An operator signaled only after the fire slackened near {ground}.',
-    'The crew kept its timing tied to the watch around {position}.'],
+    'At {ground}, an operator signaled the crew after the firing slackened.',
+    'Near {position}, the crew matched its timing to the opposing watch.'],
   'bakunin-jurisdictional-command': [
-    'The decoy held the guard’s attention as fighters neared {ground}.',
+    'Beside {ground}, a decoy drew the watch off course.',
     'A second route stayed quiet beside {position} under fire.'],
   'corregidor-jurisdictional-command': [
     'The improvised screen shifted with the fighters toward {ground}.',
     'A crew braced loose cover against incoming fire beside {position}.'],
   'tunguska-jurisdictional-command': [
     'A second watcher checked the exposed route into {ground}.',
-    'The security team delayed its lead until the guard near {position} moved.'],
+    'By {position}, the security team waited for a gap.'],
   'combined-army': [
     'The forward element kept pressure on {position} for the flanking group.',
-    'A second element moved when return fire turned toward {ground}.'],
+    'Toward {ground}, a second assault element moved during the return volley.'],
   'morat-aggression-force': [
     'The shock group held its exposed front against return fire near {ground}.',
-    'A following fighter crossed after the guard fired near {position}.'],
+    'Beside {position}, another fighter crossed after the guard’s shot.'],
   'next-wave': [
     'The hidden raider stayed beyond the search near {position}.',
     'A second approach remained open beside {ground} after the feint.'],
@@ -95,19 +95,19 @@ export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, str
     'The concealed approach stayed open after the guard checked {position}.'],
   aleph: [
     'An observer counted the gap between volleys near {ground}.',
-    'The squad moved on a signal when fire crossed {position}.'],
+    'From {position}, the squad crossed on a signal between volleys.'],
   'operations-subsection': [
     'The advance element signaled the rear from cover near {ground}.',
     'A lone operator kept an exit in sight beyond {position}.'],
   'steel-phalanx': [
-    'A veteran sheltered the following fighters at the edge of {ground}.',
+    'At {ground}, a veteran shielded the following fighters as the guard turned.',
     'The front held the guard’s attention near {position}.'],
   'o-12': [
     'A second guard extended the cordon toward {ground}.',
     'The outer boundary stayed covered after fire crossed {position}.'],
   starmada: [
     'A fleet guard held the return lane from {ground}.',
-    'The forward detail kept its exit in view beside {position}.'],
+    'Near {position}, a fleet guard marked the advancing detail’s escape route.'],
   'torchlight-brigade': [
     'A relief fighter reached the threatened front near {ground}.',
     'The reserve stood ready as fire reached {position}.'],

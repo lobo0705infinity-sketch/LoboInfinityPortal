@@ -374,6 +374,46 @@ function sceneForIncident(mission: string, first: string, other: string,
   }
   throw new Error('Could not select ' + mission + ' incident ' + index)
 }
+// The match feed records a result and aggregate points, not the status of an
+// individual console, antenna, or harvester. An invented premise may put the
+// crews near an objective, but must leave its score undecided.
+for (const [mission, unsupportedClaim] of [
+  ['Uplink Center', /\b(?:activated antenna scored|antenna came alive|far antenna stayed active)\b/i],
+  ['Hardlock', /\b(?:two active consoles|consoles stayed active|activated-console line)\b/i],
+  ['Superiority', /\ba hacked console\b/i],
+  ['Data Harvest', /\b(?:active (?:data-harvester|harvester|unit|device)|harvester reached the enemy designated zone)\b/i],
+] as const) {
+  for (let incident = 0; incident < 4; incident++) {
+    for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+      const story = sceneForIncident(mission, 'PanOceania', 'Druze Bayram Security', role, incident)
+      assert.doesNotMatch(story.paragraphs.join(' '), unsupportedClaim,
+        `${mission} incident ${incident}: do not invent an objective's scored status`)
+    }
+  }
+}
+for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
+  for (const index of [0, 2]) {
+    const waitingForId = sceneForIncident('Last Launch', 'Next Wave', 'Onyx Contact Force', role, index)
+    assert.doesNotMatch(waitingForId.paragraphs[2], /\b(?:ID Token bearer|its bearer|the bearer)\b/i,
+      'the ID Scanner scene cannot invent a bearer before the download finishes')
+  }
+  const approachingChecker = sceneForIncident('Last Launch', 'Next Wave', 'Onyx Contact Force', role, 3)
+  assert.doesNotMatch(approachingChecker.paragraphs[2], /\bbearer could (?:not|never|n’t) leave the tower threshold\b/i,
+    'a bearer already approaching the checker cannot still be stuck at the threshold')
+  if (role !== 'objective') {
+    const bearerAtGate = sceneForIncident('Last Launch', 'Next Wave', 'Onyx Contact Force', role, 1)
+    const action = bearerAtGate.paragraphs[2].match(/\{\{hero\}\}[^.]+\./)?.[0] ?? ''
+    assert.match(action, /ID bearer/i, 'the bearer scene needs a role action around the existing ID Token')
+    assert.doesNotMatch(action, /specialist at the ID Scanner/i,
+      'a bearer already in the tower should not trigger the pre-download scanner action')
+  }
+  const loneHarvester = sceneForIncident('Data Harvest', 'Next Wave', 'Onyx Contact Force', role, 3)
+  assert.doesNotMatch(loneHarvester.paragraphs[2], /\b(?:harvester|device) carrier\b/i,
+    'the device already stood alone; a new carrier needs an introduction')
+  const bridgeHarvester = sceneForIncident('Data Harvest', 'Next Wave', 'Onyx Contact Force', role, 0)
+  assert.match(bridgeHarvester.endings.heroWins, /route to a valid deposit/i,
+    'winning the game cannot place an unconfirmed harvester inside the scoring zone')
+}
 for (const army of armies) {
   for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
     const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
@@ -459,7 +499,7 @@ assert.doesNotMatch(reconnectedBeacon.paragraphs[2], /severed console|no reliabl
 const guardedHarvester = sceneForIncident('Data Harvest', 'PanOceania',
   'Druze Bayram Security', 'objective', 1)
 assert.match(guardedHarvester.paragraphs[2],
-  /\{\{hero\}\} slipped past the railing and guarded the active data-harvester against the rival specialist/,
+  /\{\{hero\}\} slipped past the railing and guarded the data-harvester while the rival specialist entered the designated zone/,
   'the objective hero must defend the harvester, not merely approach it')
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   for (const role of ['gunfighting', 'closeCombat'] as const) {
