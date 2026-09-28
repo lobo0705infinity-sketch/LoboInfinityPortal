@@ -49,6 +49,8 @@ export function validateInfListLegality({ decoded, payload } = {}) {
         ava: profile.ava,
         avaKey: `${Number(unit.id)}:${Number(group.id)}:${Number(profile.id)}`,
         combatGroup: Number(combatGroup.combatGroup),
+        unitId: Number(unit.id),
+        profileGroupId: Number(group.id),
         disabled: legalityOption.disabled === true,
         label,
         lieutenant: (legalityOption.orders || []).some((order) => String(order?.type).toUpperCase() === 'LIEUTENANT') ? 1 : 0,
@@ -91,6 +93,23 @@ export function validateInfListLegality({ decoded, payload } = {}) {
   }
   for (const [group, count] of groupCounts) {
     if (count > 10) violations.push(`Combat Group ${group} contains ${count} Troopers; the maximum is 10.`)
+  }
+
+  // Army encodes the Monitor as a second profile group of the Kuang Shi unit.
+  // Its unit note requires one Monitor per four Kuang Shi in the same group.
+  const kuangShi = units.find((unit) => unit.slug === 'kuang-shi')
+  const controllerGroup = kuangShi?.profileGroups?.find((group) => /celestial guard monitor/i.test(group.isc || ''))
+  const kuangShiGroup = kuangShi?.profileGroups?.find((group) => /kuang shi/i.test(group.isc || '') && group !== controllerGroup)
+  const perController = Number(String(kuangShi?.notes || '').match(/up to (\d+) Kuang Shi/i)?.[1])
+  if (kuangShi && controllerGroup && kuangShiGroup && perController > 0) {
+    for (const combatGroup of new Set(selections.map((selection) => selection.combatGroup))) {
+      const inGroup = selections.filter((selection) => selection.combatGroup === combatGroup && selection.unitId === Number(kuangShi.id))
+      const fighters = inGroup.filter((selection) => selection.profileGroupId === Number(kuangShiGroup.id)).length
+      const monitors = inGroup.filter((selection) => selection.profileGroupId === Number(controllerGroup.id)).length
+      if (fighters > monitors * perController) {
+        violations.push(`Combat Group ${combatGroup}: ${fighters} Kuang Shi require ${Math.ceil(fighters / perController)} Celestial Guard Monitor in the same Combat Group; found ${monitors}.`)
+      }
+    }
   }
 
   const avaCounts = new Map()

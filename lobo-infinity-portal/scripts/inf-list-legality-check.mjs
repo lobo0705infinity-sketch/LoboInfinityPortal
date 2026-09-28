@@ -81,6 +81,37 @@ const controllerResult = validateInfListLegality({
 assert.equal(controllerResult.status, 'legal')
 assert.equal(controllerResult.totals.troopers, 2, 'a Peripheral in a different profile group must not hide its Controller')
 
+const kuangShi = unit(146, 146, 8, [option(1, 6, 0, 'KUANG SHI')])
+kuangShi.slug = 'kuang-shi'
+kuangShi.profileGroups[0].isc = 'Kuang Shi'
+kuangShi.notes = 'A Kuang Shi Unit is composed by 1 Monitor Celestial Guard and up to 4 Kuang Shi. All of them must be in the same Combat Group.'
+kuangShi.profileGroups.push({ id: 2, isc: 'Celestial Guard Monitor',
+  profiles: [{ id: 1, ava: 2 }], options: [option(1, 13, 0.5, 'CELESTIAL GUARD Monitor')] })
+const kuangShiPayload = { ...payload, units: [payload.units[1], kuangShi] }
+const kuangShiList = (...groups) => ({ maxPoints: 300,
+  combatGroups: groups.map((members, index) => ({ combatGroup: index + 1, members })) })
+const lieutenant = member(20, 1)
+const fighter = member(146, 1)
+const monitor = member(146, 1, 2)
+const withoutController = validateInfListLegality({
+  decoded: kuangShiList([lieutenant], [fighter]), payload: kuangShiPayload,
+})
+assert.equal(withoutController.status, 'illegal')
+assert.ok(withoutController.violations.some(issue => /Combat Group 2.*Celestial Guard Monitor.*same Combat Group/.test(issue)))
+const wrongCombatGroup = validateInfListLegality({
+  decoded: kuangShiList([lieutenant, monitor], [fighter]), payload: kuangShiPayload,
+})
+assert.equal(wrongCombatGroup.status, 'illegal', 'a Monitor in another Combat Group cannot control Kuang Shi')
+assert.equal(validateInfListLegality({
+  decoded: kuangShiList([lieutenant], [fighter, monitor]), payload: kuangShiPayload,
+}).status, 'legal', 'one Monitor can control Kuang Shi in its Combat Group')
+assert.equal(validateInfListLegality({
+  decoded: kuangShiList([lieutenant], [monitor, ...Array.from({ length: 5 }, () => fighter)]), payload: kuangShiPayload,
+}).status, 'illegal', 'five Kuang Shi need two Monitors even if one is present')
+assert.equal(validateInfListLegality({
+  decoded: kuangShiList([lieutenant], [monitor, monitor, ...Array.from({ length: 5 }, () => fighter)]), payload: kuangShiPayload,
+}).status, 'legal', 'two Monitors can control five Kuang Shi in the same Combat Group')
+
 const unavailable = validateInfListLegality({ decoded: decoded(300, [member(999, 1)]), payload })
 assert.equal(unavailable.status, 'unavailable')
 assert.match(formatInfListLegality(unavailable), /VALIDATION UNAVAILABLE/)

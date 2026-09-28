@@ -33,6 +33,7 @@ export function resolveRequiredProfile(profiles, name) {
   }).filter(item => Number.isFinite(item.priority))
     .sort((a, b) => a.priority - b.priority
       || Number(b.profile.groupId === 0) - Number(a.profile.groupId === 0)
+      || Number(token(b.profile.optionName) === query) - Number(token(a.profile.optionName) === query)
       || b.profile.gunfighter - a.profile.gunfighter || a.profile.points - b.profile.points)[0]?.profile || null
 }
 
@@ -157,6 +158,16 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
     const base = group?.profiles[0]
     if (!base) continue
     for (const choice of group.options || []) if (choice.disabled !== true) add(unit, group, base, choice, Number(group.id))
+    // The Celestial Guard Monitor belongs to the Kuang Shi unit's second
+    // profile group, so it must be selectable to make Kuang Shi legal.
+    if (unit.slug === 'kuang-shi') {
+      const monitor = (unit.profileGroups || []).find(profileGroup => /celestial guard monitor/i.test(profileGroup.isc || ''))
+      if (monitor?.profiles?.length === 1) {
+        for (const choice of monitor.options || []) if (choice.disabled !== true) {
+          add(unit, monitor, monitor.profiles[0], choice, Number(monitor.id))
+        }
+      }
+    }
     for (const choice of unit.options || []) {
       if (choice.disabled === true || !(choice.includes || []).some(include => Number(include.group) === Number(group.id))) continue
       add(unit, group, base, choice, 0, choice.includes)
@@ -182,6 +193,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!match) throw new ListBuilderError(`No selectable ${faction.name} profile matches “${name}”.`)
       return match
     })
+  forced.sort((a, b) => Number(isKuangShiMonitor(b)) - Number(isKuangShiMonitor(a)))
   const side = forced.some(item => item.slug === 'iguana-squadron') ? 'Surface'
     : forced.some(item => item.slug === 'gator-squadron') ? 'Deepspace' : null
   constraints.side = side
@@ -201,6 +213,16 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     const buildConstraints = { ...constraints, plan, side: side || (/\bSurface\b/i.test(seed?.name || '') ? 'Surface'
       : /\bDeepspace\b/i.test(seed?.name || '') ? 'Deepspace' : null) }
     for (const item of forced) {
+      if (isKuangShiFighter(item)) {
+        const monitor = profiles.find(isKuangShiMonitor)
+        while (selected.filter(entry => isKuangShiFighter(entry) && entry.combatGroup === 1).length
+          >= 4 * selected.filter(entry => isKuangShiMonitor(entry) && entry.combatGroup === 1).length) {
+          if (!monitor || !canAdd(selected, monitor, 1, buildConstraints)) {
+            throw new ListBuilderError('Kuang Shi require a Celestial Guard Monitor in the same Combat Group.')
+          }
+          selected.push({ ...monitor, combatGroup: 1 })
+        }
+      }
       if (!canAdd(selected, item, 1, buildConstraints)) throw new ListBuilderError('Required profiles conflict with the selected Army limits or Surface/Deepspace restriction.')
       selected.push({ ...item, combatGroup: 1 })
     }
@@ -320,6 +342,14 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   })
 }
 
+function isKuangShiFighter(item) {
+  return item.slug === 'kuang-shi' && item.groupId === 1
+}
+
+function isKuangShiMonitor(item) {
+  return item.slug === 'kuang-shi' && item.groupId === 2
+}
+
 function canAdd(selected, profile, combatGroup, { points, payload, side: requiredSide }) {
   const side = requiredSide || selected.find(item => item.side)?.side
   if (profile.side && side && profile.side !== side) return false
@@ -331,12 +361,18 @@ function canAdd(selected, profile, combatGroup, { points, payload, side: require
   const bonus = selected.reduce((n, item) => n + item.swcBonus, profile.swcBonus)
   if (swc > points / 50 + bonus) return false
   if (selected.filter(item => item.avaKey === profile.avaKey).length >= profile.ava) return false
+  if (isKuangShiFighter(profile)) {
+    const fighters = selected.filter(item => isKuangShiFighter(item) && item.combatGroup === combatGroup).length
+    const monitors = selected.filter(item => isKuangShiMonitor(item) && item.combatGroup === combatGroup).length
+    if (fighters >= 4 * monitors) return false
+  }
   // These official relations describe mutually exclusive choices; ignore
   // relations for units not selectable in the current sectorial.
   for (const relation of payload.relations || []) {
     if (relation.group || !Number.isFinite(Number(relation.max))) continue
-    const ids = (relation.units || []).map(unit => Number(unit.unit)).filter(Number.isInteger)
-    if (ids.includes(profile.unitId) && selected.filter(item => ids.includes(item.unitId)).length >= Number(relation.max)) return false
+    const matches = item => (relation.units || []).some(unit => Number(unit.unit) === item.unitId
+      && (unit.profile == null || Number(unit.profile) === item.groupId))
+    if (matches(profile) && selected.filter(matches).length >= Number(relation.max)) return false
   }
   return true
 }
@@ -764,6 +800,8 @@ export function optimizeCombatGroups(profiles, chart, side = null, teamPreferenc
       if (block.team) teamGroups[group].push({ ...block.team, members: block.indices.map(i => profiles[i]) })
     }
     if (slots[0] > 10 || slots[1] > 10) continue
+    if (groups.some(members => members.filter(isKuangShiFighter).length
+      > 4 * members.filter(isKuangShiMonitor).length)) continue
     const main = groupActivity(groups[0], teamGroups[0])
     const reserve = groupActivity(groups[1], teamGroups[1])
     if (main.orders < reserve.orders) continue

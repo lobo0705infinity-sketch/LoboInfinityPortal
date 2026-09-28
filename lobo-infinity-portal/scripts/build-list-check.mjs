@@ -14,6 +14,7 @@ import { deriveTeamTypeEvidence, loadTeamTypeEvidence, possibleFireteamTypes } f
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
 import { missionPlan } from '../bot/build-list-missions.mjs'
+import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 
 const loadArchive = async name => JSON.parse(gunzipSync(Buffer.from(await readFile(new URL(`../data/infinity-army/${name}.json.gz.b64`, import.meta.url), 'utf8'), 'base64')))
@@ -44,6 +45,26 @@ assert.ok(warcor && warcor.irregular && !warcor.regular && warcor.flashPulse,
 const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
   mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
+const yuJingPayload = source.payloads.find(item => item.url?.endsWith('/units/en/201'))
+const yuJingInput = { ...input, payload: yuJingPayload, sectorialId: 201,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(201), mustInclude: [] }
+const yuJingProfiles = availableProfiles(yuJingInput)
+assert.equal(resolveRequiredProfile(yuJingProfiles, 'Kuang Shi')?.groupId, 1,
+  'asking for Kuang Shi selects the fighter rather than its Celestial Guard Monitor')
+assert.ok(yuJingProfiles.some(item => item.slug === 'kuang-shi' && item.groupId === 2
+  && /Celestial Guard Monitor/i.test(item.optionName)), 'the Monitor is selectable from its separate Army profile group')
+const reportedCode = 'gMkHeXUtamluZw1Mb2JvIEhhcmRsb2NrgSwCAQEACAB8AQoAAAB8AQEAAACE6QEDAAAAgI4BAQAAAIcwAQUAAACF2QEFAAAAhzIBAQAAAICKAQEAAAIBAAcAhtsBBAAAAIbbAQEAAACG3AEDAAAAhj8BAQAAAICNAQIAAACAkgEBAAAAMgECAAA%3D'
+const reportedList = validateInfListLegality({ decoded: decodeArmyCode(decodeURIComponent(reportedCode)), payload: yuJingPayload })
+assert.equal(reportedList.status, 'illegal', 'the exact reported Hardlock list has an uncontrolled Kuang Shi')
+assert.ok(reportedList.violations.some(issue => /Combat Group 2.*Celestial Guard Monitor/.test(issue)))
+const controlledKuangShi = buildArmyListOptions({ ...yuJingInput, mustInclude: ['Kuang Shi', 'Kuang Shi'], count: 1 })[0]
+assert.ok(controlledKuangShi && controlledKuangShi.legality.status === 'legal')
+const controlledGroup = controlledKuangShi.profiles.filter(item => item.slug === 'kuang-shi')
+assert.equal(controlledGroup.filter(item => item.groupId === 1).length, 2,
+  'two requested Kuang Shi can coexist under one Monitor')
+assert.equal(controlledGroup.filter(item => item.groupId === 2).length, 1)
+assert.ok(controlledGroup.every(item => item.combatGroup === controlledGroup[0].combatGroup),
+  'the group optimizer keeps Kuang Shi and their Monitor together')
 const results = buildArmyListOptions(input)
 assert.equal(results.length, 3)
 assert.ok(results.some(result => result.points >= 298 && result.profiles.some(item => item.id === transductor.id)
