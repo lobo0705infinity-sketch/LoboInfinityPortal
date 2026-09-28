@@ -18,7 +18,7 @@ import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { assertGeneratedStoryFacts } from '../src/services/generatedStoryFacts.ts'
-import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
+import { loadBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
   PENDING_BATTLE_STORY, UNSUPPORTED_MISSION_VERSION_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
@@ -821,8 +821,7 @@ for (const mission of ['Akial Interference', 'Critical Intervention', 'Double Bi
   const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
   assert.equal(renderGeneratedGameStory(setupGame, setupLists), null,
     mission + ': do not invent an unreported mission setup or card draw')
-  if (mission === 'Akial Interference') continue // Its authored shard is tested below with a mocked browser fetch.
-  assert.equal(await loadAuthoredBattleStory(setupGame, setupLists), MISSING_MISSION_SETUP_BATTLE_STORY,
+  assert.equal(await loadBattleStory(setupGame, setupLists), MISSING_MISSION_SETUP_BATTLE_STORY,
     mission + ': do not falsely tell the player their already linked lists are missing')
 }
 assert.equal(renderGeneratedGameStory(game, []), null, 'wait for both game-linked decoded lists')
@@ -835,8 +834,8 @@ const rendered = renderGeneratedGameStory(game, lists)
 assert.ok(rendered && rendered.includes('Winner') && rendered.includes('Loser'))
 assert.equal(rendered, renderGeneratedGameStory(game, lists), 'a report must be stable across reloads')
 assert.doesNotMatch(rendered, /\{\{\w+\}\}/)
-assert.equal((await loadAuthoredBattleStory(game, [lists[0]])), PENDING_BATTLE_STORY)
-assert.equal(await loadAuthoredBattleStory(game, lists), rendered, 'a missing mission shard uses the generated story')
+assert.equal((await loadBattleStory(game, [lists[0]])), PENDING_BATTLE_STORY)
+assert.equal(await loadBattleStory(game, lists), rendered, 'a supported matchup uses the generated story')
 
 const template = composeGameStory(game.mission, game.winnerFaction, game.loserFaction, game.winnerFaction, 'objective', game.id)
 assert.ok(template)
@@ -924,7 +923,7 @@ assert.ok(renderGeneratedGameStory({ ...mirrorGame, gameResult: 'draw' }, oneEli
     .replaceAll('{{otherPlayer}}', 'Winner')), 'mirror draws bind each player to the selected side')
 const bothIneligibleMirror = [oneEligibleMirrorList[0], { ...mirrorLists[1],
   decoded: { combatGroups: [{ entries: [ineligible] }] } }] as ArmyIntelligenceList[]
-assert.equal(await loadAuthoredBattleStory(mirrorGame, bothIneligibleMirror),
+assert.equal(await loadBattleStory(mirrorGame, bothIneligibleMirror),
   NO_ELIGIBLE_HERO_BATTLE_STORY, 'two decoded but ineligible lists are not waiting for decoding')
 
 const longDisplayGame = { ...game, mission: 'Area of Interest',
@@ -955,8 +954,8 @@ for (const mission of ['The Dig', 'Crossing Lines', 'Double Bind']) {
   assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-26' }), false)
 }
 
-// Authored scenes keep priority even when a generated scene exists for that
-// pair. Missing pairs inside an authored mission shard use the engine.
+// Historical matchup stories never intercept the pilot. A stored shard pair,
+// an inline catalog pair, and a missing pair all reach the same generator.
 const digRows = JSON.parse(await readFile('public/game-stories/the-dig.json', 'utf8')) as typeof template[]
 const authored = digRows.find((row) => row.factions.includes('Next Wave') && row.factions.includes('StarCo'))
 assert.ok(authored)
@@ -979,40 +978,51 @@ const missingLists = [
   { ...authoredLists[0], sectorial: missingPair[0] },
   { ...authoredLists[1], sectorial: missingPair[1] },
 ] as ArmyIntelligenceList[]
+const inline = GAME_STORY_CATALOG[0]
+const inlineGame = { ...authoredGame, winnerFaction: inline.factions[0],
+  loserFaction: inline.factions[1] } as RecentGame
+const inlineLists = [
+  { ...authoredLists[0], sectorial: inline.factions[0] },
+  { ...authoredLists[1], sectorial: inline.factions[1] },
+] as ArmyIntelligenceList[]
 const originalFetch = globalThis.fetch
 let fetchCount = 0
 try {
   globalThis.fetch = async () => {
     fetchCount++
-    return Response.json(digRows)
+    throw new Error('The pilot must not fetch a historical story shard')
   }
-  assert.equal(await loadAuthoredBattleStory(authoredGame, authoredLists),
-    renderGameStoryTemplate(authored, authoredGame, authoredLists))
-  assert.equal(await loadAuthoredBattleStory(missingGame, missingLists),
+  const legacy = renderGameStoryTemplate(authored, authoredGame, authoredLists)
+  assert.ok(legacy)
+  assert.equal(await loadBattleStory(authoredGame, authoredLists),
+    renderGeneratedGameStory(authoredGame, authoredLists))
+  assert.notEqual(await loadBattleStory(authoredGame, authoredLists), legacy)
+  const inlineLegacy = renderGameStoryTemplate(inline, inlineGame, inlineLists)
+  assert.ok(inlineLegacy)
+  assert.equal(await loadBattleStory(inlineGame, inlineLists),
+    renderGeneratedGameStory(inlineGame, inlineLists))
+  assert.notEqual(await loadBattleStory(inlineGame, inlineLists),
+    inlineLegacy)
+  assert.equal(await loadBattleStory(missingGame, missingLists),
     renderGeneratedGameStory(missingGame, missingLists))
-  assert.equal(fetchCount, 2, 'read the authored mission shard before generating a fallback')
-  const olderGame = { ...missingGame, date: '2026-09-23' } as RecentGame
-  const olderLists = missingLists.map((list) => ({ ...list, date: '2026-09-23' })) as ArmyIntelligenceList[]
+  const highlighted = { ...authoredGame, id: 116,
+    bestMoment: 'Tuecer killing both a Tsyklon and the engineer that went to pick it up.' } as RecentGame
+  assert.match(await loadBattleStory(highlighted, []) ?? '', /Teucer had stayed in position/,
+    'a game-specific submitted highlight still takes precedence')
+  assert.equal(fetchCount, 0, 'the pilot does not fetch historical matchup stories')
+  const olderGame = { ...authoredGame, date: '2026-09-23' } as RecentGame
+  const olderLists = authoredLists.map((list) => ({ ...list, date: '2026-09-23' })) as ArmyIntelligenceList[]
   assert.equal(renderGeneratedGameStory(olderGame, olderLists), null)
-  assert.equal(await loadAuthoredBattleStory(olderGame, olderLists),
+  assert.equal(await loadBattleStory(olderGame, olderLists),
     UNSUPPORTED_MISSION_VERSION_BATTLE_STORY,
-    'an older game cannot use the revised Dig generator without a historical version')
+    'an older game cannot bypass the version guard with a historical matchup story')
   const akialRows = JSON.parse(await readFile('public/game-stories/akial-interference.json', 'utf8')) as typeof template[]
-  const akialKeys = new Set([...GAME_STORY_CATALOG, ...akialRows].map((row) =>
-    storyTemplateKey(row.mission, ...row.factions)))
-  const missingAkialPair = armies.flatMap((first, i) => armies.slice(i).map((second) =>
-    [first.name, second.name] as const))
-    .find(([first, second]) => !akialKeys.has(storyTemplateKey('Akial Interference', first, second)))
-  assert.ok(missingAkialPair)
-  const missingAkialGame = { ...game, mission: 'Akial Interference',
-    winnerFaction: missingAkialPair[0], loserFaction: missingAkialPair[1] } as RecentGame
-  const missingAkialLists = [
-    { ...lists[0], mission: 'Akial Interference', sectorial: missingAkialPair[0] },
-    { ...lists[1], mission: 'Akial Interference', sectorial: missingAkialPair[1] },
-  ] as ArmyIntelligenceList[]
-  globalThis.fetch = async () => Response.json(akialRows)
-  assert.equal(await loadAuthoredBattleStory(missingAkialGame, missingAkialLists),
-    MISSING_MISSION_SETUP_BATTLE_STORY, 'an unwritten Akial pair needs card data before runtime generation')
+  assert.ok(akialRows.length)
+  const akialGame = { ...game, mission: 'Akial Interference',
+    winnerFaction: akialRows[0].factions[0], loserFaction: akialRows[0].factions[1] } as RecentGame
+  assert.equal(await loadBattleStory(akialGame, []), MISSING_MISSION_SETUP_BATTLE_STORY,
+    'a historical Akial story must not bypass the missing-card guard')
+  assert.equal(fetchCount, 0)
 } finally {
   globalThis.fetch = originalFetch
 }

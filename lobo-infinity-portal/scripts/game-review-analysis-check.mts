@@ -139,10 +139,12 @@ const operationsRoster = decodedList({
   ] }] } as ArmyIntelligenceList['decoded'],
 })
 const matchupReview = buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster, operationsRoster])
-assert.match(matchupReview.story, /the Ironside to descend/)
-assert.match(matchupReview.story, /Teucer’s fire/)
-assert.doesNotMatch(matchupReview.story, /Mad dice|\b(?:OP|VP)\b|record does not/i)
-assert.match(buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster]).story, /waiting for both submitted lists to be decoded/)
+assert.match(matchupReview.story, /The decoded armies show/)
+assert.doesNotMatch(matchupReview.story, /the Ironside to descend|Teucer’s fire/,
+  'the historical The Dig story must not enter the synchronous review')
+assert.match(matchupReview.story, /record does not say which actions produced/)
+assert.match(buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster]).story,
+  /A full matchup account will need both submitted armies decoded/)
 
 const publicDraw = game({
   id: 112, winner: 'Draw', winnerDisplayName: 'Draw', loser: 'Draw', loserDisplayName: 'Draw',

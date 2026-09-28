@@ -7,15 +7,17 @@ previous court, gate, rescue, and disk plots standing in for scenario
 objectives. An editor still needs to approve plot variety, faction voice, and
 actual-game fit before generated scenes could count as release coverage.
 
-This branch experiments with a local, deterministic fallback when a mission
-and army matchup has no individually written story. It does not alter the
-1,300 authored entries, submitted highlights, or the release requirement for
-22,770 individually written stories. The legacy authored entries pass a
+This branch experiments with a local, deterministic generator for every
+supported mission and army matchup without a submitted-game highlight. It
+does not alter the 1,300 historical entries, submitted highlights, or the
+release requirement for 22,770 individually written stories. The historical
+entries pass a
 structural gate, but an objective-text audit flagged all 1,300 for editorial
 review: it requires the scenario stake in the scene and all three endings.
-This is triage, **not** proof that every legacy story is incorrect. Existing
-authored stories continue to take priority in routing, so this pilot cannot
-be merged until their treatment is decided.
+This is triage, **not** proof that every historical story is incorrect. The
+1,300 entries are excluded from pilot runtime routing and cannot mask the
+generator in game reports. Submitted-game highlights retain priority. The
+pilot remains draft pending its editorial and release decisions.
 
 The older rows are pinned by their story-content hashes in
 `scripts/game-story-legacy-baseline.json`. The ordinary catalog check grants
@@ -38,8 +40,9 @@ provenance; they do not guarantee those pages will stay the same. The plots
 use core objectives and avoid disputed point totals when scenario editions
 differ. Older game records do not identify which edition was played.
 
-- The browser first checks a submitted highlight, the inline catalog, and
-  the appropriate mission shard. A missing matchup can use the engine.
+- The browser first checks a submitted highlight and then composes a scene
+  locally for a supported matchup. It does not load the inline historical
+  catalog or a mission shard.
 - Four concrete incidents per mission establish the opening, complication,
   turn and mission objective action. Incident-specific beats supply the stake,
   firefight and open-ended consequence. A mission frame supplies
@@ -120,7 +123,8 @@ sunshine or another weather effect.
 The engine test covers 22,770 canonical mission/matchup keys, four incidents
 and three hero roles: **273,240 compositions checked structurally and against
 the declared scene-fact constraints**. It
-verifies mission-objective anchors, authored precedence, list linkage,
+verifies mission-objective anchors, submitted-highlight precedence, historical
+catalog exclusion, list linkage,
 ambiguous lists, mirror matchups, and 792 synthetic
 mission/incident/role/result renders. These are *possible template
 compositions*, not 273,240 approved or individually written stories. The test
@@ -186,7 +190,8 @@ from public game records; Akial remains withheld without the drawn cards.
 The generated Dig and Crossing Lines scenes are also withheld for games
 dated September 24 or earlier, or with no usable date: the public feed does
 not say whether a game on the publication day used the revised rules.
-The older authored catalog and submitted player highlights retain priority.
+Submitted player highlights retain priority; the historical matchup catalog
+is excluded from pilot runtime routing.
 
 ## Verification
 

@@ -7,7 +7,7 @@ import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import storyManifest from '../src/data/storyManifest.json' with { type: 'json' }
 import legacyHashes from './game-story-legacy-baseline.json' with { type: 'json' }
 import { GAME_HIGHLIGHT_STORIES, renderSubmittedHighlightStory } from '../src/data/gameHighlightStories.ts'
-import { getAuthoredBattleStory, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
+import { getSubmittedHighlightBattleStory } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyModelReference, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import { assertGameStoryMissionObjective, assertGameStoryQuality, assertLegacyStoryQuality } from './game-story-quality.mts'
@@ -84,10 +84,9 @@ assert.match(rendered || '', /The Asura appeared/)
 assert.doesNotMatch(rendered || '', /(^|[.!?]\s+)the /m, 'sentence-opening unit article must be capitalized')
 assert.match(rendered || '', /Brooke already had the answer/)
 assert.equal(renderGameStoryTemplate(story, game, [nextWave]), null, 'wait for both decoded lists')
-assert.equal(getAuthoredBattleStory(game, [nextWave]), PENDING_BATTLE_STORY, 'do not show a score summary before decoding')
+assert.equal(getSubmittedHighlightBattleStory(game), null, 'the historical matchup catalog is outside the pilot story route')
 assert.equal(renderGameStoryTemplate(story, game, [nextWave, { ...operations, date: '2026-09-17' }]), null, 'never use another day’s list')
 assert.equal(renderGameStoryTemplate(story, game, [nextWave, operations, { ...operations }]), null, 'ambiguous opponent list must not be guessed')
-assert.equal(getAuthoredBattleStory(game, [nextWave, operations]), rendered, 'vague note uses mission-matchup story')
 
 const highlights = [
   { id: 109, mission: "Dead Man's Switch", winnerFaction: 'Corregidor Jurisdictional Command', loserFaction: 'Torchlight Brigade', bestMoment: 'Came down to the last moment where the Raveneye on his second order almost won the game single handedly!', fragment: 'the Raveneye had a moment to finish' },
@@ -99,7 +98,7 @@ assert.equal(GAME_HIGHLIGHT_STORIES.length, highlights.length)
 for (const item of highlights) {
   const exemplar = { ...game, ...item, winner: 'A', winnerDisplayName: 'A', loser: 'B', loserDisplayName: 'B' }
   assert.ok(renderSubmittedHighlightStory(exemplar)?.toLocaleLowerCase().includes(item.fragment.toLocaleLowerCase()), `game ${item.id}: authored player scene`)
-  assert.equal(getAuthoredBattleStory(exemplar, []), renderSubmittedHighlightStory(exemplar), 'player scene takes priority before decoding')
+  assert.equal(getSubmittedHighlightBattleStory(exemplar), renderSubmittedHighlightStory(exemplar), 'submitted player scenes retain priority')
   assert.equal(renderSubmittedHighlightStory({ ...exemplar, bestMoment: 'He rolled better than me' }), null, 'changed or unusable note cannot trigger a stale scene')
 }
 

@@ -12,7 +12,7 @@ import { publicDetailProjection, type PublicSubmittedArmyList } from '../service
 import { getNewerPublicSnapshotDataset } from '../services/publicSnapshot'
 import { formatPlayerName } from '../services/formatting'
 import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
-import { loadAuthoredBattleStory } from '../services/gameStoryRouting'
+import { loadBattleStory } from '../services/gameStoryRouting'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -400,9 +400,9 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
   useEffect(() => {
     const controller = new AbortController()
     setLoadedStory(null)
-    loadAuthoredBattleStory(game, intelligenceLists, controller.signal)
+    loadBattleStory(game, intelligenceLists)
       .then((story) => { if (!controller.signal.aborted) setLoadedStory(story) })
-      .catch(() => { /* The regular review remains available if a story shard cannot load. */ })
+      .catch(() => { /* The regular review remains available if story composition fails. */ })
     return () => controller.abort()
   }, [game, intelligenceLists])
   const [left, right] = getGameSides(game)
