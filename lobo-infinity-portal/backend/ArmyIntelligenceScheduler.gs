@@ -13,6 +13,8 @@ const ARMY_INTELLIGENCE_SCHEDULER_URL =
   "https://lobo-infinity-portal.vercel.app/api/army-intelligence-refresh-worker";
 const AUTOMATION_QUEUE_WORKER_URL =
   "https://lobo-infinity-portal.vercel.app/api/automation-queue-worker";
+const AUTOMATION_GAME_STORY_WORKER_URL =
+  "https://lobo-infinity-portal.vercel.app/api/game-story-for-discord";
 
 function installArmyIntelligenceRefreshScheduler(e) {
 

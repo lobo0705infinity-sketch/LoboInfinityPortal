@@ -145,7 +145,7 @@ const guide = `# Generated story pilot · editorial rubric
 
 - All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. For Akial Interference, Critical Intervention and Double Bind, check that no story assigns an unreported card identity, attacker role or selected scoring plan to a recorded player.
 - At least 80% of generated scenes need an average of **4/5 or better in every rated dimension** across two reviewers. No mission group should have an unaddressed repetition or faction-swap complaint. Revise weak groups, then review new, unseen scenes rather than scoring the same examples until they pass.
-- Passing this review does not change the 22,770 individually authored target, prove fictional moves happened in a match, or authorize merging/deploying the pilot.
+- Passing this review does not turn generated scenes into individually authored stories, prove fictional moves happened in a match, or itself authorize merging/deploying the pilot. Production uses generator coverage for the story build gate; other release checks still apply.
 
 **Mission versions:** Corvus Belli's [September 24, 2026 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18-hotfix-september) clarified The Dig's console analysis and Player Tokens, Double Bind's objective selection and Engineer/GizmoKit antenna repairs, and Crossing Lines' removal of the HVT and Classified Deck. This pilot does not simulate the Player Token state. Check the depicted sequence against the mission edition; older recorded games may use earlier editions.
 

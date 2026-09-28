@@ -972,6 +972,8 @@ for (const mission of ['The Dig', 'Crossing Lines', 'Double Bind']) {
   assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-23' }), true)
   assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-24' }), true)
   assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '2026-09-26' }), false)
+  assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '9/24/2026' }), true)
+  assert.equal(hasUnsupportedStoryMissionVersion({ ...game, mission, date: '9/26/2026' }), false)
 }
 
 // Historical matchup stories never intercept the pilot. A stored shard pair,

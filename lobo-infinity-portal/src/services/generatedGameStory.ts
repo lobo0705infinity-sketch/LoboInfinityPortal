@@ -26,7 +26,14 @@ import { assertGeneratedStoryFacts } from './generatedStoryFacts.ts'
 export function hasUnsupportedStoryMissionVersion(game: RecentGame): boolean {
   const mission = getCanonicalMissionName(game.mission)
   if (mission !== 'The Dig' && mission !== 'Crossing Lines' && mission !== 'Double Bind') return false
-  const day = /^\d{4}-\d{2}-\d{2}/.exec(String(game.date || ''))?.[0]
+  const date = String(game.date || '')
+  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(date)
+  const us = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\b|$)/.exec(date)
+  // Canonical Google Sheets rows can reach the report as an M/D/YYYY string.
+  // Treat that day the same way on the report and the Discord story worker.
+  const day = iso?.[0] ?? (us && Number(us[1]) >= 1 && Number(us[1]) <= 12 &&
+    Number(us[2]) >= 1 && Number(us[2]) <= 31
+    ? `${us[3]}-${us[1].padStart(2, '0')}-${us[2].padStart(2, '0')}` : undefined)
   return !day || day < '2026-09-25'
 }
 

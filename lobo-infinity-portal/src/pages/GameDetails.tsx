@@ -12,7 +12,7 @@ import { publicDetailProjection, type PublicSubmittedArmyList } from '../service
 import { getNewerPublicSnapshotDataset } from '../services/publicSnapshot'
 import { formatPlayerName } from '../services/formatting'
 import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
-import { loadBattleStory } from '../services/gameStoryRouting'
+import { loadBattleStory, PENDING_BATTLE_STORY } from '../services/gameStoryRouting'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -26,6 +26,7 @@ type GameDetailsState =
       stream: StreamedGame | null
       armyLists: PublicSubmittedArmyList[]
       intelligenceLists: ArmyIntelligenceList[]
+      awaitingCanonicalGame?: boolean
     }
   | {
       gameId: number
@@ -76,7 +77,7 @@ function GameDetails() {
         const linkedGame = buildNewsLinkedGame(gameId, data.news)
 
         if (linkedGame) {
-          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null })
+          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null, awaitingCanonicalGame: true })
           applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
@@ -96,6 +97,35 @@ function GameDetails() {
       controller.abort()
     }
   }, [gameId])
+
+  useEffect(() => {
+    if (gameState.status !== 'success' || !gameState.awaitingCanonicalGame) return
+
+    const controller = new AbortController()
+    let lastCheckedSnapshot = ''
+    let checking = false
+    const checkForCanonicalGame = async () => {
+      if (checking || controller.signal.aborted) return
+      checking = true
+      try {
+        const newer = await getNewerPublicSnapshotDataset<RecentGame[]>(
+          'games', lastCheckedSnapshot, controller.signal,
+        )
+        if (!newer || controller.signal.aborted) return
+        lastCheckedSnapshot = newer.snapshotId
+        if (newer.data.some((game) => game.id === gameState.gameId)) window.location.reload()
+      } catch { /* A later focus or interval can try again. */ }
+      finally { checking = false }
+    }
+    void checkForCanonicalGame()
+    const timer = window.setInterval(checkForCanonicalGame, 60_000)
+    window.addEventListener('focus', checkForCanonicalGame)
+    return () => {
+      controller.abort()
+      window.clearInterval(timer)
+      window.removeEventListener('focus', checkForCanonicalGame)
+    }
+  }, [gameState])
 
   useEffect(() => {
     if (gameState.status !== 'success' ||
@@ -401,8 +431,8 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
     const controller = new AbortController()
     setLoadedStory(null)
     loadBattleStory(game, intelligenceLists)
-      .then((story) => { if (!controller.signal.aborted) setLoadedStory(story) })
-      .catch(() => { /* The regular review remains available if story composition fails. */ })
+      .then((story) => { if (!controller.signal.aborted) setLoadedStory(story ?? 'A battle story is unavailable for this game.') })
+      .catch(() => { if (!controller.signal.aborted) setLoadedStory('The battle story could not be generated.') })
     return () => controller.abort()
   }, [game, intelligenceLists])
   const [left, right] = getGameSides(game)
@@ -422,7 +452,8 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
       <div className="battle-report-game-review-grid battle-report-game-review-narrative">
         <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
           <h3 id="game-review-story-title">Battle story</h3>
-          {(loadedStory ?? review.story).split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          {(loadedStory ?? (intelligenceLists.length < 2 ? PENDING_BATTLE_STORY : 'Generating battle story…'))
+            .split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
           <small>Stories are fictionalized scenes inspired by player highlights or by the mission and submitted armies.</small>
         </section>
 

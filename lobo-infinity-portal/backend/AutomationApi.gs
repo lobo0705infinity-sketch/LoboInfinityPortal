@@ -456,7 +456,6 @@ function publishLeagueAutomationEvent(event) {
 }
 
 const AUTOMATION_QUEUE_BATCH_LIMIT = 4;
-const AUTOMATION_QUEUE_SELECTION_WINDOW = 100;
 const AUTOMATION_GAME_EVENT_LOOKBACK = 100;
 
 function enqueueGameSubmittedAutomationEvent(identity) {
@@ -718,7 +717,9 @@ function selectPendingAutomationQueueItems_(limit) {
   if (lastRow <= 1)
     return [];
 
-  const firstRow = Math.max(2, lastRow - AUTOMATION_QUEUE_SELECTION_WINDOW + 1);
+  // A game can wait through several decode runs. Scan the whole queue so a
+  // waiting story remains eligible even after 100 newer events arrive.
+  const firstRow = 2;
   const values = sheet
     .getRange(
       firstRow,
@@ -737,9 +738,15 @@ function selectPendingAutomationQueueItems_(limit) {
     })
     .filter(function(item) {
       return (
-        (item.status === "Pending" || item.status === "Retry") &&
+        (item.status === "Pending" || item.status === "Retry" || item.status === "Waiting") &&
         Number(item.attempts) < retryLimit
       );
+    })
+    // Waiting for a list is normal, not a failed delivery. Rotate those
+    // entries so an undecoded game cannot starve newer queue items.
+    .sort(function(left, right) {
+      return left.lastAttempt.localeCompare(right.lastAttempt) ||
+        left.rowNumber - right.rowNumber;
     })
     .slice(0, limit);
 
@@ -772,16 +779,36 @@ function processAutomationQueueItem(item, force) {
 
 function processDiscordQueueItem(item, force) {
 
-  const payload =
-    buildAutomationDiscordPayload(item);
+  const prepared = item.eventType === "gameSubmitted"
+    ? buildAutomationGameStoryPayload_(item)
+    : { ready: true, payload: buildAutomationDiscordPayload(item) };
+
+  if (!prepared.ready) {
+    const status = prepared.pending ? "Waiting" : "Failed";
+    updateAutomationQueueItem(
+      item.queueId,
+      status,
+      Number(item.attempts),
+      prepared.reason,
+      item.rowNumber
+    );
+    return {
+      success: prepared.pending === true,
+      deferred: prepared.pending === true,
+      destination: "discord",
+      status: status,
+      reason: prepared.reason
+    };
+  }
 
   const result =
     sendDiscordAnnouncementPayload(
       item.eventType,
-      payload,
+      prepared.payload,
       {
         dedupeKey: item.queueId,
         automationEventId: item.eventId,
+        storyGenerated: item.eventType === "gameSubmitted",
         force: force === true
       }
     );
@@ -798,6 +825,53 @@ function processDiscordQueueItem(item, force) {
 
 }
 
+function buildAutomationGameStoryPayload_(item) {
+
+  const payload = parseAutomationPayload(item.payload);
+  const eventPayload = parseAutomationPayload(payload.payload);
+  const game = buildAutomationGamePayloadById_(eventPayload.gameId || eventPayload.id);
+
+  if (!game)
+    return { ready: false, pending: true, reason: "Waiting for the submitted canonical game." };
+
+  const winnerId = String(game.winnerArmyListId || "").trim();
+  const loserId = String(game.loserArmyListId || "").trim();
+  if (!winnerId || !loserId || winnerId === loserId)
+    return { ready: false, pending: true, reason: "Waiting for two distinct submitted army-list IDs." };
+
+  const lists = getDeterministicArmyIntelligenceLists().filter(function(list) {
+    return (String(list.armyListId || "") === winnerId ||
+      String(list.armyListId || "") === loserId) &&
+      list.status === "decoded" && Boolean(list.decoded);
+  });
+  if (lists.length !== 2)
+    return { ready: false, pending: true, reason: "Waiting for both submitted army lists to be decoded." };
+
+  const token = getArmyIntelligenceSchedulerToken_();
+  if (!token)
+    throw new Error("The story worker credential is not configured.");
+
+  const response = UrlFetchApp.fetch(AUTOMATION_GAME_STORY_WORKER_URL, {
+    contentType: "application/json",
+    headers: { Authorization: "Bearer " + token },
+    method: "post",
+    muteHttpExceptions: true,
+    payload: JSON.stringify({ game: game, lists: lists })
+  });
+  const code = response.getResponseCode();
+  const result = JSON.parse(response.getContentText());
+
+  if (code < 200 || code >= 300)
+    throw new Error("The story worker returned HTTP " + code + ".");
+  if (result.pending === true)
+    return { ready: false, pending: true, reason: result.error || "Waiting for a linked story." };
+  if (result.success !== true || !result.story)
+    return { ready: false, pending: false, reason: result.error || "The story could not be generated." };
+
+  return { ready: true, payload: buildDiscordGamePayload(game, result.story) };
+
+}
+
 function buildAutomationDiscordPayload(item) {
 
   const payload =
@@ -805,16 +879,6 @@ function buildAutomationDiscordPayload(item) {
 
   const eventPayload =
     parseAutomationPayload(payload.payload);
-
-  if (
-    item.eventType === "gameSubmitted" &&
-    (eventPayload.gameId || eventPayload.id)
-  ) {
-    const game = buildAutomationGamePayloadById_(
-      eventPayload.gameId || eventPayload.id
-    );
-    return buildDiscordGamePayload(game || eventPayload);
-  }
 
   const template =
     getAutomationTemplateForEvent(item.eventType);

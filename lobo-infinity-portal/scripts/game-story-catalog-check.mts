@@ -32,7 +32,7 @@ for (const story of stories) {
   keys.add(key)
   // Grandfather only the exact 1,300 existing story versions. Newly added or
   // edited stories must pass both strict gates even before catalog completion.
-  // A complete release must recheck every row, including unchanged legacy.
+  // The optional complete authored-catalog audit rechecks unchanged legacy.
   const digest = createHash('sha256').update(JSON.stringify(story)).digest('hex')
   const unchangedLegacy = legacyHashes[key as keyof typeof legacyHashes] === digest
   if (process.argv.includes('--require-complete') || !unchangedLegacy) {

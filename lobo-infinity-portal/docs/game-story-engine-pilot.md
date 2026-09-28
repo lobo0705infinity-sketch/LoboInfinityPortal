@@ -5,27 +5,29 @@
 [110-scene review](game-story-engine-editorial-review.md) no longer has the
 previous court, gate, rescue, and disk plots standing in for scenario
 objectives. An editor still needs to approve plot variety, faction voice, and
-actual-game fit before generated scenes could count as release coverage.
+actual-game fit before generated scenes can be approved for release.
 
 This branch experiments with a local, deterministic generator for every
-supported mission and army matchup without a submitted-game highlight. It
-does not alter the 1,300 historical entries, submitted highlights, or the
-release requirement for 22,770 individually written stories. The historical
-entries pass a
-structural gate, but an objective-text audit flagged all 1,300 for editorial
+supported mission and army matchup without a submitted-game highlight. The
+production story build gate now checks generator coverage of all 22,770
+possible mission-matchup keys instead of requiring 22,770 individually
+written entries. It does not alter the 1,300 historical entries or submitted
+highlights. The historical entries pass a structural gate, but an
+objective-text audit flagged all 1,300 for editorial
 review: it requires the scenario stake in the scene and all three endings.
 This is triage, **not** proof that every historical story is incorrect. The
 1,300 entries are excluded from pilot runtime routing and cannot mask the
 generator in game reports. Submitted-game highlights retain priority. The
-pilot remains draft pending its editorial and release decisions.
+pilot remains draft pending editorial review and the normal release checks.
 
 The older rows are pinned by their story-content hashes in
 `scripts/game-story-legacy-baseline.json`. The ordinary catalog check grants
 its older structural gate only to those exact versions. Any new or changed
 row must also pass the hero's own action and mission-objective gates. The
-complete release check applies both gates to *all* entries, including the
-legacy rows; it currently fails as expected. This prevents the baseline from
-silently expanding as the catalog is written.
+optional historical completeness audit applies both gates to *all* entries,
+including the legacy rows; it currently fails as expected. This prevents the
+baseline from silently expanding as the catalog is written. Production
+prebuilds run the generator coverage test instead.
 
 ## Source and scope
 
@@ -122,6 +124,30 @@ sunshine or another weather effect.
   match setup.
 - The engine runs in local TypeScript without paid model APIs or a deploy.
 
+## Submission to Discord order
+
+The submission handler persists a canonical game and queues its ID. The
+scheduled intelligence worker decodes submitted lists; the Discord queue
+checks that **both distinct army-list IDs** belong to that game and that both
+lists have decoded successfully. Only then does it call the authenticated
+story worker, which checks linkage again and renders the same story engine
+used by the Battle Report. A completed story is placed in the Discord embed,
+clearly marked as fictional, and the webhook is called last. A missing game,
+list, or pending story stays in the queue as `Waiting` without using up retry
+attempts. Waiting items rotate behind untried entries. If the generator
+reports an unsupported mission version or no eligible hero, delivery fails
+with a recorded reason and sends no announcement. A worker error follows the
+existing retry policy. Manual `gameSubmitted` announcements cannot bypass
+the story requirement. Submitted player highlights retain precedence in the
+story worker, after both lists have decoded.
+
+Public Battle Reports read published snapshots, which can become available
+later than the worker's persisted decoded lists. The Discord embed carries
+the completed scene even while a newer public snapshot is pending. A report
+opened from its earlier news link checks for the canonical game in newer
+snapshots, then reloads and continues checking for both decoded rosters.
+This branch has not deployed the new worker or Apps Script changes.
+
 ## What the checks establish
 
 The engine test covers 22,770 canonical mission/matchup keys, four incidents
@@ -165,13 +191,13 @@ not claim a particular console, token, or patient was secured solely because
 the side won.
 See the [current editorial review](game-story-engine-editorial-review.md).
 
-The next editorial gate is an independent generated-only review for natural
+The remaining editorial gate is an independent generated-only review for natural
 prose, plot variety, faction voice, version accuracy, and whether a generated
 narrative could be mistaken for a factual account of unreported moves. The
 legacy authored stories do not provide a valid mission-fidelity comparison.
-The engine test cannot grant that approval. Keep
-`STORY_CATALOG.md` at 1,300 written stories and keep the draft PR unmerged
-until there is an explicit decision on generated coverage.
+The engine test cannot grant that approval. Keep the historical catalog's
+written count at 1,300 and keep the draft PR unmerged until the generated
+prose and mission rules pass editorial review and the other release checks.
 
 The reproducible `scripts/prepare-story-editorial-review.mts` creates a
 110-scene review set: five per mission, including a same-incident faction
@@ -205,6 +231,7 @@ From `lobo-infinity-portal`:
 
 ```bash
 npm run test:game-story-engine
+npm run test:draws
 npm run test:game-stories
 npm run test:game-center
 node --experimental-strip-types scripts/sample-generated-game-stories.mts
@@ -212,5 +239,9 @@ node --experimental-strip-types scripts/prepare-story-editorial-review.mts --out
 node --experimental-strip-types scripts/audit-legacy-story-objectives.mts --output ../legacy-story-objective-audit.csv
 ```
 
-`npm run test:game-stories:complete` still requires 22,770 individually
-authored entries. A successful engine check does not change this gate.
+`npm run test:game-story-engine` is the production story gate for regular and
+Vercel builds. `npm run test:game-stories` checks the existing authored entries
+without requiring a full catalog. The separate, optional
+`npm run test:game-stories:complete` audit still requires 22,770 individually
+authored entries if someone deliberately runs it; it is not required for
+generator-backed builds or release.

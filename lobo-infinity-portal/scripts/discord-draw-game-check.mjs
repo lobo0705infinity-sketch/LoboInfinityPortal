@@ -136,7 +136,14 @@ assert.equal(context.isDuplicateDiscordAnnouncement('gameSubmitted', context.bui
 
 const automation = readFileSync('backend/AutomationApi.gs', 'utf8')
 assert.match(automation, /dedupeKey:\s*item\.queueId/)
-assert.match(automation, /buildAutomationGamePayloadById_[\s\S]*buildDiscordGamePayload\(game \|\| eventPayload\)/)
+assert.match(automation, /buildAutomationGamePayloadById_[\s\S]*buildDiscordGamePayload\(game, result\.story\)/)
+
+const generatedDraw = context.buildDiscordGamePayload(game85, 'A generated draw scene.\n\nThe standoff continues.\n\nThe last turn approaches.\n\nNeither side wins.')
+assert.match(generatedDraw.embeds[0].description, /Fictional battle story/)
+assert.match(generatedDraw.embeds[0].description, /Neither side wins\./)
+assert.ok(!('Tactical Bottom Line' in fieldValues(generatedDraw.embeds[0])))
+assert.equal(context.sendDiscordAnnouncementPayload('gameSubmitted', generatedDraw, {}).success, false,
+  'a manual announcement cannot bypass the story queue')
 
 console.log('Discord draw game regression passed.')
 console.log(JSON.stringify(drawPayload, null, 2))

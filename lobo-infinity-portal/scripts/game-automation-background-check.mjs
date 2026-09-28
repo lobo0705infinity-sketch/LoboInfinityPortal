@@ -22,13 +22,13 @@ assert.match(automation, /function hasRecentAutomationEventId_[\s\S]*AUTOMATION_
 assert.match(enqueueSource, /setValues\(queueRows\)/)
 
 assert.match(automation, /const AUTOMATION_QUEUE_BATCH_LIMIT = 4/)
-assert.match(automation, /const AUTOMATION_QUEUE_SELECTION_WINDOW = 100/)
+assert.match(automation, /const firstRow = 2;/)
 assert.match(automation, /slice\(0, limit\)/)
 assert.match(automation, /item\.rowNumber/)
 assert.match(automation, /buildAutomationGamePayloadById_[\s\S]*getRange\(target \+ 1, 1, 1, sheet\.getLastColumn\(\)\)/)
 assert.match(api, /case "processAutomationQueueBatch"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 
-assert.match(scheduler, /everyMinutes\(5\)/)
+assert.match(scheduler, /everyMinutes\(30\)/)
 assert.equal((scheduler.match(/newTrigger\(/g) || []).length, 1)
 assert.match(scheduler, /ARMY_INTELLIGENCE_SCHEDULER_URL/)
 assert.match(scheduler, /AUTOMATION_QUEUE_WORKER_URL/)

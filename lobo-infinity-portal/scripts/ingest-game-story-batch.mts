@@ -64,4 +64,4 @@ for (const [mission, stories] of byMission) {
     storyTemplateKey(left.mission, ...left.factions)!.localeCompare(storyTemplateKey(right.mission, ...right.factions)!)), null, 2)}\n`)
 }
 await writeFile('src/data/storyManifest.json', `${JSON.stringify({ missions: [...byMission.keys()].sort() }, null, 2)}\n`)
-console.log(`Wrote ${byMission.size} on-demand mission files. Run npm run test:game-stories:complete before release.`)
+console.log(`Wrote ${byMission.size} historical mission files. Run npm run test:game-stories to check the authored catalog.`)
