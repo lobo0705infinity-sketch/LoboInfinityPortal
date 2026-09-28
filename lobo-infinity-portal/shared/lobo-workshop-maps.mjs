@@ -511,7 +511,7 @@ const workshopSaveMaps = [
     "index": 43,
     "id": "3719263238:913074",
     "guid": "913074",
-    "slug": "43-ll-map-13-data-heist-double-bind",
+    "slug": "43-ll-map-13-data-harvest-double-bind",
     "name": "LL Map 13  Data Heist/Double Bind",
     "family": "League tables",
     "objectCount": 138,
@@ -523,7 +523,7 @@ const workshopSaveMaps = [
     "index": 44,
     "id": "3719263238:385da8",
     "guid": "385da8",
-    "slug": "44-ll-map-14-data-heist-double-bind",
+    "slug": "44-ll-map-14-data-harvest-double-bind",
     "name": "LL Map 14  Data Heist/Double Bind",
     "family": "League tables",
     "objectCount": 75,
@@ -606,7 +606,8 @@ const terrainLayouts = [
 const terrainBySave = new Map(terrainLayouts.flatMap(([name, indices]) =>
   indices.map((index) => [index, { name, layoutKey: indices[0] }])))
 
-// Only names explicitly present in the Workshop bag title or source note.
+// Mission names follow the Workshop bag title or source note, except that the
+// commissioner corrected "Data Heist" to the actual mission, "Data Harvest".
 // A blank list means the save is a terrain layout without a named mission setup.
 const missionSetupsBySave = new Map([
   [4, ['Area of Interest']],
@@ -621,8 +622,8 @@ const missionSetupsBySave = new Map([
   [40, ["Dead Man's Switch"]],
   [41, ["Dead Man's Switch"]],
   [42, ['Neutralization']],
-  [43, ['Data Heist', 'Double Bind']],
-  [44, ['Data Heist', 'Double Bind']],
+  [43, ['Data Harvest', 'Double Bind']],
+  [44, ['Data Harvest', 'Double Bind']],
   [45, ["Dead Man's Switch"]],
   [46, ['The Dig', 'Provisioning']],
   [47, ['The Dig', 'Provisioning']],
@@ -630,10 +631,14 @@ const missionSetupsBySave = new Map([
 
 // These pairs contain exactly the same TTS objects, not just similar photos.
 const exactDuplicateOfBySave = new Map([[31, 25], [32, 27], [33, 4], [34, 18]])
+const correctedWorkshopNames = new Map([
+  [43, 'LL Map 13 Data Harvest/Double Bind'],
+  [44, 'LL Map 14 Data Harvest/Double Bind'],
+])
 
 export const loboWorkshopMaps = workshopSaveMaps.map((map) => ({
   ...map,
-  workshopName: map.name,
+  workshopName: correctedWorkshopNames.get(map.index) ?? map.name,
   name: terrainBySave.get(map.index).name,
   layoutKey: terrainBySave.get(map.index).layoutKey,
   missionSetups: missionSetupsBySave.get(map.index) ?? [],

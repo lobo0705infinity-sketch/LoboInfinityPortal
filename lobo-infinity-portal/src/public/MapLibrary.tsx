@@ -96,12 +96,6 @@ function MapDetail({ map }: { map: WorkshopMap | undefined }) {
   const exactMatch = map.exactDuplicateOf
     ? loboWorkshopMaps.find((item) => item.index === map.exactDuplicateOf)
     : variants.find((item) => item.exactDuplicateOf === map.index)
-  const familyNote = map.family === 'Objective rooms'
-    ? 'Check approaches to the central room, then agree which elevated surfaces and interior features are playable.'
-    : map.family === 'Corner layouts'
-      ? 'Study the diagonal lanes from each corner before choosing long range pieces and deployment positions.'
-      : 'Use both views to compare central lanes, edge cover, raised terrain, and routes between the two sides.'
-
   return <main className="portal-shell lobo-maps-page lobo-map-detail" data-page="map-detail">
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'casual'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>Workshop save {String(map.index).padStart(2, '0')} / {loboWorkshopMaps.length}</span></nav>
     <header className="lobo-map-detail-heading">
@@ -127,7 +121,6 @@ function MapDetail({ map }: { map: WorkshopMap | undefined }) {
       {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>Save {String(item.index).padStart(2, '0')} · {sectionForSave(item)?.title ?? 'Workshop'}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span><small>{item.workshopName}</small></Link>)}</div></div> : null}
     </section>
     <div className="lobo-map-detail-info">
-      <section aria-labelledby="map-notes-title"><p className="eyebrow">Before deployment</p><h2 id="map-notes-title">Table checks</h2><p>{familyNote}</p><p>Confirm deployment zones, objective placement, terrain access, and line of fire with your opponent in TTS. The images are a preview; the loaded table and mission rules govern play.</p></section>
       <section aria-labelledby="map-reports-title"><p className="eyebrow">Played on this table</p><h2 id="map-reports-title">Battle reports</h2><p>No battle reports have been verified for this table yet.</p><Link to="/games">Browse all battle reports <span aria-hidden="true">→</span></Link></section>
     </div>
     {map.sourceNote ? <p className="lobo-maps-source-note">Workshop source note: {map.sourceNote}</p> : null}

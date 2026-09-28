@@ -51,7 +51,7 @@ Within Casual, **03/04**, **09/25**, **12/17**, and **15/16** share four layout 
 
 ## Each Workshop save
 
-The proposed name links to the current live preview image page. Mission labels come only from that bag’s original title or source note; an open layout can support other missions once objectives are placed according to the current rules.
+The proposed name links to the current live preview page. Mission labels follow the bag’s original title or source note except for saves 43 and 44, where the commissioner corrected **Data Heist** to **Data Harvest**. An open layout can support other missions once objectives are placed according to the current rules. The existing Workshop bags and live pages still contain the typo; the draft uses corrected page URLs ending in `data-harvest-double-bind` and redirects the old URLs after publication.
 
 | Save | Proposed terrain name / preview | Current Workshop bag | Named mission setup | Exact duplicate |
 | --- | --- | --- | --- | --- |
@@ -97,8 +97,8 @@ The proposed name links to the current live preview image page. Mission labels c
 | 40 | [Copper Grid](https://lobo-infinity-portal.vercel.app/maps/40-ll-map-12-dead-man-s-switch) | LL Map 12 Dead Man's Switch | Dead Man's Switch | — |
 | 41 | [Quadrant Bastion](https://lobo-infinity-portal.vercel.app/maps/41-ll-map-11-dead-man-s-switch) | LL Map 11 Dead Man's Switch | Dead Man's Switch | — |
 | 42 | [Skyrail Exchange](https://lobo-infinity-portal.vercel.app/maps/42-tt-map-2-neutralization) | TT Map#2 Neutralization | Neutralization | — |
-| 43 | [Dustfall Archive](https://lobo-infinity-portal.vercel.app/maps/43-ll-map-13-data-heist-double-bind) | LL Map 13  Data Heist/Double Bind | Data Heist, Double Bind | — |
-| 44 | [Civic Crossing](https://lobo-infinity-portal.vercel.app/maps/44-ll-map-14-data-heist-double-bind) | LL Map 14  Data Heist/Double Bind | Data Heist, Double Bind | — |
+| 43 | [Dustfall Archive](https://lobo-infinity-portal.vercel.app/maps/43-ll-map-13-data-heist-double-bind) | LL Map 13  Data Heist/Double Bind (current typo; proposed: Data Harvest) | Data Harvest, Double Bind | — |
+| 44 | [Civic Crossing](https://lobo-infinity-portal.vercel.app/maps/44-ll-map-14-data-heist-double-bind) | LL Map 14  Data Heist/Double Bind (current typo; proposed: Data Harvest) | Data Harvest, Double Bind | — |
 | 45 | [Containment Ring](https://lobo-infinity-portal.vercel.app/maps/45-tt-map-3-dead-man-s-switch) | TT Map#3 Dead Man's Switch | Dead Man's Switch | — |
 | 46 | [Skyrail Exchange](https://lobo-infinity-portal.vercel.app/maps/46-ll-map-15-the-dig-provisioning) | LL Map 15 The Dig/Provisioning | The Dig, Provisioning | — |
 | 47 | [Neon Exchange](https://lobo-infinity-portal.vercel.app/maps/47-ll-map-16-the-dig-provisioning) | LL Map 16 The Dig/Provisioning | The Dig, Provisioning | — |
@@ -111,8 +111,8 @@ Nine other groups share a near-identical photographed layout but have different 
 
 ## Portal presentation
 
-The browse page shows 40 layout cards organized by Casual and two named events, representing 28 unique terrains across 47 saves. It retains original Workshop names in search and on the cards and filters by named mission setup. A card with multiple saves opens the best matching save for the search or mission filter; the detail page links the other saves using that terrain. A map detail page has a separate **Missions for this save** section. A mission label describes the Workshop bag; it is not a guarantee that its markers reflect the current rules. [Check the current ITS scenario list](https://experience.corvusbelli.com/en/infinity/its).
+The browse page shows 40 layout cards organized by Casual and two named events, representing 28 unique terrains across 47 saves. It displays Workshop bag names with the commissioner’s Data Harvest correction on 43 and 44, and filters by named mission setup. A card with multiple saves opens the best matching save for the search or mission filter; the detail page links the other saves using that terrain. A map detail page has a separate **Missions for this save** section. A mission label describes the Workshop bag or the commissioner’s correction; it is not a guarantee that its markers reflect the current rules. [Check the current ITS scenario list](https://experience.corvusbelli.com/en/infinity/its).
 
 ## Matching the Workshop
 
-The proposed TTS bag nickname is `SET_<terrain name> [save number]`. Its description keeps the original Workshop name and lists any named missions. The prepared script `scripts/prepare-workshop-map-names.py` applies these changes by the 47 bag GUIDs while preserving other JSON fields, including large Steam IDs. The 47-bag capture save verifies the patch, but it contains capture automation and is **not** a safe replacement for the published Workshop item. The original published Workshop JSON is needed for its final update after the names are approved.
+The proposed TTS bag nickname is `SET_<terrain name> [save number]`. Its description lists a corrected Workshop bag name and any named missions, including **Data Harvest** for saves 43 and 44. The prepared script `scripts/prepare-workshop-map-names.py` applies these changes by the 47 bag GUIDs while preserving other JSON fields, including large Steam IDs. The 47-bag capture save verifies the patch, but it contains capture automation and is **not** a safe replacement for the published Workshop item. The original published Workshop JSON is needed for its final update after the names are approved.

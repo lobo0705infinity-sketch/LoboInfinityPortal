@@ -48,7 +48,7 @@ def prepare(source, destination):
                 summary = '\n'.join([
                     start,
                     f"Workshop save {entry['index']:02d}: {entry['name']}",
-                    f"Original bag name: {entry['workshopName']}",
+                    f"Workshop bag name: {entry['workshopName']}",
                     'Named mission setup: ' + (
                         ', '.join(entry['missionSetups']) if entry['missionSetups']
                         else 'none; place objectives for your chosen mission'

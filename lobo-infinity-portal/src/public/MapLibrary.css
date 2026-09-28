@@ -75,7 +75,7 @@
 .lobo-map-variants a strong { color: #e8f7fc; font-size: .82rem; }
 .lobo-map-variants a span { color: #f2c35a; font-size: .79rem; }
 .lobo-map-variants a small { color: #a8bac6; line-height: 1.4; }
-.lobo-map-detail-info { display: grid; grid-template-columns: 1.2fr .8fr; gap: .8rem; }
+.lobo-map-detail-info { display: grid; gap: .8rem; }
 .lobo-map-detail-info section { padding: 1.1rem; border: 1px solid rgba(143, 227, 246, .22); border-radius: 12px; background: #0d1b27; }
 .lobo-map-detail-info h2 { margin: .2rem 0 .7rem; }
 .lobo-map-detail-info p:not(.eyebrow) { color: var(--text-soft, #c1cad5); line-height: 1.55; }
