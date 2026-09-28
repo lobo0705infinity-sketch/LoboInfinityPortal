@@ -7,6 +7,9 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { SOURCED_STORY_SCENARIOS } from '../src/data/generatedStoryScenarios.ts'
 import { composeGameStory } from '../src/services/generatedGameStory.ts'
+import { getStoryListReadiness } from '../src/services/gameIntelligenceLinks.ts'
+import { loadBattleStory } from '../src/services/gameStoryRouting.ts'
+import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import type { GameStoryTemplate, HeroRole } from '../src/services/gameStoryTemplate.ts'
 import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
 
@@ -14,9 +17,14 @@ import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-
 // packet samples the generated pilot on its own terms, including reversals.
 const outArg = process.argv.indexOf('--output-dir')
 const seedArg = process.argv.indexOf('--seed')
+const revisionArg = process.argv.indexOf('--source-revision')
 const outputDir = path.resolve(outArg < 0 ? '../story-editorial-review' : process.argv[outArg + 1])
 const seed = seedArg < 0 ? randomBytes(24).toString('hex') : process.argv[seedArg + 1]
+const sourceRevision = revisionArg < 0
+  ? execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
+  : process.argv[revisionArg + 1]
 assert.ok(seed && seed.length >= 16, 'Provide a seed of at least 16 characters')
+assert.match(sourceRevision, /^[a-f0-9]{40}$/, 'Source revision must be a Git commit SHA')
 const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 const roles: readonly HeroRole[] = ['objective', 'gunfighting', 'closeCombat']
 
@@ -106,7 +114,7 @@ const packet: string[] = [
   'Each mission has five cases: the same incident with the hero faction reversed; one mirror; and two further incidents. Together they cover all four incidents and all three hero roles for each of the 22 missions. Player A/B and “the operative” are illustrative substitutions; real rosters and results are tested separately. Read all three alternative endings even though only one would appear for a game.',
 ]
 const privateConfig = { status: 'generated-only pilot; previous authored answer key superseded',
-  seed, sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+  seed, sourceRevision,
   selection: '22 missions × five cases (one reversed, one mirror, four distinct incidents, three roles); seeded factions and mission order',
   cases: [] as unknown[] }
 const scores = ['case_id,mission,role,reviewer,prose_1_5,mission_1_5,faction_1_5,incident_1_5,endings_1_5,repetition_1_5,critical_issue,major_issue,notes']
@@ -137,14 +145,15 @@ const guide = `# Generated story pilot · editorial rubric
 ## How to review the 110 generated scenes
 
 1. Give the packet and a blank scorecard to **two independent readers** who have not seen the generator. Both readers score each case 1–5: natural prose, correct mission and edition, faction-specific choices, causal incident and role action, three result-consistent endings tied to the mission stakes, and variety compared with the other four stories in that mission group.
-2. Check the linked mission rules. Each group has one reversed matchup (cases 1 and 2), a mirror (case 3), and all four incidents and three hero roles. Note verbatim phrases repeated across groups, generic faction swaps, endings inconsistent with the winner, and any action that pretends to record actual play. “The operative” is a shared illustrative stand-in; recorded games need an eligible named roster actor.
+2. Check the linked mission rules. Each group has one reversed matchup (cases 1 and 2), a mirror (case 3), and all four incidents and three hero roles. Note verbatim phrases repeated across groups, generic faction swaps, endings inconsistent with the winner, and any action that pretends to record actual play. “The operative” is a shared illustrative stand-in; when both decoded rosters are available, recorded games need an eligible named roster actor.
 3. Game records contain the winner and aggregate points, not a breakdown of accomplished objectives. Flag **critical** for a false mission mechanism, an invalid setup, a claimed objective completion that the record cannot establish, or a contradictory outcome. Flag **major** for repetitive sentence scaffolds, interchangeable armies, unmotivated scene events, or an ending that omits the mission stake. Record a sentence or case ID for every flag.
-4. Freeze both scorecards before reading the configuration file. Resolve rule disagreements using the relevant mission edition. Separately test actual games with linked decoded rosters: player/army assignment, eligible hero, result, and clear labeling of invented setting and actions.
+4. Freeze both scorecards before reading the configuration file. Resolve rule disagreements using the relevant mission edition. Separately test actual games with linked decoded rosters: player/army assignment, eligible hero, result, and clear labeling of invented setting and actions. Score the accompanying 22 roster-free runtime scenes for cases where a list was never submitted or its code was permanently rejected: these must disclose the missing verified roster and must not name an unverified unit. A submitted code still pending decode must not receive a roster-free story.
 
 ## Predeclared threshold
 
 - All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. For Akial Interference, Critical Intervention and Double Bind, check that no story assigns an unreported card identity, attacker role or selected scoring plan to a recorded player.
 - At least 80% of generated scenes need an average of **4/5 or better in every rated dimension** across two reviewers. No mission group should have an unaddressed repetition or faction-swap complaint. Revise weak groups, then review new, unseen scenes rather than scoring the same examples until they pass.
+- Apply the same 80% and zero-unresolved-critical thresholds to the roster-free runtime supplement separately; score only the applicable ending shown for each case.
 - Passing this review does not turn generated scenes into individually authored stories, prove fictional moves happened in a match, or itself authorize merging/deploying the pilot. Production uses generator coverage for the story build gate; other release checks still apply.
 
 **Mission versions:** Corvus Belli's [September 24, 2026 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18-hotfix-september) clarified The Dig's console analysis and Player Tokens, Double Bind's objective selection and Engineer/GizmoKit antenna repairs, and Crossing Lines' removal of the HVT and Classified Deck. This pilot does not simulate the Player Token state. Check the depicted sequence against the mission edition; older recorded games may use earlier editions.
@@ -152,11 +161,51 @@ const guide = `# Generated story pilot · editorial rubric
 Reproduce from the recorded source revision with \`node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir <empty-directory> --seed <seed-in-configuration>\`. The script refuses to overwrite review files.
 `
 
+const fallbackPacket = [
+  '# Roster-free battle-story review supplement',
+  '',
+  '**Fictional test games.** Each scene is the runtime output with no verified army roster. The mission, armies, players and result are inputs; actions are invented. Alternating cases simulate no submitted list or a terminally rejected code. Check mission mechanics, faction choices, prose, repetition, result, and whether the wording implies an unverified unit was present.',
+]
+const fallbackScores = ['case_id,mission,roster_state,result,reviewer,prose_1_5,mission_1_5,faction_1_5,incident_1_5,ending_1_5,repetition_1_5,critical_issue,major_issue,notes']
+for (const [index, group] of ordered.entries()) {
+  const caseId = 'F' + String(index + 1).padStart(2, '0')
+  const rejected = index % 2 === 1
+  const draw = index % 3 === 2
+  const state = rejected ? 'invalid submitted code' : 'no army lists submitted'
+  const example = group.cases[3]
+  const game = {
+    id: Number.parseInt(rank(group.mission + ':fallback').slice(0, 8), 16),
+    date: '2026-09-26', mission: group.mission,
+    winner: 'Player A', winnerDisplayName: 'Player A', winnerFaction: example.hero,
+    loser: 'Player B', loserDisplayName: 'Player B', loserFaction: example.other,
+    winnerArmyCode: '', loserArmyCode: rejected ? 'rejected-roster=' : '',
+    winnerArmyListId: '', loserArmyListId: '',
+    gameResult: draw ? 'draw' : 'win',
+    tp: draw ? '3-3' : '5-2', op: draw ? '5-5' : '6-3', vp: '150-100',
+  } as RecentGame
+  const failedLists = rejected ? [{ player: 'Player B', armyCode: 'rejected-roster=',
+    status: 'failed', decoded: null, error:
+      'Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.',
+  } as ArmyIntelligenceList] : []
+  assert.equal(getStoryListReadiness(game, failedLists), 'rosterless', caseId)
+  const story = await loadBattleStory(game, failedLists)
+  assert.ok(story && story.split('\n\n').length === 4, caseId + ': three paragraphs and one result')
+  assert.doesNotMatch(story, /\{\{[^}]+\}\}/, caseId + ': no unresolved placeholders')
+  fallbackPacket.push('', `## ${caseId} · ${group.mission}`, '',
+    `Player A: ${example.hero}. Player B: ${example.other}.`, '',
+    `Roster state: ${state}. Recorded result: ${draw ? 'draw' : 'Player A wins'}.`, '',
+    story)
+  fallbackScores.push([caseId, group.mission, state, draw ? 'draw' : 'Player A wins',
+    ...Array(10).fill('')].join(','))
+}
+
 await mkdir(outputDir, { recursive: true })
 for (const [filename, contents] of [
   ['blind-story-review-packet.md', packet.join('\n') + '\n'],
   ['story-review-rubric.md', guide],
   ['story-review-scorecard.csv', scores.join('\n') + '\n'],
+  ['roster-free-runtime-supplement.md', fallbackPacket.join('\n') + '\n'],
+  ['roster-free-review-scorecard.csv', fallbackScores.join('\n') + '\n'],
   ['PRIVATE-story-review-answer-key.json', JSON.stringify(privateConfig, null, 2) + '\n'],
 ] as const) await writeFile(path.join(outputDir, filename), contents, { flag: 'wx' })
-console.log(`Wrote ${total} generated-only scenes across ${ordered.length} missions to ${outputDir}.`)
+console.log(`Wrote ${total} generated-only scenes and ${ordered.length} roster-free runtime scenes to ${outputDir}.`)

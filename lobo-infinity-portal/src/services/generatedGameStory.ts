@@ -418,7 +418,7 @@ export function composeGameStory(
   } else if (otherVoice.style === 'rescue' && otherIntro === 3) {
     otherMove = 'Near ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' sent relief.'
   } else if (otherVoice.style === 'contract' && otherIntro === 2) {
-    otherMove = 'Across from ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' posted hired guns.'
+    otherMove = 'Across from ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' staggered their sentries along the approach.'
   } else if (otherVoice.style === 'technical' && otherIntro === 2) {
     otherMove = 'At ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' assigned a watcher.'
   }

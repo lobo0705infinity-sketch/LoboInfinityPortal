@@ -6,13 +6,15 @@ The six-game review corrected #115's omitted eight failed opposed WIP rolls
 without assigning them to a model, kept #117's analysis console in place,
 removed an unsupported cause for Ioann's immobilization in #120, and made the
 room approach and supply-box resolution in generated #118/#119 physically
-consistent. The live #118 report still awaits a verified Yu Jing decode: its
-persisted Army Intelligence record reports an invalid unit option. The
-renderer now identifies this failure instead of implying that the list simply
-has not been processed. An offline preview does not establish live readiness.
+consistent. The live #118 report has an unverified Yu Jing list: its persisted
+Army Intelligence record reports an invalid unit option. A confirmed terminal
+decode failure now uses a clearly labeled roster-free fictional scene; while
+decoding is still pending the report waits rather than inventing a unit. An
+offline preview does not establish live readiness.
 
 ## Corrections after the latest audit
 
+- The local Vercel build now passes the complete prebuild, Game Center, Discord draw regression, TypeScript compilation and Vite bundling. The draw check was updated for the roster-free disclosure argument; the release PR still needs its remote checks and editorial review.
 - Defensive replies for Bakunin, Caledonia, Tohaa and Ikari now establish their own decoy, screen, shooter or reckless fighter. A Next Wave closing supplies its own feint. The counter no longer assumes the opposing army used one of those maneuvers. An explicit check covers all 45 Area responses and 45 other-mission defenses.
 - The new-story gate reads the sentence containing `{{hero}}` and requires that actor's action to match the selected role. For objective heroes it also requires the mission anchor in the hero's own clause. All 264 inert-hero mutations in the audit were rejected for this reason. The 1,300 older authored rows are pinned by story-content hash: edits and additions must pass the new role and mission-objective gates. The optional full authored-catalog audit checks every row, including the pinned legacy versions.
 - Several repeated army introductions, maneuvers and closings now put the mission's contested position inside the tactical decision or use a distinct faction action. Area of Interest rescue defenses vary by army. Repetition remains measurable in new unseen samples; the current generator still needs an editor's variety review.
@@ -30,8 +32,10 @@ has not been processed. An offline preview does not establish live readiness.
 | --- | --- | --- |
 | Mission and result | The composer checks declared objective evidence and relevant incident item or wreck facts for every generated matchup, incident and role; negative mutations prove the three identified contradictions fail. | Text checks cover named contradictions, not all possible factual or causal errors. The scenarios and match feed still need a rules editor to confirm each premise and version. |
 | Prose variety | In one unchanged 88-scene sample, the current edits reduced distinct repeated ten-word spans from 59 to 32 and thirteen-word spans from 6 to 0. Two new seeds still yielded 66 and 72 repeated ten-word spans, and 9 and 7 repeated thirteen-word spans, respectively. Each packet contains 110 scenes before excluding the 22 deliberate faction reversals. | Reusable tactics remain visible. No new packet has received two independent editorial scorecards. A favorable single seed would misrepresent the variation. |
+| New review packet | The 28 September packet covers 110 scene compositions, five per mission. Excluding its 22 deliberate faction reversals leaves 88 independent scenes with 56 distinct repeated ten-word spans (119 appearances) and five distinct repeated thirteen-word spans (ten appearances). The accompanying 22-scene roster-free runtime supplement has no repeated thirteen-word spans by that measure. | Phrase overlap is a diagnostic, not an editorial score. Two independent readers still need to assess whether repeated prose, faction decisions, and mission stakes are acceptable. |
 | Authored catalog | The 1,300 historical entries remain unchanged and pinned for catalog testing. The pilot bypasses them at runtime; submitted-game highlights still take priority. A conservative objective-text audit flagged all 1,300 for human review. | The optional complete authored-catalog audit fails on the first legacy row that lacks an actor-specific objective action. Another 21,470 authored pairings are absent, but production builds use the generator coverage gate and do not require them. Neither a text flag nor a structural pass is a human verdict. |
 | Runtime | All 22 missions now route through the generator for games with linked, eligible rosters. Akial keeps cards anonymous; Critical Intervention gives either hero the shared Server Room objective; Double Bind does not say which selected plan scored. | The feed still lacks the drawn cards, attacker assignment, and chosen objective set. The fictional scene must never be read as a reconstruction of those details. |
+| Missing or rejected rosters | All 22 missions can render a roster-free fictional scene when a list was never submitted or a submitted code received a terminal decode error. The game page and Discord label this limitation; the story names no unverified unit. Pending decodes stay pending. | Roster-free scenes have mission, factions and result, but cannot use real unit actions or claim to reconstruct the players' lists. The review supplement has not been scored independently. |
 
 The [24 September 2026 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18-hotfix-september) affects Dig, Crossing Lines and Double Bind; the scenario sources and editions are recorded in `src/data/generatedStoryScenarios.ts`. The test suites and sampling do not replace a mission-rule signoff.
 
@@ -40,10 +44,10 @@ The [24 September 2026 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18
 From `lobo-infinity-portal`, run:
 
 ```bash
-node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir <empty-directory> --seed 20260928-scene-facts-final-b
+node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir <empty-directory> --seed 20260928-rosterless-editorial-r2
 ```
 
-The packet labels all scenes as generated and substitutes Player A/B and “the operative” for an actual game and roster hero. Readers should examine all three alternative endings, although a game displays only the applicable one. Give separate packets to two readers who have not inspected the generator; have them score mission correctness, faction choice, causality, prose, repetition, and the endings using the accompanying rubric. Record disagreements and review newly generated scenes after any revision.
+The packet labels all scenes as generated and substitutes Player A/B and “the operative” for an actual game and roster hero. Readers should examine all three alternative endings, although a game displays only the applicable one. The roster-free runtime supplement contains one rendered example per mission, alternating missing submissions and terminally rejected codes; reviewers should check that its generic actors are clear and that no unverified unit is named. Give the packet and supplement to two readers who have not inspected the generator; have them score mission correctness, faction choice, causality, prose, repetition, and the endings using the accompanying rubric. Record disagreements and review newly generated scenes after any revision.
 
 ## Gate to continue
 
