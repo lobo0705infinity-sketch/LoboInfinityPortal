@@ -121,30 +121,30 @@ function namedSeed(sentence: string, ally: string, enemy: string): string {
 // Each mission has a different contested consequence. This sentence closes
 // the fictional encounter without turning the overall score into an
 // invented claim that a particular console, object, or patient was secured.
-function missionCounter(mission: string, opponent: string): string {
+function missionCounter(mission: string, opponent: string, hero: string): string {
   switch (mission) {
-    case 'Area of Interest': return `${opponent} closed on the relay from the far side; the switch and the ground around it remained two separate problems.`
-    case 'Akial Interference': return `${opponent} watched the public cards while the filter request could still be interrupted at the aerial.`
-    case 'B-Pong': return `${opponent} turned toward the beacon, with the far console still able to alter its course.`
-    case 'Corporate Appropriation': return `${opponent} moved to block the exit; the prototype still had to leave the bay.`
-    case 'Critical Intervention': return `${opponent} held the server-room threshold, leaving the data pack's way out under fire.`
-    case 'Crossing Lines': return `${opponent} held the far dead zone while the crossing route remained exposed.`
-    case "Dead Man's Switch": return `${opponent} held the Objective Room door; reaching the Quantum Core or a Data Pack meant crossing under that watch.`
-    case 'Evacuation': return `${opponent} guarded the Extraction Console, leaving the civilian escort to find a safer angle.`
-    case 'Hardlock': return `${opponent} faced the beacon as the last accessible console became the other way to affect its course.`
-    case 'Last Launch': return `${opponent} watched the tower checker; an ID Token still had to make it across the room.`
-    case 'Neutralization': return `${opponent} held the zone boundary; a recovered token still had to cross it.`
-    case 'Outbreak': return `${opponent} stayed beside the patient, threatening the path needed for both the scan and treatment.`
-    case 'Panic Room': return `${opponent} covered the Panic Room door while the essential personnel looked for a way inside.`
-    case 'Provisioning': return `${opponent} blocked the safety boundary, with the supply box still short of a clear deposit.`
-    case 'Annihilation': return `${opponent} guarded the lieutenant's route as both sides tried to protect their remaining troops.`
-    case 'Battleground': return `${opponent} entered from the far side; neither patrol could yet leave the future central sector unchallenged.`
-    case 'Cutthroat': return `${opponent} stayed near the opposing lieutenant, turning the exposed lane into a danger for both command groups.`
-    case 'Superiority': return `${opponent} moved toward the far quadrant while the console and its approach remained under fire.`
-    case 'Uplink Center': return `${opponent} reached for the coffin as the antennas blinked, splitting attention between contact and control.`
-    case 'Double Bind': return `${opponent} pressed toward the ground beyond the aerial, forcing a choice between the switch and the nearby zone.`
-    case 'The Dig': return `${opponent} closed in; even a completed reading would leave someone to get a hand on the marked unit and neutralize it.`
-    case 'Data Harvest': return `${opponent} neared the designated zone while the harvester still needed a clear place wholly inside it.`
+    case 'Area of Interest': return `${opponent} pushed back into the courtyard as the mast flickered, closing on the switch while the ground around it remained contested.`
+    case 'Akial Interference': return `${opponent} turned toward the aerial as the filter flickered, close enough to cut in before the public cards rotated.`
+    case 'B-Pong': return `${opponent} darted across the lane toward the next console, where a single input could send the beacon back the other way.`
+    case 'Corporate Appropriation': return `${opponent} reached the lift lip as the carriage dropped, hemming the prototype and its carrier against the bay wall.`
+    case 'Critical Intervention': return `${opponent} stepped out from behind the rack with the Data Pack in sight, cutting off the server-room door just as the carrier reached it.`
+    case 'Crossing Lines': return `${opponent} stepped into the far dead zone; the antenna was at ${hero}'s back, with only the contested crossing between them.`
+    case "Dead Man's Switch": return `${opponent} cut across the Objective Room toward the Quantum Core, separating its carrier from the Data Pack at the doorway.`
+    case 'Evacuation': return `${opponent} came around the barrier, pinning the escort beside the civilian just short of contact with the Extraction Console.`
+    case 'Hardlock': return `${opponent} came down the beacon lane just as the console face lit up, closing the route to the enemy beacon.`
+    case 'Last Launch': return `${opponent} headed for the ID Checker while the download request held at the scanner, leaving the tower between the two crews.`
+    case 'Neutralization': return `${opponent} took the gap beside the box; if the token came loose, the route to the Neutralization Area ran straight through that position.`
+    case 'Outbreak': return `${opponent} entered the corridor by the stretcher, close enough to interrupt the Infected patient’s stabilization before it could take hold.`
+    case 'Panic Room': return `${opponent} was already inside, turning down the inner wall toward Essential Personnel while the broken panel swung behind them.`
+    case 'Provisioning': return `${opponent} reached the safe area from the opposite lane as the supply box came through the scattered gear.`
+    case 'Annihilation': return `${opponent} came through the wreck after the squad, keeping the enemy lieutenant’s position screened while the survivors traded fire in the gap.`
+    case 'Battleground': return `${opponent} followed through the broken barrier, forcing a fight for the ground that would become the central sector at battle’s end.`
+    case 'Cutthroat': return `${opponent} slipped through the shutter gap toward the friendly lieutenant while the rival officer withdrew behind the opposite wall.`
+    case 'Superiority': return `${opponent} entered from the far quadrant while the console light changed, forcing a fight on both sides of the boundary.`
+    case 'Uplink Center': return `${opponent} reached the Tech-Coffin’s far side, threatening the gap between it and the antenna the first squad had just left.`
+    case 'Double Bind': return `${opponent} crossed under the aerial toward ${hero}, narrowing the contested zone to the strip of ground between them.`
+    case 'The Dig': return `Across the pit, ${opponent.replace(/^The /, 'the ')} slid toward the tech; ${hero} would have to follow into the rubble to neutralize it.`
+    case 'Data Harvest': return `${opponent} cut in from the opposite wall, close enough to interrupt the deposit before the harvester could be set down inside the designated zone.`
     default: throw new Error(`Missing roster scene consequence for ${mission}`)
   }
 }
@@ -153,8 +153,8 @@ function tacticalSetting(template: GameStoryTemplate): string | null {
   const source = template.scene!
   if (template.mission === 'The Dig' && /unfinished analysis prompt/i.test(source.turn)) {
     return /stones/i.test(source.turn)
-      ? 'Grit fell from a buried contact as rounds struck the edge of the shaft.'
-      : 'A rock slipped off the reader and exposed its contact beneath the dust.'
+      ? 'A fresh volley jarred the rim, shaking grit from the buried contact.'
+      : 'A rock broke loose from the reader and exposed its contact beneath the dust.'
   }
   return source.turn.replace(/\bshifted\b/gi, 'moved')
 }
@@ -188,22 +188,26 @@ function goalReferent(mission: string, goal: string): string {
     case 'Evacuation': return 'the console'
     case 'Neutralization': return goal.endsWith('Box') ? 'the box' : 'the boundary'
     case 'Panic Room': return 'the doorway'
+    case 'The Dig': return 'the console'
     case 'Data Harvest': return goal.endsWith('zone') ? 'the zone' : 'the harvester'
     default: return goal
   }
 }
 
-function arrange(parts: string[], extras: string[], minimum = 40): string | null {
+// Live roster scenes can use longer paragraphs than the archived, hand-edited
+// catalog. Keep complete actors and consequences instead of dropping the last
+// beat merely to satisfy the catalog's separate 75-word template limit.
+function arrange(parts: string[], extras: string[], minimum = 40, maximum = 100): string | null {
   const result = parts.filter(Boolean)
   for (const sentence of extras) {
     if (count(result.join(' ')) >= minimum) break
-    if (count([...result, sentence].join(' ')) <= 75) result.push(sentence)
+    if (count([...result, sentence].join(' ')) <= maximum) result.push(sentence)
   }
   // Drop the last optional sentence if a real player handle or unit name
   // takes the paragraph over the maximum. Never truncate a model identity.
-  while (result.length > 2 && count(result.join(' ')) > 75) result.pop()
+  while (result.length > 2 && count(result.join(' ')) > maximum) result.pop()
   const paragraph = tidy(result.join(' '))
-  return count(paragraph) >= minimum && count(paragraph) <= 75 ? paragraph : null
+  return count(paragraph) >= minimum && count(paragraph) <= maximum ? paragraph : null
 }
 
 function familiarName(value: string): string {
@@ -211,6 +215,19 @@ function familiarName(value: string): string {
   // A generic unit like "the Field Engineer" retains its full designation.
   return /^the\s/i.test(value) || /['’]s\s/.test(value)
     ? value : value.split(/\s+/).at(-1) ?? value
+}
+
+function joinTurningPoint(turn: string, actor: string, action: string, mission: string): string {
+  const event = turn.replace(/[.!?]\s*$/, '')
+  if (mission === 'The Dig' && /(?:volley jarred|rock broke loose)/i.test(event)) {
+    return `${event} as ${actor} ${action}.`
+  }
+  // A simple physical change is clearer as the cause of the attempt. Longer
+  // clauses already contain their own timing and need their own sentence.
+  if (count(event) <= 22 && !/\b(?:as|while|when)\b/i.test(event)) {
+    return `When ${event.charAt(0).toLowerCase() + event.slice(1)}, ${actor} ${action}.`
+  }
+  return `${turn} ${upper(actor)} ${action}.`
 }
 
 export function renderRosterStoryScene(template: GameStoryTemplate, game: RecentGame,
@@ -250,16 +267,18 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
   const settingParts = source.setting?.split(/(?<=[.!?])\s+/) ?? []
   const introducedHero = [source.opening, source.complication].some((part) =>
     seed(part).includes(heroName))
+  const firstLine = source.setting ? settingParts[0] : seed(source.opening)
+  const secondLine = settingParts[1] ?? ''
+  const complication = seed(source.complication).replaceAll(heroName,
+    firstLine.includes(heroName) || secondLine.includes(heroName) ? heroLater : heroName)
   const opening = arrange([
-    source.setting ? settingParts[0] : seed(source.opening),
-    settingParts[1] ?? '',
-    seed(source.complication),
+    firstLine,
+    secondLine,
+    complication,
     threat && threatWeapon
-      ? introducedHero
-        ? `${upper(threatName)} covered the crossing with ${indefinite(threatWeapon)} ${threatWeapon}; the way to ${goal} had no safe angle.`
-        : `${upper(threatName)} covered the crossing with ${indefinite(threatWeapon)} ${threatWeapon}; ${heroName} needed that lane quiet to reach ${goal}.`
+      ? `Between ${introducedHero ? heroLater : heroName} and ${goal}, ${threatName} held the crossing with ${indefinite(threatWeapon)} ${threatWeapon}.`
       : `${upper(heroName)} had to cross ${ground} before ${enemyObjective} closed off ${goal}.`,
-  ], [`Neither crew could reach ${goal} without exposing its lead fighter.`])
+  ], [`The exposed approach gave both crews a view of anyone trying to reach ${goal}.`])
 
   const supportingGun = cast.allyGun ?? (hasGun(hero) ? hero : cast.allyAro)
   const supportingName = name(supportingGun)
@@ -268,14 +287,14 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
     Number(game.id) || 0)) % 4
   const shot = supportingGun && supportingWeapon && threat
     ? [
-      `${upper(supportingName)} answered ${threatName}'s fire with ${indefinite(supportingWeapon)} ${supportingWeapon}, drawing the return shots away from ${goal}.`,
-      `For a moment ${threatName} had to face ${supportingName}'s ${supportingWeapon} instead of watching ${goal}.`,
-      `${upper(threatName)} kept watch over ${goal} until ${supportingName} fired ${indefinite(supportingWeapon)} ${supportingWeapon} from the other side.`,
-      `The answer to ${threatName}'s fire came from ${supportingName}'s ${supportingWeapon}; the route to ${goal} opened for a moment.`,
+      `${upper(supportingName)} drew ${threatName}'s fire away from ${goal} with ${indefinite(supportingWeapon)} ${supportingWeapon}.`,
+      `${upper(supportingName)} fired at ${threatName} with ${indefinite(supportingWeapon)} ${supportingWeapon}, drawing the guard's eye away from ${shorterGoal}.`,
+      `A burst from ${supportingName}'s ${supportingWeapon} pulled ${threatName}'s attention off ${goal}.`,
+      `The answer came from ${supportingName}'s ${supportingWeapon}; ${threatName} fired back instead of watching ${goal}.`,
     ][variant]
     : supportingGun && supportingWeapon
-      ? `${upper(supportingName)} fired ${indefinite(supportingWeapon)} ${supportingWeapon} across ${ground}, easing the pressure on the route to ${goal}.`
-      : `${upper(heroLater)} waited behind cover until the fighting broke the watch on ${goal}.`
+      ? `${upper(supportingName)} sent fire from ${indefinite(supportingWeapon)} ${supportingWeapon} across ${ground}, giving ${heroLater} room to move toward ${goal}.`
+      : `${upper(heroLater)} held back while ${enemyObjective} watched the route to ${goal} from the opposite side.`
   const visionActor = cast.allyVision && key(cast.allyVision) !== key(supportingGun)
     ? cast.allyVision : cast.enemyVision
   const visionTool = screen(visionActor)
@@ -284,38 +303,43 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
   const screening = visionActor && visionTool
     ? /disco\s*baller/i.test(visionTool)
       ? [
-        `${upper(visionName)} sent a Disco Baller toward ${shorterGoal}; its Eclipse screen cut the firing lane in two.`,
-        `An Eclipse screen spilled from ${visionName}'s Disco Baller across the approach to ${shorterGoal}.`,
-        `${upper(visionName)} rolled a Disco Baller between the firing positions; Eclipse hid ${shorterGoal} from the far side.`,
-        `${upper(visionName)} sent a Disco Baller across the approach to ${shorterGoal}, leaving the return sightline lost in Eclipse.`,
+        `${upper(visionName)} sent a Disco Baller after the shots, and its Eclipse screen swallowed the approach to ${shorterGoal}.`,
+        `${upper(visionName)} rolled a Disco Baller into the gap, spreading Eclipse across the exposed route while the guns answered each other.`,
+        `${upper(visionName)} rolled a Disco Baller into the gap, letting Eclipse hide ${shorterGoal} behind the exchange of fire.`,
+        `Before the lane cleared, ${visionName}'s Disco Baller spread an Eclipse screen across the route to ${shorterGoal}.`,
       ][variant]
       : /mirro?rball/i.test(visionTool)
-        ? `${upper(visionName)} spread Mirrorball across the route to ${shorterGoal}, breaking sight between the firing positions.`
+        ? `${upper(visionName)} spread Mirrorball across the route to ${shorterGoal} while the return fire was still searching for an angle.`
         : /launcher/i.test(visionTool)
-          ? `${upper(visionName)} fired a smoke grenade toward ${shorterGoal}, hiding the next few steps from the far side.`
-          : `${upper(visionName)} threw a smoke grenade toward ${shorterGoal}, hiding the next few steps from the far side.`
+          ? `${upper(visionName)} fired a smoke grenade toward ${shorterGoal}, cutting the return sightline before the next crossing.`
+          : `${upper(visionName)} threw a smoke grenade toward ${shorterGoal}, cutting the return sightline before the next crossing.`
     : ''
+  const route = template.mission === 'The Dig' ? 'the excavation lip'
+    : /^the approach to /i.test(ground) ? shorterGoal : ground
   const openingInFire = screening
     ? allyScreen
       ? [
-        `${upper(heroLater)} gained a few steps, not safety: ${enemyObjective} was already nearing ${shorterGoal} from the other side.`,
-        `${upper(heroLater)} used the blind stretch to approach ${shorterGoal}; ${enemyObjective} was coming from the far side.`,
-        `The cover bought ${heroLater} a short crossing, but ${enemyObjective} was heading for ${shorterGoal} too.`,
-        `${upper(enemyObjective)} appeared beyond ${shorterGoal} before ${heroLater} could use all of the cover.`,
+        `Behind that screen, ${heroLater} edged toward ${route}, though ${enemyObjective} was closing from the other side.`,
+        `${upper(heroLater)} took the blind stretch toward ${route}; the reprieve lasted only until ${enemyObjective} appeared on the far side.`,
+        `That gave ${heroLater} a way into ${route}, but ${enemyObjective} was moving toward the same objective.`,
+        `${upper(heroLater)} slipped toward ${route} while ${enemyObjective} tried to close the distance from the opposite side.`,
       ][variant]
-      : `${upper(heroLater)} had to find another angle while ${enemyObjective} moved toward ${shorterGoal} behind the screen.`
-    : `${upper(heroLater)} saw an opening, but ${enemyObjective} had begun to move toward ${shorterGoal} too.`
+      : `${upper(heroLater)} had to find a different angle through ${route} as ${enemyObjective} pressed toward ${shorterGoal} under the screen.`
+    : `${upper(heroLater)} used the lull to approach ${route}, but ${enemyObjective} had started toward ${shorterGoal} too.`
   const middle = arrange([shot, screening, openingInFire], [
-    `From either side, the gap toward ${goal} seemed smaller than it had before the exchange.`,
+    `The brief advantage ended wherever the two approaches met near ${goal}.`,
   ])
 
   const action = template.role === 'objective' ? source.objectiveAction
     : template.role === 'gunfighting' ? source.gunfighting : source.closeCombat
   const opponent = enemyObjective
-  const enemyMove = missionCounter(template.mission, upper(opponent || `${enemyPlayer}'s remaining fighters`))
+  const enemyMove = missionCounter(template.mission, upper(opponent || `${enemyPlayer}'s remaining fighters`), heroLater)
   const turn = tacticalSetting(template) ?? seed(source.turn)
   const actionText = template.mission === 'The Dig'
-    ? action.replace(/the analysis console input/gi, 'the reader').replace(/the hyperthermal tech/gi, 'the buried unit')
+    ? action.replace(/the analysis console input/gi, 'the reader')
+      .replace(/the hyperthermal tech/gi, 'the buried unit')
+      .replace(/attempted a WIP (?:reading|analysis) of/gi, 'tried to analyze')
+      .replace(/began a reading of/gi, 'began analyzing')
     : action.replace(/\bthe specialist escorting a civilian\b/gi,
       `${name(allyObjective ?? hero)}, who was escorting a civilian`)
       .replace(/\bthe specialist\b/gi, name(allyObjective ?? hero))
@@ -325,7 +349,8 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
     ? actionText.replace(/\b(?:the|a|an)\s+(?:(?:analysis-console|Akial Antenna|lift|wreck|transport|tower|supply-box|antenna|prototype cradle)\s+)?(?:guard|defender)\b/gi,
       threatName)
     : actionText
-  const closing = arrange([seed(turn), `${upper(heroLater)} ${narrated(encounter)}.`, enemyMove], [
+  const closing = arrange([joinTurningPoint(seed(turn), heroLater, narrated(encounter), template.mission),
+    enemyMove], [
     `Neither side could leave ${ground} undefended while the other force was still approaching.`,
   ])
   if (!opening || !middle || !closing) return null

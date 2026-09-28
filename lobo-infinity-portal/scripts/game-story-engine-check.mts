@@ -906,14 +906,14 @@ for (const unused of ['Missile Sentinel', 'Raid Gunner', 'Knife Fighter']) {
   assert.doesNotMatch(groundedText, new RegExp(unused, 'i'),
     `scene should not add ${unused} only to enumerate the submitted list`)
 }
-assert.match(groundedText, /Rocket Sentry[^.]*crossing[^.]*Field Analyst[^.]*reach/i,
-  'the opposing ARO must obstruct the lead character’s goal')
 const [groundedOpening, groundedMiddle, groundedClose] = groundedText.split('\n\n')
+assert.match(groundedOpening, /Field Analyst[^.]*reader[^.]*Rocket Sentry[^.]*crossing[^.]*Panzerfaust/i,
+  'the opposing ARO must obstruct the lead character’s goal')
 assert.match(groundedMiddle, /Hill Sniper/i)
 assert.match(groundedMiddle, /Rocket Sentry/i)
 assert.match(groundedMiddle, /Screen Operator/i)
 assert.match(groundedMiddle, /Eclipse/i)
-assert.match(groundedClose, /Field Analyst.*(?:WIP|reading)/i,
+assert.match(groundedClose, /Field Analyst.*(?:analy[sz]|reading|WIP)/i,
   'the opening created by roster capabilities must lead to the hero’s mission attempt')
 const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
@@ -933,10 +933,10 @@ for (const [mission, objective, wrongGoal] of [
     groundedLists.map((roster) => ({ ...roster, mission })))
   assert.ok(objectiveScene, mission + ': linked cast should have a scene')
   assert.match(objectiveScene.split('\n\n')[0],
-    new RegExp(`(?:needed that lane quiet to reach|way to) the ${objective}`, 'i'),
+    new RegExp(`Between .* and the ${objective}, .*Rocket Sentry.*Panzerfaust`, 'i'),
     mission + ': the lead needs the actual mission objective')
   assert.doesNotMatch(objectiveScene.split('\n\n')[0],
-    new RegExp(`(?:needed that lane quiet to reach|way to) the ${wrongGoal}`, 'i'),
+    new RegExp(`Between .* and the ${wrongGoal},`, 'i'),
     mission + ': landmark must not replace the objective')
 }
 assert.doesNotMatch(groundedText, /\b(?:unfinished|shifted|specialist)\b/i,
@@ -1056,7 +1056,7 @@ for (let gameId = 0; gameId < 8; gameId++) {
   const story = renderGameStoryTemplate(template, { ...longDisplayGame, id: gameId }, longDisplayLists)
   assert.ok(story, 'long display names must not prevent a valid linked story')
   for (const paragraph of story.split('\n\n').slice(0, 3)) {
-    assert.ok(paragraph.trim().split(/\s+/).length <= 75, 'measure the rendered paragraph, not the placeholders')
+    assert.ok(paragraph.trim().split(/\s+/).length <= 100, 'measure the rendered paragraph, not the placeholders')
   }
   if (gameId === 2) {
     assert.doesNotMatch(story, /Captain Jake Strangeway|General Oliver Delta/,
