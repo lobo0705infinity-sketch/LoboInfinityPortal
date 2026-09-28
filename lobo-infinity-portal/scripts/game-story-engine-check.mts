@@ -971,6 +971,15 @@ for (const mission of CANONICAL_MISSIONS) {
         assert.ok((turn.match(/separat(?:ed|ing)/gi) ?? []).length <= 1,
           'the carrier can be separated from the Core only once in this incident')
       }
+      if (mission === "Dead Man's Switch" && candidate.scene!.incidentIndex === 2) {
+        assert.doesNotMatch(`${turn} ${outcome}`, /(?:bodyguard|guard|Field Engineer) stepped away from the (?:room )?door/i,
+          'the room guard must not abandon the doorway before closing on the same hero there')
+      }
+      if (mission === 'Provisioning' && candidate.scene!.incidentIndex === 0) {
+        assert.match(outcome, /box clear of the coffin hinge and behind the loading barricade/i,
+          'the encounter must move the box into cover without inventing its delivery')
+        assert.doesNotMatch(outcome, /start hauling the box/i)
+      }
       assertGameStoryMissionObjective({ ...candidate,
         paragraphs: [opening, firefight, turn], endings: candidate.scene!.endings,
       }, `${mission}/${id}/${role}: grounded complete scene`)

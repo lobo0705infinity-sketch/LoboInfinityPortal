@@ -93,9 +93,10 @@ assert.equal(renderGameStoryTemplate(story, game, [nextWave, operations, { ...op
 const highlights = [
   { id: 109, mission: "Dead Man's Switch", winnerFaction: 'Corregidor Jurisdictional Command', loserFaction: 'Torchlight Brigade', bestMoment: 'Came down to the last moment where the Raveneye on his second order almost won the game single handedly!', fragment: 'the Raveneye had a moment to finish' },
   { id: 114, mission: "Dead Man's Switch", winnerFaction: 'Shindenbutai', loserFaction: 'Operations Subsection', bestMoment: "Hatamoto used Quantum Resonance and stole the box and then dodged his way back from Sacha's E/M Grenade", fragment: 'the Sāchā’s E/M grenade' },
+  { id: 115, mission: "Dead Man's Switch", winnerFaction: 'Kestrel Colonial Force', loserFaction: 'Force de Réponse Rapide Merovingienne', bestMoment: 'Failing ftf wip roll 8 times', fragment: 'Eight face-to-face WIP rolls failed' },
   { id: 116, mission: 'The Dig', winnerFaction: 'Next Wave', loserFaction: 'StarCo', bestMoment: 'Tuecer killing both a Tsyklon and the engineer that went to pick it up.', fragment: 'Teucer had stayed in position' },
   { id: 117, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Ramah Taskforce', bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1', fragment: 'During B’s first turn, Tarik moved toward the excavation' },
-  { id: 120, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Tohaa', bestMoment: 'Ioann Bann making a solo run but being unable to kill anything and being immobilized in the process', fragment: 'immobilized between the two lines' },
+  { id: 120, mission: 'The Dig', winnerFaction: 'Operations Subsection', loserFaction: 'Tohaa', bestMoment: 'Ioann Bann making a solo run but being unable to kill anything and being immobilized in the process', fragment: 'immobilized short of the console' },
 ]
 assert.equal(GAME_HIGHLIGHT_STORIES.length, highlights.length)
 for (const item of highlights) {
@@ -103,6 +104,15 @@ for (const item of highlights) {
   assert.ok(renderSubmittedHighlightStory(exemplar)?.toLocaleLowerCase().includes(item.fragment.toLocaleLowerCase()), `game ${item.id}: authored player scene`)
   assert.equal(getSubmittedHighlightBattleStory(exemplar), renderSubmittedHighlightStory(exemplar), 'submitted player scenes retain priority')
   assert.equal(renderSubmittedHighlightStory({ ...exemplar, bestMoment: 'He rolled better than me' }), null, 'changed or unusable note cannot trigger a stale scene')
+  if (item.id === 115) assert.doesNotMatch(renderSubmittedHighlightStory(exemplar) ?? '',
+    /(?:Drummer|Knauf|Moblot)[^.!?]*eight[^.!?]*WIP/i,
+    'the note does not identify whose opposed rolls failed')
+  if (item.id === 117) assert.doesNotMatch(renderSubmittedHighlightStory(exemplar) ?? '',
+    /bring the reader down|mov(?:e|ing) the (?:reader|console)/i,
+    'the fixed analysis console must stay at the excavation')
+  if (item.id === 120) assert.doesNotMatch(renderSubmittedHighlightStory(exemplar) ?? '',
+    /(?:Maximus|Dasyu)[^.!?]*\b(?:immobili[sz]ed|E\/M Carbine)\b/i,
+    'the note does not identify what immobilized Ioann')
 }
 
 console.log(`Story catalog: ${keys.size}/${expected} distinct mission-matchup stories authored.`)

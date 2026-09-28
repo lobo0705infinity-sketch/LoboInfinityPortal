@@ -150,6 +150,12 @@ later than the worker's persisted decoded lists. The Discord embed carries
 the completed scene even while a newer public snapshot is pending. A report
 opened from its earlier news link checks for the canonical game in newer
 snapshots, then reloads and continues checking for both decoded rosters.
+When a submitted code has a matching failed decode, the report and Discord
+queue identify the decoder failure and keep the story waiting for a verified
+decode. Game #118's Yu Jing code is such a case: the persisted snapshot dated
+11 September 2026 reports `Invalid IDs in Army Code`. Its offline reconstruction
+is a preview only; it cannot be substituted into the live report or sent to
+Discord as a verified roster.
 This branch has not deployed the new worker or Apps Script changes.
 
 ## What the checks establish

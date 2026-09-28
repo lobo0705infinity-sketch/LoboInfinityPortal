@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { buildGameReviewAnalysis } from '../src/services/gameReviewAnalysis.ts'
 import { getGameIntelligenceLists } from '../src/services/gameIntelligenceLinks.ts'
+import { FAILED_DECODE_BATTLE_STORY, PENDING_BATTLE_STORY,
+  loadBattleStory } from '../src/services/gameStoryRouting.ts'
 import { getGameArmyLists } from '../src/services/gameArmyListLinks.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import type { PublicSubmittedArmyList } from '../src/services/publicDetailProjection.ts'
@@ -112,6 +114,14 @@ assert.equal(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
 assert.deepEqual(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
   armyCode: '', rosterFingerprint: 'b'.repeat(64) }]), [],
   'a list ID cannot override a different game-submitted code hash')
+const failedOwnerList = { ...earlierOwner, status: 'failed' as const,
+  decoded: null, armyCode: '', rosterFingerprint: publicHash,
+  error: 'Invalid IDs in Army Code: out-of-date unit option.' }
+assert.equal(await loadBattleStory(publicHashGame, [failedOwnerList]), FAILED_DECODE_BATTLE_STORY,
+  'a matching failed decode is reported accurately even if the saved list belongs to another player')
+assert.equal(await loadBattleStory(publicHashGame, [{ ...failedOwnerList,
+  rosterFingerprint: 'b'.repeat(64) }]), PENDING_BATTLE_STORY,
+  'an unrelated decoder failure must not be assigned to this game')
 const starcoCode = { ...nextGame, loserFaction: 'StarCo', loserArmyCode: 'starco-code=' }
 assert.equal(getGameIntelligenceLists(starcoCode, [{ ...earlierOwner, armyCode: 'starco-code=',
   sectorial: 'Starco Free Company Of The Star', armyListId: nextGame.loserArmyListId }]).length, 1,

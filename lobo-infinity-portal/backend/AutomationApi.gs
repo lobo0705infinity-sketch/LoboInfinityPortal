@@ -874,6 +874,15 @@ function buildAutomationGameStoryPayload_(item) {
       id: loserId, code: game.loserArmyCode }
   ];
   const intelligence = readArmyIntelligenceReadModelPayload();
+  const failedList = (intelligence && intelligence.lists || []).some(function(list) {
+    if (list.status !== "failed") return false;
+    return sides.some(function(side) {
+      if (normalizeCode(side.code))
+        return normalizeCode(list.armyCode) === normalizeCode(side.code);
+      return side.id && String(list.armyListId || "") === side.id &&
+        normalize(list.player) === normalize(side.player);
+    });
+  });
   const lists = (intelligence && intelligence.lists || []).filter(function(list) {
     if (list.status !== "decoded" || !list.decoded)
       return false;
@@ -894,7 +903,9 @@ function buildAutomationGameStoryPayload_(item) {
     });
   });
   if (lists.length < 2 || lists.length > 100)
-    return { ready: false, pending: true, reason: "Waiting for two unambiguous decoded game-linked army lists." };
+    return { ready: false, pending: true, reason: failedList
+      ? "Waiting for decoder repair: a submitted army code was rejected and needs a verified decode."
+      : "Waiting for two unambiguous decoded game-linked army lists." };
 
   const token = getArmyIntelligenceSchedulerToken_();
   if (!token)

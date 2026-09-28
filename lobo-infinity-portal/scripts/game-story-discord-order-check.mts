@@ -173,7 +173,15 @@ assert.equal(context.processDiscordQueueItem(item, false).success, true,
   'the queue should pass an exact code match to the story worker regardless of saved owner')
 assert.equal(lastWorkerLists[1]?.player, 'Earlier list owner',
   'the backend passes decoded contents; the worker binds them to the game player')
-decodedLists = [lists[0], { ...decodedLists[1], armyCode: 'different-code=' }]
+decodedLists = [lists[0], { ...decodedLists[1], status: 'failed', decoded: null,
+  error: 'Invalid IDs in Army Code: out-of-date unit option.' }]
+const failedDecodeQueue = context.processDiscordQueueItem(item, false)
+assert.equal(failedDecodeQueue.status, 'Waiting',
+  'decoder failures retain the queue item for a later verified refresh')
+assert.match(failedDecodeQueue.reason, /decoder repair/i,
+  'the queue must expose a known decoder rejection rather than hiding it as missing data')
+decodedLists = [lists[0], { ...decodedLists[1], status: 'decoded',
+  decoded: lists[1].decoded, armyCode: 'different-code=' }]
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting',
   'the queue must reject a reused list ID if the submitted code differs')
 

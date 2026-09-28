@@ -2,6 +2,15 @@
 
 **Decision: keep PR #34 in draft.** These scenes are fictional accounts assembled from a match's mission, armies, and result. The game feed does not establish the individual moves, objective activations, or scores described in the scenes.
 
+The six-game review corrected #115's omitted eight failed opposed WIP rolls
+without assigning them to a model, kept #117's analysis console in place,
+removed an unsupported cause for Ioann's immobilization in #120, and made the
+room approach and supply-box resolution in generated #118/#119 physically
+consistent. The live #118 report still awaits a verified Yu Jing decode: its
+persisted Army Intelligence record reports an invalid unit option. The
+renderer now identifies this failure instead of implying that the list simply
+has not been processed. An offline preview does not establish live readiness.
+
 ## Corrections after the latest audit
 
 - Defensive replies for Bakunin, Caledonia, Tohaa and Ikari now establish their own decoy, screen, shooter or reckless fighter. A Next Wave closing supplies its own feint. The counter no longer assumes the opposing army used one of those maneuvers. An explicit check covers all 45 Area responses and 45 other-mission defenses.

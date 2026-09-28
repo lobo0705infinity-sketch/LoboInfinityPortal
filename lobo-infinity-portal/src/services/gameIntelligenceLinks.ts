@@ -70,3 +70,23 @@ export function getGameIntelligenceLists(game: RecentGame, lists: ArmyIntelligen
 
   return matched
 }
+
+// A failed decode is different from an unprocessed list. Do not substitute a
+// locally reconstructed profile, a matching list ID, or another player's code.
+export function hasFailedGameIntelligenceList(game: RecentGame, lists: ArmyIntelligenceList[]): boolean {
+  const sides = getGameSides(game)
+  const linked = getGameIntelligenceLists(game, lists)
+  return sides.some((side, index) => {
+    if (linked.some((list) => playerKey(list.player) === playerKey(side.player))) return false
+    const code = armyCode(index === 0 ? game.winnerArmyCode : game.loserArmyCode)
+    const fingerprint = String((index === 0 ? game.winnerRosterFingerprint : game.loserRosterFingerprint) || '')
+      .trim().toLowerCase()
+    return lists.some((list) => list.status === 'failed' &&
+      (!list.sectorial && !list.faction || sameArmy(list.sectorial || list.faction, side.faction)) &&
+      (code ? armyCode(list.armyCode) === code
+        : /^[a-f0-9]{64}$/.test(fingerprint)
+          ? String(list.rosterFingerprint || list.armyCodeHash || '').toLowerCase() === fingerprint
+          : Boolean(side.listId && String(list.armyListId || '') === String(side.listId) &&
+            playerKey(list.player) === playerKey(side.player))))
+  })
+}
