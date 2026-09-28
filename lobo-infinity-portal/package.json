@@ -99,6 +99,8 @@
     "test:rules-benchmark-routing": "node scripts/rules-benchmark-routing-check.mjs && node scripts/rules-model-context-check.mjs",
     "test:rules-resource-watcher": "node scripts/rules-resource-watcher-check.mjs",
     "test:workshop-map-catalog": "node scripts/workshop-map-catalog-check.mjs",
+    "maps:forms:generate": "node scripts/generate-workshop-map-forms.mjs",
+    "test:map-ratings": "node --experimental-strip-types scripts/map-ratings-check.mjs",
     "test:matchmaking-time": "node scripts/matchmaking-time-check.mjs && node scripts/matchmaking-command-check.mjs",
     "team-tournament:routing": "node scripts/team-tournament-routing-check.mjs",
     "test:team-tournament-rounds": "node scripts/team-tournament-rounds-check.mjs",

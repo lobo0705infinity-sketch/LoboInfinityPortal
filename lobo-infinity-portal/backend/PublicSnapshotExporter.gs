@@ -707,7 +707,10 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
       winner: winnerSide === 1 ? player1.player : winnerSide === 2 ? player2.player : "Draw",
       eventId: String(row[FORM.EVENT_ID] || EVENT_ENGINE_DEFAULT_EVENT_ID).trim() || EVENT_ENGINE_DEFAULT_EVENT_ID,
       gameType: String(row[FORM.GAME_TYPE] || "League").trim() || "League",
-      bestMoment: String(row[FORM.MOMENT] || ""), firstTurn: String(row[FORM.FIRSTTURN] || "")
+      bestMoment: String(row[FORM.MOMENT] || ""), firstTurn: String(row[FORM.FIRSTTURN] || ""),
+      mapSlug: String(row[FORM.WORKSHOP_MAP_SLUG] || "").trim(),
+      mapRating: /^[1-5]$/.test(String(row[FORM.MAP_RATING] || "").trim())
+        ? Number(row[FORM.MAP_RATING]) : null
     };
   }).filter(Boolean);
 }
@@ -858,6 +861,7 @@ function buildPublicSnapshotGames_(games, events) {
       op: publicSnapshotScore_(source.player1Op, source.player2Op, winnerIsPlayer1, draw),
       vp: publicSnapshotScore_(source.player1Vp, source.player2Vp, winnerIsPlayer1, draw),
       bestMoment: source.bestMoment, firstTurn: source.firstTurn,
+      mapSlug: source.mapSlug || "", mapRating: source.mapRating == null ? null : source.mapRating,
       winnerArmyListId: draw ? source.player1ArmyListId : winnerIsPlayer1 ? source.player1ArmyListId : source.player2ArmyListId,
       loserArmyListId: draw ? source.player2ArmyListId : winnerIsPlayer1 ? source.player2ArmyListId : source.player1ArmyListId
     };

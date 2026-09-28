@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { loboWorkshopMapBySlug } from '../../shared/lobo-workshop-maps.mjs'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
@@ -202,6 +203,8 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
   const formattedDate = formatReportDate(game.date)
   const seasonLabel = formatSeasonLabel(game.date, reportType)
   const verificationStatus = game.id > 0 ? 'Verified' : 'Pending Verification'
+  const mappedGame = game as RecentGame & { mapSlug?: string; mapRating?: number | null }
+  const workshopMap = loboWorkshopMapBySlug.get(mappedGame.mapSlug ?? '')
 
   return (
     <main className="portal-shell">
@@ -270,6 +273,8 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
               <Fact label="Mission" value={mission
                 ? <Link to={`/missions/${encodeURIComponent(mission)}`}>Explore {mission} mission results</Link>
                 : 'Mission not recorded'} />
+              {workshopMap ? <Fact label="Workshop Map" value={<Link to={`/maps/${workshopMap.slug}`}>{workshopMap.name} · Save {String(workshopMap.index).padStart(2, '0')}</Link>} /> : null}
+              {workshopMap && mappedGame.mapRating ? <Fact label="Map Rating" value={`${mappedGame.mapRating} / 5`} /> : null}
             </dl>
           </BattleCard>
 

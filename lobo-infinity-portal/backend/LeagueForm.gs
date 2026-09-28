@@ -83,7 +83,7 @@ function lifGetLeagueFormForGeneration_() {
   return form;
 }
 
-function lifAddLeagueGameFields_(form, players, missions, factions) {
+function lifAddLeagueGameFields_(form, players, missions, factions, formType) {
   const f = LIF_FORMS.FIELDS;
   form.addSectionHeaderItem().setTitle("Player Information");
   lifAddChoice_(form, f.PLAYER, players, true);
@@ -106,7 +106,41 @@ function lifAddLeagueGameFields_(form, players, missions, factions) {
   form.addSectionHeaderItem().setTitle("Game Details");
   lifAddParagraph_(form, f.BEST_MOMENT, false);
   lifAddParagraph_(form, f.NOTES, false);
+  lifAddWorkshopMapFields_(form, formType || LIF_FORMS.TYPES.LEAGUE);
   return form;
+}
+
+// Run once after deploying the Apps Script revision to update existing response forms
+// in place. Existing questions and response destinations are preserved.
+function synchronizeWorkshopMapSubmissionForms() {
+  const targets = [
+    [LIF_FORMS.PROPERTIES.LEAGUE_FORM_ID, LIF_FORMS.TYPES.LEAGUE],
+    [LIF_FORMS.PROPERTIES.TEAM_FORM_ID, LIF_FORMS.TYPES.TEAM],
+    [LIF_FORMS.PROPERTIES.CASUAL_FORM_ID, LIF_FORMS.TYPES.CASUAL]
+  ];
+  const prepared = targets.map(function(target) {
+    const form = FormApp.openById(lifRequireProperty_(target[0]));
+    [LIF_FORMS.FIELDS.WORKSHOP_MAP, LIF_FORMS.FIELDS.MAP_RATING].forEach(function(title) {
+      const matches = form.getItems().filter(function(item) { return item.getTitle() === title; });
+      if (matches.length > 1 || (matches.length === 1 && String(matches[0].getType()) !== String(FormApp.ItemType.LIST)))
+        throw new Error("Expected at most one " + title + " dropdown in " + target[1] + ".");
+    });
+    return { form: form, formType: target[1] };
+  });
+  return prepared.map(function(entry) {
+    const form = entry.form;
+    const f = LIF_FORMS.FIELDS;
+    const specs = [
+      { title: f.WORKSHOP_MAP, choices: lifWorkshopMapChoices_(entry.formType), help: "Choose the save you played. Leave blank if your table is not in the Lobo Workshop library." },
+      { title: f.MAP_RATING, choices: ["1", "2", "3", "4", "5"], help: "Optional: rate the selected table from 1 (poor) to 5 (excellent)." }
+    ];
+    specs.forEach(function(spec) {
+      const existing = form.getItems(FormApp.ItemType.LIST).filter(function(item) { return item.getTitle() === spec.title; })[0];
+      const item = existing ? existing.asListItem() : form.addListItem().setTitle(spec.title);
+      item.setChoiceValues(spec.choices).setRequired(false).setHelpText(spec.help);
+    });
+    return { formType: entry.formType, formId: form.getId(), mapChoices: specs[0].choices.length };
+  });
 }
 
 function getCanonicalArmyOptions() {

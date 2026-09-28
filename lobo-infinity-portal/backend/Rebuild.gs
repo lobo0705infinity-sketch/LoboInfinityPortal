@@ -174,7 +174,7 @@ function isCanonicalGamesEdit_(e) {
 
   const firstDataRow = 2;
   const firstCanonicalColumn = 1;
-  const lastCanonicalColumn = FORM.LOSER_ARMY_LIST_ID + 1;
+  const lastCanonicalColumn = FORM.MAP_RATING + 1;
   const firstEditedRow = Number(e.range.getRow()) || 0;
   const lastEditedRow = firstEditedRow + Math.max(1, Number(e.range.getNumRows()) || 1) - 1;
   const firstEditedColumn = Number(e.range.getColumn()) || 0;

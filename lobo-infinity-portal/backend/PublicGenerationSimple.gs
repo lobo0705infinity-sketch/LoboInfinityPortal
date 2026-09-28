@@ -287,7 +287,8 @@ function buildSimplePublicGames_(frozen, players, events, gameContext) {
       bestMoment: source.bestMoment,
       firstTurn: source.firstTurn,
       winnerArmyListId: winnerArmyListId,
-      loserArmyListId: loserArmyListId
+      loserArmyListId: loserArmyListId,
+      mapSlug: source.mapSlug || "", mapRating: source.mapRating == null ? null : source.mapRating
     };
     return game;
   });

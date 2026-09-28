@@ -39,7 +39,9 @@ function buildCanonicalGameRow(command) {
     playerArmyCode,
     opponentArmyCode,
     playerIsWinner ? playerArmyListId : opponentArmyListId,
-    playerIsWinner ? opponentArmyListId : playerArmyListId
+    playerIsWinner ? opponentArmyListId : playerArmyListId,
+    canonicalGameString_(input.mapSlug),
+    input.mapRating === "" || input.mapRating == null ? "" : Number(input.mapRating)
   ];
 }
 

@@ -211,7 +211,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
     gameResult: getTeamTournamentCanonicalGameResult_(params.winner, assignment),
     firstTurn: getTeamTournamentCanonicalFirstTurn_(params.firstTurn, assignment),
     bestMoment: getTeamTournamentString(params.bestMoment),
-    notes: getTeamTournamentString(params.notes)
+    notes: getTeamTournamentString(params.notes),
+    mapSlug: "", mapRating: ""
   };
   const sheet = lifEnsureCanonicalSheet_(lifGetTargetSpreadsheet_());
   const row = buildCanonicalGameRow(
@@ -305,6 +306,8 @@ function canonicalSubmissionBuildGoogleFormGameCommand_(submission) {
     opponentFaction: submission.opponentFaction,
     canonicalizeFactions: !casual,
     bestMoment: submission.bestMoment,
+    mapSlug: submission.mapSlug,
+    mapRating: submission.mapRating,
     eventId: submission.eventId,
     gameType: casual
       ? "casual"
@@ -356,6 +359,7 @@ function canonicalSubmissionBuildPortalGameCommand_(command, workflow, validated
     playerFaction: validated.playerFaction,
     opponentFaction: validated.opponentFaction,
     bestMoment: getResultSubmissionString(params.bestMoment),
+    mapSlug: "", mapRating: "",
     eventId: validated.eventId,
     gameType: workflow === "top-40" ? "tournament" : workflow,
     outcome: validated.resultIsDraw

@@ -21,6 +21,7 @@
 .lobo-maps-controls label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .lobo-maps-control-label { margin: .45rem 0 0; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .lobo-maps-controls input { width: 100%; max-width: 500px; min-height: 44px; padding: .7rem .8rem; border: 1px solid rgba(143, 227, 246, .35); border-radius: 8px; color: #fff; background: #152635; font: inherit; }
+.lobo-maps-controls select { width: 100%; max-width: 240px; min-height: 44px; padding: .55rem .8rem; border: 1px solid rgba(143, 227, 246, .35); border-radius: 8px; color: #fff; background: #152635; font: inherit; }
 .lobo-maps-filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .25rem; }
 .lobo-maps-filters button { min-height: 40px; padding: .45rem .75rem; border: 1px solid rgba(255, 255, 255, .16); border-radius: 99px; color: #dce6ee; background: #17232d; cursor: pointer; font: inherit; font-size: .8rem; }
 .lobo-maps-filters button[aria-pressed="true"] { color: #05141c; border-color: #8fe3f6; background: #8fe3f6; font-weight: 800; }
@@ -42,6 +43,7 @@
 .lobo-map-card-info { display: grid; gap: .3rem; flex: 1; padding: .8rem .9rem 1rem; }
 .lobo-map-card-info small { color: #9dc5d6; font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
 .lobo-map-card-info strong { font-size: 1.05rem; line-height: 1.25; }
+.lobo-map-card-info .lobo-map-card-rating { color: #ffe3a5; font-size: .85rem; font-weight: 800; }
 .lobo-map-card-info .lobo-map-card-source { color: #a4afba; font-size: .72rem; font-weight: 500; letter-spacing: 0; line-height: 1.35; text-transform: none; }
 .lobo-map-card-info .lobo-map-card-other { color: #b6cee0; font-size: .72rem; font-weight: 500; letter-spacing: 0; line-height: 1.35; text-transform: none; }
 .lobo-map-card-info .lobo-map-mission-summary { color: #f2c35a; font-size: .78rem; font-weight: 800; line-height: 1.4; }
@@ -54,6 +56,7 @@
 .lobo-map-detail-heading h1 { margin: .1rem 0 .5rem; font-size: clamp(2rem, 4vw, 3.75rem); line-height: 1.05; }
 .lobo-map-detail-heading p:not(.eyebrow) { margin: 0; color: var(--text-soft, #c1cad5); }
 .lobo-map-detail-heading p:not(.eyebrow) + p:not(.eyebrow) { margin-top: .35rem; }
+.lobo-map-detail-heading p.lobo-map-detail-rating { color: #ffe3a5; font-weight: 800; }
 .lobo-map-detail-heading > a { flex: none; }
 .lobo-map-detail-hero { aspect-ratio: 16 / 8; max-height: 650px; }
 .lobo-map-detail-view-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .8rem; }
@@ -80,10 +83,11 @@
 .lobo-map-detail-info h2 { margin: .2rem 0 .7rem; }
 .lobo-map-detail-info p:not(.eyebrow) { color: var(--text-soft, #c1cad5); line-height: 1.55; }
 .lobo-map-detail-info a { color: #8fe3f6; font-weight: 800; }
+.lobo-map-reports { display: grid; gap: .45rem; margin: 0 0 1rem; padding-left: 1.25rem; }
 .lobo-map-detail-adjacent { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .lobo-map-detail-adjacent a { display: grid; gap: .25rem; padding: .85rem; border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px; background: #0d1b27; text-decoration: none; }
 .lobo-map-detail-adjacent a:last-child { text-align: right; }
 .lobo-map-detail-adjacent small { color: #9dc5d6; }
-.lobo-maps-page a:focus-visible, .lobo-maps-page button:focus-visible, .lobo-maps-page input:focus-visible { outline: 3px solid #f2c35a; outline-offset: 2px; }
+.lobo-maps-page a:focus-visible, .lobo-maps-page button:focus-visible, .lobo-maps-page input:focus-visible, .lobo-maps-page select:focus-visible { outline: 3px solid #f2c35a; outline-offset: 2px; }
 @media (max-width: 920px) { .lobo-maps-hero { grid-template-columns: 1fr; } .lobo-maps-hero-image { min-height: 260px; } .lobo-maps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 650px) { .lobo-maps-hero { padding: .7rem; } .lobo-maps-hero-copy { padding: .7rem; } .lobo-maps-hero-image { min-height: 205px; } .lobo-maps-grid, .lobo-map-detail-view-grid, .lobo-map-detail-info { grid-template-columns: 1fr; } .lobo-map-collection-heading { align-items: start; flex-direction: column; } .lobo-map-collection-meta { justify-items: start; } .lobo-map-detail-heading { display: grid; } .lobo-map-detail-heading > a { justify-self: start; } .lobo-map-detail-hero { aspect-ratio: 16 / 10; } .lobo-map-detail-adjacent strong { font-size: .85rem; } }

@@ -5,7 +5,7 @@ function createTeamTournamentSubmissionForm(responseSpreadsheetId) {
   const factions = getCanonicalArmyOptions();
   const form = lifGetTeamTournamentFormForGeneration_();
   lifAddTeamTournamentFields_(form, tournamentOptions.teams);
-  lifAddLeagueGameFields_(form, tournamentOptions.players, missions, factions);
+  lifAddLeagueGameFields_(form, tournamentOptions.players, missions, factions, LIF_FORMS.TYPES.TEAM);
   return lifLinkForm_(form, responseSpreadsheetId);
 }
 

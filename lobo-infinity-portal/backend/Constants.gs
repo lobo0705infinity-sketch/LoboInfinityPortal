@@ -24,6 +24,7 @@ const LIF_FORMS = Object.freeze({
   FIELDS: Object.freeze({
     EVENT_ID: "Event ID", DIVISION: "Division", ROUND: "Round", TEAM: "Team",
     OPPONENT_TEAM: "Opponent Team", TABLE: "Table", MISSION: "Mission",
+    WORKSHOP_MAP: "Workshop Map", MAP_RATING: "Map Rating (1–5)",
     PLAYER: "Player", OPPONENT: "Opponent", PLAYER_FACTION: "Player Faction",
     OPPONENT_FACTION: "Opponent Faction", PLAYER_ARMY_CODE: "Player Army Code",
     OPPONENT_ARMY_CODE: "Opponent Army Code", PLAYER_TP: "Player Tournament Points",
@@ -39,7 +40,7 @@ const LIF_FORMS = Object.freeze({
     "Player 1 VP", "Player 2 VP", "First Turn", "Winning Faction",
     "Losing Faction", "Best Moment", "Event ID", "Game Type", "Game Result",
     "Player 1 Army Code", "Player 2 Army Code", "Winner Army List ID",
-    "Loser Army List ID"
+    "Loser Army List ID", "Workshop Map Slug", "Map Rating"
   ]),
   IMPORT_LOG_HEADERS: Object.freeze([
     "Response Key", "Form Type", "Imported At", "Target Row", "Status", "Message"

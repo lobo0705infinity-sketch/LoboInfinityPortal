@@ -142,7 +142,9 @@ function lifGetCasualSchema_() {
     { title: f.OPPONENT_VP, type: "SCORE", required: true },
     { title: "Game Details", type: "SECTION_HEADER" },
     { title: f.BEST_MOMENT, type: "PARAGRAPH_TEXT", required: false },
-    { title: f.NOTES, type: "PARAGRAPH_TEXT", required: false }
+    { title: f.NOTES, type: "PARAGRAPH_TEXT", required: false },
+    { title: f.WORKSHOP_MAP, type: "LIST", required: false, choices: "maps" },
+    { title: f.MAP_RATING, type: "LIST", required: false, choices: "ratings" }
   ];
 }
 
@@ -163,6 +165,8 @@ function lifAppendCasualSchemaItem_(form, spec, players, missions, factions) {
       const choices = spec.choices === "players" ? players
         : spec.choices === "missions" ? missions
         : spec.choices === "factions" ? factions
+        : spec.choices === "maps" ? lifWorkshopMapChoices_(LIF_FORMS.TYPES.CASUAL)
+        : spec.choices === "ratings" ? ["1", "2", "3", "4", "5"]
         : spec.values;
       item = form.addListItem();
       item.setTitle(spec.title).setChoiceValues(choices).setRequired(spec.required === true);
@@ -203,6 +207,8 @@ function lifReconcileCasualSchemaItem_(item, spec, players, missions, factions) 
     const choices = spec.choices === "players" ? players
       : spec.choices === "missions" ? missions
       : spec.choices === "factions" ? factions
+      : spec.choices === "maps" ? lifWorkshopMapChoices_(LIF_FORMS.TYPES.CASUAL)
+      : spec.choices === "ratings" ? ["1", "2", "3", "4", "5"]
       : spec.values;
     item.asListItem().setChoiceValues(choices).setRequired(spec.required === true);
   } else if (spec.type === "TEXT") {
