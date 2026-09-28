@@ -11,6 +11,7 @@ const routeLoaders = new Map<string, () => Promise<unknown>>([
   ['/event', () => import('../pages/EventHome')],
   ['/events', () => import('../pages/PastEvents')],
   ['/explore', () => import('../pages/Explore')],
+  ['/little-helper', () => import('../pages/LittleHelper')],
   ['/games', () => import('../pages/GameDetails')],
   ['/factions', () => import('../pages/Factions')],
   ['/faction-detail', () => import('../pages/FactionProfile')],
