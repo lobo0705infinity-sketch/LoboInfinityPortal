@@ -4,13 +4,16 @@ import EntityPreviousNext from '../components/EntityPreviousNext'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import Skeleton from '../components/Skeleton'
 import { getCanonicalMissionName } from '../config/missions'
-import { type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
+import { type ArmyIntelligenceFactionData, type ArmyIntelligenceList, type CommissionerNewsItem, type RecentGame, type StreamedGame } from '../services/api'
 import { getGameIntelligenceLists } from '../services/gameIntelligenceLinks'
 import { getGameArmyLists } from '../services/gameArmyListLinks'
 import { buildGameReviewAnalysis } from '../services/gameReviewAnalysis'
 import { publicDetailProjection, type PublicSubmittedArmyList } from '../services/publicDetailProjection'
+import { getNewerPublicSnapshotDataset } from '../services/publicSnapshot'
 import { formatPlayerName } from '../services/formatting'
 import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
+import { getSubmittedHighlightBattleStory, loadBattleStory, PENDING_BATTLE_STORY } from '../services/gameStoryRouting'
+import { getStoryListReadiness } from '../services/gameIntelligenceLinks'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -24,6 +27,7 @@ type GameDetailsState =
       stream: StreamedGame | null
       armyLists: PublicSubmittedArmyList[]
       intelligenceLists: ArmyIntelligenceList[]
+      awaitingCanonicalGame?: boolean
     }
   | {
       gameId: number
@@ -74,7 +78,7 @@ function GameDetails() {
         const linkedGame = buildNewsLinkedGame(gameId, data.news)
 
         if (linkedGame) {
-          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null })
+          setGameState({ armyLists: getGameArmyLists(linkedGame, data.armyLists), intelligenceLists: getGameIntelligenceLists(linkedGame, intelligenceLists), game: linkedGame, gameId, status: 'success', stream: null, awaitingCanonicalGame: true })
           applyLinkedStream(gameId, data.streams, setGameState)
           return
         }
@@ -94,6 +98,67 @@ function GameDetails() {
       controller.abort()
     }
   }, [gameId])
+
+  useEffect(() => {
+    if (gameState.status !== 'success' || !gameState.awaitingCanonicalGame) return
+
+    const controller = new AbortController()
+    let lastCheckedSnapshot = ''
+    let checking = false
+    const checkForCanonicalGame = async () => {
+      if (checking || controller.signal.aborted) return
+      checking = true
+      try {
+        const newer = await getNewerPublicSnapshotDataset<RecentGame[]>(
+          'games', lastCheckedSnapshot, controller.signal,
+        )
+        if (!newer || controller.signal.aborted) return
+        lastCheckedSnapshot = newer.snapshotId
+        if (newer.data.some((game) => game.id === gameState.gameId)) window.location.reload()
+      } catch { /* A later focus or interval can try again. */ }
+      finally { checking = false }
+    }
+    void checkForCanonicalGame()
+    const timer = window.setInterval(checkForCanonicalGame, 60_000)
+    window.addEventListener('focus', checkForCanonicalGame)
+    return () => {
+      controller.abort()
+      window.clearInterval(timer)
+      window.removeEventListener('focus', checkForCanonicalGame)
+    }
+  }, [gameState])
+
+  useEffect(() => {
+    if (gameState.status !== 'success' ||
+      gameState.intelligenceLists.length >= 2 ||
+      ![gameState.game.winnerArmyListId, gameState.game.loserArmyListId].some(Boolean)) return
+
+    const controller = new AbortController()
+    let lastCheckedSnapshot = ''
+    let checking = false
+    const checkForDecodedLists = async () => {
+      if (checking || controller.signal.aborted) return
+      checking = true
+      try {
+        const newer = await getNewerPublicSnapshotDataset<ArmyIntelligenceFactionData[]>(
+          'army-intelligence-detail', lastCheckedSnapshot, controller.signal,
+        )
+        if (!newer || controller.signal.aborted) return
+        lastCheckedSnapshot = newer.snapshotId
+        const newlyLinked = getGameIntelligenceLists(gameState.game, newer.data.flatMap((faction) => faction.lists))
+        if (newlyLinked.length > gameState.intelligenceLists.length) window.location.reload()
+      } catch { /* A later focus or interval can try again. */ }
+      finally { checking = false }
+    }
+    void checkForDecodedLists()
+    const timer = window.setInterval(checkForDecodedLists, 60_000)
+    window.addEventListener('focus', checkForDecodedLists)
+    return () => {
+      controller.abort()
+      window.clearInterval(timer)
+      window.removeEventListener('focus', checkForDecodedLists)
+    }
+  }, [gameState])
 
   if (!Number.isInteger(gameId)) {
     return <GameNotFound />
@@ -364,6 +429,22 @@ function ParticipantPanel({ participant }: { participant: BattleParticipant }) {
 
 function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicSubmittedArmyList[]; game: RecentGame; intelligenceLists: ArmyIntelligenceList[] }) {
   const review = useMemo(() => buildGameReviewAnalysis(game, intelligenceLists, armyLists), [armyLists, game, intelligenceLists])
+  const [resolvedStory, setResolvedStory] = useState<{
+    game: RecentGame; lists: ArmyIntelligenceList[]; text: string
+  } | null>(null)
+  const loadedStory = resolvedStory?.game === game && resolvedStory.lists === intelligenceLists
+    ? resolvedStory.text : null
+  useEffect(() => {
+    const controller = new AbortController()
+    loadBattleStory(game, intelligenceLists)
+      .then((story) => { if (!controller.signal.aborted) setResolvedStory({
+        game, lists: intelligenceLists, text: story ?? 'A battle story is unavailable for this game.',
+      }) })
+      .catch(() => { if (!controller.signal.aborted) setResolvedStory({
+        game, lists: intelligenceLists, text: 'The battle story could not be generated.',
+      }) })
+    return () => controller.abort()
+  }, [game, intelligenceLists])
   const [left, right] = getGameSides(game)
   const winner = formatPlayerName(left.player, left.displayName)
   const loser = formatPlayerName(right.player, right.displayName)
@@ -381,8 +462,12 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
       <div className="battle-report-game-review-grid battle-report-game-review-narrative">
         <section className="battle-report-game-review-story" aria-labelledby="game-review-story-title">
           <h3 id="game-review-story-title">Battle story</h3>
-          {review.story.split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-          <small>Reported moments come from the player’s note. The scores and decoded lists provide context.</small>
+          {(loadedStory ?? (intelligenceLists.length < 2 ? PENDING_BATTLE_STORY : 'Generating battle story…'))
+            .split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          <small>{getStoryListReadiness(game, intelligenceLists) === 'rosterless' &&
+            loadedStory?.includes('\n\n') && !getSubmittedHighlightBattleStory(game)
+            ? 'Fictional scene based on the recorded mission, armies and result; a verified army list was unavailable, so no roster unit is identified.'
+            : 'Stories are fictionalized scenes inspired by player highlights or by the mission and submitted armies.'}</small>
         </section>
 
         <section aria-labelledby="game-review-result-title">

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 const canonical = readFileSync('backend/CanonicalSubmissionService.gs', 'utf8')
 const gameEngine = readFileSync('backend/rebuildGameEngine().gs', 'utf8')
 const automation = readFileSync('backend/AutomationApi.gs', 'utf8')
+const discord = readFileSync('backend/DiscordApi.gs', 'utf8')
 const deepLinks = readFileSync('backend/DeepLinkApi.gs', 'utf8')
 
 const checks = [
@@ -13,11 +14,13 @@ const checks = [
   ['Shared hook records enqueue failure and returns for rebuild', /Game submitted automation enqueue failed[\s\S]*return null/.test(canonical)],
   ['Shared publisher accepts the exact submitted game', /function publishLatestGameSubmittedAutomationEvent\(game\)[\s\S]*publishGameSubmittedAutomationEvent\(submittedGame\)/.test(gameEngine)],
   ['Game event stores only canonical identity fields', /const payload = JSON\.stringify\(\{[\s\S]*eventId:[\s\S]*gameId:[\s\S]*gameType:[\s\S]*\}\)/.test(automation)],
-  ['Discord queue resolves the canonical game downstream and reuses its payload builder', /buildAutomationGamePayloadById_[\s\S]*buildDiscordGamePayload\(game \|\| eventPayload\)/.test(automation)],
+  ['Discord queue requires the canonical game, decoder state, and a completed story',
+    /buildAutomationGamePayloadById_\(eventPayload\.gameId[\s\S]*readArmyIntelligenceReadModelPayload\(\)[\s\S]*UrlFetchApp\.fetch\(AUTOMATION_GAME_STORY_WORKER_URL[\s\S]*buildDiscordGamePayload\(game, result\.story, result\.rosterless === true\)/.test(automation)],
   ['Game announcements link to the canonical Battle Report route', /case "gameSubmitted":[\s\S]*return "\/games\/" \+ encodeURIComponent\(getDeepLinkId\(data\.gameId \|\| data\.id\)\)/.test(deepLinks)],
   ['Rebuild itself does not publish game events', !/function rebuildGameEngine\([^]*?publishLatestGameSubmittedAutomationEvent\(/.test(gameEngine.split('function persistGameEngineState')[0])],
   ['Submission enqueue performs no queue processing or Discord delivery', !/function canonicalSubmissionEnqueueGameAutomation_[\s\S]*processAutomationQueueItem|function canonicalSubmissionEnqueueGameAutomation_[\s\S]*sendDiscordAnnouncementPayload/.test(canonical)],
   ['Queue deduplication remains enabled', /dedupeKey: item\.queueId/.test(automation)],
+  ['Roster-free Discord stories disclose the absent lists', /Fictional battle story · army lists unavailable/.test(discord)],
 ]
 
 let failed = false

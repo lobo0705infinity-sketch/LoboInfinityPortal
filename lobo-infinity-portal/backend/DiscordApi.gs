@@ -463,7 +463,7 @@ function buildDiscordAnnouncementPayload(event, params) {
 
 }
 
-function buildDiscordGamePayload(game) {
+function buildDiscordGamePayload(game, story, rosterless) {
 
   if (!game)
     return buildDiscordInfoPayload(
@@ -479,6 +479,15 @@ function buildDiscordGamePayload(game) {
 
   const review =
     buildDiscordGameReview(game, result);
+  const generatedStory = getDiscordString(story);
+  const dispatch = generatedStory || review.dispatch;
+  const storyHeading = !generatedStory
+    ? "Dispatch from the Front"
+    : rosterless
+      ? "Fictional battle story · army lists unavailable"
+      : "Fictional battle story";
+  if (generatedStory.length > 3500)
+    throw new Error("The battle story exceeds the Discord embed limit.");
 
   if (isDiscordDrawGame(game)) {
     const participants =
@@ -488,9 +497,11 @@ function buildDiscordGamePayload(game) {
       getDiscordGameEventName(game);
 
     const fields = [
-      buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false),
-      buildDiscordField("Tactical Bottom Line", review.bottomLine, false)
+      buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false)
     ];
+
+    if (!generatedStory)
+      fields.push(buildDiscordField("Tactical Bottom Line", review.bottomLine, false));
 
     if (review.turningPoint !== "")
       fields.push(
@@ -521,8 +532,8 @@ function buildDiscordGamePayload(game) {
           description:
             "**Mission: " +
             result.mission +
-            "**\n\n**Dispatch from the Front**\n" +
-            review.dispatch,
+            "**\n\n**" + storyHeading + "**\n" +
+            dispatch,
           fields: fields,
           url:
             link.url
@@ -545,10 +556,10 @@ function buildDiscordGamePayload(game) {
         description:
           "**Mission: " +
           result.mission +
-          "**\n\n**Dispatch from the Front**\n" +
-          review.dispatch,
+          "**\n\n**" + storyHeading + "**\n" +
+          dispatch,
         fields:
-          buildDiscordGameReviewFields(game, result, review, link.url),
+          buildDiscordGameReviewFields(game, result, review, link.url, generatedStory),
         url:
           link.url
       })
@@ -557,12 +568,14 @@ function buildDiscordGamePayload(game) {
 
 }
 
-function buildDiscordGameReviewFields(game, result, review, url) {
+function buildDiscordGameReviewFields(game, result, review, url, story) {
 
   const fields = [
-    buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false),
-    buildDiscordField("Tactical Bottom Line", review.bottomLine, false)
+    buildDiscordField("Final Score", buildDiscordGameScoreLine(result), false)
   ];
+
+  if (!story)
+    fields.push(buildDiscordField("Tactical Bottom Line", review.bottomLine, false));
 
   if (review.turningPoint !== "")
     fields.push(
@@ -1417,6 +1430,11 @@ function buildDiscordInfoPayload(title, description, url) {
 function sendDiscordAnnouncementPayload(event, payload, options) {
 
   options = options || {};
+
+  // Only the decoded-list story queue can announce a newly submitted game.
+  // Manual, preview, and old direct paths cannot post before composition.
+  if (event === "gameSubmitted" && options.storyGenerated !== true)
+    return { success: false, error: "Wait for both decoded lists and the generated battle story before announcing this game." };
 
   const logPayload =
     buildDiscordLogPayload(

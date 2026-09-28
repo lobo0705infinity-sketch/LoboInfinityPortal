@@ -25,6 +25,7 @@ const sandbox = {
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
   CONFIG: { DIVISIONS: { MAIN_MAN: 'Main Man', PGA: 'Proving Grounds A', PGB: 'Proving Grounds B' } },
   getPlayerRegistryColumns: () => ({ player: 0, displayName: 1, division: 2, active: 3 }),
+  getGameEnginePlayerArmyCode: () => '',
   normalizeGameType: (value) => {
     const type = String(value || '').trim().toLowerCase()
     return ['casual', 'tournament', 'narrative'].includes(type) ? type : 'league'
@@ -36,6 +37,7 @@ vm.createContext(sandbox)
 for (const name of [
   'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',
   'resolvePublicSnapshotParticipant_', 'buildPublicSnapshotGameContext_',
+  'publicSnapshotScoreCellIsValid_',
   'isPublicSnapshotCurrentLeagueGame_', 'getPublicSnapshotCurrentLeagueDivisions_',
   'isPublicSnapshotCompletedGame_', 'buildPublicSnapshotRemainingMatchups_',
   'validatePublicSnapshotRemainingMatchups_',

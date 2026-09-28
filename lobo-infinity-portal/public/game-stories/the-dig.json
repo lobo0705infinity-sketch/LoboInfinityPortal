@@ -1,0 +1,2247 @@
+[
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "StarCo"
+    ],
+    "heroFaction": "StarCo",
+    "role": "objective",
+    "paragraphs": [
+      "The contractors had been promised an empty excavation and a clean retrieval fee. Then a shape moved behind the glass of the buried chamber. {{heroPlayer}}’s crew set a lamp beside the access hatch; across the pit, {{otherPlayer}}’s fighters answered with a light that followed the lamp instead of the ground.",
+      "{{hero}} crawled through the maintenance duct toward the console while a gunfight broke out above. The chamber had no windows on this side, only a strip of symbols crawling across the door. The trooper found a manual contact beneath the dust and held it down long enough for a reading to begin.",
+      "A second shadow appeared inside the chamber, exactly where the trooper’s reflection should have been. The contact grew hot beneath a gloved hand. Above, the crew shouted for a retreat, but the final line of data had not crossed the transmitter. The trooper stayed until the lamp outside went dark."
+    ],
+    "endings": {
+      "heroWins": "The crew pulled {{hero}} from the duct with the reading still transmitting to their ship.",
+      "heroLoses": "The crew saved the trooper, but {{otherPlayer}}’s fighters sealed the chamber before the last transmission escaped.",
+      "draw": "Both crews carried fragments away, and neither could say what had watched them from behind the glass."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Operations Subsection",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "Someone had left a field hospital at the edge of the excavation, its cots empty and its power still running. {{heroPlayer}}’s people followed the cables underground, looking for the source before the emergency generator failed. {{otherPlayer}}’s sentries had already reached the machinery and would not let them pass.",
+      "{{hero}} went down the narrow service stairs with a portable reader. The trooper reached the lowest landing as the lights died, found the console by touch, and brought the screen back with a battery from the medical kit. Lines of strange diagnostic data ran across a display built for something else entirely.",
+      "A warning sounded upstairs: the route out was closing. The trooper could carry the reader or stay to copy one last encrypted segment, the only part that seemed to explain why the hospital had been abandoned. The battery flickered. The trooper chose to wait for the final transfer."
+    ],
+    "endings": {
+      "heroWins": "The reader cleared its last segment, and {{heroPlayer}}’s people reached daylight with an answer.",
+      "heroLoses": "The transfer broke, and {{otherPlayer}}’s sentries held the machinery while the medical team withdrew.",
+      "draw": "The team escaped with a damaged reader; the chamber and its remaining data belonged to neither side."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Next Wave"
+    ],
+    "heroFaction": "Next Wave",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Two teams bearing the same insignia arrived at the excavation with different access codes. Neither commander would explain who had changed the orders. When {{heroPlayer}}’s squad opened the outer gate, {{otherPlayer}}’s squad was already inside, setting a receiver beside the deepest shaft.",
+      "{{hero}} held the upper bridge while the engineers argued over the console below. Shots struck the railing from a position the trooper knew well: the other squad had chosen the same cover and the same approach. The trooper broke that symmetry by moving onto the exposed grating and firing down through it.",
+      "The receiver’s light changed from green to amber. Somewhere in the shaft, one machine began answering two commands at once. Both squads scrambled to pull their people away from the edge as the bridge shook. The trooper kept the far end covered until the last technician cleared the span."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s team left with the receiver; the duplicate orders remained unexplained.",
+      "heroLoses": "{{otherPlayer}}’s team carried the receiver out, while {{hero}} led the technicians away from the collapsing bridge.",
+      "draw": "The bridge fell between the two teams, leaving each with half a set of orders and no receiver."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Kosmoflot",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A thaw had opened two entrances to the same buried station. {{heroPlayer}}’s expedition came down the north lift with a drilling rig; {{otherPlayer}}’s crew reached the south shaft carrying a map drawn before either commander had been born. Both maps marked the console beneath the ice as their own discovery.",
+      "{{hero}} clipped a safety line to the north wall and crossed the flooded floor toward the console. A broken turbine turned under the water, pulling the line taut. The trooper climbed onto the housing, freed the cable, and set a scanner against the only panel still giving off heat.",
+      "From the south shaft came the scrape of another crew descending. Water rose around the console as the turbine began to spin faster. The trooper could leave with an incomplete scan or hold the scanner until its green light came on. The line shivered in the current."
+    ],
+    "endings": {
+      "heroWins": "The light turned green, and {{heroPlayer}}’s crew hauled {{hero}} out with the complete reading.",
+      "heroLoses": "The rising water took the scanner, and {{otherPlayer}}’s crew secured the station above it.",
+      "draw": "Both crews escaped the flood with different pieces of the station’s buried record."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Military Orders"
+    ],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "The first drill struck a vaulted roof beneath the excavation. A knight descended through the new opening and found a chamber full of severed cables, each one leading toward a lit console. {{otherPlayer}}’s fighters entered from the far passage before {{heroPlayer}}’s engineers could learn what the machine had been built to hold.",
+      "{{hero}} met the first attacker between two rows of dead terminals. There was no room to bring a rifle to bear. The trooper drove forward, knocked the attacker away from the console, and made a narrow space for an engineer to kneel beside the exposed contacts.",
+      "The chamber door began closing without anyone touching it. On the other side, a second light had come alive. The engineer called out a sequence of numbers while the trooper braced against the narrowing gap, keeping it open just long enough for the reading to leave the room."
+    ],
+    "endings": {
+      "heroWins": "The engineer emerged with the reading as {{hero}} finally let the door shut.",
+      "heroLoses": "{{hero}} held the passage, but {{otherPlayer}}’s fighters cut the transmission and kept the chamber.",
+      "draw": "The door divided the forces with the engineers outside and the unresolved signal still inside."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "objective",
+    "paragraphs": [
+      "The excavation maps showed one buried transmitter. The survey team found three, all broadcasting the same coordinates from different depths. {{heroPlayer}}’s officer ordered a cautious descent while {{otherPlayer}}’s fighters spread through the upper galleries, waiting to see which signal the humans would follow.",
+      "{{hero}} chose the middle shaft because the dust there had been disturbed recently. The trooper lowered a sensor into the dark, found a warm cable beneath the soil, and traced it to a console hidden behind a false wall. A warning light came on before the first reading finished.",
+      "The other two transmitters began answering. Their signals overlapped until the screen showed a map of the dig that no surveyor had drawn. The trooper had seconds to copy it before the galleries filled with interference and footsteps closed on the middle shaft."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} carried the impossible map back to {{heroPlayer}}’s survey team.",
+      "heroLoses": "The map vanished from the screen as {{otherPlayer}}’s fighters secured the middle shaft.",
+      "draw": "Both teams left the dig with different coordinates and the uneasy knowledge that neither set was complete."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A medical caravan reached the excavation after receiving a distress call with no voice attached. The tents beside the pit were empty, but every monitor carried the same rising pulse. {{heroPlayer}}’s team followed it below ground, where {{otherPlayer}}’s sentries stood guard around a sealed research station.",
+      "{{hero}} found an unattended console behind the triage wall. The trooper connected a field diagnostic kit and discovered that the pulse was data, timed to sound like a heartbeat. As a gunfight drew the sentries away, the trooper copied the pattern onto a small medical recorder.",
+      "The recorder began speaking in the voice of the missing caller. It named a chamber deeper in the dig and then fell silent. The trooper had no time to follow the warning; the caravan was pulling out, and someone had just reopened the door to the station."
+    ],
+    "endings": {
+      "heroWins": "The caravan escaped with the recorder and a route to the chamber below.",
+      "heroLoses": "{{otherPlayer}}’s sentries recovered the recorder, leaving the caravan with only the caller’s last words.",
+      "draw": "The caravan kept the warning while the sentries retained the station that had sent it."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "The miners had dug through the wrong wall and found a passage older than the colony. {{heroPlayer}}’s militia came to bring them out; {{otherPlayer}}’s fighters arrived at the far end before the evacuation could begin. With the tunnel too narrow for vehicles, everyone heard the first shots echo from the same bend.",
+      "{{hero}} took the bend and fired from behind a broken ore cart. The trooper could not see the miners, only their helmet lamps moving toward the exit. Each time a lamp disappeared around the turn, the gunfighter shifted position to keep the far passage covered.",
+      "Then the wall behind the cart lit up with writing the miners had exposed. The oldest worker stopped to copy a line. Boots sounded from the far end, and the trooper had to choose between pulling the worker away and holding the tunnel for one more breath."
+    ],
+    "endings": {
+      "heroWins": "The worker escaped with the copied line while {{hero}} brought up the rear.",
+      "heroLoses": "The miners reached daylight, but {{otherPlayer}}’s fighters kept the passage and its hidden writing.",
+      "draw": "The militia saved the miners; the passage and the message remained contested."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "The dig was under seal when a second warrant arrived with the same signature and a later timestamp. {{heroPlayer}}’s investigators carried the first order down to the chamber. {{otherPlayer}}’s people held the lift with the second, certain that someone below had made a copy before either side reached the site.",
+      "{{hero}} found the original authorization embedded in the console’s maintenance log. The trooper placed a scanner against the screen, but the log began rewriting itself as the readout advanced. A voice on the radio offered a new warrant if the investigator would step away and leave the machine untouched.",
+      "The signature on the new warrant belonged to an officer who had died that morning. The trooper pulled the scanner’s cable from the console, preserving the last intact page in its memory. At the lift, both groups were waiting to see which order would be obeyed."
+    ],
+    "endings": {
+      "heroWins": "{{hero}} brought the intact page into the light and forced the argument into the open.",
+      "heroLoses": "{{otherPlayer}}’s people took the lift and the console; the scanner held only an unfinished copy.",
+      "draw": "Each group kept a warrant, and the one surviving page made both signatures suspect."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "PanOceania"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "The excavation had cut into the hull of a research vessel nobody remembered losing. Its navigation lamps still blinked beneath the stone. {{heroPlayer}}’s salvage team came for the flight recorder; {{otherPlayer}}’s scouts reached the vessel first and warned them away from the open hatch.",
+      "{{hero}} slipped into the cramped bridge and found the recorder running backward through the ship’s last minute. An image of the excavation appeared on its display, though the ship had vanished before anyone dug this pit. The trooper connected a field terminal as footsteps moved along the corridor outside.",
+      "On the final frame, the bridge camera showed someone opening the hatch from the inside. The figure wore the same salvage markings now visible on the trooper’s sleeve. The recorder clicked back to the beginning, ready to erase the image unless the transfer finished first."
+    ],
+    "endings": {
+      "heroWins": "The team carried the last frame away and began looking for the person who had worn their markings.",
+      "heroLoses": "{{otherPlayer}}’s scouts took the bridge before the transfer ended; the recorder started its loop again.",
+      "draw": "Both teams left with part of the recording, each missing the frame the other refused to share."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "ALEPH",
+      "Next Wave"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "A survey program predicted the exact minute a buried antenna would wake. When it did, the signal carried tomorrow’s casualty list. {{heroPlayer}}’s team went down to verify the source. {{otherPlayer}}’s crew followed, hoping to keep the names from reaching the surface.",
+      "{{hero}} connected a portable interface to the antenna’s control bank. The first names came through clearly, then the order changed each time someone on the radio reported a new position. The trooper realized the prediction was still being written and asked everyone above to fall silent.",
+      "Silence held for eleven seconds. One name remained, a technician standing beside the trooper. A service hatch opened behind them, and a light swept the chamber floor. The trooper left the interface attached, took the technician by the collar, and started toward a tunnel the program had not shown."
+    ],
+    "endings": {
+      "heroWins": "They found daylight by the unmarked tunnel; the last name disappeared from the recording.",
+      "heroLoses": "{{otherPlayer}}’s crew secured the control bank, leaving {{heroPlayer}}’s team with a list they could no longer test.",
+      "draw": "The antenna fell silent, but both crews remembered a name that had appeared on its last page."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "The first drill bit came up wrapped in living fibers. By nightfall, the fibers had woven a narrow stair down the side of the excavation. {{heroPlayer}}’s visitors recognized the growth and descended before it could close. {{otherPlayer}}’s guards followed the movement of their lamps through the soil.",
+      "{{hero}} placed a sensor against the root that held the buried console. The growth drew back, revealing a socket made for a hand rather than a tool. The trooper put a palm against it, and the console answered with a recording of people speaking inside a chamber still sealed beneath their feet.",
+      "One of the voices was giving directions to the guards above. The root tightened around the trooper’s wrist as the voice came closer over the radio. To carry the recording out, the trooper had to leave the sensor in place and trust the living stair to remain open."
+    ],
+    "endings": {
+      "heroWins": "The root released {{hero}}, and the recording reached the surface before the stair folded shut.",
+      "heroLoses": "The guards kept the console and its strange witness while {{heroPlayer}}’s visitors climbed out empty-handed.",
+      "draw": "The stair closed between the teams, leaving the voice on the recording with no one to answer it."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Corregidor Jurisdictional Command",
+      "Next Wave"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "The lift had stopped with six dockworkers underground and the shaft filling with warm dust. {{heroPlayer}}’s rescue crew reached the pit as {{otherPlayer}}’s surveyors tried to restart the machinery from a different control panel. Every attempt sent the trapped car a little farther down.",
+      "{{hero}} climbed through the counterweight channel and found a manual brake beside the buried console. The trooper secured the brake with a cable, then coaxed an old maintenance screen into showing the car’s position. A voice from below counted six workers and asked why the rescue crew had stopped moving.",
+      "The screen showed a seventh weight inside the car. The trooper could release the brake and bring everyone up, but the unexplained load might drag the car into the lowest chamber. The workers began pulling at their hatch while the cable strained against the trooper’s hands."
+    ],
+    "endings": {
+      "heroWins": "The car reached the surface with all six workers; no one admitted carrying the seventh load.",
+      "heroLoses": "{{otherPlayer}}’s surveyors took control of the lift, and the workers waited below for another rescue attempt.",
+      "draw": "The crew reached the car, but its mysterious weight kept the lift grounded until morning."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "objective",
+    "paragraphs": [
+      "A lacquered mask lay beside the excavation’s deepest console. The archivist accompanying {{heroPlayer}}’s patrol said it had been stolen from a shrine a century ago. {{otherPlayer}}’s crew had already tagged it for transport, and the two groups confronted each other beneath a ceiling that shed dust with every word.",
+      "{{hero}} checked the artifact with a field scanner and found a transmission hidden in the lacquer. Its final line was a set of instructions for the console. The trooper read the first command aloud; lights came on across the chamber, and a shutter began to cover the only exit.",
+      "The archivist reached for the mask. Across the floor, a rival technician shouted that the next command would stop the shutter but destroy the message. The trooper had enough time to copy one more line or obey the warning. A narrow strip of daylight still showed above the descending door."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}’s patrol escaped with the mask and the line that explained who had hidden it here.",
+      "heroLoses": "{{otherPlayer}}’s crew took the mask as the shutter sealed the chamber behind them.",
+      "draw": "The shutter caught the mask between the groups; each left with half of its broken message."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Morat Aggression Force",
+      "Next Wave"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A drilling charge cracked open a cavern full of suspended metal plates. Each plate began to ring as {{heroPlayer}}’s soldiers entered, giving away their positions to {{otherPlayer}}’s people waiting near the buried machinery. An engineer needed a clear path to the console before the charge brought the roof down.",
+      "{{hero}} advanced between the plates, firing only when a vibration gave the enemy’s position away. A round punched through one disk and sent it swinging into the next. The clamor covered the engineer’s crossing, but it also woke a low hum under the stone floor.",
+      "The plates started falling in sequence, drawing a line toward the console. The engineer called that the reading needed a few more seconds. {{hero}} stayed in the open, watching the last hanging disk and the passage from which another shot could come."
+    ],
+    "endings": {
+      "heroWins": "The engineer finished the reading as the last disk fell, and {{hero}} led the way out.",
+      "heroLoses": "{{otherPlayer}}’s people cut off the engineer; the soldiers escaped with only the echo of the machine.",
+      "draw": "The cavern collapsed between the forces, preserving the console and ending the contest for now."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Bakunin Jurisdictional Command",
+      "Next Wave"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "The workers thought the voice under the pit was a singer trapped in a maintenance tunnel. At dusk, it began repeating a childhood song known to one member of {{heroPlayer}}’s crew. {{otherPlayer}}’s scouts posted themselves at the shaft mouth, determined to keep anyone from following it.",
+      "{{hero}} descended with a receiver instead of a rescue stretcher. Each verse opened another channel on the buried console; the last verse carried the coordinates of a chamber missing from every map. The trooper hummed the melody into the receiver, and a wall of dark glass lit up with faces from the crew’s past.",
+      "One face asked to be brought home. The voice above warned that the scouts were coming down. The trooper stopped singing, saved the coordinates, and left the glass unanswered as boots sounded on the ladder and another remembered face began forming behind the first."
+    ],
+    "endings": {
+      "heroWins": "The coordinates reached {{heroPlayer}}’s crew, who could now search for the room behind the glass.",
+      "heroLoses": "{{otherPlayer}}’s scouts claimed the shaft and silenced the receiver before the coordinates escaped.",
+      "draw": "The song ended, but each side carried a different verse back into the night."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "objective",
+    "paragraphs": [
+      "The rescue beacon started transmitting from beneath solid rock, using a call sign assigned to a ship still in orbit. {{heroPlayer}}’s squad dug through the floor of the excavation while {{otherPlayer}}’s team guarded the equipment that had found the signal. When the wall opened, air rushed into an intact ship’s corridor.",
+      "{{hero}} crossed the pressure door with a diagnostic unit and found a console counting down to a launch that had never happened. A handprint marked the glass from the other side. The trooper read the beacon’s coordinates twice: they pointed here and to the vessel above, with the same timestamp.",
+      "A warning klaxon began to sound in both places at once. The trooper copied the signal and called for the squad to clear the corridor. Behind the sealed bridge door, someone struck the glass three times, then waited for an answer."
+    ],
+    "endings": {
+      "heroWins": "The squad secured the beacon recording and withdrew before the two countdowns reached zero.",
+      "heroLoses": "{{otherPlayer}}’s team held the pressure door; the squad reached daylight without the beacon recording.",
+      "draw": "The signal went silent on both ships, leaving the two squads with the same unanswered knock."
+    }
+  },
+  {
+    "mission": "The Dig",
+    "factions": [
+      "Next Wave",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "Shasvastii Expeditionary Force",
+    "role": "objective",
+    "paragraphs": [
+      "A surveyor disappeared in the pit and returned carrying a map that showed tunnels no one had opened. {{heroPlayer}}’s infiltrators followed those passages into the lower dig. {{otherPlayer}}’s guards were searching for the surveyor too; they had noticed that the returning figure cast a shadow in the wrong direction.",
+      "{{hero}} reached the buried console through a crack too small for the guards. The trooper copied its thermal map and saw that the passages were warming from the inside. In the upper gallery, the surveyor calmly led the guards toward a blank wall, promising a safe way out.",
+      "The wall split along a seam the map had predicted. Air from a deeper chamber made every sensor blink at once. The trooper could warn the guards and reveal the hidden route, or remain silent long enough to finish copying what lay beyond it."
+    ],
+    "endings": {
+      "heroWins": "The infiltrators escaped with the thermal map as the new passage closed behind them.",
+      "heroLoses": "{{otherPlayer}}’s guards sealed the seam and seized the console before {{hero}} could finish the copy.",
+      "draw": "Both groups reached the surface, and the surveyor vanished before anyone could ask what was below."
+    }
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "PanOceania"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "Two PanOceanian recovery teams reached a flooded excavation with contradictory maps of the same buried transmitter. {{heroPlayer}}'s team entered by the drainage shaft; {{otherPlayer}}'s team held the only lift to the surface. A pulse from under the water kept arriving one second before either map said it should.",
+      "{{hero}} waded to the transmitter's casing and found a second clock bolted beneath it, still measuring a forgotten rescue window. The specialist copied its setting, then freed the casing from a cable that would have pulled it deeper. Above, both teams heard the lift motor start without a command.",
+      "The transmitter could go up only if one team surrendered its route. {{heroPlayer}}'s carriers pulled from the shaft while {{otherPlayer}}'s guards braced the lift against the rising water. For a moment the two maps overlapped on the casing's wet glass, and the missing second became a place between them."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s team lifted the transmitter and preserved the forgotten clock setting.",
+      "heroLoses": "{{otherPlayer}}'s team controlled the lift and carried the transmitter out.",
+      "draw": "The transmitter reached dry ground while neither team could claim its recovery alone."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Military Orders"
+    ],
+    "heroFaction": "Military Orders",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An excavation beneath a ruined chapel exposed a metal reliquary with a seal from a century no one could place. A PanOceanian survey unit wanted its contents documented in the pit; knights of the Military Orders sought to remove it before an approaching storm filled the lower nave.",
+      "{{hero}} met an armed defender in the narrow archway and forced space for the bearers to pass. As they raised the reliquary, sand poured from its seams and revealed a tiny lens looking inward. The fighter kept the arch clear while a surveyor saw a star map reflected on its inner wall.",
+      "The storm broke across the chapel roof before anyone could read the whole map. {{heroPlayer}}'s bearers held the reliquary under a fallen vault; {{otherPlayer}}'s surveyors marked the remaining points through the lens. A narrow strip of starlight appeared on the wet stone, though the sky above had gone black."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s knights carried the reliquary clear before the nave flooded.",
+      "heroLoses": "{{otherPlayer}}'s surveyors secured the chamber and completed their record of the star map.",
+      "draw": "The reliquary survived the storm while both teams kept only part of its map."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Kestrel Colonial Force"
+    ],
+    "heroFaction": "Kestrel Colonial Force",
+    "role": "objective",
+    "paragraphs": [
+      "A colonial dig beside a greenhouse uncovered the root of a tree that had grown through an old observation vault. Kestrel scouts needed the vault's soil records to explain a failing crop; a PanOceanian team held the excavation perimeter for the landowner. The tree's leaves turned silver whenever the vault door moved.",
+      "{{hero}} climbed through the root gap and found the records sealed in a drawer beneath the living wood. Rather than cut the tree, the specialist loosened the drawer's rails and passed the cartridge out intact. A sensor inside showed the greenhouse's water had been rerouted through the vault for years.",
+      "The landowner wanted the dig closed before rain reached the drawer; the growers needed a route to repair the hidden line. {{heroPlayer}}'s scouts marked the root gap while {{otherPlayer}}'s perimeter kept the access clear. Above them, the greenhouse's silver leaves began to turn green again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts recovered the soil record and protected the greenhouse's water supply.",
+      "heroLoses": "{{otherPlayer}}'s team secured the vault and controlled the excavation perimeter.",
+      "draw": "The cartridge left the vault while both teams kept the tree standing."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Neoterra Capitaline Army"
+    ],
+    "heroFaction": "Neoterra Capitaline Army",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Below an old data center, a dig crew struck a sealed capsule from the city's first orbital expansion. Neoterra security arrived to claim the corporate archive inside; a PanOceanian recovery unit had orders to inspect the capsule before it traveled. The lift opened onto a chamber already lit by someone else's work lamps.",
+      "{{hero}} held the lamp line under fire while a technician reached the capsule's manual lock. The first drawer contained no records, only a narrow strip of film showing workers lowering the capsule into place. On the last frame, the crew had written a warning on the wall the diggers had just demolished.",
+      "The technician could read only the first word before the lift shuddered. {{heroPlayer}}'s security team shielded the capsule; {{otherPlayer}}'s recovery crew searched the rubble for the rest of the warning. The gunfighter kept the lamps burning as a second drawer clicked open by itself."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s security team held the capsule and carried its film to the surface.",
+      "heroLoses": "{{otherPlayer}}'s recovery unit secured the chamber and reconstructed the warning.",
+      "draw": "Both teams left with separate fragments of the capsule's first message."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Shock Army of Acontecimento"
+    ],
+    "heroFaction": "Shock Army of Acontecimento",
+    "role": "gunfighting",
+    "paragraphs": [
+      "In a rainforest excavation, the first drill core emerged warm from ground too shallow for geothermal heat. Acontecimento troops guarded the survey crew while a PanOceanian unit approached a rival entrance to the same chamber. Thunder rolled across the canopy, and something beneath the dig answered with a lower sound.",
+      "{{hero}} drove an attacker from the exposed winch as a surveyor cut power to the drill. The core's warmth came from a buried conduit carrying energy toward a dormant weather station. The fighter held the winch while the surveyor lifted a sensor clear of the rising mud and found the station's last transmission.",
+      "The storm hid the station above the trees, but the conduit still offered a route to it. {{heroPlayer}}'s guard covered the crew's retreat; {{otherPlayer}}'s unit held the upper trail. When the thunder stopped, the lower sound continued, timed exactly to the missing station's emergency beacon."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s guard recovered the core and traced the live conduit toward the station.",
+      "heroLoses": "{{otherPlayer}}'s unit secured the upper trail and the dig's remaining equipment.",
+      "draw": "The crew withdrew with the sensor while both teams watched the buried conduit."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Svalarheima Winter Force"
+    ],
+    "heroFaction": "Svalarheima Winter Force",
+    "role": "objective",
+    "paragraphs": [
+      "A glacier split around an excavation shaft and exposed a frozen antenna angled toward the ground. Winter Force scouts descended to recover its power unit; a PanOceanian team established a camp on the opposite rim. The antenna received a voice whenever the ice cracked, though the frequency was officially vacant.",
+      "{{hero}} crossed a blue crevasse and reached the unit before its warming cell ruptured. The specialist disconnected the cell and found a message etched inside the casing: a shaft number belonging to a buried shelter. The voice was a repeating guide signal, distorted each time the moving ice changed the antenna's angle.",
+      "The shelter lay beyond the shaft, too far to reach before the next fracture. {{heroPlayer}}'s scouts carried the cell uphill while {{otherPlayer}}'s camp mapped a safer line across the ice. The guide signal sounded once more, clearer now that the antenna had stopped moving."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts secured the power unit and mapped the buried shelter.",
+      "heroLoses": "{{otherPlayer}}'s team held the shaft and established the safe crossing.",
+      "draw": "The shelter's location was preserved as both teams withdrew ahead of the fracture."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Varuna Immediate Reaction Division"
+    ],
+    "heroFaction": "Varuna Immediate Reaction Division",
+    "role": "objective",
+    "paragraphs": [
+      "Divers working beneath a floating city found a chamber sealed into the seabed, its hatch painted with an obsolete evacuation mark. Varuna responders entered through a pressure lock while a PanOceanian surface unit held the retrieval crane. The divers' lights picked out fresh handprints on the outside of the old hatch.",
+      "{{hero}} checked the lock's pressure and found it connected to a small air pocket below the chamber floor. The specialist opened a narrow communication valve instead of the main hatch. A voice answered from underneath, asking why the rescue marker had taken so long to be found.",
+      "The crane could lift the chamber, but the hidden pocket would flood if its seals twisted. {{heroPlayer}}'s responders guided the divers around the lower rim while {{otherPlayer}}'s crew steadied the cable overhead. More handprints appeared in the disturbed silt, pointing toward a second valve beyond the lights."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s responders opened the lower pocket and brought its occupants into the pressure lock.",
+      "heroLoses": "{{otherPlayer}}'s surface crew raised the chamber and secured the seabed site.",
+      "draw": "The chamber stayed stable while both teams followed the second valve."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Yu Jing"
+    ],
+    "heroFaction": "Yu Jing",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A border excavation uncovered a freight tunnel whose ownership seals belonged to two rival survey offices. Yu Jing troops approached from an old rail spur; a PanOceanian unit held the surface ramp. A small maintenance cart emerged between them carrying a locked case and no driver.",
+      "{{hero}} met an armed guard beside the cart and forced the fight away from its open wheels. A rail worker used the opening to stop the vehicle before it entered the collapsing ramp. Inside the case lay a working key to the tunnel's ventilation doors, tagged for a crew still listed underground.",
+      "The rail worker heard tapping behind the nearest door. {{heroPlayer}}'s troops could reach it from below; {{otherPlayer}}'s unit could shore up the ramp above. The cart's motor began to turn again as the fighter held the key in the shaft's dusty light."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s troops opened the ventilation doors and reached the underground crew.",
+      "heroLoses": "{{otherPlayer}}'s unit secured the ramp and carried the crew out through the dig.",
+      "draw": "The crew emerged as both teams kept the freight tunnel from collapsing."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Imperial Service"
+    ],
+    "heroFaction": "Imperial Service",
+    "role": "objective",
+    "paragraphs": [
+      "An Imperial Service investigator sealed a dig after workers found a hidden courier capsule in its spoil heap. A PanOceanian retrieval team claimed the capsule had fallen from a licensed survey craft. The workers pointed instead to a fresh trench beneath the oldest layer, dug only the night before.",
+      "{{hero}} compared soil trapped in the capsule's hinge with the trench wall. The grains matched a deeper layer, proving someone had lifted the capsule and buried it again. The specialist photographed the hinge before opening the casing, then found a child's drawing wrapped around a data wafer inside.",
+      "The investigator wanted the wafer logged; the retrieval team wanted to trace the craft that had carried it. {{heroPlayer}}'s officers held the evidence table while {{otherPlayer}}'s unit watched the access road. One worker recognized the drawing as the view from a school no longer marked on the map."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s investigators secured the capsule and preserved its chain of custody.",
+      "heroLoses": "{{otherPlayer}}'s retrieval team controlled the dig and traced the capsule's flight path.",
+      "draw": "Both teams kept the wafer sealed while the workers identified the missing school."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Invincible Army"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Heavy armor from the Invincible Army advanced toward a dig where a PanOceanian crew had exposed an old transit engine. The engine's housing still hummed, though its tracks ended in stone. Both patrols heard a train whistle echo from the sealed side of the excavation.",
+      "{{hero}} held the open cutting under fire as engineers reached the engine's control plate. Its warning lamp indicated a vehicle moving along a route erased from the surface maps. The gunfighter protected the engineers while they uncoupled the plate, exposing a narrow inspection shaft that carried the whistle up from below.",
+      "The shaft was too small for armored troops, but wide enough for a sensor. {{heroPlayer}}'s crew lowered one as {{otherPlayer}}'s heavy guard secured the rim. On its screen, headlamps appeared in the darkness, approaching on rails that should no longer have existed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crew kept the cutting open and identified the moving vehicle.",
+      "heroLoses": "{{otherPlayer}}'s heavy guard secured the engine and controlled access to the shaft.",
+      "draw": "The headlamps reached the shaft while both patrols held their positions."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "White Banner"
+    ],
+    "heroFaction": "White Banner",
+    "role": "objective",
+    "paragraphs": [
+      "A mountain dig exposed a communications mast laid flat beneath the rock, still aimed at a pass no one used. White Banner scouts climbed down from the ridge; PanOceanian surveyors held the lower path. The mast's receiver picked up a call sign from a patrol missing before the pass was closed.",
+      "{{hero}} reached the buried transmitter and found its antenna had been folded to survive an avalanche. A memory cell held not a distress call but a route marked through the old pass. The specialist freed the cell without raising the mast, whose weight would have brought loose stone onto the workers below.",
+      "The route might still be passable, though snow had erased every surface marker. {{heroPlayer}}'s scouts began plotting its turns from the ridge while {{otherPlayer}}'s surveyors shored the excavation. The call sign sounded again from a second receiver farther up the mountain, answering a question nobody had asked aloud."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts recovered the memory cell and opened a search of the old pass.",
+      "heroLoses": "{{otherPlayer}}'s surveyors secured the mast and kept the excavation stable.",
+      "draw": "Both teams withdrew with the route copied and the mast still buried."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Ariadna"
+    ],
+    "heroFaction": "Ariadna",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Ariadnan prospectors uncovered a chamber built from mismatched hull plates beneath a low plain. PanOceanian researchers arrived to date its machinery and claimed the site for a survey. The prospectors found a row of scratches at child height on the wall, each one ending beside a sealed vent.",
+      "{{hero}} held the chamber entrance as fire came across the excavation. Behind the fighter, a prospector pried the vent open and found a packed bundle of letters, dry despite the soil above. The top letter described a ship whose crew had waited underground for a signal that never arrived.",
+      "The bundle could leave through the entrance only if the fighters kept the ladder clear. {{heroPlayer}}'s prospectors formed a line around the vent; {{otherPlayer}}'s researchers photographed the hull plates before the light failed. On the final letter, a date was crossed out and replaced with the word tomorrow."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s prospectors brought the letters into daylight and held the chamber.",
+      "heroLoses": "{{otherPlayer}}'s researchers secured the excavation and preserved the hull evidence.",
+      "draw": "The bundle was recovered as both teams left the chamber standing."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Caledonian Highlander Army"
+    ],
+    "heroFaction": "Caledonian Highlander Army",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A stone cairn shifted during a Caledonian road cut and exposed a stair descending farther than the survey bore had measured. Highlanders went down to protect the old site; PanOceanian archaeologists approached with a scanner. The stair's bottom step moved whenever someone at the top spoke a name.",
+      "{{hero}} drove a defender from the cramped landing and gave the archaeologists room to stop before the moving stone. Beneath it lay a wooden box wrapped against damp, holding a list of names cut from the road's first work crew. The fighter held the landing while a Highlander read them aloud.",
+      "Each spoken name steadied the step for a moment. {{heroPlayer}}'s people carried the box upward while {{otherPlayer}}'s team scanned the structure that had hidden it. At the top, the cairn stood open to the sky; no one could agree whether the last name had been read before the stair fell still."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s Highlanders recovered the names and secured the cairn.",
+      "heroLoses": "{{otherPlayer}}'s archaeologists held the stair and documented its mechanism.",
+      "draw": "The box reached the surface while both teams left the stair undisturbed."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Force de Réponse Rapide Merovingienne"
+    ],
+    "heroFaction": "Force de Réponse Rapide Merovingienne",
+    "role": "objective",
+    "paragraphs": [
+      "A rail cutting collapsed near a border town and revealed a line of buried signal cabinets. Merovingian responders searched for the old switching key before trains reached the broken track; a PanOceanian unit secured the excavation for a communications inquiry. From underground, a distant crossing bell began to ring.",
+      "{{hero}} crawled between the cabinets and located the live switch beneath a layer of rust. The specialist rerouted the bell to warn the nearest station, then lifted the key from its socket before the exposed cable flooded. The first approaching train answered the warning with a long whistle through the hills.",
+      "Stopping the train was only the first problem; the key could reveal why the old line had been reactivated. {{heroPlayer}}'s responders carried it out through the cutting while {{otherPlayer}}'s investigators kept the fallen wall from shifting. The crossing bell continued ringing after its power cable had been removed."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s responders secured the switching key and diverted the train.",
+      "heroLoses": "{{otherPlayer}}'s investigators controlled the cutting and preserved the signal cabinets.",
+      "draw": "The train stopped safely while both teams pursued the unexplained bell."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Kosmoflot"
+    ],
+    "heroFaction": "Kosmoflot",
+    "role": "objective",
+    "paragraphs": [
+      "A spaceport expansion uncovered the nose of a shuttle buried beneath decades of landing dust. Kosmoflot crews recognized its old rescue markings; PanOceanian engineers wanted the port's runways protected before any extraction. A recorder inside the wreck began playing a launch countdown whenever the dig lights were switched on.",
+      "{{hero}} entered through a fracture in the shuttle's flank and found the recorder powered by the dig's temporary cables. The specialist saved its memory and disconnected the borrowed current. On the final frame, the crew had turned back during ascent toward a signal rising from the ground below them.",
+      "The runway could not reopen until the shuttle moved, but its last signal pointed to another object beneath the apron. {{heroPlayer}}'s crew prepared lifting slings while {{otherPlayer}}'s engineers mapped the foundation. A taxiing pilot reported a faint countdown over the radio, although the recorder was now silent."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s crew recovered the shuttle recorder and traced its final signal.",
+      "heroLoses": "{{otherPlayer}}'s engineers secured the runway and controlled the wreck's extraction.",
+      "draw": "The shuttle remained supported while both teams surveyed the apron beneath it."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Tartary Army Corps"
+    ],
+    "heroFaction": "Tartary Army Corps",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Tartary engineers exposed a bunker roof while digging a defensive trench through frozen ground. PanOceanian troops approached the same position from an abandoned road, following a beacon beneath the concrete. The roof bore four fresh footprints, though no one on either side had crossed it yet.",
+      "{{hero}} kept the road under fire while an engineer opened a narrow access panel. Inside, a maintenance drone carried the beacon in circles around a sealed door, stamping the roof each time it climbed out to check its bearings. Its camera showed light under the door from a room the bunker plans omitted.",
+      "The engineer could stop the drone, but doing so might lose the only map of its route. {{heroPlayer}}'s defenders covered the panel while {{otherPlayer}}'s troops held the road. The drone made a fifth footprint, then paused at the door and turned its camera toward whoever stood behind it."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s engineers secured the bunker and preserved the drone's route.",
+      "heroLoses": "{{otherPlayer}}'s troops took the road and controlled the bunker entrance.",
+      "draw": "The sealed room remained untouched while both teams held opposite sides of the roof."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "USAriadna Ranger Force"
+    ],
+    "heroFaction": "USAriadna Ranger Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "An excavation at a geothermal field exposed a ladder descending beside an unmarked steam pipe. USAriadna rangers came to find a missing surveyor; PanOceanian technicians sought a heat regulator said to be below. A hard knock traveled up the pipe whenever the steam pressure fell.",
+      "{{hero}} forced an armed defender away from the ladder and held the opening while a ranger descended. The surveyor was alive on a lower ledge, using a wrench against the pipe to mark each lull in the steam. Beside her lay the regulator, wrapped in her field jacket to protect its controls.",
+      "The surveyor could climb only when the next pressure cycle passed. {{heroPlayer}}'s rangers kept the ladder clear while {{otherPlayer}}'s technicians watched the gauge. The fighter counted the knocks from below until the last one came from above, where the surveyor finally reached the rim."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s rangers brought the surveyor out and secured the shaft.",
+      "heroLoses": "{{otherPlayer}}'s technicians controlled the regulator and stabilized the geothermal field.",
+      "draw": "The surveyor reached safety as both teams kept the pressure cycle steady."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Haqqislam"
+    ],
+    "heroFaction": "Haqqislam",
+    "role": "objective",
+    "paragraphs": [
+      "A medicinal research team sought a seed vault beneath an ancient riverbed while PanOceanian surveyors mapped the layers above it. The dig uncovered a metal door too narrow for the expected cache. A thin line of green emerged through its seal after the first rain in years.",
+      "{{hero}} measured the door's pressure and found the vault still maintained a living atmosphere. The specialist opened a sampling port rather than the main seal, collecting a single viable seed carried by condensation. Its coating matched a plant believed lost during the first settlement, but the vault held many more containers.",
+      "Removing them without cooling the chamber would ruin what they held. {{heroPlayer}}'s researchers built a temporary cold passage while {{otherPlayer}}'s surveyors protected the bank from runoff. The green line at the door grew another leaf, visible in the light from both teams' lamps."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s researchers preserved the seed and secured the living vault.",
+      "heroLoses": "{{otherPlayer}}'s surveyors held the riverbed and controlled access to the chamber.",
+      "draw": "The vault stayed sealed as both teams prepared a safe recovery route."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Hassassin Bahram"
+    ],
+    "heroFaction": "Hassassin Bahram",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A dig for a missing courier's cache reached a chamber whose walls had been scraped clean. Hassassin operatives entered through an old ventilation route; a PanOceanian patrol held the lift above. On the floor lay one untouched line of writing, pointing to a door without a handle.",
+      "{{hero}} met a guard in the cramped chamber and forced the fight away from the writing. Behind the unmarked door, a courier had left a coded warning pressed into soft insulation. The fighter held the passage while an operative copied the impression, careful not to tear away the last surface that carried it.",
+      "The warning named a second cache, but its location depended on the writing still visible on the floor. {{heroPlayer}}'s cell aligned the two messages while {{otherPlayer}}'s patrol lowered a scanner from the lift. Dust blew across the chamber, leaving only part of the arrow uncovered."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s cell recovered the warning and traced the second cache.",
+      "heroLoses": "{{otherPlayer}}'s patrol secured the chamber and preserved the courier's writing.",
+      "draw": "Both teams left with different halves of the courier's directions."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Qapu Khalqi"
+    ],
+    "heroFaction": "Qapu Khalqi",
+    "role": "objective",
+    "paragraphs": [
+      "A customs warehouse foundation yielded a buried cargo container with a seal from a shipping line long dissolved. Qapu Khalqi officers came with the old port ledger; PanOceanian contractors arrived to reclaim equipment supposedly inside. The container's weight shifted as the digging machines fell silent.",
+      "{{hero}} checked its balance against the ledger and found an internal cradle had broken loose. The specialist opened the inspection hatch while workers braced the container, revealing a fragile model of the port before its harbor walls were built. Beneath the model lay a destination slip addressed to the people who had excavated it.",
+      "The slip listed a berth that would not exist for another decade. {{heroPlayer}}'s officers guarded the cradle while {{otherPlayer}}'s contractors cleared a path for lifting it. As the model rose, the harbor outside matched its tiny shoreline for one breath before the tide covered the resemblance."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers secured the model and the container's unexplained destination slip.",
+      "heroLoses": "{{otherPlayer}}'s contractors controlled the lift and recovered the buried cargo.",
+      "draw": "The model reached the surface while both parties retained a claim to its discovery."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Ramah Taskforce"
+    ],
+    "heroFaction": "Ramah Taskforce",
+    "role": "objective",
+    "paragraphs": [
+      "A collapsed aid station emerged beneath a new transit platform. Ramah medics came for a registry of patients left there during an evacuation; PanOceanian engineers needed to shore up the platform before its next train. The station door opened onto a row of sealed drawers, each colder than the surrounding earth.",
+      "{{hero}} checked the drawers and found that a surviving coolant loop protected a tray of blood samples. The patient registry was printed on the underside of that tray, where condensation had not reached it. The specialist rerouted power through a portable cell while a cracked ceiling beam began to creep across the door.",
+      "The tray could leave only after the beam was braced. {{heroPlayer}}'s medics carried the portable cell into the passage; {{otherPlayer}}'s engineers lowered a support through the platform. For several minutes the two crews listened to a train approaching overhead, unable to tell whether its weight would hold the chamber closed or bring it down."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s medics recovered the patient registry and its protected samples.",
+      "heroLoses": "{{otherPlayer}}'s engineers stabilized the platform and took control of the sealed station.",
+      "draw": "The train passed safely while the samples remained cooled inside the braced station."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Nomads"
+    ],
+    "heroFaction": "Nomads",
+    "role": "objective",
+    "paragraphs": [
+      "A dig below a disused relay yard found an antenna folded into a concrete tomb. Nomad salvagers recognized a call sign on its casing; PanOceanian inspectors wanted to know why the old yard had transmitted after its power was cut. A voice came through the antenna each time a worker struck the concrete.",
+      "{{hero}} traced the voice to a mechanical recorder, its needle driven by vibration from the excavation. The specialist separated the antenna from a live cable and wound the tape by hand. Between repetitions of a weather forecast, someone had spoken a list of names and the depth of a second buried vault.",
+      "The forecast ended just as water seeped into the tomb. {{heroPlayer}}'s salvagers raised the recorder in a sealed basket while {{otherPlayer}}'s inspectors isolated the cable. Everyone heard the last name spoken aloud before the tape stopped. It belonged to a worker who was standing among them, holding the basket rope."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s salvagers saved the recording and located the second vault.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the relay yard and impounded the recorder.",
+      "draw": "The crew preserved a partial list while the second vault remained buried."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Bakunin Jurisdictional Command"
+    ],
+    "heroFaction": "Bakunin Jurisdictional Command",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A housing block was being dismantled when workers exposed a narrow stair behind its foundation. Bakunin archivists believed a communal mural survived below; PanOceanian demolition crews were closing the site before the building shifted. A young archivist slipped down the stair and called up that the mural had faces still visible under the plaster.",
+      "{{hero}} descended when an armed guard blocked the archivist at the landing. In the cramped stairwell the fighter drove the guard back without firing into the painted wall. The archivist freed a small panel from the plaster, revealing that the faces were portraits of people who had disappeared during the block's first winter.",
+      "A crack opened over the landing as the demolition rig changed its weight. {{heroPlayer}}'s archivists passed the panel upward, portrait by portrait, while {{otherPlayer}}'s crew set braces around the foundation. The final face was painted directly on the wall, too large to move before the stair began to settle."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s archivists secured the mural and documented every portrait.",
+      "heroLoses": "{{otherPlayer}}'s crew closed the dangerous stair and controlled the demolition site.",
+      "draw": "The portable panel survived, but the last portrait stayed beneath the braced foundation."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Corregidor Jurisdictional Command"
+    ],
+    "heroFaction": "Corregidor Jurisdictional Command",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A drydock that had been filled with rubble revealed a second floor of rusted lifting chains. Corregidor riggers sought a missing crew capsule suspended below it; PanOceanian recovery officers had orders to claim the dock's cargo. The first winch movement sent a chain snapping across the open pit.",
+      "{{hero}} took position behind a crane housing and held an armed recovery team away from the winch controls. A rigger followed the fighter's covering fire across a swaying bridge and locked the loose chain. Below, a lamp blinked inside the capsule, although the dock had been abandoned for years.",
+      "The capsule proved empty except for a navigation plate still drawing power from its own battery. {{heroPlayer}}'s riggers raised it as {{otherPlayer}}'s officers secured the crane track. With every meter gained, the plate changed its displayed destination, finally settling on the exact coordinates of the drydock where they stood."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s riggers lifted the capsule and retained its navigation plate.",
+      "heroLoses": "{{otherPlayer}}'s officers took the dock and claimed the recovered cargo.",
+      "draw": "The capsule reached the surface while both crews recorded its impossible destination."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Tunguska Jurisdictional Command"
+    ],
+    "heroFaction": "Tunguska Jurisdictional Command",
+    "role": "objective",
+    "paragraphs": [
+      "Under a demolished banking kiosk lay a vault of paper identity slips, each sealed in wax. Tunguska auditors came to reconcile missing account holders; PanOceanian investigators searched for the contractor who had poured the kiosk foundation. A slip on the top shelf bore the contractor's signature dated thirty years after the vault was closed.",
+      "{{hero}} checked the wax for tampering and found the date was stamped into a reusable seal, not written by the contractor. The specialist matched its scratches to a second seal hidden beneath the shelf. Someone had changed the stamp each time a person took a slip, leaving the true removal dates in a shallow line of impressions.",
+      "The line ended with an impression made that morning. {{heroPlayer}}'s auditors copied it while {{otherPlayer}}'s investigators checked every worker at the dig. One worker carried fresh wax on a glove and a slip with no name, yet neither crew could find the corresponding empty space in the vault."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s auditors recovered the date trail and accounted for the missing slips.",
+      "heroLoses": "{{otherPlayer}}'s investigators seized the vault and questioned the worker.",
+      "draw": "Both teams retained the morning impression while the blank slip remained unexplained."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Combined Army"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A quarry bore broke into a chamber lined with dark, flexible plates. PanOceanian surveyors entered to map its supports; a rival Combined force advanced through an older cut to recover a buried device. The plates flexed at regular intervals, making every loose stone in the chamber jump toward the bore.",
+      "{{hero}} held a firing angle across the older cut while the surveyors took readings. The fighter noticed each shot made the plates pause, then start again in a different sequence. A surveyor used the pause to pull a worker clear of a falling shelf and found a small motor buried behind the vibrating wall.",
+      "Disabling the motor would also stop the wall that supported the quarry roof. {{heroPlayer}}'s surveyors marked a safe corridor as {{otherPlayer}}'s force approached the device. The fighter kept the older cut covered until the last worker escaped, and the chamber continued to pulse beneath both teams' feet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s surveyors secured the motor and mapped a safe way out.",
+      "heroLoses": "{{otherPlayer}}'s force reached the buried device and controlled the chamber.",
+      "draw": "Both teams withdrew through marked passages while the motor kept the roof steady."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Morat Aggression Force"
+    ],
+    "heroFaction": "Morat Aggression Force",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A drill broke into an underground firing range sealed beneath a training field. Morat soldiers sought equipment stored beyond its last blast door; PanOceanian personnel wanted to retrieve a survey probe trapped inside. Every attempt to open the door released a gust that blew grit through the narrow approach.",
+      "{{hero}} forced a defender away from the door wheel in the close passage and held the space while a technician tested the pressure. The gust came from an old ventilation fan still turning behind the wall. The fighter braced the wheel between bursts so the technician could open a gap without tearing the probe cable.",
+      "Inside, the probe rested beside a stack of numbered targets, all shot from the wrong side. {{heroPlayer}}'s soldiers lifted the targets clear while {{otherPlayer}}'s personnel reeled in the probe. The fan turned once more and exposed a fresh target at the bottom of the stack, its paint not yet dry."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s soldiers secured the range and its unexplained targets.",
+      "heroLoses": "{{otherPlayer}}'s personnel recovered the probe and sealed the blast door.",
+      "draw": "The probe came free as both teams photographed the newly painted target."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Dashat Company"
+    ],
+    "heroFaction": "Dashat Company",
+    "role": "objective",
+    "paragraphs": [
+      "A road crew found a freight wagon buried nose first in a dry ravine. Dashat contractors had a claim ticket for its missing pay chest; PanOceanian inspectors came to trace a cargo manifest that had vanished with the wagon. The brake lever was still locked, though the rails above had been removed years earlier.",
+      "{{hero}} opened the axle housing and found the pay chest wedged where a wheel had once been. The specialist freed it with a jack while an inspector read chalk marks inside the wagon. Each mark counted a day after the derailment, ending with a small arrow pointing down through the floorboards.",
+      "Below the boards lay a bundle of letters, addressed but never sent. {{heroPlayer}}'s contractors checked the chest against their ticket while {{otherPlayer}}'s inspectors copied the vanished cargo manifest from a letter. The last envelope carried no address, only a rubbing of the rail junction before the track was lifted."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s contractors recovered the pay chest and proved their claim.",
+      "heroLoses": "{{otherPlayer}}'s inspectors secured the wagon and reconstructed its manifest.",
+      "draw": "The letters were saved while both teams studied the junction rubbing."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Onyx Contact Force"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "gunfighting",
+    "paragraphs": [
+      "A stone quarry uncovered a grid of polished panels below its lowest cut. PanOceanian engineers thought the panels focused sunlight into a power well; an Onyx recovery party entered through a drainage tunnel. At noon, a stripe of light traveled across the quarry floor despite the panels lying underground.",
+      "{{hero}} kept the drainage tunnel covered while engineers followed the stripe to a buried mirror shaft. The fighter called a warning when a reflector rose unexpectedly, throwing light toward a worker on the scaffolding. An engineer turned the mirror by hand and found a scorched pattern beneath it, shaped like a map of the quarry.",
+      "The stripe pointed to a cut scheduled for blasting that afternoon. {{heroPlayer}}'s engineers evacuated the scaffolding while {{otherPlayer}}'s party examined the shaft. The fighter stayed at the tunnel mouth until the last worker crossed, watching the bright line stop exactly at the place where the blast charges had been set."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s engineers secured the mirror shaft and cleared the blast site.",
+      "heroLoses": "{{otherPlayer}}'s party controlled the panel grid and its buried map.",
+      "draw": "The blast was postponed while both teams tracked the moving light."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Shasvastii Expeditionary Force"
+    ],
+    "heroFaction": "PanOceania",
+    "role": "objective",
+    "paragraphs": [
+      "Workers excavating a drainage basin uncovered smooth pods packed among ordinary stones. PanOceanian field specialists feared the pods would break when the basin filled; Shasvastii scouts approached along the dry spillway. The first pod made a faint clicking sound whenever its shadow crossed a survey flag.",
+      "{{hero}} set a light screen around the pods and found the clicks came from a shallow sensor buried beneath them. The specialist loosened the surrounding soil one layer at a time, exposing a narrow cable that led away from the basin. A scout at the spillway had already found its far end.",
+      "The cable ran into a locked pump housing, where the basin gates could be opened. {{heroPlayer}}'s specialists packed the pods against the coming water while {{otherPlayer}}'s scouts held the spillway. The clicking stopped when the screen was lowered, and every pod remained still even as the first gate began to move."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s specialists protected the pods and secured the sensor.",
+      "heroLoses": "{{otherPlayer}}'s scouts controlled the spillway and the pump housing.",
+      "draw": "The basin stayed dry long enough for both teams to inspect the unbroken pods."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "ALEPH"
+    ],
+    "heroFaction": "ALEPH",
+    "role": "objective",
+    "paragraphs": [
+      "Beneath a ruined records office, a dig team found shelves of clay tablets wrapped in fiber. ALEPH analysts sought a missing index to an evacuation archive; PanOceanian custodians had come to safeguard the original documents. The tablets carried numbers in ink, but the paper index beside them had turned black with damp.",
+      "{{hero}} angled a lamp across the paper and read the indentations left by a writer on an earlier sheet. The specialist matched a sequence of tablet numbers to an unmarked shelf, where a sealed envelope held the names of people whose records had been deliberately omitted. A ceiling leak began to spread toward the envelope.",
+      "The names could be copied only while the paper remained dry. {{heroPlayer}}'s analysts recorded them as {{otherPlayer}}'s custodians lifted the tablets from the leaking shelf. The last line was an address for the old records office itself, written in a hand that matched the ink on every tablet."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s analysts recovered the omitted index and its names.",
+      "heroLoses": "{{otherPlayer}}'s custodians preserved the tablets and retained the archive.",
+      "draw": "The envelope was copied as both teams moved the tablets away from the leak."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Operations Subsection"
+    ],
+    "heroFaction": "Operations Subsection",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An ice shelf excavation uncovered the dome of a forgotten observatory. Operations Subsection researchers needed its last sky log; PanOceanian explorers wanted to raise the dome before spring runoff filled it. Through the frost, someone saw a mechanical pointer turning even though its viewing slit faced solid ice.",
+      "{{hero}} held the narrow ice approach against armed explorers while a researcher reached the log cabinet. A shot cracked a support, and the fighter shifted position to keep the doorway clear of falling ice. Inside, the pointer was following a reflection in an old lens, not the sky above the dome.",
+      "The log described a light seen beneath the observatory, deep in the ice. {{heroPlayer}}'s researchers copied the final entry as {{otherPlayer}}'s explorers rigged the dome for lifting. The pointer completed one more turn and stopped on a spot below the cabinet, where neither team had time to dig."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s researchers recovered the sky log and its final observation.",
+      "heroLoses": "{{otherPlayer}}'s explorers raised the dome and secured the observatory.",
+      "draw": "The log was copied while the pointer's last bearing remained under the ice."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Steel Phalanx"
+    ],
+    "heroFaction": "Steel Phalanx",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A quarry cut through a chamber of carved reliefs, bringing an elderly witness to the dig. She said the figures marked a route used by her family, not a tomb. Steel Phalanx escorts brought her to identify the passage; PanOceanian guards had cordoned the quarry off after a theft from its tool store.",
+      "{{hero}} intercepted a guard at the tight arch and pushed the fight away from the witness. She slipped past and pressed a loose stone in the relief, opening a shallow recess with a worn path marker inside. The fighter held the arch while she compared the marker to a sketch she had carried since childhood.",
+      "The marker pointed across the active quarry cut, where machines were already moving. {{heroPlayer}}'s escorts led the witness along a safe ledge while {{otherPlayer}}'s guards halted the saws. She reached the far wall and found a second carving, blank except for the fresh dust caught in its grooves."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s escorts brought the witness to the far wall and secured the marker.",
+      "heroLoses": "{{otherPlayer}}'s guards controlled the quarry and protected the reliefs.",
+      "draw": "The witness identified the route while both teams stopped work around the carvings."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "O-12"
+    ],
+    "heroFaction": "O-12",
+    "role": "objective",
+    "paragraphs": [
+      "A border survey exposed a buried stone marker beneath a disputed footbridge. O-12 observers came to verify an old treaty line; PanOceanian surveyors had already laid out a new crossing. The stone carried two arrows pointing in opposite directions, and fresh soil filled the cut around its base.",
+      "{{hero}} measured the marker's depth and found its foundation farther down than the recent soil. The specialist cleared a narrow trench without turning the stone, revealing a second inscription on the buried side. It named a seasonal stream that had been diverted long before either team arrived at the bridge.",
+      "The stream still ran inside a culvert under the new crossing. {{heroPlayer}}'s observers traced it from below while {{otherPlayer}}'s surveyors measured the bridge above. Water rose in the trench as they worked, blurring the inscription just after both teams had copied it and before either could agree which arrow mattered."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s observers documented the original marker and treaty line.",
+      "heroLoses": "{{otherPlayer}}'s surveyors secured the bridge and established a surveyed crossing.",
+      "draw": "Both teams recorded the buried inscription before the trench filled."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Starmada"
+    ],
+    "heroFaction": "Starmada",
+    "role": "gunfighting",
+    "paragraphs": [
+      "Canal workers unearthed a ship's recorder beneath a reclaimed quay. Starmada recovery officers wanted its final route; PanOceanian contractors held the construction permit and an older claim to the wreck. The recorder was still tied to a length of chain that descended into water below the excavation.",
+      "{{hero}} held the quay stairs under fire while a diver freed the recorder from its chain. A contractor tried to start the pumps, and the fighter shot the control lock rather than risk draining the diver's passage. The diver surfaced with a second object: a small brass bell whose clapper had been wrapped in cloth.",
+      "The recorder's clock had stopped an hour before the ship vanished. {{heroPlayer}}'s officers dried its contacts while {{otherPlayer}}'s contractors examined the bell. Its cloth bore a date one day later than the stopped clock, and the chain below still moved gently against the quay even after the pumps were shut."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s officers recovered the recorder and traced the ship's final route.",
+      "heroLoses": "{{otherPlayer}}'s contractors controlled the quay and retained the recovered bell.",
+      "draw": "The diver reached safety with both objects before the chain slipped away."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Torchlight Brigade"
+    ],
+    "heroFaction": "Torchlight Brigade",
+    "role": "closeCombat",
+    "paragraphs": [
+      "A quarry blast opened an emergency shaft beneath a remote signal station. Torchlight rescuers followed a lamp flashing from below; PanOceanian security personnel arrived to secure the damaged station. A trapped geologist called that the ladder had broken and the next shift of gravel would bury the lamp.",
+      "{{hero}} forced a defender from the shaft rim and held a clear landing for the rescue line. Below, the geologist tied the line to a case of survey cards before accepting a harness. The fighter hauled when the gravel began to slide, bringing the case up first so the geologist could climb without its weight.",
+      "The cards marked another shaft beyond the station fence. {{heroPlayer}}'s rescuers checked the geologist for injuries while {{otherPlayer}}'s personnel inspected the unstable rim. The lamp kept flashing after the rescue, far lower than the geologist had been, and no one at the top had a second line ready."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s rescuers saved the geologist and secured the survey cards.",
+      "heroLoses": "{{otherPlayer}}'s personnel closed the shaft and took control of the station.",
+      "draw": "The geologist escaped while both teams prepared to investigate the deeper light."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Japanese Secessionist Army"
+    ],
+    "heroFaction": "Japanese Secessionist Army",
+    "role": "objective",
+    "paragraphs": [
+      "A new foundation cut exposed a small bronze bell beneath a road that had covered an old shrine. Japanese Secessionist Army caretakers came to return it to its setting; PanOceanian archaeologists wanted to record the layers before anything moved. A cord still hung from the bell, passing through a hole in the buried floor.",
+      "{{hero}} followed the cord to a wooden tray concealed under the floor and lifted it without pulling the bell. The tray held dozens of folded notes, each naming someone who had never returned from a journey. The specialist separated the damp pages and found one blank note tucked between two that shared the same handwriting.",
+      "The cord would ring the bell if the tray left its place. {{heroPlayer}}'s caretakers carried the notes toward dry light while {{otherPlayer}}'s archaeologists measured the floor. At the moment the last page cleared the hole, the bell sounded once, although no one had touched the cord."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s caretakers saved the notes and restored the bell to the shrine.",
+      "heroLoses": "{{otherPlayer}}'s archaeologists documented the floor and retained the excavation.",
+      "draw": "The notes were dried while the bell remained in its recorded position."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Oban"
+    ],
+    "heroFaction": "Oban",
+    "role": "closeCombat",
+    "paragraphs": [
+      "Beneath stepped farm terraces, a dig revealed a stone channel carrying water away from the fields. Oban wardens sought the blocked sluice that had dried the upper plots; PanOceanian contractors planned a reservoir on the lower ground. A worker heard tapping behind a wall just as the trench began to fill.",
+      "{{hero}} grappled with a guard in the narrow channel and cleared a route to the wall. A warden found the tapping came from a loose wooden gate, not a trapped worker, and wedged it against the current. The fighter held the gate while the warden scraped silt from an older side passage.",
+      "Water divided between the passages, reaching the dry plots and the proposed reservoir basin. {{heroPlayer}}'s wardens measured the flow above while {{otherPlayer}}'s contractors staked the lower bank. When the fighter released the gate, it stayed open by itself; the stone channel had been shaped to hold exactly that balance."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s wardens restored water to the upper terraces.",
+      "heroLoses": "{{otherPlayer}}'s contractors controlled the channel and supplied the reservoir basin.",
+      "draw": "Both sets of fields received water while the old gate remained open."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Shindenbutai"
+    ],
+    "heroFaction": "Shindenbutai",
+    "role": "gunfighting",
+    "paragraphs": [
+      "An excavation under a ruined theater exposed a rehearsal room with its painted floor intact. Shindenbutai scouts searched for a concealed signal station; PanOceanian guards sought the theater's missing inventory. A small red lamp lit whenever anyone stepped on the mark where an actor would have stood.",
+      "{{hero}} kept the entrance covered as a scout tested the floor marks one at a time. When a guard rushed the doorway, the fighter fired into a hanging counterweight, dropping a curtain between them. Behind it, the scout lifted a stage board and found a signal key connected to the red lamp by a fresh wire.",
+      "The wire led outside to a buried transmitter with no power cell. {{heroPlayer}}'s scouts traced it while {{otherPlayer}}'s guards opened the inventory chest. Inside lay a stack of scripts, each with the same stage mark circled in a different color; the red lamp blinked again after the key had been disconnected."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s scouts secured the signal key and the hidden transmitter.",
+      "heroLoses": "{{otherPlayer}}'s guards held the theater and recovered its inventory.",
+      "draw": "Both teams kept a copy of the marked scripts while the source of the last blink stayed hidden."
+    },
+    "mission": "The Dig"
+  },
+  {
+    "factions": [
+      "PanOceania",
+      "Tohaa"
+    ],
+    "heroFaction": "Tohaa",
+    "role": "objective",
+    "paragraphs": [
+      "A greenhouse extension exposed three layers of roots crossing a buried stone basin. Tohaa botanists wanted to preserve the living network; PanOceanian builders needed to finish the foundation before a storm. The upper roots were pale and dry, yet water dripped from their tips onto the lowest layer.",
+      "{{hero}} cleared a small window in the soil and found a porous tile lifting moisture from a hidden reservoir. The specialist marked each root before removing one tile, then guided the water into a temporary channel. The lowest roots changed color in minutes, showing which plants were still connected across the basin.",
+      "A foundation beam would sever the temporary channel unless the crews shifted it overnight. {{heroPlayer}}'s botanists bound the roots in damp cloth while {{otherPlayer}}'s builders raised the beam on jacks. Rain struck the greenhouse roof as the last tile came free, and water began to flow through the basin again."
+    ],
+    "endings": {
+      "heroWins": "{{heroPlayer}}'s botanists saved the root network and its hidden reservoir.",
+      "heroLoses": "{{otherPlayer}}'s builders secured the foundation and controlled the basin.",
+      "draw": "The shifted beam and restored channel let the living roots remain in place."
+    },
+    "mission": "The Dig"
+  }
+,
+  {
+      "factions": [
+        "PanOceania",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the collapsed customs house uncovered a locked survey room and a brass seal press. PanOceania claimed the chamber under an older recovery order, while Druze Bayram Security arrived with a competing map. Before either crew could present proof, masonry settled around the entrance, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the brass seal press while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the brass seal press before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the salt quarry uncovered a locked survey room and a ceramic courier tube. PanOceania claimed the chamber under an older recovery order, while Ikari Company arrived with a competing map. Before either crew could present proof, salt dust blinded every rangefinder, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ceramic courier tube while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ceramic courier tube before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the abandoned tram depot uncovered a locked survey room and a star chart etched on slate. PanOceania claimed the chamber under an older recovery order, while StarCo arrived with a competing map. Before either crew could present proof, a dead tram shifted on its rails, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the star chart etched on slate while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the star chart etched on slate before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "PanOceania",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the flooded counting house uncovered a locked survey room and a ledger sealed in wax. PanOceania claimed the chamber under an older recovery order, while White Company arrived with a competing map. Before either crew could present proof, black water climbed the stairwell, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ledger sealed in wax while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ledger sealed in wax before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Military Orders"
+      ],
+      "heroFaction": "Military Orders",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the ruined chapel uncovered a locked survey room and a bell mechanism. Military Orders claimed the chamber under an older recovery order, while Military Orders arrived with a competing map. Before either crew could present proof, the cracked bell began to swing, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the bell mechanism while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the bell mechanism before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Kestrel Colonial Force"
+      ],
+      "heroFaction": "Kestrel Colonial Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the orchard cistern uncovered a locked survey room and a irrigation tablet. Military Orders claimed the chamber under an older recovery order, while Kestrel Colonial Force arrived with a competing map. Before either crew could present proof, roots tightened across the passage, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the irrigation tablet while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the irrigation tablet before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Neoterra Capitaline Army"
+      ],
+      "heroFaction": "Neoterra Capitaline Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the sunken observatory uncovered a locked survey room and a mirrored lens assembly. Military Orders claimed the chamber under an older recovery order, while Neoterra Capitaline Army arrived with a competing map. Before either crew could present proof, the dome's remaining glass fell inward, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the mirrored lens assembly while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the mirrored lens assembly before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the jungle pumping station uncovered a locked survey room and a pressure map. Military Orders claimed the chamber under an older recovery order, while Shock Army of Acontecimento arrived with a competing map. Before either crew could present proof, a pump restarted without warning, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the pressure map while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the pressure map before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the glacial cable vault uncovered a locked survey room and a frozen navigation core. Military Orders claimed the chamber under an older recovery order, while Svalarheima Winter Force arrived with a competing map. Before either crew could present proof, meltwater split the ice floor, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the frozen navigation core while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the frozen navigation core before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the coastal desalination plant uncovered a locked survey room and a tide-calibration wheel. Military Orders claimed the chamber under an older recovery order, while Varuna Immediate Reaction Division arrived with a competing map. Before either crew could present proof, the returning tide filled the intake, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the tide-calibration wheel while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the tide-calibration wheel before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the buried magistrate's court uncovered a locked survey room and a testimony cylinder. Military Orders claimed the chamber under an older recovery order, while Yu Jing arrived with a competing map. Before either crew could present proof, archive shelves toppled into the aisle, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the testimony cylinder while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the testimony cylinder before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the old parade ground uncovered a locked survey room and a bronze muster roll. Military Orders claimed the chamber under an older recovery order, while Imperial Service arrived with a competing map. Before either crew could present proof, buried loudspeakers crackled to life, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the bronze muster roll while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the bronze muster roll before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the armored rail depot uncovered a locked survey room and a switching diagram. Military Orders claimed the chamber under an older recovery order, while Invincible Army arrived with a competing map. Before either crew could present proof, an unmanned engine rolled downhill, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the switching diagram while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the switching diagram before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the mountain weather station uncovered a locked survey room and a storm chronometer. Military Orders claimed the chamber under an older recovery order, while White Banner arrived with a competing map. Before either crew could present proof, lightning grounded through the antenna, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the storm chronometer while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the storm chronometer before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the forgotten survey camp uncovered a locked survey room and a surveyor's compass. Military Orders claimed the chamber under an older recovery order, while Ariadna arrived with a competing map. Before either crew could present proof, loose spoil slid toward the tents, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the surveyor's compass while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the surveyor's compass before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Caledonian Highlander Army"
+      ],
+      "heroFaction": "Caledonian Highlander Army",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the peat-cutters' village uncovered a locked survey room and a carved boundary stone. Military Orders claimed the chamber under an older recovery order, while Caledonian Highlander Army arrived with a competing map. Before either crew could present proof, bog water swallowed the plank road, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the carved boundary stone while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the carved boundary stone before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Force de Réponse Rapide Merovingienne"
+      ],
+      "heroFaction": "Force de Réponse Rapide Merovingienne",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the vineyard aqueduct uncovered a locked survey room and a water-allocation register. Military Orders claimed the chamber under an older recovery order, while Force de Réponse Rapide Merovingienne arrived with a competing map. Before either crew could present proof, a retaining arch shed stones, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the water-allocation register while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the water-allocation register before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Kosmoflot"
+      ],
+      "heroFaction": "Kosmoflot",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the permafrost listening post uncovered a locked survey room and a magnetic tape spool. Military Orders claimed the chamber under an older recovery order, while Kosmoflot arrived with a competing map. Before either crew could present proof, the thaw buckled the steel ladder, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the magnetic tape spool while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the magnetic tape spool before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tartary Army Corps"
+      ],
+      "heroFaction": "Tartary Army Corps",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the steppe grain silo uncovered a locked survey room and a granary tally board. Military Orders claimed the chamber under an older recovery order, while Tartary Army Corps arrived with a competing map. Before either crew could present proof, stored dust ignited in the vents, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the granary tally board while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the granary tally board before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "USAriadna Ranger Force"
+      ],
+      "heroFaction": "USAriadna Ranger Force",
+      "role": "objective",
+      "paragraphs": [
+        "Excavation beneath the desert ranger outpost uncovered a locked survey room and a ranger beacon. Military Orders claimed the chamber under an older recovery order, while USAriadna Ranger Force arrived with a competing map. Before either crew could present proof, a sandstorm erased the surface markers, trapping the evidence below.",
+        "{{hero}} followed chalk marks through the buried passage, checked each support, and found a maintenance recess behind the survey room. The specialist connected a field reader to the ranger beacon while rival shots struck the outer door. One damaged mark proved the object had been moved after the chamber was sealed.",
+        "With the exit narrowing, {{heroPlayer}}'s team carried the reading toward the surface as {{otherPlayer}}'s crew secured the original chamber. The specialist paused to map a second tunnel concealed beneath the floor. Both commanders heard machinery start deeper underground, although every available plan ended at the survey room."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} recovered the complete reading and the route to the deeper tunnel.",
+        "heroLoses": "{{otherPlayer}} held the chamber and removed the ranger beacon before the passage closed.",
+        "draw": "Each crew escaped with different evidence while the deeper machinery continued running."
+      },
+      "mission": "The Dig"
+    }
+,
+  {
+      "factions": [
+        "Military Orders",
+        "Haqqislam"
+      ],
+      "heroFaction": "Haqqislam",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a desert hospice broke into a tiled chamber containing a copper astrolabe. Military Orders entered from the old foundation, while Haqqislam opened a route from the opposite slope. Neither team had finished bracing its tunnel when sand poured through a split ceiling, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the copper astrolabe. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the copper astrolabe, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the copper astrolabe and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Hassassin Bahram"
+      ],
+      "heroFaction": "Hassassin Bahram",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a mountain caravanserai broke into a tiled chamber containing a coded prayer wheel. Military Orders entered from the old foundation, while Hassassin Bahram opened a route from the opposite slope. Neither team had finished bracing its tunnel when the supporting terrace shifted, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the coded prayer wheel and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the coded prayer wheel, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the coded prayer wheel and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Qapu Khalqi"
+      ],
+      "heroFaction": "Qapu Khalqi",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a silted harbor fort broke into a tiled chamber containing a harbor master's sounding chain. Military Orders entered from the old foundation, while Qapu Khalqi opened a route from the opposite slope. Neither team had finished bracing its tunnel when seawater forced open a lower gate, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the harbor master's sounding chain. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the harbor master's sounding chain, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the harbor master's sounding chain and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ramah Taskforce"
+      ],
+      "heroFaction": "Ramah Taskforce",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a field surgery compound broke into a tiled chamber containing a glass medicine case. Military Orders entered from the old foundation, while Ramah Taskforce opened a route from the opposite slope. Neither team had finished bracing its tunnel when an oxygen line ruptured, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the glass medicine case. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the glass medicine case, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the glass medicine case and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Nomads"
+      ],
+      "heroFaction": "Nomads",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a derelict orbital-elevator station broke into a tiled chamber containing a vacuum-rated dispatch box. Military Orders entered from the old foundation, while Nomads opened a route from the opposite slope. Neither team had finished bracing its tunnel when the elevator cable began descending, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the vacuum-rated dispatch box and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the vacuum-rated dispatch box, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the vacuum-rated dispatch box and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Bakunin Jurisdictional Command"
+      ],
+      "heroFaction": "Bakunin Jurisdictional Command",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a subterranean artists' quarter broke into a tiled chamber containing a kinetic sculpture core. Military Orders entered from the old foundation, while Bakunin Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when hidden projectors flooded the tunnels with moving shadows, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the kinetic sculpture core. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the kinetic sculpture core, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the kinetic sculpture core and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Corregidor Jurisdictional Command"
+      ],
+      "heroFaction": "Corregidor Jurisdictional Command",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a dry-docked freighter broke into a tiled chamber containing a engraved docking plate. Military Orders entered from the old foundation, while Corregidor Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when the hull groaned against its cradle, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the engraved docking plate. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the engraved docking plate, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the engraved docking plate and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tunguska Jurisdictional Command"
+      ],
+      "heroFaction": "Tunguska Jurisdictional Command",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a abandoned financial exchange broke into a tiled chamber containing a cold-storage account key. Military Orders entered from the old foundation, while Tunguska Jurisdictional Command opened a route from the opposite slope. Neither team had finished bracing its tunnel when security shutters divided the vault, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the cold-storage account key and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the cold-storage account key, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the cold-storage account key and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Combined Army"
+      ],
+      "heroFaction": "Combined Army",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a cratered xenology lab broke into a tiled chamber containing a hexagonal specimen cradle. Military Orders entered from the old foundation, while Combined Army opened a route from the opposite slope. Neither team had finished bracing its tunnel when a dormant specimen enclosure warmed, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the hexagonal specimen cradle. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the hexagonal specimen cradle, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the hexagonal specimen cradle and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Morat Aggression Force"
+      ],
+      "heroFaction": "Morat Aggression Force",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a basalt quarry broke into a tiled chamber containing a obsidian drilling crown. Military Orders entered from the old foundation, while Morat Aggression Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when blasting charges armed themselves, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the obsidian drilling crown. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the obsidian drilling crown, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the obsidian drilling crown and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Onyx Contact Force"
+      ],
+      "heroFaction": "Onyx Contact Force",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a sealed antenna farm broke into a tiled chamber containing a phase-locked signal prism. Military Orders entered from the old foundation, while Onyx Contact Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when every antenna turned toward the excavation, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the phase-locked signal prism and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the phase-locked signal prism, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the phase-locked signal prism and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Shasvastii Expeditionary Force"
+      ],
+      "heroFaction": "Shasvastii Expeditionary Force",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a overgrown seed bank broke into a tiled chamber containing a spore catalog etched in crystal. Military Orders entered from the old foundation, while Shasvastii Expeditionary Force opened a route from the opposite slope. Neither team had finished bracing its tunnel when roots burst through the archive floor, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the spore catalog etched in crystal. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the spore catalog etched in crystal, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the spore catalog etched in crystal and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "ALEPH"
+      ],
+      "heroFaction": "ALEPH",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a buried philosophy archive broke into a tiled chamber containing a bronze mnemonic cylinder. Military Orders entered from the old foundation, while ALEPH opened a route from the opposite slope. Neither team had finished bracing its tunnel when recorded voices began answering questions, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the bronze mnemonic cylinder. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the bronze mnemonic cylinder, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the bronze mnemonic cylinder and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Operations Subsection"
+      ],
+      "heroFaction": "Operations Subsection",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a collapsed transit nexus broke into a tiled chamber containing a ceramic route token. Military Orders entered from the old foundation, while Operations Subsection opened a route from the opposite slope. Neither team had finished bracing its tunnel when an empty tram rolled into the station, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the ceramic route token and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the ceramic route token, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the ceramic route token and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Steel Phalanx"
+      ],
+      "heroFaction": "Steel Phalanx",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a marble athletic precinct broke into a tiled chamber containing a laurel-shaped timing device. Military Orders entered from the old foundation, while Steel Phalanx opened a route from the opposite slope. Neither team had finished bracing its tunnel when the arena's buried clock started counting backward, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the laurel-shaped timing device. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the laurel-shaped timing device, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the laurel-shaped timing device and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "O-12"
+      ],
+      "heroFaction": "O-12",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a quarantined courthouse broke into a tiled chamber containing a witness seal with three faces. Military Orders entered from the old foundation, while O-12 opened a route from the opposite slope. Neither team had finished bracing its tunnel when locked evidence drawers sprang open, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the witness seal with three faces. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the witness seal with three faces, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the witness seal with three faces and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Starmada"
+      ],
+      "heroFaction": "Starmada",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a storm-battered lighthouse broke into a tiled chamber containing a tide clock built without hands. Military Orders entered from the old foundation, while Starmada opened a route from the opposite slope. Neither team had finished bracing its tunnel when a storm surge struck the sea wall, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the tide clock built without hands and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the tide clock built without hands, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the tide clock built without hands and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Torchlight Brigade"
+      ],
+      "heroFaction": "Torchlight Brigade",
+      "role": "gunfighting",
+      "paragraphs": [
+        "The dig beneath a unfinished pilgrimage station broke into a tiled chamber containing a unfinished reliquary frame. Military Orders entered from the old foundation, while Torchlight Brigade opened a route from the opposite slope. Neither team had finished bracing its tunnel when the foundation crane started lifting by itself, leaving the discovery between two unstable exits.",
+        "{{hero}} held the buried workrooms under disciplined rifle fire while an engineer crossed the exposed access bridge. A precise shot broke the rival team's lamp without striking the unfinished reliquary frame. In the sudden darkness, its engraved face glowed and indicated a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the unfinished reliquary frame, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the unfinished reliquary frame and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Japanese Secessionist Army"
+      ],
+      "heroFaction": "Japanese Secessionist Army",
+      "role": "objective",
+      "paragraphs": [
+        "The dig beneath a cedar-shored shrine broke into a tiled chamber containing a lacquered survey tablet. Military Orders entered from the old foundation, while Japanese Secessionist Army opened a route from the opposite slope. Neither team had finished bracing its tunnel when bells sounded beneath the lake, leaving the discovery between two unstable exits.",
+        "{{hero}} mapped a safe line through the buried workrooms, isolated the live mechanism, and connected a field reader to the lacquered survey tablet. The specialist compared fresh scratches against the chamber wall and discovered that someone had recently rotated the relic to point toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the lacquered survey tablet, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the lacquered survey tablet and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Oban"
+      ],
+      "heroFaction": "Oban",
+      "role": "closeCombat",
+      "paragraphs": [
+        "The dig beneath a terraced monastery broke into a tiled chamber containing a stone counterweight marked with stars. Military Orders entered from the old foundation, while Oban opened a route from the opposite slope. Neither team had finished bracing its tunnel when the counterweight pulled against its buried chain, leaving the discovery between two unstable exits.",
+        "{{hero}} caught an attacker beside the buried workrooms and fought across the narrow access bridge. After forcing the opponent away from the supports, the trooper recovered the stone counterweight marked with stars and noticed fresh scratches beneath it. The marks pointed toward a passage omitted from both survey plans.",
+        "{{heroPlayer}}'s crew followed the new bearing and found a narrow lift descending below the known chamber. {{otherPlayer}}'s team secured the upper excavation and its only reliable winch. As dust settled over the stone counterweight marked with stars, the lift returned empty with damp soil on its platform and one additional destination lit on its controls."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} secured the stone counterweight marked with stars and opened the newly revealed descent.",
+        "heroLoses": "{{otherPlayer}} held the upper chamber and sealed the lift before the rival crew could return.",
+        "draw": "Both teams preserved an exit, but the empty lift carried the discovery deeper underground."
+      },
+      "mission": "The Dig"
+    }
+,
+  {
+      "factions": [
+        "Military Orders",
+        "Shindenbutai"
+      ],
+      "heroFaction": "Shindenbutai",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a buried tea warehouse uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the bamboo message case stored inside, but Shindenbutai produced a survey placing the room on its side of the boundary. During the argument, the roof tiles slid toward the shaft, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the bamboo message case and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the bamboo message case to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Tohaa"
+      ],
+      "heroFaction": "Tohaa",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a fossilized grove uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the living resin compass stored inside, but Tohaa produced a survey placing the room on its side of the boundary. During the argument, pollen filled every lamp beam, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the living resin compass. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the living resin compass to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Dashat Company"
+      ],
+      "heroFaction": "Dashat Company",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a canyon toll station uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the silver toll stamp stored inside, but Dashat Company produced a survey placing the room on its side of the boundary. During the argument, a rockfall blocked the road above, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the silver toll stamp. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the silver toll stamp to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Druze Bayram Security"
+      ],
+      "heroFaction": "Druze Bayram Security",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a submerged caravan vault uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the pearl-inlaid strongbox stored inside, but Druze Bayram Security produced a survey placing the room on its side of the boundary. During the argument, the vault's trapped air escaped, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the pearl-inlaid strongbox. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the pearl-inlaid strongbox to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "Ikari Company"
+      ],
+      "heroFaction": "Ikari Company",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a scrapped foundry uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the iron casting pattern stored inside, but Ikari Company produced a survey placing the room on its side of the boundary. During the argument, molten slag began leaking from a cracked conduit, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the iron casting pattern and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the iron casting pattern to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "StarCo"
+      ],
+      "heroFaction": "StarCo",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a collapsed broadcast studio uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the portable voice archive stored inside, but StarCo produced a survey placing the room on its side of the boundary. During the argument, recorded applause echoed from an empty room, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the portable voice archive. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the portable voice archive to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Military Orders",
+        "White Company"
+      ],
+      "heroFaction": "White Company",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a snowbound customs tunnel uncovered a catalog room sealed beneath two meters of stone. Military Orders claimed the folded border charter stored inside, but White Company produced a survey placing the room on its side of the boundary. During the argument, a ventilation fan drove snow through the corridor, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the folded border charter. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the folded border charter to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Kestrel Colonial Force"
+      ],
+      "heroFaction": "Kestrel Colonial Force",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a colonial seed nursery uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the numbered seed carousel stored inside, but Kestrel Colonial Force produced a survey placing the room on its side of the boundary. During the argument, sprinklers awakened and flooded the beds, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the numbered seed carousel. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the numbered seed carousel to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Neoterra Capitaline Army"
+      ],
+      "heroFaction": "Neoterra Capitaline Army",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a executive shelter uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the glass evacuation roster stored inside, but Neoterra Capitaline Army produced a survey placing the room on its side of the boundary. During the argument, the shelter doors began closing in sequence, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the glass evacuation roster and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the glass evacuation roster to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Shock Army of Acontecimento"
+      ],
+      "heroFaction": "Shock Army of Acontecimento",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a rainforest rail terminus uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the brass locomotive governor stored inside, but Shock Army of Acontecimento produced a survey placing the room on its side of the boundary. During the argument, a locomotive horn sounded below the platform, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the brass locomotive governor. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the brass locomotive governor to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Svalarheima Winter Force"
+      ],
+      "heroFaction": "Svalarheima Winter Force",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a icebound power relay uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the ceramic heat exchanger stored inside, but Svalarheima Winter Force produced a survey placing the room on its side of the boundary. During the argument, the relay discharged into the surrounding ice, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the ceramic heat exchanger. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the ceramic heat exchanger to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Varuna Immediate Reaction Division"
+      ],
+      "heroFaction": "Varuna Immediate Reaction Division",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a reef-side research pier uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the coral-encrusted depth gauge stored inside, but Varuna Immediate Reaction Division produced a survey placing the room on its side of the boundary. During the argument, the pier pilings started to shear, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the coral-encrusted depth gauge. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the coral-encrusted depth gauge to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Yu Jing"
+      ],
+      "heroFaction": "Yu Jing",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a riverbank porcelain kiln uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the painted firing schedule stored inside, but Yu Jing produced a survey placing the room on its side of the boundary. During the argument, the kiln relit beneath their feet, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the painted firing schedule and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the painted firing schedule to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Imperial Service"
+      ],
+      "heroFaction": "Imperial Service",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a sealed census office uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the mechanical population counter stored inside, but Imperial Service produced a survey placing the room on its side of the boundary. During the argument, paper cards poured from a broken sorter, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the mechanical population counter. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the mechanical population counter to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Invincible Army"
+      ],
+      "heroFaction": "Invincible Army",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a fortified machine shop uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the titanium tool ledger stored inside, but Invincible Army produced a survey placing the room on its side of the boundary. During the argument, an assembly arm began repeating its final task, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the titanium tool ledger. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the titanium tool ledger to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "White Banner"
+      ],
+      "heroFaction": "White Banner",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a high-altitude signal hut uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the wind-scored heliograph stored inside, but White Banner produced a survey placing the room on its side of the boundary. During the argument, the heliograph flashed toward an unseen ridge, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the wind-scored heliograph. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the wind-scored heliograph to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Ariadna"
+      ],
+      "heroFaction": "Ariadna",
+      "role": "closeCombat",
+      "paragraphs": [
+        "Workers digging foundations beside a frontier schoolhouse uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the slate attendance board stored inside, but Ariadna produced a survey placing the room on its side of the boundary. During the argument, desks shifted as the floor settled, cutting off the original stairs.",
+        "{{hero}} intercepted an opponent beside the slate attendance board and fought through the cramped catalog room. The trooper forced the attacker behind a cracked partition, then pushed the artifact clear before the ceiling dropped. Its underside carried a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the slate attendance board to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Caledonian Highlander Army"
+      ],
+      "heroFaction": "Caledonian Highlander Army",
+      "role": "gunfighting",
+      "paragraphs": [
+        "Workers digging foundations beside a granite whisky cellar uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the copper distilling license stored inside, but Caledonian Highlander Army produced a survey placing the room on its side of the boundary. During the argument, fermentation gas forced open a stone hatch, cutting off the original stairs.",
+        "{{hero}} covered the catalog room with controlled rifle fire as technicians reached the copper distilling license. When a rival sighted through the broken doorway, the trooper fired into a hanging lamp and used the darkness to move the artifact. Its underside carried coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the copper distilling license to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Force de Réponse Rapide Merovingienne"
+      ],
+      "heroFaction": "Force de Réponse Rapide Merovingienne",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a limestone canal lock uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the oak lock-gate model stored inside, but Force de Réponse Rapide Merovingienne produced a survey placing the room on its side of the boundary. During the argument, the buried gate admitted a wall of water, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the oak lock-gate model. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the oak lock-gate model to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    },
+    {
+      "factions": [
+        "Kestrel Colonial Force",
+        "Kosmoflot"
+      ],
+      "heroFaction": "Kosmoflot",
+      "role": "objective",
+      "paragraphs": [
+        "Workers digging foundations beside a polar balloon hangar uncovered a catalog room sealed beneath two meters of stone. Kestrel Colonial Force claimed the silk weather balloon stored inside, but Kosmoflot produced a survey placing the room on its side of the boundary. During the argument, a winch reeled in a cable from beneath the permafrost, cutting off the original stairs.",
+        "{{hero}} inspected the supports, opened a service panel, and traced an insulated cable to the silk weather balloon. The specialist copied its markings before disconnecting the live circuit. Beneath the mounting plate lay a sequence of coordinates scratched through several older ownership marks.",
+        "The coordinates led {{heroPlayer}}'s searchers to a ventilation well beyond the disputed boundary. {{otherPlayer}}'s crew remained with the catalog room, trying to reopen the stairs. From the well came warm air and the smell of rain, impossible beneath the local ground, followed by a bell answering every tap on the artifact."
+      ],
+      "endings": {
+        "heroWins": "{{heroPlayer}} carried the silk weather balloon to the ventilation well and decoded the hidden route.",
+        "heroLoses": "{{otherPlayer}} reopened the stairs and retained both the catalog room and its artifact.",
+        "draw": "The crews divided the coordinates while the bell below continued answering both sides."
+      },
+      "mission": "The Dig"
+    }
+]

@@ -456,7 +456,6 @@ function publishLeagueAutomationEvent(event) {
 }
 
 const AUTOMATION_QUEUE_BATCH_LIMIT = 4;
-const AUTOMATION_QUEUE_SELECTION_WINDOW = 100;
 const AUTOMATION_GAME_EVENT_LOOKBACK = 100;
 
 function enqueueGameSubmittedAutomationEvent(identity) {
@@ -718,7 +717,9 @@ function selectPendingAutomationQueueItems_(limit) {
   if (lastRow <= 1)
     return [];
 
-  const firstRow = Math.max(2, lastRow - AUTOMATION_QUEUE_SELECTION_WINDOW + 1);
+  // A game can wait through several decode runs. Scan the whole queue so a
+  // waiting story remains eligible even after 100 newer events arrive.
+  const firstRow = 2;
   const values = sheet
     .getRange(
       firstRow,
@@ -737,9 +738,15 @@ function selectPendingAutomationQueueItems_(limit) {
     })
     .filter(function(item) {
       return (
-        (item.status === "Pending" || item.status === "Retry") &&
+        (item.status === "Pending" || item.status === "Retry" || item.status === "Waiting") &&
         Number(item.attempts) < retryLimit
       );
+    })
+    // Waiting for a list is normal, not a failed delivery. Rotate those
+    // entries so an undecoded game cannot starve newer queue items.
+    .sort(function(left, right) {
+      return left.lastAttempt.localeCompare(right.lastAttempt) ||
+        left.rowNumber - right.rowNumber;
     })
     .slice(0, limit);
 
@@ -772,19 +779,59 @@ function processAutomationQueueItem(item, force) {
 
 function processDiscordQueueItem(item, force) {
 
-  const payload =
-    buildAutomationDiscordPayload(item);
+  const prepared = item.eventType === "gameSubmitted"
+    ? buildAutomationGameStoryPayload_(item)
+    : { ready: true, payload: buildAutomationDiscordPayload(item) };
+
+  if (!prepared.ready) {
+    const status = prepared.pending ? "Waiting" : "Failed";
+    updateAutomationQueueItem(
+      item.queueId,
+      status,
+      Number(item.attempts),
+      prepared.reason,
+      item.rowNumber
+    );
+    return {
+      success: prepared.pending === true,
+      deferred: prepared.pending === true,
+      destination: "discord",
+      status: status,
+      reason: prepared.reason
+    };
+  }
 
   const result =
     sendDiscordAnnouncementPayload(
       item.eventType,
-      payload,
+      prepared.payload,
       {
         dedupeKey: item.queueId,
         automationEventId: item.eventId,
+        storyGenerated: item.eventType === "gameSubmitted",
         force: force === true
       }
     );
+
+  // A paused Discord webhook has not delivered the story. Keep submitted
+  // games in the queue without consuming a retry; resume can send them later.
+  // A deduplicated prior delivery, by contrast, has already been sent.
+  if (item.eventType === "gameSubmitted" && result.skipped === true && result.duplicate !== true) {
+    updateAutomationQueueItem(
+      item.queueId,
+      "Waiting",
+      Number(item.attempts),
+      "Waiting for Discord automation to resume.",
+      item.rowNumber
+    );
+    return {
+      success: true,
+      deferred: true,
+      destination: "discord",
+      status: "Waiting",
+      reason: "Waiting for Discord automation to resume."
+    };
+  }
 
   updateAutomationQueueItem(
     item.queueId,
@@ -798,6 +845,84 @@ function processDiscordQueueItem(item, force) {
 
 }
 
+function buildAutomationGameStoryPayload_(item) {
+
+  const payload = parseAutomationPayload(item.payload);
+  const eventPayload = parseAutomationPayload(payload.payload);
+  const game = buildAutomationGamePayloadById_(eventPayload.gameId || eventPayload.id);
+
+  if (!game)
+    return { ready: false, pending: true, reason: "Waiting for the submitted canonical game." };
+
+  const winnerId = String(game.winnerArmyListId || "").trim();
+  const loserId = String(game.loserArmyListId || "").trim();
+  if (winnerId && winnerId === loserId)
+    return { ready: false, pending: true, reason: "Waiting for two distinct submitted army lists." };
+
+  const normalize = function(value) {
+    return String(value || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+  };
+  const normalizeCode = function(value) {
+    const code = String(value || "").trim();
+    try { return decodeURIComponent(code).replace(/\s+/g, ""); }
+    catch (error) { return code.replace(/\s+/g, ""); }
+  };
+  const sides = [
+    { player: game.winner, opponent: game.loser, faction: game.winnerFaction,
+      id: winnerId, code: game.winnerArmyCode },
+    { player: game.loser, opponent: game.winner, faction: game.loserFaction,
+      id: loserId, code: game.loserArmyCode }
+  ];
+  const intelligence = readArmyIntelligenceReadModelPayload();
+  if (!intelligence || !Array.isArray(intelligence.lists))
+    return { ready: false, pending: true, reason: "Waiting for the army-list decoder read model." };
+  const lists = intelligence.lists.filter(function(list) {
+    if (list.status !== "decoded" && list.status !== "failed" && list.status !== "pending")
+      return false;
+    return sides.some(function(side) {
+      // A game's submitted code identifies its roster regardless of who
+      // originally saved that code. The worker rechecks the canonical army
+      // alias as well as the code, then rebinds its player.
+      if (normalizeCode(side.code))
+        return normalizeCode(list.armyCode) === normalizeCode(side.code);
+      if (side.id && String(list.armyListId || "") === side.id)
+        return normalize(list.player) === normalize(side.player);
+      // The same unambiguous legacy fallback used by the Battle Report.
+      return !list.armyListId && normalize(list.player) === normalize(side.player) &&
+        normalize(list.opponent) === normalize(side.opponent) &&
+        normalize(list.mission) === normalize(game.mission) &&
+        Boolean(list.date && game.date) &&
+        String(list.date).slice(0, 10) === String(game.date).slice(0, 10);
+    });
+  });
+  if (lists.length > 100)
+    return { ready: false, pending: true, reason: "Waiting for unambiguous game-linked army lists." };
+
+  const token = getArmyIntelligenceSchedulerToken_();
+  if (!token)
+    throw new Error("The story worker credential is not configured.");
+
+  const response = UrlFetchApp.fetch(AUTOMATION_GAME_STORY_WORKER_URL, {
+    contentType: "application/json",
+    headers: { Authorization: "Bearer " + token },
+    method: "post",
+    muteHttpExceptions: true,
+    payload: JSON.stringify({ game: game, lists: lists })
+  });
+  const code = response.getResponseCode();
+  const result = JSON.parse(response.getContentText());
+
+  if (code < 200 || code >= 300)
+    throw new Error("The story worker returned HTTP " + code + ".");
+  if (result.pending === true)
+    return { ready: false, pending: true, reason: result.error || "Waiting for a linked story." };
+  if (result.success !== true || !result.story)
+    return { ready: false, pending: false, reason: result.error || "The story could not be generated." };
+
+  return { ready: true, payload: buildDiscordGamePayload(game, result.story, result.rosterless === true) };
+
+}
+
 function buildAutomationDiscordPayload(item) {
 
   const payload =
@@ -805,16 +930,6 @@ function buildAutomationDiscordPayload(item) {
 
   const eventPayload =
     parseAutomationPayload(payload.payload);
-
-  if (
-    item.eventType === "gameSubmitted" &&
-    (eventPayload.gameId || eventPayload.id)
-  ) {
-    const game = buildAutomationGamePayloadById_(
-      eventPayload.gameId || eventPayload.id
-    );
-    return buildDiscordGamePayload(game || eventPayload);
-  }
 
   const template =
     getAutomationTemplateForEvent(item.eventType);
@@ -895,11 +1010,18 @@ function buildAutomationGamePayloadById_(gameId) {
 
   const winner = determineWinner(row);
   const analyticsRow = buildAnalyticsRow(row, winner);
-  return buildRecentGame(
+  const game = buildRecentGame(
     analyticsRow,
     target,
     getRecentGameColumns(getGameAnalyticsHeaders()[0])
   );
+  // Analytics omits army codes when a submitted list ID is present. The story
+  // worker needs the actual game-submitted codes to check a reused roster.
+  // This private queue payload is never the public game projection.
+  const winnerPlayerNumber = winner === 2 ? 2 : 1;
+  game.winnerArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber);
+  game.loserArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber === 1 ? 2 : 1);
+  return game;
 
 }
 
