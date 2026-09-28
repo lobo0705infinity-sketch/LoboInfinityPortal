@@ -871,8 +871,8 @@ assert.ok(rendered && rendered.includes('Winner') && rendered.includes('Loser'))
 assert.equal(rendered, renderGeneratedGameStory(game, lists), 'a report must be stable across reloads')
 assert.doesNotMatch(rendered, /\{\{\w+\}\}/)
 
-// Distinct decoded capabilities on both sides must drive distinct actions.
-// A one-model roster cannot satisfy all four roles by inventing equipment.
+// A few roster actors must create a cause-and-effect scene. The presence of a
+// valid model in a submitted list does not oblige the story to recite them all.
 const rosterEntry = (unit: string, id: string, points: number,
   weapons: string[], skills: string[], specialist = false): typeof entry => ({
   ...entry, unit, profile: unit, canonicalUnitId: 0, combinedId: id, points,
@@ -885,6 +885,7 @@ const groundedLists = [
     rosterEntry('HILL SNIPER', 'a-gun', 31, ['MULTI Sniper Rifle'], []),
     rosterEntry('MISSILE SENTINEL', 'a-aro', 18, ['Missile Launcher'], []),
     rosterEntry('SCREEN OPERATOR', 'a-vision', 15, ['Disco Baller'], []),
+    rosterEntry('BREACH DUELIST', 'a-melee', 14, ['DA CC Weapon'], ['Martial Arts L3']),
   ] }] } },
   { ...list('Loser', 'Winner', 'Druze Bayram Security'), mission: 'The Dig', decoded: { combatGroups: [{ entries: [
     rosterEntry('FIELD ENGINEER', 'b-specialist', 35, ['Combi Rifle'], ['Engineer'], true),
@@ -897,10 +898,46 @@ const groundedText = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
   'objective', groundedGame.id)!, groundedGame, groundedLists)
 assert.ok(groundedText, 'both game-linked rosters must drive the Dig scene')
-for (const expected of ['Field Analyst', 'Hill Sniper', 'Missile Sentinel', 'Screen Operator',
-  'Field Engineer', 'Raid Gunner', 'Rocket Sentry', 'Knife Fighter',
-  'MULTI Sniper Rifle', 'Missile Launcher', 'Spitfire', 'Panzerfaust', 'Disco Baller']) {
+for (const expected of ['Field Analyst', 'Hill Sniper', 'Screen Operator',
+  'Field Engineer', 'Rocket Sentry', 'MULTI Sniper Rifle', 'Panzerfaust', 'Disco Baller']) {
   assert.match(groundedText, new RegExp(expected, 'i'), `missing qualified cast or gear: ${expected}`)
+}
+for (const unused of ['Missile Sentinel', 'Raid Gunner', 'Knife Fighter']) {
+  assert.doesNotMatch(groundedText, new RegExp(unused, 'i'),
+    `scene should not add ${unused} only to enumerate the submitted list`)
+}
+assert.match(groundedText, /Rocket Sentry[^.]*crossing[^.]*Field Analyst[^.]*reach/i,
+  'the opposing ARO must obstruct the lead character’s goal')
+const [groundedOpening, groundedMiddle, groundedClose] = groundedText.split('\n\n')
+assert.match(groundedMiddle, /Hill Sniper/i)
+assert.match(groundedMiddle, /Rocket Sentry/i)
+assert.match(groundedMiddle, /Screen Operator/i)
+assert.match(groundedMiddle, /Eclipse/i)
+assert.match(groundedClose, /Field Analyst.*(?:WIP|reading)/i,
+  'the opening created by roster capabilities must lead to the hero’s mission attempt')
+const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
+  groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
+  'closeCombat', groundedGame.id)!, groundedGame, groundedLists)
+assert.match(duelScene?.split('\n\n')[2] ?? '', /Breach Duelist grappled the Rocket Sentry/i,
+  'a close combat lead must confront the rostered defender introduced earlier')
+for (const [mission, objective, wrongGoal] of [
+  ['Area of Interest', 'antenna switch', 'breach in the far wall'],
+  ['Evacuation', 'Extraction Console', 'waiting civilian escort'],
+  ['Neutralization', 'Hyperthermal Tech Box', 'nearest Neutralization Area'],
+  ['Panic Room', 'Panic Room entrance', 'its open central gate'],
+  ['Data Harvest', 'designated zone', 'disputed data-harvester'],
+] as const) {
+  const candidate = composeGameStory(mission, groundedGame.winnerFaction,
+    groundedGame.loserFaction, groundedGame.winnerFaction, 'objective', groundedGame.id)!
+  const objectiveScene = renderGameStoryTemplate(candidate, { ...groundedGame, mission },
+    groundedLists.map((roster) => ({ ...roster, mission })))
+  assert.ok(objectiveScene, mission + ': linked cast should have a scene')
+  assert.match(objectiveScene.split('\n\n')[0],
+    new RegExp(`(?:needed that lane quiet to reach|way to) the ${objective}`, 'i'),
+    mission + ': the lead needs the actual mission objective')
+  assert.doesNotMatch(objectiveScene.split('\n\n')[0],
+    new RegExp(`(?:needed that lane quiet to reach|way to) the ${wrongGoal}`, 'i'),
+    mission + ': landmark must not replace the objective')
 }
 assert.doesNotMatch(groundedText, /\b(?:unfinished|shifted|specialist)\b/i,
   'a live Dig story must not fall back to the repetitive placeholder prose')
