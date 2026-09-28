@@ -17,9 +17,17 @@ assert.ok(!homepage.links.some(link => link.href === '/games/109'))
 assert.ok(army.links.some(link => link.href === '/games/109'))
 assert.equal(publicDatasetForPath('/'), 'games')
 assert.equal(publicDatasetForPath('/games/117'), 'games')
+assert.equal(publicDatasetForPath('/maps/01-object-room-1-classic'), null)
 assert.equal(publicDatasetForPath('/commissioner'), null)
 assert.equal(describePublicSearchPage('/hall-of-fame'), null)
 assert.equal(describePublicSearchPage('/rivalries'), null)
+const maps = describePublicSearchPage('/maps')
+assert.equal(maps.links.filter(link => link.href.startsWith('/maps/')).length, 47)
+const table = describePublicSearchPage('/maps/05-objective-room-2-blockfort')
+assert.match(table.title, /Objective Room - 2 Blockfort/)
+assert.equal(table.image, '/assets/maps/05-objective-room-2-blockfort-angled.jpg')
+assert.match(renderPublicSearchHtml(template, table), /og:image:width" content="1600"/)
+assert.equal(describePublicSearchPage('/maps/unknown-table'), null)
 
 const reports = [
   { id: 118, mission: "Dead Man's Switch", player1Faction: 'Corregidor Jurisdictional Command', player2Faction: 'Torchlight Brigade', bestMoment: '' },

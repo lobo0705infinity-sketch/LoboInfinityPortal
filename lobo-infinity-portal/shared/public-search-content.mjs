@@ -1,10 +1,12 @@
 import { selectFeaturedReport } from './featured-report.mjs'
+import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from './lobo-workshop-maps.mjs'
 
 export const SITE_ORIGIN = 'https://lobo-infinity-portal.vercel.app'
 
 const starterLinks = [
   { label: 'Explore Army Intelligence', href: '/army-intelligence' },
   { label: 'Read battle reports', href: '/games' },
+  { label: 'Explore TTS maps', href: '/maps' },
   { label: 'Join a game or event', href: '/events' },
 ]
 
@@ -54,6 +56,17 @@ const publicPages = {
     heading: 'Infinity N5 battle reports',
     intro: 'Browse played games by mission and matchup, then open a report for the result and its submitted highlight.',
     links: [{ label: 'Explore Army Intelligence', href: '/army-intelligence' }],
+  },
+  '/maps': {
+    title: 'Infinity N5 TTS Map Library: 47 Lobo Workshop Tables | Lobo Portal',
+    description: 'Explore 47 Infinity Tabletop Simulator maps from Lobo’s Workshop with original overhead and angled captures, source links, and deployment checks.',
+    heading: 'Lobo Workshop TTS map library',
+    intro: 'Browse 47 real TTS table previews. Each map has an overhead layout and an angled terrain view, with a link to the Lobo Workshop collection.',
+    image: loboWorkshopMaps[46].angled,
+    imageAlt: `Angled preview of ${loboWorkshopMaps[46].name} in Tabletop Simulator`,
+    imageWidth: 1600,
+    imageHeight: 900,
+    links: [{ label: 'Read battle reports', href: '/games' }],
   },
   '/events': {
     title: 'Infinity N5 Games and Events | Lobo Infinity Portal',
@@ -169,6 +182,11 @@ export function describePublicSearchPage(pathname, datasets = {}) {
         }
       }
     }
+    if (pathname === '/maps') {
+      for (const map of loboWorkshopMaps) {
+        links.push({ label: `${map.name} · ${map.family}`, href: `/maps/${map.slug}` })
+      }
+    }
     if (pathname === '/events' && datasets.events) {
       for (const event of datasets.events) links.push({ label: `${text(event.name)} · ${text(event.status || event.lifecycleStage)}`, href: `/event/${encodeURIComponent(event.id)}` })
     }
@@ -179,6 +197,29 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       for (const mission of datasets.missions) links.push({ label: `${text(mission.mission)} · ${Number(mission.games) || 0} recorded games`, href: `/missions/${encodeURIComponent(mission.mission)}` })
     }
     return { ...staticPage, pathname, canonicalPath: pathname, links }
+  }
+
+  const mapSlug = /^\/maps\/([a-z0-9-]+)$/.exec(pathname)?.[1]
+  if (mapSlug) {
+    const map = loboWorkshopMapBySlug.get(mapSlug)
+    if (!map) return null
+    return {
+      pathname,
+      canonicalPath: `/maps/${map.slug}`,
+      title: `${map.name} TTS Map: Overhead & Terrain Views | Lobo Portal`,
+      description: shorten(`Explore ${map.name} from Lobo’s Infinity Maps Workshop collection. View original overhead and angled TTS captures and check the table before deployment.`, 170),
+      heading: map.name,
+      intro: `${map.family} in Lobo’s Infinity Maps Workshop collection. Compare the overhead layout with the angled terrain view before deploying.${map.sourceNote ? ` Workshop note: ${map.sourceNote}` : ''}`,
+      image: map.angled,
+      imageAlt: `Angled Tabletop Simulator preview of ${map.name}`,
+      imageWidth: 1600,
+      imageHeight: 900,
+      links: [
+        { label: 'All TTS maps', href: '/maps' },
+        { label: 'Browse battle reports', href: '/games' },
+        { label: 'Lobo’s Infinity Maps Workshop collection', href: LOBO_WORKSHOP_URL },
+      ],
+    }
   }
 
   const gameId = /^\/games\/(\d+)$/.exec(pathname)?.[1]

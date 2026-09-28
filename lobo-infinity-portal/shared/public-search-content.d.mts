@@ -8,6 +8,8 @@ export type PublicSearchPage = {
   links: Array<{ label: string; href: string }>
   image?: string
   imageAlt?: string
+  imageWidth?: number
+  imageHeight?: number
 }
 
 export function publicDatasetForPath(pathname: string): 'games' | 'events' | 'factions' | 'missions' | null

@@ -32,7 +32,7 @@ function Explore() {
       <header className="page-header">
         <p className="eyebrow">Public portal</p>
         <h1>Explore</h1>
-        <p>Follow a faction, a player, a mission, or the story behind a game.</p>
+        <p>Follow a faction, a player, a mission, a TTS table, or the story behind a game.</p>
       </header>
 
       <nav className="portal-explore-features" aria-label="Start exploring">

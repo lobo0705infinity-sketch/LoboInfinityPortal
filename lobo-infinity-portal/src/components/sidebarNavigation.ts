@@ -69,6 +69,11 @@ export const communityItems: NavigationItem[] = [
     to: '/games',
   },
   {
+    icon: 'maps',
+    label: 'TTS Map Library',
+    to: '/maps',
+  },
+  {
     icon: 'players',
     label: 'Players',
     to: '/players',
