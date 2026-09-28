@@ -49,12 +49,16 @@
       "destination": "/api/public-search-page?page=/"
     },
     {
-      "source": "/:page(explore|army-intelligence|games|events|players|factions|missions|streams|army-lists|analytics|compare|standings|schedule|league-operations|community|rules)",
+      "source": "/:page(explore|army-intelligence|games|maps|events|players|factions|missions|streams|army-lists|analytics|compare|standings|schedule|league-operations|community|rules)",
       "destination": "/api/public-search-page?page=/:page"
     },
     {
       "source": "/games/:id",
       "destination": "/api/public-search-page?page=/games/:id"
+    },
+    {
+      "source": "/maps/:slug",
+      "destination": "/api/public-search-page?page=/maps/:slug"
     },
     {
       "source": "/event/:id",

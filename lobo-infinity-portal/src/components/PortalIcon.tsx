@@ -7,6 +7,7 @@ export type PortalIconName =
   | 'discord'
   | 'factions'
   | 'hall'
+  | 'maps'
   | 'missions'
   | 'news'
   | 'players'
@@ -73,6 +74,13 @@ const paths: Record<PortalIconName, string[]> = {
     'M12 15.5V19',
     'M6 7H4.7a2.2 2.2 0 0 0 2.2 2.2',
     'M18 7h1.3a2.2 2.2 0 0 1-2.2 2.2',
+  ],
+  maps: [
+    'M4.5 6.5 10 4l4 2 5.5-2.5v13L14 19l-4-2-5.5 2.5v-13Z',
+    'M10 4v13',
+    'M14 6v13',
+    'M7 9.5 8.5 9',
+    'M16 12l1.5-.7',
   ],
   missions: [
     'M12 4.5v15',

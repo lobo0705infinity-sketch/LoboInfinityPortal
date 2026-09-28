@@ -34,6 +34,7 @@ const Rules = lazy(() => import('../pages/Rules'))
 const MobileMenu = lazy(() => import('../pages/MobileMenu'))
 const Explore = lazy(() => import('../pages/Explore'))
 const LittleHelper = lazy(() => import('../pages/LittleHelper'))
+const MapLibrary = lazy(() => import('./MapLibrary'))
 
 export default function SnapshotPublicApp() {
   return <Routes>
@@ -45,6 +46,8 @@ export default function SnapshotPublicApp() {
     <Route path="/player/:playerName" element={<PlayerProfile />} />
     <Route path="/games" element={<Games />} />
     <Route path="/games/:id" element={<PublicGameDetails />} />
+    <Route path="/maps" element={<Suspense fallback={<Loading />}><MapLibrary /></Suspense>} />
+    <Route path="/maps/:slug" element={<Suspense fallback={<Loading />}><MapLibrary /></Suspense>} />
     <Route path="/game/:id" element={<PublicGameDetails />} />
     <Route path="/standings" element={<Standings />} />
     <Route path="/factions" element={<Factions />} />

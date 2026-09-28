@@ -10,7 +10,7 @@ const quickAccessSource = publicApp.match(/const quickAccess = \[([\s\S]*?)\]\s+
 const quickAccessEntries = [...quickAccessSource.matchAll(/\['([^']+)', '([^']+)'\]/g)].map((match) => `${match[1]}:${match[2]}`)
 const expectedQuickAccess = ['Players:/players', 'Standings:/standings?eventId=event-current-league', 'Games:/games', 'Factions:/factions', 'Missions:/missions', 'Schedule:/event/event-current-league/schedule', 'Streams:/streams', 'Submit Game:/submit-game']
 
-const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/standings', '/factions', '/missions', '/compare', '/analytics', '/army-lists', '/army-intelligence', '/schedule', '/community', '/events', '/event/:eventId', '/submit-game', '/army-lists/submit']
+const requiredRoutes = ['/', '/players', '/players/:playerName', '/games/:id', '/maps', '/maps/:slug', '/standings', '/factions', '/missions', '/compare', '/analytics', '/army-lists', '/army-intelligence', '/schedule', '/community', '/events', '/event/:eventId', '/submit-game', '/army-lists/submit']
 const checks = [
   [app.includes('!commissionerRoute ? <SnapshotPublicApp />'), 'public/Commissioner route separation'],
   [!publicApp.includes("../services/api") && !publicApp.includes('apiClient'), 'no legacy public API controller'],

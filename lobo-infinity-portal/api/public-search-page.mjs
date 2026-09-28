@@ -82,8 +82,8 @@ export function renderPublicSearchHtml(template, page) {
     `<meta property="og:description" content="${escapeHtml(page.description)}" />`,
     ...(page.image ? [
       `<meta property="og:image" content="${escapeHtml(SITE_ORIGIN + page.image)}" />`,
-      `<meta property="og:image:width" content="1200" />`,
-      `<meta property="og:image:height" content="630" />`,
+      `<meta property="og:image:width" content="${Number(page.imageWidth) || 1200}" />`,
+      `<meta property="og:image:height" content="${Number(page.imageHeight) || 630}" />`,
       `<meta property="og:image:alt" content="${escapeHtml(page.imageAlt)}" />`,
       `<meta name="twitter:card" content="summary_large_image" />`,
       `<meta name="twitter:image" content="${escapeHtml(SITE_ORIGIN + page.image)}" />`,

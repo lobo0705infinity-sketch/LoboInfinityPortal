@@ -1,3 +1,5 @@
+import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
+
 const siteOrigin = 'https://lobo-infinity-portal.vercel.app'
 const snapshotOrigin = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/'
 
@@ -9,6 +11,7 @@ const publicPaths = [
   '/little-helper',
   '/army-intelligence',
   '/games',
+  '/maps',
   '/events',
   '/players',
   '/factions',
@@ -44,6 +47,7 @@ export default async function handler(request, response) {
 
 export async function buildSitemap({ fetchObject = fetch } = {}) {
   const paths = new Set(publicPaths)
+  for (const map of loboWorkshopMaps) paths.add(`/maps/${map.slug}`)
   let snapshotAvailable = false
 
   try {
