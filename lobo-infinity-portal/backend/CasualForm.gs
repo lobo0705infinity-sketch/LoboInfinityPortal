@@ -143,8 +143,8 @@ function lifGetCasualSchema_() {
     { title: "Game Details", type: "SECTION_HEADER" },
     { title: f.BEST_MOMENT, type: "PARAGRAPH_TEXT", required: false },
     { title: f.NOTES, type: "PARAGRAPH_TEXT", required: false },
-    { title: f.WORKSHOP_MAP, type: "LIST", required: false, choices: "maps" },
-    { title: f.MAP_RATING, type: "LIST", required: false, choices: "ratings" }
+    { title: f.WORKSHOP_MAP, type: "LIST", required: false, choices: "maps", help: "Choose the save you played. Leave blank if your table is not in the Lobo Workshop library." },
+    { title: f.MAP_RATING, type: "LIST", required: false, choices: "ratings", help: "Optional: rate the selected table from 1 (poor) to 5 (excellent)." }
   ];
 }
 
@@ -170,6 +170,7 @@ function lifAppendCasualSchemaItem_(form, spec, players, missions, factions) {
         : spec.values;
       item = form.addListItem();
       item.setTitle(spec.title).setChoiceValues(choices).setRequired(spec.required === true);
+      if (spec.help) item.setHelpText(spec.help);
     } else if (spec.type === "TEXT") {
       item = form.addTextItem();
       item.setTitle(spec.title).setRequired(spec.required === true);
@@ -211,6 +212,7 @@ function lifReconcileCasualSchemaItem_(item, spec, players, missions, factions) 
       : spec.choices === "ratings" ? ["1", "2", "3", "4", "5"]
       : spec.values;
     item.asListItem().setChoiceValues(choices).setRequired(spec.required === true);
+    if (spec.help) item.asListItem().setHelpText(spec.help);
   } else if (spec.type === "TEXT") {
     const text = item.asTextItem().setRequired(spec.required === true);
     if (spec.help) text.setHelpText(spec.help);
