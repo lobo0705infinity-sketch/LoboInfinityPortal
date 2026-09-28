@@ -2,7 +2,7 @@
 // Preview photos were captured in Tabletop Simulator on 2026-09-28.
 export const LOBO_WORKSHOP_URL = 'https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238'
 
-export const loboWorkshopMaps = [
+const workshopSaveMaps = [
   {
     "index": 1,
     "id": "3719263238:5c10ce",
@@ -568,5 +568,76 @@ export const loboWorkshopMaps = [
     "angled": "/assets/maps/47-ll-map-16-the-dig-provisioning-angled.jpg"
   }
 ]
+
+// A Workshop bag is a save, not necessarily a different terrain layout. These
+// names describe the photographed terrain; the original bag name stays available
+// for lookup and for updating the published Workshop item after review.
+const terrainLayouts = [
+  ['Containment Ring', [1, 45]],
+  ['Rustline Market', [2]],
+  ['Cargo Crossroads', [3, 4, 33]],
+  ['Quadrant Bastion', [5, 41]],
+  ['Tidal Turbines', [6]],
+  ['Azure Circuit', [7]],
+  ['Autumn Underpass', [8]],
+  ['Shardworks', [9, 25, 31]],
+  ['The Iron Yard', [10]],
+  ['Canal Quarter', [11, 30, 39]],
+  ['Skyrail Exchange', [12, 17, 29, 42, 46]],
+  ['Concrete Labyrinth', [13]],
+  ['Dustline Outpost', [14]],
+  ['Neon Exchange', [15, 16, 37, 47]],
+  ['Sakura Courtyard', [18, 34]],
+  ['Foundry Blocks', [19]],
+  ['Kokkyo Nights', [20]],
+  ['Kunin Mothership', [21]],
+  ['Polar Station', [22]],
+  ['Engineering Deck', [23]],
+  ['Void Tango', [24]],
+  ['Freight Terminal', [26, 38]],
+  ['Hangar 1.7', [27, 32]],
+  ['NeoTerran Command', [28]],
+  ['Containment Ring: Red Sector', [35]],
+  ['Copper Grid', [36, 40]],
+  ['Dustfall Archive', [43]],
+  ['Civic Crossing', [44]],
+]
+
+const terrainBySave = new Map(terrainLayouts.flatMap(([name, indices]) =>
+  indices.map((index) => [index, { name, layoutKey: indices[0] }])))
+
+// Only names explicitly present in the Workshop bag title or source note.
+// A blank list means the save is a terrain layout without a named mission setup.
+const missionSetupsBySave = new Map([
+  [4, ['Area of Interest']],
+  [15, ['Mindwipe']],
+  [16, ['Provisioning', 'Outbreak']],
+  [17, ['Provisioning', 'Outbreak']],
+  [22, ['Frostbyte']],
+  [25, ['Area of Interest']],
+  [37, ['Outbreak']],
+  [38, ['Neutralization']],
+  [39, ['Neutralization']],
+  [40, ["Dead Man's Switch"]],
+  [41, ["Dead Man's Switch"]],
+  [42, ['Neutralization']],
+  [43, ['Data Heist', 'Double Bind']],
+  [44, ['Data Heist', 'Double Bind']],
+  [45, ["Dead Man's Switch"]],
+  [46, ['The Dig', 'Provisioning']],
+  [47, ['The Dig', 'Provisioning']],
+])
+
+// These pairs contain exactly the same TTS objects, not just similar photos.
+const exactDuplicateOfBySave = new Map([[31, 25], [32, 27], [33, 4], [34, 18]])
+
+export const loboWorkshopMaps = workshopSaveMaps.map((map) => ({
+  ...map,
+  workshopName: map.name,
+  name: terrainBySave.get(map.index).name,
+  layoutKey: terrainBySave.get(map.index).layoutKey,
+  missionSetups: missionSetupsBySave.get(map.index) ?? [],
+  exactDuplicateOf: exactDuplicateOfBySave.get(map.index) ?? null,
+}))
 
 export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))

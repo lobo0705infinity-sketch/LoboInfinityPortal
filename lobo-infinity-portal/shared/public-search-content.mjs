@@ -58,10 +58,10 @@ const publicPages = {
     links: [{ label: 'Explore Army Intelligence', href: '/army-intelligence' }],
   },
   '/maps': {
-    title: 'Infinity N5 TTS Map Library: 47 Lobo Workshop Tables | Lobo Portal',
-    description: 'Explore 47 Infinity Tabletop Simulator maps from Lobo’s Workshop with original overhead and angled captures, source links, and deployment checks.',
+    title: 'Infinity N5 TTS Map Library: 28 Layouts, 47 Saves | Lobo Portal',
+    description: 'Explore 28 Infinity table layouts across 47 Lobo Workshop saves. Compare overhead and angled captures and find saves named for specific missions.',
     heading: 'Lobo Workshop TTS map library',
-    intro: 'Browse 47 real TTS table previews. Each map has an overhead layout and an angled terrain view, with a link to the Lobo Workshop collection.',
+    intro: 'Browse 47 TTS saves across 28 table layouts. Each save has overhead and angled terrain views, its original Workshop title, and any named mission setup.',
     image: loboWorkshopMaps[46].angled,
     imageAlt: `Angled preview of ${loboWorkshopMaps[46].name} in Tabletop Simulator`,
     imageWidth: 1600,
@@ -184,7 +184,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     }
     if (pathname === '/maps') {
       for (const map of loboWorkshopMaps) {
-        links.push({ label: `${map.name} · ${map.family}`, href: `/maps/${map.slug}` })
+        links.push({ label: `${map.name} · save ${map.index}${map.missionSetups.length ? ` · ${map.missionSetups.join(' / ')}` : ''}`, href: `/maps/${map.slug}` })
       }
     }
     if (pathname === '/events' && datasets.events) {
@@ -206,10 +206,10 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     return {
       pathname,
       canonicalPath: `/maps/${map.slug}`,
-      title: `${map.name} TTS Map: Overhead & Terrain Views | Lobo Portal`,
-      description: shorten(`Explore ${map.name} from Lobo’s Infinity Maps Workshop collection. View original overhead and angled TTS captures and check the table before deployment.`, 170),
+      title: `${map.name} · TTS Save ${map.index} | Lobo Portal`,
+      description: shorten(`Explore ${map.name} (Workshop: ${map.workshopName}). View overhead and angled TTS captures${map.missionSetups.length ? ` for ${map.missionSetups.join(' and ')}` : ''}.`, 170),
       heading: map.name,
-      intro: `${map.family} in Lobo’s Infinity Maps Workshop collection. Compare the overhead layout with the angled terrain view before deploying.${map.sourceNote ? ` Workshop note: ${map.sourceNote}` : ''}`,
+      intro: `${map.family} in Lobo’s Infinity Maps Workshop collection. Original bag: ${map.workshopName}.${map.missionSetups.length ? ` Named mission setup: ${map.missionSetups.join(', ')}.` : ' No named mission setup.'} Compare the overhead layout with the angled terrain view before deploying.${map.sourceNote ? ` Workshop note: ${map.sourceNote}` : ''}`,
       image: map.angled,
       imageAlt: `Angled Tabletop Simulator preview of ${map.name}`,
       imageWidth: 1600,

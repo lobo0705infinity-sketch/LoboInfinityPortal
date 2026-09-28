@@ -4,7 +4,11 @@ export type LoboWorkshopMap = {
   guid: string
   slug: string
   name: string
+  workshopName: string
   family: string
+  layoutKey: number
+  missionSetups: string[]
+  exactDuplicateOf: number | null
   objectCount: number
   sourceNote: string
   overhead: string

@@ -19,10 +19,12 @@
 .lobo-maps-section-heading > span { color: var(--text-soft, #c1cad5); font-size: .85rem; white-space: nowrap; }
 .lobo-maps-controls { display: grid; gap: .55rem; padding: .9rem; border: 1px solid rgba(255, 255, 255, .1); border-radius: 12px; background: #0c1722; }
 .lobo-maps-controls label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.lobo-maps-control-label { margin: .45rem 0 0; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .lobo-maps-controls input { width: 100%; max-width: 500px; min-height: 44px; padding: .7rem .8rem; border: 1px solid rgba(143, 227, 246, .35); border-radius: 8px; color: #fff; background: #152635; font: inherit; }
 .lobo-maps-filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .25rem; }
 .lobo-maps-filters button { min-height: 40px; padding: .45rem .75rem; border: 1px solid rgba(255, 255, 255, .16); border-radius: 99px; color: #dce6ee; background: #17232d; cursor: pointer; font: inherit; font-size: .8rem; }
 .lobo-maps-filters button[aria-pressed="true"] { color: #05141c; border-color: #8fe3f6; background: #8fe3f6; font-weight: 800; }
+.lobo-maps-filter-note { margin: .1rem 0 0; color: #abc0cc; font-size: .82rem; line-height: 1.5; }
 .lobo-maps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
 .lobo-map-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; background: #0e1b27; text-decoration: none; transition: border-color .15s, transform .15s; }
 .lobo-map-card:hover, .lobo-map-card:focus-visible { border-color: #8fe3f6; transform: translateY(-2px); }
@@ -30,6 +32,8 @@
 .lobo-map-card-info { display: grid; gap: .3rem; flex: 1; padding: .8rem .9rem 1rem; }
 .lobo-map-card-info small { color: #9dc5d6; font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
 .lobo-map-card-info strong { font-size: 1.05rem; line-height: 1.25; }
+.lobo-map-card-info .lobo-map-card-source { color: #a4afba; font-size: .72rem; font-weight: 500; letter-spacing: 0; line-height: 1.35; text-transform: none; }
+.lobo-map-card-info .lobo-map-mission-summary { color: #f2c35a; font-size: .78rem; font-weight: 800; line-height: 1.4; }
 .lobo-map-card-info > span { margin-top: .2rem; color: #8fe3f6; font-size: .83rem; font-weight: 800; }
 .lobo-maps-source-note { margin: 0; color: var(--text-soft, #b5c2cb); font-size: .83rem; line-height: 1.5; }
 .lobo-maps-empty { margin: 0; padding: 2rem; border: 1px dashed rgba(143, 227, 246, .3); border-radius: 12px; background: #0d1b27; }
@@ -38,6 +42,7 @@
 .lobo-map-detail-heading { display: flex; align-items: end; justify-content: space-between; gap: 1rem; }
 .lobo-map-detail-heading h1 { margin: .1rem 0 .5rem; font-size: clamp(2rem, 4vw, 3.75rem); line-height: 1.05; }
 .lobo-map-detail-heading p:not(.eyebrow) { margin: 0; color: var(--text-soft, #c1cad5); }
+.lobo-map-detail-heading p:not(.eyebrow) + p:not(.eyebrow) { margin-top: .35rem; }
 .lobo-map-detail-heading > a { flex: none; }
 .lobo-map-detail-hero { aspect-ratio: 16 / 8; max-height: 650px; }
 .lobo-map-detail-view-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .8rem; }
@@ -45,6 +50,20 @@
 .lobo-map-detail-view-grid img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 .lobo-map-detail-view-grid a > span { display: grid; gap: .2rem; padding: .75rem .9rem; }
 .lobo-map-detail-view-grid small { color: var(--text-soft, #c1cad5); }
+.lobo-map-missions { padding: 1.15rem; border: 1px solid rgba(242, 195, 90, .32); border-radius: 12px; background: #101b25; }
+.lobo-map-missions h2 { margin: .2rem 0 .5rem; font-size: clamp(1.45rem, 2.5vw, 2rem); }
+.lobo-map-missions p:not(.eyebrow) { max-width: 90ch; margin: .45rem 0; color: var(--text-soft, #c1cad5); line-height: 1.5; }
+.lobo-map-mission-list { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0 1rem; padding: 0; list-style: none; }
+.lobo-map-mission-list li { padding: .4rem .7rem; border: 1px solid rgba(242, 195, 90, .65); border-radius: 99px; color: #ffe3a5; background: rgba(242, 195, 90, .11); font-size: .85rem; font-weight: 800; }
+.lobo-map-missions .lobo-map-duplicate-note { padding: .7rem .8rem; border-left: 3px solid #f2c35a; background: rgba(242, 195, 90, .08); }
+.lobo-map-missions a { color: #9be7f7; }
+.lobo-map-variants { margin-top: 1rem; }
+.lobo-map-variants h3 { margin: 0 0 .6rem; font-size: 1rem; }
+.lobo-map-variants > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .55rem; }
+.lobo-map-variants a { display: grid; gap: .15rem; padding: .65rem .75rem; border: 1px solid rgba(255, 255, 255, .14); border-radius: 8px; background: #132530; text-decoration: none; }
+.lobo-map-variants a strong { color: #e8f7fc; font-size: .82rem; }
+.lobo-map-variants a span { color: #f2c35a; font-size: .79rem; }
+.lobo-map-variants a small { color: #a8bac6; line-height: 1.4; }
 .lobo-map-detail-info { display: grid; grid-template-columns: 1.2fr .8fr; gap: .8rem; }
 .lobo-map-detail-info section { padding: 1.1rem; border: 1px solid rgba(143, 227, 246, .22); border-radius: 12px; background: #0d1b27; }
 .lobo-map-detail-info h2 { margin: .2rem 0 .7rem; }
