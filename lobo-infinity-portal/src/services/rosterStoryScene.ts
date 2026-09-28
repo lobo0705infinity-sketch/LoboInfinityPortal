@@ -149,6 +149,22 @@ function missionCounter(mission: string, opponent: string, hero: string): string
   }
 }
 
+function digResolution(ending: string, endings: GameStoryTemplate['endings'],
+  hero: string, opponent: string, allyPlayer: string, enemyPlayer: string): string | null {
+  // Resolve the invented encounter in the same direction as the recorded
+  // result without claiming that a particular analysis or neutralization scored.
+  if (ending === endings.heroWins) {
+    return `${upper(hero)} slipped past ${opponent} among the stones, leaving ${allyPlayer}’s crew at the buried tech while the rival fighters fell back to the rim.`
+  }
+  if (ending === endings.heroLoses) {
+    return `${upper(opponent)} reached the buried tech first as a burst of fire drove ${hero} back toward the rim, leaving ${enemyPlayer}’s crew below the console.`
+  }
+  if (ending === endings.draw) {
+    return `${upper(hero)} and ${opponent} held opposite sides of the buried tech; neither ${allyPlayer}’s crew nor ${enemyPlayer}’s crew gave ground before the shooting stopped.`
+  }
+  return null
+}
+
 function tacticalSetting(template: GameStoryTemplate): string | null {
   const source = template.scene!
   if (template.mission === 'The Dig' && /unfinished analysis prompt/i.test(source.turn)) {
@@ -358,7 +374,10 @@ export function renderRosterStoryScene(template: GameStoryTemplate, game: Recent
     '{{heroPlayer}}': allyPlayer, '{{otherPlayer}}': enemyPlayer,
     '{{hero}}': name(hero),
   }
-  const outcome = Object.entries(players).reduce((value, [tag, player]) => value.replaceAll(tag, player), ending)
+  const narrativeEnding = template.mission === 'The Dig'
+    ? digResolution(ending, source.endings, heroLater, enemyObjective, allyPlayer, enemyPlayer) ?? ending
+    : ending
+  const outcome = Object.entries(players).reduce((value, [tag, player]) => value.replaceAll(tag, player), narrativeEnding)
   if (/\{\{\w+\}\}/.test(outcome)) return null
   // The game result chooses an ending; the body is a fictional encounter
   // shaped by the mission and decoded rosters, not a turn-by-turn game log.

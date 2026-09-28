@@ -915,6 +915,22 @@ assert.match(groundedMiddle, /Screen Operator/i)
 assert.match(groundedMiddle, /Eclipse/i)
 assert.match(groundedClose, /Field Analyst.*(?:analy[sz]|reading|WIP)/i,
   'the opening created by roster capabilities must lead to the hero’s mission attempt')
+const groundedDigTemplate = composeGameStory('The Dig', groundedGame.winnerFaction,
+  groundedGame.loserFaction, groundedGame.winnerFaction, 'objective', groundedGame.id)!
+const groundedDigOutcomes = [
+  { game: groundedGame, pattern: /Field Analyst slipped past the Field Engineer[^.]*Winner’s crew at the buried tech/i },
+  { game: { ...groundedGame, winner: 'Loser', winnerDisplayName: 'Loser',
+    winnerFaction: 'Druze Bayram Security', loser: 'Winner', loserDisplayName: 'Winner',
+    loserFaction: 'PanOceania' },
+    pattern: /Field Engineer reached the buried tech first[^.]*Loser’s crew below the console/i },
+  { game: { ...groundedGame, gameResult: 'draw' },
+    pattern: /Field Analyst and the Field Engineer held opposite sides[^.]*neither Winner’s crew nor Loser’s crew gave ground/i },
+] as const
+for (const { game: outcome, pattern } of groundedDigOutcomes) {
+  const scene = renderGameStoryTemplate(groundedDigTemplate, outcome as RecentGame, groundedLists)
+  assert.match(scene?.split('\n\n').at(-1) ?? '', pattern,
+    'the Dig closing beat must follow the named confrontation and the recorded result')
+}
 const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
   'closeCombat', groundedGame.id)!, groundedGame, groundedLists)
@@ -992,9 +1008,19 @@ for (const mission of CANONICAL_MISSIONS) {
       for (const { game: outcome, ending } of outcomes) {
         const actual = renderGameStoryTemplate(scenario, outcome as RecentGame, scenarioLists)
         assert.match(actual ?? '', /\bTest Trooper\b/, mission + ': model substitution')
-        assert.ok(actual.endsWith(ending.replaceAll('{{heroPlayer}}', 'Winner')
-          .replaceAll('{{otherPlayer}}', 'Loser')
-          .replaceAll('{{hero}}', 'the Test Trooper')), mission + ': ending selection')
+        if (mission === 'The Dig') {
+          const closingBeat = actual.split('\n\n').at(-1) ?? ''
+          assert.match(closingBeat, /buried tech/i, 'the Dig resolution stays at the excavation')
+          assert.doesNotMatch(closingBeat, /gained the edge|in the struggle to/i,
+            'a rostered encounter should end with a physical outcome')
+          assert.match(closingBeat, outcome.gameResult === 'draw'
+            ? /neither Winner’s crew nor Loser’s crew/i
+            : new RegExp(`${outcome.winner}’s crew`), 'the Dig resolution follows the result')
+        } else {
+          assert.ok(actual.endsWith(ending.replaceAll('{{heroPlayer}}', 'Winner')
+            .replaceAll('{{otherPlayer}}', 'Loser')
+            .replaceAll('{{hero}}', 'the Test Trooper')), mission + ': ending selection')
+        }
         assert.doesNotMatch(actual, /\{\{\w+\}\}/, mission + ': unresolved placeholder')
         renderedVariants++
       }
