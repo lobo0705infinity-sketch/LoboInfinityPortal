@@ -19,12 +19,17 @@ export default function MapLibrary() {
   const gameState = useSnapshotData<PublicGame[]>('games')
   const games = gameState.data ?? []
   const ratings = buildMapRatings(games)
+  const ratingsStatus = gameState.data ? 'ready' : gameState.error ? 'unavailable' : 'loading'
   return slug
-    ? <MapDetail games={games} map={loboWorkshopMapBySlug.get(slug)} ratings={ratings} ratingsAvailable={!!gameState.data} />
-    : <MapIndex ratings={ratings} ratingsAvailable={!!gameState.data} />
+    ? <MapDetail games={games} map={loboWorkshopMapBySlug.get(slug)} ratings={ratings} ratingsStatus={ratingsStatus} />
+    : <MapIndex ratings={ratings} ratingsStatus={ratingsStatus} />
 }
 
-function MapIndex({ ratings, ratingsAvailable }: { ratings: Map<number, MapRating>; ratingsAvailable: boolean }) {
+type RatingsStatus = 'loading' | 'ready' | 'unavailable'
+const ratingText = (status: RatingsStatus, rating?: MapRating) => status === 'ready'
+  ? mapRatingLabel(rating) : status === 'loading' ? 'Ratings loading…' : 'Ratings unavailable'
+
+function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>; ratingsStatus: RatingsStatus }) {
   const [query, setQuery] = useState('')
   const [mission, setMission] = useState('All missions')
   const [sort, setSort] = useState('collection')
@@ -79,7 +84,7 @@ function MapIndex({ ratings, ratingsAvailable }: { ratings: Map<number, MapRatin
         <label htmlFor="map-sort">Sort tables</label>
         <select id="map-sort" onChange={(event) => setSort(event.target.value)} value={sort}>
           <option value="collection">Collection order</option>
-          <option value="top-rated">Highest rated</option>
+          <option disabled={ratingsStatus !== 'ready'} value="top-rated">Highest rated</option>
         </select>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Different saves of the same terrain share one ranking; unrated layouts appear last.</p>
       </div>
@@ -97,7 +102,7 @@ function MapIndex({ ratings, ratingsAvailable }: { ratings: Map<number, MapRatin
           const otherCollections = loboWorkshopMapSections.filter((other) => other.id !== section.id && other.layouts.some((item) => item.layoutKey === layout.layoutKey))
           return <Link className="lobo-map-card" key={layout.layoutKey} to={`/maps/${map.slug}`}>
             <img alt={`Overhead preview of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
-            <span className="lobo-map-card-info"><small>{map.family} · {layout.saves.length} {layout.saves.length === 1 ? 'save' : 'saves'}</small><strong>{layout.name}</strong><span className="lobo-map-card-rating">{ratingsAvailable ? mapRatingLabel(ratings.get(layout.layoutKey)) : 'Ratings loading…'}</span><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span>{otherCollections.length ? <small className="lobo-map-card-other">Also in {otherCollections.map((other) => other.title).join(' · ')}</small> : null}<span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
+            <span className="lobo-map-card-info"><small>{map.family} · {layout.saves.length} {layout.saves.length === 1 ? 'save' : 'saves'}</small><strong>{layout.name}</strong><span className="lobo-map-card-rating">{ratingText(ratingsStatus, ratings.get(layout.layoutKey))}</span><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span>{otherCollections.length ? <small className="lobo-map-card-other">Also in {otherCollections.map((other) => other.title).join(' · ')}</small> : null}<span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
           </Link>
         })}</div>
       </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
@@ -106,7 +111,7 @@ function MapIndex({ ratings, ratingsAvailable }: { ratings: Map<number, MapRatin
   </main>
 }
 
-function MapDetail({ map, games, ratings, ratingsAvailable }: { map: WorkshopMap | undefined; games: PublicGame[]; ratings: Map<number, MapRating>; ratingsAvailable: boolean }) {
+function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | undefined; games: PublicGame[]; ratings: Map<number, MapRating>; ratingsStatus: RatingsStatus }) {
   if (!map) return <main className="portal-shell lobo-maps-page"><section className="lobo-maps-empty"><h1>Map not found</h1><p>This table is not in the current Lobo Workshop collection.</p><Link to="/maps">Browse all maps</Link></section></main>
 
   const next = loboWorkshopMaps[map.index % loboWorkshopMaps.length]
@@ -120,7 +125,7 @@ function MapDetail({ map, games, ratings, ratingsAvailable }: { map: WorkshopMap
   return <main className="portal-shell lobo-maps-page lobo-map-detail" data-page="map-detail">
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'casual'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>Workshop save {String(map.index).padStart(2, '0')} / {loboWorkshopMaps.length}</span></nav>
     <header className="lobo-map-detail-heading">
-      <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopName}</p><p className="lobo-map-detail-rating">{ratingsAvailable ? mapRatingLabel(ratings.get(map.layoutKey)) : 'Ratings loading…'}</p><p>Preview the full table from above and at an angle before loading it for a game.</p></div>
+      <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopName}</p><p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Preview the full table from above and at an angle before loading it for a game.</p></div>
       <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a>
     </header>
     <a aria-label={`Open full-size angled preview of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`Angled Tabletop Simulator view of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>Angled view <span aria-hidden="true">↗</span></span></a>
@@ -142,7 +147,7 @@ function MapDetail({ map, games, ratings, ratingsAvailable }: { map: WorkshopMap
       {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>Save {String(item.index).padStart(2, '0')} · {sectionForSave(item)?.title ?? 'Workshop'}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span><small>{item.workshopName}</small></Link>)}</div></div> : null}
     </section>
     <div className="lobo-map-detail-info">
-      <section aria-labelledby="map-reports-title"><p className="eyebrow">Played on this table</p><h2 id="map-reports-title">Battle reports</h2>{reports.length ? <ul className="lobo-map-reports">{reports.slice(0, 8).map((game) => <li key={game.id}><Link to={`/games/${game.id}`}>#{game.id} · {game.mission} · {game.date}</Link></li>)}</ul> : <p>{ratingsAvailable ? 'No battle reports have been linked to this table yet.' : 'Battle reports loading…'}</p>}<Link to="/submit-game">Submit a game and rate this table <span aria-hidden="true">→</span></Link></section>
+      <section aria-labelledby="map-reports-title"><p className="eyebrow">Played on this table</p><h2 id="map-reports-title">Battle reports</h2>{reports.length ? <ul className="lobo-map-reports">{reports.slice(0, 8).map((game) => <li key={game.id}><Link to={`/games/${game.id}`}>#{game.id} · {game.mission} · {game.date}</Link></li>)}</ul> : <p>{ratingsStatus === 'ready' ? 'No battle reports have been linked to this table yet.' : ratingsStatus === 'loading' ? 'Battle reports loading…' : 'Battle reports unavailable.'}</p>}<Link to="/submit-game">Submit a game and rate this table <span aria-hidden="true">→</span></Link></section>
     </div>
     {map.sourceNote ? <p className="lobo-maps-source-note">Workshop source note: {map.sourceNote}</p> : null}
     <nav aria-label="Adjacent maps" className="lobo-map-detail-adjacent"><Link to={`/maps/${previous.slug}`}><small>← Previous table</small><strong>{previous.name}</strong></Link><Link to={`/maps/${next.slug}`}><small>Next table →</small><strong>{next.name}</strong></Link></nav>
