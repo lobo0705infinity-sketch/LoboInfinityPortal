@@ -2,6 +2,20 @@
 
 **Proposal only.** The public portal and Steam Workshop retain their current names until approval. The 47 Workshop bags represent 28 distinct photographed terrain layouts and 43 distinct sets of TTS contained objects. Each proposed terrain name is shared by saves showing the same layout; the save number and original Workshop name distinguish variants.
 
+## Proposed collections
+
+The map index now groups saves by how they would be used. One terrain layout has one card **within each section**, with its different saves and mission setups listed together. The same terrain can have a card in Casual and another in an event. All 47 individual save pages remain reachable.
+
+| Section | Workshop saves | Distinct layout cards |
+| --- | --- | --- |
+| Casual tables | 01–28 | 24 |
+| July 2026 League | 29–36, 38–41, 43–44, 46–47 | 13 |
+| August 2026 Team Tournament | 37, 42, 45 | 3 |
+
+The Workshop bag names `Lobo League` / `LL` and `TT` are the evidence for these event assignments; **confirm the event association before publishing**. The first 28 saves are offered for casual use, even when their original names mention earlier tournaments or leagues. Lobo's American Top 40 has no identified Workshop save, so an empty section is not shown. This structure can add an event section when its maps are identified.
+
+Within Casual, **03/04**, **09/25**, **12/17**, and **15/16** share four layout cards while keeping their separate mission saves. Within the League, **29/46**, **30/39**, and **36/40** likewise share three layout cards. The four exactly matching object sets (**04/33**, **18/34**, **25/31**, **27/32**) belong to different sections, so both bags can stay without repeated cards within a section.
+
 ## Proposed terrain names
 
 | Terrain name | Workshop save numbers |
@@ -91,13 +105,13 @@ The proposed name links to the current live preview image page. Mission labels c
 
 ## Duplicates found
 
-Four pairs have **identical ContainedObjects arrays**, including their object GUIDs, in the captured TTS save: **04 / 33**, **18 / 34**, **25 / 31**, and **27 / 32**. Their bag labels differ. These are marked for a keep/remove decision; this proposal does not delete anything.
+Four pairs have **identical ContainedObjects arrays**, including their object GUIDs, in the captured TTS save: **04 / 33**, **18 / 34**, **25 / 31**, and **27 / 32**. Their bag labels differ. Each pair spans Casual and League in the proposed sections, so both bags can remain; this proposal does not delete anything.
 
 Nine other groups share a near-identical photographed layout but have different TTS object sets: **01 / 45**, **03 / 04 / 33**, **05 / 41**, **09 / 25 / 31**, **11 / 30 / 39**, **12 / 17 / 29 / 42 / 46**, **15 / 16 / 37 / 47**, **26 / 38**, and **36 / 40**. Some groups also contain one of the exact duplicate pairs above. These may be intended mission variants, so they remain distinct saves. The two exact pairs **18 / 34** and **27 / 32** have no further variants in their groups.
 
 ## Portal presentation
 
-The browse page shows 28 layout names across 47 saves, retains each original Workshop name in search and on the card, and filters saves by named mission setup. A map detail page has a separate **Missions for this save** section and links to other saves using the same terrain. A mission label describes the Workshop bag; it is not a guarantee that its markers reflect the current rules. [Check the current ITS scenario list](https://experience.corvusbelli.com/en/infinity/its).
+The browse page shows 40 layout cards organized by Casual and two named events, representing 28 unique terrains across 47 saves. It retains original Workshop names in search and on the cards and filters by named mission setup. A card with multiple saves opens the best matching save for the search or mission filter; the detail page links the other saves using that terrain. A map detail page has a separate **Missions for this save** section. A mission label describes the Workshop bag; it is not a guarantee that its markers reflect the current rules. [Check the current ITS scenario list](https://experience.corvusbelli.com/en/infinity/its).
 
 ## Matching the Workshop
 
