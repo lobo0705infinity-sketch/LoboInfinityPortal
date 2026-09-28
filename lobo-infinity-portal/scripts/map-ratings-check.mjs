@@ -52,15 +52,15 @@ assert.equal(row[23], submission.mapSlug)
 assert.equal(row[24], 5)
 
 const exported = source('PublicSnapshotExporter.gs')
-function functionSource(name) {
-  const start = exported.indexOf(`function ${name}(`)
+function functionSource(text, name) {
+  const start = text.indexOf(`function ${name}(`)
   assert.ok(start >= 0, `${name} is present`)
   let depth = 0
   let opened = false
-  for (let end = start; end < exported.length; end += 1) {
-    if (exported[end] === '{') { depth += 1; opened = true }
-    if (exported[end] === '}') depth -= 1
-    if (opened && depth === 0) return exported.slice(start, end + 1)
+  for (let end = start; end < text.length; end += 1) {
+    if (text[end] === '{') { depth += 1; opened = true }
+    if (text[end] === '}') depth -= 1
+    if (opened && depth === 0) return text.slice(start, end + 1)
   }
   throw new Error(`Incomplete function ${name}`)
 }
@@ -76,7 +76,7 @@ Object.assign(context, {
   publicSnapshotScoreCellIsValid_: () => true,
 })
 for (const name of ['buildPublicSnapshotGameContext_', 'buildPublicSnapshotGames_', 'publicSnapshotScore_'])
-  vm.runInContext(functionSource(name), context)
+  vm.runInContext(functionSource(exported, name), context)
 const publicSource = context.buildPublicSnapshotGameContext_({ rows: [row] }, {})
 const publicGame = context.buildPublicSnapshotGames_(publicSource, [])[0]
 assert.equal(publicGame.mapSlug, submission.mapSlug)
@@ -84,6 +84,32 @@ assert.equal(publicGame.mapRating, 5)
 const legacyGame = context.buildPublicSnapshotGameContext_({ rows: [row.slice(0, 23)] }, {})[0]
 assert.equal(legacyGame.mapSlug, '')
 assert.equal(legacyGame.mapRating, null)
+
+const formIds = { LIF_LEAGUE_FORM_ID: 'league-id', LIF_TEAM_FORM_ID: 'team-id', LIF_CASUAL_FORM_ID: 'casual-id' }
+const forms = new Map(Object.values(formIds).map((id) => [id, {
+  items: [{ title: 'Mission', getTitle() { return this.title }, getType: () => 'TEXT' }],
+  getId() { return id },
+  getItems(type) { return type ? this.items.filter((item) => item.getType() === type) : this.items },
+  addListItem() {
+    const item = { title: '', values: [], getTitle() { return this.title }, getType: () => 'LIST',
+      asListItem() { return this }, setTitle(title) { this.title = title; return this },
+      setChoiceValues(values) { this.values = values; return this }, setRequired() { return this },
+      setHelpText() { return this } }
+    this.items.push(item)
+    return item
+  },
+}]))
+context.PropertiesService = { getScriptProperties: () => ({ getProperty: (key) => formIds[key] }) }
+context.FormApp = { ItemType: { LIST: 'LIST' }, openById: (id) => forms.get(id) }
+vm.runInContext(functionSource(source('LeagueForm.gs'), 'synchronizeWorkshopMapSubmissionForms'), context)
+for (let pass = 0; pass < 2; pass += 1) {
+  const result = context.synchronizeWorkshopMapSubmissionForms()
+  assert.deepEqual(Array.from(result, (item) => item.mapChoices), [16, 3, 47])
+  for (const form of forms.values()) {
+    assert.equal(form.items.length, 3, 'sync preserves old questions and creates each map question only once')
+    assert.equal(form.items[0].getTitle(), 'Mission')
+  }
+}
 
 const sameLayout = loboWorkshopMaps.filter((map) => map.layoutKey === loboWorkshopMaps[24].layoutKey)
 assert.ok(sameLayout.length >= 2, 'fixture includes a terrain layout with two saves')
