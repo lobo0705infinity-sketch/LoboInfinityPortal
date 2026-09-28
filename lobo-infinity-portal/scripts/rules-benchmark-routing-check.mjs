@@ -147,9 +147,34 @@ for (const question of fireteamQuestions) {
   assert.match(embed.footer.text, /no provider call/)
 }
 assert.equal(identityCalls, 0, 'public Fireteam identity questions must not depend on provider output')
+for (const question of [
+  'Does E/M destroy a deployable?',
+  'Can electromagnetic ammunition damage a deployable?',
+  'Will an E/M hit remove deployable equipment?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: identityFallback })
+  assert.equal(result.answerSource, 'EVIDENCE_BOUNDED_RULES', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
+  assert.match(result.deepSeek.answer, /No\. E\/M alone causes no Wounds/i)
+  assert.match(result.deepSeek.answer, /Deployable Repeater.*communications/i)
+  assert.match(result.deepSeek.answer, /N\+E\/M.*Normal ammunition/i)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 64', 'p. 175', 'p. 168', 'p. 67'])
+  const embed = formatRulesDiscordResponse(result).embeds[0]
+  assert.match(embed.fields.find((field) => field.name === 'ANSWER').value, /\*\*NO\*\*/)
+  assert.match(embed.fields.find((field) => field.name === 'OFFICIAL SOURCES').value, /COMBINED AMMUNITION/)
+}
+assert.equal(identityCalls, 0, 'E/M deployable answers must not depend on provider output')
+const combinedEM = await retrieveRulesReference({ question: 'Does N+E/M destroy a deployable?', deepSeek: identityFallback })
+assert.equal(combinedEM.status, 'FALLBACK', 'combined ammunition must not be classified as pure E/M')
+const electromagneticEvidence = buildRulesEvidencePrompt(await loadProductionRulesCorpus(), 'Does E/M destroy a deployable?')
+const electromagneticPages = JSON.parse(electromagneticEvidence.text.split('\n').at(-1)).entries
+assert.ok(electromagneticPages.some((entry) => entry.page === '64' && /ELECTROMAGNETIC \(E\/M\) AMMUNITION/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '67' && /Normal component inflicts one Wound/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '168' && /Trooper or game element/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '175' && /can be chosen as targets/.test(entry.text)))
 const bonuses = await retrieveRulesReference({ question: 'Are Fireteam bonuses public information?', deepSeek: identityFallback })
 assert.equal(bonuses.status, 'FALLBACK', 'private Fireteam bonuses must not be classified as public identity')
-assert.equal(identityCalls, 1)
+assert.equal(identityCalls, 2)
 const fireteamEvidence = buildRulesEvidencePrompt(await loadProductionRulesCorpus(), fireteamQuestions[2])
 assert.match(fireteamEvidence.text, /must declare which Troopers are members/)
 assert.match(fireteamEvidence.text, /Army List information not explicitly designated Private is Open/)
