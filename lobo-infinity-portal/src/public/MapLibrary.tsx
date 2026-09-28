@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from '../../shared/lobo-workshop-maps.mjs'
+import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps, loboWorkshopMapSections } from '../../shared/lobo-workshop-maps.mjs'
 import './MapLibrary.css'
 
 type WorkshopMap = (typeof loboWorkshopMaps)[number]
 
-const families = ['All maps', 'Standard layouts', 'Objective rooms', 'Corner layouts', 'League tables', 'Tournament tables']
 const missionOptions = [...new Set(loboWorkshopMaps.flatMap((map) => map.missionSetups))].sort((a, b) => a.localeCompare(b))
 const layoutCount = new Set(loboWorkshopMaps.map((map) => map.layoutKey)).size
+const cardCount = loboWorkshopMapSections.reduce((total, section) => total + section.layouts.length, 0)
+const sectionForSave = (map: WorkshopMap) => loboWorkshopMapSections.find((section) =>
+  section.layouts.some((layout) => layout.saves.some((save) => save.id === map.id)))
 
 export default function MapLibrary() {
   const { slug } = useParams()
@@ -16,14 +18,18 @@ export default function MapLibrary() {
 
 function MapIndex() {
   const [query, setQuery] = useState('')
-  const [family, setFamily] = useState('All maps')
   const [mission, setMission] = useState('All missions')
   const normalizedQuery = query.trim().toLocaleLowerCase()
-  const visibleMaps = loboWorkshopMaps.filter((map) =>
-    (family === 'All maps' || map.family === family) &&
-    (mission === 'All missions' || map.missionSetups.includes(mission)) &&
-    (!normalizedQuery || `${map.name} ${map.workshopName} ${map.family} ${map.missionSetups.join(' ')}`.toLocaleLowerCase().includes(normalizedQuery)),
-  )
+  const visibleSections = loboWorkshopMapSections.map((section) => ({
+    ...section,
+    layouts: section.layouts.flatMap((layout) => {
+      const matchingSaves = layout.saves.filter((map) =>
+        (mission === 'All missions' || map.missionSetups.includes(mission)) &&
+        (!normalizedQuery || `${map.name} ${map.workshopName} ${map.family} ${map.missionSetups.join(' ')} ${section.title}`.toLocaleLowerCase().includes(normalizedQuery)))
+      return matchingSaves.length ? [{ ...layout, primary: matchingSaves[0] }] : []
+    }),
+  }))
+  const visibleLayoutCount = visibleSections.reduce((total, section) => total + section.layouts.length, 0)
   const featured = loboWorkshopMaps.find((map) => map.slug === '47-ll-map-16-the-dig-provisioning') ?? loboWorkshopMaps[0]
 
   return <main className="portal-shell lobo-maps-page" data-page="map-library">
@@ -31,7 +37,7 @@ function MapIndex() {
       <div className="lobo-maps-hero-copy">
         <p className="eyebrow">Tabletop Simulator · Lobo Workshop</p>
         <h1>See the table before you deploy.</h1>
-        <p>Explore {loboWorkshopMaps.length} Workshop saves across {layoutCount} Infinity table layouts with real overhead and angled TTS captures. Find a layout, inspect its terrain, then choose the save for your mission.</p>
+        <p>Explore {layoutCount} Infinity table layouts across casual and event collections, with overhead and angled TTS captures. Find your event, inspect the terrain, then choose a save for your mission.</p>
         <div className="lobo-maps-hero-actions">
           <a href="#browse-maps">Browse the maps <span aria-hidden="true">↓</span></a>
           <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Open Steam Workshop <span aria-hidden="true">↗</span></a>
@@ -47,28 +53,37 @@ function MapIndex() {
     <section aria-labelledby="browse-maps-title" className="lobo-maps-browse" id="browse-maps">
       <div className="lobo-maps-section-heading">
         <div><p className="eyebrow">Choose your ground</p><h2 id="browse-maps-title">Map library</h2></div>
-        <span aria-live="polite">{visibleMaps.length} of {loboWorkshopMaps.length} saves</span>
+        <span aria-live="polite">{visibleLayoutCount} of {cardCount} table cards</span>
       </div>
       <div className="lobo-maps-controls">
         <label htmlFor="map-search">Search maps</label>
         <input autoComplete="off" id="map-search" onChange={(event) => setQuery(event.target.value)} placeholder="Terrain, Workshop name, or mission…" type="search" value={query} />
-        <div aria-label="Filter by layout" className="lobo-maps-filters" role="group">
-          {families.map((option) => <button aria-pressed={family === option} key={option} onClick={() => setFamily(option)} type="button">{option}</button>)}
-        </div>
         <p className="lobo-maps-control-label">Named mission setup</p>
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
         <p className="lobo-maps-filter-note">Mission filters use the Workshop bag names and notes. Other terrain saves can be adapted by placing objectives according to the mission rules.</p>
       </div>
-      {visibleMaps.length ? <div className="lobo-maps-grid">
-        {visibleMaps.map((map) => <Link className="lobo-map-card" key={map.id} to={`/maps/${map.slug}`}>
-          <img alt={`Overhead preview of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
-          <span className="lobo-map-card-info"><small>{map.family} · Save {String(map.index).padStart(2, '0')}</small><strong>{map.name}</strong><small className="lobo-map-card-source">Workshop: {map.workshopName}</small><span className="lobo-map-mission-summary">{map.missionSetups.length ? map.missionSetups.join(' · ') : 'Open layout'}{map.exactDuplicateOf ? ` · Exact copy of save ${String(map.exactDuplicateOf).padStart(2, '0')}` : ''}</span><span>Inspect table <span aria-hidden="true">→</span></span></span>
-        </Link>)}
-      </div> : <p className="lobo-maps-empty">No maps match that search. Try another name or layout.</p>}
+      <nav aria-label="Map collections" className="lobo-map-section-nav">
+        {visibleSections.filter((section) => section.layouts.length).map((section) => <a href={`#maps-${section.id}`} key={section.id}>{section.title} <span>{section.layouts.length}</span></a>)}
+      </nav>
+      {visibleLayoutCount ? visibleSections.map((section) => section.layouts.length ? <section aria-labelledby={`maps-${section.id}-title`} className="lobo-map-collection" id={`maps-${section.id}`} key={section.id}>
+        <div className="lobo-map-collection-heading">
+          <div><p className="eyebrow">{section.id === 'casual' ? 'Pick a table' : 'Event tables'}</p><h3 id={`maps-${section.id}-title`}>{section.title}</h3><p>{section.description}</p></div>
+          <div className="lobo-map-collection-meta"><span>{section.layouts.length} {section.layouts.length === 1 ? 'layout' : 'layouts'} · {section.layouts.reduce((total, layout) => total + layout.saves.length, 0)} saves</span>{section.eventUrl ? <Link to={section.eventUrl}>View event <span aria-hidden="true">↗</span></Link> : null}</div>
+        </div>
+        <div className="lobo-maps-grid">{section.layouts.map((layout) => {
+          const map = layout.primary
+          const namedMissions = [...new Set(layout.saves.flatMap((save) => save.missionSetups))]
+          const otherCollections = loboWorkshopMapSections.filter((other) => other.id !== section.id && other.layouts.some((item) => item.layoutKey === layout.layoutKey))
+          return <Link className="lobo-map-card" key={layout.layoutKey} to={`/maps/${map.slug}`}>
+            <img alt={`Overhead preview of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
+            <span className="lobo-map-card-info"><small>{map.family} · {layout.saves.length} {layout.saves.length === 1 ? 'save' : 'saves'}</small><strong>{layout.name}</strong><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span>{otherCollections.length ? <small className="lobo-map-card-other">Also in {otherCollections.map((other) => other.title).join(' · ')}</small> : null}<span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
+          </Link>
+        })}</div>
+      </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
     </section>
-    <p className="lobo-maps-source-note">The original Workshop names remain searchable and appear on each page. Captures show the saves as loaded in Tabletop Simulator on September 28, 2026.</p>
+    <p className="lobo-maps-source-note">Layouts can appear in more than one collection, but appear only once within each. All 47 original Workshop saves remain available. Captures show the saves as loaded in Tabletop Simulator on September 28, 2026.</p>
   </main>
 }
 
@@ -88,7 +103,7 @@ function MapDetail({ map }: { map: WorkshopMap | undefined }) {
       : 'Use both views to compare central lanes, edge cover, raised terrain, and routes between the two sides.'
 
   return <main className="portal-shell lobo-maps-page lobo-map-detail" data-page="map-detail">
-    <nav aria-label="Map navigation" className="lobo-map-detail-nav"><Link to="/maps">← All maps</Link><span>Workshop save {String(map.index).padStart(2, '0')} / {loboWorkshopMaps.length}</span></nav>
+    <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'casual'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>Workshop save {String(map.index).padStart(2, '0')} / {loboWorkshopMaps.length}</span></nav>
     <header className="lobo-map-detail-heading">
       <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopName}</p><p>Preview the full table from above and at an angle before loading it for a game.</p></div>
       <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a>
@@ -109,7 +124,7 @@ function MapDetail({ map }: { map: WorkshopMap | undefined }) {
         : <p>This bag has no named mission setup. Use it as a terrain layout and place mission objectives according to the scenario you choose.</p>}
       <p>Check the current mission rules and the loaded TTS table before play. These labels describe Workshop saves, not an exhaustive list of playable missions.</p>
       {exactMatch ? <p className="lobo-map-duplicate-note">Exact copy: <Link to={`/maps/${exactMatch.slug}`}>Save {String(exactMatch.index).padStart(2, '0')} · {exactMatch.workshopName}</Link> contains the same TTS objects under a different bag name.</p> : null}
-      {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>Save {String(item.index).padStart(2, '0')}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span><small>{item.workshopName}</small></Link>)}</div></div> : null}
+      {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>Save {String(item.index).padStart(2, '0')} · {sectionForSave(item)?.title ?? 'Workshop'}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span><small>{item.workshopName}</small></Link>)}</div></div> : null}
     </section>
     <div className="lobo-map-detail-info">
       <section aria-labelledby="map-notes-title"><p className="eyebrow">Before deployment</p><h2 id="map-notes-title">Table checks</h2><p>{familyNote}</p><p>Confirm deployment zones, objective placement, terrain access, and line of fire with your opponent in TTS. The images are a preview; the loaded table and mission rules govern play.</p></section>
