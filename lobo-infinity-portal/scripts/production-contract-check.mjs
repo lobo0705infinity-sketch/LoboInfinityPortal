@@ -58,11 +58,11 @@ function extractCommissionerItems(source) {
 function assertExactCommissionerNavigation(source, failures) {
   const expected = [
     ['Command Center', '/commissioner'],
-    ['Game Center', '/commissioner/game-center'],
     ['Events', '/commissioner/events'],
-    ['Players', '/commissioner/players'],
-    ['Automation', '/commissioner/automation'],
-    ['System', '/commissioner/system'],
+    ['Games & Army Lists', '/commissioner/game-center'],
+    ['Players & Access', '/commissioner/players'],
+    ['Community', '/commissioner/community-manager'],
+    ['System & Recovery', '/commissioner/system'],
   ]
   const actual = extractCommissionerItems(source)
 
@@ -83,6 +83,13 @@ function assertRouteElement(name, appSource, route, element, failures) {
   const routePattern = new RegExp(`path="${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]{0,240}<${element}\\s*/>`)
   if (!routePattern.test(appSource)) {
     failures.push(`${name} route ${route} does not render ${element}.`)
+  }
+}
+
+function assertLauncherRoute(name, appSource, route, failures) {
+  const routePattern = new RegExp(`path="${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s+element=\\{<CommissionerLauncher`)
+  if (!routePattern.test(appSource)) {
+    failures.push(`${name} route ${route} does not render its Commissioner launcher.`)
   }
 }
 
@@ -169,11 +176,16 @@ assertIncludes(
   failures,
 )
 const app = read('src/App.tsx')
-assertRouteElement('Commissioner Game Center', app, '/commissioner/game-center', 'CommissionerGameCenter', failures)
-assertRouteElement('Commissioner Events', app, '/commissioner/events', 'CommissionerEvents', failures)
-assertRouteElement('Commissioner Players', app, '/commissioner/players', 'CommissionerPlayers', failures)
+assertLauncherRoute('Commissioner Game Center', app, '/commissioner/game-center', failures)
+assertLauncherRoute('Commissioner Events', app, '/commissioner/events', failures)
+assertLauncherRoute('Commissioner Players', app, '/commissioner/players', failures)
+assertLauncherRoute('Commissioner Community', app, '/commissioner/community-manager', failures)
+assertLauncherRoute('Commissioner System', app, '/commissioner/system', failures)
+assertRouteElement('Commissioner Game Center browse', app, '/commissioner/game-center/browse', 'CommissionerGameCenter', failures)
+assertRouteElement('Commissioner Event Manager', app, '/commissioner/events/manage', 'CommissionerEventManager', failures)
+assertRouteElement('Commissioner Player Corrections', app, '/commissioner/players/corrections', 'CommissionerPlayers', failures)
 assertRouteElement('Commissioner Automation', app, '/commissioner/automation', 'AutomationCenter', failures)
-assertRouteElement('Commissioner System', app, '/commissioner/system', 'CommissionerSystem', failures)
+assertRouteElement('Commissioner System recovery', app, '/commissioner/system/recovery', 'CommissionerSystem', failures)
 assertExcludes(
   'Commissioner top-level navigation',
   commissionerSidebar,
@@ -190,11 +202,12 @@ const submitResult = read('src/pages/SubmitResult.tsx')
 assertIncludes('Submit Game modes', submitResult, manifest.contractMarkers.submitGameModes, failures)
 assertExcludes('Submit Game modes', submitResult, manifest.forbiddenActiveMarkers.removedSubmitGameModes, failures)
 
-const missions = read('src/pages/Missions.tsx')
-assertIncludes('Mission Headquarters scope selector', missions, manifest.contractMarkers.missionHeadquartersScope, failures)
-if (!/apiClient\s*\.\s*getMissions\(\{[\s\S]*eventId,[\s\S]*gameType,/.test(missions)) {
-  failures.push('Mission Headquarters must pass eventId and gameType to the missions endpoint.')
-}
+const publicApp = read('src/public/SnapshotPublicApp.tsx')
+const missionScope = read('src/public/missionSnapshotScope.ts')
+assertIncludes('Public mission directory', publicApp, manifest.contractMarkers.missionHeadquartersScope, failures)
+assertIncludes('Public mission routes', publicApp, ['path="/missions"', 'path="/missions/:missionName"'], failures)
+assertIncludes('Pinned-snapshot event summaries', publicApp, ["summarizeMissionForEvent(mission,games,selectedEventId)", "summarizeMissionForEvent(m,games.data!,selectedEventId)", "getEventMissionGames(m.mission,games.data!,selectedEventId)"], failures)
+assertIncludes('Mission event filter', missionScope, ["eventId === 'all' || game.eventId === eventId", 'firstTurnWins', 'averageTP: average(scores.tp)'], failures)
 
 const missionApi = read('backend/MissionApi.gs')
 if (!/getLeagueDataForEvent\(\s*eventId \|\| "all",\s*gameType \|\| "league"\s*\)/.test(missionApi)) {

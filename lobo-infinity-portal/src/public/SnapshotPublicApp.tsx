@@ -20,7 +20,8 @@ import { resolvePlayerProfileHero, type PlayerProfileHeroArtwork } from '../conf
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
 import { resolveFactionProfileHero, type FactionProfileHeroArtwork } from '../config/factionProfileHeroArtwork'
 import { buildFactionMissionPerformance, buildFactionPlayerPerformance, getFactionGameObservations, summarizeFactionObservations, type FactionGameObservation } from './factionAnalytics'
-import { buildMissionFactionPerformance, getMissionGames } from './missionProfileAnalytics'
+import { buildMissionFactionPerformance } from './missionProfileAnalytics'
+import { getEventMissionGames, summarizeMissionForEvent } from './missionSnapshotScope'
 import { getPlayerGameResult, isPlayerInGame } from './playerGameResult'
 import { getGameParticipants } from './gameParticipants'
 import { getPublicTeamTournamentParticipants, orderPublicTeamTournamentGames, orderPublicTeamTournamentStandings } from './teamTournamentPresentation'
@@ -311,32 +312,49 @@ function FactionMissionPerformanceTable({missions,catalog}:{missions:ReturnType<
 function FactionPlayersTable({players}:{players:ReturnType<typeof buildFactionPlayerPerformance>}){return <Panel title="Players Using This Faction">{players.length?<div className="table-wrapper snapshot-table-shell"><table className="snapshot-data-table"><thead><tr><th>Player</th><th>Games</th><th>W-L-D</th><th>Win %</th></tr></thead><tbody>{players.map(p=><tr key={p.player}><td><Link to={`/players/${encodeURIComponent(p.player)}`}>{p.displayName}</Link></td><td>{p.games}</td><td>{p.wins}-{p.losses}-{p.draws}</td><td>{formatPercent(p.winRate)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No players have recorded a game with this faction yet."/>}</Panel>}
 function FactionRecentGames({observations}:{observations:FactionGameObservation[]}){return <Panel title="Recent Games">{observations.length?<div className="table-wrapper snapshot-table-shell"><table className="snapshot-data-table"><thead><tr><th>Date</th><th>Player</th><th>Opponent</th><th>Opponent Faction</th><th>Mission</th><th>Result</th><th>TP</th><th>OP</th><th>VP</th></tr></thead><tbody>{observations.map(r=><tr key={`${r.game.id}-${r.player}`}><td>{formatDate(r.game.date)}</td><td><Link to={`/players/${encodeURIComponent(r.player)}`}>{r.playerName}</Link></td><td>{r.opponentName}</td><td>{r.opponentFaction}</td><td><Link to={`/missions/${encodeURIComponent(r.game.mission)}`}>{r.game.mission}</Link></td><td>{r.result}</td><td>{formatOptionalScore(r.tp)}</td><td>{formatOptionalScore(r.op)}</td><td>{formatOptionalScore(r.vp)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No recent games are available for this faction."/>}</Panel>}
 function Missions(){const missions=useSnapshotData<PublicMission[]>('missions');const events=useSnapshotData<PublicEvent[]>('events');const games=useSnapshotData<PublicGame[]>('games');const catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog');return <DataGate states={[missions,events,games,catalog]}>{()=><MissionsDirectory missions={missions.data!} events={events.data!} games={games.data!} catalog={catalog.data!.missions}/>}</DataGate>}
-function MissionsDirectory({missions,events,games,catalog}:{missions:PublicMission[];events:PublicEvent[];games:PublicGame[];catalog:MissionGeistCatalogMission[]}){const[selectedEventId,setSelectedEventId]=useState('all');const missionNamesForSelectedEvent=new Set(selectedEventId==='all'?missions.map(mission=>mission.mission):games.filter(game=>game.eventId===selectedEventId).map(game=>game.mission));const visibleMissions=missions.filter(mission=>missionNamesForSelectedEvent.has(mission.mission));return <main className="portal-shell snapshot-public-page snapshot-missions-page" data-page="missions"><header className="snapshot-missions-hero" aria-labelledby="missions-title"><p className="eyebrow">Lobo Infinity Portal</p><h1 id="missions-title">Missions</h1></header><section className="snapshot-missions-controls" aria-label="Mission directory filters"><label htmlFor="missions-event-filter">Event:</label><select id="missions-event-filter" value={selectedEventId} onChange={event=>setSelectedEventId(event.target.value)}><option value="all">All Events</option>{events.map(event=><option key={event.id} value={event.id}>{event.name}</option>)}</select></section><section className="panel snapshot-missions-table-panel" aria-label="Mission directory">{visibleMissions.length?<div className="table-wrapper"><table className="snapshot-data-table"><thead><tr><th>Mission</th><th>Games Played</th><th>First-Turn Win Rate</th></tr></thead><tbody>{visibleMissions.map(mission=><tr key={mission.mission}><td><Link to={`/missions/${encodeURIComponent(mission.mission)}`}>{mission.mission}</Link><MissionCatalogNavigation mission={mission} catalog={catalog}/></td><td>{mission.games}</td><td>{formatPercent(mission.firstTurnWinRate)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No missions are available for this event in the current snapshot."/>}</section></main>}
+function MissionsDirectory({missions,events,games,catalog}:{missions:PublicMission[];events:PublicEvent[];games:PublicGame[];catalog:MissionGeistCatalogMission[]}){
+  const [searchParams,setSearchParams]=useSearchParams()
+  const requestedEventId=searchParams.get('eventId')||'all'
+  const selectedEventId=requestedEventId==='all'||events.some(event=>event.id===requestedEventId)?requestedEventId:'all'
+  const visibleMissions=missions.map(mission=>summarizeMissionForEvent(mission,games,selectedEventId)).filter(mission=>mission.games>0)
+  return <main className="portal-shell snapshot-public-page snapshot-missions-page" data-page="missions">
+    <header className="snapshot-missions-hero" aria-labelledby="missions-title"><p className="eyebrow">Lobo Infinity Portal</p><h1 id="missions-title">Missions</h1></header>
+    <section className="snapshot-missions-controls" aria-label="Mission directory filters"><label htmlFor="missions-event-filter">Event:</label>
+      <select id="missions-event-filter" value={selectedEventId} onChange={event=>setSearchParams(event.target.value==='all'?{}:{eventId:event.target.value})}>
+        <option value="all">All Events</option>{events.map(event=><option key={event.id} value={event.id}>{event.name}</option>)}
+      </select>
+    </section>
+    <section className="panel snapshot-missions-table-panel" aria-label="Mission directory">{visibleMissions.length?<div className="table-wrapper"><table className="snapshot-data-table"><thead><tr><th>Mission</th><th>Games Played</th><th>First-Turn Win Rate</th></tr></thead><tbody>{visibleMissions.map(mission=><tr key={mission.mission}><td><Link to={`/missions/${encodeURIComponent(mission.mission)}${selectedEventId==='all'?'':`?eventId=${encodeURIComponent(selectedEventId)}`}`}>{mission.mission}</Link><MissionCatalogNavigation mission={mission} catalog={catalog}/></td><td>{mission.games}</td><td>{formatPercent(mission.firstTurnWinRate)}</td></tr>)}</tbody></table></div>:<PublicEmptyState message="No missions are available for this event in the current snapshot."/>}</section>
+  </main>
+}
 function MissionProfile(){
   const {missionName=''}=useParams()
+  const [searchParams]=useSearchParams()
+  const selectedEventId=searchParams.get('eventId')||'all'
   const state=useSnapshotData<PublicMission[]>('missions')
   const games=useSnapshotData<PublicGame[]>('games')
   const catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog')
   return <DataGate states={[state,games,catalog]}>{()=>{
     const m=state.data!.find(x=>x.mission===decodeURIComponent(missionName))
     if(!m)return <Missing label="Mission"/>
-    const missionGames=getMissionGames(m.mission,games.data!)
-    const factionPerformance=buildMissionFactionPerformance(m.mission,games.data!)
+    const missionGames=getEventMissionGames(m.mission,games.data!,selectedEventId)
+    const summary=summarizeMissionForEvent(m,games.data!,selectedEventId)
+    const factionPerformance=buildMissionFactionPerformance(m.mission,missionGames)
     return <main className="portal-shell snapshot-public-page snapshot-mission-profile" data-page="mission-profile">
-      <section className="page-header snapshot-mission-profile-header"><p className="eyebrow">Mission Profile</p><h1>{m.mission}</h1></section>
+      <section className="page-header snapshot-mission-profile-header"><p className="eyebrow">Mission Profile</p><h1>{m.mission}</h1>{selectedEventId!=='all'?<p>Showing this event only. <Link to={`/missions?eventId=${encodeURIComponent(selectedEventId)}`}>Back to event missions</Link></p>:null}</section>
       <section className="snapshot-mission-dossier">
         <article className="panel snapshot-mission-identity">
           <p className="eyebrow">Mission Intelligence</p>
           <h2>{m.mission}</h2>
-          <p>{m.games ? m.games+' recorded '+(m.games===1?'game':'games')+' across the Lobo Infinity League.' : 'No games recorded yet for this mission.'}</p>
+          <p>{summary.games ? summary.games+' recorded '+(summary.games===1?'game':'games')+(selectedEventId==='all'?' across all events.':' in this event.') : 'No games recorded yet for this mission in this event.'}</p>
           <MissionCatalogNavigation mission={m} catalog={catalog.data!.missions}/>
         </article>
-        <div className="snapshot-mission-primary-metrics"><MetricGrid items={[['Games',m.games],['Average TP',formatMissionAverage(m.averageTP)],['Average OP',formatMissionAverage(m.averageOP)],['Average VP',formatMissionAverage(m.averageVP)],['First-turn Win Rate',formatPercent(m.firstTurnWinRate)]]}/></div>
+        <div className="snapshot-mission-primary-metrics"><MetricGrid items={[['Games',summary.games],['Average TP',formatMissionAverage(summary.averageTP)],['Average OP',formatMissionAverage(summary.averageOP)],['Average VP',formatMissionAverage(summary.averageVP)],['First-turn Win Rate',formatPercent(summary.firstTurnWinRate)]]}/></div>
       </section>
       <dl className="panel snapshot-mission-context">
-        <div><dt>Most Successful Faction</dt><dd>{m.mostSuccessfulFaction||'—'}</dd></div>
-        <div><dt>Most Played Faction</dt><dd>{m.mostPlayedFaction||'—'}</dd></div>
-        <div><dt>Last Played</dt><dd>{formatDate(m.lastPlayed)}</dd></div>
+        <div><dt>Most Successful Faction</dt><dd>{summary.mostSuccessfulFaction||'—'}</dd></div>
+        <div><dt>Most Played Faction</dt><dd>{summary.mostPlayedFaction||'—'}</dd></div>
+        <div><dt>Last Played</dt><dd>{formatDate(summary.lastPlayed)}</dd></div>
       </dl>
       <MissionFactionPerformanceTable rows={factionPerformance}/>
       <MissionRecentGames games={missionGames.slice(0,10)}/>
