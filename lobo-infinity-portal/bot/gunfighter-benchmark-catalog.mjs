@@ -81,14 +81,17 @@ export function lookupGunfighterRatings(catalog, decodedArmy) {
   })
 }
 
-export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4 } = {}) {
+export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4, rankings = null } = {}) {
   const members = decodedArmy.combatGroups.flatMap((group) => group.members || group.entries || [])
   const lookups = lookupGunfighterRatings(catalog, decodedArmy)
   return lookups.map((lookup, index) => {
     const member = members[lookup.memberIndex ?? index]
     const states = lookup.result?.states || []
     const nonLinkedState = states.find((state) => state.id === 'normal')
-    const fireteamState = states.find((state) => state.id === 'fireteam')
+    const ranking = rankings?.get(lookup.key)
+    // The source catalog still contains historical TAG +1SD states. The rank
+    // index excludes them, so don't display their illegal linked rating.
+    const fireteamState = ranking && !ranking.fireteam ? null : states.find((state) => state.id === 'fireteam')
     return {
       status: lookup.status,
       key: lookup.key,
@@ -96,9 +99,9 @@ export function rankArmyGunfighters(catalog, decodedArmy, { limit = 4 } = {}) {
       unitName: member?.unitName || member?.unit || lookup.result?.name || null,
       profileName: member?.profileName || member?.profile || null,
       normal: nonLinkedState?.rating ?? null,
-      nonLinked: nonLinkedState ? { rating: nonLinkedState.rating, grade: nonLinkedState.grade, percentile: nonLinkedState.percentile, weaponsUsed: nonLinkedState.weaponsUsed || [] } : null,
+      nonLinked: nonLinkedState ? { rating: nonLinkedState.rating, grade: nonLinkedState.grade, percentile: nonLinkedState.percentile, weaponsUsed: nonLinkedState.weaponsUsed || [], ranking: ranking?.normal || null } : null,
       fireteam: fireteamState?.rating ?? null,
-      fireteamLinked: fireteamState ? { rating: fireteamState.rating, grade: fireteamState.grade, percentile: fireteamState.percentile, weaponsUsed: fireteamState.weaponsUsed || [] } : null,
+      fireteamLinked: fireteamState ? { rating: fireteamState.rating, grade: fireteamState.grade, percentile: fireteamState.percentile, weaponsUsed: fireteamState.weaponsUsed || [], ranking: ranking?.fireteam || null } : null,
       result: lookup.result,
     }
   }).sort((left, right) => {
