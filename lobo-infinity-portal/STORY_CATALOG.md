@@ -14,6 +14,7 @@ The review tries a written story for a concrete player highlight first. When the
 - `public/game-stories/area-of-interest.json`: all one thousand and thirty-five individually written Area of Interest matchups.
 - `public/game-stories/akial-interference.json`: one hundred and five individually written Akial Interference matchups.
 - **Total: 1,300 of 22,770** individually written mission-matchup stories.
+- These 1,300 pass the historical structural check; all are flagged for separate mission-objective review. Their exact existing versions are pinned in `scripts/game-story-legacy-baseline.json`. Added or edited rows must pass the stronger actor-action and objective checks even while the catalog is incomplete.
 - `src/services/gameStoryRouting.ts`: highlight-first routing and on-demand loading of generated mission shards.
 - Open reports waiting on submitted lists check newer public snapshots; once an additional list decodes and links to that game, the report reloads with the new pinned generation.
 - `src/data/storyCharacters.json`: 201 named-character identities classified by the bundled official Army dataset; `npm run game-stories:characters` regenerates it. The Sāchā is classified as a unit type, so story text calls it “the Sāchā.”

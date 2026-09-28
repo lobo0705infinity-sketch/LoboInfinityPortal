@@ -23,7 +23,7 @@ export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, str
     'The patrol waited under cover as fire reached {position}.'],
   'varuna-immediate-reaction-division': [
     'The relief detail marked a route back from {ground}.',
-    'A marine sheltered the open exit while teammates approached {ground}.'],
+    'By {position}, a marine shielded the exit as teammates approached {ground}.'],
   'yu-jing': [
     'The next volley pinned a guard near {position}.',
     'A second line covered the forward fighters beside {ground}.'],
@@ -86,7 +86,7 @@ export const MISSION_ARMY_CLOSE_ALTERNATES: Record<string, readonly [string, str
     'Beside {position}, another fighter crossed after the guard’s shot.'],
   'next-wave': [
     'The hidden raider stayed beyond the search near {position}.',
-    'A second approach remained open beside {ground} after the feint.'],
+    'A staged feint drew fire toward {position}, leaving a second approach open beside {ground}.'],
   'onyx-contact-force': [
     'A forward element held the guard’s attention near {position}.',
     'The assault line narrowed its fire around {ground} as another crossed.'],

@@ -42,6 +42,28 @@ const tactics: Record<ArmyStoryStyle, { approach: string; defense: string }> = {
   technical: { approach: 'charted a route toward', defense: 'tracked movement around' },
   contract: { approach: 'moved to secure', defense: 'watched' },
 }
+// Shared rescue style is too broad to narrate every army's defense with the
+// same withdrawal sentence. Tie its Area of Interest entrance to each crew's
+// own way of protecting the disputed relay.
+const areaRescueDefense: Record<string, string> = {
+  'varuna-immediate-reaction-division': 'guarded a fast exit beside',
+  haqqislam: 'reserved a casualty corridor beside',
+  'ramah-taskforce': 'posted a relief escort near',
+  tohaa: 'rotated a three-fighter watch around',
+  starmada: 'sheltered a fleet withdrawal lane by',
+  'torchlight-brigade': 'manned a relief route beside',
+}
+const flankingApproach: Record<string, string> = {
+  'kestrel-colonial-force': 'tested a scout route toward',
+  'shock-army-of-acontecimento': 'advanced between cover breaks toward',
+  'svalarheima-winter-force': 'checked the narrow passage toward',
+  'white-banner': 'threaded a higher path toward',
+  'force-de-reponse-rapide-merovingienne': 'sent a fallback patrol toward',
+  kosmoflot: 'worked an oblique route toward',
+  'usariadna-ranger-force': 'scouted a long way around to',
+  oban: 'split their patrol for a route into',
+  shindenbutai: 'sought a blind crossing into',
+}
 
 // The Area of Interest openings describe a particular site. Other missions
 // rotate several ways of approaching or guarding it so a recurring army does
@@ -244,7 +266,7 @@ export function composeGameStory(
     const heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
       tactics[heroVoice.style].approach + ' ' + location.approach + '.'
     const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
-      tactics[otherVoice.style].defense + ' ' + location.position + '.'
+      (areaRescueDefense[opponent.id] ?? tactics[otherVoice.style].defense) + ' ' + location.position + '.'
     return finish({
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
@@ -355,8 +377,18 @@ export function composeGameStory(
   const missionIndex = CANONICAL_MISSIONS.indexOf(canonical)
   const heroIntro = (missionIndex + incidentIndex + stableHash(hero.id + ':' + role)) % 4
   const otherIntro = (missionIndex + incidentIndex + stableHash(opponent.id + ':defense')) % 4
+  // These three introductions were repeating ten to thirteen consecutive
+  // words across missions before reaching their final objective noun. Put
+  // the incident's defensive place inside the action, where it changes the
+  // route the crew takes rather than merely replacing the last word.
+  const placeInApproach = (heroVoice.style === 'assault' && heroIntro === 2) ||
+    (heroVoice.style === 'flanking' && heroIntro === 1) ||
+    (heroVoice.style === 'rescue' && heroIntro === 1)
+  const approach = heroVoice.style === 'flanking' && heroIntro === 1
+    ? flankingApproach[hero.id] : missionIntro(heroVoice.style, 'approach', heroIntro)
   let heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
-    missionIntro(heroVoice.style, 'approach', heroIntro) + ' ' + ground + '.'
+    (placeInApproach ? 'near ' + position + ' ' : '') +
+    approach + ' ' + ground + '.'
   if (heroVoice.style === 'covert' && heroIntro === 3) {
     heroMove = 'Near ' + ground + ', {{heroPlayer}}’s ' + heroVoice.crew + ' sent a quiet lead.'
   } else if (heroVoice.style === 'contract' && heroIntro === 2) {
@@ -372,6 +404,13 @@ export function composeGameStory(
     otherMove = 'Across from ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' posted hired guns.'
   } else if (otherVoice.style === 'technical' && otherIntro === 2) {
     otherMove = 'At ' + position + ', {{otherPlayer}}’s ' + otherVoice.crew + ' assigned a watcher.'
+  }
+  // Long mission openings occasionally leave no room for the extra site
+  // detail. Restore the shorter, army-neutral entrance in those cases.
+  const opening = () => arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant)
+  if (previewWords(opening()) > 75) {
+    heroMove = '{{heroPlayer}}’s ' + heroVoice.crew + ' ' +
+      missionIntro(heroVoice.style, 'approach', heroIntro) + ' ' + ground + '.'
   }
 
   const winnerBeat = editorial.winner.replaceAll('{winner}', '{{heroPlayer}}’s crew')
@@ -392,7 +431,7 @@ export function composeGameStory(
     role,
     objectiveSkill: scenario.objectiveSkill,
     paragraphs: [
-      arrangeOpening(seed.opening, heroMove, otherMove, stakes, variant),
+      opening(),
       incidentMiddle,
       incidentClose,
     ],

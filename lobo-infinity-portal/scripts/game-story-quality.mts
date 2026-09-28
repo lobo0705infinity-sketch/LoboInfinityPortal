@@ -13,6 +13,15 @@ const roleActionTerms: Record<HeroRole, RegExp> = {
   objective: /\b(?:access|activat|analy|attempt|began|brush|calibrat|carr|caught|check|clear|compar|connect|control|copy|crawl|cross|cut|decode|direct|discover|duck|enter|escort|examin|find|fire|fired|fit|follow|forced|found|grab|grip|guid|hack|identif|inspect|isolat|key|led|listen|locat|map|measur|move|open|place|press|pull|push|read|reach|repair|retriev|return|scanner|secur|sensor|sent|slid|slip|specialist|start|step|stretch|tap|took|touch|trace|traced|tried|try|tug|work)\w*\b/i,
 }
 
+// New stories must put a role action in the sentence that names the selected
+// roster hero. Words such as "fire" elsewhere in the paragraph cannot turn
+// "{{hero}} waited" into a gunfighting action.
+const heroActionTerms: Record<HeroRole, RegExp> = {
+  gunfighting: /^\s*(?:aim\w*|attack\w*|cover(?:ed|ing|s)\b|drew\b[^.!?]{0,55}\bfire\b|fir(?:ed|es|ing)\b|laid\s+(?:covering\s+)?fire\b|pin(?:ned|ning|s)\b|return(?:ed|ing)?\s+fire\b|screened\b[^.!?]{0,55}\bfire\b|shoot\w*|shot\b|suppress\w*|target\w*|trad(?:ed|ing)\s+(?:shots|fire)\b|challeng\w*\b[^.!?]{0,55}\bfire\b|(?:held|kept)\b[^.!?]{0,65}\b(?:fire|shots|shooting|gunner|guard|firing lane)\b)/i,
+  closeCombat: /^\s*(?:caught|closed|drove|dueled|fought|forced|grappled|intercepted|parried|pushed|shoved|struck|wrestled)\b/i,
+  objective: /^\s*(?:access\w*|activat\w*|analy\w*|attempt\w*|block\w*|brush\w*|calibrat\w*|carr\w*|caught|check\w*|circled|clear\w*|compar\w*|connect\w*|control\w*|copy\w*|crawl\w*|cross\w*|cut\w*|decod\w*|direct\w*|discover\w*|duck\w*|enter\w*|escort\w*|examin\w*|fir\w*|fit\w*|forc\w*|found|grab\w*|grip\w*|guid\w*|hack\w*|identif\w*|inspect\w*|isolat\w*|key\w*|led|left|locat\w*|map\w*|measur\w*|mov\w*|open\w*|plac\w*|plugg\w*|press\w*|pull\w*|push\w*|read|reach\w*|repair\w*|retriev\w*|return\w*|select\w*|sent|slid|slip\w*|start\w*|step\w*|stretch\w*|tap\w*|took|touch\w*|trac\w*|tried|try|tug\w*|work\w*)\b/i,
+}
+
 const missionPlotTerms: Record<string, RegExp> = {
   'Area of Interest': /\b(?:approach|arriv|area|boundary|came|claim|converg|control|disput|enter|follow|guard|had|held|hold|insist|move|needed|occup|order|perimeter|plan|prepar|protect|reach|refus|secure|site|sought|territory|tried|wanted|zone)\w*\b/i,
   'Akial Interference': /\b(?:akial|interference|signal|static|echo|pulse|broadcast|carrier|frequency|transmi|relay)\w*\b/i,
@@ -42,7 +51,7 @@ const words = (value: string) => value.trim().split(/\s+/).filter(Boolean).lengt
 const normalized = (value: string) => value.toLocaleLowerCase().replace(/\{\{\w+\}\}/g, 'token').replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
 const sentenceCount = (value: string) => value.trim().split(/(?<=[.!?])(?:["'”’)]*)\s+/u).filter(Boolean).length
 
-export function assertGameStoryQuality(story: GameStoryTemplate, key: string): void {
+function checkGameStoryQuality(story: GameStoryTemplate, key: string, legacyHeroCheck: boolean): void {
   assert.ok(CANONICAL_MISSIONS.includes(story.mission as never), `${key}: noncanonical mission`)
   assert.ok(Array.isArray(story.factions) && story.factions.length === 2 && story.factions.every((faction) => activeArmies.has(faction)), `${key}: inactive or alias faction`)
   assert.ok(story.factions.includes(story.heroFaction), `${key}: hero faction must be in the matchup`)
@@ -64,8 +73,24 @@ export function assertGameStoryQuality(story: GameStoryTemplate, key: string): v
   assert.ok(tokens.includes('hero'), `${key}: missing roster-selected hero`)
   assert.ok(tokens.includes('heroPlayer') && tokens.includes('otherPlayer'), `${key}: scene must identify both players`)
   assert.ok(tokens.every((token) => allowedTokens.has(token)), `${key}: scene contains an unsupported placeholder`)
-  const heroParagraph = story.paragraphs.find((paragraph) => paragraph.includes('{{hero}}')) ?? ''
-  assert.match(heroParagraph, roleActionTerms[story.role], `${key}: {{hero}} action does not fit ${story.role}`)
+  if (legacyHeroCheck) {
+    // Preserve the old catalog's baseline until its separate mission and
+    // hero-action editorial review; never use this path to accept new work.
+    const heroParagraph = story.paragraphs.find((paragraph) => paragraph.includes('{{hero}}')) ?? ''
+    assert.match(heroParagraph, roleActionTerms[story.role], `${key}: legacy role evidence missing`)
+  } else {
+    const actions = story.paragraphs.flatMap((paragraph) => paragraph.split(/(?<=[.!?])\s+/u))
+      .filter((sentence) => sentence.includes('{{hero}}'))
+      .map((sentence) => sentence.slice(sentence.indexOf('{{hero}}') + '{{hero}}'.length))
+    assert.ok(actions.some((action) => heroActionTerms[story.role].test(action)),
+      `${key}: {{hero}} sentence lacks a ${story.role} action`)
+    if (story.role === 'objective') {
+      assert.ok(actions.some((action) => heroActionTerms.objective.test(action) &&
+        SOURCED_STORY_SCENARIOS[story.mission as keyof typeof SOURCED_STORY_SCENARIOS]
+          ?.anchor.test(action.split(/\b(?:while|so that)\b/i)[0])),
+      `${key}: {{hero}} must act on the mission objective`)
+    }
+  }
   assert.match(scene, missionPlotTerms[story.mission], `${key}: scene lacks mission-specific plot evidence`)
 
   assert.ok(story.endings && typeof story.endings === 'object', `${key}: missing endings`)
@@ -75,6 +100,16 @@ export function assertGameStoryQuality(story: GameStoryTemplate, key: string): v
   assert.equal(new Set(endings.map(normalized)).size, 3, `${key}: win, loss, and draw endings must be distinct`)
   const endingTokens = endings.flatMap((ending) => [...ending.matchAll(/\{\{(\w+)\}\}/g)].map((match) => match[1]))
   assert.ok(endingTokens.every((token) => allowedTokens.has(token)), `${key}: ending contains an unsupported placeholder`)
+}
+
+export function assertGameStoryQuality(story: GameStoryTemplate, key: string): void {
+  checkGameStoryQuality(story, key, false)
+}
+
+// The 1,300 historical entries are still shipped but are not certified by the
+// stricter hero-action or mission-objective gates for newly written stories.
+export function assertLegacyStoryQuality(story: GameStoryTemplate, key: string): void {
+  checkGameStoryQuality(story, key, true)
 }
 
 // New writing must carry the actual scenario objective through the plot and

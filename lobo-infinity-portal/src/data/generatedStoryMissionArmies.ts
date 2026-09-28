@@ -68,12 +68,12 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   'imperial-service': method(
     'An investigator read the patrol around {position} and found an interval toward {ground}.',
     'The defenders checked every approach to {position} before committing their reserve.',
-    'The guards used the change of watch to close the gap toward {ground}.',
+    'From {position}, the replacement guards closed on {ground} before the watch settled.',
     'its guard detail closed the last uncovered interval',
     'kept the opposing movements under watch'),
   'invincible-army': method(
     'A heavy column absorbed return fire on the narrow route toward {ground}.',
-    'The defenders concentrated fire before the lead fighter could pass {position}.',
+    'Fire from the armored line swept {position}, holding the lead fighter short.',
     'The column sheltered its forward element on the exposed approach to {ground}.',
     'its heavy line remained anchored at the front',
     'refused to yield the exposed approach'),
@@ -151,7 +151,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
     'tracked each shift in the opposing line'),
   'bakunin-jurisdictional-command': method(
     'One fighter rushed at {position} while another crossed toward {ground} unseen.',
-    'The defenders held fire on the decoy at {position} and waited for quieter movement.',
+    'The defenders sent a decoy past {position} while their guard watched the quieter approach.',
     'The diversion still threatened to draw a shot as fighters neared {ground}.',
     'its noisy feint concealed the decisive crossing',
     'kept a decoy between the front and guard'),
@@ -253,7 +253,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
     'held a blind angle beside the fighting'),
   tohaa: method(
     'Three fighters rotated around the lead element on the approach to {ground}.',
-    'The defenders tracked the shifting screen near {position} and tried to split it.',
+    'The defenders rotated a three-fighter screen near {position} and kept its flanks in view.',
     'The three-point screen closed toward {ground} when the opposing guard shifted.',
     'its rotating screen kept the advance together',
     'kept rotating its three-point escort'),
@@ -271,12 +271,12 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
     'kept a fixed angle on the approach'),
   'ikari-company': method(
     'A reckless fighter rushed past {position}, pulling its guard off the route to {ground}.',
-    'The defenders let the rush pass {position} and waited for the fighters behind it.',
+    'The defenders sent a reckless fighter past {position} to draw fire from their specialist.',
     'The forward fighter kept the guard busy while the others hurried toward {ground}.',
     'its sudden breach survived the counterattack',
     'pressed ahead despite the exposed crossing'),
   starco: method(
-    'A retrieval team marked a way back before committing its front toward {ground}.',
+    'Near {position}, a retrieval team secured its return route before pressing toward {ground}.',
     'The defenders watched the exit beside {position} for a withdrawal.',
     'The marked route from {ground} stayed open as the forward group committed.',
     'its retrieval route stayed protected to the end',
@@ -284,7 +284,7 @@ export const MISSION_ARMY_METHODS: Record<string, MissionArmyMethod> = {
   'white-company': method(
     'A guard team covered two approaches to {ground} and chose the quieter one.',
     'The defenders denied the easy lane toward {position} without leaving their post.',
-    'A second covering fighter kept watch over the crossing toward {ground}.',
+    'At {position}, a second fighter watched the exposed crossing to {ground}.',
     'its steady guard line survived the last exchange',
     'kept both approaches under watch'),
 }
@@ -400,7 +400,7 @@ export const MISSION_ARMY_PIVOT_MANEUVERS: Record<string, readonly [string, stri
     'The escort recovered a pinned fighter before sending its relief group toward {ground}.',
     'A field team held shelter near {position} while its protected lead crossed toward {ground}.' ],
   'hassassin-bahram': [
-    'A concealed fighter waited for the guard at {position} to chase the visible decoy.',
+    'A concealed fighter sent a visible decoy past the guard at {position} before testing the route toward {ground}.',
     'The false approach ended at {position}; another shadow reached for the route toward {ground}.' ],
   'qapu-khalqi': [
     'A contract gunner fixed the pursuit at {position} while an escort tested the exit from {ground}.',

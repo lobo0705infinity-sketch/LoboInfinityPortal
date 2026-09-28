@@ -1,20 +1,23 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import storyManifest from '../src/data/storyManifest.json' with { type: 'json' }
+import legacyHashes from './game-story-legacy-baseline.json' with { type: 'json' }
 import { GAME_HIGHLIGHT_STORIES, renderSubmittedHighlightStory } from '../src/data/gameHighlightStories.ts'
 import { getAuthoredBattleStory, PENDING_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyModelReference, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
-import { assertGameStoryQuality } from './game-story-quality.mts'
+import { assertGameStoryMissionObjective, assertGameStoryQuality, assertLegacyStoryQuality } from './game-story-quality.mts'
 
 const activeArmies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 const expected = CANONICAL_MISSIONS.length * activeArmies.length * (activeArmies.length + 1) / 2
 const keys = new Set<string>()
 const distinctScenes = new Set<string>()
 const stories = [...GAME_STORY_CATALOG]
+assert.equal(Object.keys(legacyHashes).length, 1300, 'legacy baseline must remain the 1,300 reviewed versions')
 for (const mission of storyManifest.missions as string[]) {
   assert.ok(CANONICAL_MISSIONS.some((name) => name === mission), `Unknown story shard mission: ${mission}`)
   const filename = mission.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -27,7 +30,15 @@ for (const story of stories) {
   assert.ok(key, `invalid story identity: ${story.mission}/${story.factions.join('/')}`)
   assert.ok(!keys.has(key), `duplicate story identity: ${key}`)
   keys.add(key)
-  assertGameStoryQuality(story, key)
+  // Grandfather only the exact 1,300 existing story versions. Newly added or
+  // edited stories must pass both strict gates even before catalog completion.
+  // A complete release must recheck every row, including unchanged legacy.
+  const digest = createHash('sha256').update(JSON.stringify(story)).digest('hex')
+  const unchangedLegacy = legacyHashes[key as keyof typeof legacyHashes] === digest
+  if (process.argv.includes('--require-complete') || !unchangedLegacy) {
+    assertGameStoryQuality(story, key)
+    assertGameStoryMissionObjective(story, key)
+  } else assertLegacyStoryQuality(story, key)
   const scene = story.paragraphs.join(' ').replaceAll(/\{\{\w+\}\}/g, 'HERO').replaceAll(/\s+/g, ' ')
   assert.ok(!distinctScenes.has(scene), `${key}: repeated story scene`)
   distinctScenes.add(scene)

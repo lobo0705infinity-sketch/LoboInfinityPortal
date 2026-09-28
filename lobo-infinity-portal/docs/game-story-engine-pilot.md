@@ -17,6 +17,14 @@ This is triage, **not** proof that every legacy story is incorrect. Existing
 authored stories continue to take priority in routing, so this pilot cannot
 be merged until their treatment is decided.
 
+The older rows are pinned by their story-content hashes in
+`scripts/game-story-legacy-baseline.json`. The ordinary catalog check grants
+its older structural gate only to those exact versions. Any new or changed
+row must also pass the hero's own action and mission-objective gates. The
+complete release check applies both gates to *all* entries, including the
+legacy rows; it currently fails as expected. This prevents the baseline from
+silently expanding as the catalog is written.
+
 ## Source and scope
 
 [`generatedStoryScenarios.ts`](../src/data/generatedStoryScenarios.ts) records

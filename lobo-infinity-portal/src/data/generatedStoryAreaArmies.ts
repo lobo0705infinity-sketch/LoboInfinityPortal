@@ -79,7 +79,7 @@ export const AREA_ARMY_METHODS: Record<string, AreaArmyMethod> = {
     'used the ground to screen its approach', 'held a concealed route toward the controls'),
   'caledonian-highlander-army': method(
     'A charging fighter drew the guard away while the specialist followed through the gap.',
-    'The defenders braced for the rush and tried to keep a shooter near the panel.',
+    'The defenders posted a shooter near the panel and readied a countercharge.',
     'The sudden breach held the guard back for another moment at the controls.',
     'forced a gap through the relay guard', 'pressed hard against the guarded entrance'),
   'force-de-reponse-rapide-merovingienne': method(
@@ -129,7 +129,7 @@ export const AREA_ARMY_METHODS: Record<string, AreaArmyMethod> = {
     'read the disputed signal and screened the operator', 'tracked each change in the relay signal'),
   'bakunin-jurisdictional-command': method(
     'One fighter made a noisy approach while the specialist slipped along its blind side.',
-    'The defenders held fire on the decoy and waited for the quieter movement.',
+    'The defenders sent a decoy across the exposed lane while their guard watched the quieter approach.',
     'The diversion stayed close enough to draw a shot when the operator reached the switch.',
     'turned a diversion into an opening at the panel', 'kept a decoy between the guard and operator'),
   'corregidor-jurisdictional-command': method(
@@ -214,7 +214,7 @@ export const AREA_ARMY_METHODS: Record<string, AreaArmyMethod> = {
     'kept the guard occupied at close range', 'held a blind angle beside the relay'),
   tohaa: method(
     'Three fighters exchanged positions around the specialist, keeping the switch covered from either side.',
-    'The defenders tracked the shifting screen and tried to split its members apart.',
+    'The defenders rotated a three-fighter screen around the panel and watched both flanks.',
     'The three-point screen closed around the operator as the relay changed color.',
     'kept its three-point screen at the controls', 'kept rotating its three-point escort'),
   'dashat-company': method(
@@ -229,7 +229,7 @@ export const AREA_ARMY_METHODS: Record<string, AreaArmyMethod> = {
     'locked a firing angle across the relay', 'held its contract line under pressure'),
   'ikari-company': method(
     'A reckless fighter rushed one side to pull the guard off the operator’s route.',
-    'The defenders let the rush pass and held their fire for the specialist.',
+    'The defenders sent a reckless fighter into the open to draw fire away from their specialist.',
     'The forward fighter kept the guard busy as the operator made a hurried attempt.',
     'made its sudden breach hold at the switch', 'kept pressing despite the exposed crossing'),
   starco: method(

@@ -72,6 +72,15 @@ for (const field of ['maneuver', 'defense', 'followThrough', 'winClause', 'drawB
   assert.equal(new Set(Object.values(MISSION_ARMY_METHODS).map((method) => method[field])).size,
     armies.length, `other missions' ${field} must distinguish all active armies`)
 }
+for (const army of armies) {
+  // A defender's response is reused against every attacker. A reference to
+  // an attacker-specific decoy, rush or screen would invent that attack for
+  // dozens of matchups. Responses must supply their own tactical setup.
+  for (const reply of [AREA_ARMY_METHODS[army.id].response, MISSION_ARMY_METHODS[army.id].defense]) {
+    assert.doesNotMatch(reply, /\b(?:the decoy|the rush|the shifting screen)\b/i,
+      army.name + ': defensive response presupposes an attacker maneuver')
+  }
+}
 assert.deepEqual(Object.keys(SOURCED_STORY_SCENARIOS).sort(), [...CANONICAL_MISSIONS].sort())
 
 // One faction appearing across the calendar must not repeat its entire
@@ -391,6 +400,30 @@ function sceneForIncident(mission: string, first: string, other: string,
       : story?.paragraphs[0].startsWith(incident.opening))) return story!
   }
   throw new Error('Could not select ' + mission + ' incident ' + index)
+}
+// The hero must perform the role action. A gunfight elsewhere in the same
+// paragraph (or a subordinate specialist action) cannot rescue an inert hero.
+function replaceHeroSentence(story: NonNullable<ReturnType<typeof composeGameStory>>, replacement: string) {
+  const index = story.paragraphs.findIndex((paragraph) => paragraph.includes('{{hero}}'))
+  const original = story.paragraphs[index].match(/\{\{hero\}\}[^.!?]*[.!?]/)?.[0]
+  assert.ok(original)
+  const originalLength = original.trim().split(/\s+/).length
+  const words = replacement.split(/\s+/)
+  while (words.length < originalLength) words.push('nearby')
+  const inert = words.slice(0, originalLength).join(' ') + '.'
+  return { ...story, paragraphs: story.paragraphs.map((paragraph, position) =>
+    position === index ? paragraph.replace(original, inert) : paragraph) }
+}
+for (const [role, replacement] of [
+  ['gunfighting', '{{hero}} waited while another fighter fired at the guard'],
+  ['closeCombat', '{{hero}} waited while another fighter grappled with the guard'],
+  ['objective', '{{hero}} waited while another specialist activated the beacon'],
+] as const) {
+  const original = sceneForIncident('Hardlock', 'PanOceania', 'Druze Bayram Security', role, 1)
+  const inert = replaceHeroSentence(original, replacement)
+  assert.throws(() => assertGameStoryQuality(inert, 'inert ' + role),
+    /\{\{hero\}\} sentence lacks a|\{\{hero\}\} must act on the mission objective/,
+    role + ': another actor cannot supply the selected hero’s role action')
 }
 const areaEvidence = SOURCED_STORY_SCENARIOS['Area of Interest']!
 const areaUnverified = sceneForIncident('Area of Interest', 'PanOceania',
@@ -896,7 +929,8 @@ assert.equal(await loadAuthoredBattleStory(mirrorGame, bothIneligibleMirror),
 
 const longDisplayGame = { ...game, mission: 'Area of Interest',
   winnerFaction: 'Yu Jing', loserFaction: 'Haqqislam',
-  winnerDisplayName: 'Captain Jake Strangeway', loserDisplayName: 'General Oliver Delta',
+  winnerDisplayName: 'Captain Jake Strangeway of the Fourth Expeditionary Patrol',
+  loserDisplayName: 'General Oliver Delta of the Eastern Auxiliary Corps',
 } as RecentGame
 const longDisplayLists = [
   { ...lists[0], sectorial: 'Yu Jing', mission: 'Area of Interest' },
