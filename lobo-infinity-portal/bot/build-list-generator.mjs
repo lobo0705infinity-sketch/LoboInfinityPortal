@@ -9,6 +9,17 @@ const token = value => normalize(value).replace(/\s/g, '')
 const roleNames = /\b(hacker|forward observer|engineer|doctor|paramedic|specialist operative|chain of command)\b/i
 const gradeRank = grade => ({ S: 5, A: 4, B: 3, C: 2, D: 1, F: 0 })[String(grade || '').toUpperCase()] ?? 0
 
+// These three missions award no OP for specialist actions. Preserve combat
+// profiles and useful support roles even when they also have FO or SO.
+export function missionSpecialistPenalty(item, plan, linked = false) {
+  if (!plan?.deprioritizeFOandSO || !(item.forwardObserver || item.specialistOperative)
+    || item.paramedic || item.doctor || item.engineer || item.hacker
+    || gradeRank(item.gunfighterGrade) >= gradeRank('A')
+    || gradeRank(item.ccGrade) >= gradeRank('A')
+    || linked && gradeRank(item.linkedGunfighterGrade) >= gradeRank('A')) return 0
+  return 6
+}
+
 export class ListBuilderError extends Error {}
 
 export function resolveRequiredProfile(profiles, name) {
@@ -487,6 +498,10 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       + (missionScore([...selected, item], constraints.plan) - currentMission) * .75
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
+      // A linked A/S gunfighter remains a candidate; the final roster verifies
+      // that the Fireteam really exists before granting that exemption.
+      - missionSpecialistPenalty(item, constraints.plan, item.fireteamEligible
+        && gradeRank(item.linkedGunfighterGrade) >= gradeRank('A'))
       - (constraints.plan.tacticalLink && item.chainOfCommand ? 8 : 0)
       - (constraints.plan.tacticalLink && matchingLieutenantDecoy(selected.find(profile => profile.lieutenant), item) ? 7 : 0)
       - (!constraints.plan.tacticalLink && selected.some(profile => profile.lieutenant && profile.troopType === 1)
@@ -958,6 +973,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
   const usedTeamMembers = new Set()
   const resolvedTeams = fireteams.map(team => ({ ...team,
     members: membersInTeam(profiles, team, usedTeamMembers) }))
+  const linkedMembers = new Set(resolvedTeams.filter(team => team.level >= 2).flatMap(team => team.members))
   const teamGroups = [1, 2].map(group => resolvedTeams.filter(team => team.combatGroup === group))
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, plan.target) * 6) + regular * 2
@@ -973,6 +989,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
     + (points >= 300 ? impactAnchorValue(profiles) : 0) + missionScore(profiles, plan)
     + assessLieutenantPackage(profiles, fireteams, plan).score
+    - profiles.reduce((sum, item) => sum + missionSpecialistPenalty(item, plan, linkedMembers.has(item)), 0)
     - rosterRedundancy(profiles) * 1.5
 }
 

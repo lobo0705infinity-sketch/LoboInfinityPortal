@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, matchingLieutenantDecoy, ncoCombatValue, optimizeCombatGroups,
+import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
@@ -170,6 +170,26 @@ assert.equal(assessLieutenantPackage(cutthroatList.profiles, cutthroatList.firet
 assert.equal(missionPlan('Annihilation').lieutenantKills, true)
 assert.equal(missionPlan('Cutthroat').tacticalLink, true)
 assert.equal(missionPlan('Firefight').tacticalLink, true)
+const lowCombatObserver = { forwardObserver: true, specialistOperative: false,
+  gunfighterGrade: 'B', linkedGunfighterGrade: 'A', ccGrade: 'B' }
+for (const name of ['Annihilation', 'Battleground', 'Cutthroat']) {
+  const plan = missionPlan(name)
+  assert.equal(missionSpecialistPenalty(lowCombatObserver, plan), 6,
+    `${name} should prefer a better combat or support use of this roster slot`)
+  assert.equal(missionSpecialistPenalty({ ...lowCombatObserver, forwardObserver: false, specialistOperative: true }, plan), 6)
+  for (const role of ['paramedic', 'doctor', 'engineer', 'hacker']) {
+    assert.equal(missionSpecialistPenalty({ ...lowCombatObserver, [role]: true }, plan), 0,
+      `${name} should not penalize a ${role} who is also a Forward Observer`)
+  }
+  assert.equal(missionSpecialistPenalty({ ...lowCombatObserver, gunfighterGrade: 'A' }, plan), 0)
+  assert.equal(missionSpecialistPenalty({ ...lowCombatObserver, ccGrade: 'S' }, plan), 0)
+  assert.equal(missionSpecialistPenalty(lowCombatObserver, plan, true), 0,
+    'an actually linked A-tier gunfighter keeps its combat exception')
+}
+for (const name of ['Crossing Lines', 'Outbreak', 'Superiority', 'Uplink Center', 'Firefight']) {
+  assert.equal(missionSpecialistPenalty(lowCombatObserver, missionPlan(name)), 0,
+    `${name} still uses its own specialist priorities`)
+}
 assert.ok(akialList.legality.status === 'legal' && akialList.quality.specialistTarget === 5
   && akialList.specialistCount >= 5 && akialList.quality.gunfighters >= 2
   && akialList.quality.aro >= 2 && akialList.quality.cc >= 2,

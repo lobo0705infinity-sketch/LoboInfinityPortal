@@ -5,16 +5,16 @@
 // rules in either catalog, so it deliberately uses the general-purpose plan.
 const plans = {
   'akial interference': { target: 5, focus: 'diverse specialists for repeated Classifieds', weights: { classified: 8, objectives: 2 } },
-  annihilation: { target: 0, focus: 'killing power and surviving Army Points', weights: { combat: 8, survive: 6 }, lieutenantKills: true },
+  annihilation: { target: 0, focus: 'killing power and surviving Army Points', weights: { combat: 8, survive: 6 }, lieutenantKills: true, deprioritizeFOandSO: true },
   'area of interest': { target: 2, focus: 'area presence and Antenna activation', weights: { zones: 6, objectives: 5, classified: 2 } },
-  battleground: { target: 0, focus: 'central and far sector control with capable attackers', weights: { zones: 8, combat: 5 } },
+  battleground: { target: 0, focus: 'central and far sector control with capable attackers', weights: { zones: 8, combat: 5 }, deprioritizeFOandSO: true },
   'b pong': { target: 3, focus: 'move the Beacon and control Consoles', weights: { courier: 6, objectives: 6, classified: 2 } },
   'corporate appropriation': { target: 2, focus: 'recover and protect Prototypes; contest Panoplies', weights: { courier: 6, objectives: 3, demolition: 3, classified: 2 } },
   'critical intervention': { target: 2, focus: 'reach the Data Console and hold the Server Room', weights: { courier: 5, objectives: 5, zones: 4, combat: 2 } },
   'crossing lines': { target: 3, focus: 'dominate Dead Zones and activate Antennas', weights: { zones: 3, objectives: 3, baggage: 2 } },
   // Reinforced Tactical Link makes the Lieutenant public and removes Loss of Lieutenant.
   // Cutthroat also scores kills made by the Lieutenant and kills of enemy Lieutenants.
-  cutthroat: { target: 0, focus: 'kill enemy leaders and preserve attacking power', weights: { combat: 8, survive: 5, midfield: 2 }, lieutenantKills: true, tacticalLink: true },
+  cutthroat: { target: 0, focus: 'kill enemy leaders and preserve attacking power', weights: { combat: 8, survive: 5, midfield: 2 }, lieutenantKills: true, tacticalLink: true, deprioritizeFOandSO: true },
   'data harvest': { target: 3, focus: 'extract Data-Harvesters and advance into the enemy half', weights: { objectives: 5, courier: 5, midfield: 4, baggage: 2, classified: 2 } },
   'double bind': [
     { target: 3, focus: 'Encryption: activate and hold Antennas', weights: { objectives: 7, zones: 3, classified: 2 } },
