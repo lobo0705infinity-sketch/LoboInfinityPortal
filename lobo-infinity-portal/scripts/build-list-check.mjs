@@ -242,8 +242,8 @@ assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Jazz
 const warcorList = buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Warcor'], count: 1 })[0]
 assert.equal(warcorList.legality.status, 'legal')
 assert.equal(warcorList.profiles.filter(item => /warcor/i.test(item.slug)).length, 1)
-assert.match(formatBuiltList(warcorList, 1), /WARCOR[^\n]*Irregular/,
-  'show the Warcor as Irregular even though it fills a trooper slot')
+assert.doesNotMatch(formatBuiltList(warcorList, 1), /WARCOR[^\n]*Irregular/,
+  'compact Discord summaries leave individual models to the linked Army list')
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
 assert.equal(lowPointLists.length, 3)
@@ -436,20 +436,23 @@ const messages = await buildListResponses({ faction: 'Corregidor', mission: 'Har
   getCatalog: async () => catalog, getAroCatalog: async () => aroCatalog,
   getCloseCombatCatalog: async () => closeCombatCatalog, getMobilityCatalog: async () => mobilityCatalog,
   getTeamEvidence: async () => null })
-assert.equal(messages.length, 1, '/build-list sends one ranked army')
-for (const message of messages) {
+assert.equal(messages.length, 3, '/build-list sends three ranked armies')
+assert.equal(new Set(messages.map(message => message.content.match(/\[Open in Infinity Army\]\(([^)]+)\)/)?.[1])).size, 3,
+  'all three responses link to distinct full rosters')
+for (const [index, message] of messages.entries()) {
   assert.ok(message.content.length <= 2000)
+  assert.match(message.content, new RegExp(`\\*\\*Option ${index + 1} · .*Corregidor · Hardlock\\*\\*`))
   assert.doesNotMatch(message.content, /· option \d+/)
+  assert.doesNotMatch(message.content, /\*\*Group [12] · \d+ Regular/)
+  assert.doesNotMatch(message.content, / — \d+ pts/)
   assert.match(message.content, /Proposed fireteams[\s\S]*Level [2345]/)
   assert.match(message.content, /A\/S coverage.*Guns \d+\/2.*CC \d+\/2.*ARO \d+\/2/)
   assert.match(message.content, /Support links/)
+  assert.match(message.content, /Mission plan/)
+  assert.match(message.content, /Lieutenant plan/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
-  assert.match(message.content, /Group 1 · \d+ Regular/)
   assert.match(message.content, /Open in Infinity Army/)
-  assert.equal(message.embeds.length, 1)
-  assert.equal(message.embeds[0].fields.length, 20, 'all current Operations Deck cards appear in the reply')
-  assert.match(message.embeds[0].fields[8].value, /JAZZ/i, 'the Jazz component of the required Jazz & Billie team can do HVT: Espionage')
-  assert.ok(message.embeds[0].fields.every(field => !/Secure HVT/i.test(field.name)))
+  assert.equal(message.embeds, undefined, 'the compact response contains only the requested summary and Army link')
 }
 const calls = []
 let selectedModels
@@ -459,10 +462,11 @@ const handled = await handler({
   options: { getString: name => ({ faction: 'Corregidor', mission: 'Hardlock', 'must-include': 'Jazz, Iguana',
     'model-2': 'ALGUACIL', 'model-3': 'ALGUACIL', 'model-4': 'SOMBRA' })[name], getInteger: () => 300 },
   deferReply: async () => calls.push('defer'), editReply: async result => calls.push(result),
-  followUp: async () => { throw Error('a second list must not be sent') },
+  followUp: async result => calls.push(result),
 })
 assert.equal(handled, true)
-assert.equal(calls.length, 2, 'defer and the one generated list')
+assert.equal(calls.length, 4, 'defer, edit the initial reply, then follow up with the second and third lists')
+assert.deepEqual(calls.slice(1), messages)
 assert.deepEqual(selectedModels, ['Jazz', 'Iguana', 'ALGUACIL', 'ALGUACIL', 'SOMBRA'],
   'independent model slots combine with the original comma input and preserve requested copies')
 

@@ -7,11 +7,9 @@ import { loadGunfighterBenchmarkCatalog } from './gunfighter-catalog-store.mjs'
 import { loadAroBenchmarkCatalog } from './aro-catalog-store.mjs'
 import { loadCloseCombatCatalog } from './close-combat-catalog-store.mjs'
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
-import { availableProfiles, buildArmyListOptions, ListBuilderError, projectedRegularOrders, rosterConnections,
+import { availableProfiles, buildArmyListOptions, ListBuilderError, rosterConnections,
   resolveRequiredProfile } from './build-list-generator.mjs'
 import { loadTeamTypeEvidence } from './build-list-team-evidence.mjs'
-import { assessGeneratedListClassifieds } from './generated-list-classifieds.mjs'
-import { formatInfListClassifiedEmbeds } from './inf-list-classifieds.mjs'
 
 export const BUILD_LIST_COMMAND = 'build-list'
 export const BUILD_LIST_FACTION_OPTION = 'faction'
@@ -166,67 +164,38 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
     rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)), gunfighterCatalog,
     aroCatalog, closeCombatCatalog, mobilityCatalog,
     mission, mustInclude: (Array.isArray(mustInclude) ? mustInclude : [mustInclude])
-      .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence, count: 1 })
-  const list = lists[0]
-  list.teamTypeEvidence = teamTypeEvidence?.decisiveLists ? teamTypeEvidence : null
-  const classifiedCoverage = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
-  return [{ allowedMentions: { parse: [] }, content: formatBuiltList(list),
-    embeds: formatInfListClassifiedEmbeds(classifiedCoverage) }]
+      .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence, count: 3 })
+  return lists.map((list, index) => ({ allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1) }))
 }
 
-export function formatBuiltList(list) {
-  const groupText = [1, 2].map(group => {
-    const members = list.profiles.filter(item => item.combatGroup === group)
-    if (!members.length) return ''
-    const regular = projectedRegularOrders(list.profiles, group)
-    const tactical = members.reduce((sum, item) => sum + (item.tacticalOrders || 0), 0)
-    const lieutenantOrders = list.profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
-    const nco = lieutenantOrders && members.some(item => item.nco) ? ` · NCO (${lieutenantOrders} Lt, shared)` : ''
-    const delayed = members.filter(item => item.regular && item.startsOffTable).length
-    return `**Group ${group} · ${regular} Regular${tactical ? ` +${tactical} Tactical` : ''}${nco}${delayed ? ` · ${delayed} off table` : ''}**\n${members.map(item => `• ${item.label}${item.irregular ? ' · Irregular' : ''} — ${item.points} pts`).join('\n')}`
-  }).filter(Boolean).join('\n')
+export function formatBuiltList(list, index = 1) {
   const fireteams = list.fireteams.length
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')
     : '• No legal Level 2 Fireteam found in this roster.'
   const quality = list.quality
-    ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}\n`
+    ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}`
     : ''
-  const introBase = `**${list.faction} · ${list.mission}**\n`
-    + `${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC · ${list.legality.totals.troopers}/15 troopers · ${list.specialistCount} specialists\n`
-    + `**Proposed fireteams**\n${fireteams}\n${quality}`
-  const evidenceNote = list.teamTypeEvidence
-    ? ` Portal type prior: ${list.teamTypeEvidence.decisiveLists} decisive lists; compatible teams inferred, not observed.` : ''
-  const baseEnding = `${groupText}\n[Open in Infinity Army](${list.url})\n`
-    + `-# Army profiles ${list.payloadVersion}; verify fireteams during deployment.`
-  const missionNote = list.missionSummary ? `**Mission plan** ${list.missionSummary}\n` : ''
-  const shortMissionNote = list.missionPlan?.focus ? `**Mission plan** ${list.missionPlan.focus}\n` : ''
-  let intro = introBase + (introBase.length + baseEnding.length + missionNote.length <= 1990
-    ? missionNote : introBase.length + baseEnding.length + shortMissionNote.length <= 1990 ? shortMissionNote : '')
   const ltPlan = list.lieutenantPlan
   const ncoNote = ltPlan?.nco && (ltPlan.kind === 'cheap-decoy' || ltPlan.lieutenant.lieutenantOrders > 1)
     ? ` · ${ltPlan.nco.optionName} NCO` : ''
   const leadershipNote = ltPlan?.kind === 'cheap-decoy'
-    ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} + identical non-Lt decoy${ncoNote}\n`
+    ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} + identical non-Lt decoy${ncoNote}`
     : ltPlan?.kind === 'apex-coc'
-      ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter) + ${ltPlan.partner.optionName} (Chain of Command)${ncoNote}\n`
+      ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter) + ${ltPlan.partner.optionName} (Chain of Command)${ncoNote}`
       : ltPlan?.kind === 'apex-open'
-        ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter); Tactical Link reveals the Lt${ncoNote}\n`
-        : ''
-  if (leadershipNote && intro.length + leadershipNote.length + baseEnding.length <= 1990) intro += leadershipNote
-  let ending = baseEnding
-  if (intro.length + baseEnding.length + evidenceNote.length <= 1990) ending += evidenceNote
+        ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter); Tactical Link reveals the Lt${ncoNote}`
+        : `**Lieutenant plan** ${ltPlan?.lieutenant?.optionName || 'No Lieutenant plan available'}`
+  const header = `**Option ${index} · ${list.faction} · ${list.mission}** · ${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC`
+  const missionNote = `**Mission plan** ${list.missionSummary || list.missionPlan?.focus || 'Complete mission objectives'}`
+  const body = [header, `**Proposed fireteams**\n${fireteams}`, quality, missionNote, leadershipNote].filter(Boolean).join('\n')
+  const ending = `[Open in Infinity Army](${list.url})`
   const links = rosterConnections(list.profiles)
-  let support = ''
-  for (let size = links.length; size > 0; size--) {
-    const proposed = `**Support links** ${links.slice(0, size).join(' · ')}\n`
-    if (intro.length + proposed.length + ending.length <= 1990) {
-      support = proposed
-      break
-    }
+  for (let size = links.length; size >= 0; size--) {
+    const support = `**Support links** ${size ? links.slice(0, size).join(' · ') : 'None identified'}`
+    const message = `${body}\n${support}\n${ending}`
+    if (message.length <= 1990) return message
   }
-  const message = intro + support + ending
-  if (message.length > 1990) throw new ListBuilderError('The generated list is too long for Discord; try fewer required profiles.')
-  return message
+  throw new ListBuilderError('The generated list is too long for Discord; try fewer required profiles.')
 }
 
 export function createBuildListInteractionHandler({ build = buildListResponses, logger = console } = {}) {
@@ -242,6 +211,7 @@ export function createBuildListInteractionHandler({ build = buildListResponses, 
         points: interaction.options.getInteger('points') || 300,
       })
       await interaction.editReply(results[0])
+      for (const result of results.slice(1)) await interaction.followUp(result)
     } catch (error) {
       logger.error?.('Army list generation failed:', error)
       const content = error instanceof ListBuilderError ? error.message : 'I could not build a verified list right now.'
