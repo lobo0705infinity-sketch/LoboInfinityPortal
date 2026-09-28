@@ -18,7 +18,7 @@ import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
 import { assertGeneratedStoryFacts } from '../src/services/generatedStoryFacts.ts'
-import { loadBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
+import { loadBattleStory, NO_ELIGIBLE_HERO_BATTLE_STORY,
   PENDING_BATTLE_STORY, UNSUPPORTED_MISSION_VERSION_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
@@ -816,13 +816,33 @@ const remOnlyRoster = { ...evacuationRoster, decoded: { combatGroups: [{ entries
 ] }] } } as ArmyIntelligenceList
 assert.equal(renderGameStoryTemplate(evacuationTemplate, evacuationGame, [remOnlyRoster, evacuationOther]),
   null, 'a remote must never be assigned the CivEvac action')
-for (const mission of ['Akial Interference', 'Critical Intervention', 'Double Bind']) {
-  const setupGame = { ...game, mission } as RecentGame
-  const setupLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
-  assert.equal(renderGeneratedGameStory(setupGame, setupLists), null,
-    mission + ': do not invent an unreported mission setup or card draw')
-  assert.equal(await loadBattleStory(setupGame, setupLists), MISSING_MISSION_SETUP_BATTLE_STORY,
-    mission + ': do not falsely tell the player their already linked lists are missing')
+for (const mission of CANONICAL_MISSIONS) {
+  const missionGame = { ...game, mission } as RecentGame
+  const missionLists = lists.map((item) => ({ ...item, mission })) as ArmyIntelligenceList[]
+  const story = renderGeneratedGameStory(missionGame, missionLists)
+  assert.ok(story, mission + ': a dated game with linked eligible rosters needs a live story')
+  assert.equal(await loadBattleStory(missionGame, missionLists), story,
+    mission + ': route the live game to the generator')
+  if (mission === 'Akial Interference') {
+    assert.match(story, /Common Classified/, 'describe public cards without inventing their identities')
+  }
+  if (mission === 'Critical Intervention') {
+    assert.match(story, /server room/i, 'both sides can contest the server room')
+    for (const faction of ['PanOceania', 'Druze Bayram Security']) {
+      for (let incident = 0; incident < 4; incident++) {
+        const other = faction === 'PanOceania' ? 'Druze Bayram Security' : 'PanOceania'
+        const scene = sceneForIncident(mission, faction, other, 'objective', incident)
+        const action = scene.paragraphs[2].match(/\{\{hero\}\}[^.]+\./)?.[0] ?? ''
+        assert.match(action, /server[- ]room/i, 'either possible hero must attempt the shared room objective')
+        assert.doesNotMatch(action, /unlock|extract|take the data pack/i,
+          'an unknown defender must not be assigned the attacker-only data-pack task')
+      }
+    }
+  }
+  if (mission === 'Double Bind') {
+    assert.doesNotMatch(story, /\b(?:selected|chosen) (?:antenna|zone|objective)|\bscor(?:ed|ing) (?:ground|zone)\b/i,
+      'the missing objective set must not be asserted as a recorded choice')
+  }
 }
 assert.equal(renderGeneratedGameStory(game, []), null, 'wait for both game-linked decoded lists')
 assert.equal(renderGeneratedGameStory(game, [lists[0]]), null)
@@ -1020,8 +1040,8 @@ try {
   assert.ok(akialRows.length)
   const akialGame = { ...game, mission: 'Akial Interference',
     winnerFaction: akialRows[0].factions[0], loserFaction: akialRows[0].factions[1] } as RecentGame
-  assert.equal(await loadBattleStory(akialGame, []), MISSING_MISSION_SETUP_BATTLE_STORY,
-    'a historical Akial story must not bypass the missing-card guard')
+  assert.equal(await loadBattleStory(akialGame, []), PENDING_BATTLE_STORY,
+    'a historical Akial story must not bypass the linked-roster guard')
   assert.equal(fetchCount, 0)
 } finally {
   globalThis.fetch = originalFetch

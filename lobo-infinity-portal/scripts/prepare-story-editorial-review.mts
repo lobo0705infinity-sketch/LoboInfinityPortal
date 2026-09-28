@@ -115,8 +115,7 @@ for (const [groupIndex, group] of ordered.entries()) {
   const scenario = SOURCED_STORY_SCENARIOS[group.mission]
   assert.ok(scenario)
   packet.push('', `## Group ${groupIndex + 1}: ${group.mission}`, '',
-    `Rule reference: ${scenario.source} (${scenario.season}).` +
-    (scenario.requiresUnreportedSetup ? ' These are **preview-only** scenes: game records lack the chosen setup.' : ''), '')
+    `Rule reference: ${scenario.source} (${scenario.season}).`, '')
   for (const [caseIndex, item] of group.cases.entries()) {
     const caseId = 'G' + String(groupIndex + 1).padStart(2, '0') + '-' + (caseIndex + 1)
     packet.push(`### ${caseId} · ${item.role}` + (caseIndex < 2 ? ' · faction reversal' : caseIndex === 2 ? ' · mirror' : ''),
@@ -124,7 +123,7 @@ for (const [groupIndex, group] of ordered.entries()) {
     privateConfig.cases.push({ caseId, mission: group.mission,
       factions: item.story.factions, heroFaction: item.hero, role: item.role,
       gameId: item.gameId, incidentIndex: item.incident, sceneTags: item.story.sceneTags ?? null,
-      runtimeAvailable: !scenario.requiresUnreportedSetup })
+      runtimeAvailable: true })
     scores.push(`${caseId},${group.mission},${item.role},,,,,,,,,,`)
     total++
   }
@@ -144,7 +143,7 @@ const guide = `# Generated story pilot · editorial rubric
 
 ## Predeclared threshold
 
-- All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. Akial Interference, Critical Intervention and Double Bind stay preview-only until the drawn Common Classified cards, attacker assignment, or selected objective set is recorded as applicable.
+- All 22 mission premises and three endings per scene must have **zero unresolved critical errors**. For Akial Interference, Critical Intervention and Double Bind, check that no story assigns an unreported card identity, attacker role or selected scoring plan to a recorded player.
 - At least 80% of generated scenes need an average of **4/5 or better in every rated dimension** across two reviewers. No mission group should have an unaddressed repetition or faction-swap complaint. Revise weak groups, then review new, unseen scenes rather than scoring the same examples until they pass.
 - Passing this review does not change the 22,770 individually authored target, prove fictional moves happened in a match, or authorize merging/deploying the pilot.
 

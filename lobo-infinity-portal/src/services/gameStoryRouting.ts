@@ -1,19 +1,14 @@
 import { renderSubmittedHighlightStory } from '../data/gameHighlightStories.ts'
-import { getCanonicalMissionName } from '../config/missions.ts'
-import { SOURCED_STORY_SCENARIOS } from '../data/generatedStoryScenarios.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from './generatedGameStory.ts'
 import { storyTemplateKey } from './gameStoryTemplate.ts'
 import { getGameIntelligenceLists } from './gameIntelligenceLinks.ts'
 
 export const PENDING_BATTLE_STORY = 'The battle story is waiting for both submitted lists to be decoded and linked to this game.'
-export const MISSING_MISSION_SETUP_BATTLE_STORY = 'A generated battle story is unavailable because this game does not record the mission setup needed to tell it accurately.'
 export const UNSUPPORTED_MISSION_VERSION_BATTLE_STORY = 'A generated battle story is unavailable because this game may have used an earlier version of the mission rules.'
 export const NO_ELIGIBLE_HERO_BATTLE_STORY = 'A battle story is unavailable because the linked rosters do not provide an eligible actor for this mission scene.'
 
 function unavailableStory(game: RecentGame, lists: ArmyIntelligenceList[]): string {
-  const mission = getCanonicalMissionName(game.mission)
-  if (mission && SOURCED_STORY_SCENARIOS[mission]?.requiresUnreportedSetup) return MISSING_MISSION_SETUP_BATTLE_STORY
   if (getGameIntelligenceLists(game, lists).length < 2) return PENDING_BATTLE_STORY
   return hasUnsupportedStoryMissionVersion(game) ? UNSUPPORTED_MISSION_VERSION_BATTLE_STORY
     : NO_ELIGIBLE_HERO_BATTLE_STORY

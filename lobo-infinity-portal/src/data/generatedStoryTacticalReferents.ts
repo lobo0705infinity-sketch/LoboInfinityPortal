@@ -57,7 +57,7 @@ export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area 
   'Uplink Center': referents(
     'the Tech-Coffin', 'the antenna-side cover', 'the disputed uplink', 'the open crossing'),
   'Double Bind': referents(
-    'the scoring zone', 'the rival aerial', 'the antenna controls', 'the scored ground'),
+    'the contested zone', 'the rival aerial', 'the antenna controls', 'the disputed ground'),
   'The Dig': referents(
     'the excavated tech', 'the excavation rim', 'the analysis console', 'the exposed reader'),
   'Data Harvest': referents(

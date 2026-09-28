@@ -246,7 +246,7 @@ export const INCIDENT_CROSSFIRE: typeof INCIDENT_CONSEQUENCES = {
   ],
   'Double Bind': [
     'Fire crossed the barrier between the antenna and the occupied zone.',
-    'A defender shot toward the fallen panel while reserves entered the scored ground.',
+    'A defender shot toward the fallen panel while reserves entered the disputed ground.',
     'Both crews fired past the disabled carrier toward the antenna base.',
     'Shots reached through the cover gap as the rival force disputed the zone.',
   ],
@@ -377,10 +377,10 @@ export const INCIDENT_STAKES: typeof INCIDENT_CONSEQUENCES = {
     'A rival model at the coffin could deny control even if the antenna stayed active.',
   ],
   'Double Bind': [
-    'Aerial control and the adjacent zone supported different plans chosen before the troops arrived.',
-    'The divided zone could be contested while the rival crew defended its own antenna plan.',
-    'The blocked aerial still offered an objective if that side had chosen antenna control.',
-    'The antenna route could open without settling the other side’s selected zone objective.',
+    'The crews guarded the aerial and the adjacent zone while following their separate plans.',
+    'The divided zone could be contested while the rival crew defended its antenna approach.',
+    'The blocked aerial still mattered to the fight regardless of which ground each crew favored.',
+    'The antenna route could open without settling the fight for the adjacent zone.',
   ],
   'The Dig': [
     'A successful console analysis would let the rival choose an unanalysed tech to mark before any trooper could neutralize it in contact.',

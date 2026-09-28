@@ -18,8 +18,8 @@ export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of 
     closeCombat: 'forced a path through the cradle guard so a carrier could reach the prototype',
   },
   'Critical Intervention': {
-    gunfighting: 'held the doorway under fire while the specialist approached the data console',
-    closeCombat: 'drove the guard from the server-room threshold and protected the specialist at the console',
+    gunfighting: 'held the server-room doorway under fire while the data pack remained disputed',
+    closeCombat: 'drove a rival fighter back from the server-room threshold and contested the room',
   },
   'Crossing Lines': {
     gunfighting: 'kept fire on the aerial guard as the specialist crossed the contested ground',
@@ -79,7 +79,7 @@ export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of 
   },
   'Double Bind': {
     gunfighting: 'covered the antenna lane while the squad contested the adjacent zone',
-    closeCombat: 'forced the antenna guard back as the squad disputed the scoring ground',
+    closeCombat: 'forced the antenna guard back as the squad disputed the nearby ground',
   },
   'The Dig': {
     gunfighting: 'drew fire from the analysis console and sheltered the specialist reaching for its input',

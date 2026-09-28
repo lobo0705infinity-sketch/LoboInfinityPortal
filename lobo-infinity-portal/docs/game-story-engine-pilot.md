@@ -111,11 +111,15 @@ sunshine or another weather effect.
   eligible actor exists, the report identifies that limitation instead of
   claiming the lists are still being decoded. The final rendered paragraphs
   obey the 40–75 word bound; long display names fall back to player handles.
-  **Akial Interference** needs the two drawn public Common Classified
-  cards; **Critical Intervention** needs attacker/defender assignment; and
-  **Double Bind** needs the chosen objective set. Those three mission templates
-  remain available for editorial inspection, but the
-  runtime refuses to invent setup and explains that limitation to the user.
+  All 22 mission families now render with linked eligible rosters. The public
+  feed does not name **Akial Interference**'s drawn Common Classified cards,
+  identify **Critical Intervention**'s attacker, or report **Double Bind**'s
+  selected objective set. Akial scenes leave card identities unnamed;
+  Critical Intervention's hero contests the Server Room, an objective shared
+  by attacker and defender, while an unnamed attacker pursues the Data Pack;
+  Double Bind scenes show the antenna and nearby zone without identifying
+  which plan scored. These fictional events do not reconstruct the missing
+  match setup.
 - The engine runs in local TypeScript without paid model APIs or a deploy.
 
 ## What the checks establish
@@ -130,10 +134,11 @@ mission/incident/role/result renders. These are *possible template
 compositions*, not 273,240 approved or individually written stories. The test
 also injects false objective control, a premature bearer, and wrong prototype
 locations to ensure the runtime guard rejects them. This does not catch every
-possible semantic contradiction or certify prose originality. Because
-three missions need unreported setup, only 19 mission families are eligible for
-runtime generation with the current game records; all 22 remain in the
-synthetic template check.
+possible semantic contradiction or certify prose originality. All 22 mission
+families can render at runtime when a supported mission edition, two
+unambiguous decoded lists, and an eligible hero exist. For the three missions
+with missing setup, stories use shared mission elements and leave the actual
+card, attacker assignment, and selected plan unstated.
 
 The reproducible 110-scene editorial sample has five scenes per mission,
 including one deliberate faction reversal, a mirror and all three roles.
@@ -171,7 +176,7 @@ until there is an explicit decision on generated coverage.
 The reproducible `scripts/prepare-story-editorial-review.mts` creates a
 110-scene review set: five per mission, including a same-incident faction
 reversal, mirror matchup, all four incidents, and all three hero roles.
-Akial Interference, Critical Intervention and Double Bind remain preview-only. The review packet
+Akial Interference, Critical Intervention and Double Bind have live, setup-neutral routes. The review packet
 openly identifies all scenes as generated; reviewers are blinded to generator
 implementation and configuration. A separate private configuration file makes
 selection reproducible. Two independent readers should score every story.
@@ -185,9 +190,10 @@ is reflected in the Dig's console analysis before neutralization and the
 reviewer's checks for Player Tokens, Double Bind's Engineer/GizmoKit antenna
 repairs, and Crossing Lines. The pilot does not simulate Player Tokens.
 Crossing Lines has no HVT or Classified Deck in the updated scenario. The
-Double Bind runtime remains withheld while the chosen objective set is missing
-from public game records; Akial remains withheld without the drawn cards.
-The generated Dig and Crossing Lines scenes are also withheld for games
+Double Bind does not assign the unknown selected objective set; Akial names
+no specific drawn cards. Critical Intervention does not assign the attacking
+side to a recorded player.
+The generated Dig, Double Bind, and Crossing Lines scenes are also withheld for games
 dated September 24 or earlier, or with no usable date: the public feed does
 not say whether a game on the publication day used the revised rules.
 Submitted player highlights retain priority; the historical matchup catalog

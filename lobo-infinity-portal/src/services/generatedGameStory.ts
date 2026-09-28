@@ -454,10 +454,12 @@ export function composeGameStory(
 export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligenceList[]): string | null {
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)
   if (!key || hasUnsupportedStoryMissionVersion(game)) return null
-  // Common Classified cards, attacker assignment, and selected objective
-  // mode are absent from public games for three respective missions.
+  // The feed omits Common card identities, the attacker assignment, and the
+  // selected Double Bind objective set. Those scenes describe only mission
+  // elements shared across possible setups, without assigning the missing
+  // detail to either recorded player.
   const canonical = getCanonicalMissionName(game.mission)
-  if (!canonical || SOURCED_STORY_SCENARIOS[canonical]?.requiresUnreportedSetup) return null
+  if (!canonical) return null
   const [, firstId, secondId] = key.split('|')
   const first = activeById.get(firstId)
   const second = activeById.get(secondId)

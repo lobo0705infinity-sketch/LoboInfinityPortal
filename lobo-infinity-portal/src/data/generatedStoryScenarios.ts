@@ -22,7 +22,6 @@ export type SourcedStoryScenario = {
   source: string
   season: 'ITS 18' | 'ITS 16' | 'Lobo League'
   objectiveEvidence: ObjectiveEvidence
-  requiresUnreportedSetup?: boolean
   objectiveSkill?: 'infectedCare' | 'civilianEscort'
   anchor: RegExp
   ground: string
@@ -75,7 +74,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   'Akial Interference': {
     source: 'https://infinitygeist.com/mission/s18_akial_interference', season: 'ITS 18',
     objectiveEvidence: 'aggregate-only',
-    requiresUnreportedSetup: true, anchor: /classified objective|Common Classified|Akial Antenna|Akial interference|filter the signal/i,
+    anchor: /classified objective|Common Classified|Akial Antenna|Akial interference|filter the signal/i,
     ground: 'the Akial Antenna', position: 'the aerial service walkway',
     gunfighting: 'fired at the guard beside the Akial Antenna and covered the operator watching the Common cards',
     closeCombat: 'wrestled the Akial Antenna guard away from the filter controls so the operator could try them',
@@ -174,20 +173,20 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   'Critical Intervention': {
     source: 'https://infinitygeist.com/mission/s18_critical_intervention', season: 'ITS 18',
     objectiveEvidence: 'aggregate-only',
-    requiresUnreportedSetup: true, anchor: /data console|data pack|server room/i,
+    anchor: /data console|data pack|server room/i,
     ground: 'the server room', position: 'the data console',
-    gunfighting: 'traded shots with a defender at the server racks and shielded the pack carrier',
-    closeCombat: 'forced a defender from the data console and held the route out of the server room',
+    gunfighting: 'traded shots across the server-room threshold while the data pack remained contested',
+    closeCombat: 'forced a rival fighter back from the server-room threshold while the pack remained inside',
     endings: {
       heroWins: '{{heroPlayer}}’s crew held the overall advantage in the fight for the server room and its data pack.',
       heroLoses: '{{otherPlayer}}’s crew held the overall advantage over {{heroPlayer}} in the fight for the server room and its data pack.',
       draw: 'The server room and its data pack remained the center of a fight that neither crew won outright.',
     },
     incidents: [
-      incident('The data console reported an unlocked pack, but its cradle stayed shut inside the server room.', 'A bent release bar caught the pack carrier’s glove while defenders closed on the doorway.', 'The bar gave a little under pressure, exposing the data pack without freeing it from the cradle.', 'pulled at the data console release bar and reached into the cradle for the data pack'),
-      incident('A data pack waited beside the server-room console as the alarm sounded through an empty corridor.', 'A locked partition separated the attacker’s specialist from the pack while defenders approached the room.', 'A damaged hinge exposed a narrow opening just as the console displayed another lock warning.', 'worked the data console lock and reached through the partition for the data pack'),
-      incident('The server room went dark around a data console showing one remaining active connection.', 'The attacker could not read the pack status while the defender reached the room’s far entrance.', 'Emergency lighting revealed the console face and a narrow passage to the pack cradle.', 'entered a release command at the data console and moved toward the data pack cradle'),
-      incident('A dropped data pack lay beside the server-room threshold as its console began a lock sequence.', 'The attacker’s carrier reached for the pack while a defender covered the room from a damaged rack.', 'The rack shifted and briefly masked both teams from the blinking console display.', 'reached for the dropped data pack and dragged it toward the server-room threshold'),
+      incident('The data console reported an unlocked pack, but its cradle stayed shut inside the server room.', 'A bent release bar caught the pack carrier’s glove while defenders closed on the doorway.', 'The bar gave a little under pressure, exposing the data pack without freeing it from the cradle.', 'crossed the server-room threshold and tried to hold the ground around the data console'),
+      incident('A data pack waited beside the server-room console as the alarm sounded through an empty corridor.', 'A locked partition separated the attacker’s specialist from the pack while defenders approached the room.', 'A damaged hinge exposed a narrow opening just as the console displayed another lock warning.', 'slipped past the partition and contested the server room beside the data console'),
+      incident('The server room went dark around a data console showing one remaining active connection.', 'The attacker could not read the pack status while the defender reached the room’s far entrance.', 'Emergency lighting revealed the console face and a narrow passage to the pack cradle.', 'entered the lit server room and tried to dominate the ground between the console and pack cradle'),
+      incident('A dropped data pack lay beside the server-room threshold as its console began a lock sequence.', 'The attacker’s carrier reached for the pack while a defender covered the room from a damaged rack.', 'The rack shifted and briefly masked both teams from the blinking console display.', 'stepped past the fallen rack to dispute control of the server room beside the data pack'),
     ],
   },
   'Crossing Lines': {
@@ -467,11 +466,11 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   'Double Bind': {
     source: 'https://infinitygeist.com/mission/s18_double_bind', season: 'ITS 18',
     objectiveEvidence: 'aggregate-only',
-    // The September 24 ITS 18 hotfix requires each side to choose one of three
-    // objective sets when Deployment is chosen. Public games omit that choice.
-    requiresUnreportedSetup: true, anchor: /antenna|zone of influence/i,
+    // The chosen objective set is not in the game feed. A mission scene may
+    // include both physical sites but must never claim which one scored.
+    anchor: /antenna|zone of influence/i,
     ground: 'the antenna and zone-of-influence line', position: 'the contested aerial',
-    gunfighting: 'traded shots at the antenna base while a specialist crossed toward the scoring zone',
+    gunfighting: 'traded shots at the antenna base while a specialist crossed toward the contested zone',
     closeCombat: 'intercepted the antenna guard as the squad contested the adjacent zone of influence',
     endings: {
       heroWins: '{{heroPlayer}}’s crew earned the advantage around the antennas and zones of influence.',
@@ -479,10 +478,10 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
       draw: 'The rival crews disputed the antennas and zones of influence without a clear winner.',
     },
     incidents: [
-      incident('An antenna stood at the edge of a zone of influence where both squads had taken cover.', 'A specialist approached the aerial while the rival force shifted enough bodies into the scoring zone.', 'A broken barrier opened a narrow path between the antenna base and the contested zone.', 'keyed an antenna request and crossed the barrier into the zone of influence'),
+      incident('An antenna stood at the edge of a zone of influence where both squads had taken cover.', 'A specialist approached the aerial while the rival force shifted more fighters into the contested zone.', 'A broken barrier opened a narrow path between the antenna base and the contested zone.', 'keyed an antenna request and crossed the barrier into the zone of influence'),
       incident('Two antennas blinked with disputed status above a zone of influence full of moving fighters.', 'A fallen panel blocked one aerial’s controls just as the other force sent reserves into the zone.', 'The panel rocked aside and exposed a short path toward the contested antenna.', 'touched the exposed antenna controls and pushed into the disputed zone of influence'),
-      incident('A zone of influence emptied as both sides tried to reach the antenna beyond it.', 'A disabled carrier blocked the aerial base while a rival squad returned to the scored zone.', 'The carrier shifted and exposed the controls at the moment both squads crossed the boundary.', 'reached over the carrier for the antenna controls and entered the zone of influence'),
-      incident('The nearest antenna flashed above a zone of influence divided by broken cover.', 'A specialist reached the base while opposing troops held enough space to dispute the zone.', 'A gap opened in the cover and briefly connected the aerial approach with scoring ground.', 'keyed the antenna controls and stepped through the gap into the zone of influence'),
+      incident('A zone of influence emptied as both sides tried to reach the antenna beyond it.', 'A disabled carrier blocked the aerial base while a rival squad returned to the disputed zone.', 'The carrier shifted and exposed the controls at the moment both squads crossed the boundary.', 'reached over the carrier for the antenna controls and entered the zone of influence'),
+      incident('The nearest antenna flashed above a zone of influence divided by broken cover.', 'A specialist reached the base while opposing troops held enough space to dispute the zone.', 'A gap opened in the cover and briefly connected the aerial approach with contested ground.', 'keyed the antenna controls and stepped through the gap into the zone of influence'),
     ],
   },
   'The Dig': {
