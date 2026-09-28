@@ -75,6 +75,11 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
     const side = (base.chars || []).includes(surfaceId) ? 'Surface'
       : (base.chars || []).includes(deepspaceId) ? 'Deepspace' : null
     const primaryWeapon = weapons.find(weapon => /rifle|shotgun|machine gun|spitfire|sniper|feuerbach|thunderbolt|launcher|smg|submachine/i.test(weapon)) || weapons[0]
+    // A Lieutenant decoy must have the same visible unit and complete loadout,
+    // not merely the same primary weapon. Ignore only the Lieutenant skill.
+    const disguiseKey = [unit.id, groupId, token(choice.name),
+      skills.filter(skill => !/^lieutenant\b/i.test(skill)).map(normalize).sort().join(','),
+      equipment.map(normalize).sort().join(','), weapons.map(normalize).sort().join(',')].join(':')
     const key = `${sectorialId}:${unit.id}:${groupId}:${choice.id}:1`
     const shooting = ratings.get(key) || []
     const aroResults = aroRatings.get(key) || []
@@ -89,7 +94,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       swcBonus: swcString.startsWith('+') ? swcAmount : 0,
       ava, avaKey: `${unit.id}:${group.id}:${base.id}`, slots,
       troopType: Number(base.type), armor: Number(base.arm || 0), wounds: Number(base.w || 1),
-      lieutenant, side,
+      lieutenant, side, disguiseKey,
       regular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'REGULAR'),
       irregular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'IRREGULAR'),
       startsOffTable: skills.some(skill => /\b(combat jump|parachutist|hidden deployment)\b/i.test(skill)),
@@ -191,10 +196,10 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     if (seed) for (const item of seed.members) {
       if (canAdd(selected, item, 1, buildConstraints)) selected.push({ ...item, combatGroup: 1 })
     }
-    const lieutenant = profiles.filter(item => item.lieutenant && !selected.some(entry => entry.lieutenant) && canAdd(selected, item, 1, buildConstraints))
-      .sort((a, b) => (a.points - b.points) || b.regular - a.regular)[baseAttempt % 3 === 2 ? 1 : 0]
-    if (lieutenant) selected.push({ ...lieutenant, combatGroup: 1 })
-    if (!selected.some(item => item.lieutenant)) continue
+    selectLieutenantPackage(profiles, selected, buildConstraints, baseAttempt)
+    if (!selected.some(item => item.lieutenant) || plan.tacticalLink
+      && selected.some(item => item.lieutenant && item.startsOffTable)) continue
+    addLieutenantNco(profiles, selected, buildConstraints, baseAttempt)
 
     if (plan.seed && !selected.some(item => plan.seed === 'medical'
       ? item.doctor || item.paramedic || item.specialistOperative : item.demolition)) {
@@ -245,8 +250,9 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     seen.add(signature)
     const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side, teamPreference)
     const quality = roleCoverage(grouped, fireteams, mission, plan)
+    const lieutenantPlan = assessLieutenantPackage(grouped, fireteams, plan)
     options.push({ code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}`, profiles: grouped, fireteams,
-      legality, mission, missionPlan: plan, missionSummary: missionSummary(grouped, plan),
+      legality, mission, missionPlan: plan, missionSummary: missionSummary(grouped, plan), lieutenantPlan,
       faction: faction.name, payloadVersion: payload.version, quality,
       specialistCount: grouped.filter(item => item.specialist).length,
       points: legality.totals.points, swc: legality.totals.swc,
@@ -254,16 +260,23 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   }
   if (!options.length) throw new ListBuilderError('I could not make a legal list with those required profiles and points.')
   const ranked = options.sort((a, b) => b.score - a.score)
-  const fullEnough = ranked.filter(item => item.legality.totals.troopers >= 12
-    && item.score >= ranked[0].score - 12)
-  const candidates = fullEnough.length >= Math.min(3, count) ? fullEnough : ranked
+  const minTroopers = points >= 300 ? 12 : points >= 200 ? 10 : 0
+  const viable = ranked.filter(item => item.legality.totals.troopers >= minTroopers)
+  const fullEnough = viable.filter(item => item.score >= ranked[0].score - 12)
+  const candidates = fullEnough.length >= Math.min(3, count) ? fullEnough
+    : viable.length >= Math.min(3, count) ? viable : ranked
   const complete = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 2
     && item.quality.cc >= 2 && item.quality.aro >= 2
     && item.quality.specialists >= item.quality.specialistTarget) : []
   const rolePool = complete.length ? complete : candidates
+  const preferredPackage = rolePool.filter(item => item.score >= rolePool[0].score - 12
+    && (item.missionPlan.tacticalLink ? item.lieutenantPlan.kind === 'apex-open'
+      : item.missionPlan.lieutenantKills ? item.lieutenantPlan.kind === 'apex-coc'
+        : ['cheap-decoy', 'apex-coc'].includes(item.lieutenantPlan.kind)))
+  const leadershipPool = preferredPackage.length ? preferredPackage : rolePool
   // Prefer the fullest roster among similarly strong builds. A sparse list
   // can still win when adding bodies causes a marked loss in overall quality.
-  const similarlyStrong = rolePool.filter(item => item.score >= rolePool[0].score - 6)
+  const similarlyStrong = leadershipPool.filter(item => item.score >= leadershipPool[0].score - 6)
   const duoOrHaris = similarlyStrong.filter(item => item.fireteams.some(team =>
     (team.type === 'DUO' || team.type === 'HARIS') && team.level >= 2))
   const competitive = duoOrHaris.length ? duoOrHaris : similarlyStrong
@@ -272,7 +285,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const chosen = []
   const doubleBind = missionPlan(mission).focus.startsWith('Encryption:') && count >= 3
   const firstPass = doubleBind
-    ? [0, 1, 2].map(variant => rolePool.find(item => item.missionPlan.variant === variant)
+    ? [0, 1, 2].map(variant => leadershipPool.find(item => item.missionPlan.variant === variant)
       || candidates.find(item => item.missionPlan.variant === variant)
       || ranked.find(item => item.missionPlan.variant === variant)).filter(Boolean)
     : pool
@@ -283,7 +296,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     chosen.push({ ...option, teamSignature: signature })
     if (chosen.length >= Math.min(3, count)) break
   }
-  for (const option of [...pool, ...rolePool, ...candidates]) {
+  for (const option of [...pool, ...leadershipPool, ...rolePool, ...candidates]) {
     if (chosen.length >= Math.min(3, count)) break
     if (!chosen.some(item => item.code === option.code)) chosen.push(option)
   }
@@ -315,6 +328,112 @@ function canAdd(selected, profile, combatGroup, { points, payload, side: require
     if (ids.includes(profile.unitId) && selected.filter(item => ids.includes(item.unitId)).length >= Number(relation.max)) return false
   }
   return true
+}
+
+function placeProfile(selected, profile, constraints) {
+  for (const combatGroup of [1, 2]) {
+    if (canAdd(selected, profile, combatGroup, constraints)) return { ...profile, combatGroup }
+  }
+  return null
+}
+
+export function matchingLieutenantDecoy(lieutenant, profile) {
+  return Boolean(lieutenant?.lieutenant && !profile?.lieutenant && lieutenant.disguiseKey
+    && lieutenant.disguiseKey === profile.disguiseKey && profile.slots === 1)
+}
+
+function findLieutenantPartner(profiles, selected, lieutenant, constraints, role) {
+  const qualifies = role === 'decoy'
+    ? item => matchingLieutenantDecoy(lieutenant, item)
+    : item => item.chainOfCommand && !item.lieutenant && !item.startsOffTable
+  const existing = selected.find(qualifies)
+  if (existing) return existing
+  const candidates = profiles.filter(qualifies).map(item => placeProfile(selected, item, constraints)).filter(Boolean)
+  candidates.sort((a, b) => role === 'decoy'
+    ? a.points - b.points || Number(b.regular) - Number(a.regular)
+    : ((b.wounds || 1) - (a.wounds || 1)) * 3 + ((b.armor || 0) - (a.armor || 0))
+      + (b.regular - a.regular) + (b.gunfighter - a.gunfighter) / 15 + (a.points - b.points) / 5)
+  return candidates[0] || null
+}
+
+function selectLieutenantPackage(profiles, selected, constraints, attempt) {
+  const current = selected.find(item => item.lieutenant)
+  const choices = (current ? [current] : profiles.filter(item => item.lieutenant
+    && (!constraints.plan.tacticalLink || !item.startsOffTable)))
+    .map(item => current || placeProfile(selected, item, constraints)).filter(Boolean)
+    .map(lieutenant => {
+      const roster = current ? selected : [...selected, lieutenant]
+      const cheap = lieutenant.troopType === 1 && lieutenant.points <= 20 && lieutenant.slots === 1
+      const apex = lieutenant.points >= 30 && (lieutenant.gunfighterGrade === 'S'
+        || lieutenant.fireteamEligible && lieutenant.linkedGunfighterGrade === 'S')
+      const decoy = !constraints.plan.tacticalLink && cheap
+        ? findLieutenantPartner(profiles, roster, lieutenant, constraints, 'decoy') : null
+      const successor = !constraints.plan.tacticalLink && apex
+        ? findLieutenantPartner(profiles, roster, lieutenant, constraints, 'successor') : null
+      return { lieutenant, decoy, successor, cheap: Boolean(decoy), apex: Boolean(apex && (successor || constraints.plan.tacticalLink)) }
+    })
+  if (!choices.length) return
+  const preferApex = constraints.plan.lieutenantKills || constraints.plan.tacticalLink || attempt % 2 === 1
+  const sortApex = (a, b) => Number(b.lieutenant.gunfighterGrade === 'S') - Number(a.lieutenant.gunfighterGrade === 'S')
+    || b.lieutenant.gunfighter - a.lieutenant.gunfighter
+    || b.lieutenant.wounds - a.lieutenant.wounds || b.lieutenant.armor - a.lieutenant.armor
+  const sortCheap = (a, b) => a.lieutenant.points + a.decoy.points - b.lieutenant.points - b.decoy.points
+    || b.lieutenant.regular - a.lieutenant.regular
+  const apex = choices.filter(item => item.apex).sort(sortApex)
+  const cheap = choices.filter(item => item.cheap).sort(sortCheap)
+  const wanted = preferApex ? apex.length ? apex : cheap : cheap.length ? cheap : apex
+  const fallbacks = [...choices].sort(constraints.plan.lieutenantKills
+    ? (a, b) => b.lieutenant.gunfighter - a.lieutenant.gunfighter || a.lieutenant.points - b.lieutenant.points
+    : (a, b) => a.lieutenant.points - b.lieutenant.points || b.lieutenant.regular - a.lieutenant.regular)
+  const choice = (wanted.length ? wanted : fallbacks)[attempt % Math.min(3, (wanted.length ? wanted : fallbacks).length)]
+  if (!current) selected.push(choice.lieutenant)
+  if (constraints.plan.tacticalLink) return
+  const partner = choice.apex ? choice.successor : choice.cheap ? choice.decoy : null
+  if (partner && !selected.includes(partner) && !selected.some(item => item.id === partner.id
+    && item.combatGroup === partner.combatGroup)) selected.push(partner)
+}
+
+export function ncoCombatValue(item) {
+  return Math.max(gradeRank(item.gunfighterGrade) * 3 + (item.gunfighter || 0) / 8,
+    gradeRank(item.ccGrade) * 3 + (item.ccRating || 0) / 8)
+}
+
+function addLieutenantNco(profiles, selected, constraints, attempt) {
+  const lieutenant = selected.find(item => item.lieutenant)
+  if (!lieutenant || selected.some(item => item.nco && !item.lieutenant && !item.startsOffTable)) return
+  const cheapPair = lieutenant.troopType === 1 && lieutenant.points <= 20
+    && selected.some(item => matchingLieutenantDecoy(lieutenant, item))
+  if (lieutenant.lieutenantOrders <= 1 && !cheapPair) return
+  const candidates = profiles.filter(item => item.nco && !item.lieutenant && !item.startsOffTable)
+    .map(item => placeProfile(selected, item, constraints)).filter(Boolean)
+    .sort((a, b) => ncoCombatValue(b) - ncoCombatValue(a)
+      || b.gunfighter - a.gunfighter || b.ccRating - a.ccRating || a.points - b.points)
+  if (candidates.length) selected.push(candidates[attempt % Math.min(3, candidates.length)])
+}
+
+export function assessLieutenantPackage(profiles, fireteams = [], plan = {}) {
+  const lieutenant = profiles.find(item => item.lieutenant)
+  if (!lieutenant) return { kind: 'missing', score: -20 }
+  const decoy = profiles.find(item => matchingLieutenantDecoy(lieutenant, item))
+  const successor = profiles.find(item => item.chainOfCommand && !item.lieutenant && !item.startsOffTable)
+  const linked = fireteams.some(team => team.level >= 2 && team.combatGroup === lieutenant.combatGroup
+    && team.members.includes(lieutenant.label))
+  const grade = lieutenant.gunfighterGrade === 'S' || linked && lieutenant.linkedGunfighterGrade === 'S'
+    ? 'S' : lieutenant.gunfighterGrade
+  const apex = grade === 'S' && lieutenant.points >= 30
+  const cheap = lieutenant.troopType === 1 && lieutenant.points <= 20 && Boolean(decoy)
+  const nco = profiles.filter(item => item.nco && !item.lieutenant && !item.startsOffTable)
+    .sort((a, b) => ncoCombatValue(b) - ncoCombatValue(a))[0] || null
+  const ncoNeeded = lieutenant.lieutenantOrders > 1 || cheap && !plan.tacticalLink
+  const ncoScore = ncoNeeded ? nco ? 11 + Math.min(8, ncoCombatValue(nco) * .55) : -10 : 0
+  if (plan.tacticalLink) return { kind: apex ? 'apex-open' : 'fallback', lieutenant, partner: null, grade,
+    score: (apex ? 16 : grade === 'A' ? 8 : 0)
+      - (successor ? 8 : 0) - (decoy ? 7 : 0) + ncoScore, nco }
+  if (apex && successor) return { kind: 'apex-coc', lieutenant, partner: successor, grade, nco,
+    score: (plan.lieutenantKills ? 22 : 11) + ncoScore }
+  if (cheap) return { kind: 'cheap-decoy', lieutenant, partner: decoy, grade, nco,
+    score: (plan.lieutenantKills ? 3 : 11) + ncoScore }
+  return { kind: 'fallback', lieutenant, partner: null, grade, nco, score: -6 + ncoScore }
 }
 
 function bestNext(profiles, selected, constraints, attempt, mode) {
@@ -368,6 +487,10 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       + (missionScore([...selected, item], constraints.plan) - currentMission) * .75
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
+      - (constraints.plan.tacticalLink && item.chainOfCommand ? 8 : 0)
+      - (constraints.plan.tacticalLink && matchingLieutenantDecoy(selected.find(profile => profile.lieutenant), item) ? 7 : 0)
+      - (!constraints.plan.tacticalLink && selected.some(profile => profile.lieutenant && profile.troopType === 1)
+        && item.chainOfCommand ? 3 : 0)
     candidates.push({ ...item, combatGroup: group, value })
   }
   candidates.sort((a, b) => b.value - a.value || a.points - b.points)
@@ -849,6 +972,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
     + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
     + (points >= 300 ? impactAnchorValue(profiles) : 0) + missionScore(profiles, plan)
+    + assessLieutenantPackage(profiles, fireteams, plan).score
     - rosterRedundancy(profiles) * 1.5
 }
 

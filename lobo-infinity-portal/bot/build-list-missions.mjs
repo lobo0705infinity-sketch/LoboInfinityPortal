@@ -5,14 +5,16 @@
 // rules in either catalog, so it deliberately uses the general-purpose plan.
 const plans = {
   'akial interference': { target: 5, focus: 'diverse specialists for repeated Classifieds', weights: { classified: 8, objectives: 2 } },
-  annihilation: { target: 0, focus: 'killing power and surviving Army Points', weights: { combat: 8, survive: 6 } },
+  annihilation: { target: 0, focus: 'killing power and surviving Army Points', weights: { combat: 8, survive: 6 }, lieutenantKills: true },
   'area of interest': { target: 2, focus: 'area presence and Antenna activation', weights: { zones: 6, objectives: 5, classified: 2 } },
   battleground: { target: 0, focus: 'central and far sector control with capable attackers', weights: { zones: 8, combat: 5 } },
   'b pong': { target: 3, focus: 'move the Beacon and control Consoles', weights: { courier: 6, objectives: 6, classified: 2 } },
   'corporate appropriation': { target: 2, focus: 'recover and protect Prototypes; contest Panoplies', weights: { courier: 6, objectives: 3, demolition: 3, classified: 2 } },
   'critical intervention': { target: 2, focus: 'reach the Data Console and hold the Server Room', weights: { courier: 5, objectives: 5, zones: 4, combat: 2 } },
   'crossing lines': { target: 3, focus: 'dominate Dead Zones and activate Antennas', weights: { zones: 3, objectives: 3, baggage: 2 } },
-  cutthroat: { target: 0, focus: 'kill enemy leaders and preserve attacking power', weights: { combat: 8, survive: 5, midfield: 2 } },
+  // Reinforced Tactical Link makes the Lieutenant public and removes Loss of Lieutenant.
+  // Cutthroat also scores kills made by the Lieutenant and kills of enemy Lieutenants.
+  cutthroat: { target: 0, focus: 'kill enemy leaders and preserve attacking power', weights: { combat: 8, survive: 5, midfield: 2 }, lieutenantKills: true, tacticalLink: true },
   'data harvest': { target: 3, focus: 'extract Data-Harvesters and advance into the enemy half', weights: { objectives: 5, courier: 5, midfield: 4, baggage: 2, classified: 2 } },
   'double bind': [
     { target: 3, focus: 'Encryption: activate and hold Antennas', weights: { objectives: 7, zones: 3, classified: 2 } },
@@ -20,6 +22,8 @@ const plans = {
     { target: 1, focus: 'Secure Vector: dominate Zones of Influence', weights: { zones: 8, combat: 3, classified: 2 } },
   ],
   evacuation: { target: 2, focus: 'extract Civilians with eligible, mobile carriers', weights: { civEvac: 9, classified: 4 } },
+  // The N5.3 Firefight scenario also uses Reinforced Tactical Link.
+  firefight: { target: 3, focus: 'kill enemy leaders and Specialists while preserving your own', weights: { combat: 7, survive: 4, objectives: 2 }, lieutenantKills: true, tacticalLink: true },
   hardlock: { target: 4, focus: 'activate Consoles and reach the enemy Beacon', weights: { objectives: 7, courier: 3, classified: 2 } },
   'last launch': { target: 4, focus: 'extract specialists and Army Points; hold the Tower', weights: { objectives: 5, courier: 4, classified: 5, zones: 2 } },
   neutralization: { target: 3, focus: 'extract Hyperthermal Tech and control Antennas', weights: { objectives: 4, courier: 5, baggage: 3, zones: 3, classified: 2 } },

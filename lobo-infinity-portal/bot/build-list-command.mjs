@@ -200,8 +200,19 @@ export function formatBuiltList(list) {
     + `-# Army profiles ${list.payloadVersion}; verify fireteams during deployment.`
   const missionNote = list.missionSummary ? `**Mission plan** ${list.missionSummary}\n` : ''
   const shortMissionNote = list.missionPlan?.focus ? `**Mission plan** ${list.missionPlan.focus}\n` : ''
-  const intro = introBase + (introBase.length + baseEnding.length + missionNote.length <= 1990
+  let intro = introBase + (introBase.length + baseEnding.length + missionNote.length <= 1990
     ? missionNote : introBase.length + baseEnding.length + shortMissionNote.length <= 1990 ? shortMissionNote : '')
+  const ltPlan = list.lieutenantPlan
+  const ncoNote = ltPlan?.nco && (ltPlan.kind === 'cheap-decoy' || ltPlan.lieutenant.lieutenantOrders > 1)
+    ? ` · ${ltPlan.nco.optionName} NCO` : ''
+  const leadershipNote = ltPlan?.kind === 'cheap-decoy'
+    ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} + identical non-Lt decoy${ncoNote}\n`
+    : ltPlan?.kind === 'apex-coc'
+      ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter) + ${ltPlan.partner.optionName} (Chain of Command)${ncoNote}\n`
+      : ltPlan?.kind === 'apex-open'
+        ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter); Tactical Link reveals the Lt${ncoNote}\n`
+        : ''
+  if (leadershipNote && intro.length + leadershipNote.length + baseEnding.length <= 1990) intro += leadershipNote
   let ending = baseEnding
   if (intro.length + baseEnding.length + evidenceNote.length <= 1990) ending += evidenceNote
   const links = rosterConnections(list.profiles)

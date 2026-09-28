@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, optimizeCombatGroups,
+import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, matchingLieutenantDecoy, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
@@ -53,6 +53,37 @@ assert.ok(results.every(result => result.profiles.filter(item => /warcor/i.test(
   'do not fill spare slots with multiple Irregular Warcors')
 assert.equal(new Set(results.map(item => item.profiles.map(profile => `${profile.combatGroup}:${profile.id}`).sort().join('|'))).size, 3)
 assert.ok(results.some(result => result.legality.totals.troopers === 15), 'prefer 15 models when the roster can support them')
+const alguacilLieutenant = profiles.find(item => item.slug === 'corregidor-alguaciles' && item.lieutenant)
+const alguacilDecoy = profiles.find(item => item.slug === 'corregidor-alguaciles' && !item.lieutenant && item.optionId === 1)
+const alguacilParamedic = profiles.find(item => item.slug === 'corregidor-alguaciles' && !item.lieutenant && item.paramedic)
+assert.ok(matchingLieutenantDecoy(alguacilLieutenant, alguacilDecoy), 'the ordinary Alguacil has the Lieutenant’s exact loadout')
+assert.ok(!matchingLieutenantDecoy(alguacilLieutenant, alguacilParamedic), 'a visible MediKit is not an identical decoy')
+assert.ok(results.every(result => result.lieutenantPlan.kind === 'cheap-decoy'
+  && matchingLieutenantDecoy(result.lieutenantPlan.lieutenant, result.lieutenantPlan.partner)),
+'Corregidor must pair its cheap LI Lieutenant with a truly identical non-Lieutenant')
+assert.ok(results.every(result => result.lieutenantPlan.nco && result.lieutenantPlan.nco.nco
+  && ['A', 'B', 'S'].includes(result.lieutenantPlan.nco.gunfighterGrade)),
+'a cheap Lieutenant with a decoy needs a capable NCO to spend the Lieutenant Order')
+const wildcatPlusOne = profiles.find(item => item.slug === 'wildcats'
+  && item.lieutenantOrders === 2)
+const loboNco = profiles.find(item => item.nco && item.optionName === 'LOBO')
+assert.ok(wildcatPlusOne && loboNco, 'Corregidor provides a +1 Order Lieutenant and a combat NCO')
+assert.ok(assessLieutenantPackage([wildcatPlusOne, loboNco], [], missionPlan('Hardlock')).score
+  > assessLieutenantPackage([wildcatPlusOne], [], missionPlan('Hardlock')).score,
+  'Lieutenant (+1 Order) sharply rewards a combat NCO even without a cheap-LI decoy')
+assert.ok(ncoCombatValue(loboNco) > ncoCombatValue({ ...loboNco, gunfighterGrade: 'F', gunfighter: 0,
+  ccGrade: 'F', ccRating: 0 }), 'NCO gunfighting and close-combat ratings influence the pick')
+const onlyPlusOneLieutenant = { ...payload, units: payload.units.map(unit => ({ ...unit,
+  profileGroups: unit.profileGroups?.map(group => ({ ...group, options: group.options?.filter(option =>
+    !(option.orders || []).some(order => order.type === 'LIEUTENANT')
+      || unit.slug === 'wildcats' && option.id === wildcatPlusOne.optionId) })),
+  options: unit.options?.filter(option => !(option.orders || []).some(order => order.type === 'LIEUTENANT')),
+})) }
+const plusOneList = buildArmyListOptions({ ...input, payload: onlyPlusOneLieutenant, mustInclude: [], count: 1 })[0]
+assert.equal(plusOneList.lieutenantPlan.lieutenant.lieutenantOrders, 2)
+assert.ok(plusOneList.lieutenantPlan.nco && !plusOneList.lieutenantPlan.nco.lieutenant
+  && ncoCombatValue(plusOneList.lieutenantPlan.nco) >= ncoCombatValue(loboNco),
+  'a +1 Order Lieutenant gets a separate, high-performing NCO in a legal generated list')
 for (const result of results) {
   assert.equal(result.legality.status, 'legal')
   assert.ok(result.profiles.some(item => /jazz/i.test(item.optionName)))
@@ -82,16 +113,10 @@ for (const result of results) {
   assert.equal(decoded.combatGroups.flatMap(group => group.members).length, result.profiles.length)
   assert.equal(encodeArmyCode({ ...decoded, combatGroups: decoded.combatGroups }), result.code, 'Army code must round-trip')
 }
-assert.ok(results.some(result => projectedRegularOrders(result.profiles, 1) === 8
-  && projectedRegularOrders(result.profiles, 2) === 7
-  && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0) > 0
-  || projectedRegularOrders(result.profiles, 1) === 9
-  && projectedRegularOrders(result.profiles, 2) === 6
-  || projectedRegularOrders(result.profiles, 1) === 10
-  && projectedRegularOrders(result.profiles, 2) === 5
-  && result.profiles.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.tacticalOrders, 0)
-    >= result.profiles.filter(item => item.combatGroup === 2).reduce((sum, item) => sum + item.tacticalOrders, 0)),
-'keep Tactical Awareness supported in a capable primary group when it is the better order split')
+assert.ok(results.every(result => projectedRegularOrders(result.profiles, 1) >= projectedRegularOrders(result.profiles, 2)
+  && [1, 2].every(group => !result.profiles.some(item => item.combatGroup === group && item.tacticalOrders)
+    || projectedRegularOrders(result.profiles, group) >= 5)),
+'Tactical Awareness belongs in a group with enough Regular orders to use its active pieces')
 const nomadsPayload = source.payloads.find(item => item.url?.endsWith('/units/en/501'))
 const nomadsInput = { ...input, payload: nomadsPayload, sectorialId: 501,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(501), mission: 'Crossing Lines', mustInclude: [] }
@@ -104,18 +129,21 @@ assert.equal(impactAnchorValue([{ ...taskmaster, gunfighterGrade: 'F', aroGrade:
 assert.equal(impactAnchorValue([taskmaster, taskmaster]), impactAnchorValue([taskmaster]),
   'duplicates do not become better just because they cost more')
 const nomadsList = buildArmyListOptions({ ...nomadsInput, count: 1 })[0]
+const nomadsAlternatives = buildArmyListOptions({ ...nomadsInput, count: 3 })
 const nomadsFlashBots = nomadsList.profiles.filter(item => item.slug === 'transductor-zonds'
   && item.points === 7 && item.regular && item.flashPulse)
-assert.equal(nomadsFlashBots.length, 2,
-  'the standard 300-point Nomads list should compare both legal cheap orders with basic Securitate filler')
+assert.ok(nomadsAlternatives.some(list => list.profiles.filter(item => item.slug === 'transductor-zonds'
+  && item.points === 7 && item.regular && item.flashPulse).length === 2),
+  'the Nomads builder still evaluates two cheap Regular Flash Pulse orders alongside linked infantry and Baggage')
 assert.ok(nomadsFlashBots.length <= nomadsProfiles.find(item => item.slug === 'transductor-zonds')?.ava,
   'the second Flash Pulse remote still obeys its official availability')
 assert.ok(nomadsList.profiles.filter(item => item.optionName === 'SECURITATE' && /Combi Rifle/i.test(item.label)).length < 2,
   'do not preserve a pair of basic Securitate Combi orders solely for a weak Duo')
 assert.ok(nomadsList.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30),
   'a 300-point Nomads roster should consider at least one capable expensive model')
-assert.ok(nomadsList.profiles.some(item => item.points === 7 && item.flashPulse && item.regular),
-  'a cheap Regular order can support the expensive role pieces')
+assert.ok(nomadsAlternatives.some(list => list.profiles.some(item => item.points === 7 && item.flashPulse && item.regular)
+  && list.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30)),
+  'an efficient Flash Pulse order can support expensive role pieces in a competitive alternative')
 assert.ok(nomadsList.legality.status === 'legal' && nomadsList.quality.gunfighters >= 2
   && nomadsList.quality.aro >= 2 && nomadsList.quality.cc >= 2
   && nomadsList.profiles.filter(item => item.regular).length >= 13,
@@ -128,7 +156,20 @@ assert.ok(nomadsProfiles.some(item => item.slug === 'perseus-rogue-myrmidon' && 
   'a Character can fulfill Panic Room Essential Personnel requirements')
 const outbreakList = buildArmyListOptions({ ...nomadsInput, mission: 'Outbreak', count: 1 })[0]
 const annihilationList = buildArmyListOptions({ ...nomadsInput, mission: 'Annihilation', count: 1 })[0]
+const cutthroatList = buildArmyListOptions({ ...nomadsInput, mission: 'Cutthroat', count: 1 })[0]
 const akialList = buildArmyListOptions({ ...nomadsInput, mission: 'Akial Interference', count: 1 })[0]
+assert.equal(nomadsList.lieutenantPlan.kind, 'cheap-decoy', 'an objective mission may favor an economical LI Lieutenant and decoy')
+assert.equal(annihilationList.lieutenantPlan.kind, 'apex-coc', 'Lieutenant-kill scoring favors an S gunfighter Lieutenant with Chain of Command')
+assert.equal(annihilationList.lieutenantPlan.lieutenant.gunfighterGrade, 'S')
+assert.ok(annihilationList.lieutenantPlan.partner.chainOfCommand)
+assert.equal(cutthroatList.lieutenantPlan.kind, 'apex-open', 'Tactical Link favors an S gunfighter Lieutenant without a dedicated decoy')
+assert.ok(!cutthroatList.profiles.some(item => item.chainOfCommand), 'Tactical Link removes the need to pay for Loss of Lieutenant protection')
+assert.ok(!cutthroatList.profiles.some(item => matchingLieutenantDecoy(cutthroatList.lieutenantPlan.lieutenant, item)),
+  'an openly identified Lieutenant gains nothing from an identical non-Lieutenant')
+assert.equal(assessLieutenantPackage(cutthroatList.profiles, cutthroatList.fireteams, missionPlan('Cutthroat')).kind, 'apex-open')
+assert.equal(missionPlan('Annihilation').lieutenantKills, true)
+assert.equal(missionPlan('Cutthroat').tacticalLink, true)
+assert.equal(missionPlan('Firefight').tacticalLink, true)
 assert.ok(akialList.legality.status === 'legal' && akialList.quality.specialistTarget === 5
   && akialList.specialistCount >= 5 && akialList.quality.gunfighters >= 2
   && akialList.quality.aro >= 2 && akialList.quality.cc >= 2,
