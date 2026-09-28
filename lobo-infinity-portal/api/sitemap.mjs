@@ -6,6 +6,7 @@ const snapshotOrigin = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/
 const publicPaths = [
   '/',
   '/explore',
+  '/little-helper',
   '/army-intelligence',
   '/games',
   '/events',

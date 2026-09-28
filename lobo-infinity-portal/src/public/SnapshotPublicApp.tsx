@@ -33,6 +33,7 @@ const PublicGameDetails = lazy(() => import('../pages/GameDetails'))
 const Rules = lazy(() => import('../pages/Rules'))
 const MobileMenu = lazy(() => import('../pages/MobileMenu'))
 const Explore = lazy(() => import('../pages/Explore'))
+const LittleHelper = lazy(() => import('../pages/LittleHelper'))
 
 export default function SnapshotPublicApp() {
   return <Routes>
@@ -52,6 +53,7 @@ export default function SnapshotPublicApp() {
     <Route path="/missions" element={<Missions />} />
     <Route path="/menu" element={<Suspense fallback={<Loading />}><MobileMenu /></Suspense>} />
     <Route path="/explore" element={<Suspense fallback={<Loading />}><Explore /></Suspense>} />
+    <Route path="/little-helper" element={<Suspense fallback={<Loading />}><LittleHelper /></Suspense>} />
     <Route path="/missions/:missionName" element={<MissionProfile />} />
     <Route path="/mission/:missionName" element={<MissionProfile />} />
     <Route path="/compare" element={<Compare />} />

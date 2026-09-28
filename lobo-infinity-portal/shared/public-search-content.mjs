@@ -23,6 +23,19 @@ const publicPages = {
     intro: 'Choose a faction to study, follow a battle report, or find an event to play.',
     links: starterLinks,
   },
+  '/little-helper': {
+    title: "Lobo's Little Helper | Infinity N5 Discord Bot Commands",
+    description: 'See how Lobo’s Little Helper turns Infinity Army codes into tactical briefs, compares exact profiles, and finds ARO counters in Discord.',
+    heading: "Lobo's Little Helper: Infinity N5 Discord tools",
+    intro: 'Explore /inf-list, /matchup, and /aro-counter with response previews and simple steps to try the bot in the Lobo Infinity League Discord.',
+    image: '/assets/little-helper-share.png',
+    imageAlt: "Lobo's Little Helper: Infinity N5 army list, matchup, and ARO counter tools",
+    links: [
+      { label: 'Explore Army Intelligence', href: '/army-intelligence' },
+      { label: 'Read battle reports', href: '/games' },
+      { label: 'Explore the portal', href: '/explore' },
+    ],
+  },
   '/army-intelligence': {
     title: 'Infinity N5 Army Intelligence: Gunfighters, ARO & Factions | Lobo Portal',
     description: 'Compare Infinity N5 faction gunfighters, ARO pieces, close combat specialists, hacking networks, and control tools in Army Intelligence.',

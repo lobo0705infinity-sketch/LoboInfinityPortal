@@ -54,6 +54,11 @@ export function getJoinCommunityNavigationItem(
 
 export const communityItems: NavigationItem[] = [
   {
+    icon: 'discord',
+    label: "Lobo's Little Helper",
+    to: '/little-helper',
+  },
+  {
     icon: 'army',
     label: 'Army Intelligence',
     to: '/army-intelligence',

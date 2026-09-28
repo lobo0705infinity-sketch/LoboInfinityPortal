@@ -16,6 +16,12 @@ const featured = [
     icon: 'rules' as const,
     to: '/games',
   },
+  {
+    title: "Lobo's Little Helper",
+    description: 'See army list, matchup, and ARO tools you can use in Discord.',
+    icon: 'discord' as const,
+    to: '/little-helper',
+  },
 ]
 
 const directory = communityItems.filter((item) => !featured.some((feature) => feature.to === item.to))
