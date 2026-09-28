@@ -641,3 +641,43 @@ export const loboWorkshopMaps = workshopSaveMaps.map((map) => ({
 }))
 
 export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))
+
+// Section membership follows the original bag labels. The LL and TT event
+// assignments are proposals until the commissioner confirms them. A layout
+// appears once in each section, while all of its Workshop saves remain linked.
+const sectionDefinitions = [
+  {
+    id: 'casual',
+    title: 'Casual tables',
+    description: 'Browse the general Workshop collection for an open game. Some saves also have named mission setups.',
+    eventUrl: null,
+    indices: Array.from({ length: 28 }, (_, index) => index + 1),
+  },
+  {
+    id: 'event-current-league',
+    title: 'July 2026 League',
+    description: 'Tables marked Lobo League or LL in the Workshop. Choose a save to inspect its mission setup.',
+    eventUrl: '/event/event-current-league',
+    indices: [29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 43, 44, 46, 47],
+  },
+  {
+    id: 'event-august-2026-team-tournament',
+    title: 'August 2026 Team Tournament',
+    description: 'Tables marked TT in the Workshop, collected here for the tournament.',
+    eventUrl: '/event/event-august-2026-team-tournament',
+    indices: [37, 42, 45],
+  },
+]
+
+const mapByIndex = new Map(loboWorkshopMaps.map((map) => [map.index, map]))
+
+export const loboWorkshopMapSections = sectionDefinitions.map(({ indices, ...section }) => {
+  const layouts = new Map()
+  for (const index of indices) {
+    const map = mapByIndex.get(index)
+    if (!map) throw new Error(`Workshop map section ${section.id} references missing save ${index}`)
+    if (!layouts.has(map.layoutKey)) layouts.set(map.layoutKey, { layoutKey: map.layoutKey, name: map.name, saves: [] })
+    layouts.get(map.layoutKey).saves.push(map)
+  }
+  return { ...section, layouts: [...layouts.values()] }
+})
