@@ -463,7 +463,7 @@ function buildDiscordAnnouncementPayload(event, params) {
 
 }
 
-function buildDiscordGamePayload(game, story) {
+function buildDiscordGamePayload(game, story, rosterless) {
 
   if (!game)
     return buildDiscordInfoPayload(
@@ -481,6 +481,11 @@ function buildDiscordGamePayload(game, story) {
     buildDiscordGameReview(game, result);
   const generatedStory = getDiscordString(story);
   const dispatch = generatedStory || review.dispatch;
+  const storyHeading = !generatedStory
+    ? "Dispatch from the Front"
+    : rosterless
+      ? "Fictional battle story · army lists unavailable"
+      : "Fictional battle story";
   if (generatedStory.length > 3500)
     throw new Error("The battle story exceeds the Discord embed limit.");
 
@@ -527,7 +532,7 @@ function buildDiscordGamePayload(game, story) {
           description:
             "**Mission: " +
             result.mission +
-            "**\n\n**" + (generatedStory ? "Fictional battle story" : "Dispatch from the Front") + "**\n" +
+            "**\n\n**" + storyHeading + "**\n" +
             dispatch,
           fields: fields,
           url:
@@ -551,7 +556,7 @@ function buildDiscordGamePayload(game, story) {
         description:
           "**Mission: " +
           result.mission +
-          "**\n\n**" + (generatedStory ? "Fictional battle story" : "Dispatch from the Front") + "**\n" +
+          "**\n\n**" + storyHeading + "**\n" +
           dispatch,
         fields:
           buildDiscordGameReviewFields(game, result, review, link.url, generatedStory),

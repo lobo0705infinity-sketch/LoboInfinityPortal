@@ -16,7 +16,8 @@ import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA
   AREA_WEATHER, AREA_WEATHER_ALTERNATES, AREA_WEATHER_EARLY,
   AREA_WEATHER_LATE } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
-import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
+import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory,
+  renderGeneratedRosterlessStory } from '../src/services/generatedGameStory.ts'
 import { assertGeneratedStoryFacts } from '../src/services/generatedStoryFacts.ts'
 import { loadBattleStory, NO_ELIGIBLE_HERO_BATTLE_STORY,
   PENDING_BATTLE_STORY, UNSUPPORTED_MISSION_VERSION_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
@@ -181,6 +182,13 @@ for (const mission of CANONICAL_MISSIONS) {
         }
       }
       assert.equal(incidents.size, 4, key + ': incident coverage')
+      assert.ok(renderGeneratedRosterlessStory({
+        id: 9081, date: '2026-09-28', mission,
+        winner: 'Winner', winnerDisplayName: 'Winner', winnerFaction: armies[i].name,
+        loser: 'Loser', loserDisplayName: 'Loser', loserFaction: armies[j].name,
+        gameResult: 'win',
+      } as RecentGame),
+      key + ': a game with no valid lists needs a roster-free scene')
       covered++
     }
   }
@@ -842,6 +850,13 @@ for (const mission of CANONICAL_MISSIONS) {
   }
   assert.equal(await loadBattleStory(missionGame, missionLists), story,
     mission + ': route the live game to the generator')
+  const rosterless = renderGeneratedRosterlessStory(missionGame)
+  assert.ok(rosterless && rosterless.split('\n\n').length === 4,
+    mission + ': missing army lists still produce three scene paragraphs and a result')
+  assert.equal(await loadBattleStory(missionGame, []), rosterless,
+    mission + ': no submitted list may use the roster-free backup')
+  assert.doesNotMatch(rosterless, /Test Trooper|\{\{\w+\}\}/i,
+    mission + ': the backup must not borrow a named unit')
   if (mission === 'Akial Interference') {
     assert.match(story, /Common Classified/, 'describe public cards without inventing their identities')
   }
@@ -1039,7 +1054,8 @@ const sparseText = renderGameStoryTemplate(composeGameStory('The Dig',
 assert.ok(sparseText)
 assert.doesNotMatch(sparseText, /\b(?:Disco Baller|Mirrorball|smoke grenade|Eclipse screen)\b/i,
   'do not create a vision effect when neither list supplies one')
-assert.equal((await loadBattleStory(game, [lists[0]])), PENDING_BATTLE_STORY)
+assert.equal((await loadBattleStory({ ...game, loserArmyListId: 'still-processing' }, [lists[0]])),
+  PENDING_BATTLE_STORY, 'a submitted list still being processed cannot trigger fallback')
 assert.equal(await loadBattleStory(game, lists), rendered, 'a supported matchup uses the generated story')
 
 const template = composeGameStory(game.mission, game.winnerFaction, game.loserFaction, game.winnerFaction, 'objective', game.id)
@@ -1254,6 +1270,7 @@ try {
   const akialRows = JSON.parse(await readFile('public/game-stories/akial-interference.json', 'utf8')) as typeof template[]
   assert.ok(akialRows.length)
   const akialGame = { ...game, mission: 'Akial Interference',
+    winnerArmyListId: 'submitted-winner', loserArmyListId: 'submitted-loser',
     winnerFaction: akialRows[0].factions[0], loserFaction: akialRows[0].factions[1] } as RecentGame
   assert.equal(await loadBattleStory(akialGame, []), PENDING_BATTLE_STORY,
     'a historical Akial story must not bypass the linked-roster guard')

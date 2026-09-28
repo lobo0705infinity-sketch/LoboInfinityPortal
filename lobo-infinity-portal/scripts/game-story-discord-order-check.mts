@@ -45,6 +45,37 @@ try {
   assert.equal((await invoke({ lists })).statusCode, 400, 'no submitted game, no story')
   const oneList = await invoke({ game, lists: [lists[0], { ...lists[1], status: 'pending', decoded: null }] })
   assert.equal(oneList.body.pending, true, 'story waits for both decoded game-linked lists')
+  const missingListsGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
+  const missing = await invoke({ game: missingListsGame, lists: [] })
+  assert.equal(missing.body.success, true, 'a game without submitted lists still gets a story')
+  assert.equal(missing.body.rosterless, true)
+  assert.match(String(missing.body.story), /Winner/)
+  assert.match(String(missing.body.story), /Loser/)
+  assert.doesNotMatch(String(missing.body.story), /TEST TROOPER|\{\{\w+\}\}/i)
+  assert.equal(String(missing.body.story).split('\n\n').length, 4)
+  const oneMissing = await invoke({ game: { ...game, loserArmyListId: '' }, lists: [lists[0]] })
+  assert.equal(oneMissing.body.rosterless, true,
+    'a valid list from one side cannot supply invented actors for the missing side')
+  const rejectedCode = 'rejected-roster='
+  const rejectedGame = { ...game, loserArmyCode: rejectedCode }
+  const terminalFailure = { ...lists[1], armyCode: rejectedCode, status: 'failed', decoded: null,
+    error: 'Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.' }
+  const failed = await invoke({ game: rejectedGame, lists: [lists[0], terminalFailure] })
+  assert.equal(failed.body.success, true, 'a terminal rejected code uses the roster-free story')
+  assert.equal(failed.body.rosterless, true)
+  assert.doesNotMatch(String(failed.body.story), /TEST TROOPER/i,
+    'a failed list must not borrow a model from another game')
+  assert.equal((await invoke({ game: rejectedGame,
+    lists: [{ ...lists[0], status: 'pending', decoded: null }, terminalFailure] })).body.pending, true,
+  'the other submitted list must finish decoding before a fallback story is generated')
+  assert.equal((await invoke({ game: rejectedGame,
+    lists: [lists[0], { ...terminalFailure, error: 'Decoder temporarily offline.' }] })).body.pending, true,
+  'a transient decoder failure stays queued for retry')
+  const drawn = await invoke({ game: { ...missingListsGame, gameResult: 'draw' }, lists: [] })
+  assert.equal(drawn.body.success, true, 'the roster-free path handles a recorded draw')
+  assert.match(String(drawn.body.story).split('\n\n').at(-1) ?? '', /neither|even|draw/i)
+  assert.equal((await invoke({ game: { ...missingListsGame, mission: 'The Dig', date: '9/24/2026' },
+    lists: [] })).body.success, false, 'a missing roster cannot bypass the mission-version guard')
   const wrongList = await invoke({ game, lists: [lists[0], { ...lists[1], armyListId: 'another-game' }] })
   assert.equal(wrongList.body.pending, true, 'an unrelated decoded roster cannot start the story')
   const ready = await invoke({ game, lists })
@@ -86,13 +117,15 @@ let decodedLists: typeof lists = []
 let workerResult: Record<string, unknown> = { success: true, story: generatedStory }
 let discordResult: Record<string, unknown> = { success: true }
 const queueUpdates: Array<{ status: string; attempts: number }> = []
+let expectedStory = generatedStory
+let expectedRosterless = false
 const context = vm.createContext({ console, Date, JSON,
   UrlFetchApp: { fetch(_url: string, options: { payload: string }) {
     steps.push('story-generated')
     const request = JSON.parse(options.payload)
     lastWorkerLists = request.lists
     assert.equal(request.game.id, game.id)
-    assert.equal(request.lists.length, 2)
+    assert.ok(request.lists.length <= 2)
     return { getResponseCode: () => 200, getContentText: () => JSON.stringify(workerResult) }
   } },
 })
@@ -123,14 +156,15 @@ context.buildAutomationGamePayloadById_ = (id: number) => {
 }
 context.readArmyIntelligenceReadModelPayload = () => { steps.push('lists-read'); return { lists: decodedLists } }
 context.getArmyIntelligenceSchedulerToken_ = () => 'local-story-worker-token'
-context.buildDiscordGamePayload = (_game: typeof game, story: string) => {
+context.buildDiscordGamePayload = (_game: typeof game, story: string, rosterless: boolean) => {
   steps.push('discord-payload')
-  assert.equal(story, generatedStory)
+  assert.equal(story, expectedStory)
+  assert.equal(rosterless, expectedRosterless)
   return { content: story }
 }
 context.sendDiscordAnnouncementPayload = (_event: string, payload: { content: string }, options: { storyGenerated: boolean }) => {
   steps.push(discordResult.skipped === true ? 'discord-skipped' : 'discord-sent')
-  assert.equal(payload.content, generatedStory)
+  assert.equal(payload.content, expectedStory)
   assert.equal(options.storyGenerated, true)
   return discordResult
 }
@@ -146,12 +180,12 @@ const item = {
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting')
 assert.deepEqual(steps, ['game-read'])
 canonicalGame = game
+workerResult = { success: false, pending: true, error: 'Still waiting for a linked story.' }
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting')
-assert.deepEqual(steps.slice(-2), ['game-read', 'lists-read'])
+assert.deepEqual(steps.slice(-3), ['game-read', 'lists-read', 'story-generated'])
 decodedLists = [lists[0]]
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting')
 decodedLists = lists
-workerResult = { success: false, pending: true, error: 'Still waiting for a linked story.' }
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting')
 assert.equal(steps.includes('discord-sent'), false)
 workerResult = { success: true, story: generatedStory }
@@ -174,22 +208,38 @@ assert.equal(context.processDiscordQueueItem(item, false).success, true,
 assert.equal(lastWorkerLists[1]?.player, 'Earlier list owner',
   'the backend passes decoded contents; the worker binds them to the game player')
 decodedLists = [lists[0], { ...decodedLists[1], status: 'failed', decoded: null,
-  error: 'Invalid IDs in Army Code: out-of-date unit option.' }]
+  error: 'Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option.' }]
+expectedStory = String((await invoke({ game: canonicalGame, lists: decodedLists })).body.story)
+expectedRosterless = true
+workerResult = { success: true, story: expectedStory, rosterless: true }
 const failedDecodeQueue = context.processDiscordQueueItem(item, false)
-assert.equal(failedDecodeQueue.status, 'Waiting',
-  'decoder failures retain the queue item for a later verified refresh')
-assert.match(failedDecodeQueue.reason, /decoder repair/i,
-  'the queue must expose a known decoder rejection rather than hiding it as missing data')
+assert.equal(failedDecodeQueue.success, true,
+  'terminal decoder failure still reaches Discord after the roster-free story')
+assert.equal(lastWorkerLists[1]?.status, 'failed', 'the worker receives the failed decode status')
+assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
 decodedLists = [lists[0], { ...decodedLists[1], status: 'decoded',
   decoded: lists[1].decoded, armyCode: 'different-code=' }]
+workerResult = { success: false, pending: true, error: 'Still waiting for the submitted code.' }
 assert.equal(context.processDiscordQueueItem(item, false).status, 'Waiting',
   'the queue must reject a reused list ID if the submitted code differs')
 
 canonicalGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
 decodedLists = lists.map((list, index) => ({ ...list, armyListId: '',
   opponent: index ? 'Winner' : 'Loser', mission: game.mission, date: game.date }))
+expectedStory = generatedStory
+expectedRosterless = false
+workerResult = { success: true, story: generatedStory }
 assert.equal(context.processDiscordQueueItem(item, false).success, true,
   'an ID-less Google Form game also reaches Discord after both lists decode')
+assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
+
+canonicalGame = { ...game, winnerArmyListId: '', loserArmyListId: '' }
+decodedLists = []
+expectedStory = String((await invoke({ game: canonicalGame, lists: [] })).body.story)
+expectedRosterless = true
+workerResult = { success: true, story: expectedStory, rosterless: true }
+assert.equal(context.processDiscordQueueItem(item, false).success, true,
+  'both absent submitted lists follow game, decoder, story, Discord order')
 assert.deepEqual(steps.slice(-5), ['game-read', 'lists-read', 'story-generated', 'discord-payload', 'discord-sent'])
 
 context.getDiscordConfig = () => ({ retryLimit: 3 })
@@ -216,4 +266,4 @@ context.ensureAutomationQueueSheet = () => ({ getLastRow: () => 104,
   },
 })
 assert.equal(context.selectPendingAutomationQueueItems_(1)[0].queueId, 'old')
-console.log('Story delivery order: canonical submission, both decoded lists, generated story, then Discord.')
+console.log('Story delivery order: canonical submission, resolved army-list state, generated story, then Discord.')

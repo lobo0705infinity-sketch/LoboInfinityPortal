@@ -12,7 +12,8 @@ import { publicDetailProjection, type PublicSubmittedArmyList } from '../service
 import { getNewerPublicSnapshotDataset } from '../services/publicSnapshot'
 import { formatPlayerName } from '../services/formatting'
 import { getGameSides, getGameTimelineResult, isDrawGame } from '../services/gameResults'
-import { loadBattleStory, PENDING_BATTLE_STORY } from '../services/gameStoryRouting'
+import { getSubmittedHighlightBattleStory, loadBattleStory, PENDING_BATTLE_STORY } from '../services/gameStoryRouting'
+import { getStoryListReadiness } from '../services/gameIntelligenceLinks'
 import './GameDetails.css'
 
 type GameDetailsState =
@@ -454,7 +455,10 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
           <h3 id="game-review-story-title">Battle story</h3>
           {(loadedStory ?? (intelligenceLists.length < 2 ? PENDING_BATTLE_STORY : 'Generating battle story…'))
             .split(/\n\n+/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-          <small>Stories are fictionalized scenes inspired by player highlights or by the mission and submitted armies.</small>
+          <small>{getStoryListReadiness(game, intelligenceLists) === 'rosterless' &&
+            loadedStory?.includes('\n\n') && !getSubmittedHighlightBattleStory(game)
+            ? 'Fictional scene based on the recorded mission, armies and result; a verified army list was unavailable, so no roster unit is identified.'
+            : 'Stories are fictionalized scenes inspired by player highlights or by the mission and submitted armies.'}</small>
         </section>
 
         <section aria-labelledby="game-review-result-title">

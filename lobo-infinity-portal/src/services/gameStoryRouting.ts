@@ -1,8 +1,10 @@
 import { renderSubmittedHighlightStory } from '../data/gameHighlightStories.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
-import { hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from './generatedGameStory.ts'
+import { hasUnsupportedStoryMissionVersion, renderGeneratedGameStory,
+  renderGeneratedRosterlessStory } from './generatedGameStory.ts'
 import { storyTemplateKey } from './gameStoryTemplate.ts'
-import { getGameIntelligenceLists, hasFailedGameIntelligenceList } from './gameIntelligenceLinks.ts'
+import { getGameIntelligenceLists, getStoryListReadiness,
+  hasFailedGameIntelligenceList } from './gameIntelligenceLinks.ts'
 
 export const PENDING_BATTLE_STORY = 'The battle story is waiting for both submitted lists to be decoded and linked to this game.'
 export const FAILED_DECODE_BATTLE_STORY = 'A submitted army code was rejected by the roster decoder. The story will wait until that list can be verified and decoded.'
@@ -20,6 +22,10 @@ function unavailableStory(game: RecentGame, lists: ArmyIntelligenceList[]): stri
 function generatedStory(game: RecentGame, lists: ArmyIntelligenceList[]): string {
   const generated = renderGeneratedGameStory(game, lists)
   if (generated) return generated
+  if (getStoryListReadiness(game, lists) === 'rosterless' && !hasUnsupportedStoryMissionVersion(game)) {
+    const rosterless = renderGeneratedRosterlessStory(game)
+    if (rosterless) return rosterless
+  }
   return unavailableStory(game, lists)
 }
 

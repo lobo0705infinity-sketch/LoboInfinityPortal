@@ -167,6 +167,43 @@ export function renderGameStoryTemplate(template: GameStoryTemplate, game: Recen
   return parts.join('\n\n')
 }
 
+// The roster-free path is a fictional scene, never a claim that an unnamed
+// actor or weapon was present in a particular submitted army list.
+export function renderRosterlessGameStory(template: GameStoryTemplate, game: RecentGame): string | null {
+  if (storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction) !==
+    storyTemplateKey(template.mission, ...template.factions)) return null
+  const sides = getGameSides(game)
+  if (!sameArmy(sides[0].faction, template.heroFaction)) return null
+  const replacements: Record<string, string> = {
+    '{{hero}}': 'an operative',
+    '{{heroPlayer}}': sides[0].displayName || sides[0].player,
+    '{{otherPlayer}}': sides[1].displayName || sides[1].player,
+    '{{allyGunfighter}}': 'a covering shooter',
+    '{{enemyGunfighter}}': 'an opposing gunfighter',
+    '{{winner}}': sides[0].displayName || sides[0].player,
+    '{{loser}}': sides[1].displayName || sides[1].player,
+  }
+  const ending = isDrawGame(game) ? template.endings.draw : template.endings.heroWins
+  const render = (values: Record<string, string>) => [...template.paragraphs, ending].map((paragraph) =>
+    Object.entries(values).reduce((value, [token, replacement]) => value.replaceAll(token, replacement), paragraph)
+      .replace(/(^|[.!?]\s+)(the|a|an)\b/g, (_, lead: string, article: string) =>
+        `${lead}${article[0].toUpperCase()}${article.slice(1)}`))
+  let parts = render(replacements)
+  if (parts.slice(0, 3).some((paragraph) => paragraph.trim().split(/\s+/).length > 75)) {
+    parts = render({ ...replacements,
+      '{{heroPlayer}}': sides[0].player,
+      '{{otherPlayer}}': sides[1].player,
+      '{{winner}}': sides[0].player,
+      '{{loser}}': sides[1].player,
+    })
+  }
+  if (parts.some((paragraph) => /\{\{\w+\}\}/.test(paragraph)) || parts.slice(0, 3).some((paragraph) => {
+    const words = paragraph.trim().split(/\s+/).length
+    return words < 40 || words > 75
+  })) return null
+  return parts.join('\n\n')
+}
+
 function selectStoryHeroExcluding(list: ArmyIntelligenceList | undefined, role: HeroRole, unitId: number | null | undefined): ArmyIntelligenceDecodedEntry | null {
   if (!list?.decoded) return null
   const withoutHeroUnit: ArmyIntelligenceList = {

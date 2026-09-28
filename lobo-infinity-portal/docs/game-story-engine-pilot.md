@@ -122,20 +122,30 @@ sunshine or another weather effect.
   Double Bind scenes show the antenna and nearby zone without identifying
   which plan scored. These fictional events do not reconstruct the missing
   match setup.
+- If a submitted list is absent or the decoder has definitively rejected its
+  code, the engine renders a roster-free fictional scene using the recorded
+  mission, armies, players and result. It identifies no unit from an
+  unverified list. Known permanent decoder rejections are the invalid-ID and
+  malformed-code states; temporary errors, pending decodes, code/hash
+  mismatches and ambiguous roster links keep waiting. When one list exists,
+  that list finishes decoding before the fallback runs. The report and Discord
+  label the scene as based on the game without verified army lists.
 - The engine runs in local TypeScript without paid model APIs or a deploy.
 
 ## Submission to Discord order
 
 The submission handler persists a canonical game and queues its ID. The
-scheduled intelligence worker decodes submitted lists; the Discord queue
-links **both distinct decoded lists** to that game, by army-list ID where
-available or by unambiguous player, opponent, mission and day otherwise.
-Only then does it call the authenticated
-story worker, which checks linkage again and renders the same story engine
-used by the Battle Report. A completed story is placed in the Discord embed,
-clearly marked as fictional, and the webhook is called last. A missing game,
-list, or pending story stays in the queue as `Waiting` without using up retry
-attempts. Waiting items rotate behind untried entries. If the generator
+scheduled intelligence worker processes submitted lists; the Discord queue
+reads the decoder state and forwards candidate records to the authenticated
+story worker. The worker links decoded lists by submitted code or ID where
+available, or by unambiguous player, opponent, mission and day otherwise.
+With two decoded lists it renders the normal roster story. If a list was
+never submitted or its code was definitively rejected, it renders the
+roster-free story after any other submitted list finishes. A completed story
+is placed in the Discord embed, clearly marked as fictional, and the webhook
+is called last. A missing game, pending/ambiguous list, or pending story stays
+in the queue as `Waiting` without using up retry attempts. Waiting items
+rotate behind untried entries. If the generator
 returns a completed story while Discord automation is paused, its queue item
 also waits without consuming an attempt; enabling Discord delivers it later.
 An already logged duplicate delivery can still close the queue item. If the
@@ -143,27 +153,29 @@ generator reports an unsupported mission version or no eligible hero, delivery f
 with a recorded reason and sends no announcement. A worker error follows the
 existing retry policy. Manual `gameSubmitted` announcements cannot bypass
 the story requirement. Submitted player highlights retain precedence in the
-story worker, after both lists have decoded.
+story worker, after submitted list processing has settled.
 
 Public Battle Reports read published snapshots, which can become available
 later than the worker's persisted decoded lists. The Discord embed carries
 the completed scene even while a newer public snapshot is pending. A report
 opened from its earlier news link checks for the canonical game in newer
-snapshots, then reloads and continues checking for both decoded rosters.
-When a submitted code has a matching failed decode, the report and Discord
-queue identify the decoder failure and keep the story waiting for a verified
-decode. Game #118's Yu Jing code is such a case: the persisted snapshot dated
-11 September 2026 reports `Invalid IDs in Army Code`. Its offline reconstruction
-is a preview only; it cannot be substituted into the live report or sent to
-Discord as a verified roster.
+snapshots, then reloads and continues checking for settled roster state.
+When a submitted code has a matching terminal failed decode, the report and
+Discord queue use a roster-free scene once the other list is settled. Game
+#118's Yu Jing code is such a case: the persisted snapshot dated 11 September
+2026 reports `Invalid IDs in Army Code`. Its offline reconstruction is a
+preview only; the roster-free story cannot name any unit from it.
 This branch has not deployed the new worker or Apps Script changes.
 
 ## What the checks establish
 
 The engine test covers 22,770 canonical mission/matchup keys, four incidents
 and three hero roles: **273,240 compositions checked structurally and against
-the declared scene-fact constraints**. It
-verifies mission-objective anchors, submitted-highlight precedence, historical
+the declared scene-fact constraints**. It also requires a roster-free scene
+for every one of the 22,770 keys. This coverage is structural and does not
+approve each scene's prose. The delivery test checks absent, rejected,
+pending, transient-error and draw outcomes before Discord posting. The checks
+verify mission-objective anchors, submitted-highlight precedence, historical
 catalog exclusion, list linkage,
 ambiguous lists, mirror matchups, and 792 synthetic
 mission/incident/role/result renders. These are *possible template

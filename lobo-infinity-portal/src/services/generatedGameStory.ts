@@ -16,7 +16,7 @@ import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA
   AREA_WEATHER_LATE } from '../data/generatedStorySettings.ts'
 import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
-import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
+import { renderGameStoryTemplate, renderRosterlessGameStory, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
 import { assertGeneratedStoryFacts } from './generatedStoryFacts.ts'
 
@@ -507,4 +507,11 @@ export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligen
     }
   }
   return null
+}
+
+export function renderGeneratedRosterlessStory(game: RecentGame): string | null {
+  if (hasUnsupportedStoryMissionVersion(game)) return null
+  const template = composeGameStory(game.mission, game.winnerFaction, game.loserFaction,
+    game.winnerFaction, 'objective', game.id)
+  return template ? renderRosterlessGameStory(template, game) : null
 }

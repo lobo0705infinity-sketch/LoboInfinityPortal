@@ -1,13 +1,14 @@
 import { timingSafeEqual } from 'node:crypto'
-import { getGameIntelligenceLists } from '../src/services/gameIntelligenceLinks.ts'
+import { getStoryListReadiness } from '../src/services/gameIntelligenceLinks.ts'
 import {
-  loadBattleStory, NO_ELIGIBLE_HERO_BATTLE_STORY, PENDING_BATTLE_STORY,
+  FAILED_DECODE_BATTLE_STORY, getSubmittedHighlightBattleStory, loadBattleStory,
+  NO_ELIGIBLE_HERO_BATTLE_STORY, PENDING_BATTLE_STORY,
   UNSUPPORTED_MISSION_VERSION_BATTLE_STORY,
 } from '../src/services/gameStoryRouting.ts'
 
-// The Apps Script queue calls this only after persisting a canonical game and
-// decoding the two army lists. Recheck the linkage here before producing any
-// text that could be sent to Discord.
+// The Apps Script queue calls this after persisting a canonical game and
+// consulting the decoder. Wait for submitted lists that can still decode;
+// confirmed missing or terminally invalid lists use a roster-free scene.
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('allow', 'POST')
@@ -28,21 +29,24 @@ export default async function handler(request, response) {
     const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
     const game = body?.game
     const lists = body?.lists
-    if (!Number.isSafeInteger(game?.id) || game.id <= 0 || !Array.isArray(lists) || lists.length < 2 || lists.length > 100) {
-      response.status(400).json({ error: 'A canonical game and its candidate decoded lists are required.', success: false })
+    if (!Number.isSafeInteger(game?.id) || game.id <= 0 || !Array.isArray(lists) || lists.length > 100 ||
+      !game.mission || !game.winnerFaction || !game.loserFaction ||
+      (game.winnerArmyListId && game.winnerArmyListId === game.loserArmyListId)) {
+      response.status(400).json({ error: 'A canonical game and its candidate army lists are required.', success: false })
       return
     }
 
-    const linked = getGameIntelligenceLists(game, lists)
-    if (linked.length !== 2 || linked[0] === linked[1]) {
-      response.status(200).json({ error: 'Waiting for both game-linked decoded lists.', pending: true, success: false })
+    const readiness = getStoryListReadiness(game, lists)
+    if (readiness === 'pending') {
+      response.status(200).json({ error: PENDING_BATTLE_STORY, pending: true, success: false })
       return
     }
 
-    const story = await loadBattleStory(game, linked)
-    if (story && ![PENDING_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
+    const story = await loadBattleStory(game, lists)
+    if (story && ![PENDING_BATTLE_STORY, FAILED_DECODE_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
       UNSUPPORTED_MISSION_VERSION_BATTLE_STORY].includes(story)) {
-      response.status(200).json({ story, success: true })
+      response.status(200).json({ story, success: true,
+        rosterless: readiness === 'rosterless' && !getSubmittedHighlightBattleStory(game) })
       return
     }
 

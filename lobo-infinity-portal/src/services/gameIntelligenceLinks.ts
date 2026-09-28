@@ -71,22 +71,64 @@ export function getGameIntelligenceLists(game: RecentGame, lists: ArmyIntelligen
   return matched
 }
 
+// Only known deterministic decoder rejections are terminal. A network error,
+// a pending refresh, or an ambiguous roster link must still wait for a decode.
+const terminalDecoderError = /^(?:Invalid IDs in Army Code: Infinity-Data deterministically rejected an out-of-date unit option\.|Invalid Army Code: malformed or contaminated source value\.)$/
+
+function matchingStoryList(game: RecentGame, lists: ArmyIntelligenceList[], index: number): ArmyIntelligenceList[] {
+  const sides = getGameSides(game)
+  const side = sides[index]
+  const other = sides[1 - index]
+  const code = armyCode(index === 0 ? game.winnerArmyCode : game.loserArmyCode)
+  const fingerprint = String((index === 0 ? game.winnerRosterFingerprint : game.loserRosterFingerprint) || '')
+    .trim().toLowerCase()
+  return lists.filter((list) =>
+    (!list.sectorial && !list.faction || sameArmy(list.sectorial || list.faction, side.faction)) &&
+    (code ? armyCode(list.armyCode) === code
+      : /^[a-f0-9]{64}$/.test(fingerprint)
+        ? String(list.rosterFingerprint || list.armyCodeHash || '').toLowerCase() === fingerprint
+        : side.listId ? String(list.armyListId || '') === String(side.listId) &&
+          playerKey(list.player) === playerKey(side.player)
+          : !list.armyListId && playerKey(list.player) === playerKey(side.player) &&
+            playerKey(list.opponent) === playerKey(other.player) &&
+            Boolean(game.mission && list.mission && game.date && list.date) &&
+            playerKey(list.mission) === playerKey(game.mission) &&
+            list.date.slice(0, 10) === game.date.slice(0, 10)))
+}
+
 // A failed decode is different from an unprocessed list. Do not substitute a
 // locally reconstructed profile, a matching list ID, or another player's code.
 export function hasFailedGameIntelligenceList(game: RecentGame, lists: ArmyIntelligenceList[]): boolean {
   const sides = getGameSides(game)
   const linked = getGameIntelligenceLists(game, lists)
-  return sides.some((side, index) => {
-    if (linked.some((list) => playerKey(list.player) === playerKey(side.player))) return false
+  return sides.some((side, index) =>
+    !linked.some((list) => playerKey(list.player) === playerKey(side.player)) &&
+    matchingStoryList(game, lists, index).some((list) => list.status === 'failed'))
+}
+
+export type StoryListReadiness = 'decoded' | 'pending' | 'rosterless'
+
+export function getStoryListReadiness(game: RecentGame, lists: ArmyIntelligenceList[]): StoryListReadiness {
+  const sides = getGameSides(game)
+  const linked = getGameIntelligenceLists(game, lists)
+  let unavailable = false
+  for (let index = 0; index < sides.length; index++) {
+    if (linked.some((list) => playerKey(list.player) === playerKey(sides[index].player))) continue
+    const candidates = matchingStoryList(game, lists, index)
+    // A decoded but ambiguous match cannot be treated as a missing list.
+    if (candidates.some((list) => list.status === 'decoded' && list.decoded)) return 'pending'
+    if (candidates.some((list) => list.status === 'pending' ||
+      list.status === 'failed' && !terminalDecoderError.test(String(list.error || '')))) return 'pending'
+    if (candidates.some((list) => list.status === 'failed')) {
+      unavailable = true
+      continue
+    }
+    // A submitted code, hash, or list ID may simply not have reached the
+    // read model yet. No such identifier means there is nothing to decode.
     const code = armyCode(index === 0 ? game.winnerArmyCode : game.loserArmyCode)
     const fingerprint = String((index === 0 ? game.winnerRosterFingerprint : game.loserRosterFingerprint) || '')
-      .trim().toLowerCase()
-    return lists.some((list) => list.status === 'failed' &&
-      (!list.sectorial && !list.faction || sameArmy(list.sectorial || list.faction, side.faction)) &&
-      (code ? armyCode(list.armyCode) === code
-        : /^[a-f0-9]{64}$/.test(fingerprint)
-          ? String(list.rosterFingerprint || list.armyCodeHash || '').toLowerCase() === fingerprint
-          : Boolean(side.listId && String(list.armyListId || '') === String(side.listId) &&
-            playerKey(list.player) === playerKey(side.player))))
-  })
+    if (code || /^[a-f0-9]{64}$/i.test(fingerprint) || sides[index].listId) return 'pending'
+    unavailable = true
+  }
+  return unavailable ? 'rosterless' : linked.length === 2 ? 'decoded' : 'pending'
 }
