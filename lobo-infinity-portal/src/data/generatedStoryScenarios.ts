@@ -355,7 +355,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
     anchor: /supply box|tech-coffin|safe area/i,
     ground: 'the supply-box route', position: 'the nearest Tech-Coffin',
     gunfighting: 'fired on the guard watching the supply box and covered its carrier approaching the safe area',
-    closeCombat: 'shoved the supply-box guard aside as its carrier searched for a route to safety',
+    closeCombat: 'grappled the guard beside the supply box and gave the carrier time to move',
     endings: {
       heroWins: '{{heroPlayer}}’s crew had the stronger result in the struggle to move supply boxes into a safe area.',
       heroLoses: '{{otherPlayer}}’s crew had the stronger result over {{heroPlayer}} in the struggle to move supply boxes into a safe area.',

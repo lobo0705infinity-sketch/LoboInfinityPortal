@@ -4,7 +4,7 @@ import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
-import { INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
+import { AREA_INCIDENT_BEATS, INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
   MISSION_ARMY_PIVOT_MANEUVERS } from '../src/data/generatedStoryMissionArmies.ts'
 import { MISSION_ARMY_CLOSE_ALTERNATES } from '../src/data/generatedStoryMissionClosings.ts'
@@ -37,6 +37,7 @@ assert.deepEqual(Object.keys(MISSION_TACTICAL_REFERENTS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 assert.deepEqual(Object.keys(INCIDENT_EDITORIAL_BEATS).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
+assert.equal(AREA_INCIDENT_BEATS.length, 4)
 assert.deepEqual(Object.keys(MISSION_ROLE_ALTERNATES).sort(),
   CANONICAL_MISSIONS.filter((mission) => mission !== 'Area of Interest').sort())
 for (const [mission, referents] of Object.entries(MISSION_TACTICAL_REFERENTS)) {
@@ -161,6 +162,8 @@ for (const mission of CANONICAL_MISSIONS) {
         for (const gameId of [0, 1, 2, 3]) {
           const story = composeGameStory(mission, armies[i].name, armies[j].name, armies[i].name, role, gameId)
           assert.ok(story, key + ': no generated story')
+          assert.ok(story.scene?.incidentBeat,
+            key + ': every faction, role and incident needs a matching outcome beat')
           assertGameStoryQuality(story, key)
           if (role === 'objective' && i !== j) {
             const reverseHero = composeGameStory(mission, armies[i].name, armies[j].name,
@@ -918,13 +921,13 @@ assert.match(groundedClose, /Field Analyst.*(?:analy[sz]|reading|WIP)/i,
 const groundedDigTemplate = composeGameStory('The Dig', groundedGame.winnerFaction,
   groundedGame.loserFaction, groundedGame.winnerFaction, 'objective', groundedGame.id)!
 const groundedDigOutcomes = [
-  { game: groundedGame, pattern: /Field Analyst slipped past the Field Engineer[^.]*Winner’s crew at the buried tech/i },
+  { game: groundedGame, pattern: /Field Analyst held the Field Engineer back near the buried tech[^.]*Winner’s crew closer to a possible analysis/i },
   { game: { ...groundedGame, winner: 'Loser', winnerDisplayName: 'Loser',
     winnerFaction: 'Druze Bayram Security', loser: 'Winner', loserDisplayName: 'Winner',
     loserFaction: 'PanOceania' },
-    pattern: /Field Engineer reached the buried tech first[^.]*Loser’s crew below the console/i },
+    pattern: /Field Engineer got past the Field Analyst near the buried tech[^.]*Loser’s crew closer to a possible analysis/i },
   { game: { ...groundedGame, gameResult: 'draw' },
-    pattern: /Field Analyst and the Field Engineer held opposite sides[^.]*neither Winner’s crew nor Loser’s crew gave ground/i },
+    pattern: /Field Analyst and the Field Engineer held opposite sides[^.]*neither Winner’s crew nor Loser’s crew could force a clear approach/i },
 ] as const
 for (const { game: outcome, pattern } of groundedDigOutcomes) {
   const scene = renderGameStoryTemplate(groundedDigTemplate, outcome as RecentGame, groundedLists)
@@ -951,10 +954,23 @@ for (const mission of CANONICAL_MISSIONS) {
       assert.match(firefight, /Disco Baller/i, `${mission}/${id}/${role}: rostered vision action`)
       assert.match(firefight, /Eclipse/i, `${mission}/${id}/${role}: correct device effect`)
       assert.match(turn, /Field Engineer/i, `${mission}/${id}/${role}: opposition arrives at the turn`)
+      assert.ok(turn.includes(candidate.scene!.incidentBeat!.aftermath.replace(/[.!?]\s*$/, '')),
+        `${mission}/${id}/${role}: counter must follow this incident's aftermath`)
       assert.match(turn, role === 'objective' ? /Field Analyst/i
         : role === 'gunfighting' ? /Hill Sniper/i : /Breach Duelist/i,
       `${mission}/${id}/${role}: eligible lead attempts the mission`)
       assert.match(outcome, /Winner’s crew/, `${mission}/${id}/${role}: result resolves for the right crew`)
+      assert.ok(outcome.toLocaleLowerCase().includes(candidate.scene!.incidentBeat!.winner
+        .replaceAll('{winner}', 'Winner’s crew').toLocaleLowerCase()),
+        `${mission}/${id}/${role}: outcome must resolve this same incident`)
+      if (mission === 'Provisioning' && candidate.scene!.incidentIndex !== 2) {
+        assert.doesNotMatch(`${turn} ${outcome}`, /scattered (?:gear|supplies)/i,
+          'scattered supplies belong only to the loading-lane incident')
+      }
+      if (mission === "Dead Man's Switch" && candidate.scene!.incidentIndex === 1) {
+        assert.ok((turn.match(/separat(?:ed|ing)/gi) ?? []).length <= 1,
+          'the carrier can be separated from the Core only once in this incident')
+      }
       assertGameStoryMissionObjective({ ...candidate,
         paragraphs: [opening, firefight, turn], endings: candidate.scene!.endings,
       }, `${mission}/${id}/${role}: grounded complete scene`)
@@ -968,6 +984,15 @@ for (const mission of CANONICAL_MISSIONS) {
   }
 }
 assert.equal(castScenes, 22 * 4 * 3)
+const snowyForest = composeGameStory('Area of Interest', 'PanOceania',
+  'Druze Bayram Security', 'PanOceania', 'objective', 2,
+  { location: 'forest', weather: 'snow' })!
+const forestReport = renderGameStoryTemplate(snowyForest,
+  { ...groundedGame, mission: 'Area of Interest', id: 2 },
+  groundedLists.map((roster) => ({ ...roster, mission: 'Area of Interest' })))!
+assert.match(forestReport, /forest clearing|\bclearing\b/i)
+assert.doesNotMatch(forestReport, /\bcourtyard\b/i,
+  'the outcome of a forest incident cannot borrow a courtyard from another location')
 const duelScene = renderGameStoryTemplate(composeGameStory('The Dig',
   groundedGame.winnerFaction, groundedGame.loserFaction, groundedGame.winnerFaction,
   'closeCombat', groundedGame.id)!, groundedGame, groundedLists)

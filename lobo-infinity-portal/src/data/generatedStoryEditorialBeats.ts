@@ -11,6 +11,37 @@ export type EditorialBeat = {
   draw: string
 }
 
+// Area of Interest also has four distinct incidents, even when its terrain
+// and weather change. The outcome stays with the selected antenna problem;
+// the runtime renderer supplies the scored ground from the location tag.
+export const AREA_INCIDENT_BEATS: readonly [
+  Pick<EditorialBeat, 'aftermath' | 'winner' | 'draw'>,
+  Pick<EditorialBeat, 'aftermath' | 'winner' | 'draw'>,
+  Pick<EditorialBeat, 'aftermath' | 'winner' | 'draw'>,
+  Pick<EditorialBeat, 'aftermath' | 'winner' | 'draw'>,
+] = [
+  {
+    aftermath: 'The fallen brace still lay across part of the antenna switch.',
+    winner: 'the gap beside the brace gave {winner} room to contest the antenna and surrounding ground',
+    draw: 'the fallen brace left the switch and surrounding ground contested',
+  },
+  {
+    aftermath: 'The fresh command drew the rival operator back to the antenna.',
+    winner: 'the reset display gave {winner} another chance to dispute the antenna and its ground',
+    draw: 'the newly entered command left both crews reaching for the same antenna',
+  },
+  {
+    aftermath: 'The reattached connector sparked as both crews watched the relay.',
+    winner: 'the exposed connector kept {winner} close to the relay and its contested ground',
+    draw: 'the reattached connector left both approaches to the relay disputed',
+  },
+  {
+    aftermath: 'The replacement code remained disputed when the patrols reached the mast.',
+    winner: 'the exposed panel gave {winner} an opening at the switch and nearby ground',
+    draw: 'the replacement code and the ground around the mast remained disputed',
+  },
+]
+
 function beat(move: string, aftermath: string, winner: string, draw: string): EditorialBeat {
   return { move, aftermath, winner, draw }
 }
@@ -42,7 +73,7 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
       'both console routes stayed exposed around the unattended beacon'),
     beat('used the moving smoke to open a path to the beacon’s contact ring.',
       'The rival guard crossed the gap before the specialist could secure the beacon route.',
-      'the cleared contact path favored {winner} in the struggle to shift the beacon',
+      'the cleared contact path left {winner} within reach of the beacon’s far-half route',
       'the shifting smoke left both crews within reach of the contact ring'),
     beat('drew fire toward the cracked console before their operator crossed the open lane.',
       'The broken screen continued to conceal the next beacon nudge.',
@@ -113,11 +144,11 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
       'the opened plate gave {winner} a clearer route toward the Quantum Core',
       'the revealed Core left the Data Pack route disputed inside the Objective Room'),
     beat('kept a covering line through the door rather than chasing the rival across the room.',
-      'The carrier still needed a way back to the Core after working the console.',
+      'The Data Pack remained beside the console while the Core lay beyond the contested doorway.',
       'the defended doorway gave {winner} room to contest the Data Pack route',
       'the interrupted doorway left the Core within reach of both crews'),
     beat('cleared a cautious path for the Core seeker while their guards watched the Stunned fighters.',
-      'The specialist remained short of the Core as guards watched the room doorway.',
+      'The Data Pack carrier remained short of the Core beyond the doorway.',
       'the protected slow route kept {winner} in the contest for the Core',
       'neither escort could guide its Core seeker past the rival watch without a fight'),
     beat('screened the fallen pack from the room’s defender while the console came into view.',
@@ -182,7 +213,7 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
   Neutralization: [
     beat('screened the damaged Tech Box while a specialist sought a token inside.',
       'The operator had to choose between the exposed box and the guarded area crossing.',
-      'the exposed box route favored {winner} in the struggle to carry the tech',
+      'the exposed box route left {winner} nearer the token and the guarded area crossing',
       'the damaged box left both crews contesting the token before the area crossing'),
     beat('held the circular boundary instead of diverting to the separate antenna fight.',
       'The gap into the Neutralization Area drew the opposing patrol across the line.',
@@ -235,8 +266,8 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
   ],
   Provisioning: [
     beat('stopped the coffin lid from closing while the carrier reached for the box.',
-      'The bent hinge shifted as rivals reached the loading lane.',
-      'the lifted lid kept {winner} close to a route toward the safe area',
+      'The freed handle drew both crews toward the loading lane.',
+      'the freed handle let {winner} start hauling the box toward the safe area',
       'the coffin hinge trapped both carriers near the supply box'),
     beat('braced the falling rack while their carrier searched beneath the shelves.',
       'The rack sagged across the route to safety as the box moved.',
@@ -361,15 +392,15 @@ export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of
   ],
   'The Dig': [
     beat('shielded the dusty console while their operator sought the exposed contact.',
-      'The unanalysed tech stayed in reach of a rival trooper across the excavation.',
+      'The unanalysed tech could not be neutralized while a rival contested the excavation.',
       'the cleared reader gave {winner} another chance to attempt an analysis',
       'the dusty reader left both crews without an uncontested analysis route'),
     beat('used the broken cable as cover to approach the buried console contact.',
-      'A rival fighter stepped across the cable break to challenge the console reader.',
+      'The broken cable delayed neutralization as a rival challenged the console reader.',
       'the open cable route favored {winner} in the console analysis contest',
       'the broken cable left both crews between console and unmarked tech'),
     beat('held the shifting stones back while a specialist tried the uncovered input.',
-      'The console prompt remained unfinished as rival operators approached.',
+      'The unanswered prompt delayed neutralization as rival operators approached.',
       'the exposed prompt kept {winner} closer to a possible analysis',
       'the falling stones left neither operator with a settled analysis'),
     beat('cleared the loose rock from the control face before the rival guard arrived.',

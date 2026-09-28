@@ -43,7 +43,7 @@ export const GAME_HIGHLIGHT_STORIES: readonly HighlightStory[] = [
     paragraphs: [
       'Dust from the excavation hung in the air when the Tsyklon appeared above the dig. Teucer watched it cross the far platform, measured the angle between two support beams, and fired. The remote dropped against the metal decking, its gun suddenly silent.',
       'An engineer came for the wreck. There was a brief hope that the Tsyklon might stand again: a hand on the chassis, a tool lifted toward the damaged housing. Teucer had stayed in position. Another shot dropped the engineer beside the silent machine.',
-      'Below them, the search through the buried machinery went on. {{winner}}’s fighters had room to move through the dig now, while {{loser}}’s side had lost both a gun and the person sent to bring it back.',
+      '{{winner}}’s fighters crossed below the platform while Teucer kept the approach in view. {{loser}} still had soldiers around the buried machinery, but the immediate repair had failed, and the Tsyklon’s gun no longer covered the advance. The next push toward the dig came through the space those shots had opened.',
     ],
   },
   {
@@ -52,9 +52,20 @@ export const GAME_HIGHLIGHT_STORIES: readonly HighlightStory[] = [
     factions: ['Operations Subsection', 'Ramah Taskforce'],
     notePattern: /yadu.+(?:hrl|heavy rocket launcher).+(?:tariq|tarik).+(?:opponents? turn 1|turn 1)/i,
     paragraphs: [
-      'Tarik took the first turn with the dig still open before him. He had barely found the line toward the excavation when a Yadu on the opposite side raised a heavy rocket launcher. The shot crossed the dust in a streak of fire and took him out before the opening move could become an advance.',
-      'For a moment the soldiers near the pit could only stare at the space Tarik had occupied. Then someone called for the route to be covered, and the fighting started up again around the machinery. The Yadu had bought time with one sudden shot; there was still a whole dig to contest.',
-      '{{winner}}’s fighters pressed toward the site through the smoke, with the first turn’s loss hanging over every movement from {{loser}}’s side. The launcher had settled one encounter. The rest of the battle belonged to the people still trying to reach the buried tech.',
+      'During {{loser}}’s first turn, Tarik moved toward the excavation. Across the shaft, a Yadu in {{winner}}’s line caught him in the sights of a heavy rocket launcher. The shot tore through the dust and took Tarik out before he could turn that advance into a path for Ramah’s squad.',
+      'A Ghulam reached the cover Tarik had been heading for and stopped. The Yadu had not moved; its launcher still faced the route across the shaft. With that lane closed, Ramah’s fighters searched the rim for a second entrance while {{winner}}’s squad edged toward the analysis console below.',
+      'Fire came from the other side of the pit, and the Yadu swung its launcher away from Tarik’s fallen route. That gave {{winner}}’s fighters a narrow crossing toward the reader. Ramah still contested the buried tech, but its first path into the dig had ended in the dust, and the next exchange began on the route the rocket shot had opened.',
+    ],
+  },
+  {
+    id: 120,
+    mission: 'The Dig',
+    factions: ['Operations Subsection', 'Tohaa'],
+    notePattern: /ioann\s+bann.+solo run.+(?:unable to kill|no kills|without killing).+immobili[sz]ed/i,
+    paragraphs: [
+      '{{loser}}’s Tohaa fighters were pressing into the dig when Ioann Bann broke away for a solo run. The analysis console and buried tech lay beyond rubble watched by {{winner}}’s Operations Subsection. Ioann took the exposed line himself. A Dasyu with a MULTI Sniper Rifle held the far rim; Maximus waited nearer the reader.',
+      'Ioann loosed his Viral Tactical Bow toward the Dasyu as he pushed forward, then charged the gap near Maximus. He could not bring either fighter down. Before he could reach cover, his movement stopped and he was immobilized, alone in the open between the two lines. The run had left the reader out of reach.',
+      'Claire Lazhari’s Disco Baller spread Eclipse across the crossing, sheltering {{winner}}’s movement toward the reader. A Kosuil still held the rim for the Tohaa, and {{loser}}’s fighters kept looking for another way through the dig. Ioann could see the gap he had tried to make, but he could not take another step toward it.',
     ],
   },
 ]

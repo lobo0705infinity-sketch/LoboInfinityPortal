@@ -1,6 +1,7 @@
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies.ts'
 import { getCanonicalMissionName } from '../config/missions.ts'
 import namedCharacters from '../data/storyCharacters.json' with { type: 'json' }
+import type { EditorialBeat } from '../data/generatedStoryEditorialBeats.ts'
 import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList, RecentGame } from './api.ts'
 import { getGameIntelligenceLists } from './gameIntelligenceLinks.ts'
 import { getGameSides, isDrawGame } from './gameResults.ts'
@@ -27,6 +28,8 @@ export type GameStoryTemplate = {
     closeCombat: string
     ground: string
     position: string
+    incidentIndex?: number
+    incidentBeat?: Pick<EditorialBeat, 'aftermath' | 'winner' | 'draw'>
     setting?: string
     endings: { heroWins: string; heroLoses: string; draw: string }
   }
@@ -51,7 +54,8 @@ export function storyModelReference(entry: ArmyIntelligenceDecodedEntry): string
   if (character) return character
   const name = String(entry.unit || entry.profile || '').trim().replace(/\s+FTO$/i, '')
   const words = name.split(/\s+/).map((word) =>
-    /\p{L}/u.test(word) && word === word.toLocaleUpperCase('en-US')
+    /\p{L}/u.test(word) && word === word.toLocaleUpperCase('en-US') &&
+      !/^[A-Z](?:\.[A-Z])+\.?$/.test(word)
       ? word.charAt(0) + word.slice(1).toLocaleLowerCase('en-US')
       : word,
   )

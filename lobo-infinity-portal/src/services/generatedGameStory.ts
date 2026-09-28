@@ -3,7 +3,7 @@ import { CANONICAL_MISSIONS, getCanonicalMissionName } from '../config/missions.
 import { ARMY_STORY_VOICES } from '../data/generatedStoryArmies.ts'
 import type { ArmyStoryStyle } from '../data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../data/generatedStoryAreaArmies.ts'
-import { INCIDENT_EDITORIAL_BEATS } from '../data/generatedStoryEditorialBeats.ts'
+import { AREA_INCIDENT_BEATS, INCIDENT_EDITORIAL_BEATS } from '../data/generatedStoryEditorialBeats.ts'
 import { MISSION_ARMY_ALTERNATE_MANEUVERS, MISSION_ARMY_METHODS,
   MISSION_ARMY_PIVOT_MANEUVERS } from '../data/generatedStoryMissionArmies.ts'
 import { MISSION_ARMY_CLOSE_ALTERNATES } from '../data/generatedStoryMissionClosings.ts'
@@ -283,6 +283,7 @@ export function composeGameStory(
         gunfighting: areaRoleActions[heroVoice.style].gunfighting,
         closeCombat: areaRoleActions[heroVoice.style].closeCombat,
         ground: location.scoringGround, position: location.position,
+        incidentIndex, incidentBeat: AREA_INCIDENT_BEATS[incidentIndex],
         setting: `${setting.arrival} ${weather.opening}`,
         endings: scenario.endings,
       },
@@ -451,7 +452,7 @@ export function composeGameStory(
       objectiveAction: seed.objectiveAction,
       gunfighting: seed.roleActions?.gunfighting ?? scenario.gunfighting,
       closeCombat: seed.roleActions?.closeCombat ?? scenario.closeCombat,
-      ground, position,
+      ground, position, incidentIndex, incidentBeat: editorial,
       endings: scenario.endings,
     },
     paragraphs: [
