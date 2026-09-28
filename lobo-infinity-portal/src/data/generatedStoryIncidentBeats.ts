@@ -37,7 +37,7 @@ export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of In
   "Dead Man's Switch": [
     'The plate settled behind the Core, leaving the Data Pack carrier exposed at the door.',
     'The carrier could see the Core through smoke but had not reached the Objective Room.',
-    'The slow bearer’s route remained open for a moment as the bodyguard turned back.',
+    'The guarded approach to the Core remained open for a moment as the bodyguard turned back.',
     'The dropped pack stayed outside while another trooper contested the Core inside.',
   ],
   Evacuation: [

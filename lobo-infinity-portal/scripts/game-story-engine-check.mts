@@ -17,6 +17,7 @@ import { AREA_LOCATION_ALTERNATES, AREA_LOCATION_EARLY, AREA_LOCATION_LATE, AREA
   AREA_WEATHER_LATE } from '../src/data/generatedStorySettings.ts'
 import { GAME_STORY_CATALOG } from '../src/data/gameStoryCatalog.ts'
 import { composeGameStory, hasUnsupportedStoryMissionVersion, renderGeneratedGameStory } from '../src/services/generatedGameStory.ts'
+import { assertGeneratedStoryFacts } from '../src/services/generatedStoryFacts.ts'
 import { loadAuthoredBattleStory, MISSING_MISSION_SETUP_BATTLE_STORY, NO_ELIGIBLE_HERO_BATTLE_STORY,
   PENDING_BATTLE_STORY, UNSUPPORTED_MISSION_VERSION_BATTLE_STORY } from '../src/services/gameStoryRouting.ts'
 import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
@@ -94,7 +95,23 @@ for (const army of armies) {
 for (const [mission, scenario] of Object.entries(SOURCED_STORY_SCENARIOS)) {
   assert.ok(scenario)
   assert.match(scenario.source, /^https:\/\/infinitygeist\.com\/mission\//)
+  assert.equal(scenario.objectiveEvidence, 'aggregate-only', mission + ': record the available result evidence')
   assert.equal(scenario.incidents.length, 4, mission + ': four incidents')
+  if (mission === "Dead Man's Switch" || mission === 'Last Launch') {
+    assert.deepEqual(scenario.incidents.map((seed) => seed.facts?.item?.possession),
+      mission === 'Last Launch' ? ['unclaimed', 'carried', 'unclaimed', 'carried']
+        : ['unclaimed', 'unclaimed', 'unclaimed', 'unclaimed'],
+      mission + ': declare each incident’s item state')
+  }
+  if (mission === 'Corporate Appropriation') {
+    assert.deepEqual(scenario.incidents.map((seed) => seed.facts?.site),
+      ['prototype-lift', 'prototype-cradle', 'prototype-wreck', 'prototype-cradle'],
+      'every Corporate Appropriation incident names its prototype location')
+    assert.ok(scenario.incidents[0].referents,
+      'moving lift incident needs its own tactical referents instead of the cradle')
+    assert.ok(scenario.incidents[2].referents,
+      'wreck incident needs its own tactical referents instead of the cradle')
+  }
   assert.equal(new Set(scenario.incidents.map((seed) => seed.opening)).size, 4, mission + ': distinct openings')
   assert.equal(new Set(scenario.incidents.map((seed) => seed.complication)).size, 4, mission + ': distinct complications')
   for (const seed of scenario.incidents) {
@@ -129,8 +146,9 @@ for (const mission of CANONICAL_MISSIONS) {
       seen.add(key)
       const incidents = new Set<string>()
       for (const role of ['objective', 'gunfighting', 'closeCombat'] as const) {
-        // Each of the four complete incidents must pass the existing
-        // structural gate; this does not establish editorial originality.
+        // Compose runs the scene-facts guard across every incident, role and
+        // matchup, as well as the structural gate below. Neither establishes
+        // independent editorial originality.
         for (const gameId of [0, 1, 2, 3]) {
           const story = composeGameStory(mission, armies[i].name, armies[j].name, armies[i].name, role, gameId)
           assert.ok(story, key + ': no generated story')
@@ -374,6 +392,35 @@ function sceneForIncident(mission: string, first: string, other: string,
   }
   throw new Error('Could not select ' + mission + ' incident ' + index)
 }
+const areaEvidence = SOURCED_STORY_SCENARIOS['Area of Interest']!
+const areaUnverified = sceneForIncident('Area of Interest', 'PanOceania',
+  'Druze Bayram Security', 'objective', 0)
+assert.throws(() => assertGeneratedStoryFacts({ ...areaUnverified,
+  endings: { ...areaUnverified.endings,
+    heroWins: '{{heroPlayer}} secured the relay and led the contest for the area.' } },
+areaEvidence.objectiveEvidence, areaEvidence.incidents[0].facts),
+/unverified objective control/, 'overall victory cannot prove the relay was secured')
+const coreUnclaimed = sceneForIncident("Dead Man's Switch", 'Combined Army',
+  'Morat Aggression Force', 'objective', 2)
+const coreEvidence = SOURCED_STORY_SCENARIOS["Dead Man's Switch"]!
+assert.throws(() => assertGeneratedStoryFacts({ ...coreUnclaimed,
+  paragraphs: [coreUnclaimed.paragraphs[0], coreUnclaimed.paragraphs[1],
+    coreUnclaimed.paragraphs[2] + ' The slow bearer crossed the room.'] },
+coreEvidence.objectiveEvidence, coreEvidence.incidents[2].facts),
+/unclaimed Quantum Core/, 'an unclaimed Core cannot have a current bearer')
+const wreck = sceneForIncident('Corporate Appropriation', 'Tohaa', 'Next Wave', 'closeCombat', 2)
+const wreckEvidence = SOURCED_STORY_SCENARIOS['Corporate Appropriation']!
+assert.throws(() => assertGeneratedStoryFacts({ ...wreck,
+  paragraphs: [wreck.paragraphs[0], wreck.paragraphs[1],
+    wreck.paragraphs[2] + ' A cradle guard watched the specialist.'] },
+wreckEvidence.objectiveEvidence, wreckEvidence.incidents[2].facts),
+/prototype-wreck/, 'a prototype trapped in the transport cannot have a cradle guard')
+const movingLift = sceneForIncident('Corporate Appropriation', 'Tohaa', 'Next Wave', 'gunfighting', 0)
+assert.throws(() => assertGeneratedStoryFacts({ ...movingLift,
+  paragraphs: [movingLift.paragraphs[0], movingLift.paragraphs[1],
+    movingLift.paragraphs[2] + ' A guard waited at the cradle.'] },
+wreckEvidence.objectiveEvidence, wreckEvidence.incidents[0].facts),
+/prototype-lift/, 'the moving prototype cannot return to the abandoned cradle')
 // The match feed records a result and aggregate points, not the status of an
 // individual console, antenna, or harvester. An invented premise may put the
 // crews near an objective, but must leave its score undecided.
@@ -419,9 +466,10 @@ for (const army of armies) {
     const decisions = [MISSION_ARMY_METHODS[army.id].maneuver,
       MISSION_ARMY_ALTERNATE_MANEUVERS[army.id], ...MISSION_ARMY_PIVOT_MANEUVERS[army.id],
       ...MISSION_ARMY_CLOSE_ALTERNATES[army.id]]
-    const referents = MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
     const incidentDecisions = new Set<number>()
     for (let incident = 0; incident < 4; incident++) {
+      const referents = SOURCED_STORY_SCENARIOS[mission]!.incidents[incident].referents ??
+        MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
       const opponent = army.id === 'druze-bayram-security' ? 'Tohaa' : 'Druze Bayram Security'
       const story = sceneForIncident(mission, army.name, opponent, 'objective', incident)
       const index = decisions.findIndex((decision) => story.paragraphs[1].includes(decision
@@ -555,16 +603,17 @@ assert.equal(draws.size, armies.length, 'the same location and incident yield fa
 for (const mission of CANONICAL_MISSIONS.filter((name) => name !== 'Area of Interest')) {
   const scenario = SOURCED_STORY_SCENARIOS[mission]
   assert.ok(scenario)
-  const referents = MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
   for (const opponent of armies) {
     const tohaa = composeGameStory(mission, tohaaArmy.name, opponent.name,
       tohaaArmy.name, 'objective', 0)
     assert.ok(tohaa)
     assertGameStoryQuality(tohaa, `${mission}: Tohaa / ${opponent.name}`)
-    assert.ok([referents.advance, referents.defend].some((place) => tohaa.paragraphs[1].includes(place)),
-      `${mission}: army movement needs its objective`)
     const incidentIndex = scenario.incidents.findIndex((seed) => tohaa.paragraphs[0].startsWith(seed.opening))
     assert.ok(incidentIndex >= 0)
+    const referents = scenario.incidents[incidentIndex].referents ??
+      MISSION_TACTICAL_REFERENTS[mission as keyof typeof MISSION_TACTICAL_REFERENTS]
+    assert.ok([referents.advance, referents.defend].some((place) => tohaa.paragraphs[1].includes(place)),
+      `${mission}: army movement needs its objective`)
     assert.ok(tohaa.paragraphs[2].includes(INCIDENT_EDITORIAL_BEATS[mission][incidentIndex].aftermath.slice(0, -1)),
       `${mission}: the follow-through must remain tied to the incident`)
     assert.doesNotMatch(tohaa.paragraphs.join(' '), /\{(?:ground|position)\}/,

@@ -18,6 +18,7 @@ import type { AreaStoryTags } from '../data/generatedStorySettings.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { renderGameStoryTemplate, storyTemplateKey } from './gameStoryTemplate.ts'
 import type { GameStoryTemplate, HeroRole } from './gameStoryTemplate.ts'
+import { assertGeneratedStoryFacts } from './generatedStoryFacts.ts'
 
 // The September 24 hotfix does not include an effective hour or prior-edition
 // rules in the public feed. Withhold ambiguous same-day and earlier reports
@@ -212,6 +213,10 @@ export function composeGameStory(
   if (sceneTags && canonical !== 'Area of Interest') return null
   const incidentIndex = stableHash(key + ':' + String(gameId)) % scenario.incidents.length
   const seed = scenario.incidents[incidentIndex]
+  const finish = (story: GameStoryTemplate): GameStoryTemplate => {
+    assertGeneratedStoryFacts(story, scenario.objectiveEvidence, seed.facts)
+    return story
+  }
   const variant = stableHash(key + ':' + String(gameId) + ':' + hero.id + ':' + role + ':prose') % 4
   if (canonical === 'Area of Interest') {
     const requestedWeather = sceneTags?.weather
@@ -240,7 +245,7 @@ export function composeGameStory(
       tactics[heroVoice.style].approach + ' ' + location.approach + '.'
     const otherMove = '{{otherPlayer}}’s ' + otherVoice.crew + ' ' +
       tactics[otherVoice.style].defense + ' ' + location.position + '.'
-    return {
+    return finish({
       mission: canonical, factions: [first.name, second.name], heroFaction: hero.name, role,
       sceneTags: { location: locationId, weather: weatherId },
       paragraphs: [
@@ -261,7 +266,7 @@ export function composeGameStory(
           : '{{heroPlayer}}’s crew ' + method.drawBeat + ' while {{otherPlayer}}’s crew ' + response.drawBeat +
             ', leaving neither ahead in the contest for the communication antenna and ' + location.scoringGround + '.',
       },
-    }
+    })
   }
   const alternateRoleAction = MISSION_ROLE_ALTERNATES[canonical as keyof typeof MISSION_ROLE_ALTERNATES]
   if (!alternateRoleAction) throw new Error('Missing role alternates for ' + canonical)
@@ -276,7 +281,7 @@ export function composeGameStory(
   const heroPivots = MISSION_ARMY_PIVOT_MANEUVERS[hero.id]
   const closeAlternates = MISSION_ARMY_CLOSE_ALTERNATES[hero.id]
   if (!method || !response || !alternateManeuver || !heroPivots || !closeAlternates) return null
-  const referents = MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
+  const referents = seed.referents ?? MISSION_TACTICAL_REFERENTS[canonical as keyof typeof MISSION_TACTICAL_REFERENTS]
   if (!referents) throw new Error('Missing tactical referents for ' + canonical)
   const consequence = INCIDENT_CONSEQUENCES[canonical as keyof typeof INCIDENT_CONSEQUENCES]?.[incidentIndex]
   const crossfire = INCIDENT_CROSSFIRE[canonical as keyof typeof INCIDENT_CROSSFIRE]?.[incidentIndex]
@@ -380,7 +385,7 @@ export function composeGameStory(
   // mission claim in every ending; only the recorded winner selects a result.
   const incidentLead = incidentIndex % 2 === 0
 
-  return {
+  return finish({
     mission: canonical,
     factions: [first.name, second.name],
     heroFaction: hero.name,
@@ -404,7 +409,7 @@ export function composeGameStory(
             : '{{heroPlayer}}’s crew ' + method.drawBeat + ' and {{otherPlayer}}’s crew ' + response.drawBeat)
         : continueEnding(scenario.endings.draw, drawBeat),
     },
-  }
+  })
 }
 
 export function renderGeneratedGameStory(game: RecentGame, lists: ArmyIntelligenceList[]): string | null {

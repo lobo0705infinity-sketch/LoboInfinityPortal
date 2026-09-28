@@ -1,4 +1,6 @@
 import type { CanonicalMission } from '../config/missions.ts'
+import type { MissionTacticalReferents } from './generatedStoryTacticalReferents.ts'
+import type { IncidentSceneFacts, ObjectiveEvidence } from '../services/generatedStoryFacts.ts'
 
 export const MISSION_GEIST_SOURCE_SNAPSHOT = {
   inspectedOn: '2026-09-27', siteBuild: 'geist-v2-20260924190254',
@@ -12,11 +14,14 @@ type Incident = {
   ground?: string
   position?: string
   roleActions?: Partial<Record<'gunfighting' | 'closeCombat', string>>
+  referents?: MissionTacticalReferents
+  facts?: IncidentSceneFacts
 }
 
 export type SourcedStoryScenario = {
   source: string
   season: 'ITS 18' | 'ITS 16' | 'Lobo League'
+  objectiveEvidence: ObjectiveEvidence
   requiresUnreportedSetup?: boolean
   objectiveSkill?: 'infectedCare' | 'civilianEscort'
   anchor: RegExp
@@ -29,7 +34,7 @@ export type SourcedStoryScenario = {
 }
 
 function incident(opening: string, complication: string, turn: string, objectiveAction: string,
-  setting: Pick<Incident, 'ground' | 'position' | 'roleActions'> = {}): Incident {
+  setting: Pick<Incident, 'ground' | 'position' | 'roleActions' | 'referents' | 'facts'> = {}): Incident {
   return { opening, complication, turn, objectiveAction, ...setting }
 }
 
@@ -38,6 +43,7 @@ function incident(opening: string, complication: string, turn: string, objective
 export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedStoryScenario>> = {
   'Area of Interest': {
     source: 'https://infinitygeist.com/mission/s18_area_of_interest', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /communication antenna|relay mast/i,
     ground: 'the collapsed arcade', position: 'the breach in the far wall',
     gunfighting: 'fired at the gunner above the mast and covered the specialist crossing the broken paving',
@@ -68,6 +74,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Akial Interference': {
     source: 'https://infinitygeist.com/mission/s18_akial_interference', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     requiresUnreportedSetup: true, anchor: /classified objective|Common Classified|Akial Antenna|Akial interference|filter the signal/i,
     ground: 'the Akial Antenna', position: 'the aerial service walkway',
     gunfighting: 'fired at the guard beside the Akial Antenna and covered the operator watching the Common cards',
@@ -98,6 +105,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'B-Pong': {
     source: 'https://infinitygeist.com/mission/s18_b_pong', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /tracking beacon|console/i,
     ground: 'the tracking beacon lane', position: 'the nearest console',
     gunfighting: 'fired at the guard beside the tracking beacon and sheltered the specialist by the console',
@@ -128,6 +136,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Corporate Appropriation': {
     source: 'https://infinitygeist.com/mission/s18_corporate_appropriation', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /prototype|panoply/i,
     ground: 'the enemy prototype cradle', position: 'the adjacent panoply',
     gunfighting: 'laid fire across the bay sentry’s position while its carrier approached the prototype',
@@ -138,14 +147,33 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
       draw: 'The fight over the prototype and panoplies left the two crews evenly matched.',
     },
     incidents: [
-      incident('An enemy prototype rolled from a damaged cradle as both crews entered the equipment bay.', 'A failed brake sent the prototype toward a service lift beneath the rival firing lane.', 'The lift began descending with the restraint open and its carrier still a step away.', 'caught the prototype restraint and tried to pull the enemy device clear of the descending lift'),
-      incident('An enemy prototype stood beside a panoply whose locker seals had just failed.', 'A rival specialist searched the open locker while a guard blocked the prototype carrier’s exit.', 'The broken locker door swung across the lane, briefly screening a path to the prototype.', 'reached past the panoply door and tugged at the enemy prototype in its cradle'),
-      incident('A prototype crate lay between two panoplies after an equipment transport overturned.', 'A damaged label obscured which container held the enemy prototype under the fallen transport.', 'A torn seal exposed a serial mark as the opposing squad approached the wreck.', 'grabbed the enemy prototype by its serial-marked crate and tried to draw it out from under the transport'),
-      incident('The prototype cradle alarm sounded as the nearest panoply opened without a specialist nearby.', 'A loose clamp held the prototype in place while rival fighters searched the room.', 'A sudden power dip released the clamp halfway and opened a narrow route to the cradle.', 'slipped through the gap and tried to work the clamp loose to take the enemy prototype'),
+      incident('An enemy prototype rolled from a damaged cradle as both crews entered the equipment bay.', 'A failed brake sent the prototype toward a service lift beneath the rival firing lane.', 'The lift began descending with the restraint open and its carrier still a step away.', 'caught the prototype restraint and tried to pull the enemy device clear of the descending lift', {
+        ground: 'the descending service lift', position: 'the lower lift landing',
+        referents: { advance: 'the moving prototype', feint: 'the lift landing',
+          defend: 'the lower landing', continuation: 'the descending lift' },
+        roleActions: {
+          gunfighting: 'fired on the lift guard and covered the carrier reaching for the moving prototype',
+          closeCombat: 'forced the lift guard back from the moving prototype and screened the carrier',
+        },
+        facts: { site: 'prototype-lift' },
+      }),
+      incident('An enemy prototype stood beside a panoply whose locker seals had just failed.', 'A rival specialist searched the open locker while a guard blocked the prototype carrier’s exit.', 'The broken locker door swung across the lane, briefly screening a path to the prototype.', 'reached past the panoply door and tugged at the enemy prototype in its cradle', { facts: { site: 'prototype-cradle' } }),
+      incident('A prototype crate lay between two panoplies after an equipment transport overturned.', 'A damaged label obscured which container held the enemy prototype under the fallen transport.', 'A torn seal exposed a serial mark as the opposing squad approached the wreck.', 'grabbed the enemy prototype by its serial-marked crate and tried to draw it out from under the transport', {
+        ground: 'the overturned transport', position: 'the marked prototype crate',
+        referents: { advance: 'the marked prototype crate', feint: 'the wrecked transport',
+          defend: 'the wreck’s far opening', continuation: 'the transport bay' },
+        roleActions: {
+          gunfighting: 'fired at the wreck guard and covered the carrier reaching for the marked prototype crate',
+          closeCombat: 'shoved the transport guard away from the marked crate and opened the carrier’s approach',
+        },
+        facts: { site: 'prototype-wreck' },
+      }),
+      incident('The prototype cradle alarm sounded as the nearest panoply opened without a specialist nearby.', 'A loose clamp held the prototype in place while rival fighters searched the room.', 'A sudden power dip released the clamp halfway and opened a narrow route to the cradle.', 'slipped through the gap and tried to work the clamp loose to take the enemy prototype', { facts: { site: 'prototype-cradle' } }),
     ],
   },
   'Critical Intervention': {
     source: 'https://infinitygeist.com/mission/s18_critical_intervention', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     requiresUnreportedSetup: true, anchor: /data console|data pack|server room/i,
     ground: 'the server room', position: 'the data console',
     gunfighting: 'traded shots with a defender at the server racks and shielded the pack carrier',
@@ -164,6 +192,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Crossing Lines': {
     source: 'https://infinitygeist.com/mission/s18_crossing_lines', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /dead zone|antenna/i,
     ground: 'the disputed dead zone', position: 'the antenna at its edge',
     gunfighting: 'fired at the guard overlooking the dead zone and covered the specialist reaching the antenna',
@@ -182,6 +211,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   "Dead Man's Switch": {
     source: 'https://infinitygeist.com/mission/cm_lobo_dead_mans_switch', season: 'Lobo League',
+    objectiveEvidence: 'aggregate-only',
     anchor: /quantum core|data pack|objective room|resonance/i,
     ground: 'the Objective Room', position: 'the Quantum Core',
     gunfighting: 'fired at the guard near the Objective Room and covered a specialist approaching the Core',
@@ -192,14 +222,15 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
       draw: 'The fight for the Quantum Core and Objective Room left neither crew ahead.',
     },
     incidents: [
-      incident('The Quantum Core lay unattended in the Objective Room after its bearer slipped away under fire.', 'A loose floor plate hid the Core from the nearest specialist while rival fighters reached the room entrance.', 'The plate rocked and exposed its glow just as a Data Pack carrier came within sight.', 'located the Quantum Core and reached for it beneath the plate as the Data Pack carrier crossed'),
-      incident('A Data Pack carrier approached the Objective Room while two Quantum Core seekers watched its door.', 'The nearest console flickered as the carrier drew near enough for Quantum Resonance to matter.', 'A rival fighter crossed the room and briefly separated the carrier from the Core.', 'worked the Data Pack console and reached toward the Quantum Core through the contested doorway'),
-      incident('The Quantum Core lay between two Stunned fighters near the Objective Room entrance.', 'The next bearer could not fire or take a second Move while carrying the unstable payload.', 'A bodyguard stepped away from the room door and opened a slow route toward the Core.', 'stepped between the Stunned fighters and stretched a hand toward the Quantum Core'),
-      incident('Both Data Pack consoles glowed outside the Objective Room while the Quantum Core remained unclaimed.', 'A dropped pack blocked one specialist at the threshold as an opposing squad took cover.', 'The pack slid clear and exposed the console control just as another trooper entered the room.', 'entered a request at the Data Pack console and pushed through the doorway toward the Quantum Core'),
+      incident('The Quantum Core lay unattended in the Objective Room after its bearer slipped away under fire.', 'A loose floor plate hid the Core from the nearest specialist while rival fighters reached the room entrance.', 'The plate rocked and exposed its glow just as a Data Pack carrier came within sight.', 'located the Quantum Core and reached for it beneath the plate as the Data Pack carrier crossed', { facts: { item: { name: 'Quantum Core', possession: 'unclaimed' } } }),
+      incident('A Data Pack carrier approached the Objective Room while two Quantum Core seekers watched its door.', 'The nearest console flickered as the carrier drew near enough for Quantum Resonance to matter.', 'A rival fighter crossed the room and briefly separated the carrier from the Core.', 'worked the Data Pack console and reached toward the Quantum Core through the contested doorway', { facts: { item: { name: 'Quantum Core', possession: 'unclaimed' } } }),
+      incident('The Quantum Core lay between two Stunned fighters near the Objective Room entrance.', 'The next bearer could not fire or take a second Move while carrying the unstable payload.', 'A bodyguard stepped away from the room door and opened a slow route toward the Core.', 'stepped between the Stunned fighters and stretched a hand toward the Quantum Core', { facts: { item: { name: 'Quantum Core', possession: 'unclaimed' } } }),
+      incident('Both Data Pack consoles glowed outside the Objective Room while the Quantum Core remained unclaimed.', 'A dropped pack blocked one specialist at the threshold as an opposing squad took cover.', 'The pack slid clear and exposed the console control just as another trooper entered the room.', 'entered a request at the Data Pack console and pushed through the doorway toward the Quantum Core', { facts: { item: { name: 'Quantum Core', possession: 'unclaimed' } } }),
     ],
   },
   Evacuation: {
     source: 'https://infinitygeist.com/mission/s18_evacuation', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     objectiveSkill: 'civilianEscort',
     anchor: /civilian|HVT|Extraction Console/i,
     ground: 'the approach to the Extraction Console', position: 'the waiting civilian escort',
@@ -219,6 +250,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Hardlock: {
     source: 'https://infinitygeist.com/mission/s18_hard_lock', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /beacon|console/i,
     ground: 'the enemy beacon position', position: 'the console switch line',
     gunfighting: 'fired at the defender watching the enemy beacon and covered the console specialist',
@@ -237,6 +269,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Last Launch': {
     source: 'https://infinitygeist.com/mission/s18_last_launch', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /launching tower|ID Scanner|ID Checker|extract/i,
     ground: 'the ID Scanner approach', position: 'the ID Checker inside the Launching Tower',
     gunfighting: 'laid covering fire across the tower stairwell to shelter the specialist at the ID Scanner',
@@ -247,20 +280,21 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
       draw: 'Neither crew pulled ahead in the contest for ID downloads and access to the Launching Tower checker.',
     },
     incidents: [
-      incident('A specialist approached an ID Scanner while an escort waited outside the Launching Tower.', 'A fallen stair rail exposed the scanner and delayed the WIP download for an ID Token.', 'The rail pulled loose and offered a narrow approach before the patrol reached the scanner.', 'keyed a download request into the ID Scanner beneath the Launching Tower stairs'),
+      incident('A specialist approached an ID Scanner while an escort waited outside the Launching Tower.', 'A fallen stair rail exposed the scanner and delayed the WIP download for an ID Token.', 'The rail pulled loose and offered a narrow approach before the patrol reached the scanner.', 'keyed a download request into the ID Scanner beneath the Launching Tower stairs', { facts: { item: { name: 'ID Token', possession: 'unclaimed' } } }),
       incident('A trooper carrying an ID Token reached a Launching Tower gate with the ID Checker still across the room.', 'A rival patrol entered by the next gate and cut off the direct route to the checker.', 'A damaged inner partition shifted and exposed another path between the bearer and the tower center.', 'took the ID Token through the Launching Tower passage and reached toward the checker', { ground: 'the Launching Tower gate', roleActions: {
         gunfighting: 'laid fire on the tower guard to shelter the ID bearer crossing toward the checker',
         closeCombat: 'shoved the defender from the tower gate and shielded the ID bearer’s route inside',
-      } }),
-      incident('An ID Scanner flickered below the Launching Tower while the checker stood beyond its dark central gate.', 'A guard covered the scanner and forced a specialist to shelter before downloading an ID.', 'Emergency lighting revealed the scanner face as the opposing crew moved toward the tower.', 'entered a download request at the ID Scanner as the tower checker came into view'),
+      }, facts: { item: { name: 'ID Token', possession: 'carried' } } }),
+      incident('An ID Scanner flickered below the Launching Tower while the checker stood beyond its dark central gate.', 'A guard covered the scanner and forced a specialist to shelter before downloading an ID.', 'Emergency lighting revealed the scanner face as the opposing crew moved toward the tower.', 'entered a download request at the ID Scanner as the tower checker came into view', { facts: { item: { name: 'ID Token', possession: 'unclaimed' } } }),
       incident('A wounded trooper carrying an ID Token took cover at the Launching Tower threshold.', 'A broken handrail and a rival guard separated the bearer from the ID Checker at the tower center.', 'A smoke trail briefly concealed the route inside without settling who could reach the checker.', 'carried the ID Token through the smoke and reached for the ID Checker controls', { ground: 'the Launching Tower threshold', roleActions: {
         gunfighting: 'fired across the tower passage to shelter the wounded ID bearer on the checker approach',
         closeCombat: 'forced the tower guard back from the checker approach and protected the wounded bearer',
-      } }),
+      }, facts: { item: { name: 'ID Token', possession: 'carried' } } }),
     ],
   },
   Neutralization: {
     source: 'https://infinitygeist.com/mission/s18_neutralization', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /hyperthermal tech|Neutralization Area|neutralizing antenna/i,
     ground: 'the Hyperthermal Tech Box passage', position: 'the nearest Neutralization Area',
     gunfighting: 'fired at the guard between the Hyperthermal Tech Box and the Neutralization Area',
@@ -279,6 +313,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Outbreak: {
     source: 'https://infinitygeist.com/mission/s18_outbreak', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     objectiveSkill: 'infectedCare',
     anchor: /infected|alpha infected/i,
     ground: 'the infected containment lane', position: 'the Alpha Infected position',
@@ -298,6 +333,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Panic Room': {
     source: 'https://infinitygeist.com/mission/s16_panic_room', season: 'ITS 16',
+    objectiveEvidence: 'aggregate-only',
     anchor: /panic room|essential personnel/i,
     ground: 'the contested Panic Room', position: 'its open central gate',
     gunfighting: 'traded fire through the Panic Room gate to shelter Essential Personnel entering it',
@@ -316,6 +352,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Provisioning: {
     source: 'https://infinitygeist.com/mission/s18_provisioning', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /supply box|tech-coffin|safe area/i,
     ground: 'the supply-box route', position: 'the nearest Tech-Coffin',
     gunfighting: 'fired on the guard watching the supply box and covered its carrier approaching the safe area',
@@ -334,6 +371,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Annihilation: {
     source: 'https://infinitygeist.com/mission/s18_annihilation', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /lieutenant|surviv|army point|casualt/i,
     ground: 'the broken battle line', position: 'the enemy lieutenant’s cover',
     gunfighting: 'challenged the lieutenant’s guard with sustained fire while the surviving squad regrouped',
@@ -352,6 +390,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Battleground: {
     source: 'https://infinitygeist.com/mission/s18_battleground', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /sector|dominat/i,
     ground: 'the contested central scoring sector', position: 'the far sector boundary',
     gunfighting: 'fired at the guard holding the central sector and covered a squad moving inside it',
@@ -370,6 +409,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Cutthroat: {
     source: 'https://infinitygeist.com/mission/s18_cutthroat', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /lieutenant|army point|casualt/i,
     ground: 'the lieutenant’s exposed flank', position: 'the opposing lieutenant’s guarded position',
     gunfighting: 'traded shots with the bodyguard by the rival officer while holding the friendly command route',
@@ -388,6 +428,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   Superiority: {
     source: 'https://infinitygeist.com/mission/s18_superiority', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /quadrant|console/i,
     ground: 'the contested quadrant', position: 'the central console',
     gunfighting: 'fired at the defender watching the console and covered the squad moving into the quadrant',
@@ -406,6 +447,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Uplink Center': {
     source: 'https://infinitygeist.com/mission/s18_uplink_center', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /communication antenna|tech-coffin/i,
     ground: 'the contested line between the communication antennas', position: 'the contested Tech-Coffin',
     gunfighting: 'laid fire on the antenna approach to screen a fighter nearing the Tech-Coffin',
@@ -424,6 +466,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Double Bind': {
     source: 'https://infinitygeist.com/mission/s18_double_bind', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     // The September 24 ITS 18 hotfix requires each side to choose one of three
     // objective sets when Deployment is chosen. Public games omit that choice.
     requiresUnreportedSetup: true, anchor: /antenna|zone of influence/i,
@@ -444,6 +487,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'The Dig': {
     source: 'https://infinitygeist.com/mission/s18_the_dig', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     // September 24 ITS 18 hotfix: Analyze Hyperthermal Tech is performed in
     // contact with a Console before any neutralization, with Player Tokens.
     anchor: /hyperthermal tech|analysis console|analy/i,
@@ -464,6 +508,7 @@ export const SOURCED_STORY_SCENARIOS: Partial<Record<CanonicalMission, SourcedSt
   },
   'Data Harvest': {
     source: 'https://infinitygeist.com/mission/s18_data_harvest', season: 'ITS 18',
+    objectiveEvidence: 'aggregate-only',
     anchor: /data-harvester|designated zone/i,
     ground: 'the enemy designated zone', position: 'the disputed data-harvester',
     gunfighting: 'fired across the zone boundary to keep the rival specialist from the data-harvester',

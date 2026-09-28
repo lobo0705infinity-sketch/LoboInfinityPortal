@@ -4,6 +4,9 @@
 
 ## Corrections after the latest audit
 
+- Scene composition now carries an explicit `aggregate-only` evidence contract for all 22 missions. The runtime checks all three endings for unsupported completed objectives and Area of Interest endings for a claimed switch, relay or panel. The Area army outcome beats now describe the tactical lead without assuming a particular activation or secure control.
+- Each Dead Man’s Switch incident explicitly records an unclaimed Quantum Core; Last Launch records whether its ID Token has been downloaded. The unclaimed-item guard rejects a current bearer in the incident or ending. The third Core incident now follows a seeker toward the Core instead of describing a bearer before anyone has picked it up.
+- Corporate Appropriation now records the prototype’s location in all four incidents. The transport wreck and moving lift each supply their own tactical referents and role actions; the guard rejects an abandoned cradle in either scene. Negative mutations exercise the objective, item and both location constraints before the exhaustive generator run.
 - Uplink Center, Hardlock, Superiority, Data Harvest, Double Bind and Akial Interference no longer treat an unreported activation, deposit, or completed card as a known scored event. The incident presents a contested objective or an attempt; winning an aggregate game result does not certify a particular objective.
 - Last Launch distinguishes scenes before an ID download from those with an existing ID bearer. Its gunfight and close combat actions now fit each incident's position in that sequence. Data Harvest no longer introduces an unexplained carrier beside an unattended device or places a harvester inside the designated zone solely because that side won the game.
 - A repeated B-Pong console consequence and long reusable tactical phrases were revised. Closing tactics vary by matchup. These changes reduce examples of repetition; they do not give the engine the distinct plots and faction decisions that a human editor can establish.
@@ -13,8 +16,8 @@
 
 | Check | Observed result | Limit |
 | --- | --- | --- |
-| Mission and result | Sampled scenes leave objective status open and order the ID Scanner before the checker. Endings refer to the mission contest without claiming a specific unreported score. | The scenarios and match feed still need a rules editor to confirm each premise and version. |
-| Prose variety | Two fresh 110-scene packets contain all 22 missions, four incidents, three roles, a mirror, and a deliberate faction reversal per mission. In the scene paragraphs, after excluding the 22 deliberate reversals in each packet, no complete sentence recurs across scenes; no 13-word phrase appears in three scenes. But 19 and 14 distinct ten-word phrases, respectively, do recur in three or more scenes. | Reusable tactics remain visible, and two independent readers have not scored either packet. |
+| Mission and result | The composer checks declared objective evidence and relevant incident item or wreck facts for every generated matchup, incident and role; negative mutations prove the three identified contradictions fail. | Text checks cover named contradictions, not all possible factual or causal errors. The scenarios and match feed still need a rules editor to confirm each premise and version. |
+| Prose variety | Two earlier 110-scene packets covered all 22 missions, four incidents, three roles, a mirror, and a deliberate faction reversal per mission. Excluding deliberate reversals, no complete sentence recurred across scenes, while 19 and 14 distinct ten-word phrases, respectively, recurred in at least three scenes. A new 110-scene packet was generated after these repairs; its affected Area, Core and prototype incidents were inspected for the targeted contradictions. | Reusable tactics remain visible. The new packet has not received two independent editorial scorecards. |
 | Authored catalog | The 1,300 authored entries remain unchanged and retain routing priority. | They need a separate mission-fidelity decision; this pilot does not satisfy the 22,770 individually written-story release gate. |
 | Runtime | Akial Interference, Critical Intervention and Double Bind remain preview-only because the feed lacks the selected setup. | No inferred card, attacker assignment, or objective set may be treated as observed play. |
 
@@ -25,7 +28,7 @@ The [24 September 2026 ITS 18 hotfix](https://infinityuniverse.com/en/news/its18
 From `lobo-infinity-portal`, run:
 
 ```bash
-node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir <empty-directory> --seed 20260928-final-check-0124-a4cb90fd
+node --experimental-strip-types scripts/prepare-story-editorial-review.mts --output-dir <empty-directory> --seed 20260928-scene-facts-final-b
 ```
 
 The packet labels all scenes as generated and substitutes Player A/B and “the operative” for an actual game and roster hero. Readers should examine all three alternative endings, although a game displays only the applicable one. Give separate packets to two readers who have not inspected the generator; have them score mission correctness, faction choice, causality, prose, repetition, and the endings using the accompanying rubric. Record disagreements and review newly generated scenes after any revision.

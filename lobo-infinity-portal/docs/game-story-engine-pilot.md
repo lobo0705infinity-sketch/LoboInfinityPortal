@@ -56,6 +56,15 @@ differ. Older game records do not identify which edition was played.
   changes its subject: Last Launch, for example, first needs an ID download
   and only later can describe an ID bearer. Game ID chooses an incident
   deterministically.
+- Every scenario declares that the game feed supplies only an aggregate result.
+  Composition checks all three endings for claimed objective completion and
+  checks Area of Interest outcomes for unverified control of a particular
+  relay or switch. Dead Man’s Switch and Last Launch incidents explicitly
+  declare whether the Quantum Core or ID Token has a bearer. Corporate
+  Appropriation incidents declare whether the prototype is at the cradle,
+  moving on the lift, or trapped under the transport. The moving scenes
+  override tactical places and role actions; the composer rejects a current
+  bearer before pickup and rejects references to an abandoned cradle.
 - The Area of Interest pilot additionally accepts `location` and `weather`
   tags. It selects tags deterministically when omitted and rejects explicit
   incompatible combinations. No weather effects (`none`) is valid everywhere.
@@ -101,11 +110,15 @@ sunshine or another weather effect.
 ## What the checks establish
 
 The engine test covers 22,770 canonical mission/matchup keys, four incidents
-and three hero roles: **273,240 structurally checked compositions**. It
+and three hero roles: **273,240 compositions checked structurally and against
+the declared scene-fact constraints**. It
 verifies mission-objective anchors, authored precedence, list linkage,
 ambiguous lists, mirror matchups, and 792 synthetic
 mission/incident/role/result renders. These are *possible template
-compositions*, not 273,240 approved or individually written stories. Because
+compositions*, not 273,240 approved or individually written stories. The test
+also injects false objective control, a premature bearer, and wrong prototype
+locations to ensure the runtime guard rejects them. This does not catch every
+possible semantic contradiction or certify prose originality. Because
 three missions need unreported setup, only 19 mission families are eligible for
 runtime generation with the current game records; all 22 remain in the
 synthetic template check.
