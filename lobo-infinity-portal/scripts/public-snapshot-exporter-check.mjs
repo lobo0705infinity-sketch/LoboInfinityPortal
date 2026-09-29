@@ -558,7 +558,7 @@ const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'divi
   'player1', 'player1DisplayName', 'player1Faction', 'player2', 'player2DisplayName', 'player2Faction', 'winner',
   'winnerDisplayName', 'loser', 'loserDisplayName', 'winnerFaction', 'loserFaction', 'mission',
   'tp', 'op', 'vp', 'bestMoment', 'firstTurn', 'winnerArmyListId', 'loserArmyListId',
-  'winnerRosterFingerprint', 'loserRosterFingerprint']
+  'mapSlug', 'mapRating', 'winnerRosterFingerprint', 'loserRosterFingerprint']
 assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())

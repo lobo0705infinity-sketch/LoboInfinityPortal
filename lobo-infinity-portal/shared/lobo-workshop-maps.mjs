@@ -2,7 +2,7 @@
 // Preview photos were captured in Tabletop Simulator on 2026-09-28.
 export const LOBO_WORKSHOP_URL = 'https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238'
 
-export const loboWorkshopMaps = [
+const workshopSaveMaps = [
   {
     "index": 1,
     "id": "3719263238:5c10ce",
@@ -511,7 +511,7 @@ export const loboWorkshopMaps = [
     "index": 43,
     "id": "3719263238:913074",
     "guid": "913074",
-    "slug": "43-ll-map-13-data-heist-double-bind",
+    "slug": "43-ll-map-13-data-harvest-double-bind",
     "name": "LL Map 13  Data Heist/Double Bind",
     "family": "League tables",
     "objectCount": 138,
@@ -523,7 +523,7 @@ export const loboWorkshopMaps = [
     "index": 44,
     "id": "3719263238:385da8",
     "guid": "385da8",
-    "slug": "44-ll-map-14-data-heist-double-bind",
+    "slug": "44-ll-map-14-data-harvest-double-bind",
     "name": "LL Map 14  Data Heist/Double Bind",
     "family": "League tables",
     "objectCount": 75,
@@ -569,4 +569,120 @@ export const loboWorkshopMaps = [
   }
 ]
 
+// A Workshop bag is a save, not necessarily a different terrain layout. These
+// names describe the photographed terrain; the original bag name stays available
+// for lookup and for updating the published Workshop item after review.
+const terrainLayouts = [
+  ['Containment Ring', [1, 45]],
+  ['Rustline Market', [2]],
+  ['Cargo Crossroads', [3, 4, 33]],
+  ['Quadrant Bastion', [5, 41]],
+  ['Tidal Turbines', [6]],
+  ['Azure Circuit', [7]],
+  ['Autumn Underpass', [8]],
+  ['Shardworks', [9, 25, 31]],
+  ['The Iron Yard', [10]],
+  ['Canal Quarter', [11, 30, 39]],
+  ['Skyrail Exchange', [12, 17, 29, 42, 46]],
+  ['Concrete Labyrinth', [13]],
+  ['Dustline Outpost', [14]],
+  ['Neon Exchange', [15, 16, 37, 47]],
+  ['Sakura Courtyard', [18, 34]],
+  ['Foundry Blocks', [19]],
+  ['Kokkyo Nights', [20]],
+  ['Kunin Mothership', [21]],
+  ['Polar Station', [22]],
+  ['Engineering Deck', [23]],
+  ['Void Tango', [24]],
+  ['Freight Terminal', [26, 38]],
+  ['Hangar 1.7', [27, 32]],
+  ['NeoTerran Command', [28]],
+  ['Containment Ring: Red Sector', [35]],
+  ['Copper Grid', [36, 40]],
+  ['Dustfall Archive', [43]],
+  ['Civic Crossing', [44]],
+]
+
+const terrainBySave = new Map(terrainLayouts.flatMap(([name, indices]) =>
+  indices.map((index) => [index, { name, layoutKey: indices[0] }])))
+
+// Mission names follow the Workshop bag title or source note, except that the
+// commissioner corrected "Data Heist" to the actual mission, "Data Harvest".
+// A blank list means the save is a terrain layout without a named mission setup.
+const missionSetupsBySave = new Map([
+  [4, ['Area of Interest']],
+  [15, ['Mindwipe']],
+  [16, ['Provisioning', 'Outbreak']],
+  [17, ['Provisioning', 'Outbreak']],
+  [22, ['Frostbyte']],
+  [25, ['Area of Interest']],
+  [37, ['Outbreak']],
+  [38, ['Neutralization']],
+  [39, ['Neutralization']],
+  [40, ["Dead Man's Switch"]],
+  [41, ["Dead Man's Switch"]],
+  [42, ['Neutralization']],
+  [43, ['Data Harvest', 'Double Bind']],
+  [44, ['Data Harvest', 'Double Bind']],
+  [45, ["Dead Man's Switch"]],
+  [46, ['The Dig', 'Provisioning']],
+  [47, ['The Dig', 'Provisioning']],
+])
+
+// These pairs contain exactly the same TTS objects, not just similar photos.
+const exactDuplicateOfBySave = new Map([[31, 25], [32, 27], [33, 4], [34, 18]])
+const correctedWorkshopNames = new Map([
+  [43, 'LL Map 13 Data Harvest/Double Bind'],
+  [44, 'LL Map 14 Data Harvest/Double Bind'],
+])
+
+export const loboWorkshopMaps = workshopSaveMaps.map((map) => ({
+  ...map,
+  workshopName: correctedWorkshopNames.get(map.index) ?? map.name,
+  name: terrainBySave.get(map.index).name,
+  layoutKey: terrainBySave.get(map.index).layoutKey,
+  missionSetups: missionSetupsBySave.get(map.index) ?? [],
+  exactDuplicateOf: exactDuplicateOfBySave.get(map.index) ?? null,
+}))
+
 export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))
+
+// Section membership follows the original bag labels. The LL and TT event
+// assignments are proposals until the commissioner confirms them. A layout
+// appears once in each section, while all of its Workshop saves remain linked.
+const sectionDefinitions = [
+  {
+    id: 'casual',
+    title: 'Casual tables',
+    description: 'Browse the general Workshop collection for an open game. Some saves also have named mission setups.',
+    eventUrl: null,
+    indices: Array.from({ length: 28 }, (_, index) => index + 1),
+  },
+  {
+    id: 'event-current-league',
+    title: 'July 2026 League',
+    description: 'Tables marked Lobo League or LL in the Workshop. Choose a save to inspect its mission setup.',
+    eventUrl: '/event/event-current-league',
+    indices: [29, 30, 31, 32, 33, 34, 35, 36, 38, 39, 40, 41, 43, 44, 46, 47],
+  },
+  {
+    id: 'event-august-2026-team-tournament',
+    title: 'August 2026 Team Tournament',
+    description: 'Tables marked TT in the Workshop, collected here for the tournament.',
+    eventUrl: '/event/event-august-2026-team-tournament',
+    indices: [37, 42, 45],
+  },
+]
+
+const mapByIndex = new Map(loboWorkshopMaps.map((map) => [map.index, map]))
+
+export const loboWorkshopMapSections = sectionDefinitions.map(({ indices, ...section }) => {
+  const layouts = new Map()
+  for (const index of indices) {
+    const map = mapByIndex.get(index)
+    if (!map) throw new Error(`Workshop map section ${section.id} references missing save ${index}`)
+    if (!layouts.has(map.layoutKey)) layouts.set(map.layoutKey, { layoutKey: map.layoutKey, name: map.name, saves: [] })
+    layouts.get(map.layoutKey).saves.push(map)
+  }
+  return { ...section, layouts: [...layouts.values()] }
+})

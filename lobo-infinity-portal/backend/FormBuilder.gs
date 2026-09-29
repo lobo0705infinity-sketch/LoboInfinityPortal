@@ -29,6 +29,15 @@ function lifAddChoice_(form, title, choices, required) {
   return form.addListItem().setTitle(title).setChoiceValues(choices).setRequired(required !== false);
 }
 
+function lifAddWorkshopMapFields_(form, formType) {
+  const choices = lifWorkshopMapChoices_(formType);
+  if (!choices.length) throw new Error("No Workshop maps are assigned to " + formType + ".");
+  lifAddChoice_(form, LIF_FORMS.FIELDS.WORKSHOP_MAP, choices, false)
+    .setHelpText("Choose the save you played. Leave blank if your table is not in the Lobo Workshop library.");
+  lifAddChoice_(form, LIF_FORMS.FIELDS.MAP_RATING, ["1", "2", "3", "4", "5"], false)
+    .setHelpText("Optional: rate the selected table from 1 (poor) to 5 (excellent).");
+}
+
 function lifAddCommonGameFields_(form, options) {
   const f = LIF_FORMS.FIELDS;
   form.addSectionHeaderItem().setTitle("Player Information");

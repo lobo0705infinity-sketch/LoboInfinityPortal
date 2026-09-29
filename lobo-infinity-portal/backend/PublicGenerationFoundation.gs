@@ -346,7 +346,10 @@ function sanitizePublicGenerationGame_(row, sourceRow) {
     winner: winner === 1 ? String(row[FORM.PLAYER1] || "") :
       winner === 2 ? String(row[FORM.PLAYER2] || "") : "Draw",
     eventId: String(row[FORM.EVENT_ID] || ""),
-    gameType: String(row[FORM.GAME_TYPE] || "")
+    gameType: String(row[FORM.GAME_TYPE] || ""),
+    mapSlug: String(row[FORM.WORKSHOP_MAP_SLUG] || "").trim(),
+    mapRating: /^[1-5]$/.test(String(row[FORM.MAP_RATING] || "").trim())
+      ? Number(row[FORM.MAP_RATING]) : null
   };
 }
 

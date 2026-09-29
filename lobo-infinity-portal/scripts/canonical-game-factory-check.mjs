@@ -151,12 +151,13 @@ const normalizeCell = (value) => {
 
 const assertRowsEqual = (label, before, after) => {
   assert.equal(before.length, 23, `${label} reference row must contain 23 columns`)
-  assert.equal(after.length, 23, `${label} factory row must contain 23 columns`)
+  assert.equal(after.length, 25, `${label} factory row must contain the two appended map columns`)
   assert.equal(
-    JSON.stringify(Array.from(after, normalizeCell)),
+    JSON.stringify(Array.from(after.slice(0, 23), normalizeCell)),
     JSON.stringify(Array.from(before, normalizeCell)),
-    `${label} row changed`,
+    `${label} existing columns changed`,
   )
+  assert.deepEqual(Array.from(after.slice(23)), ['', ''], `${label} has no selected Workshop map`)
 }
 
 const commonSubmission = {

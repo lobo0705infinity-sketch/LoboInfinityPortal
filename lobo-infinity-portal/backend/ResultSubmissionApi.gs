@@ -492,6 +492,14 @@ function ensureResultSubmissionArmyListHeaders(sheet) {
     {
       column: FORM.LOSER_ARMY_LIST_ID,
       header: "Loser Army List ID"
+    },
+    {
+      column: FORM.WORKSHOP_MAP_SLUG,
+      header: "Workshop Map Slug"
+    },
+    {
+      column: FORM.MAP_RATING,
+      header: "Map Rating"
     }
   ];
 

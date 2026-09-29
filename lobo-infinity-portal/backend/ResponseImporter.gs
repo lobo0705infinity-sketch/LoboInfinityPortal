@@ -148,7 +148,9 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     playerOp: get(f.PLAYER_OP), opponentOp: get(f.OPPONENT_OP),
     playerVp: get(f.PLAYER_VP), opponentVp: get(f.OPPONENT_VP),
     gameResult: get(f.GAME_RESULT), firstTurn: get(f.FIRST_TURN),
-    bestMoment: get(f.BEST_MOMENT), notes: get(f.NOTES)
+    bestMoment: get(f.BEST_MOMENT), notes: get(f.NOTES),
+    mapSlug: get(f.WORKSHOP_MAP) ? lifWorkshopMapSlug_(formType, get(f.WORKSHOP_MAP)) : "",
+    mapRating: get(f.MAP_RATING)
   };
 }
 

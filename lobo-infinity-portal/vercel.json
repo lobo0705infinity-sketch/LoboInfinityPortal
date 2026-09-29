@@ -29,6 +29,16 @@
   ],
   "redirects": [
     {
+      "source": "/maps/43-ll-map-13-data-heist-double-bind",
+      "destination": "/maps/43-ll-map-13-data-harvest-double-bind",
+      "permanent": true
+    },
+    {
+      "source": "/maps/44-ll-map-14-data-heist-double-bind",
+      "destination": "/maps/44-ll-map-14-data-harvest-double-bind",
+      "permanent": true
+    },
+    {
       "source": "/hall-of-fame",
       "destination": "/analytics",
       "permanent": true

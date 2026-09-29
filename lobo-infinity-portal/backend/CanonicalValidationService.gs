@@ -85,6 +85,10 @@ function canonicalValidateGoogleFormGame_(submission) {
   if (["Player", "Opponent"].indexOf(submission.firstTurn) < 0)
     errors.push("First Turn is invalid.");
 
+  const mapRating = String(submission.mapRating || "").trim();
+  if (mapRating && (!submission.mapSlug || !/^[1-5]$/.test(mapRating)))
+    errors.push("Map Rating requires a selected Workshop Map and a whole number from 1 to 5.");
+
   return canonicalValidationResult_(errors, {
     submission: submission
   });
