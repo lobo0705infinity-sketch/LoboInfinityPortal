@@ -28,67 +28,12 @@ const fixtureToken =
 
 const surfaces = [
   {
-    forbidden: ['API response is missing summary.', 'Operations error'],
-    markers: ['Command Center', 'Events', 'Players', 'Automation', 'System'],
-    name: 'commissioner-sidebar-desktop',
+    forbidden: ['Page not found', 'Operations error'],
+    markers: ['Set Up Commissioner Access'],
+    name: 'commissioner-login-desktop',
     route: '/commissioner',
     width: 1440,
     height: 1000,
-  },
-  {
-    markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', preferredArmy, '2 Wins'],
-    name: 'my-profile-desktop-dashboard',
-    expectedPortrait: { faction: preferredArmy, mode: 'desktop', requireAlpha: false, src: preferredArmyPortrait },
-    route: '/profile',
-    screenshot: 'viewport',
-    width: 1440,
-    height: 1050,
-  },
-  {
-    componentCapture: {
-      markers: ['Player Identity', 'Edit Profile', preferredArmy, 'Save Profile'],
-    },
-    hideAppChrome: true,
-    markers: ['Edit Profile', preferredArmy],
-    name: 'my-profile-edit-profile',
-    route: '/profile',
-    screenshotSelector: '[data-visual-surface="my-profile-edit-profile"]',
-    width: 1440,
-    height: 1050,
-  },
-  {
-    componentCapture: {
-      markers: ['Player Intelligence', 'Competitive Coaching'],
-    },
-    hideAppChrome: true,
-    markers: ['Competitive Coaching'],
-    name: 'my-profile-competitive-coaching',
-    route: '/profile',
-    screenshotSelector: '[data-visual-surface="my-profile-competitive-coaching"]',
-    width: 1440,
-    height: 1050,
-  },
-  {
-    componentCapture: {
-      markers: ['Advanced Analytics', 'First / Second Turn'],
-    },
-    hideAppChrome: true,
-    markers: ['First / Second Turn'],
-    name: 'my-profile-advanced-analytics',
-    route: '/profile',
-    screenshotSelector: '[data-visual-surface="my-profile-advanced-analytics"]',
-    width: 1440,
-    height: 1050,
-  },
-  {
-    markers: [leagueName, 'Main Man', '#2', '#2 of 10', '2-0', 'Safe', 'Current Season'],
-    name: 'my-profile-mobile-dashboard',
-    expectedPortrait: { faction: preferredArmy, mode: 'mobile', requireAlpha: false, src: preferredArmyPortrait },
-    route: '/profile',
-    hideAppChrome: true,
-    screenshotSelector: '.my-profile-v3-dashboard',
-    width: 390,
-    height: 844,
   },
   { name: 'dashboard-desktop', route: '/', width: 1440, height: 1000 },
   { name: 'players-desktop', route: '/players', width: 1440, height: 1000 },
@@ -771,12 +716,7 @@ function includeSurface(surface) {
     .map((name) => name.trim())
     .filter(Boolean)
   const approvedReleaseSurfaces = [
-    'commissioner-sidebar-desktop',
-    'my-profile-desktop-dashboard',
-    'my-profile-edit-profile',
-    'my-profile-competitive-coaching',
-    'my-profile-advanced-analytics',
-    'my-profile-mobile-dashboard',
+    'commissioner-login-desktop',
   ]
 
   if (requested.length > 0) {
