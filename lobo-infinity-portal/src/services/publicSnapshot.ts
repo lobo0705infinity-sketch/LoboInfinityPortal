@@ -85,12 +85,30 @@ export function getPublicSnapshotDataset<T>(
   return pending as Promise<T>
 }
 
+// A report that is still waiting for decoded lists can inspect a newer
+// generation without invalidating the session's pinned, internally consistent
+// snapshot. The caller decides whether the new data merits a page refresh.
+export async function getNewerPublicSnapshotDataset<T>(
+  dataset: PublicSnapshotDataset,
+  sinceSnapshotId: string,
+  signal?: AbortSignal,
+): Promise<{ snapshotId: string; data: T } | null> {
+  const pinned = await getPinnedPublicSnapshot(signal)
+  const response = await fetch(PUBLIC_SNAPSHOT_POINTER_URL, { cache: 'no-cache', signal })
+  if (!response.ok) return null
+  const latest = validatePointer(await response.json() as PublicSnapshotPointer)
+  if (latest.snapshotId === pinned.snapshotId || latest.snapshotId === sinceSnapshotId) return null
+  const envelope = await readPublicSnapshotFile<SnapshotEnvelope<T>>(dataset, signal, latest)
+  if (envelope.snapshotId !== latest.snapshotId) return null
+  return { snapshotId: latest.snapshotId, data: envelope.data }
+}
+
 export function getPublicMissionGeistCatalog(signal?: AbortSignal) {
   return getPublicSnapshotDataset<MissionGeistCatalog>('mission-catalog', signal)
 }
 
-async function readPublicSnapshotFile<T>(dataset: PublicSnapshotDataset, signal?: AbortSignal) {
-  const pointer = await getPinnedPublicSnapshot(signal)
+async function readPublicSnapshotFile<T>(dataset: PublicSnapshotDataset, signal?: AbortSignal, pointer?: PublicSnapshotPointer) {
+  pointer ??= await getPinnedPublicSnapshot(signal)
   const base = new URL(pointer.basePath, PUBLIC_BLOB_ORIGIN)
   const response = await fetch(new URL(`${dataset}.json`, base), {
     cache: 'force-cache',

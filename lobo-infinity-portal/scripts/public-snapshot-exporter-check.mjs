@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import vm from 'node:vm'
 
@@ -23,8 +24,12 @@ assert.match(source, /published: false/)
 assert.match(source, /livePointer: false/)
 assert.match(source, /duplicate Game ID/)
 assert.match(source, /function runScheduledPublicSnapshot\(\)/)
-assert.match(source, /readPublicSnapshotSheet_\(spreadsheet, "Game Review Narratives"\)/)
-assert.match(source, /reviewNarratives: narratives\[mission\] \|\| \[\]/)
+assert.doesNotMatch(source, /readPublicSnapshotSheet_\(spreadsheet, "Game Review Narratives"\)/)
+assert.doesNotMatch(source, /reviewNarratives: narratives\[mission\] \|\| \[\]/)
+assert.match(source, /buildPublicSnapshotMissions_\(games\)/)
+assert.match(source, /readCount: 20/)
+assert.match(source, /armyListId: String\(list\.armyListId \|\| ""\)/)
+assert.match(source, /rosterFingerprint: String\(list\.armyCodeHash \|\| ""\)/)
 assert.match(source, /function installTwiceDailyPublicSnapshotTriggers\(\)/)
 assert.match(source, /remainingMatchups:\s*remainingMatchups/)
 assert.equal((source.match(/armyLink:\s*buildPublicSnapshotArmyLink_\(list\.armyLink, list\.armyCode\)/g) || []).length, 2)
@@ -288,6 +293,7 @@ const FORM = {
   P1TP: 6, P2TP: 7, P1OP: 8, P2OP: 9, P1VP: 10, P2VP: 11,
   FIRSTTURN: 12, WINNINGFACTION: 13, LOSINGFACTION: 14, MOMENT: 15,
   EVENT_ID: 16, GAME_TYPE: 17, GAME_RESULT: 18,
+  PLAYER1_ARMY_CODE: 19, PLAYER2_ARMY_CODE: 20,
   WINNER_ARMY_LIST_ID: 21, LOSER_ARMY_LIST_ID: 22,
 }
 const sandbox = {
@@ -295,6 +301,9 @@ const sandbox = {
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
   CONFIG: { DIVISIONS: { MAIN_MAN: 'Main Man', PGA: 'Proving Grounds A', PGB: 'Proving Grounds B' } },
   determineWinner: (row) => row[FORM.GAME_RESULT] === 'Player 2' ? 2 : row[FORM.GAME_RESULT] === 'Draw' ? 0 : 1,
+  getGameEnginePlayerArmyCode: (row, playerNumber) => String(row[playerNumber === 1
+    ? FORM.PLAYER1_ARMY_CODE : FORM.PLAYER2_ARMY_CODE] || '').trim(),
+  getArmyIntelligenceHash: (value) => createHash('sha256').update(String(value).trim()).digest('hex'),
   normalizeGameType: (value) => ['tournament', 'casual', 'narrative'].includes(String(value).toLowerCase()) ? String(value).toLowerCase() : 'league',
   getPlayerRegistryColumns: () => ({ player: 0, displayName: 1, division: 2, active: 3 }),
 }
@@ -403,6 +412,10 @@ assert.deepEqual([game73Out.winner, game73Out.loser, game73Out.mission, game73Ou
   ['Lobo', 'Nighthawkmk2', "Dead Man's Switch", '5–0', '8–2', '262–122'])
 assert.equal(game73Out.winnerArmyListId, '3296098999')
 assert.equal(game73Out.loserArmyListId, '4483300877')
+assert.equal(game73Out.winnerRosterFingerprint,
+  createHash('sha256').update('SECRET-73-A').digest('hex'))
+assert.equal(game73Out.loserRosterFingerprint,
+  createHash('sha256').update('SECRET-73-B').digest('hex'))
 assert.equal(games.find((game) => game.id === 40).op, '7–3')
 assert.equal('winnerArmyCode' in game73Out, false)
 assert.equal('loserArmyCode' in game73Out, false)
@@ -544,7 +557,8 @@ assert.throws(() => sandbox.validatePublicSnapshotDatasets_({
 const allowedGameKeys = ['id', 'eventId', 'eventName', 'gameType', 'date', 'division',
   'player1', 'player1DisplayName', 'player1Faction', 'player2', 'player2DisplayName', 'player2Faction', 'winner',
   'winnerDisplayName', 'loser', 'loserDisplayName', 'winnerFaction', 'loserFaction', 'mission',
-  'tp', 'op', 'vp', 'bestMoment', 'firstTurn', 'winnerArmyListId', 'loserArmyListId', 'mapSlug', 'mapRating']
+  'tp', 'op', 'vp', 'bestMoment', 'firstTurn', 'winnerArmyListId', 'loserArmyListId',
+  'mapSlug', 'mapRating', 'winnerRosterFingerprint', 'loserRosterFingerprint']
 assert.deepEqual(Object.keys(game73Out).sort(), allowedGameKeys.sort())
 assert.deepEqual(Object.keys(standings[0].standings[0]).sort(),
   ['rank', 'player', 'displayName', 'games', 'wins', 'losses', 'draws', 'tp', 'op', 'vp'].sort())

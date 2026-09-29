@@ -25,11 +25,11 @@
   "contractMarkers": {
     "commissionerNavigation": [
       "Command Center",
-      "Game Center",
       "Events",
-      "Players",
-      "Automation",
-      "System"
+      "Games & Army Lists",
+      "Players & Access",
+      "Community",
+      "System & Recovery"
     ],
     "commissionerRoutes": [
       "/commissioner/game-center",
@@ -60,13 +60,10 @@
       "saveTeamTournamentResult"
     ],
     "missionHeadquartersScope": [
-      "Mission Headquarters",
-      "Current League",
-      "Tournament",
-      "Casual",
-      "All Games",
-      "getMissions",
-      "gameType"
+      "MissionsDirectory",
+      "missions-event-filter",
+      "All Events",
+      "summarizeMissionForEvent"
     ],
     "authenticationHardening": [
       "DUPLICATE_MATCH",

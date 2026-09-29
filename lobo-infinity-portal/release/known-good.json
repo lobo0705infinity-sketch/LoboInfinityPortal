@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "label": "pre-battle-story-engine-production",
+      "gitCommit": "2b8b4d341ade71885e3a2643c848da4ae2df1bf1",
+      "vercelDeploymentId": "dpl_92gEeDibRHqs6s5P3E2qC4cp2T6H",
+      "vercelUrl": "https://lobo-infinity-portal-577i8xmwu-lobo0705infinity-5309s-projects.vercel.app",
+      "appsScriptDeploymentId": "AKfycbx38UitMXyXYG6av0dq9YlTiIY2wcoaHyr_Xh5bYKPdZH2fojk8g8pZZpHmzoyRj7SMzw",
+      "appsScriptVersion": 413,
+      "apiEndpoint": "https://script.google.com/macros/s/AKfycbx38UitMXyXYG6av0dq9YlTiIY2wcoaHyr_Xh5bYKPdZH2fojk8g8pZZpHmzoyRj7SMzw/exec",
+      "productionContractResult": "passed-before-battle-story-release",
+      "visualRegressionResult": "current production deployment retained for paired rollback",
+      "deployedAt": "2026-09-28T19:19:24-04:00"
+    },
+    {
       "label": "auth-hardening-conservative-recovery",
       "gitCommit": "c85039d0ab47faae9b657654f62a6c1f5ef0ee12",
       "vercelDeploymentId": "dpl_F1sHbRQvo7E9PZjSBD2bMLqEMwFd",

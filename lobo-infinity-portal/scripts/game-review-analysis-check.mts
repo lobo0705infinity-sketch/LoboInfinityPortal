@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { buildGameReviewAnalysis } from '../src/services/gameReviewAnalysis.ts'
 import { getGameIntelligenceLists } from '../src/services/gameIntelligenceLinks.ts'
+import { FAILED_DECODE_BATTLE_STORY, PENDING_BATTLE_STORY,
+  loadBattleStory } from '../src/services/gameStoryRouting.ts'
 import { getGameArmyLists } from '../src/services/gameArmyListLinks.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import type { PublicSubmittedArmyList } from '../src/services/publicDetailProjection.ts'
@@ -90,6 +92,44 @@ assert.deepEqual(getGameArmyLists(nextGame, [nextWinnerSubmission, nextLoserSubm
 assert.deepEqual(getGameArmyLists(nextGame, [{ ...nextWinnerSubmission, opponent: 'Somebody else' }]), [])
 assert.deepEqual(getGameArmyLists({ ...nextGame, winnerArmyListId: '', loserArmyListId: '' }, [nextWinnerSubmission, nextLoserSubmission]), [])
 assert.deepEqual(getGameIntelligenceLists(nextGame, [staleSourceId]), [])
+const borrowedCode = 'verified-army-code%3D'
+const submittedCodeGame = { ...linkedGame, winnerArmyCode: borrowedCode }
+const earlierOwner = { ...staleSourceId, armyCode: 'verified-army-code=',
+  player: 'Earlier list owner', opponent: 'Someone else', mission: 'Neutralization' }
+const codeLinked = getGameIntelligenceLists(submittedCodeGame, [earlierOwner])
+assert.equal(codeLinked.length, 1, 'the submitted army code identifies a decoded roster even if its saved owner differs')
+assert.equal(codeLinked[0].player, linkedGame.winner, 'the scene uses the game player, not the earlier list owner')
+assert.equal(earlierOwner.player, 'Earlier list owner', 'rebind only the story copy')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [{ ...earlierOwner, armyCode: 'different-code=' }]), [],
+  'matching the list ID alone cannot override a different submitted code')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [{ ...earlierOwner, sectorial: 'Tohaa' }]), [],
+  'the submitted code still needs the recorded faction')
+assert.deepEqual(getGameIntelligenceLists(submittedCodeGame, [earlierOwner, { ...earlierOwner }]), [],
+  'two matching decodes with the same list ID require disambiguation')
+const publicHash = 'a'.repeat(64)
+const publicHashGame = { ...linkedGame, winnerRosterFingerprint: publicHash }
+assert.equal(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
+  armyCode: '', rosterFingerprint: publicHash }])[0]?.player, linkedGame.winner,
+  'the public report can bind the same roster by the submitted code hash without disclosing the code')
+assert.deepEqual(getGameIntelligenceLists(publicHashGame, [{ ...earlierOwner,
+  armyCode: '', rosterFingerprint: 'b'.repeat(64) }]), [],
+  'a list ID cannot override a different game-submitted code hash')
+const failedOwnerList = { ...earlierOwner, status: 'failed' as const,
+  decoded: null, armyCode: '', rosterFingerprint: publicHash,
+  error: 'Invalid IDs in Army Code: out-of-date unit option.' }
+assert.equal(await loadBattleStory(publicHashGame, [failedOwnerList]), FAILED_DECODE_BATTLE_STORY,
+  'a matching failed decode is reported accurately even if the saved list belongs to another player')
+assert.equal(await loadBattleStory(publicHashGame, [{ ...failedOwnerList,
+  rosterFingerprint: 'b'.repeat(64) }]), PENDING_BATTLE_STORY,
+  'an unrelated decoder failure must not be assigned to this game')
+const starcoCode = { ...nextGame, loserFaction: 'StarCo', loserArmyCode: 'starco-code=' }
+assert.equal(getGameIntelligenceLists(starcoCode, [{ ...earlierOwner, armyCode: 'starco-code=',
+  sectorial: 'Starco Free Company Of The Star', armyListId: nextGame.loserArmyListId }]).length, 1,
+  'a sectorial alias may differ from the game faction label')
+assert.equal(getGameIntelligenceLists({ ...linkedGame,
+  loserFaction: 'Force de Réponse Rapide Merovingienne', loserArmyCode: 'frrm-code=' },
+[{ ...earlierOwner, armyCode: 'frrm-code=', sectorial: 'Force De Reponse Rapide Merovingienne',
+  armyListId: linkedGame.loserArmyListId }]).length, 1, 'faction accents are normalized')
 assert.match(buildGameReviewAnalysis(nextGame, []).decidingFactors, /no decoded roster in this public snapshot yet/)
 assert.doesNotMatch(buildGameReviewAnalysis(nextGame, []).decidingFactors, /Without decoded lists/)
 assert.match(buildGameReviewAnalysis({ ...nextGame, bestMoment: 'Yadu HRL Taking out Tariq on opponents turn 1' }, []).turningPoint, /does not establish whether that moment changed the final score/)
@@ -112,6 +152,39 @@ assert.match(freshReview.story, /Tarik Mansuri with Zhukov2/)
 assert.match(freshReview.story, /only two points, far narrower than the 116-point gap/)
 assert.doesNotMatch(freshReview.story, /reserve of orders|carrier|extraction/i)
 assert.equal(freshReview.story.split('\n\n').length, 2)
+
+const reviewedHighlight = buildGameReviewAnalysis(game({
+  id: 114, mission: "Dead Man's Switch", winner: 'Lobo', winnerFaction: 'Shindenbutai',
+  loser: 'Nighthawkmk2', loserFaction: 'Operations Subsection',
+  bestMoment: "Hatamoto used Quantum Resonance and stole the box and then dodged his way back from Sacha's E/M Grenade",
+}), [])
+assert.match(reviewedHighlight.story, /The Sāchā’s E\/M grenade/)
+assert.doesNotMatch(reviewedHighlight.story, /\b(?:OP|VP)\b|the record does not|roster capabilities/i)
+
+const reviewedNoHighlight = game({
+  id: 105, mission: 'The Dig', date: '2026-09-16', winner: 'Brooke', winnerFaction: 'Next Wave',
+  loser: 'Blitchga', loserFaction: 'Operations Subsection', bestMoment: 'Mad dice, great game.',
+})
+const nextWaveRoster = decodedList({
+  player: 'Brooke', opponent: 'Blitchga', date: reviewedNoHighlight.date, mission: reviewedNoHighlight.mission,
+  sectorial: 'Next Wave', decoded: { combatGroups: [{ entries: [
+    { unit: 'IRONSIDE', points: 34, canonicalUnitId: 1881, skills: ['Hacker'], equipment: [], weapons: ['Submachine Gun'] },
+    { unit: 'TEUCER', points: 37, canonicalUnitId: 1860, skills: [], equipment: [], weapons: ['Plasma Sniper Rifle'], bs: 14 },
+  ] }] } as ArmyIntelligenceList['decoded'],
+})
+const operationsRoster = decodedList({
+  player: 'Blitchga', opponent: 'Brooke', date: reviewedNoHighlight.date, mission: reviewedNoHighlight.mission,
+  sectorial: 'Operations Subsection', decoded: { combatGroups: [{ entries: [
+    { unit: 'ASURA', points: 67, canonicalUnitId: 584, skills: [], equipment: [], weapons: ['MULTI Marksman Rifle'], bs: 14 },
+  ] }] } as ArmyIntelligenceList['decoded'],
+})
+const matchupReview = buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster, operationsRoster])
+assert.match(matchupReview.story, /The decoded armies show/)
+assert.doesNotMatch(matchupReview.story, /the Ironside to descend|Teucer’s fire/,
+  'the historical The Dig story must not enter the synchronous review')
+assert.match(matchupReview.story, /record does not say which actions produced/)
+assert.match(buildGameReviewAnalysis(reviewedNoHighlight, [nextWaveRoster]).story,
+  /A full matchup account will need both submitted armies decoded/)
 
 const publicDraw = game({
   id: 112, winner: 'Draw', winnerDisplayName: 'Draw', loser: 'Draw', loserDisplayName: 'Draw',

@@ -3,13 +3,17 @@ import { fail, pass, readManifest } from './release-utils.mjs'
 const manifest = readManifest()
 const stagingUrl = process.env.STAGING_URL || ''
 const productionUrl = process.env.PRODUCTION_URL || `https://${manifest.productionAlias}`
+const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '').trim()
+const fetchOptions = bypass
+  ? { headers: { 'x-vercel-protection-bypass': bypass } }
+  : undefined
 
 if (!stagingUrl) {
   fail('STAGING_URL is required for promotion validation')
 }
 
 async function fetchJson(url) {
-  const response = await fetch(url)
+  const response = await fetch(url, fetchOptions)
   if (!response.ok) {
     throw new Error(`${url} returned HTTP ${response.status}`)
   }
@@ -17,22 +21,27 @@ async function fetchJson(url) {
 }
 
 async function fetchBundle(baseUrl) {
-  const htmlResponse = await fetch(baseUrl)
+  const htmlResponse = await fetch(baseUrl, fetchOptions)
   if (!htmlResponse.ok) {
     throw new Error(`${baseUrl} returned HTTP ${htmlResponse.status}`)
   }
   const html = await htmlResponse.text()
-  const bundlePath = html.match(/\/assets\/index-[^"']+\.js/)?.[0]
-  if (!bundlePath) {
-    throw new Error(`${baseUrl} has no index bundle`)
+  const bundlePaths = [...new Set(
+    [...html.matchAll(/(?:src|href)=["']([^"']+\.js)["']/g)].map((match) => match[1]),
+  )]
+  if (!bundlePaths.length) {
+    throw new Error(`${baseUrl} has no JavaScript assets`)
   }
-  const bundleResponse = await fetch(new URL(bundlePath, baseUrl).toString())
-  if (!bundleResponse.ok) {
-    throw new Error(`${bundlePath} returned HTTP ${bundleResponse.status}`)
-  }
+  const bundles = await Promise.all(bundlePaths.map(async (bundlePath) => {
+    const response = await fetch(new URL(bundlePath, baseUrl).toString(), fetchOptions)
+    if (!response.ok) {
+      throw new Error(`${bundlePath} returned HTTP ${response.status}`)
+    }
+    return response.text()
+  }))
   return {
-    bundle: await bundleResponse.text(),
-    bundlePath,
+    bundle: bundles.join('\n'),
+    bundlePath: bundlePaths.join(', '),
   }
 }
 

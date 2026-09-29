@@ -72,6 +72,8 @@ Object.assign(context, {
     WORKSHOP_MAP_SLUG: 23, MAP_RATING: 24 },
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
   determineWinner: () => 1,
+  getGameEnginePlayerArmyCode: () => '',
+  getArmyIntelligenceHash: () => '',
   resolvePublicSnapshotParticipant_: (_, player) => ({ player, displayName: player }),
   publicSnapshotScoreCellIsValid_: () => true,
 })
