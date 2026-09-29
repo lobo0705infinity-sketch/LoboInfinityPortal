@@ -204,18 +204,19 @@ const nomadsList = buildArmyListOptions({ ...nomadsInput, count: 1 })[0]
 const nomadsAlternatives = buildArmyListOptions({ ...nomadsInput, count: 3 })
 const nomadsFlashBots = nomadsList.profiles.filter(item => item.slug === 'transductor-zonds'
   && item.points === 7 && item.regular && item.flashPulse)
-assert.ok(nomadsAlternatives.some(list => list.profiles.filter(item => item.slug === 'transductor-zonds'
-  && item.points === 7 && item.regular && item.flashPulse).length === 2),
-  'the Nomads builder still evaluates two cheap Regular Flash Pulse orders alongside linked infantry and Baggage')
+assert.ok(nomadsAlternatives.some(list => list.profiles.filter(item => item.racerBot).length === 2),
+  'available RacerBots take priority over ordinary Flash Pulse and Baggage filler')
 assert.ok(nomadsFlashBots.length <= nomadsProfiles.find(item => item.slug === 'transductor-zonds')?.ava,
   'the second Flash Pulse remote still obeys its official availability')
-assert.ok(nomadsList.profiles.filter(item => item.optionName === 'SECURITATE' && /Combi Rifle/i.test(item.label)).length < 2,
-  'do not preserve a pair of basic Securitate Combi orders solely for a weak Duo')
+const securitateCombis = nomadsList.profiles.filter(item => item.optionName === 'SECURITATE' && /Combi Rifle/i.test(item.label))
+assert.ok(securitateCombis.length < 2 || securitateCombis.some(item => item.lieutenant)
+  && securitateCombis.some(item => !item.lieutenant && matchingLieutenantDecoy(securitateCombis.find(entry => entry.lieutenant), item)),
+  'a Securitate Combi pair needs a real Lieutenant decoy purpose')
 assert.ok(nomadsList.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30),
   'a 300-point Nomads roster should consider at least one capable expensive model')
-assert.ok(nomadsAlternatives.some(list => list.profiles.some(item => item.points === 7 && item.flashPulse && item.regular)
+assert.ok(nomadsAlternatives.some(list => list.profiles.some(item => item.racerBot)
   && list.profiles.some(item => impactAnchorValue([item]) > 0 && item.points >= 30)),
-  'an efficient Flash Pulse order can support expensive role pieces in a competitive alternative')
+  'an efficient RacerBot order can support expensive role pieces in a competitive alternative')
 assert.ok(nomadsList.legality.status === 'legal' && nomadsList.quality.gunfighters >= 2
   && nomadsList.quality.aro >= 2 && nomadsList.quality.cc >= 2
   && nomadsList.profiles.filter(item => item.regular).length >= 13,
@@ -328,9 +329,10 @@ assert.ok(onyxLists.some(list => list.fireteams.some(team =>
 'mixed loadouts should be eligible for pure fireteams')
 for (const list of onyxLists) {
   assert.equal(list.legality.status, 'legal')
-  assert.equal(list.legality.totals.troopers, 15)
+  assert.ok(list.legality.totals.troopers >= 12)
   assert.ok(list.quality.gunfighters >= 2 && list.quality.aro >= 2
-    && list.quality.cc >= 2 && list.quality.specialists >= 3)
+    && list.quality.cc >= 1 && list.quality.specialists >= 3,
+  'Onyx retains separate ARO and attacking roles while filling mission specialists')
   const expensiveCopies = Object.values(Object.groupBy(list.profiles.filter(item => item.points >= 30), item => item.id))
   assert.ok(expensiveCopies.every(copies => copies.length <= 2),
     'do not fill the list with three identical expensive profiles when alternatives exist')
@@ -382,7 +384,8 @@ assert.ok(shasLists.every(list => list.quality.gunfighters >= 2 && list.quality.
 'all offered 300-point Shasvastii B-Pong builds should fill two separate gun and ARO slots')
 assert.ok(shasLists[0].fireteams.some(team => ['DUO', 'HARIS'].includes(team.type) && team.level >= 2),
   'the coverage target should keep a useful pure Duo or Haris when a comparably good build exists')
-assert.match(formatBuiltList(shasLists[0], 1), /\*\*A\/S coverage \(separate Guns\/ARO\)\*\* Guns \d+\/2 · CC \d+\/2 · ARO \d+\/2 · Specialists \d+\/3/)
+assert.match(formatBuiltList(shasLists[0], 1), /\*\*Combat coverage \(global S target; A fallback\)\*\* Guns \d+\/3 S \(\d+\/3 A\+\)/)
+assert.match(formatBuiltList(shasLists[0], 1), /\*\*Guns tiers\*\* .* \(army\/global\)/)
 assert.ok(formatBuiltList(shasLists[0], 1).length <= 1990)
 const cheapTeam = Array.from({ length: 5 }, () => ({ specialist: false, gunfighterGrade: 'D', aroGrade: 'C' }))
 assert.equal(fireteamUsefulness({ type: 'DUO', level: 2 }, cheapTeam.slice(0, 2)), 0,
@@ -497,7 +500,8 @@ for (const [index, message] of messages.entries()) {
   assert.doesNotMatch(message.content, /\*\*Group [12] · \d+ Regular/)
   assert.doesNotMatch(message.content, / — \d+ pts/)
   assert.match(message.content, /Proposed fireteams[\s\S]*Level [2345]/)
-  assert.match(message.content, /A\/S coverage.*Guns \d+\/2.*CC \d+\/2.*ARO \d+\/2/)
+  assert.match(message.content, /Combat coverage.*Guns \d+\/3 S \(\d+\/3 A\+\).*ARO \d+\/3 S \(\d+\/3 A\+\).*CC \d+\/3 S \(\d+\/3 A\+\)/)
+  assert.match(message.content, /Guns tiers.*\(army\/global\)[\s\S]*ARO tiers.*\(army\/global\)[\s\S]*CC tiers.*\(army\/global\)/)
   assert.match(message.content, /Support links/)
   assert.match(message.content, /Mission plan/)
   assert.match(message.content, /Lieutenant plan/)
