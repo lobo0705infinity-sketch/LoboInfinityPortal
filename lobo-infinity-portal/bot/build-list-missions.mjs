@@ -31,7 +31,7 @@ const plans = {
   'panic room': { target: 1, focus: 'hold the central room with Essential Personnel', weights: { room: 8, essential: 6, survive: 3 } },
   provisioning: { target: 2, focus: 'carry Supply Boxes into the safe area', weights: { courier: 7, objectives: 3, classified: 2 } },
   superiority: { target: 2, focus: 'dominate quadrants and hack Consoles', weights: { zones: 6, objectives: 5, hacker: 3 } },
-  'the dig': { target: 3, focus: 'analyze Hyperthermal Tech before neutralizing it', weights: { objectives: 8, courier: 3, classified: 3 } },
+  'the dig': { target: 3, focus: 'analyze Hyperthermal Tech before neutralizing it', weights: { objectives: 8, courier: 3, classified: 3, midfield: 2 } },
   'uplink center': { target: 3, focus: 'activate Antennas, control the Tech-Coffin, keep the Lt active', weights: { objectives: 6, zones: 5, leadership: 5 } },
 }
 
@@ -40,6 +40,20 @@ const cap = (value, limit) => Math.min(limit, value)
 const best = (profiles, limit, value) => profiles.map(value).sort((a, b) => b - a).slice(0, limit)
   .reduce((sum, item) => sum + item, 0)
 const grade = value => ({ S: 1.3, A: 1, B: .5 })[value] || 0
+
+// Opening position and concealment are distinct from movement speed. Count
+// only pregame deployment skills here; airborne arrival is scored elsewhere.
+export function deploymentPositionValue(skills = []) {
+  if (skills.some(skill => /^Impersonation(?:\(|$)/i.test(skill))) return 1.5
+  if (skills.some(skill => /^Infiltration(?:\(|$)/i.test(skill))) return 1
+  if (skills.some(skill => /^Forward Deployment(?:\(|$)/i.test(skill))) return .5
+  return 0
+}
+
+export function deploymentCoverage(profiles) {
+  return best(profiles.filter(item => item.slots === 1 && !item.startsOffTable), 2,
+    item => item.deploymentPosition || 0)
+}
 
 export function missionPlan(mission, variant = 0) {
   const choices = plans[key(mission)]
@@ -75,7 +89,7 @@ export function missionRoleScore(profiles, role) {
       return best(onRoster.filter(item => item.demolition), 2,
         item => .7 + cap((item.mobility || 20) / 80, .6))
     case 'midfield':
-      return best(eligible.filter(item => item.forwardDeployment), 2, item => 1)
+      return deploymentCoverage(eligible)
     case 'combat': {
       const distinct = new Map()
       for (const item of onRoster) distinct.set(item.unitId, Math.max(distinct.get(item.unitId) || 0,
