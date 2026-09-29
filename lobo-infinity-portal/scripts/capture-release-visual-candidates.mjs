@@ -16,6 +16,7 @@ const staticServer = baseUrl ? null : await startStaticServer()
 baseUrl = baseUrl || staticServer.baseUrl
 const compareBaselines = process.env.VISUAL_COMPARE_BASELINES === '1'
 const updateBaselines = process.env.UPDATE_VISUAL_BASELINES === '1'
+const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '').trim()
 
 const player = 'Lobo'
 const now = '2026-07-15T12:00:00.000Z'
@@ -101,7 +102,11 @@ const surfaces = [
 ].filter(includeSurface)
 
 const browser = await chromium.launch({ headless: true })
-const context = await browser.newContext()
+const context = await browser.newContext({
+  extraHTTPHeaders: bypass
+    ? { 'x-vercel-protection-bypass': bypass }
+    : undefined,
+})
 await context.addInitScript((token) => {
   window.localStorage.setItem(
     'lobo-google-id-token',

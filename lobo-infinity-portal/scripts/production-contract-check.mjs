@@ -139,7 +139,10 @@ function assertBuildFingerprint(manifest, failures) {
 }
 
 async function fetchText(url) {
-  const response = await fetch(url)
+  const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '').trim()
+  const response = await fetch(url, bypass
+    ? { headers: { 'x-vercel-protection-bypass': bypass } }
+    : undefined)
   if (!response.ok) {
     throw new Error(`${url} returned HTTP ${response.status}`)
   }
@@ -148,12 +151,16 @@ async function fetchText(url) {
 
 async function readDeployedBundle(baseUrl) {
   const html = await fetchText(baseUrl)
-  const bundlePath = html.match(/\/assets\/index-[^"']+\.js/)?.[0]
-  if (!bundlePath) {
-    throw new Error('Could not find production index bundle in deployed HTML.')
+  const bundlePaths = [...new Set(
+    [...html.matchAll(/(?:src|href)=["']([^"']+\.js)["']/g)].map((match) => match[1]),
+  )]
+  if (!bundlePaths.length) {
+    throw new Error('Could not find production JavaScript assets in deployed HTML.')
   }
-  const bundle = await fetchText(new URL(bundlePath, baseUrl).toString())
-  return { bundle, bundlePath, html }
+  const bundle = (await Promise.all(
+    bundlePaths.map((path) => fetchText(new URL(path, baseUrl).toString())),
+  )).join('\n')
+  return { bundle, bundlePath: bundlePaths.join(', '), html }
 }
 
 const failures = []
@@ -234,7 +241,7 @@ if (targetUrl) {
     assertIncludes('Deployed bundle API endpoint', bundle, [manifest.appsScriptDeploymentId], failures)
     assertExcludes('Deployed bundle untraceable metadata', bundle, manifest.forbiddenActiveMarkers.untraceableBuild, failures)
 
-    if (!html.includes('<div id="root"></div>')) {
+    if (!/<div\b[^>]*\bid=["']root["'][^>]*>/i.test(html)) {
       failures.push('Deployed HTML does not contain the React root.')
     }
 
