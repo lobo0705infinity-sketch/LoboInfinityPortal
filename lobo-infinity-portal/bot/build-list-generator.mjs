@@ -81,6 +81,8 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
     })
     const canAro = weapons.some(weapon => !/\bcc weapon\b/i.test(weapon))
       || [...skills, ...equipment].some(value => /\bpheroware\b/i.test(value))
+    const impetuous = skills.some(skill => /^Impetuous$/i.test(skill))
+    const closeThreat = /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit)
     const lieutenant = (choice.orders || []).some(order => String(order.type).toUpperCase() === 'LIEUTENANT')
     const orderCount = type => (choice.orders || []).filter(order => String(order.type).toUpperCase() === type)
       .reduce((sum, order) => sum + Number(order.total || 0), 0)
@@ -110,6 +112,9 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       lieutenant, side, disguiseKey,
       regular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'REGULAR'),
       irregular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'IRREGULAR'),
+      // The extra order is restricted to its own trooper, so it earns only a
+      // modest attack-piece bonus rather than another Regular order.
+      impetuousWarband: impetuous && (Number(base.type) === 7 || closeThreat && points <= 25),
       startsOffTable: skills.some(skill => /\b(combat jump|parachutist|hidden deployment)\b/i.test(skill)),
       tacticalOrders: orderCount('TACTICAL') || (skills.some(skill => /\btactical awareness\b/i.test(skill)) ? 1 : 0),
       lieutenantOrders: lieutenant ? orderCount('LIEUTENANT') || 1 : 0,
@@ -127,6 +132,9 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       essentialPersonnel: lieutenant || skills.some(skill => /^(number 2|NCO|chain of command)$/i.test(skill))
         || (unit.filters?.categories || []).some(category => category === 6 || category === 10),
       baggage: [...skills, ...equipment].some(value => /^baggage$/i.test(value)),
+      unarmedBaggageBot: unit.slug !== 'ikadron-batroids' && Boolean(base.str)
+        && [...skills, ...equipment].some(value => /^baggage$/i.test(value))
+        && !weapons.some(weapon => !/\bcc weapon\b/i.test(weapon)),
       demolition,
       civEvacEligible: ![5, 8].includes(Number(base.type)) && !(base.chars || []).includes(6)
         && !(base.chars || []).includes(27) && !skills.some(skill => /\b(impetuous|peripheral)\b/i.test(skill)),
@@ -138,7 +146,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       repeater: /repeater|pitcher|fastpanda/i.test(toolkit),
       flashPulse: weapons.some(weapon => /\bflash pulse\b/i.test(weapon)),
       aro: /sniper|feuerbach|missile launcher|rocket launcher|flash pulse|panzerfaust|thunderbolt/i.test(toolkit),
-      closeThreat: /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit),
+      closeThreat,
       defensive: /camouflage|minelayer|decoy/i.test(roleText),
       gunfighter: Number(normalShooting?.rating || 0),
       gunfighterGrade: normalShooting?.grade || '',
@@ -353,6 +361,7 @@ function isKuangShiMonitor(item) {
 }
 
 function canAdd(selected, profile, combatGroup, { points, payload, side: requiredSide }) {
+  if (profile.unarmedBaggageBot && selected.some(item => item.unarmedBaggageBot)) return false
   const side = requiredSide || selected.find(item => item.side)?.side
   if (profile.side && side && profile.side !== side) return false
   if (selected.reduce((n, item) => n + item.points, profile.points) > points) return false
@@ -499,6 +508,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const currentAnchors = constraints.points >= 300 ? impactAnchorValue(selected) : 0
   const currentMission = missionScore(selected, constraints.plan)
   const currentDeployment = deploymentCoverage(selected)
+  const currentWarbands = impetuousWarbandValue(selected)
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -537,6 +547,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       + (missionScore([...selected, item], constraints.plan) - currentMission) * .75
       + (deploymentCoverage([...selected, item]) - currentDeployment) * 3
+      + (impetuousWarbandValue([...selected, item]) - currentWarbands)
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
       // A linked A/S gunfighter remains a candidate; the final roster verifies
       // that the Fireteam really exists before granting that exemption.
@@ -550,6 +561,12 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   }
   candidates.sort((a, b) => b.value - a.value || a.points - b.points)
   return mode === 'specialist' ? candidates.find(item => item.specialist) : candidates.find(item => item.value > -.5)
+}
+
+export function impetuousWarbandValue(profiles) {
+  // An Impetuous order can help the warband itself, but cannot fuel another
+  // attacker. Stop rewarding extra copies once three have been selected.
+  return Math.min(3, profiles.filter(item => item.impetuousWarband).length) * 1.5
 }
 
 export function rosterSynergy(profiles) {
@@ -1031,6 +1048,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
     + (points >= 300 ? impactAnchorValue(profiles) : 0) + missionScore(profiles, plan)
     + deploymentCoverage(profiles) * 3
+    + impetuousWarbandValue(profiles)
     + assessLieutenantPackage(profiles, fireteams, plan).score
     - profiles.reduce((sum, item) => sum + missionSpecialistPenalty(item, plan, linkedMembers.has(item)), 0)
     - rosterRedundancy(profiles) * 1.5
