@@ -27,9 +27,39 @@ export async function retrieveRulesReference({ question, deepSeek = createDeepSe
   // profile facts participate in the answer.
   const benchmark = modelResolution.models.length ? null : await findApprovedRulesAnswer(question)
   if (benchmark) return benchmarkResult(question, benchmark, corpus)
+  if (!modelResolution.models.length && asksIfElectromagneticDestroysDeployable(question))
+    return electromagneticDeployableResult(question, corpus)
   if (!modelResolution.models.length && asksAboutPublicFireteamIdentity(question))
     return publicFireteamIdentityResult(question, corpus)
   return deepSeek({ question, corpus, modelResolution })
+}
+
+function asksIfElectromagneticDestroysDeployable(question) {
+  const words = normalizeRuleText(question).replace(/[+./-]/g, ' ')
+  return /\b(?:e m|electromagnetic)\b/.test(words)
+    && /\bdeployables?\b/.test(words)
+    && /\b(?:destroy\w*|damage\w*|kill\w*|remove\w*|wound\w*)\b/.test(words)
+    && !/\b(?:n e m|normal|combined)\b/.test(words)
+}
+
+function electromagneticDeployableResult(question, corpus) {
+  const source = corpus.manifest.sources.find((item) => item.id === 'infinity-rules-n5.3')
+  const sources = [
+    [64, 'E/M AMMUNITION'],
+    [175, 'DEPLOYABLE'],
+    [168, 'ISOLATED STATE'],
+    [67, 'COMBINED AMMUNITION'],
+  ].map(([page, section], index) => ({ id: `E${String(index + 1).padStart(4, '0')}`, title: source.title, version: source.version, page: `p. ${page}`, section, url: source.officialUrl }))
+  return {
+    question: String(question || '').trim(),
+    versions: corpus.manifest.sources.map((item) => ({ id: item.id, version: item.version, label: item.id === 'its-season-18' ? 'ITS Season 18' : `${item.title} ${item.version}` })),
+    status: 'EVIDENCE-BOUNDED RULES ANSWER',
+    answerSource: 'EVIDENCE_BOUNDED_RULES',
+    deepSeek: {
+      answer: 'No. E/M alone causes no Wounds, so it does not destroy a deployed Mine, Repeater, or other deployable. A failed E/M Saving Roll instead causes Isolated State; that disables a Deployable Repeater’s communications function. N+E/M is different: its Normal ammunition can inflict Wounds and destroy a one-STR deployable.',
+      conclusion: 'NO', certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true, sources,
+    },
+  }
 }
 
 
@@ -109,7 +139,18 @@ function benchmarkResult(question, benchmark, corpus) {
   }
 }
 
-function formatCitations(sources) { return sources.slice(0, 8).map((source) => { const label = [source.title, source.version, source.page, source.section].filter(Boolean).join(' — '); return source.url ? `• [${label}](${source.url})` : `• ${label}` }).join('\n') }
+function formatCitations(sources) {
+  const seen = new Set()
+  return sources.filter((source) => {
+    const key = [source.url, source.title, source.version, source.page, source.section].join('|')
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  }).slice(0, 8).map((source) => {
+    const label = [source.title, source.version, source.page, source.section].filter(Boolean).join(' — ')
+    return source.url ? `• [${label}](${source.url})` : `• ${label}`
+  }).join('\n')
+}
 function formatModelContext(context) {
   if (!context?.models?.length) return ''
   return context.models.map((model) => {

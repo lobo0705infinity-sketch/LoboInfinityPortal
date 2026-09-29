@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1402)
+assert.equal(index.canonicalCases, 1403)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -147,9 +147,34 @@ for (const question of fireteamQuestions) {
   assert.match(embed.footer.text, /no provider call/)
 }
 assert.equal(identityCalls, 0, 'public Fireteam identity questions must not depend on provider output')
+for (const question of [
+  'Does E/M destroy a deployable?',
+  'Can electromagnetic ammunition damage a deployable?',
+  'Will an E/M hit remove deployable equipment?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: identityFallback })
+  assert.equal(result.answerSource, 'EVIDENCE_BOUNDED_RULES', question)
+  assert.equal(result.deepSeek.conclusion, 'NO', question)
+  assert.match(result.deepSeek.answer, /No\. E\/M alone causes no Wounds/i)
+  assert.match(result.deepSeek.answer, /Deployable Repeater.*communications/i)
+  assert.match(result.deepSeek.answer, /N\+E\/M.*Normal ammunition/i)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 64', 'p. 175', 'p. 168', 'p. 67'])
+  const embed = formatRulesDiscordResponse(result).embeds[0]
+  assert.match(embed.fields.find((field) => field.name === 'ANSWER').value, /\*\*NO\*\*/)
+  assert.match(embed.fields.find((field) => field.name === 'OFFICIAL SOURCES').value, /COMBINED AMMUNITION/)
+}
+assert.equal(identityCalls, 0, 'E/M deployable answers must not depend on provider output')
+const combinedEM = await retrieveRulesReference({ question: 'Does N+E/M destroy a deployable?', deepSeek: identityFallback })
+assert.equal(combinedEM.status, 'FALLBACK', 'combined ammunition must not be classified as pure E/M')
+const electromagneticEvidence = buildRulesEvidencePrompt(await loadProductionRulesCorpus(), 'Does E/M destroy a deployable?')
+const electromagneticPages = JSON.parse(electromagneticEvidence.text.split('\n').at(-1)).entries
+assert.ok(electromagneticPages.some((entry) => entry.page === '64' && /ELECTROMAGNETIC \(E\/M\) AMMUNITION/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '67' && /Normal component inflicts one Wound/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '168' && /Trooper or game element/.test(entry.text)))
+assert.ok(electromagneticPages.some((entry) => entry.page === '175' && /can be chosen as targets/.test(entry.text)))
 const bonuses = await retrieveRulesReference({ question: 'Are Fireteam bonuses public information?', deepSeek: identityFallback })
 assert.equal(bonuses.status, 'FALLBACK', 'private Fireteam bonuses must not be classified as public identity')
-assert.equal(identityCalls, 1)
+assert.equal(identityCalls, 2)
 const fireteamEvidence = buildRulesEvidencePrompt(await loadProductionRulesCorpus(), fireteamQuestions[2])
 assert.match(fireteamEvidence.text, /must declare which Troopers are members/)
 assert.match(fireteamEvidence.text, /Army List information not explicitly designated Private is Open/)
@@ -464,5 +489,22 @@ for (const question of [
   'Will a WildParrot detonate when a Marker executes Move inside its Trigger Area?',
 ]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, 'new-topic-2-522', question)
 console.log('PASS - WildParrot waived-ARO interactions route directly from the approved rules benchmark.')
+
+const ccBurstCase = impetuousDocument.cases.find((item) => item.id === 'new-topic-2-523')
+assert.equal(ccBurstCase.queryVariants.length, 10)
+for (const { question } of ccBurstCase.queryVariants) {
+  const result = await retrieveRulesReference({ question, deepSeek: fallback })
+  assert.equal(result.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(result.benchmark.id, 'new-topic-2-523', question)
+  assert.equal(result.deepSeek.conclusion, 'DEPENDS', question)
+  assert.match(result.deepSeek.answer, /no for CC Attack \(\+1B\)/i, question)
+  assert.match(result.deepSeek.answer, /yes for Martial Arts \+1B/i, question)
+  assert.match(result.deepSeek.answer, /multiple-combatant bonus/i, question)
+  assert.deepEqual(result.deepSeek.sources.map((source) => source.page), ['p. 75', 'p. 100', 'p. 52'], question)
+  const answerField = formatRulesDiscordResponse(result).embeds[0].fields.find((field) => field.name === 'ANSWER').value
+  assert.ok(answerField.length <= 1024, question)
+}
+assert.equal(calls, 3, 'All CC Burst/ARO phrasings must bypass the provider')
+console.log('PASS - ambiguous CC +1B/ARO questions distinguish profile MODs, Martial Arts, and multiple-combatant bonuses.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)

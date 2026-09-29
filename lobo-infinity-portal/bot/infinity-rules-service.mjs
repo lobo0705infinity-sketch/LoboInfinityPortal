@@ -23,6 +23,35 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 64, printedPage: '64',
+  section: 'ELECTROMAGNETIC (E/M) AMMUNITION',
+  headings: ['ELECTROMAGNETIC (E/M) AMMUNITION', 'EFFECTS'],
+  structuredBlockTypes: ['ROLL', 'EFFECTS'], canonicalTerm: 'electromagnetic (e/m) ammunition',
+  text: 'ELECTROMAGNETIC (E/M) AMMUNITION\nAfter a successful E/M Attack, the target makes two Saving Rolls per hit using half their BTS, rounded up. Each failed Saving Roll causes the target to enter Isolated State. If the target is HI, a TAG, REM, or Vehicle, it also enters Immobilized-B State.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 67, printedPage: '67',
+  section: 'COMBINED AMMUNITION', headings: ['COMBINED AMMUNITION'],
+  structuredBlockTypes: ['EXAMPLE'], canonicalTerm: 'combined ammunition',
+  text: 'COMBINED AMMUNITION\nFor N+E/M Ammunition, the E/M component requires two Saving Rolls with BTS halved. The Normal component inflicts one Wound for each failed Saving Roll. Any failed Saving Roll also causes Isolated State, and Immobilized-B for HI, TAGs, REMs, and Vehicles.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 168, printedPage: '168',
+  section: 'ISOLATED STATE', headings: ['ISOLATED STATE', 'ACTIVATION', 'EFFECTS'],
+  structuredBlockTypes: ['ACTIVATION', 'EFFECTS'], canonicalTerm: 'isolated state',
+  text: 'ISOLATED STATE\nA Trooper or game element enters Isolated State after a successful Attack or effect capable of causing this state. In Isolated State, Skills and Equipment with the Comms Attack or Comms Equipment Labels or Traits, including Repeaters, are disabled. Other Automatic Skills and Equipment continue to work.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 175, printedPage: '175',
+  section: 'DEPLOYABLE TRAIT', headings: ['DEPLOYABLE', 'NON-LETHAL'],
+  structuredBlockTypes: ['BODY'], canonicalTerm: 'deployable',
+  text: 'DEPLOYABLE\nDeployable weapons and pieces of Equipment have their own profiles and Attributes, and can be chosen as targets. A Deployable that enters Unconscious State passes directly to Dead State and is removed from the table.\nNON-LETHAL\nA weapon or piece of Equipment with this Trait never inflicts Wounds on the target, regardless of its ammunition.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 7, printedPage: '7',
   section: 'OPEN AND PRIVATE INFORMATION',
   headings: ['OPEN AND PRIVATE INFORMATION', 'FIRETEAM BONUSES'],

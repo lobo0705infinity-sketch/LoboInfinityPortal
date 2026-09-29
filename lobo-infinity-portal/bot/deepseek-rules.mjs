@@ -27,6 +27,14 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
   const add = (candidate) => { const original = originals.get(key(candidate)); if (original) selected.set(original.index, original.chunk) }
+  // PDF text extraction dropped the main E/M effects clause. Keep its restored
+  // excerpt and the relevant state/deployable clauses together for these questions.
+  if (/\be\s*\/\s*m\b|\belectromagnetic\b|\bem\b/i.test(question)) {
+    const terms = new Set(['electromagnetic (e/m) ammunition', 'isolated state'])
+    if (/deployable|mine|repeater|fastpanda/i.test(question)) terms.add('deployable')
+    if (/destroy|damage|wound|normal|combined|n\s*\+\s*e\s*\/\s*m/i.test(question)) terms.add('combined ammunition')
+    corpus.chunks.filter((chunk) => chunk.sourceId === 'infinity-rules-n5.3' && terms.has(chunk.canonicalTerm)).forEach(add)
+  }
   // A lexical ranker can otherwise omit the controlling page when ordinary
   // language mentions several rules at once. Always activate the best official
   // evidence for every confidently resolved concept and dependency first.
