@@ -27,11 +27,30 @@ const mobilityCatalog = JSON.parse(await readFile(new URL('../src/data/mobility-
 assert.ok(payload?.fireteamChart?.teams?.length, 'bundled official Corregidor source is available')
 
 const roster = LIVE_ROSTER_UNIT_SLUGS.get(502)
+const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
+  gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
+  mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const profiles = availableProfiles({ payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
 const hassassinPayload = source.payloads.find(item => item.url?.endsWith('/402'))
 const hassassinProfiles = availableProfiles({ payload: hassassinPayload, metadata: source.metadata, sectorialId: 402,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
+const gradeFixture = (name, gun, aro, cc) => ({ unitName: name, unitId: name, label: name, combatGroup: 1,
+  gunfighterGrade: gun, aroGrade: aro, ccGrade: cc, armyGunfighterGrade: gun, armyAroGrade: aro, armyCcGrade: cc })
+const exclusiveRoles = roleCoverage([gradeFixture('hybrid', 'S', 'S', 'S'), gradeFixture('defender', '', 'S', ''),
+  gradeFixture('gun-two', 'S', '', 'S'), gradeFixture('gun-three', 'S', '', 'S')])
+assert.deepEqual([exclusiveRoles.gunfighters, exclusiveRoles.aro, exclusiveRoles.cc], [3, 1, 3],
+  'gunfighters may also fight in CC, while the assigned ARO model cannot fill either role')
+assert.deepEqual([exclusiveRoles.sGunfighters, exclusiveRoles.sAro, exclusiveRoles.sCc], [3, 1, 3])
+assert.ok(hassassinProfiles.some(item => item.pitcher && item.linkable && item.points <= 25))
+assert.ok(hassassinProfiles.some(item => item.hacker && item.trinityHacker && item.armyCcGrade))
+const hackerPackage = buildArmyListOptions({ ...input, payload: hassassinPayload, sectorialId: 402,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), mustInclude: ['Hassassin Barids'], mission: 'The Dig', count: 1 })[0]
+if (hackerPackage.profiles.some(item => item.pitcher && item.linkable && item.points <= 25)) {
+  assert.ok(hackerPackage.profiles.filter(item => item.hacker).length >= 2
+    && hackerPackage.profiles.some(item => item.hacker && item.trinityHacker),
+  'a cheap linkable Pitcher requires two hackers, including KHD or Trinity')
+}
 const impersonators = hassassinProfiles.filter(item => ['hussein-al-djabel', 'hassassin-fiday'].includes(item.slug))
 assert.equal(impersonators.length, 4, 'Al-Djabel and all three Fiday profiles are selectable')
 assert.ok(impersonators.every(item => item.deploymentPosition === 1.5 && item.forwardDeployment && !item.specialist),
@@ -77,9 +96,6 @@ assert.ok(transductor?.regular && transductor.flashPulse && transductor.repairab
 assert.ok(warcor && warcor.irregular && !warcor.regular && warcor.flashPulse,
   'a Warcor provides cheap ARO utility but no Regular order')
 
-const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
-  gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
-  mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const yuJingPayload = source.payloads.find(item => item.url?.endsWith('/units/en/201'))
 const yuJingInput = { ...input, payload: yuJingPayload, sectorialId: 201,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(201), mustInclude: [] }
