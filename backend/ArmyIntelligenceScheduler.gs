@@ -1,0 +1,228 @@
+/*******************************************************
+ * ArmyIntelligenceScheduler.gs
+ *
+ * Owner-authorized clock only. Decoding and persistence
+ * remain owned by the existing Vercel worker/API path.
+ *******************************************************/
+
+const ARMY_INTELLIGENCE_SCHEDULER_HANDLER =
+  "runScheduledArmyIntelligenceRefresh";
+const ARMY_INTELLIGENCE_SCHEDULER_TOKEN_PROPERTY =
+  "ARMY_INTELLIGENCE_WORKER_TOKEN";
+const ARMY_INTELLIGENCE_SCHEDULER_URL =
+  "https://lobo-infinity-portal.vercel.app/api/army-intelligence-refresh-worker";
+const AUTOMATION_QUEUE_WORKER_URL =
+  "https://lobo-infinity-portal.vercel.app/api/automation-queue-worker";
+const AUTOMATION_GAME_STORY_WORKER_URL =
+  "https://lobo-infinity-portal.vercel.app/api/game-story-for-discord";
+
+function installArmyIntelligenceRefreshScheduler(e) {
+
+  const parameters = e ? getApiParameters(e) : {};
+  const suppliedToken = e
+    ? getApiParameter(parameters, "workerToken")
+    : "";
+
+  if (suppliedToken)
+    PropertiesService.getScriptProperties().setProperty(
+      ARMY_INTELLIGENCE_SCHEDULER_TOKEN_PROPERTY,
+      suppliedToken
+    );
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error(
+      "Set the ARMY_INTELLIGENCE_WORKER_TOKEN Script Property before installing the scheduler."
+    );
+
+  const initialResult = runScheduledArmyIntelligenceRefresh();
+
+  ScriptApp.getProjectTriggers().forEach(function(trigger) {
+    if (trigger.getHandlerFunction() === ARMY_INTELLIGENCE_SCHEDULER_HANDLER)
+      ScriptApp.deleteTrigger(trigger);
+  });
+
+  const trigger =
+    ScriptApp
+      .newTrigger(ARMY_INTELLIGENCE_SCHEDULER_HANDLER)
+      .timeBased()
+      .everyMinutes(30)
+      .create();
+
+  return {
+    cadenceMinutes: 30,
+    handler: ARMY_INTELLIGENCE_SCHEDULER_HANDLER,
+    initialResult: initialResult,
+    success: true,
+    triggerId: trigger.getUniqueId()
+  };
+
+}
+
+function runScheduledArmyIntelligenceRefresh() {
+
+  const lock = LockService.getScriptLock();
+
+  if (!lock.tryLock(1000)) {
+    const skipped = {
+      status: "Skipped",
+      success: true,
+      timestamp: new Date().toISOString()
+    };
+    Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(skipped));
+    return skipped;
+  }
+
+  let token = "";
+  try {
+    token = getArmyIntelligenceSchedulerToken_();
+
+    if (!token)
+      throw new Error("Army Intelligence scheduler credential is not configured.");
+  }
+  finally {
+    lock.releaseLock();
+  }
+
+  const intelligence = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    { batchLimit: 5 }
+  );
+  const automation = runScheduledMaintenanceWorker_(
+    AUTOMATION_QUEUE_WORKER_URL,
+    token
+  );
+  const payload = intelligence.payload;
+  const result = {
+    automation: automation,
+    decoded: Number(payload.decoded) || 0,
+    error: intelligence.success
+      ? ""
+      : String(payload.error || intelligence.error || "Army Intelligence worker failed."),
+    failed: Number(payload.failed) || 0,
+    hasMore: payload.hasMore === true,
+    remaining: intelligence.success ? Number(payload.remaining) || 0 : null,
+    status: intelligence.success && automation.success
+      ? "Succeeded"
+      : "Failed",
+    success: intelligence.success && automation.success,
+    timestamp: new Date().toISOString(),
+    updated: Number(payload.updated) || 0,
+    workerHttpStatus: intelligence.workerHttpStatus
+  };
+
+  Logger.log("ARMY_INTELLIGENCE_SCHEDULER " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error(
+      result.error || String(automation.payload.error || automation.error || "Scheduled maintenance worker failed.")
+    );
+
+  return result;
+
+}
+
+function runArmyIntelligenceRefreshSmallBatch() {
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error("Army Intelligence scheduler credential is not configured.");
+
+  const result = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    { batchLimit: 5 }
+  );
+
+  Logger.log("ARMY_INTELLIGENCE_SMALL_BATCH " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error(
+      String(result.payload.error || result.error || "Army Intelligence worker failed.")
+    );
+
+  return result.payload;
+
+}
+
+function runPublishOnlyPublicSnapshotRefresh() {
+
+  const token = getArmyIntelligenceSchedulerToken_();
+
+  if (!token)
+    throw new Error("Army Intelligence scheduler credential is not configured.");
+
+  const result = runScheduledMaintenanceWorker_(
+    ARMY_INTELLIGENCE_SCHEDULER_URL,
+    token,
+    {
+      publishPublicSnapshot: true,
+      snapshotKeys: ["__publish_only__"]
+    }
+  );
+
+  Logger.log("PUBLIC_SNAPSHOT_PUBLISH_ONLY " + JSON.stringify(result));
+
+  if (!result.success)
+    throw new Error("Publish-only public snapshot refresh failed.");
+
+  return result;
+
+}
+
+function runScheduledMaintenanceWorker_(url, token, requestPayload) {
+
+  try {
+    const response = UrlFetchApp.fetch(url, {
+      contentType: "application/json",
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      method: "post",
+      muteHttpExceptions: true,
+      payload: JSON.stringify(requestPayload || {})
+    });
+    const statusCode = response.getResponseCode();
+    const payload = parseArmyIntelligenceSchedulerResponse_(response.getContentText());
+    return {
+      payload: payload,
+      success: statusCode >= 200 && statusCode < 300 && payload.success !== false,
+      workerHttpStatus: statusCode
+    };
+  }
+  catch (error) {
+    return {
+      error: String(error && error.message ? error.message : error),
+      payload: {},
+      success: false,
+      workerHttpStatus: 0
+    };
+  }
+
+}
+
+function getArmyIntelligenceSchedulerToken_() {
+
+  return String(
+    PropertiesService
+      .getScriptProperties()
+      .getProperty(ARMY_INTELLIGENCE_SCHEDULER_TOKEN_PROPERTY) || ""
+  ).trim();
+
+}
+
+function parseArmyIntelligenceSchedulerResponse_(value) {
+
+  try {
+    return JSON.parse(String(value || "{}"));
+  }
+  catch (error) {
+    return {
+      success: false
+    };
+  }
+
+}
