@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
+import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, impetuousWarbandValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
@@ -42,6 +42,28 @@ assert.ok(deploymentPositionValue(['Impersonation']) > deploymentPositionValue([
 assert.ok(missionScore([impersonators[0]], missionPlan('The Dig')) >
   missionScore([{ ...impersonators[0], deploymentPosition: 1 }], missionPlan('The Dig')),
   'The Dig rewards an Impersonator more than an otherwise identical Infiltrator')
+const mcmurrough = hassassinProfiles.find(item => item.slug === 'mcmurrough-merc-dog-warrior')
+assert.ok(mcmurrough?.impetuousWarband && mcmurrough.irregular,
+  'McMurrough earns a modest Impetuous warband value without becoming a Regular order')
+assert.equal(impetuousWarbandValue([mcmurrough]), 1.5)
+assert.equal(impetuousWarbandValue(Array(4).fill(mcmurrough)), 4.5,
+  'the Impetuous benefit stops growing after three warbands')
+const baggagePanoPayload = source.payloads.find(item => item.url?.endsWith('/101'))
+const baggagePanoInput = { ...input, payload: baggagePanoPayload, sectorialId: 101,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(101), mustInclude: [], mission: 'Crossing Lines' }
+const baggagePanoProfiles = availableProfiles(baggagePanoInput)
+assert.ok(baggagePanoProfiles.some(item => item.slug === 'mulebots' && item.points === 8 && item.unarmedBaggageBot),
+  'the 8-point Mulebot counts toward the shared unarmed Baggage cap')
+assert.ok(baggagePanoProfiles.some(item => item.slug === 'mulebots' && item.points === 17 && !item.unarmedBaggageBot),
+  'an armed Baggage profile is not subject to the unarmed cap')
+const baggagePanoList = buildArmyListOptions({ ...baggagePanoInput, count: 1 })[0]
+assert.ok(baggagePanoList.profiles.filter(item => item.unarmedBaggageBot).length <= 1,
+  'a generated list never takes two unarmed Baggage remotes')
+const combinedPayload = source.payloads.find(item => item.url?.endsWith('/601'))
+const combinedProfiles = availableProfiles({ ...baggagePanoInput, payload: combinedPayload, sectorialId: 601,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(601) })
+assert.ok(combinedProfiles.some(item => item.slug === 'ikadron-batroids' && item.baggage
+  && !item.unarmedBaggageBot), 'armed Ikadrons retain their explicit exception')
 assert.ok(profiles.some(item => item.slug === 'jazz-and-billie-tactical-hacking-team' && item.groupId === 0 && item.specialist))
 assert.ok(profiles.some(item => item.slug === 'iguana-squadron' && !item.specialist), 'the dismounted TAG operator does not make the Iguana a console specialist')
 assert.ok(profiles.every(item => roster.includes(item.slug)))
