@@ -13,7 +13,7 @@ import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
 import { deriveTeamTypeEvidence, loadTeamTypeEvidence, possibleFireteamTypes } from '../bot/build-list-team-evidence.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
-import { missionPlan } from '../bot/build-list-missions.mjs'
+import { deploymentPositionValue, missionPlan, missionScore } from '../bot/build-list-missions.mjs'
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 
@@ -29,6 +29,19 @@ assert.ok(payload?.fireteamChart?.teams?.length, 'bundled official Corregidor so
 const roster = LIVE_ROSTER_UNIT_SLUGS.get(502)
 const profiles = availableProfiles({ payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
+const hassassinPayload = source.payloads.find(item => item.url?.endsWith('/402'))
+const hassassinProfiles = availableProfiles({ payload: hassassinPayload, metadata: source.metadata, sectorialId: 402,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
+const impersonators = hassassinProfiles.filter(item => ['hussein-al-djabel', 'hassassin-fiday'].includes(item.slug))
+assert.equal(impersonators.length, 4, 'Al-Djabel and all three Fiday profiles are selectable')
+assert.ok(impersonators.every(item => item.deploymentPosition === 1.5 && item.forwardDeployment && !item.specialist),
+  'Impersonation earns forward position without being mistaken for a specialist')
+assert.ok(deploymentPositionValue(['Impersonation']) > deploymentPositionValue(['Infiltration'])
+  && deploymentPositionValue(['Infiltration']) > deploymentPositionValue(['Forward Deployment(+8")']),
+  'Impersonation grades above Infiltration and ordinary Forward Deployment')
+assert.ok(missionScore([impersonators[0]], missionPlan('The Dig')) >
+  missionScore([{ ...impersonators[0], deploymentPosition: 1 }], missionPlan('The Dig')),
+  'The Dig rewards an Impersonator more than an otherwise identical Infiltrator')
 assert.ok(profiles.some(item => item.slug === 'jazz-and-billie-tactical-hacking-team' && item.groupId === 0 && item.specialist))
 assert.ok(profiles.some(item => item.slug === 'iguana-squadron' && !item.specialist), 'the dismounted TAG operator does not make the Iguana a console specialist')
 assert.ok(profiles.every(item => roster.includes(item.slug)))
