@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import Skeleton from '../components/Skeleton'
 import type { LeagueOperationsData } from '../services/api'
 import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
+import { resolveLoboWorkshopMapLabel } from '../../shared/lobo-workshop-maps.mjs'
+
+function AssignedMap({ label }: { label: string }) {
+  const map = resolveLoboWorkshopMapLabel(label)
+  return map ? <a href={`/maps/${map.slug}`}>{map.workshopBagName}</a> : <>{label || 'Map not configured'}</>
+}
 
 type LeagueOperationsState =
   | { status: 'loading' }
@@ -82,11 +88,11 @@ function LeagueOperations() {
               <div className="operations-stack">
                 <div className="operations-record">
                   <span>Map A</span>
-                  <strong>{mission.maps[0] || 'Map not configured'}</strong>
+                  <strong><AssignedMap label={mission.maps[0]} /></strong>
                 </div>
                 <div className="operations-record">
                   <span>Map B</span>
-                  <strong>{mission.maps[1] || 'Map not configured'}</strong>
+                  <strong><AssignedMap label={mission.maps[1]} /></strong>
                 </div>
               </div>
             </article>

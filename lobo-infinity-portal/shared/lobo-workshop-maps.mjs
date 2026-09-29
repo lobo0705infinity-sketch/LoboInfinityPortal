@@ -684,6 +684,20 @@ export const loboWorkshopMaps = workshopSaveMaps.map((map) => {
 
 export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))
 
+const normalizeWorkshopMapLabel = (value) => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
+const workshopMapByLegacyLabel = new Map()
+for (const map of loboWorkshopMaps) {
+  for (const label of [map.workshopBagName, map.workshopName, workshopSaveMaps[map.index - 1].name])
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(label), map)
+  const leagueNumber = map.workshopName.match(/^(?:LL|Lobo League) Map\s*#?\s*(\d+)/i)?.[1]
+  if (leagueNumber) {
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(`Lobo League Map ${leagueNumber}`), map)
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(`LL Map ${leagueNumber}`), map)
+  }
+}
+
+export const resolveLoboWorkshopMapLabel = (label) => workshopMapByLegacyLabel.get(normalizeWorkshopMapLabel(label))
+
 const mapByIndex = new Map(loboWorkshopMaps.map((map) => [map.index, map]))
 
 export const loboWorkshopMapSections = sectionDefinitions.map(({ indices, ...section }) => {
