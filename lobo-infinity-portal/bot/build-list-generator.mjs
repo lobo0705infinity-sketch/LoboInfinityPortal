@@ -623,12 +623,12 @@ export function rosterSynergy(profiles) {
 }
 
 function hackingPackageComplete(profiles) {
-  return !profiles.some(item => item.pitcher && item.linkable && item.points <= 25)
+  return !profiles.some(item => item.pitcher && item.linkable)
     || profiles.filter(item => item.hacker).length >= 2 && profiles.some(item => item.hacker && item.trinityHacker)
 }
 
 function addHackingSupport(selected, profiles, constraints) {
-  if (!selected.some(item => item.pitcher && item.linkable && item.points <= 25)) return true
+  if (!selected.some(item => item.pitcher && item.linkable)) return true
   while (!hackingPackageComplete(selected)) {
     const needsTrinity = !selected.some(item => item.hacker && item.trinityHacker)
     const hacker = profiles.filter(item => item.hacker && (!needsTrinity || item.trinityHacker) && !item.lieutenant)
