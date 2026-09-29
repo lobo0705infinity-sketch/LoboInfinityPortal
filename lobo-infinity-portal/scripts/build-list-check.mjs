@@ -46,7 +46,7 @@ assert.ok(hassassinProfiles.some(item => item.pitcher && item.linkable && item.p
 assert.ok(hassassinProfiles.some(item => item.hacker && item.trinityHacker && item.armyCcGrade))
 const hackerPackage = buildArmyListOptions({ ...input, payload: hassassinPayload, sectorialId: 402,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), mustInclude: ['Hassassin Barids'], mission: 'The Dig', count: 1 })[0]
-if (hackerPackage.profiles.some(item => item.pitcher && item.linkable && item.points <= 25)) {
+if (hackerPackage.profiles.some(item => item.pitcher && item.linkable)) {
   assert.ok(hackerPackage.profiles.filter(item => item.hacker).length >= 2
     && hackerPackage.profiles.some(item => item.hacker && item.trinityHacker),
   'a cheap linkable Pitcher requires two hackers, including KHD or Trinity')
