@@ -8,9 +8,11 @@ from pathlib import Path
 
 def portal_maps(project_root):
     script = (
-        "import {loboWorkshopMaps} from './shared/lobo-workshop-maps.mjs'; "
+        "import {loboWorkshopMaps,loboWorkshopMapSections} from './shared/lobo-workshop-maps.mjs'; "
+        "const groups=new Map(loboWorkshopMapSections.flatMap(section=>"
+        "section.layouts.flatMap(layout=>layout.saves.map(save=>[save.index,section.title])))); "
         "console.log(JSON.stringify(loboWorkshopMaps.map(({index,guid,name,workshopName,missionSetups}) "
-        "=> ({index,guid,name,workshopName,missionSetups}))))"
+        "=> ({index,guid,name,workshopName,missionSetups,collection:groups.get(index)}))))"
     )
     result = subprocess.check_output(
         ['node', '--input-type=module', '-e', script], cwd=project_root, text=True
@@ -38,7 +40,10 @@ def prepare(source, destination):
                 if guid in matched:
                     raise ValueError(f'Workshop bag {guid} appears more than once')
                 matched.add(guid)
-                obj['Nickname'] = f"SET_{entry['name']} [{entry['index']:02d}]"
+                collection = entry['collection']
+                if not collection:
+                    raise ValueError(f"Workshop bag {guid} has no collection")
+                obj['Nickname'] = f"SET_{collection} - {entry['name']} [{entry['index']:02d}]"
                 start, end = '[Lobo Portal map]', '[/Lobo Portal map]'
                 prior = str(obj.get('Description', ''))
                 if start in prior and end in prior:
@@ -47,6 +52,7 @@ def prepare(source, destination):
                     prior = (prefix + suffix).strip()
                 summary = '\n'.join([
                     start,
+                    f"Collection: {collection}",
                     f"Workshop save {entry['index']:02d}: {entry['name']}",
                     f"Workshop bag name: {entry['workshopName']}",
                     'Named mission setup: ' + (

@@ -39,7 +39,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
     layouts: section.layouts.flatMap((layout) => {
       const matchingSaves = layout.saves.filter((map) =>
         (mission === 'All missions' || map.missionSetups.includes(mission)) &&
-        (!normalizedQuery || `${map.name} ${map.workshopName} ${map.family} ${map.missionSetups.join(' ')} ${section.title}`.toLocaleLowerCase().includes(normalizedQuery)))
+        (!normalizedQuery || `${map.name} ${map.workshopBagName} ${map.workshopName} ${map.family} ${map.missionSetups.join(' ')} ${section.title}`.toLocaleLowerCase().includes(normalizedQuery)))
       return matchingSaves.length ? [{ ...layout, primary: matchingSaves[0] }] : []
     }).sort((left, right) => sort === 'top-rated'
       ? (ratings.get(right.layoutKey)?.average ?? -1) - (ratings.get(left.layoutKey)?.average ?? -1) ||
@@ -102,7 +102,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
           const otherCollections = loboWorkshopMapSections.filter((other) => other.id !== section.id && other.layouts.some((item) => item.layoutKey === layout.layoutKey))
           return <Link className="lobo-map-card" key={layout.layoutKey} to={`/maps/${map.slug}`}>
             <img alt={`Overhead preview of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
-            <span className="lobo-map-card-info"><small>{map.family} · {layout.saves.length} {layout.saves.length === 1 ? 'save' : 'saves'}</small><strong>{layout.name}</strong><span className="lobo-map-card-rating">{ratingText(ratingsStatus, ratings.get(layout.layoutKey))}</span><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span>{otherCollections.length ? <small className="lobo-map-card-other">Also in {otherCollections.map((other) => other.title).join(' · ')}</small> : null}<span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
+            <span className="lobo-map-card-info"><small>{map.family} · {layout.saves.length} {layout.saves.length === 1 ? 'save' : 'saves'}</small><strong>{layout.name}</strong><span className="lobo-map-card-rating">{ratingText(ratingsStatus, ratings.get(layout.layoutKey))}</span><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopBagName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span>{otherCollections.length ? <small className="lobo-map-card-other">Also in {otherCollections.map((other) => other.title).join(' · ')}</small> : null}<span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
           </Link>
         })}</div>
       </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
@@ -125,7 +125,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
   return <main className="portal-shell lobo-maps-page lobo-map-detail" data-page="map-detail">
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'casual'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>Workshop save {String(map.index).padStart(2, '0')} / {loboWorkshopMaps.length}</span></nav>
     <header className="lobo-map-detail-heading">
-      <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopName}</p><p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Preview the full table from above and at an angle before loading it for a game.</p></div>
+      <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopBagName}</p><p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Preview the full table from above and at an angle before loading it for a game.</p></div>
       <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a>
     </header>
     <a aria-label={`Open full-size angled preview of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`Angled Tabletop Simulator view of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>Angled view <span aria-hidden="true">↗</span></span></a>
@@ -143,8 +143,8 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
         ? <><p>The Workshop bag names this layout for:</p><ul className="lobo-map-mission-list">{map.missionSetups.map((mission) => <li key={mission}>{mission}</li>)}</ul></>
         : <p>This bag has no named mission setup. Use it as a terrain layout and place mission objectives according to the scenario you choose.</p>}
       <p>Check the current mission rules and the loaded TTS table before play. These labels describe Workshop saves, not an exhaustive list of playable missions.</p>
-      {exactMatch ? <p className="lobo-map-duplicate-note">Exact copy: <Link to={`/maps/${exactMatch.slug}`}>Save {String(exactMatch.index).padStart(2, '0')} · {exactMatch.workshopName}</Link> contains the same TTS objects under a different bag name.</p> : null}
-      {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>Save {String(item.index).padStart(2, '0')} · {sectionForSave(item)?.title ?? 'Workshop'}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span><small>{item.workshopName}</small></Link>)}</div></div> : null}
+      {exactMatch ? <p className="lobo-map-duplicate-note">Exact copy: <Link to={`/maps/${exactMatch.slug}`}>{exactMatch.workshopBagName}</Link> contains the same TTS objects under a different bag name.</p> : null}
+      {variants.length ? <div className="lobo-map-variants"><h3>Other saves using this terrain</h3><div>{variants.map((item) => <Link key={item.id} to={`/maps/${item.slug}`}><strong>{item.workshopBagName}</strong><span>{item.missionSetups.length ? item.missionSetups.join(' · ') : 'Open layout'}</span></Link>)}</div></div> : null}
     </section>
     <div className="lobo-map-detail-info">
       <section aria-labelledby="map-reports-title"><p className="eyebrow">Played on this table</p><h2 id="map-reports-title">Battle reports</h2>{reports.length ? <ul className="lobo-map-reports">{reports.slice(0, 8).map((game) => <li key={game.id}><Link to={`/games/${game.id}`}>#{game.id} · {game.mission} · {game.date}</Link></li>)}</ul> : <p>{ratingsStatus === 'ready' ? 'No battle reports have been linked to this table yet.' : ratingsStatus === 'loading' ? 'Battle reports loading…' : 'Battle reports unavailable.'}</p>}<Link to="/submit-game">Submit a game and rate this table <span aria-hidden="true">→</span></Link></section>

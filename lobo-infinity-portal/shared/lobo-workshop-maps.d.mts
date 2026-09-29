@@ -5,6 +5,8 @@ export type LoboWorkshopMap = {
   slug: string
   name: string
   workshopName: string
+  workshopBagName: string
+  collectionTitle: string
   family: string
   layoutKey: number
   missionSetups: string[]
