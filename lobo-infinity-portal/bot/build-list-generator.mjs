@@ -2,7 +2,7 @@ import { encodeArmyCode } from '../scripts/infinity-army-encode.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { validateInfListLegality } from './inf-list-legality.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
-import { missionPlan, missionScore, missionSummary } from './build-list-missions.mjs'
+import { deploymentCoverage, deploymentPositionValue, missionPlan, missionScore, missionSummary } from './build-list-missions.mjs'
 
 const normalize = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const token = value => normalize(value).replace(/\s/g, '')
@@ -93,6 +93,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       skills.filter(skill => !/^lieutenant\b/i.test(skill)).map(normalize).sort().join(','),
       equipment.map(normalize).sort().join(','), weapons.map(normalize).sort().join(',')].join(':')
     const key = `${sectorialId}:${unit.id}:${groupId}:${choice.id}:1`
+    const deploymentPosition = deploymentPositionValue(skills)
     const shooting = ratings.get(key) || []
     const aroResults = aroRatings.get(key) || []
     const normalShooting = shooting.find(state => state.id === 'normal')
@@ -129,7 +130,8 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       demolition,
       civEvacEligible: ![5, 8].includes(Number(base.type)) && !(base.chars || []).includes(6)
         && !(base.chars || []).includes(27) && !skills.some(skill => /\b(impetuous|peripheral)\b/i.test(skill)),
-      forwardDeployment: skills.some(skill => /\b(infiltration|forward deployment|combat jump|parachutist)\b/i.test(skill)),
+      deploymentPosition,
+      forwardDeployment: deploymentPosition > 0,
       repairable: Boolean(base.str),
       hacker: /\bhacker\b|hacking device/i.test(roleText),
       smoke: /smoke|eclipse|disco baller|mirroball/i.test(toolkit),
@@ -496,6 +498,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const currentQuality = rosterQuality(selected, [], constraints.mission, constraints.points)
   const currentAnchors = constraints.points >= 300 ? impactAnchorValue(selected) : 0
   const currentMission = missionScore(selected, constraints.plan)
+  const currentDeployment = deploymentCoverage(selected)
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -533,6 +536,7 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (rosterQuality([...selected, item], [], constraints.mission, constraints.points) - currentQuality) * 1.2
       + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       + (missionScore([...selected, item], constraints.plan) - currentMission) * .75
+      + (deploymentCoverage([...selected, item]) - currentDeployment) * 3
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
       // A linked A/S gunfighter remains a candidate; the final roster verifies
       // that the Fireteam really exists before granting that exemption.
@@ -1026,6 +1030,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
     + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
     + (points >= 300 ? impactAnchorValue(profiles) : 0) + missionScore(profiles, plan)
+    + deploymentCoverage(profiles) * 3
     + assessLieutenantPackage(profiles, fireteams, plan).score
     - profiles.reduce((sum, item) => sum + missionSpecialistPenalty(item, plan, linkedMembers.has(item)), 0)
     - rosterRedundancy(profiles) * 1.5
