@@ -2,12 +2,14 @@ import { encodeArmyCode } from '../scripts/infinity-army-encode.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { validateInfListLegality } from './inf-list-legality.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
-import { missionPlan, missionScore, missionSummary } from './build-list-missions.mjs'
+import { deploymentCoverage, deploymentPositionValue, missionPlan, missionScore, missionSummary } from './build-list-missions.mjs'
 
 const normalize = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 const token = value => normalize(value).replace(/\s/g, '')
 const roleNames = /\b(hacker|forward observer|engineer|doctor|paramedic|specialist operative|chain of command)\b/i
 const gradeRank = grade => ({ S: 5, A: 4, B: 3, C: 2, D: 1, F: 0 })[String(grade || '').toUpperCase()] ?? 0
+const percentileGrade = percentile => percentile >= 95 ? 'S' : percentile >= 80 ? 'A'
+  : percentile >= 60 ? 'B' : percentile >= 40 ? 'C' : percentile >= 20 ? 'D' : 'F'
 
 // These three missions award no OP for specialist actions. Preserve combat
 // profiles and useful support roles even when they also have FO or SO.
@@ -69,6 +71,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       .map(ref => skillNames.get(Number(ref.id)) || '').filter(Boolean)
     const equipment = [...(base.equip || []), ...(choice.equip || []), ...includedOptions.flatMap(o => o.equip || [])]
       .map(ref => equipmentNames.get(Number(ref.id)) || '').filter(Boolean)
+    const equipmentRefs = [...(base.equip || []), ...(choice.equip || []), ...includedOptions.flatMap(o => o.equip || [])]
     const weapons = [...(base.weapons || []), ...(choice.weapons || []), ...includedOptions.flatMap(o => o.weapons || [])]
       .map(ref => weaponNames.get(Number(ref.id)) || '').filter(Boolean)
     const roleText = [...skills, ...equipment.filter(name => /hacking device/i.test(name))].join(' ')
@@ -81,6 +84,8 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
     })
     const canAro = weapons.some(weapon => !/\bcc weapon\b/i.test(weapon))
       || [...skills, ...equipment].some(value => /\bpheroware\b/i.test(value))
+    const impetuous = skills.some(skill => /^Impetuous$/i.test(skill))
+    const closeThreat = /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit)
     const lieutenant = (choice.orders || []).some(order => String(order.type).toUpperCase() === 'LIEUTENANT')
     const orderCount = type => (choice.orders || []).filter(order => String(order.type).toUpperCase() === type)
       .reduce((sum, order) => sum + Number(order.total || 0), 0)
@@ -93,6 +98,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       skills.filter(skill => !/^lieutenant\b/i.test(skill)).map(normalize).sort().join(','),
       equipment.map(normalize).sort().join(','), weapons.map(normalize).sort().join(',')].join(':')
     const key = `${sectorialId}:${unit.id}:${groupId}:${choice.id}:1`
+    const deploymentPosition = deploymentPositionValue(skills)
     const shooting = ratings.get(key) || []
     const aroResults = aroRatings.get(key) || []
     const normalShooting = shooting.find(state => state.id === 'normal')
@@ -109,6 +115,9 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       lieutenant, side, disguiseKey,
       regular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'REGULAR'),
       irregular: (choice.orders || []).some(order => String(order.type).toUpperCase() === 'IRREGULAR'),
+      // The extra order is restricted to its own trooper, so it earns only a
+      // modest attack-piece bonus rather than another Regular order.
+      impetuousWarband: impetuous && (Number(base.type) === 7 || closeThreat && points <= 25),
       startsOffTable: skills.some(skill => /\b(combat jump|parachutist|hidden deployment)\b/i.test(skill)),
       tacticalOrders: orderCount('TACTICAL') || (skills.some(skill => /\btactical awareness\b/i.test(skill)) ? 1 : 0),
       lieutenantOrders: lieutenant ? orderCount('LIEUTENANT') || 1 : 0,
@@ -126,17 +135,27 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       essentialPersonnel: lieutenant || skills.some(skill => /^(number 2|NCO|chain of command)$/i.test(skill))
         || (unit.filters?.categories || []).some(category => category === 6 || category === 10),
       baggage: [...skills, ...equipment].some(value => /^baggage$/i.test(value)),
+      unarmedBaggageBot: unit.slug !== 'ikadron-batroids' && Boolean(base.str)
+        && [...skills, ...equipment].some(value => /^baggage$/i.test(value))
+        && !weapons.some(weapon => !/\bcc weapon\b/i.test(weapon)),
       demolition,
       civEvacEligible: ![5, 8].includes(Number(base.type)) && !(base.chars || []).includes(6)
         && !(base.chars || []).includes(27) && !skills.some(skill => /\b(impetuous|peripheral)\b/i.test(skill)),
-      forwardDeployment: skills.some(skill => /\b(infiltration|forward deployment|combat jump|parachutist)\b/i.test(skill)),
+      deploymentPosition,
+      forwardDeployment: deploymentPosition > 0,
       repairable: Boolean(base.str),
       hacker: /\bhacker\b|hacking device/i.test(roleText),
+      trinityHacker: equipmentRefs.some(ref => Number(ref.id) === 145
+        || /hacking device/i.test(equipmentNames.get(Number(ref.id)) || '')
+          && (ref.extra || []).some(extra => Number(extra) === 12)),
+      pitcher: weapons.some(weapon => /^pitcher$/i.test(weapon)),
+      discoBaller: weapons.some(weapon => /^disco baller$/i.test(weapon)),
+      racerBot: unit.slug === 'racerbots',
       smoke: /smoke|eclipse|disco baller|mirroball/i.test(toolkit),
       repeater: /repeater|pitcher|fastpanda/i.test(toolkit),
       flashPulse: weapons.some(weapon => /\bflash pulse\b/i.test(weapon)),
       aro: /sniper|feuerbach|missile launcher|rocket launcher|flash pulse|panzerfaust|thunderbolt/i.test(toolkit),
-      closeThreat: /shotgun|flamethrower|chain rifle|submachine gun/i.test(toolkit),
+      closeThreat,
       defensive: /camouflage|minelayer|decoy/i.test(roleText),
       gunfighter: Number(normalShooting?.rating || 0),
       gunfighterGrade: normalShooting?.grade || '',
@@ -173,6 +192,16 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
       add(unit, group, base, choice, 0, choice.includes)
     }
   }
+  const localGrades = (rating, values) => percentileGrade(100 * values.filter(value => value <= rating).length / Math.max(1, values.length))
+  for (const [rating, field] of [['gunfighter', 'armyGunfighterGrade'], ['linkedGunfighter', 'armyLinkedGunfighterGrade'],
+    ['aroRating', 'armyAroGrade'], ['linkedAroRating', 'armyLinkedAroGrade'], ['ccRating', 'armyCcGrade']]) {
+    const values = result.filter(item => rating === 'ccRating' ? item.ccGrade : rating.startsWith('linked')
+      ? item[rating === 'linkedGunfighter' ? 'linkedGunfighterGrade' : 'linkedAroGrade']
+      : item[rating === 'gunfighter' ? 'gunfighterGrade' : 'aroGrade']).map(item => item[rating])
+    for (const item of result) item[field] = localGrades(item[rating], values)
+  }
+  for (const item of result) item.linkable = item.fireteamEligible && payload.fireteamChart.teams.some(team =>
+    team.type?.length && membershipRows(item, team, payload.fireteamChart).length)
   return result
 }
 
@@ -199,10 +228,11 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   constraints.side = side
   const teamPreference = teamTypeEvidence?.preferences?.[Number(sectorialId)] || teamTypeEvidence?.preferences?.global || {}
   const seeds = starterTeams(profiles, payload.fireteamChart, constraints, side, teamPreference)
-  const support = profiles.filter(item => item.slots === 1 && item.flashPulse && !item.specialist
+  const support = profiles.filter(item => item.slots === 1 && (item.flashPulse || item.racerBot) && !item.specialist
     && !item.lieutenant && (item.regular && item.repairable && item.points <= 9
+      || item.racerBot && item.regular && item.points <= 12
       || /warcor/i.test(item.slug) && item.points <= 5))
-    .sort((a, b) => a.points - b.points || Number(b.regular) - Number(a.regular))
+    .sort((a, b) => Number(b.racerBot) - Number(a.racerBot) || a.points - b.points || Number(b.regular) - Number(a.regular))
   const options = []
   const seen = new Set()
   for (let attempt = 0; attempt < 96 && options.length < 96; attempt++) {
@@ -248,6 +278,13 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!specialist) break
       selected.push(specialist)
     }
+    // Explore inexpensive linked Pitchers with their full hacking package.
+    if (baseAttempt % 4 === 0 && !selected.some(item => item.pitcher && item.linkable)) {
+      const pitcher = profiles.filter(item => item.pitcher && item.linkable && item.points <= 25 && !item.lieutenant)
+        .sort((a, b) => a.points - b.points)[0]
+      if (pitcher && canAdd(selected, pitcher, 1, buildConstraints)) selected.push({ ...pitcher, combatGroup: 1 })
+    }
+    if (!addHackingSupport(selected, profiles, buildConstraints)) continue
     // Vary the order base before the greedy fill. A cheap Regular Flash Pulse
     // trooper can finance better specialists and attackers; a Warcor may do
     // the same when the roster already has enough Regular orders. They are
@@ -270,6 +307,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       if (!next) break
       selected.push(next)
     }
+    if (!hackingPackageComplete(selected)) continue
     const grouped = optimizeCombatGroups(selected, payload.fireteamChart, buildConstraints.side, teamPreference)
     const groups = [1, 2].map(index => ({ members: grouped.filter(item => item.combatGroup === index)
       .map(({ unitId, groupId, optionId }) => ({ unitId, groupId, optionId })) })).filter(group => group.members.length)
@@ -298,8 +336,8 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const fullEnough = viable.filter(item => item.score >= ranked[0].score - 12)
   const candidates = fullEnough.length >= Math.min(3, count) ? fullEnough
     : viable.length >= Math.min(3, count) ? viable : ranked
-  const complete = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 2
-    && item.quality.cc >= 2 && item.quality.aro >= 2
+  const complete = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 3
+    && item.quality.cc >= 3 && item.quality.aro >= 3
     && item.quality.specialists >= item.quality.specialistTarget) : []
   const rolePool = complete.length ? complete : candidates
   const preferredPackage = rolePool.filter(item => item.score >= rolePool[0].score - 12
@@ -351,6 +389,7 @@ function isKuangShiMonitor(item) {
 }
 
 function canAdd(selected, profile, combatGroup, { points, payload, side: requiredSide }) {
+  if (profile.unarmedBaggageBot && selected.some(item => item.unarmedBaggageBot)) return false
   const side = requiredSide || selected.find(item => item.side)?.side
   if (profile.side && side && profile.side !== side) return false
   if (selected.reduce((n, item) => n + item.points, profile.points) > points) return false
@@ -496,6 +535,8 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   const currentQuality = rosterQuality(selected, [], constraints.mission, constraints.points)
   const currentAnchors = constraints.points >= 300 ? impactAnchorValue(selected) : 0
   const currentMission = missionScore(selected, constraints.plan)
+  const currentDeployment = deploymentCoverage(selected)
+  const currentWarbands = impetuousWarbandValue(selected)
   const candidates = []
   for (const item of profiles) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
@@ -526,6 +567,9 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       ? Math.max(0, item.points / item.slots - remaining / (15 - count)) * .3
       : count < 12 ? Math.max(0, item.points - remaining / Math.max(1, 14 - count) * 1.6) * .10 : 0
     const value = regular + missionValue + engineer + coverage + Math.min(5, item.gunfighter / 13)
+      + (item.racerBot ? 7 : 0)
+      + (item.discoBaller && item.linkable && item.points <= 25 ? 5 : 0)
+      + (item.pitcher && item.linkable && item.points <= 25 && hackingPackageComplete(selected) ? 5 : 0)
       + (selected.some(profile => profile.ccRating > 10) ? 0 : item.ccRating / 14)
       + (item.specialist ? item.mobility / 80 : 0)
       + spend - item.points * .075 - existing * .35 - affordable + variation
@@ -533,6 +577,8 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (rosterQuality([...selected, item], [], constraints.mission, constraints.points) - currentQuality) * 1.2
       + (constraints.points >= 300 ? impactAnchorValue([...selected, item]) - currentAnchors : 0) * .65
       + (missionScore([...selected, item], constraints.plan) - currentMission) * .75
+      + (deploymentCoverage([...selected, item]) - currentDeployment) * 3
+      + (impetuousWarbandValue([...selected, item]) - currentWarbands)
       - (rosterRedundancy([...selected, item]) - currentRedundancy) * .8
       // A linked A/S gunfighter remains a candidate; the final roster verifies
       // that the Fireteam really exists before granting that exemption.
@@ -546,6 +592,12 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
   }
   candidates.sort((a, b) => b.value - a.value || a.points - b.points)
   return mode === 'specialist' ? candidates.find(item => item.specialist) : candidates.find(item => item.value > -.5)
+}
+
+export function impetuousWarbandValue(profiles) {
+  // An Impetuous order can help the warband itself, but cannot fuel another
+  // attacker. Stop rewarding extra copies once three have been selected.
+  return Math.min(3, profiles.filter(item => item.impetuousWarband).length) * 1.5
 }
 
 export function rosterSynergy(profiles) {
@@ -568,6 +620,25 @@ export function rosterSynergy(profiles) {
   const smokeAttack = smokeAssaultPair(profiles) ? 2.5 : 0
   return network + repairs + smokeAttack
     + Math.min(3, specialists) * 1.2
+}
+
+function hackingPackageComplete(profiles) {
+  return !profiles.some(item => item.pitcher && item.linkable)
+    || profiles.filter(item => item.hacker).length >= 2 && profiles.some(item => item.hacker && item.trinityHacker)
+}
+
+function addHackingSupport(selected, profiles, constraints) {
+  if (!selected.some(item => item.pitcher && item.linkable)) return true
+  while (!hackingPackageComplete(selected)) {
+    const needsTrinity = !selected.some(item => item.hacker && item.trinityHacker)
+    const hacker = profiles.filter(item => item.hacker && (!needsTrinity || item.trinityHacker) && !item.lieutenant)
+      .sort((a, b) => a.points - b.points)
+      .find(item => canAdd(selected, item, selected.filter(entry => entry.combatGroup === 1).reduce((sum, entry) => sum + entry.slots, 0) + item.slots <= 10 ? 1 : 2, constraints))
+    if (!hacker) return false
+    const group = selected.filter(item => item.combatGroup === 1).reduce((sum, item) => sum + item.slots, 0) + hacker.slots <= 10 ? 1 : 2
+    selected.push({ ...hacker, combatGroup: group })
+  }
+  return true
 }
 
 function smokeAssaultPair(profiles) {
@@ -603,10 +674,8 @@ export function rosterRedundancy(profiles) {
   return identical + repeatedRole + expensiveUnitCopies
 }
 
-// Grade the physical models in the proposed teams, not just their unlinked
-// profiles. Each gunfighter or ARO slot must be filled by a different model;
-// a gunfighter may also satisfy a CC slot. Linked grades count only when the
-// model belongs to a proposed Level 2+ team.
+// Grade physical models in actual proposed teams. Gunfighters and CC may
+// overlap, while an ARO model cannot fill either attacking role.
 export function roleCoverage(profiles, fireteams = [], mission = '', plan = missionPlan(mission)) {
   const linked = new Set()
   for (const team of fireteams) {
@@ -617,43 +686,61 @@ export function roleCoverage(profiles, fireteams = [], mission = '', plan = miss
       if (index >= 0) linked.add(index)
     }
   }
-  const qualify = (normal, upgraded, index) => gradeRank(normal) >= gradeRank('A')
-    || linked.has(index) && gradeRank(upgraded) >= gradeRank('A')
-  const gunfighters = profiles.map((item, index) => index)
-    .filter(index => qualify(profiles[index].gunfighterGrade, profiles[index].linkedGunfighterGrade, index))
-  const aro = profiles.map((item, index) => index)
-    .filter(index => qualify(profiles[index].aroGrade, profiles[index].linkedAroGrade, index))
-  const gunChoices = [[], ...gunfighters.map(index => [index])]
-  for (let i = 0; i < gunfighters.length; i++) {
-    for (let j = i + 1; j < gunfighters.length; j++) gunChoices.push([gunfighters[i], gunfighters[j]])
+  const grade = (item, normal, upgraded, index) => Math.max(gradeRank(item[normal]),
+    linked.has(index) ? gradeRank(item[upgraded]) : 0)
+  const candidates = profiles.map((item, index) => ({ item, index,
+    gun: grade(item, 'gunfighterGrade', 'linkedGunfighterGrade', index),
+    aro: grade(item, 'aroGrade', 'linkedAroGrade', index), cc: gradeRank(item.ccGrade) }))
+  const defenders = candidates.filter(entry => entry.aro >= 4)
+    .sort((a, b) => b.aro - a.aro || b.item.aroRating - a.item.aroRating).slice(0, 9)
+  const defenseChoices = [[]]
+  for (let a = 0; a < defenders.length; a++) {
+    defenseChoices.push([defenders[a]])
+    for (let b = a + 1; b < defenders.length; b++) {
+      defenseChoices.push([defenders[a], defenders[b]])
+      for (let c = b + 1; c < defenders.length; c++) defenseChoices.push([defenders[a], defenders[b], defenders[c]])
+    }
   }
   let best = null
-  for (const guns of gunChoices) {
-    const remainingAro = aro.filter(index => !guns.includes(index))
-    const defenders = remainingAro.length >= 2
-      ? [remainingAro[0], remainingAro.find(index => profiles[index].unitId !== profiles[remainingAro[0]].unitId) ?? remainingAro[1]]
-      : remainingAro
-    const distinctGunfighters = new Set(guns.map(index => profiles[index].unitId)).size
-    const distinctAro = new Set(defenders.map(index => profiles[index].unitId)).size
-    const score = guns.length * 8 + defenders.length * 6
-      + (distinctGunfighters >= 2 ? 2 : 0) + (distinctAro >= 2 ? 1.5 : 0)
-    if (!best || score > best.score) best = { guns, defenders, distinctGunfighters, distinctAro, score }
+  for (const defense of defenseChoices) {
+      const used = new Set(defense.map(entry => entry.index))
+      const attacks = candidates.filter(entry => !used.has(entry.index))
+      const guns = attacks.filter(entry => entry.gun >= 4).sort((x, y) => y.gun - x.gun || y.item.gunfighter - x.item.gunfighter).slice(0, 3)
+      const cc = attacks.filter(entry => entry.cc >= 4).sort((x, y) => y.cc - x.cc || y.item.ccRating - x.item.ccRating).slice(0, 3)
+      const distinctGunfighters = new Set(guns.map(entry => entry.item.unitId)).size
+      const distinctAro = new Set(defense.map(entry => entry.item.unitId)).size
+      const sGunfighters = guns.filter(entry => entry.gun >= 5).length
+      const sAro = defense.filter(entry => entry.aro >= 5).length
+      const sCc = cc.filter(entry => entry.cc >= 5).length
+      const score = guns.length * 8 + defense.length * 6 + cc.length * 5
+        + (sGunfighters * 3 + sAro * 3 + sCc * 2)
+        + (distinctGunfighters >= 2 ? 2 : 0) + (distinctAro >= 2 ? 1.5 : 0)
+      if (!best || score > best.score) best = { guns, defense, cc, sGunfighters, sAro, sCc,
+        distinctGunfighters, distinctAro, score }
   }
-  const cc = profiles.filter(item => gradeRank(item.ccGrade) >= gradeRank('A'))
   const specialists = profiles.filter(item => item.specialist)
   const linkedRequired = (index, normalGrade) => linked.has(index) && gradeRank(normalGrade) < gradeRank('A')
-  return { gunfighters: best.guns.length, aro: best.defenders.length, cc: cc.length,
+  const summary = (entries, normal, upgraded, armyNormal, armyUpgraded) => entries.map(({ item, index }) => {
+    const useLinked = linked.has(index) && gradeRank(item[upgraded]) > gradeRank(item[normal])
+    return { name: item.unitName, global: useLinked ? item[upgraded] : item[normal],
+      army: useLinked ? item[armyUpgraded] : item[armyNormal], linked: useLinked }
+  })
+  return { gunfighters: best.guns.length, aro: best.defense.length, cc: best.cc.length,
+    sGunfighters: best.sGunfighters, sAro: best.sAro, sCc: best.sCc,
+    gunfighterTiers: summary(best.guns, 'gunfighterGrade', 'linkedGunfighterGrade', 'armyGunfighterGrade', 'armyLinkedGunfighterGrade'),
+    aroTiers: summary(best.defense, 'aroGrade', 'linkedAroGrade', 'armyAroGrade', 'armyLinkedAroGrade'),
+    ccTiers: best.cc.map(({ item }) => ({ name: item.unitName, global: item.ccGrade, army: item.armyCcGrade })),
     specialists: specialists.length, specialistTarget: plan.target,
     distinctGunfighters: best.distinctGunfighters, distinctAro: best.distinctAro,
-    linkedGunfighters: best.guns.filter(index => linkedRequired(index, profiles[index].gunfighterGrade)).length,
-    linkedAro: best.defenders.filter(index => linkedRequired(index, profiles[index].aroGrade)).length }
+    linkedGunfighters: best.guns.filter(entry => linkedRequired(entry.index, entry.item.gunfighterGrade)).length,
+    linkedAro: best.defense.filter(entry => linkedRequired(entry.index, entry.item.aroGrade)).length }
 }
 
 export function rosterQuality(profiles, fireteams = [], mission = '', points = 300) {
   if (points < 300) return 0
   const quality = roleCoverage(profiles, fireteams, mission)
-  return Math.min(2, quality.gunfighters) * 8 + Math.min(2, quality.cc) * 5
-    + Math.min(2, quality.aro) * 6
+  return quality.gunfighters * 8 + quality.cc * 5 + quality.aro * 6
+    + quality.sGunfighters * 3 + quality.sAro * 3 + quality.sCc * 2
     + (quality.distinctGunfighters >= 2 ? 2 : 0)
     + (quality.distinctAro >= 2 ? 1.5 : 0)
 }
@@ -1002,6 +1089,9 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
   // role coverage and the rest of the roster still decide the list.
   const cheapFlashOrders = Math.min(2, profiles.filter(item => item.regular && item.repairable
     && item.flashPulse && item.points <= 9).length)
+  const racerOrders = Math.min(2, profiles.filter(item => item.racerBot && item.regular).length)
+  const cheapDisco = Math.min(2, profiles.filter(item => item.discoBaller && item.linkable && item.points <= 25).length)
+  const cheapPitcher = Math.min(2, profiles.filter(item => item.pitcher && item.linkable && item.points <= 25).length)
   const distinctShooters = new Map()
   for (const item of profiles) distinctShooters.set(item.unitId,
     Math.max(distinctShooters.get(item.unitId) || 0, item.gunfighter || 0))
@@ -1016,6 +1106,7 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
   const lieutenantOrders = profiles.reduce((sum, item) => sum + (item.lieutenantOrders || 0), 0)
   return (Math.min(specialists, plan.target) * 6) + regular * 2
     + cheapFlashOrders * 1.5 + (cheapFlashOrders === 2 ? 3.5 : 0)
+    + racerOrders * 5 + cheapDisco * 3 + (hackingPackageComplete(profiles) ? cheapPitcher * 3 : 0)
     + (bestShooter + secondShooter * .6) / 8
     + resolvedTeams.reduce((n, item) => n + fireteamUsefulness(item, item.members, teamPreference), 0)
     + Math.max(0, ...profiles.map(item => item.aroRating)) / 4
@@ -1026,6 +1117,8 @@ function scoreList(profiles, fireteams, mission, points, teamPreference = {}, pl
     + groupPlacementScore(groups, teamGroups, lieutenantOrders) * .35
     + rosterSynergy(profiles) * 1.5 + rosterQuality(profiles, fireteams, mission, points)
     + (points >= 300 ? impactAnchorValue(profiles) : 0) + missionScore(profiles, plan)
+    + deploymentCoverage(profiles) * 3
+    + impetuousWarbandValue(profiles)
     + assessLieutenantPackage(profiles, fireteams, plan).score
     - profiles.reduce((sum, item) => sum + missionSpecialistPenalty(item, plan, linkedMembers.has(item)), 0)
     - rosterRedundancy(profiles) * 1.5

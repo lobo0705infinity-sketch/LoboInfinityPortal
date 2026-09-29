@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
-import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
+import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, impetuousWarbandValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
   rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
@@ -13,7 +13,7 @@ import { LIVE_ROSTER_UNIT_SLUGS } from '../bot/official-army-rosters.mjs'
 import { deriveTeamTypeEvidence, loadTeamTypeEvidence, possibleFireteamTypes } from '../bot/build-list-team-evidence.mjs'
 import { decodeArmyCode } from './infinity-army-decode.mjs'
 import { encodeArmyCode } from './infinity-army-encode.mjs'
-import { missionPlan } from '../bot/build-list-missions.mjs'
+import { deploymentPositionValue, missionPlan, missionScore } from '../bot/build-list-missions.mjs'
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 
@@ -27,8 +27,62 @@ const mobilityCatalog = JSON.parse(await readFile(new URL('../src/data/mobility-
 assert.ok(payload?.fireteamChart?.teams?.length, 'bundled official Corregidor source is available')
 
 const roster = LIVE_ROSTER_UNIT_SLUGS.get(502)
+const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
+  gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
+  mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const profiles = availableProfiles({ payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
+const hassassinPayload = source.payloads.find(item => item.url?.endsWith('/402'))
+const hassassinProfiles = availableProfiles({ payload: hassassinPayload, metadata: source.metadata, sectorialId: 402,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
+const gradeFixture = (name, gun, aro, cc) => ({ unitName: name, unitId: name, label: name, combatGroup: 1,
+  gunfighterGrade: gun, aroGrade: aro, ccGrade: cc, armyGunfighterGrade: gun, armyAroGrade: aro, armyCcGrade: cc })
+const exclusiveRoles = roleCoverage([gradeFixture('hybrid', 'S', 'S', 'S'), gradeFixture('defender', '', 'S', ''),
+  gradeFixture('gun-two', 'S', '', 'S'), gradeFixture('gun-three', 'S', '', 'S')])
+assert.deepEqual([exclusiveRoles.gunfighters, exclusiveRoles.aro, exclusiveRoles.cc], [3, 1, 3],
+  'gunfighters may also fight in CC, while the assigned ARO model cannot fill either role')
+assert.deepEqual([exclusiveRoles.sGunfighters, exclusiveRoles.sAro, exclusiveRoles.sCc], [3, 1, 3])
+assert.ok(hassassinProfiles.some(item => item.pitcher && item.linkable && item.points <= 25))
+assert.ok(hassassinProfiles.some(item => item.hacker && item.trinityHacker && item.armyCcGrade))
+const hackerPackage = buildArmyListOptions({ ...input, payload: hassassinPayload, sectorialId: 402,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(402), mustInclude: ['Hassassin Barids'], mission: 'The Dig', count: 1 })[0]
+if (hackerPackage.profiles.some(item => item.pitcher && item.linkable)) {
+  assert.ok(hackerPackage.profiles.filter(item => item.hacker).length >= 2
+    && hackerPackage.profiles.some(item => item.hacker && item.trinityHacker),
+  'a cheap linkable Pitcher requires two hackers, including KHD or Trinity')
+}
+const impersonators = hassassinProfiles.filter(item => ['hussein-al-djabel', 'hassassin-fiday'].includes(item.slug))
+assert.equal(impersonators.length, 4, 'Al-Djabel and all three Fiday profiles are selectable')
+assert.ok(impersonators.every(item => item.deploymentPosition === 1.5 && item.forwardDeployment && !item.specialist),
+  'Impersonation earns forward position without being mistaken for a specialist')
+assert.ok(deploymentPositionValue(['Impersonation']) > deploymentPositionValue(['Infiltration'])
+  && deploymentPositionValue(['Infiltration']) > deploymentPositionValue(['Forward Deployment(+8")']),
+  'Impersonation grades above Infiltration and ordinary Forward Deployment')
+assert.ok(missionScore([impersonators[0]], missionPlan('The Dig')) >
+  missionScore([{ ...impersonators[0], deploymentPosition: 1 }], missionPlan('The Dig')),
+  'The Dig rewards an Impersonator more than an otherwise identical Infiltrator')
+const mcmurrough = hassassinProfiles.find(item => item.slug === 'mcmurrough-merc-dog-warrior')
+assert.ok(mcmurrough?.impetuousWarband && mcmurrough.irregular,
+  'McMurrough earns a modest Impetuous warband value without becoming a Regular order')
+assert.equal(impetuousWarbandValue([mcmurrough]), 1.5)
+assert.equal(impetuousWarbandValue(Array(4).fill(mcmurrough)), 4.5,
+  'the Impetuous benefit stops growing after three warbands')
+const baggagePanoPayload = source.payloads.find(item => item.url?.endsWith('/101'))
+const baggagePanoInput = { ...input, payload: baggagePanoPayload, sectorialId: 101,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(101), mustInclude: [], mission: 'Crossing Lines' }
+const baggagePanoProfiles = availableProfiles(baggagePanoInput)
+assert.ok(baggagePanoProfiles.some(item => item.slug === 'mulebots' && item.points === 8 && item.unarmedBaggageBot),
+  'the 8-point Mulebot counts toward the shared unarmed Baggage cap')
+assert.ok(baggagePanoProfiles.some(item => item.slug === 'mulebots' && item.points === 17 && !item.unarmedBaggageBot),
+  'an armed Baggage profile is not subject to the unarmed cap')
+const baggagePanoList = buildArmyListOptions({ ...baggagePanoInput, count: 1 })[0]
+assert.ok(baggagePanoList.profiles.filter(item => item.unarmedBaggageBot).length <= 1,
+  'a generated list never takes two unarmed Baggage remotes')
+const combinedPayload = source.payloads.find(item => item.url?.endsWith('/601'))
+const combinedProfiles = availableProfiles({ ...baggagePanoInput, payload: combinedPayload, sectorialId: 601,
+  rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(601) })
+assert.ok(combinedProfiles.some(item => item.slug === 'ikadron-batroids' && item.baggage
+  && !item.unarmedBaggageBot), 'armed Ikadrons retain their explicit exception')
 assert.ok(profiles.some(item => item.slug === 'jazz-and-billie-tactical-hacking-team' && item.groupId === 0 && item.specialist))
 assert.ok(profiles.some(item => item.slug === 'iguana-squadron' && !item.specialist), 'the dismounted TAG operator does not make the Iguana a console specialist')
 assert.ok(profiles.every(item => roster.includes(item.slug)))
@@ -42,9 +96,6 @@ assert.ok(transductor?.regular && transductor.flashPulse && transductor.repairab
 assert.ok(warcor && warcor.irregular && !warcor.regular && warcor.flashPulse,
   'a Warcor provides cheap ARO utility but no Regular order')
 
-const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
-  gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
-  mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const yuJingPayload = source.payloads.find(item => item.url?.endsWith('/units/en/201'))
 const yuJingInput = { ...input, payload: yuJingPayload, sectorialId: 201,
   rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(201), mustInclude: [] }

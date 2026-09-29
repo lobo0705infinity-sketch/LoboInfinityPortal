@@ -172,9 +172,11 @@ export function formatBuiltList(list, index = 1) {
   const fireteams = list.fireteams.length
     ? list.fireteams.map(team => `• **${team.type} · Level ${team.level}** (${team.name}, Group ${team.combatGroup}): ${team.members.map(name => name.split(' · ')[0]).join(' + ')}${team.level >= 2 ? ' · BS Attack (+1 SD)' : ''}`).join('\n')
     : '• No legal Level 2 Fireteam found in this roster.'
-  const quality = list.quality
-    ? `**A/S coverage (separate Guns/ARO)** Guns ${list.quality.gunfighters}/2 · CC ${list.quality.cc}/2 · ARO ${list.quality.aro}/2 · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}${list.quality.linkedGunfighters || list.quality.linkedAro ? ' · linked grades included' : ''}`
-    : ''
+  const quality = list.quality ? [
+    `**Combat coverage (global S target; A fallback)** Guns ${list.quality.sGunfighters}/3 S (${list.quality.gunfighters}/3 A+) · ARO ${list.quality.sAro}/3 S (${list.quality.aro}/3 A+) · CC ${list.quality.sCc}/3 S (${list.quality.cc}/3 A+) · Specialists ${list.quality.specialists}${list.quality.specialistTarget ? `/${list.quality.specialistTarget}` : ' (optional)'}`,
+    ...[['Guns', list.quality.gunfighterTiers], ['ARO', list.quality.aroTiers], ['CC', list.quality.ccTiers]]
+      .map(([role, tiers]) => `**${role} tiers** ${tiers.map(item => `${item.name} ${item.army || '—'}/${item.global || '—'}${item.linked ? ' linked' : ''}`).join(' · ') || 'None'} (army/global)`),
+  ].join('\n') : ''
   const ltPlan = list.lieutenantPlan
   const ncoNote = ltPlan?.nco && (ltPlan.kind === 'cheap-decoy' || ltPlan.lieutenant.lieutenantOrders > 1)
     ? ` · ${ltPlan.nco.optionName} NCO` : ''
