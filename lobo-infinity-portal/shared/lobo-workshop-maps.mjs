@@ -636,20 +636,9 @@ const correctedWorkshopNames = new Map([
   [44, 'LL Map 14 Data Harvest/Double Bind'],
 ])
 
-export const loboWorkshopMaps = workshopSaveMaps.map((map) => ({
-  ...map,
-  workshopName: correctedWorkshopNames.get(map.index) ?? map.name,
-  name: terrainBySave.get(map.index).name,
-  layoutKey: terrainBySave.get(map.index).layoutKey,
-  missionSetups: missionSetupsBySave.get(map.index) ?? [],
-  exactDuplicateOf: exactDuplicateOfBySave.get(map.index) ?? null,
-}))
-
-export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))
-
 // Section membership follows the original bag labels. The LL and TT event
-// assignments are proposals until the commissioner confirms them. A layout
-// appears once in each section, while all of its Workshop saves remain linked.
+// assignments were confirmed by the commissioner. A layout appears once in
+// each section, while all of its Workshop saves remain linked.
 const sectionDefinitions = [
   {
     id: 'casual',
@@ -673,6 +662,41 @@ const sectionDefinitions = [
     indices: [37, 42, 45],
   },
 ]
+
+const collectionTitleByIndex = new Map(sectionDefinitions.flatMap((section) =>
+  section.indices.map((index) => [index, section.title])))
+
+export const loboWorkshopMaps = workshopSaveMaps.map((map) => {
+  const collectionTitle = collectionTitleByIndex.get(map.index)
+  if (!collectionTitle) throw new Error(`Workshop save ${map.index} has no collection`)
+  const name = terrainBySave.get(map.index).name
+  return {
+    ...map,
+    workshopName: correctedWorkshopNames.get(map.index) ?? map.name,
+    workshopBagName: `SET_${collectionTitle} - ${name} [${String(map.index).padStart(2, '0')}]`,
+    collectionTitle,
+    name,
+    layoutKey: terrainBySave.get(map.index).layoutKey,
+    missionSetups: missionSetupsBySave.get(map.index) ?? [],
+    exactDuplicateOf: exactDuplicateOfBySave.get(map.index) ?? null,
+  }
+})
+
+export const loboWorkshopMapBySlug = new Map(loboWorkshopMaps.map((map) => [map.slug, map]))
+
+const normalizeWorkshopMapLabel = (value) => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
+const workshopMapByLegacyLabel = new Map()
+for (const map of loboWorkshopMaps) {
+  for (const label of [map.workshopBagName, map.workshopName, workshopSaveMaps[map.index - 1].name])
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(label), map)
+  const leagueNumber = map.workshopName.match(/^(?:LL|Lobo League) Map\s*#?\s*(\d+)/i)?.[1]
+  if (leagueNumber) {
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(`Lobo League Map ${leagueNumber}`), map)
+    workshopMapByLegacyLabel.set(normalizeWorkshopMapLabel(`LL Map ${leagueNumber}`), map)
+  }
+}
+
+export const resolveLoboWorkshopMapLabel = (label) => workshopMapByLegacyLabel.get(normalizeWorkshopMapLabel(label))
 
 const mapByIndex = new Map(loboWorkshopMaps.map((map) => [map.index, map]))
 

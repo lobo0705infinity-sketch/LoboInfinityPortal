@@ -5,6 +5,8 @@ export type LoboWorkshopMap = {
   slug: string
   name: string
   workshopName: string
+  workshopBagName: string
+  collectionTitle: string
   family: string
   layoutKey: number
   missionSetups: string[]
@@ -18,6 +20,7 @@ export type LoboWorkshopMap = {
 export const LOBO_WORKSHOP_URL: string
 export const loboWorkshopMaps: LoboWorkshopMap[]
 export const loboWorkshopMapBySlug: Map<string, LoboWorkshopMap>
+export const resolveLoboWorkshopMapLabel: (label: string) => LoboWorkshopMap | undefined
 export type LoboWorkshopMapSection = {
   id: string
   title: string
