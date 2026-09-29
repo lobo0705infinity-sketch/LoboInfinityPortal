@@ -339,7 +339,10 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const complete = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 3
     && item.quality.cc >= 3 && item.quality.aro >= 3
     && item.quality.specialists >= item.quality.specialistTarget) : []
-  const rolePool = complete.length ? complete : candidates
+  const fallbackCoverage = points >= 300 ? candidates.filter(item => item.quality.gunfighters >= 2
+    && item.quality.cc >= 2 && item.quality.aro >= 2
+    && item.quality.specialists >= item.quality.specialistTarget) : []
+  const rolePool = complete.length ? complete : fallbackCoverage.length ? fallbackCoverage : candidates
   const preferredPackage = rolePool.filter(item => item.score >= rolePool[0].score - 12
     && (item.missionPlan.tacticalLink ? item.lieutenantPlan.kind === 'apex-open'
       : item.missionPlan.lieutenantKills ? item.lieutenantPlan.kind === 'apex-coc'
@@ -542,6 +545,9 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
     const group = selected.filter(profile => profile.combatGroup === 1).reduce((n, profile) => n + profile.slots, 0) + item.slots <= 10 ? 1 : 2
     if (!canAdd(selected, item, group, constraints)) continue
     if (item.lieutenant || item.slots > 1 && count > 8) continue
+    // Peripheral helpers take a list slot but do not add a trooper or an
+    // order. Do not use one to fill the last slot of a 300-point army.
+    if (!item.regular && !item.irregular && count >= 10) continue
     if (/warcor/i.test(item.slug) && selected.some(profile => /warcor/i.test(profile.slug))) continue
     const regular = item.regular ? 2.1 : 0.1
     const missionValue = item.specialist && specialists < constraints.plan.target ? 5.5
