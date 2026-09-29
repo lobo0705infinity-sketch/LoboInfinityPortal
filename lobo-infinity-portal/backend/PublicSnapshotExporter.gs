@@ -334,7 +334,7 @@ function buildPublicSnapshotV1_() {
     enrichPublicSnapshotMissionGeistEventState_(projectedEventState, missionCatalog);
     const players = buildPublicSnapshotPlayers_(frozen.playersTable, games, eventState);
     const publicGames = buildPublicSnapshotGames_(games, events);
-    const missions = buildPublicSnapshotMissions_(games, frozen.gameReviewNarrativesTable);
+    const missions = buildPublicSnapshotMissions_(games);
     const factions = buildPublicSnapshotFactions_(games, players);
     const standings = buildPublicSnapshotStandings_(frozen.playersTable, games);
     const armyLists = buildPublicSnapshotArmyLists_(frozen.armyLists);
@@ -537,7 +537,6 @@ function capturePublicSnapshotSource_(snapshotId) {
   const hallOfFame = buildPublicSnapshotHallOfFameStrict_(armyLists);
   const teamTournamentProjection = readPublicSnapshotTeamTournamentProjection_();
   const top40RegistrationSource = readPublicSnapshotTop40RegistrationNames_();
-  const gameReviewNarrativesTable = readPublicSnapshotSheet_(spreadsheet, "Game Review Narratives");
   return {
     snapshotId: snapshotId,
     sourceCutoff: new Date().toISOString(),
@@ -559,7 +558,6 @@ function capturePublicSnapshotSource_(snapshotId) {
     teamsTable: freezePublicSnapshotTable_(teamsTable),
     pairingsTable: freezePublicSnapshotTable_(pairingsTable),
     missionCatalog: JSON.parse(JSON.stringify(missionCatalog)),
-    gameReviewNarrativesTable: freezePublicSnapshotTable_(gameReviewNarrativesTable),
     teamTournamentProjection: JSON.parse(JSON.stringify(teamTournamentProjection)),
     top40RegistrationNames: {
       names: top40RegistrationSource.names.slice(),
@@ -567,7 +565,7 @@ function capturePublicSnapshotSource_(snapshotId) {
       responseWorksheet: top40RegistrationSource.responseWorksheet
     },
     hallOfFame: JSON.parse(JSON.stringify(hallOfFame)),
-    readCount: 21
+    readCount: 20
   };
 }
 
@@ -1029,22 +1027,7 @@ function publicSnapshotRecentGames_(games) {
   }).slice(0, 10).map(function(game) { return { id: game.gameId }; });
 }
 
-function buildPublicSnapshotMissions_(games, narrativesTable) {
-  const narratives = {};
-  (narrativesTable && narrativesTable.rows || []).forEach(function(row) {
-    const mission = String(row[0] || "").trim();
-    const id = Number(row[1]);
-    const angle = String(row[2] || "").trim();
-    const enabled = String(row[3] || "").trim().toLowerCase();
-    if (!mission || !Number.isInteger(id) || id < 1 || id > 100 ||
-        !angle || angle.length > 500 || enabled === "false" || enabled === "no") return;
-    if (!narratives[mission]) narratives[mission] = [];
-    if (narratives[mission].some(function(item) { return item.id === id; })) return;
-    narratives[mission].push({ id: id, angle: angle });
-  });
-  Object.keys(narratives).forEach(function(mission) {
-    narratives[mission].sort(function(a, b) { return a.id - b.id; });
-  });
+function buildPublicSnapshotMissions_(games) {
   const groups = {};
   games.forEach(function(game) {
     if (!game.mission) return;
@@ -1078,7 +1061,7 @@ function buildPublicSnapshotMissions_(games, narrativesTable) {
         factions[right] - factions[left] || left.localeCompare(right);
     })[0] || "";
     return {
-      mission: mission, games: rows.length, reviewNarratives: narratives[mission] || [],
+      mission: mission, games: rows.length,
       averageTP: publicSnapshotMissionAverage_(winnerScores.tp),
       averageOP: publicSnapshotMissionAverage_(winnerScores.op),
       averageVP: publicSnapshotMissionAverage_(winnerScores.vp),

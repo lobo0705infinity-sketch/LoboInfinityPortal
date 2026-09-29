@@ -88,7 +88,7 @@ function runScheduledArmyIntelligenceRefresh() {
   const intelligence = runScheduledMaintenanceWorker_(
     ARMY_INTELLIGENCE_SCHEDULER_URL,
     token,
-    { batchLimit: 1 }
+    { batchLimit: 5 }
   );
   const automation = runScheduledMaintenanceWorker_(
     AUTOMATION_QUEUE_WORKER_URL,
