@@ -60,6 +60,10 @@ export function verifiedRulesInteraction(question, corpus) {
     conclusion = 'NO'
     answer = 'No. MSV1 cannot draw LoF through White Noise. Discover is not a BS Attack and does not trigger the exception allowing a Trooper targeted by a BS Attack through the zone to treat it as Poor Visibility (-6) when drawing LoF to the attacker. MSV1’s ability to see through ordinary Smoke does not bypass White Noise. A separate unobstructed LoF could allow a BS Attack ARO normally.'
     pages = ['White_Noise', 'Visibility_Conditions', 'Multispectral_Visor']
+  } else if (/^(?:what happens (?:if|when)|what do you do (?:if|when)) (?:you (?:do a |use |perform )?|a trooper (?:uses |performs )?)?transmutation(?: happens)? (?:but |and |if |when )?(?:the (?:new|replacement) (?:model|silhouette) |you |it )?(?:cant|cannot|does not|doesnt|won t|wont)(?: physically)? fit(?: in (?:the )?(?:available )?space)?$/.test(words)) {
+    conclusion = 'DEPENDS'
+    answer = 'It depends on whether the transformation is mandatory. For a mandatory and inevitable replacement, if the new Silhouette cannot fit, the replacement Trooper enters Immobilized-A. This particular IMM-A can only be cancelled when the conditions of the surrounding space change enough to accommodate the new Silhouette; Dodge and Engineer cannot cancel it. With different base sizes, check the legal centre-aligned or edge-aligned replacement positions first; replacement cannot cancel Engaged State. The mandatory-replacement rule does not automatically apply to optional profile changes. Not owning an alternative miniature is a separate issue: use a Transmuted Token to indicate the new profile.'
+    pages = ['Replacing_Game_Elements', 'Transmutation']
   } else return null
   return {
     question: String(question).trim(),

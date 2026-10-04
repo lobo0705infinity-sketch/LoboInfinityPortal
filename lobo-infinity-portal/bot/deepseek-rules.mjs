@@ -53,6 +53,9 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   if (/immobili[sz]|\bimm[- ]?[ab]\b/i.test(question)) {
     ;['immobilized-a state', 'immobilized-b state', 'dodge', 'reset'].forEach((term) => interactionTerms.add(term))
   }
+  if (/transmut|replac|immobili[sz]|\bimm[- ]?a\b/i.test(question)) {
+    ;['replacing game elements', 'transmutation', 'immobilized-a state'].forEach((term) => interactionTerms.add(term))
+  }
   if (/white noise/i.test(question)) {
     ;['white noise', 'white noise zone', 'visibility conditions', 'visibility zones', 'multispectral visor', 'discover', 'bs attack'].forEach((term) => interactionTerms.add(term))
   }
@@ -90,6 +93,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'State restrictions apply to every Skill or ARO unless an explicit rule limits them to a Turn. IMM-A allows only Dodge (PH -6), including in the Active Turn; IMM-B allows only Reset (WIP -3). When both states apply simultaneously, intersect the allowed declarations: neither Dodge nor Reset is permitted. Do not reinterpret A and B together as separate alternatives.',
     'Distinguish Dodge (-3), the profile Skill imposing a penalty on opponents when its user Dodges, from the -3 PH penalty for Dodging a Template without LoF. Speculative Attack excludes the former negative MOD on its attack roll, but does not remove the latter penalty on the defender’s Dodge.',
     'White Noise blocks LoF for all MSV levels and Marksmanship; ordinary Smoke and White Noise are different. Discover is not a BS Attack. The exception for a Trooper targeted by a BS Attack through a Zero Visibility or White Noise Zone does not activate merely because someone declares Discover.',
+    'For Transmutation or any replacement that cannot fit, apply Replacing Game Elements as well as the named Skill. First check legal replacement positions. For a mandatory and inevitable replacement, insufficient Silhouette volume causes IMM-A that can only end when the containing space changes; Dodge and Engineer cannot cancel it. Do not conflate missing an alternative miniature (use a Token) with insufficient physical space. Distinguish mandatory replacement from an optional profile change rather than assuming all Transmutation types are mandatory.',
     'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
     'Do not silently assume an omitted game state, Turn, active/reactive role, target, declared Skill, range, equipment, or other fact when changing that fact could change the answer. Identify every material ambiguity and evaluate all of its alternatives.',
     'If any material ambiguity has alternatives with different outcomes, conclusion must be DEPENDS, requestedOutcomeApplies must be null, and answer must begin "It depends." Explain each outcome concisely.',

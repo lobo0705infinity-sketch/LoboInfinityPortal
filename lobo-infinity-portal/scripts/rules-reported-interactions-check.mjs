@@ -15,6 +15,9 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['what happens if you do a transmutation but cant fit', 'DEPENDS', /Dodge and Engineer cannot cancel it/],
+  ['what happens if you do a transmutation but cannot fit?', 'DEPENDS', /mandatory and inevitable/],
+  ['What happens when transmutation happens and the new silhouette cannot fit in the available space?', 'DEPENDS', /optional profile changes/],
   ['does speculative attack ignore dodge-3?', 'YES', /defender.*-3 PH/],
   ['Does Speculative Attack ignore Dodge (-3)?', 'YES', /ignored/],
   ['can you reset if you are immobilised a and immobilised b?', 'NO', /simultaneously/],
@@ -27,6 +30,7 @@ const cases = [
 ]
 for (const [question, conclusion, detail] of cases) {
   const result = await context.retrieveRulesReference({ question })
+  assert.ok(result.deepSeek, question)
   assert.equal(result.deepSeek.conclusion, conclusion, question)
   assert.match(result.deepSeek.answer, detail, question)
   assert.ok(result.deepSeek.sources.every((item) => item.url.startsWith('https://infinitythewiki.com/')))
@@ -50,15 +54,16 @@ const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
 assert.match(prompt, /defender’s Dodge/)
-console.log('Rules interaction regressions passed: 9 corrections, 5 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: 12 corrections, 5 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
-  [cases[0][0], ['modifiers explained', 'speculative attack']],
-  [cases[2][0], ['immobilized-a state', 'immobilized-b state']],
-  [cases[7][0], ['visibility conditions']],
+  ['what happens if you do a transmutation but cant fit', ['replacing game elements', 'transmutation']],
+  ['does speculative attack ignore dodge-3?', ['modifiers explained', 'speculative attack']],
+  ['can you reset if you are immobilised a and immobilised b?', ['immobilized-a state', 'immobilized-b state', 'replacing game elements']],
+  ['does discover through white noise triggers bs attack aro from msv 1 model', ['visibility conditions']],
 ]) {
   const evidence = buildRulesEvidencePrompt(productionCorpus, question)
   const ids = evidence.evidenceIds
