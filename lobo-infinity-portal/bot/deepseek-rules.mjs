@@ -44,6 +44,20 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   if (/\bmines?\b/i.test(question) && /engag|melee|close combat|base contact|silhouette contact|b2b|hand.to.hand/i.test(question)) {
     corpus.chunks.filter((chunk) => ['mines', 'template weapons into close combat'].includes(chunk.canonicalTerm)).forEach(add)
   }
+  // Activate every controlling clause for the interactions whose individual
+  // fragments are easily confused by lexical retrieval.
+  const interactionTerms = new Set()
+  if (/speculative/i.test(question) && /dodg/i.test(question)) {
+    ;['speculative attack', 'dodge', 'modifiers', 'modifiers explained'].forEach((term) => interactionTerms.add(term))
+  }
+  if (/immobili[sz]|\bimm[- ]?[ab]\b/i.test(question)) {
+    ;['immobilized-a state', 'immobilized-b state', 'dodge', 'reset'].forEach((term) => interactionTerms.add(term))
+  }
+  if (/white noise/i.test(question)) {
+    ;['white noise', 'white noise zone', 'visibility conditions', 'visibility zones', 'multispectral visor', 'discover', 'bs attack'].forEach((term) => interactionTerms.add(term))
+  }
+  corpus.chunks.filter((chunk) => interactionTerms.has(chunk.canonicalTerm)
+    || [...interactionTerms].some((term) => normalizeRuleText((chunk.headings || []).join(' ')).includes(term))).forEach(add)
   ranked.slice(0, 10).forEach((candidate) => {
     add(candidate)
     corpus.chunks.filter((chunk) => chunk.sourceId === candidate.sourceId && chunk.pdfPage === candidate.pdfPage).forEach(add)
@@ -73,6 +87,9 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'Check each declared Skill’s labels and apply every restriction that targets those labels. Permission to declare a Skill combination does not waive its movement restrictions. In particular, Dodge has the Movement label: during an Impetuous activation its movement must obey Impetuous priorities, including the enemy Deployment Zone exception. Do not extend Impetuous Phase restrictions to an ordinary Order or a reactive Dodge merely because the Trooper has Impetuous.',
+    'State restrictions apply to every Skill or ARO unless an explicit rule limits them to a Turn. IMM-A allows only Dodge (PH -6), including in the Active Turn; IMM-B allows only Reset (WIP -3). When both states apply simultaneously, intersect the allowed declarations: neither Dodge nor Reset is permitted. Do not reinterpret A and B together as separate alternatives.',
+    'Distinguish Dodge (-3), the profile Skill imposing a penalty on opponents when its user Dodges, from the -3 PH penalty for Dodging a Template without LoF. Speculative Attack excludes the former negative MOD on its attack roll, but does not remove the latter penalty on the defender’s Dodge.',
+    'White Noise blocks LoF for all MSV levels and Marksmanship; ordinary Smoke and White Noise are different. Discover is not a BS Attack. The exception for a Trooper targeted by a BS Attack through a Zero Visibility or White Noise Zone does not activate merely because someone declares Discover.',
     'Before answering, silently translate informal player wording into the practical rules question. For example, "breaks Stealth" means the declaration causes the Trooper to lose Stealth protection and permits an otherwise-suppressed ARO; it does not mean permanently removing the Skill.',
     'Do not silently assume an omitted game state, Turn, active/reactive role, target, declared Skill, range, equipment, or other fact when changing that fact could change the answer. Identify every material ambiguity and evaluate all of its alternatives.',
     'If any material ambiguity has alternatives with different outcomes, conclusion must be DEPENDS, requestedOutcomeApplies must be null, and answer must begin "It depends." Explain each outcome concisely.',

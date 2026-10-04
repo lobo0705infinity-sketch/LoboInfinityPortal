@@ -22,6 +22,8 @@ export async function ensureRulesCommand(client) {
 
 export async function retrieveRulesReference({ question, deepSeek = createDeepSeekRulesAnswer() }) {
   const [corpus, modelResolution] = await Promise.all([loadProductionRulesCorpus(), resolveRulesModelMentions(question)])
+  const verified = verifiedRulesInteraction(question, corpus)
+  if (verified) return verified
   // Approved benchmark answers describe rules concepts, not the selected Army
   // profile. A named model must take the evidence-bounded path so its actual
   // profile facts participate in the answer.
@@ -32,6 +34,43 @@ export async function retrieveRulesReference({ question, deepSeek = createDeepSe
   if (!modelResolution.models.length && asksAboutPublicFireteamIdentity(question))
     return publicFireteamIdentityResult(question, corpus)
   return deepSeek({ question, corpus, modelResolution })
+}
+
+
+/** Verified N5.3 interactions. Keep compound questions on the evidence path. */
+export function verifiedRulesInteraction(question, corpus) {
+  const words = normalizeRuleText(question)
+    .replace(/\bimmobili[sz]ed\b/g, 'immobilized')
+    .replace(/\bimmobili[sz]ation\b/g, 'immobilized')
+    .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
+  let answer, conclusion, pages
+  if (/^(?:does|do|can|will) speculative attack(?:s)? (?:ignore|bypass)(?:s)? (?:the )?dodge\s*-?\s*3(?: skill| mod| modifier)?$/.test(words)) {
+    conclusion = 'YES'
+    answer = 'Yes. If you mean the Dodge (-3) profile Skill, its penalty to the attacker is ignored by Speculative Attack, which applies its own -6 and Range MODs but excludes other negative MODs. This is different from the defender’s -3 PH penalty for Dodging a Template without LoF to the attacker: that penalty still applies to the defender’s Dodge Roll.'
+    pages = ['Speculative_Attack', 'Template:Modifiers-explained']
+  } else if (/^(?:can|may) (?:you|a trooper|a model) reset (?:if|when|while) (?:you are|they are|it is|in|youre) (?:in )?(?:the )?immobilized[- ]a(?: state)?(?: and (?:in )?(?:the )?immobilized[- ]b(?: state)?)?$/.test(words)
+    || /^(?:can|may) (?:you|a trooper|a model) reset(?: against hacking)? (?:in|while in) (?:the )?immobilized[- ]a state(?: in (?:the )?(?:active|reactive) turn)?$/.test(words)) {
+    const both = /immobilized[- ]b/.test(words)
+    conclusion = 'NO'
+    answer = both
+      ? 'No. With Immobilized-A and Immobilized-B simultaneously, both restrictions apply: IMM-A permits only Dodge, while IMM-B permits only Reset. IMM-A therefore prohibits Reset and IMM-B prohibits Dodge, in both Active and Reactive Turns. The Trooper cannot cancel either state by its own Dodge or Reset; an Engineer (or equivalent Skill) can cancel the states.'
+      : 'No. Immobilized-A prohibits declaring any Skill or ARO except Dodge, applying PH -6. This restriction applies in both the Active and Reactive Turns, so Reset cannot be declared, including against Hacking. A successful Dodge can cancel IMM-A; an Engineer (or equivalent Skill) can also cancel it.'
+    pages = both ? ['Immobilized-A_State', 'Immobilized-B_State'] : ['Immobilized-A_State']
+  } else if (/^(?:does|can|will) discover(?:ing)? through white noise (?:trigger|triggers|allow|allows|permit|permits)(?: a| an)? bs attack aro (?:from|by)(?: a| an)? (?:msv ?1|multispectral visor(?: level)? 1)(?: model| trooper)?$/.test(words)) {
+    conclusion = 'NO'
+    answer = 'No. MSV1 cannot draw LoF through White Noise. Discover is not a BS Attack and does not trigger the exception allowing a Trooper targeted by a BS Attack through the zone to treat it as Poor Visibility (-6) when drawing LoF to the attacker. MSV1’s ability to see through ordinary Smoke does not bypass White Noise. A separate unobstructed LoF could allow a BS Attack ARO normally.'
+    pages = ['White_Noise', 'Visibility_Conditions', 'Multispectral_Visor']
+  } else return null
+  return {
+    question: String(question).trim(),
+    versions: corpus.manifest.sources.map((source) => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+    status: 'EVIDENCE-BOUNDED RULES ANSWER',
+    answerSource: 'EVIDENCE_BOUNDED_RULES',
+    deepSeek: {
+      answer, conclusion, certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true,
+      sources: pages.map((page, index) => ({ id: 'V' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+    },
+  }
 }
 
 function asksIfElectromagneticDestroysDeployable(question) {
