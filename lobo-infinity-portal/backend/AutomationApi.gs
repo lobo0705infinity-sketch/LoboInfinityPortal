@@ -388,14 +388,14 @@ function clearAutomationQueue() {
 function retryAutomationFailed() {
 
   const failed =
-    getAutomationQueue(250)
+    getAutomationQueue(ensureAutomationQueueSheet().getLastRow())
       .filter(function(item) {
         return item.status === "Failed" || item.status === "Retry";
       });
 
   const results =
     failed.map(function(item) {
-      return processAutomationQueueItem(item, true);
+      return processAutomationQueueItem(item, false);
     });
 
   return jsonOutput({
@@ -480,12 +480,7 @@ function enqueueGameSubmittedAutomationEvent(identity) {
   if (typeof markPublicDetailProjectionDirty_ === "function")
     markPublicDetailProjectionDirty_(["games", "players", "factions", "missions"]);
 
-  if (hasRecentAutomationEventId_(eventId))
-    return {
-      duplicate: true,
-      eventId: eventId,
-      success: true
-    };
+  const eventExists = hasRecentAutomationEventId_(eventId);
 
   const rules = getAutomationRules();
   const rule = rules.gameSubmitted || buildDefaultAutomationRule("gameSubmitted");
@@ -519,7 +514,7 @@ function enqueueGameSubmittedAutomationEvent(identity) {
       timestamp: timestamp
   };
 
-  ensureAutomationEventsSheet().appendRow([
+  if (!eventExists) ensureAutomationEventsSheet().appendRow([
       eventRecord.eventId,
       eventRecord.eventType,
       eventRecord.category,
@@ -534,7 +529,13 @@ function enqueueGameSubmittedAutomationEvent(identity) {
   ]);
 
   if (destinations.length > 0) {
-    const queueRows = destinations.map(function(destination) {
+    const queueSheet = ensureAutomationQueueSheet();
+    const existingQueueIds = queueSheet.getLastRow() > 1
+      ? queueSheet.getRange(2, 1, queueSheet.getLastRow() - 1, 1).getValues().map(function(row) { return String(row[0]); })
+      : [];
+    const queueRows = destinations.filter(function(destination) {
+      return existingQueueIds.indexOf(eventId + "-" + destination) < 0;
+    }).map(function(destination) {
       const queueId = eventId + "-" + destination;
       return [
           queueId,
@@ -551,8 +552,7 @@ function enqueueGameSubmittedAutomationEvent(identity) {
           })
       ];
     });
-    const queueSheet = ensureAutomationQueueSheet();
-    queueSheet
+    if (queueRows.length > 0) queueSheet
       .getRange(
         queueSheet.getLastRow() + 1,
         1,
@@ -578,7 +578,7 @@ function hasRecentAutomationEventId_(eventId) {
   if (lastRow <= 1)
     return false;
 
-  const firstRow = Math.max(2, lastRow - AUTOMATION_GAME_EVENT_LOOKBACK + 1);
+  const firstRow = 2;
   const values = sheet
     .getRange(firstRow, 1, lastRow - firstRow + 1, 1)
     .getValues();
@@ -762,17 +762,17 @@ function processAutomationQueueItem(item, force) {
 
   updateAutomationQueueItem(
     item.queueId,
-    "Sent",
+    "Unsupported",
     Number(item.attempts) + 1,
-    "Queued for " + item.destination + " destination.",
+    "Delivery is not implemented for " + item.destination + ". No delivery was attempted.",
     item.rowNumber
   );
 
   return {
-    success: true,
+    success: false,
     destination:
       item.destination,
-    status: "Sent"
+    status: "Unsupported"
   };
 
 }
@@ -910,10 +910,14 @@ function buildAutomationGameStoryPayload_(item) {
     payload: JSON.stringify({ game: game, lists: lists })
   });
   const code = response.getResponseCode();
-  const result = JSON.parse(response.getContentText());
+  const text = response.getContentText() || "";
+  let result;
+  try { result = JSON.parse(text); } catch (error) {
+    throw new Error("The story worker returned non-JSON (HTTP " + code + "): " + text.slice(0, 200));
+  }
 
   if (code < 200 || code >= 300)
-    throw new Error("The story worker returned HTTP " + code + ".");
+    throw new Error("The story worker returned HTTP " + code + ": " + String(result.error || "Unknown error"));
   if (result.pending === true)
     return { ready: false, pending: true, reason: result.error || "Waiting for a linked story." };
   if (result.success !== true || !result.story)

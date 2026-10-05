@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import vm from 'node:vm'
 import automationWorker from '../api/automation-queue-worker.mjs'
 
 const canonical = readFileSync('backend/CanonicalSubmissionService.gs', 'utf8')
@@ -18,8 +19,36 @@ const enqueueEnd = automation.indexOf('function hasRecentAutomationEventId_', en
 const enqueueSource = automation.slice(enqueueStart, enqueueEnd)
 assert.doesNotMatch(enqueueSource, /UrlFetchApp|processAutomationQueueItem|sendDiscordAnnouncementPayload|getAllRecentGameObjects|rebuild/)
 assert.match(enqueueSource, /gameSubmitted-game-" \+ gameId/)
-assert.match(automation, /function hasRecentAutomationEventId_[\s\S]*AUTOMATION_GAME_EVENT_LOOKBACK/)
+assert.match(automation, /function hasRecentAutomationEventId_[\s\S]*const firstRow = 2/)
 assert.match(enqueueSource, /setValues\(queueRows\)/)
+
+const eventRows = []; const queueRows = []
+let failQueueWrite = true
+const sandbox = vm.createContext({})
+vm.runInContext(automation, sandbox)
+sandbox.getAutomationRules = () => ({ gameSubmitted: { enabled: true } })
+sandbox.getRuleDestinations = () => ['discord', 'portal']
+sandbox.getAutomationTimestamp = () => '2026-10-05T17:00:00Z'
+sandbox.ensureAutomationEventsSheet = () => ({ getLastRow: () => eventRows.length + 1,
+  appendRow: row => eventRows.push(row), getRange: () => ({ getValues: () => eventRows }) })
+sandbox.ensureAutomationQueueSheet = () => ({ getLastRow: () => queueRows.length + 1,
+  getRange: () => ({ getValues: () => queueRows,
+    setValues: rows => { if (failQueueWrite) throw new Error('queue write failed'); queueRows.push(...rows) } }) })
+assert.throws(() => sandbox.enqueueGameSubmittedAutomationEvent({ gameId: 122 }), /queue write failed/)
+assert.equal(eventRows.length, 1)
+assert.equal(queueRows.length, 0)
+failQueueWrite = false
+sandbox.enqueueGameSubmittedAutomationEvent({ gameId: 122 })
+assert.equal(eventRows.length, 1, 'retry repairs fanout without duplicating the persisted event')
+assert.equal(queueRows.length, 2)
+sandbox.enqueueGameSubmittedAutomationEvent({ gameId: 122 })
+assert.equal(queueRows.length, 2, 'identical retry does not duplicate destination jobs')
+let unsupportedUpdate
+sandbox.updateAutomationQueueItem = (...args) => { unsupportedUpdate = args }
+const unsupported = sandbox.processAutomationQueueItem({ queueId: 'email-1', destination: 'email', attempts: 0 }, false)
+assert.equal(unsupported.success, false)
+assert.equal(unsupported.status, 'Unsupported')
+assert.equal(unsupportedUpdate[1], 'Unsupported', 'unimplemented destinations must never claim delivery')
 
 assert.match(automation, /const AUTOMATION_QUEUE_BATCH_LIMIT = 4/)
 assert.match(automation, /const firstRow = 2;/)

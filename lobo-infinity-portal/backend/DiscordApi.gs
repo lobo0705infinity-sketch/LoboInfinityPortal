@@ -1493,7 +1493,7 @@ function sendDiscordAnnouncementPayload(event, payload, options) {
   }
 
   if (
-    !options.force &&
+    (!options.force || Boolean(options.dedupeKey)) &&
     isDuplicateDiscordAnnouncement(
       event,
       logPayload

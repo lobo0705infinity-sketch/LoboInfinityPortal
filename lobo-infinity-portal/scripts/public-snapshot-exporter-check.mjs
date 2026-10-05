@@ -407,6 +407,12 @@ const eventsTable = { headers: ['ID', 'Name', 'Type', 'Status', 'Commissioners',
 ] }
 const index = sandbox.buildPublicSnapshotPlayerIndex_(playersTable)
 const context = sandbox.buildPublicSnapshotGameContext_({ headers, rows: gameRows }, index)
+const casualRow = [...fixtureRows[0]]
+casualRow[FORM.GAME_TYPE] = 'casual'; casualRow[FORM.EVENT_ID] = ''
+assert.equal(sandbox.buildPublicSnapshotGameContext_({ rows: [casualRow] }, index)[0].eventId, '',
+  'an unassigned casual game must not enter the current league event')
+const leagueRow = [...casualRow]; leagueRow[FORM.GAME_TYPE] = 'league'
+assert.equal(sandbox.buildPublicSnapshotGameContext_({ rows: [leagueRow] }, index)[0].eventId, 'event-current-league')
 const historicalGame73Context = context.find((game) => game.gameId === 73)
 historicalGame73Context.gameId = 173
 historicalGame73Context.player2Op = 2

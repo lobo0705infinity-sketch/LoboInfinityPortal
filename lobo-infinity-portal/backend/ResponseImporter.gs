@@ -277,8 +277,11 @@ function lifEnsureImportLog_(spreadsheet) {
 
 function lifWasImported_(log, key) {
   if (log.getLastRow() < 2) return false;
-  return log.getRange(2, 1, log.getLastRow() - 1, 1).getDisplayValues()
-    .some(function(row) { return row[0] === key; });
+  return log.getRange(2, 1, log.getLastRow() - 1, LIF_FORMS.IMPORT_LOG_HEADERS.length).getDisplayValues()
+    .some(function(row) {
+      return row[0] === key && (row[4] === "Imported" || row[4] === "Duplicate" ||
+        (row[4] === "Rebuild Failed" && Number(row[3]) >= 2));
+    });
 }
 
 function lifWriteImportLog_(log, key, type, row, status, message) {

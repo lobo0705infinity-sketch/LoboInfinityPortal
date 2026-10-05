@@ -72,7 +72,7 @@ check(
 )
 check(
   'Game Engine draw player rows keep each player faction',
-  /const playerIsOne = playerNumber === 1[\s\S]*if \(playerIsOne\)[\s\S]*winner === 2[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\][\s\S]*winner === 1[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\]/.test(
+  /const playerIsOne = playerNumber === 1[\s\S]*if \(playerIsOne\)[\s\S]*winner === 2[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\][\s\S]*winner !== 2[\s\S]*row\[FORM\.LOSINGFACTION\][\s\S]*row\[FORM\.WINNINGFACTION\]/.test(
     gameEngine,
   ),
 )

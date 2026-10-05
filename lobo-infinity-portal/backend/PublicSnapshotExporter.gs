@@ -743,7 +743,8 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
       player1VpValid: publicSnapshotScoreCellIsValid_(row[FORM.P1VP]),
       player2VpValid: publicSnapshotScoreCellIsValid_(row[FORM.P2VP]),
       winner: winnerSide === 1 ? player1.player : winnerSide === 2 ? player2.player : "Draw",
-      eventId: String(row[FORM.EVENT_ID] || EVENT_ENGINE_DEFAULT_EVENT_ID).trim() || EVENT_ENGINE_DEFAULT_EVENT_ID,
+      eventId: String(row[FORM.EVENT_ID] || "").trim() ||
+        (normalizeGameType(row[FORM.GAME_TYPE]) === "league" ? EVENT_ENGINE_DEFAULT_EVENT_ID : ""),
       gameType: String(row[FORM.GAME_TYPE] || "League").trim() || "League",
       bestMoment: String(row[FORM.MOMENT] || ""), firstTurn: String(row[FORM.FIRSTTURN] || ""),
       mapSlug: String(row[FORM.WORKSHOP_MAP_SLUG] || "").trim(),

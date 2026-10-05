@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+api/_lib/game-story-handler.mjs
 dist
 .codex-screenshots
 dist-ssr

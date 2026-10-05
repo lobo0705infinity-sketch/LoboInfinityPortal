@@ -332,7 +332,7 @@ function buildPlayerRow(row, playerNumber, winner) {
   } else {
 
     faction =
-      winner === 1
+      winner !== 2
         ? row[FORM.LOSINGFACTION]
         : row[FORM.WINNINGFACTION];
 

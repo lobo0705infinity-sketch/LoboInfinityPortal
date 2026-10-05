@@ -71,6 +71,7 @@ Object.assign(context, {
     GAME_TYPE: 17, GAME_RESULT: 18, WINNER_ARMY_LIST_ID: 21, LOSER_ARMY_LIST_ID: 22,
     WORKSHOP_MAP_SLUG: 23, MAP_RATING: 24 },
   EVENT_ENGINE_DEFAULT_EVENT_ID: 'event-current-league',
+  normalizeGameType: value => String(value || 'league').trim().toLowerCase(),
   determineWinner: () => 1,
   getGameEnginePlayerArmyCode: () => '',
   getArmyIntelligenceHash: () => '',
