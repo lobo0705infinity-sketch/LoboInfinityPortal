@@ -209,7 +209,7 @@
     "rules:check": "node scripts/firestore-rules-check.mjs",
     "security:cache": "node scripts/security-cache-audit.mjs",
     "test:security-cache-policy": "node scripts/security-cache-policy-check.mjs",
-    "test:game-automation-background": "node scripts/game-automation-background-check.mjs",
+    "test:game-automation-background": "node scripts/public-snapshot-maintenance-check.mjs && node scripts/game-automation-background-check.mjs",
     "test:canonical-rebuild-recovery": "node scripts/canonical-rebuild-recovery-check.mjs",
     "test:public-projection-reliability": "node scripts/public-projection-reliability-check.mjs",
     "test:prepared-projection-owner-maintenance": "node scripts/prepared-projection-owner-maintenance-check.mjs",

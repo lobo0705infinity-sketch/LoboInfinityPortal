@@ -1,4 +1,5 @@
 import { timingSafeEqual } from 'node:crypto'
+import { refreshPublicSnapshotIfDue } from './_lib/public-snapshot-maintenance.mjs'
 
 const DEFAULT_BATCH_LIMIT = 4
 
@@ -27,6 +28,7 @@ export default async function handler(request, response) {
       return
     }
 
+    const snapshotPublication = await refreshPublicSnapshotIfDue(apiUrl, workerToken)
     const body = new URLSearchParams()
     body.set('action', 'processAutomationQueueBatch')
     body.set('batchLimit', String(DEFAULT_BATCH_LIMIT))
@@ -48,7 +50,7 @@ export default async function handler(request, response) {
       return
     }
 
-    response.status(200).json(payload)
+    response.status(200).json({ ...payload, snapshotPublication })
   } catch (error) {
     response.status(500).json({
       error: error instanceof Error ? error.message : String(error),
@@ -62,4 +64,3 @@ function safeEqual(left, right) {
   const rightBuffer = Buffer.from(String(right))
   return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer)
 }
-

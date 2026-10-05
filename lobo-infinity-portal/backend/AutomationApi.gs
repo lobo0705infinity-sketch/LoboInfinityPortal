@@ -602,6 +602,7 @@ function processAutomationQueueBatch(e) {
     1,
     Math.min(AUTOMATION_QUEUE_BATCH_LIMIT, requestedLimit || AUTOMATION_QUEUE_BATCH_LIMIT)
   );
+  const storyRuntimeRecovery = recoverLegacyStoryRuntimeFailures_();
   const items = selectPendingAutomationQueueItems_(batchLimit);
   const results = items.map(function(item) {
     try {
@@ -660,6 +661,7 @@ function processAutomationQueueBatch(e) {
 
   return jsonOutput({
     canonicalRebuildRecovery: canonicalRebuildRecovery,
+    storyRuntimeRecovery: storyRuntimeRecovery,
     analyticsProjection: analyticsProjection,
     armyWorkspaceProjection: armyWorkspaceProjection,
     detailProjection: detailProjection,
@@ -707,6 +709,29 @@ function runPreparedProjectionRecoveryMaintenance() {
   };
   Logger.log(JSON.stringify(result));
   return result;
+}
+
+function recoverLegacyStoryRuntimeFailures_() {
+  const sheet = ensureAutomationQueueSheet();
+  const lastRow = sheet.getLastRow();
+  const recovered = [];
+  if (lastRow <= 1) return recovered;
+  const retryLimit = Number(getDiscordConfig().retryLimit) || 3;
+  const rows = sheet.getRange(2, 1, lastRow - 1, AUTOMATION_QUEUE_HEADERS.length).getValues();
+  rows.forEach(function(row, index) {
+    const item = buildAutomationQueueItem(row);
+    // The old unbundled story function returned a plain-text Vercel server
+    // error before any Discord send. Recover only that identified failure;
+    // webhook failures and already delivered jobs retain their retry state.
+    if (item.eventType !== "gameSubmitted" || item.destination !== "discord" ||
+        item.status !== "Retry" || Number(item.attempts) < retryLimit ||
+        !/^Unexpected token ['"]A['"],[\s\S]*(?:server|not valid JSON)/i.test(item.reason)) return;
+    updateAutomationQueueItem(item.queueId, "Retry", 0,
+      "Recovered legacy story runtime failure (previous attempts " + item.attempts + "): " + item.reason,
+      index + 2);
+    recovered.push(item.queueId);
+  });
+  return recovered;
 }
 
 function selectPendingAutomationQueueItems_(limit) {

@@ -3,6 +3,9 @@
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "functions": {
+    "api/automation-queue-worker.mjs": {
+      "maxDuration": 300
+    },
     "api/public-snapshot-publish.mjs": {
       "maxDuration": 300
     },

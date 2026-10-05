@@ -50,6 +50,26 @@ assert.equal(unsupported.success, false)
 assert.equal(unsupported.status, 'Unsupported')
 assert.equal(unsupportedUpdate[1], 'Unsupported', 'unimplemented destinations must never claim delivery')
 
+const legacyRows = [
+  ['game-122', 'event-122', 'gameSubmitted', 'discord', 'Retry', '', 3, '', 'Unexpected token \'A\', "A server e"... is not valid JSON', '{}'],
+  ['game-123', 'event-123', 'gameSubmitted', 'discord', 'Retry', '', 3, '', 'Unexpected token \'A\', "A server e"... is not valid JSON', '{}'],
+  ['delivered', 'event-old', 'gameSubmitted', 'discord', 'Sent', '', 3, '', 'Unexpected token \'A\', "A server e"... is not valid JSON', '{}'],
+  ['webhook', 'event-webhook', 'gameSubmitted', 'discord', 'Retry', '', 3, '', 'Webhook returned HTTP 429', '{}'],
+]
+sandbox.getDiscordConfig = () => ({ retryLimit: 3 })
+sandbox.ensureAutomationQueueSheet = () => ({ getLastRow: () => legacyRows.length + 1,
+  getRange: () => ({ getValues: () => legacyRows }) })
+sandbox.updateAutomationQueueItem = (id, status, attempts, reason, rowNumber) => {
+  const row = legacyRows[rowNumber - 2]
+  assert.equal(row[0], id)
+  row[4] = status; row[6] = attempts; row[8] = reason
+}
+assert.deepEqual(Array.from(sandbox.recoverLegacyStoryRuntimeFailures_()), ['game-122', 'game-123'])
+assert.deepEqual(Array.from(sandbox.recoverLegacyStoryRuntimeFailures_()), [], 'identified runtime failures are requeued once')
+assert.equal(legacyRows[2][4], 'Sent', 'delivered jobs remain untouched')
+assert.equal(legacyRows[3][6], 3, 'exhausted webhook failures are not reset')
+assert.deepEqual(Array.from(sandbox.selectPendingAutomationQueueItems_(4), item => item.queueId), ['game-122', 'game-123'])
+
 assert.match(automation, /const AUTOMATION_QUEUE_BATCH_LIMIT = 4/)
 assert.match(automation, /const firstRow = 2;/)
 assert.match(automation, /slice\(0, limit\)/)
@@ -72,6 +92,11 @@ const requests = []
 process.env.ARMY_INTELLIGENCE_WORKER_TOKEN = 'focused-worker-token'
 process.env.VITE_API_URL = 'https://example.invalid/api'
 globalThis.fetch = async (url, options) => {
+  if (String(url).endsWith('/current.json')) return new Response(JSON.stringify({
+    snapshotId: '20261005T160801Z', sourceCutoff: new Date().toISOString(),
+    publishedAt: new Date().toISOString(), basePath: 'public-snapshots/20261005T160801Z/',
+  }), { status: 200 })
+  if (String(url).endsWith('/refresh-status.json')) return new Response('', { status: 404 })
   requests.push({ body: String(options.body), method: options.method, url: String(url) })
   return new Response(JSON.stringify({ attempted: 0, success: true }), { status: 200 })
 }

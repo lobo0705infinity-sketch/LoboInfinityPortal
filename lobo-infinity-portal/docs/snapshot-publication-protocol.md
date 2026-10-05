@@ -36,3 +36,27 @@ Validation: `npm run test:public-snapshot-publication`,
 `npm run release:apps-script:syntax`. The chunk regression covers a >5 MB
 Unicode dataset, repeated uploads, missing chunks, corrupted chunks, incomplete
 manifests, and preservation of the live pointer on failure.
+
+The authenticated automation queue worker now checks snapshot maintenance before
+processing announcements. If the last verified publication or successful refresh
+is at least 15 minutes old, it invokes the existing protected
+`refreshArmyIntelligence` API with an empty snapshot list and
+`publishPublicSnapshot=true`. The credential stays inside the deployed runtime;
+local secret export and Apps Script Execution API access are unnecessary.
+
+It verifies the publisher receipt against the live pointer before allowing queue
+processing. `public-snapshots/refresh-status.json` records only the snapshot ID and
+last successful refresh time, so unchanged data is throttled across cold starts.
+Failures do not record success and are retried at the next scheduled invocation.
+Actual refresh latency also depends on the installed scheduler cadence.
+
+Queue maintenance recovers exhausted Discord game jobs whose saved error is the
+identified legacy `Unexpected token 'A'` plain-text report-server response. It
+resets that pre-delivery retry budget once, preserves the previous failure in the
+reason field, and retains the same queue ID and delivery deduplication. Sent jobs
+and unrelated webhook failures are untouched. The backend recovery addition must
+be deployed through clasp; publication maintenance itself runs in Vercel.
+
+Additional validation: `npm run test:game-automation-background` covers stale and
+unchanged refreshes, false success receipts, failed uploads, and one-time queue
+recovery without changing delivered or exhausted webhook jobs.
