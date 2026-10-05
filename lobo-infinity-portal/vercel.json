@@ -3,6 +3,9 @@
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "functions": {
+    "api/public-snapshot-publish.mjs": {
+      "maxDuration": 300
+    },
     "api/public-search-page.mjs": {
       "includeFiles": "dist/app-shell.html"
     }

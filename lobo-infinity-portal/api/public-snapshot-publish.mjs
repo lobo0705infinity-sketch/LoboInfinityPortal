@@ -21,6 +21,8 @@ export const PUBLIC_SNAPSHOT_FILES = Object.freeze([
 
 const SNAPSHOT_ID_PATTERN = /^\d{8}T\d{6}Z$/
 const MAX_PUBLICATION_BYTES = 4_000_000
+export const SNAPSHOT_CHUNK_BYTES = 512_000
+const MAX_SNAPSHOT_FILE_BYTES = 64_000_000
 
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
@@ -55,6 +57,7 @@ export async function publishPublicSnapshot(rawBody, {
   fetchObject = fetch,
   headObject = head,
   putObject = put,
+  assembled = false,
 } = {}) {
   const body = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -66,6 +69,9 @@ export async function publishPublicSnapshot(rawBody, {
   const activate = body.activate === true
   if (!SNAPSHOT_ID_PATTERN.test(snapshotId)) throw new Error('Invalid snapshot ID.')
   if (!sourceCutoff || Number.isNaN(Date.parse(sourceCutoff))) throw new Error('Invalid source cutoff.')
+  if (body.action === 'chunk' || body.action === 'finalize') {
+    return publishChunkedSnapshot(body, { compareCurrent, fetchObject, headObject, putObject })
+  }
   if (!body.files || typeof body.files !== 'object' || Array.isArray(body.files)) {
     throw new Error('The complete snapshot files are required.')
   }
@@ -93,9 +99,14 @@ export async function publishPublicSnapshot(rawBody, {
       text,
     }
   })
-  if (totalBytes > MAX_PUBLICATION_BYTES) throw new Error('Snapshot publication payload is too large.')
+  if (!assembled && Buffer.byteLength(JSON.stringify(body), 'utf8') > MAX_PUBLICATION_BYTES) {
+    throw new Error('Snapshot publication request is too large; use chunk uploads.')
+  }
 
   const currentSnapshot = await readCurrentSnapshot({ fetchObject, headObject })
+  if (activate && currentSnapshot && Date.parse(sourceCutoff) < Date.parse(currentSnapshot.pointer.sourceCutoff)) {
+    throw new Error('An older snapshot cannot replace the current snapshot.')
+  }
   if (compareCurrent && currentSnapshot && await snapshotDataMatchesCurrent(prepared, currentSnapshot.baseUrl, fetchObject)) {
     return {
       snapshotId: currentSnapshot.pointer.snapshotId,
@@ -177,6 +188,73 @@ export async function publishPublicSnapshot(rawBody, {
     current: activatedCurrent,
     unchanged: false,
   }
+}
+
+function validateArtifactManifest(artifact) {
+  if (!artifact || !PUBLIC_SNAPSHOT_FILES.includes(artifact.filename) ||
+      !Number.isSafeInteger(artifact.byteCount) || artifact.byteCount < 1 ||
+      artifact.byteCount > MAX_SNAPSHOT_FILE_BYTES || !/^[a-f0-9]{64}$/.test(artifact.contentHash) ||
+      artifact.chunks !== Math.ceil(artifact.byteCount / SNAPSHOT_CHUNK_BYTES)) {
+    throw new Error('Invalid snapshot artifact manifest.')
+  }
+}
+
+function chunkPath(snapshotId, artifact, index) {
+  return `public-snapshots/${snapshotId}/parts/${artifact.filename}/${artifact.contentHash}/${String(index).padStart(6, '0')}`
+}
+
+async function publishChunkedSnapshot(body, dependencies) {
+  const { headObject, putObject, fetchObject } = dependencies
+  if (body.action === 'chunk') {
+    const artifact = body.artifact
+    validateArtifactManifest(artifact)
+    const index = body.index
+    if (!Number.isSafeInteger(index) || index < 0 || index >= artifact.chunks ||
+        typeof body.content !== 'string' || body.content.length > Math.ceil(SNAPSHOT_CHUNK_BYTES / 3) * 4 ||
+        !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(body.content)) {
+      throw new Error('Invalid snapshot chunk.')
+    }
+    const bytes = Buffer.from(body.content, 'base64')
+    const expectedBytes = Math.min(SNAPSHOT_CHUNK_BYTES, artifact.byteCount - index * SNAPSHOT_CHUNK_BYTES)
+    if (bytes.length !== expectedBytes) throw new Error('Snapshot chunk size mismatch.')
+    const pathname = chunkPath(body.snapshotId, artifact, index)
+    try {
+      const existing = await headObject(pathname)
+      const response = await fetchObject(existing.url)
+      if (!response.ok || !Buffer.from(await response.arrayBuffer()).equals(bytes)) {
+        throw new Error('Immutable snapshot chunk differs.')
+      }
+    } catch (error) {
+      if (!(error instanceof BlobNotFoundError)) throw error
+      await putObject(pathname, bytes, {
+        access: 'public', addRandomSuffix: false, cacheControlMaxAge: 31_536_000,
+        contentType: 'application/octet-stream',
+      })
+    }
+    return { snapshotId: body.snapshotId, filename: artifact.filename, index, uploaded: 1, activated: false }
+  }
+  if (!Array.isArray(body.manifest) || body.manifest.length !== PUBLIC_SNAPSHOT_FILES.length ||
+      new Set(body.manifest.map(item => item.filename)).size !== PUBLIC_SNAPSHOT_FILES.length) {
+    throw new Error('The complete snapshot manifest is required.')
+  }
+  const files = {}
+  for (const artifact of body.manifest) {
+    validateArtifactManifest(artifact)
+    const parts = []
+    for (let index = 0; index < artifact.chunks; index++) {
+      const existing = await headObject(chunkPath(body.snapshotId, artifact, index))
+      const response = await fetchObject(existing.url)
+      if (!response.ok) throw new Error(`Snapshot chunk could not be read: ${artifact.filename}`)
+      parts.push(Buffer.from(await response.arrayBuffer()))
+    }
+    const bytes = Buffer.concat(parts)
+    if (bytes.length !== artifact.byteCount || createHash('sha256').update(bytes).digest('hex') !== artifact.contentHash) {
+      throw new Error(`Snapshot artifact verification failed: ${artifact.filename}`)
+    }
+    files[artifact.filename] = bytes.toString('utf8')
+    if (!Buffer.from(files[artifact.filename], 'utf8').equals(bytes)) throw new Error('Snapshot artifact is not UTF-8.')
+  }
+  return publishPublicSnapshot({ ...body, action: undefined, files }, { ...dependencies, assembled: true })
 }
 
 async function readCurrentSnapshot({ fetchObject, headObject }) {

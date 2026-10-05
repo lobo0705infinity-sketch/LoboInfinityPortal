@@ -107,7 +107,7 @@ for (const forbidden of ['buildPublicSnapshotV1_', 'canonicalDecoderGatewayDecod
   assert.equal(publicationReachable.has(forbidden), false, `publication reaches ${forbidden}`)
 }
 const publicationUrlFetchReachable = [...publicationReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
-assert.deepEqual(publicationUrlFetchReachable.map(([name]) => name), ['publishLatestPublicSnapshotV1_'])
+assert.deepEqual(publicationUrlFetchReachable.map(([name]) => name), ['requestPublicSnapshotPublication_'])
 
 const inspectionReachable = new Map()
 const inspectionPending = ['runInspectLatestValidatedPublicSnapshotV1']
@@ -145,7 +145,7 @@ while (scheduledPending.length) {
 }
 const scheduledUrlFetchReachable = [...scheduledReachable].filter(([, definition]) => /\bUrlFetchApp\b/.test(definition.body))
 assert.deepEqual(scheduledUrlFetchReachable.map(([name]) => name),
-  ['publishLatestPublicSnapshotV1_', 'fetchMissionGeistListing_'])
+  ['requestPublicSnapshotPublication_', 'fetchMissionGeistListing_'])
 for (const forbidden of ['canonicalDecoderGatewayDecode_', 'rebuildGameEngine', 'refreshArmyIntelligence']) {
   assert.equal(scheduledReachable.has(forbidden), false, `scheduled snapshot reaches ${forbidden}`)
 }
@@ -236,6 +236,12 @@ const exactFiles = Object.fromEntries([
 })]))
 const exactPublicationSandbox = {
   Error, JSON, Logger: { log() {} }, String,
+  Utilities: {
+    newBlob: text => ({ getBytes: () => [...Buffer.from(text, 'utf8')] }),
+    DigestAlgorithm: { SHA_256: 'sha256' },
+    computeDigest: (algorithm, bytes) => [...createHash(algorithm).update(Buffer.from(bytes)).digest()],
+    base64Encode: bytes => Buffer.from(bytes).toString('base64'),
+  },
   PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_PROPERTY: 'PUBLIC_SNAPSHOT_V1_LAST_VALIDATED_ID',
   PUBLIC_SNAPSHOT_PUBLISH_TOKEN_PROPERTY: 'LOBO_SNAPSHOT_PUBLISH_TOKEN',
   PUBLIC_SNAPSHOT_V1_ROOT_PROPERTY: 'PUBLIC_SNAPSHOT_V1_ROOT_FOLDER_ID',
@@ -261,8 +267,18 @@ const exactPublicationSandbox = {
       } }
     } }
   } },
-  UrlFetchApp: { fetch: () => {
+  UrlFetchApp: { fetch: (url, options) => {
     exactUrlFetchCalls += 1
+    assert.ok(Buffer.byteLength(options.payload) < 1000000)
+    const body = JSON.parse(options.payload)
+    if (body.action === 'chunk') {
+      assert.equal(Buffer.from(body.content, 'base64').toString(), exactFiles[body.artifact.filename])
+      assert.equal(body.artifact.contentHash, createHash('sha256').update(exactFiles[body.artifact.filename]).digest('hex'))
+    } else {
+      assert.equal(body.action, 'finalize')
+      assert.equal(body.manifest.length, 15)
+      assert.equal(body.activate, true)
+    }
     return { getResponseCode: () => 200, getContentText: () => JSON.stringify({
       success: true, activated: true, snapshotId: exactSnapshotId, sourceCutoff: exactSourceCutoff,
       uploaded: 15, files: [], current: { snapshotId: exactSnapshotId },
@@ -270,22 +286,22 @@ const exactPublicationSandbox = {
   } },
 }
 vm.createContext(exactPublicationSandbox)
-for (const name of ['getLatestValidatedPublicSnapshotId_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T194207ZProof']) {
+for (const name of ['getLatestValidatedPublicSnapshotId_', 'requestPublicSnapshotPublication_', 'publishLatestPublicSnapshotV1_', 'runPublishPublicSnapshot20260903T194207ZProof']) {
   vm.runInContext(backendFunctions.get(name).body, exactPublicationSandbox)
 }
 assert.equal(exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof().snapshotId, exactSnapshotId)
-assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactUrlFetchCalls, 16)
 exactLatestValidatedId = '20260903T050000Z'
 assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /changed before publication/)
-assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactUrlFetchCalls, 16)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = ''
 assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /identity is unavailable/)
-assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactUrlFetchCalls, 16)
 assert.equal(exactDriveReads, 1)
 exactLatestValidatedId = 'malformed-snapshot'
 assert.throws(() => exactPublicationSandbox.runPublishPublicSnapshot20260903T194207ZProof(), /identity is unavailable/)
-assert.equal(exactUrlFetchCalls, 1)
+assert.equal(exactUrlFetchCalls, 16)
 assert.equal(exactDriveReads, 1)
 
 const FORM = {
