@@ -1,3 +1,4 @@
+import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { getCurrentArmySource, searchBuildListFactions } from './build-list-command.mjs'
 import { ListBuilderError } from './build-list-generator.mjs'
@@ -32,7 +33,8 @@ export async function buildRandomListResponse({ faction, points, swc, getSource 
     sectorialId: Number(source.faction.id), rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(Number(source.faction.id)),
     points, swc })
   const classifiedCoverage = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
-  return { ...formatRandomArmyList(list), embeds: formatInfListClassifiedEmbeds(classifiedCoverage) }
+  const tts = ttsDiscordAttachment({ armyCode: list.code, payload: source.payload, metadata: source.metadata })
+  return { ...formatRandomArmyList(list), files: tts.files, embeds: appendTtsEmbed(formatInfListClassifiedEmbeds(classifiedCoverage), tts) }
 }
 
 export function createRandomListAutocompleteHandler({ searchFaction = searchRandomListFactions, logger = console } = {}) {

@@ -384,6 +384,7 @@ export async function renderInfListPng({ input, outputPath, mobileGunfighter = f
       height: profilePages[0].height,
       imageBuffer: profilePages[0].imageBuffer,
       classifiedCoverage,
+      ttsSource: { payload: classificationData.payload, metadata },
       legality,
       officialArmyUrl: buildOfficialArmyUrl(armyCode),
       outputPath: finalOutputPath,

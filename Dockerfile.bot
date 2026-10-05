@@ -10,6 +10,7 @@ COPY lobo-infinity-portal/ .
 RUN node scripts/rules-reported-interactions-check.mjs
 RUN node scripts/rules-deepseek-check.mjs
 RUN npm run test:build-list
+RUN node scripts/tts-2d-export-check.mjs
 RUN npm run test:random-list
 RUN npm run test:inf-list-classifieds
 

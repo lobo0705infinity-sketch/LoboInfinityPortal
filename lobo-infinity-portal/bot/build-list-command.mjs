@@ -1,3 +1,4 @@
+import { ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { resolve } from 'node:path'
 import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
@@ -165,7 +166,10 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
     aroCatalog, closeCombatCatalog, mobilityCatalog,
     mission, mustInclude: (Array.isArray(mustInclude) ? mustInclude : [mustInclude])
       .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence, count: 3 })
-  return lists.map((list, index) => ({ allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1) }))
+  return lists.map((list, index) => {
+    const tts = ttsDiscordAttachment({ armyCode: list.code, payload: source.payload, metadata: source.metadata })
+    return { allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1), files: tts.files, embeds: [{ description: tts.text.slice(0,4000) }] }
+  })
 }
 
 export function formatBuiltList(list, index = 1) {

@@ -125,7 +125,7 @@ const reply = await createInfListResponse({
   withRenderSlot: task => task(),
   render: async () => ({ classifiedCoverage: coverage, officialArmyUrl: 'https://example.test/army', tacticalPages: [] }),
 })
-assert.equal(reply.embeds.length, 1, 'both text and slash /inf-list responses show all cards in one embed')
+assert.equal(reply.embeds.length, 2, 'all classified cards stay in one embed with separate TTS instructions')
 assert.equal(reply.embeds[0].fields[0].name, '✓ 1. HVT: Follow-Up')
 assert.equal(reply.embeds[0].fields[19].name, '✓ 20. HVT: Assassination')
 assert.doesNotMatch(reply.embeds[0].url, /classified-deck-en\.pdf/, 'never link players to the obsolete printable deck')

@@ -1,3 +1,4 @@
+import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { InfListRenderError, renderInfListPng, validateArmyCode } from '../scripts/inf-list-render-poc.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { formatInfListLegality } from './inf-list-legality.mjs'
@@ -92,10 +93,12 @@ export async function createInfListResponse({
     const suffix = result.tacticalPages.length > 1 ? `-${index + 1}` : ''
     files.push({ attachment: tacticalPage.imageBuffer, name: `infinity-army-tactical-brief${suffix}.png` })
   }
+  const tts = ttsDiscordAttachment({ armyCode: validatedArmyCode, ...result.ttsSource })
+  files.push(...tts.files)
   return {
     allowedMentions: { repliedUser: false },
     content: `${formatInfListLegality(result.legality)}\n\n${SUCCESS_TEXT}\n\n[Open in Infinity Army](${result.officialArmyUrl})`,
-    embeds: formatInfListClassifiedEmbeds(result.classifiedCoverage),
+    embeds: appendTtsEmbed(formatInfListClassifiedEmbeds(result.classifiedCoverage), tts),
     files,
   }
 }
