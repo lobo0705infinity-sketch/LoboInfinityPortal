@@ -49,7 +49,7 @@ function ensureCanonicalGameIdentities_(sheet) {
       sheet.getRange(1, 26, 1, 3).setValues([GAME_PIPELINE_HEADERS]);
     if (migrated.some(function(row, index) { return Number(values[index + 1][25]) !== row[0]; }) &&
         typeof markCanonicalRebuildRequired_ === "function")
-      markCanonicalRebuildRequired_("Persistent game identities assigned");
+      markCanonicalRebuildRequired_({ reason: "persistent-game-identities-assigned" });
     props.setProperty("LIF_GAME_ID_HIGH_WATER", String(maximum));
     return maximum;
   });

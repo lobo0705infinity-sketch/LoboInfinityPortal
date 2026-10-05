@@ -35,10 +35,15 @@ const context=vm.createContext({console,Number,Date,JSON,Math,String,Object,
  lifGetTargetSpreadsheet_:()=>({getSheetByName:()=>canonical}),
  validateGame:r=>Boolean(r[4]&&r[5]),getGameEngineEventId:()=>'',getGameEngineGameType:r=>r[17],
 })
-for(const file of ['GamePipelineReliability.gs','AutomationApi.gs']) vm.runInContext(fs.readFileSync('backend/'+file,'utf8'),context)
+for(const file of ['CanonicalRebuildCoordinator.gs','GamePipelineReliability.gs','AutomationApi.gs']) vm.runInContext(fs.readFileSync('backend/'+file,'utf8'),context)
 context.ensureAutomationEventsSheet=()=>events;context.ensureAutomationQueueSheet=()=>queue
 context.getAutomationRules=()=>({gameSubmitted:{enabled:true}})
 context.getRuleDestinations=()=>['discord','portal'];context.getAutomationTimestamp=()=>new Date().toISOString()
+context.withGamePipelineLock_(() => {
+  context.markCanonicalRebuildRequired_({ reason: 'nested-lock-test' })
+  assert.equal(locked, true, 'rebuild bookkeeping must not release the enclosing submission lock')
+})
+assert.equal(locked, false)
 canonical.interrupt=true
 assert.throws(()=>context.ensureCanonicalGameIdentities_(canonical),/interrupted/)
 assert.notEqual(canonical.rows[0][25],'Game ID','migration marker is written only after all IDs')

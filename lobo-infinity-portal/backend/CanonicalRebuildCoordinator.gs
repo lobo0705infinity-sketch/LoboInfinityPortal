@@ -181,12 +181,13 @@ function failCanonicalRebuildObligation_(generation, stage, error) {
 
 function withCanonicalRebuildObligationLock_(callback) {
   const lock = LockService.getScriptLock();
-  lock.waitLock(10000);
+  const acquired = typeof lock.hasLock !== "function" || !lock.hasLock();
+  if (acquired) lock.waitLock(10000);
   try {
     return callback();
   }
   finally {
-    lock.releaseLock();
+    if (acquired) lock.releaseLock();
   }
 }
 
