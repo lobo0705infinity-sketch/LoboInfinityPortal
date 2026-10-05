@@ -15,6 +15,12 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['what happens if you transmute but you can’t fit', 'DEPENDS', /Dodge and Engineer cannot cancel it/],
+  ["what happens if you transmute but you can't fit", 'DEPENDS', /centre-aligned or edge-aligned/],
+  ['can you guts prone if you are immobilized', 'NO', /cannot voluntarily fail/],
+  ['Can you go prone through a Guts Roll while in immobilised-B state?', 'NO', /merely declaring Dodge/],
+  ['can you target a model witha template weapon if it would hit your own hvt', 'DEPENDS', /no PS value that inflicts no States/],
+  ['Can you target a model with a template weapon if it would affect your HVT?', 'DEPENDS', /Other shots in the same Burst/],
   ['what happens if you do a transmutation but cant fit', 'DEPENDS', /Dodge and Engineer cannot cancel it/],
   ['what happens if you do a transmutation but cannot fit?', 'DEPENDS', /mandatory and inevitable/],
   ['What happens when transmutation happens and the new silhouette cannot fit in the available space?', 'DEPENDS', /optional profile changes/],
@@ -54,7 +60,7 @@ const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
 assert.match(prompt, /defender’s Dodge/)
-console.log('Rules interaction regressions passed: 12 corrections, 5 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 5 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')

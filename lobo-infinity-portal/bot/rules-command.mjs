@@ -39,12 +39,23 @@ export async function retrieveRulesReference({ question, deepSeek = createDeepSe
 
 /** Verified N5.3 interactions. Keep compound questions on the evidence path. */
 export function verifiedRulesInteraction(question, corpus) {
-  const words = normalizeRuleText(question)
+  const words = normalizeRuleText(String(question).replace(/[’']/g, ''))
     .replace(/\bimmobili[sz]ed\b/g, 'immobilized')
     .replace(/\bimmobili[sz]ation\b/g, 'immobilized')
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
-  if (/^(?:does|do|can|will) speculative attack(?:s)? (?:ignore|bypass)(?:s)? (?:the )?dodge\s*-?\s*3(?: skill| mod| modifier)?$/.test(words)) {
+  let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  if (/^(?:can|may) (?:you|a trooper|a model) (?:guts prone|go prone (?:through|with|via|by failing) (?:a )?guts(?: roll)?) (?:if|when|while) (?:you are|they are|it is|in|youre) (?:in )?(?:the )?immobilized(?:[- ](?:a|b))?(?: state)?$/.test(words)) {
+    conclusion = 'NO'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'No. A Trooper in Immobilized-A or Immobilized-B cannot make a Guts Roll, so it cannot voluntarily fail one or go Prone through Guts. The Guts Roll requirements explicitly exclude IMM States. A separate successful PH-6 Dodge can cancel ordinary IMM-A and permit Dodge movement, including going Prone; merely declaring Dodge does not allow that movement.'
+    pages = ['Guts_Roll', 'Immobilized-A_State', 'Dodge', 'General_Movement_Rules']
+  } else if (/^(?:can|may) you (?:target|attack) (?:a|an|the|enemy) (?:model|trooper) with ?a (?:template weapon|template) if it would (?:hit|affect|overlap) (?:your|my|an|the) (?:own )?hvt$/.test(words)) {
+    conclusion = 'DEPENDS'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'For a damaging or State-inflicting template, no: if it would affect your HVT, that shot is cancelled because the HVT is Neutral. Other shots in the same Burst remain valid if their templates do not affect allied or neutral Troopers. The exception is a template with no PS value that inflicts no States, such as Smoke or Eclipse: it may overlap the HVT. If a cancelled shot used a Disposable weapon, that use is still consumed.'
+    pages = ['Template_Weapons_and_Equipment']
+  } else if (/^(?:does|do|can|will) speculative attack(?:s)? (?:ignore|bypass)(?:s)? (?:the )?dodge\s*-?\s*3(?: skill| mod| modifier)?$/.test(words)) {
     conclusion = 'YES'
     answer = 'Yes. If you mean the Dodge (-3) profile Skill, its penalty to the attacker is ignored by Speculative Attack, which applies its own -6 and Range MODs but excludes other negative MODs. This is different from the defender’s -3 PH penalty for Dodging a Template without LoF to the attacker: that penalty still applies to the defender’s Dodge Roll.'
     pages = ['Speculative_Attack', 'Template:Modifiers-explained']
@@ -60,7 +71,7 @@ export function verifiedRulesInteraction(question, corpus) {
     conclusion = 'NO'
     answer = 'No. MSV1 cannot draw LoF through White Noise. Discover is not a BS Attack and does not trigger the exception allowing a Trooper targeted by a BS Attack through the zone to treat it as Poor Visibility (-6) when drawing LoF to the attacker. MSV1’s ability to see through ordinary Smoke does not bypass White Noise. A separate unobstructed LoF could allow a BS Attack ARO normally.'
     pages = ['White_Noise', 'Visibility_Conditions', 'Multispectral_Visor']
-  } else if (/^(?:what happens (?:if|when)|what do you do (?:if|when)) (?:you (?:do a |use |perform )?|a trooper (?:uses |performs )?)?transmutation(?: happens)? (?:but |and |if |when )?(?:the (?:new|replacement) (?:model|silhouette) |you |it )?(?:cant|cannot|does not|doesnt|won t|wont)(?: physically)? fit(?: in (?:the )?(?:available )?space)?$/.test(words)) {
+  } else if (/^(?:what happens (?:if|when)|what do you do (?:if|when)) (?:you (?:do a |use |perform )?|a trooper (?:uses |performs )?)?transmut(?:ation|e)(?: happens)? (?:but |and |if |when )?(?:the (?:new|replacement) (?:model|silhouette) |you |it )?(?:cant|cannot|does not|doesnt|won t|wont)(?: physically)? fit(?: in (?:the )?(?:available )?space)?$/.test(words)) {
     conclusion = 'DEPENDS'
     answer = 'It depends on whether the transformation is mandatory. For a mandatory and inevitable replacement, if the new Silhouette cannot fit, the replacement Trooper enters Immobilized-A. This particular IMM-A can only be cancelled when the conditions of the surrounding space change enough to accommodate the new Silhouette; Dodge and Engineer cannot cancel it. With different base sizes, check the legal centre-aligned or edge-aligned replacement positions first; replacement cannot cancel Engaged State. The mandatory-replacement rule does not automatically apply to optional profile changes. Not owning an alternative miniature is a separate issue: use a Transmuted Token to indicate the new profile.'
     pages = ['Replacing_Game_Elements', 'Transmutation']
@@ -71,7 +82,7 @@ export function verifiedRulesInteraction(question, corpus) {
     status: 'EVIDENCE-BOUNDED RULES ANSWER',
     answerSource: 'EVIDENCE_BOUNDED_RULES',
     deepSeek: {
-      answer, conclusion, certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true,
+      answer, conclusion, certainty, interpretationRequired: certainty === 'EVIDENCE-BOUNDED INTERPRETATION',
       sources: pages.map((page, index) => ({ id: 'V' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
     },
   }
