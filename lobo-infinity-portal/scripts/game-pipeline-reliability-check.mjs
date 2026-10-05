@@ -5,7 +5,11 @@ import vm from 'node:vm'
 class Sheet {
   constructor(rows) { this.rows = rows; this.columns = 26; this.interrupt = false }
   getMaxColumns() { return this.columns }
-  insertColumnsAfter(_column, count) { this.columns += count }
+  insertColumnsAfter(_column, count) {
+    this.columns += count
+    // Native Sheets tables assign these headers automatically when extended.
+    for (let col=25;col<this.columns;col++) this.rows[0][col] ||= `Column ${col+1}`
+  }
   getLastColumn() { return this.columns }
   getLastRow() { return this.rows.length }
   getDataRange() { return { getValues: () => this.rows.map(row => row.slice()) } }

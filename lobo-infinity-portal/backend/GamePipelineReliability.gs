@@ -18,7 +18,15 @@ function ensureCanonicalGameIdentities_(sheet) {
     const legacyMigration = headers[25] !== "Game ID";
     GAME_PIPELINE_HEADERS.forEach(function(header, index) {
       const existing = String(headers[25 + index] || "");
-      if (existing && existing !== header) throw new Error("Canonical identity column conflict: " + existing);
+      // Google Sheets tables auto-name inserted columns. Only replace these
+      // defaults when empty, or containing our interrupted legacy migration.
+      const generatedDefault = existing === "Column " + (26 + index) && values.slice(1).every(function(row) {
+        if (row.slice(25, 28).every(function(value) { return value === "" || value == null; })) return true;
+        const id = Number(row[25]);
+        return Number.isSafeInteger(id) && id > 0 && row[26] === "legacy-game-" + id && row[27] === "Legacy";
+      });
+      if (existing && existing !== header && !generatedDefault)
+        throw new Error("Canonical identity column conflict: " + existing);
     });
     const props = PropertiesService.getScriptProperties();
     let maximum = Number(props.getProperty("LIF_GAME_ID_HIGH_WATER")) || 0;
