@@ -26,7 +26,7 @@ export const CANONICAL_ARMY_REGISTRY: readonly ArmyRegistryEntry[] = [
   { active: true, aliases: ['frrm', 'mrrf', 'force de reponse rapide merovingienne', 'merovingienne'], id: 'force-de-reponse-rapide-merovingienne', name: 'Force de Réponse Rapide Merovingienne', parentFaction: 'Ariadna', type: 'Sectorial' },
   { active: true, id: 'kosmoflot', name: 'Kosmoflot', parentFaction: 'Ariadna', type: 'Sectorial' },
   { active: true, id: 'tartary-army-corps', name: 'Tartary Army Corps', parentFaction: 'Ariadna', type: 'Sectorial' },
-  { active: true, id: 'usariadna-ranger-force', name: 'USAriadna Ranger Force', parentFaction: 'Ariadna', type: 'Sectorial' },
+  { active: true, aliases: ['usariadna'], id: 'usariadna-ranger-force', name: 'USAriadna Ranger Force', parentFaction: 'Ariadna', type: 'Sectorial' },
   { active: true, aliases: ['haqq', 'vanilla haqq', 'vanilla haqqislam'], id: 'haqqislam', name: 'Haqqislam', parentFaction: 'Haqqislam', type: 'Vanilla' },
   { active: true, id: 'hassassin-bahram', name: 'Hassassin Bahram', parentFaction: 'Haqqislam', type: 'Sectorial' },
   { active: true, id: 'qapu-khalqi', name: 'Qapu Khalqi', parentFaction: 'Haqqislam', type: 'Sectorial' },

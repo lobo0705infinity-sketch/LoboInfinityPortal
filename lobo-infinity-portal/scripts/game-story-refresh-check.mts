@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { clearPublicSnapshotMemoryCacheForTests, getNewerPublicSnapshotDataset, getPublicSnapshotDataset, PUBLIC_SNAPSHOT_POINTER_URL } from '../src/services/publicSnapshot.ts'
-import { getGameIntelligenceLists } from '../src/services/gameIntelligenceLinks.ts'
+import { getGameIntelligenceLists, getStoryListReadiness } from '../src/services/gameIntelligenceLinks.ts'
 import type { ArmyIntelligenceFactionData, RecentGame } from '../src/services/api.ts'
 
 const first = '20260924T190000Z'
@@ -10,6 +10,19 @@ const list = { armyListId: 'list-1', player: 'A', status: 'decoded', decoded: { 
 const newData = [{ lists: [list] }] as ArmyIntelligenceFactionData[]
 const oldData = [{ lists: [] }] as ArmyIntelligenceFactionData[]
 const originalFetch = globalThis.fetch
+// Game 123's decoder uses the Army export label "Usariadna". It must bind
+// to the canonical sectorial without accepting another Ariadna army.
+const aliasGame = { winner: 'Defuser', loser: 'xtapro',
+  winnerFaction: 'USAriadna Ranger Force', loserFaction: 'O-12',
+  winnerArmyListId: '1180466479', loserArmyListId: '4388106048',
+  winnerRosterFingerprint: '8'.repeat(64), loserRosterFingerprint: '5'.repeat(64) } as RecentGame
+const aliasLists = [
+  { ...list, player: 'Defuser', armyListId: '1180466479', sectorial: 'Usariadna', rosterFingerprint: '8'.repeat(64) },
+  { ...list, player: 'xtapro', armyListId: '4388106048', sectorial: 'O 12', rosterFingerprint: '5'.repeat(64) },
+] as ArmyIntelligenceFactionData['lists']
+assert.equal(getStoryListReadiness(aliasGame, aliasLists), 'decoded')
+assert.equal(getGameIntelligenceLists(aliasGame, aliasLists).length, 2)
+assert.equal(getStoryListReadiness(aliasGame, [{ ...aliasLists[0], sectorial: 'Kosmoflot' }, aliasLists[1]]), 'pending')
 let pointerReads = 0
 let detailReads = 0
 globalThis.fetch = async (input) => {
