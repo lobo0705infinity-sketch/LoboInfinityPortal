@@ -324,6 +324,7 @@ const sandbox = {
   getPlayerRegistryColumns: () => ({ player: 0, displayName: 1, division: 2, active: 3 }),
 }
 vm.createContext(sandbox)
+vm.runInContext(fs.readFileSync('backend/GamePipelineReliability.gs', 'utf8'), sandbox)
 vm.runInContext(armyRegistrySource, sandbox)
 const functions = [
   'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',

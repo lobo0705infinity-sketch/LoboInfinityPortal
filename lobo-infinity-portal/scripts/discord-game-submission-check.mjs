@@ -10,7 +10,7 @@ const checks = [
   ['Google Form submissions enqueue after persistence and before canonical rebuild', /SpreadsheetApp\.flush\(\);[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow[\s\S]*?coordinateCanonicalRebuild\(/.test(canonical)],
   ['All canonical branches enqueue once through the shared hook', (canonical.match(/canonicalSubmissionEnqueueGameAutomation_\(targetRow, \{/g) || []).length === 3],
   ['Portal Team Tournament enqueues before canonical rebuild', /canonicalSubmitPortalTeamTournamentGame_[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow[\s\S]*?coordinateCanonicalRebuild\(/.test(canonical)],
-  ['Shared hook resolves the submitted canonical Game ID without analytics', /const gameId = Number\(targetRow\) - 1;/.test(canonical) && !/canonicalSubmissionEnqueueGameAutomation_[\s\S]*getAllRecentGameObjects/.test(canonical)],
+  ['Shared hook resolves the submitted canonical Game ID without analytics', /const gameId = canonicalGameId_\(row, Number\(targetRow\) - 1\);/.test(canonical) && !/canonicalSubmissionEnqueueGameAutomation_[\s\S]*getAllRecentGameObjects/.test(canonical)],
   ['Shared hook records enqueue failure and returns for rebuild', /Game submitted automation enqueue failed[\s\S]*return null/.test(canonical)],
   ['Shared publisher accepts the exact submitted game', /function publishLatestGameSubmittedAutomationEvent\(game\)[\s\S]*publishGameSubmittedAutomationEvent\(submittedGame\)/.test(gameEngine)],
   ['Game event stores only canonical identity fields', /const payload = JSON\.stringify\(\{[\s\S]*eventId:[\s\S]*gameId:[\s\S]*gameType:[\s\S]*\}\)/.test(automation)],

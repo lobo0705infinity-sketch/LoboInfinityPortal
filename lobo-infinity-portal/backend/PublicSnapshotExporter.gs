@@ -722,7 +722,7 @@ function buildPublicSnapshotGameContext_(table, playerIndex) {
     const player1ArmyCode = getGameEnginePlayerArmyCode(row, 1);
     const player2ArmyCode = getGameEnginePlayerArmyCode(row, 2);
     return {
-      gameId: sourceRow - 1,
+      gameId: canonicalGameId_(row, sourceRow - 1),
       date: String(row[FORM.DATE] || ""), division: String(row[FORM.DIVISION] || "").trim(),
       mission: String(row[FORM.MISSION] || "").trim(),
       player1: player1.player, player1DisplayName: player1.displayName,

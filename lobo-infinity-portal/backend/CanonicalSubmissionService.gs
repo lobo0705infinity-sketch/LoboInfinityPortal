@@ -62,8 +62,8 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
     : null;
-  sheet.appendRow(row);
-  const targetRow = sheet.getLastRow();
+  const persisted = appendCanonicalGameDurably_(sheet, row, "google-form:" + responseKey);
+  const targetRow = persisted.targetRow;
 
   lifWriteImportLog_(log, responseKey, workflow, targetRow, "Imported", "");
   SpreadsheetApp.flush();
@@ -119,8 +119,8 @@ function canonicalSubmitPortalGame_(command, workflow) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
     : null;
-  sheet.appendRow(row);
-  const targetRow = sheet.getLastRow();
+  const persisted = appendCanonicalGameDurably_(sheet, row);
+  const targetRow = persisted.targetRow;
 
   canonicalSubmissionRecordPortalAudit_(
     command.commissionerContext,
@@ -151,7 +151,7 @@ function canonicalSubmitPortalGame_(command, workflow) {
       eventId: validation.value.eventId,
       player: validation.value.player,
       opponent: validation.value.opponent,
-      gameId: targetRow - 1,
+      gameId: persisted.gameId,
       bracketMatchId: canonicalSubmissionString_(command.params && command.params.matchId)
     }
   );
@@ -221,8 +221,8 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: "team-tournament" })
     : null;
-  sheet.appendRow(row);
-  const targetRow = sheet.getLastRow();
+  const persisted = appendCanonicalGameDurably_(sheet, row);
+  const targetRow = persisted.targetRow;
 
   SpreadsheetApp.flush();
   canonicalSubmissionEnqueueGameAutomation_(targetRow, {
@@ -254,7 +254,9 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
 }
 
 function canonicalSubmissionEnqueueGameAutomation_(targetRow, context) {
-  const gameId = Number(targetRow) - 1;
+  const sheet = lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.FORM);
+  const row = sheet.getRange(Number(targetRow), 1, 1, sheet.getLastColumn()).getValues()[0];
+  const gameId = canonicalGameId_(row, Number(targetRow) - 1);
 
   if (
     gameId <= 0 ||
@@ -263,11 +265,14 @@ function canonicalSubmissionEnqueueGameAutomation_(targetRow, context) {
     return null;
 
   try {
-    return enqueueGameSubmittedAutomationEvent({
+    const receipt = enqueueGameSubmittedAutomationEvent({
       eventId: canonicalSubmissionString_(context && context.eventId),
       gameId: gameId,
       gameType: canonicalSubmissionString_(context && context.gameType)
     });
+    if (receipt && receipt.success === true && !receipt.skipped)
+      sheet.getRange(Number(targetRow), 28).setValue("Queued");
+    return receipt;
   }
   catch (error) {
     Logger.log(

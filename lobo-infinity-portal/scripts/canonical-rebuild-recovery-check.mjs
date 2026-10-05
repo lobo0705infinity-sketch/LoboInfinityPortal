@@ -91,7 +91,7 @@ const automation = fs.readFileSync('backend/AutomationApi.gs', 'utf8')
 const engine = fs.readFileSync('backend/rebuildGameEngine().gs', 'utf8')
 const discovery = fs.readFileSync('backend/CanonicalSourceDiscovery.gs', 'utf8')
 
-assert.match(submissions, /markCanonicalRebuildRequired_[\s\S]*\.appendRow\(row\)/)
+assert.match(submissions, /markCanonicalRebuildRequired_[\s\S]*appendCanonicalGameDurably_\(sheet, row/)
 assert.match(coordinator, /completeCanonicalRebuildObligation_\(state\.rebuildGeneration\)/)
 assert.match(automation, /recoverPendingCanonicalRebuildBestEffort_\(\)/)
 assert.match(engine, /validatePersistedGameEngineState_\(engine, analytics\)/)

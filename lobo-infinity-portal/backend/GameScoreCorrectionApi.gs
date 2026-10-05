@@ -199,8 +199,11 @@ function getGameScoreCorrectionTarget(gameId) {
       error: "Result datastore was not found."
     };
 
-  const rowNumber =
-    gameId + 1;
+  ensureCanonicalGameIdentities_(sheet);
+  const values = sheet.getDataRange().getValues();
+  const rowNumber = values.findIndex(function(row, index) {
+    return index > 0 && canonicalGameId_(row, index) === Number(gameId);
+  }) + 1;
 
   if (
     rowNumber < 2 ||

@@ -11,7 +11,7 @@ const worker = readFileSync('api/automation-queue-worker.mjs', 'utf8')
 
 assert.equal((canonical.match(/canonicalSubmissionEnqueueGameAutomation_\(targetRow, \{/g) || []).length, 3)
 assert.doesNotMatch(canonical, /canonicalSubmissionPublishGameAutomation_/)
-assert.match(canonical, /appendRow\(row\)[\s\S]*canonicalSubmissionEnqueueGameAutomation_[\s\S]*coordinateCanonicalRebuild/)
+assert.match(canonical, /appendCanonicalGameDurably_\(sheet, row[\s\S]*canonicalSubmissionEnqueueGameAutomation_[\s\S]*coordinateCanonicalRebuild/)
 assert.doesNotMatch(canonical, /getAllRecentGameObjects/)
 
 const enqueueStart = automation.indexOf('function enqueueGameSubmittedAutomationEvent')
@@ -74,7 +74,7 @@ assert.match(automation, /const AUTOMATION_QUEUE_BATCH_LIMIT = 4/)
 assert.match(automation, /const firstRow = 2;/)
 assert.match(automation, /slice\(0, limit\)/)
 assert.match(automation, /item\.rowNumber/)
-assert.match(automation, /buildAutomationGamePayloadById_[\s\S]*getRange\(target \+ 1, 1, 1, sheet\.getLastColumn\(\)\)/)
+assert.match(automation, /buildAutomationGamePayloadById_[\s\S]*canonicalGameId_\(candidate, index \+ 1\) === target/)
 assert.match(api, /case "processAutomationQueueBatch"[\s\S]*requireArmyIntelligenceWorkerOrPermission/)
 
 assert.match(scheduler, /everyMinutes\(30\)/)
@@ -89,12 +89,13 @@ const originalFetch = globalThis.fetch
 const originalWorkerToken = process.env.ARMY_INTELLIGENCE_WORKER_TOKEN
 const originalApiUrl = process.env.VITE_API_URL
 const requests = []
+const publishedAt = new Date(Date.now() - 1000).toISOString()
 process.env.ARMY_INTELLIGENCE_WORKER_TOKEN = 'focused-worker-token'
 process.env.VITE_API_URL = 'https://example.invalid/api'
 globalThis.fetch = async (url, options) => {
   if (String(url).endsWith('/current.json')) return new Response(JSON.stringify({
-    snapshotId: '20261005T160801Z', sourceCutoff: new Date().toISOString(),
-    publishedAt: new Date().toISOString(), basePath: 'public-snapshots/20261005T160801Z/',
+    snapshotId: '20261005T160801Z', sourceCutoff: publishedAt,
+    publishedAt, basePath: 'public-snapshots/20261005T160801Z/',
   }), { status: 200 })
   if (String(url).endsWith('/refresh-status.json')) return new Response('', { status: 404 })
   requests.push({ body: String(options.body), method: options.method, url: String(url) })

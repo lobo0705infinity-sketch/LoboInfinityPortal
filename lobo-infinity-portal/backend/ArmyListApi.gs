@@ -892,19 +892,9 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
       })
     );
 
-    if (!list)
-      throw new Error(
-        "Army Intelligence source list not found for Army List ID " +
-          id +
-          "."
-      );
+    if (!list) { Logger.log("Missing Army Intelligence source isolated: " + id); return; }
 
-    if (!list.armyCode)
-      throw new Error(
-        "Army Intelligence source list " +
-          id +
-          " does not have an Army Code."
-      );
+    if (!list.armyCode) { Logger.log("Missing Army Code isolated: " + id); return; }
 
     const armyCodeHash =
       getArmyIntelligenceHash(list.armyCode);
@@ -918,12 +908,7 @@ function buildArmyIntelligenceForGameEngineRows(gameEngineRows) {
         snapshots
       );
 
-    if (!snapshot || snapshot.status !== "decoded")
-      throw new Error(
-        "Persisted Army Intelligence snapshot is missing for Army List ID " +
-          id +
-          "."
-      );
+    if (!snapshot || snapshot.status !== "decoded") { Logger.log("Unprocessed Army Intelligence list isolated: " + id); return; }
 
   });
 
@@ -1694,8 +1679,8 @@ function buildCanonicalArmyListGameSubmission(row, sourceIndex) {
     winner === 0;
 
   return {
-    id: sourceIndex,
-    sourceIndex: sourceIndex,
+    id: canonicalGameId_(row, sourceIndex),
+    sourceIndex: canonicalGameId_(row, sourceIndex),
     date:
       formatArmyListDate(row[FORM.DATE]),
     mission:

@@ -4,6 +4,7 @@ import vm from 'node:vm'
 
 const source = filename => readFileSync(new URL(`../backend/${filename}`, import.meta.url), 'utf8')
 const context = vm.createContext({ canonicalizeArmyName: value => value, normalizeGameType: value => value || 'league' })
+vm.runInContext(source('GamePipelineReliability.gs'), context)
 vm.runInContext(source('GameEngine.gs'), context)
 context.getGameEngineEventId = () => ''
 context.getGameEngineGameType = () => 'casual'

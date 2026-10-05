@@ -7,6 +7,6 @@ await build({
   input: resolve(root, 'scripts/server/game-story-handler.mjs'),
   platform: 'node',
   external: ['node:crypto'],
-  output: { file: resolve(root, 'api/_lib/game-story-handler.mjs'), format: 'esm' },
+  output: { file: resolve(root, 'api/_lib/game-story-handler.mjs'), format: 'esm', codeSplitting: false },
 })
 console.log('Built self-contained Discord story handler')

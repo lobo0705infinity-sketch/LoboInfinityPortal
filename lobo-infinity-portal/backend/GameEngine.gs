@@ -76,6 +76,8 @@ function getFormResponses() {
     spreadsheet
       .getSheetByName(CONFIG.SHEETS.FORM);
 
+  ensureCanonicalGameIdentities_(sheet);
+
   const values =
     sheet
       .getDataRange()
@@ -237,7 +239,8 @@ function getGameEngineHeaders() {
     "Event ID",
     "Game Type",
     "Game Result",
-    "Army List ID"
+    "Army List ID",
+    "Game ID"
   ]];
 
 }
@@ -266,7 +269,8 @@ function getGameAnalyticsHeaders() {
     "Winner Army List ID",
     "Loser Army List ID",
     "Winner Army Code",
-    "Loser Army Code"
+    "Loser Army Code",
+    "Game ID"
   ]];
 
 }
@@ -387,7 +391,9 @@ function buildPlayerRow(row, playerNumber, winner) {
 
     gameResult,
 
-    armyListId
+    armyListId,
+
+    canonicalGameId_(row, 0)
 
   ];
 
@@ -674,7 +680,9 @@ function buildAnalyticsRow(row, winner) {
 
     winnerArmyCode,
 
-    loserArmyCode
+    loserArmyCode,
+
+    canonicalGameId_(row, 0)
 
   ];
 

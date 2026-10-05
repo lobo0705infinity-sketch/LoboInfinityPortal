@@ -44,7 +44,17 @@ const canonicalizeArmyName = (value) => ({
   'vanilla o-12': 'O-12',
 }[string(value).toLowerCase()] ?? string(value))
 
+const sheetHeaders = Array(25).fill("")
 const sheet = {
+  getMaxColumns: () => 28,
+  getLastColumn: () => 28,
+  getDataRange: () => ({ getValues: () => [sheetHeaders.slice(), ...rows.map(r => r.slice())] }),
+  getRange(r, c, n = 1, w = 1) {
+    const targets = () => [sheetHeaders, ...rows].slice(r - 1, r - 1 + n)
+    return { getValues: () => targets().map(row => row.slice(c - 1, c - 1 + w)),
+      setValues(values) { targets().forEach((row, i) => values[i].forEach((v, j) => row[c - 1 + j] = v)) },
+      setValue(value) { targets()[0][c - 1] = value } }
+  },
   appendRow(row) {
     events.push('append')
     rows.push(row.slice())
@@ -92,11 +102,11 @@ const context = vm.createContext({
   CONFIG: { SHEETS: { FORM: 'Form Responses' } },
   FORM: { MISSION: 3, GAME_RESULT: 18, WINNER_ARMY_LIST_ID: 21, LOSER_ARMY_LIST_ID: 22 },
   Session: { getScriptTimeZone: () => 'UTC' },
-  Utilities: { formatDate },
+  Utilities: { formatDate, getUuid: () => "test-" + events.length },
   SpreadsheetApp: { flush: () => events.push('flush') },
   Logger: { log: () => events.push('missing-rebuild-log') },
   LockService: {
-    getScriptLock: () => ({ waitLock() {}, releaseLock() {} }),
+    getScriptLock: () => ({ hasLock: () => false, waitLock() {}, releaseLock() {} }),
   },
   PropertiesService: {
     getScriptProperties: () => ({
@@ -183,6 +193,7 @@ context.buildCanonicalGameRow = (command) => {
   events.push('factory')
   return buildCanonicalGameRow(command)
 }
+vm.runInContext(fs.readFileSync('backend/GamePipelineReliability.gs', 'utf8'), context)
 vm.runInContext(fs.readFileSync('backend/CanonicalSubmissionService.gs', 'utf8'), context)
 
 const normalizeRow = (row) => row.map((value) => value instanceof Date ? value.toISOString() : value)
@@ -265,7 +276,7 @@ for (const workflow of ['league', 'casual', 'team-tournament']) {
   assert.equal(result.row[22], armyListId(commonGoogle.opponentArmyCode), `${workflow} loser Army List ID must be derived`)
   const expectedEvents = [
     'idempotency', 'context', `validate:google-form:${workflow}`, 'canonical-sheet', 'factory',
-    'append', 'import-log:Imported', 'flush', 'automation', 'rebuild',
+    'append', 'flush', 'import-log:Imported', 'flush', 'automation', 'rebuild',
   ]
   if (workflow === 'team-tournament') expectedEvents.push('team-runtime-cache')
   assert.deepEqual(events, expectedEvents, `Google Form ${workflow} rebuild order changed`)
@@ -307,7 +318,7 @@ for (const workflow of ['league', 'casual']) {
   assert.equal(result.success, true)
   assertRow(`Portal ${workflow}`, result.row, expected)
   assert.deepEqual(events, [
-    `validate:portal:${workflow}`, 'factory', 'army-list-headers', 'append',
+    `validate:portal:${workflow}`, 'factory', 'army-list-headers', 'append', 'flush',
     'audit', 'automation', 'rebuild', 'cache',
   ], `Portal ${workflow} rebuild order changed`)
 }
@@ -325,7 +336,7 @@ const teamResult = context.submitCanonicalGame({
 const expectedTeamRow = buildCanonicalGameRow(legacyGoogleCommand(teamResult.context.submission))
 assertRow('Portal Team Tournament', teamResult.row, expectedTeamRow)
 assert.deepEqual(events, [
-  'validate:portal:team-tournament', 'canonical-sheet', 'factory', 'append', 'flush', 'automation', 'rebuild',
+  'validate:portal:team-tournament', 'canonical-sheet', 'factory', 'append', 'flush', 'flush', 'automation', 'rebuild',
   'team-runtime-cache',
 ], 'Portal Team Tournament rebuild order changed')
 

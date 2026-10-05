@@ -68,12 +68,16 @@ function rebuildEverything() {
 }
 
 function onFormSubmit(e) {
-
-  rebuildEverything();
-
-  if (typeof publishLatestGameSubmittedAutomationEvent === "function")
-    publishLatestGameSubmittedAutomationEvent();
-
+  if (!e || !e.range) throw new Error("A spreadsheet submission event is required.");
+  const sheet = e.range.getSheet();
+  if (sheet.getName() !== CONFIG.SHEETS.FORM) return handleLoboFormSubmit(e);
+  return withGamePipelineLock_(function() {
+    ensureCanonicalGameIdentities_(sheet);
+    sheet.getRange(e.range.getRow(), 28).setValue("Pending");
+    markCanonicalRebuildRequired_({ reason: "canonical-form-submit", targetRow: e.range.getRow() });
+    rebuildEverything();
+    return recoverCanonicalGameOutbox_(20);
+  });
 }
 
 function runLeague() {

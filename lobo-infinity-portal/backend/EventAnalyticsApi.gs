@@ -508,7 +508,7 @@ function getEventAnalyticsGameTypeIntelligence(context) {
   const intelligenceGames =
     games.map(function(game, index) {
       return {
-        id: index + 1,
+        id: game.id,
         date: game.date,
         division: game.division,
         winner: game.winner,

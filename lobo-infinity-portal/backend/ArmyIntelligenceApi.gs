@@ -79,6 +79,7 @@ function constantTimeArmyIntelligenceStringEqual(left, right) {
 }
 
 function refreshArmyIntelligence(e) {
+  ensureCanonicalGameIdentities_(lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.FORM));
 
   const parameters =
     getApiParameters(e);
@@ -149,8 +150,10 @@ function refreshArmyIntelligence(e) {
   const persistedSnapshots =
     getPersistedArmyIntelligenceSnapshotLookup();
 
+  const rejectedSnapshots = [];
   const rows =
     snapshots.map(function(snapshot) {
+      try {
       const source =
         sourcesByKey[
           getArmyIntelligenceString(snapshot && snapshot.snapshotKey)
@@ -176,6 +179,11 @@ function refreshArmyIntelligence(e) {
         return null;
 
       return buildPersistedArmyIntelligenceSnapshotRow(source, snapshot);
+      } catch (error) {
+        rejectedSnapshots.push({ snapshotKey: getArmyIntelligenceString(snapshot && snapshot.snapshotKey),
+          error: String(error.message || error).slice(0, 300) });
+        return null;
+      }
     })
     .filter(Boolean);
 
@@ -187,7 +195,8 @@ function refreshArmyIntelligence(e) {
       sourceCount: authoritativeSources.length,
       status: "Persisted",
       success: true,
-      updated: rows.length
+      rejectedSnapshots: rejectedSnapshots,
+    updated: rows.length
     });
 
   rebuildArmyIntelligenceReadModelPayloadAndPersist();
@@ -201,6 +210,7 @@ function refreshArmyIntelligence(e) {
     publication: publication,
     sourceCount: authoritativeSources.length,
     status: "Refreshed",
+    rejectedSnapshots: rejectedSnapshots,
     updated: rows.length
   });
 

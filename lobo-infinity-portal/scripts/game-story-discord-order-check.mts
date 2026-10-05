@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import vm from 'node:vm'
-import storyWorker from '../api/game-story-for-discord.mjs'
+import { createGameStoryHandler } from '../api/game-story-for-discord.mjs'
+const storyWorker = createGameStoryHandler({ persistenceEnabled: () => false })
 
 const game = {
   id: 9081, date: '9/28/2026', mission: 'Area of Interest',
@@ -133,16 +134,24 @@ vm.runInContext(`${scheduler}\n${automation}`, context)
 const buildFromSubmittedRow = context.buildAutomationGamePayloadById_
 context.CONFIG = { SHEETS: { FORM: 'Form Responses' } }
 context.lifGetTargetSpreadsheet_ = () => ({ getSheetByName: () => ({
+  getDataRange: () => ({ getValues: () => [[], Object.assign(["first-player-code", "second-player-code"], { 25: game.id })] }),
   getLastRow: () => game.id + 1,
   getLastColumn: () => 2,
   getRange: () => ({ getValues: () => [['first-player-code', 'second-player-code']] }),
 }) })
+context.ensureCanonicalGameIdentities_ = () => {}
+context.canonicalGameId_ = (row: unknown[]) => Number(row[25])
+context.getArmyIntelligenceHash = () => "a".repeat(64)
 context.validateGame = () => true
 context.determineWinner = () => 2
 context.buildAnalyticsRow = () => []
 context.getRecentGameColumns = () => ({})
 context.getGameAnalyticsHeaders = () => [[]]
-context.buildRecentGame = () => ({ ...game, winnerArmyCode: '', loserArmyCode: '' })
+context.buildPublicSnapshotGames_ = () => [{ ...game, winnerArmyCode: '', loserArmyCode: '' }]
+context.freezePublicSnapshotTable_ = (value: unknown) => value
+context.readPublicSnapshotSheet_ = () => ({ headers: [], rows: [] })
+context.buildPublicSnapshotGameContext_ = () => []
+context.buildPublicSnapshotPlayerIndex_ = () => ({})
 context.getGameEnginePlayerArmyCode = (row: string[], playerNumber: number) => row[playerNumber - 1]
 const gameWithSubmittedCodes = buildFromSubmittedRow(game.id)
 assert.equal(gameWithSubmittedCodes.winnerArmyCode, 'second-player-code',

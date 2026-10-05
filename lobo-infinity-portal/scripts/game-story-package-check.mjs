@@ -11,7 +11,8 @@ try {
   await mkdir(join(isolated, '_lib'))
   await copyFile(new URL('../api/game-story-for-discord.mjs', import.meta.url), join(isolated, 'handler.mjs'))
   await copyFile(new URL('../api/_lib/game-story-handler.mjs', import.meta.url), join(isolated, '_lib/game-story-handler.mjs'))
-  const { default: handler } = await import(pathToFileURL(join(isolated, 'handler.mjs')))
+  const { createGameStoryHandler } = await import(pathToFileURL(join(isolated, 'handler.mjs')))
+  const handler = createGameStoryHandler({ persistenceEnabled: () => false })
   const invoke = async request => {
     const reply = {}
     await handler(request, { setHeader() {}, status(code) { reply.status = code; return this },

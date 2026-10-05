@@ -1,3 +1,4 @@
+import { readBattleStoryArtifact } from "./gameStoryArtifact.ts"
 import { renderSubmittedHighlightStory } from '../data/gameHighlightStories.ts'
 import type { ArmyIntelligenceList, RecentGame } from './api.ts'
 import { hasUnsupportedStoryMissionVersion, renderGeneratedGameStory,
@@ -37,6 +38,12 @@ export function getSubmittedHighlightBattleStory(game: RecentGame): string | nul
 // reads them: every supported game without a submitted highlight uses the
 // same generator, including pairs that have an older authored story.
 export async function loadBattleStory(game: RecentGame, lists: ArmyIntelligenceList[]): Promise<string | null> {
+  if (typeof window !== "undefined" && getStoryListReadiness(game, lists) !== "pending") {
+    try {
+      const stored = await readBattleStoryArtifact(game, lists)
+      if (stored) return stored.story
+    } catch { /* Keep the local report readable during a storage outage. */ }
+  }
   const immediate = getSubmittedHighlightBattleStory(game)
   if (immediate) return immediate
   const key = storyTemplateKey(game.mission, game.winnerFaction, game.loserFaction)

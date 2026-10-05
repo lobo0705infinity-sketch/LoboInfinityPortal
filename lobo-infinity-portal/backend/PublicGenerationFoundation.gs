@@ -326,7 +326,7 @@ function sanitizePublicGenerationGame_(row, sourceRow) {
     ? row[FORM.WINNER_ARMY_LIST_ID]
     : row[FORM.LOSER_ARMY_LIST_ID];
   return {
-    gameId: sourceRow - 1,
+    gameId: canonicalGameId_(row, sourceRow - 1),
     sourceRow: sourceRow,
     date: normalizePublicGenerationValue_(row[FORM.DATE]),
     division: String(row[FORM.DIVISION] || ""),

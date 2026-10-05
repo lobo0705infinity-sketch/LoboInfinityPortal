@@ -590,6 +590,7 @@ function hasRecentAutomationEventId_(eventId) {
 }
 
 function processAutomationQueueBatch(e) {
+  ensureCanonicalGameIdentities_(lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.FORM));
 
   const canonicalRebuildRecovery =
     typeof recoverPendingCanonicalRebuildBestEffort_ === "function"
@@ -602,6 +603,7 @@ function processAutomationQueueBatch(e) {
     1,
     Math.min(AUTOMATION_QUEUE_BATCH_LIMIT, requestedLimit || AUTOMATION_QUEUE_BATCH_LIMIT)
   );
+  const outboxRecovery = recoverCanonicalGameOutbox_(20);
   const storyRuntimeRecovery = recoverLegacyStoryRuntimeFailures_();
   const items = selectPendingAutomationQueueItems_(batchLimit);
   const results = items.map(function(item) {
@@ -662,6 +664,7 @@ function processAutomationQueueBatch(e) {
   return jsonOutput({
     canonicalRebuildRecovery: canonicalRebuildRecovery,
     storyRuntimeRecovery: storyRuntimeRecovery,
+    outboxRecovery: outboxRecovery,
     analyticsProjection: analyticsProjection,
     armyWorkspaceProjection: armyWorkspaceProjection,
     detailProjection: detailProjection,
@@ -1027,29 +1030,33 @@ function buildAutomationGamePayloadById_(gameId) {
 
   const sheet = lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.FORM);
 
-  if (!sheet || target + 1 > sheet.getLastRow())
-    return null;
-
-  const row = sheet
-    .getRange(target + 1, 1, 1, sheet.getLastColumn())
-    .getValues()[0];
+  if (!sheet) return null;
+  ensureCanonicalGameIdentities_(sheet);
+  const values = sheet.getDataRange().getValues();
+  const row = values.slice(1).find(function(candidate, index) {
+    return canonicalGameId_(candidate, index + 1) === target;
+  });
 
   if (!row || !validateGame(row))
     return null;
 
   const winner = determineWinner(row);
-  const analyticsRow = buildAnalyticsRow(row, winner);
-  const game = buildRecentGame(
-    analyticsRow,
-    target,
-    getRecentGameColumns(getGameAnalyticsHeaders()[0])
-  );
+  // Use the exact public game projection for story identity, including draws,
+  // registered display names and calendar dates. Add private codes below only.
+  const playersTable = freezePublicSnapshotTable_(readPublicSnapshotSheet_(
+    lifGetTargetSpreadsheet_(), CONFIG.SHEETS.PLAYERS));
+  const gameContext = buildPublicSnapshotGameContext_(
+    freezePublicSnapshotTable_({ headers: values[0], rows: [row] }),
+    buildPublicSnapshotPlayerIndex_(playersTable));
+  const game = buildPublicSnapshotGames_(gameContext, [])[0];
   // Analytics omits army codes when a submitted list ID is present. The story
   // worker needs the actual game-submitted codes to check a reused roster.
   // This private queue payload is never the public game projection.
   const winnerPlayerNumber = winner === 2 ? 2 : 1;
   game.winnerArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber);
   game.loserArmyCode = getGameEnginePlayerArmyCode(row, winnerPlayerNumber === 1 ? 2 : 1);
+  game.winnerRosterFingerprint = game.winnerArmyCode ? getArmyIntelligenceHash(game.winnerArmyCode) : "";
+  game.loserRosterFingerprint = game.loserArmyCode ? getArmyIntelligenceHash(game.loserArmyCode) : "";
   return game;
 
 }

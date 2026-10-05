@@ -384,7 +384,7 @@ function buildRecentGameFromGameEngineRows(
         : null;
 
   return {
-    id: (firstRowIndex / 2) + 1,
+    id: Number(firstRow[15]) || (firstRowIndex / 2) + 1,
     sourceIndex: firstRowIndex + 1,
     sortDate: sortDate,
     date:
@@ -1038,7 +1038,7 @@ function buildRecentGameFromFormResponseId(gameId) {
     getFormResponses();
 
   const row =
-    rows[target - 1];
+    rows.find(function(candidate, index) { return canonicalGameId_(candidate, index + 1) === target; });
 
   if (
     !row ||
@@ -1250,6 +1250,7 @@ function getRecentGameScoreParts(score) {
 function getRecentGameColumns(headers) {
 
   return {
+    gameId: headers.indexOf("Game ID"),
     date:
       getRecentGameColumn(
         headers,
@@ -1401,8 +1402,8 @@ function buildRecentGame(
     );
 
   return {
-    id: sourceIndex,
-    sourceIndex: sourceIndex,
+    id: Number(row[columns.gameId]) || sourceIndex,
+    sourceIndex: Number(row[columns.gameId]) || sourceIndex,
     sortDate: sortDate,
     date:
       formatRecentGameDate(
