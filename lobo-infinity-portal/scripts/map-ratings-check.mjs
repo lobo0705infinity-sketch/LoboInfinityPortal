@@ -13,7 +13,7 @@ const context = vm.createContext({
   Session: { getScriptTimeZone: () => 'UTC' },
   Utilities: { formatDate: () => '2026-09-28' },
 })
-for (const file of ['Constants.gs', 'WorkshopMapCatalog.gs', 'ResponseImporter.gs', 'CanonicalValidationService.gs', 'GameFactory.gs'])
+for (const file of ['GamePipelineReliability.gs', 'Constants.gs', 'WorkshopMapCatalog.gs', 'ResponseImporter.gs', 'CanonicalValidationService.gs', 'GameFactory.gs'])
   vm.runInContext(source(file), context, { filename: file })
 
 const options = (type) => Array.from(context.lifWorkshopMapChoices_(type))

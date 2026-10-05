@@ -33,6 +33,7 @@ const sandbox = {
   determineWinner: () => 1,
 }
 vm.createContext(sandbox)
+vm.runInContext(fs.readFileSync("backend/GamePipelineReliability.gs", "utf8"), sandbox)
 
 for (const name of [
   'normalizePublicSnapshotIdentity_', 'buildPublicSnapshotPlayerIndex_', 'findPublicSnapshotRegistryIdentity_',

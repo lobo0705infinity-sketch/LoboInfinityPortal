@@ -71,7 +71,7 @@ assert.match(bracketSource, /placeEventBracketPlayer_\(byId, match\.nextWinnerMa
 assert.match(bracketSource, /placeEventBracketPlayer_\(byId, match\.nextLoserMatch/)
 assert.match(bracketSource, /activatePlayableEventBracketMatches_\(matches, now\)/)
 assert.match(submissionSource, /workflow === "top-40"/)
-assert.match(submissionSource, /gameId: targetRow - 1/)
+assert.match(submissionSource, /gameId: persisted\.gameId/)
 assert.match(validationSource, /canonicalValidatePortalTop40Game_/)
 assert.match(uiSource, /apiClient\.submitTop40Result/)
 assert.match(uiSource, /ReadOnlyField label="Opponent"/)
