@@ -37,6 +37,14 @@ try {
   assert.deepEqual(await getBattleStoryArtifactIdentity(game, []),
     await getBattleStoryArtifactIdentity({ ...game, date: '10/4/2026', tp: '4-1', op: '2 - 0', vp: '171-64',
       winnerDisplayName: 'Alice', loserDisplayName: 'Bob' }, []), 'public/private formatting shares identity')
+  const rosters = ['Alice', 'Bob'].map((player, index) => ({ armyListId: `list-${index}`, player,
+    status: 'decoded', armyCodeHash: String(index + 1).repeat(64),
+    decoded: { pipelineVersion: 'pipeline-v2', tacticalSchemaVersion: 'tactical-v3', combatGroups: [] } }))
+  const rosterGame = { ...game, winnerArmyListId: 'list-0', loserArmyListId: 'list-1' }
+  assert.deepEqual(await getBattleStoryArtifactIdentity(rosterGame, rosters as any),
+    await getBattleStoryArtifactIdentity(rosterGame, rosters.map(list => ({ ...list,
+      rosterFingerprint: list.armyCodeHash, pipelineVersion: 'pipeline-v2', tacticalSchemaVersion: 'tactical-v3' })) as any),
+    'sanitized and private decoded metadata share the same identity')
   const draw = { ...game, gameResult: 'draw', tp: '2–2', op: '3–3', vp: '100–100' }
   assert.deepEqual(await getBattleStoryArtifactIdentity(draw, []),
     await getBattleStoryArtifactIdentity({ ...draw, winner: 'Draw', loser: 'Draw',

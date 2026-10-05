@@ -32,7 +32,8 @@ export async function getBattleStoryArtifactIdentity(game: RecentGame, lists: Ar
         id: normalize(index ? game.loserArmyListId : game.winnerArmyListId),
         fingerprint: normalize(list?.rosterFingerprint || list?.armyCodeHash ||
           (index ? game.loserRosterFingerprint : game.winnerRosterFingerprint)),
-        pipeline: normalize(list?.pipelineVersion), tactical: normalize(list?.tacticalSchemaVersion),
+        pipeline: normalize(list?.pipelineVersion || list?.decoded?.pipelineVersion),
+        tactical: normalize(list?.tacticalSchemaVersion || list?.decoded?.tacticalSchemaVersion),
       }
     }),
   }
