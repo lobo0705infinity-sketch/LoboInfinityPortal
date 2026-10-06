@@ -89,3 +89,62 @@ assert.equal(oneGroup.groupColors.length,1)
 const colorResponse=ttsDiscordAttachment({armyCode,payload,metadata:source.metadata,pickColorIndex:()=>0})
 assert.match(colorResponse.text,/Group 1: Red · Group 2: Blue/)
 console.log('PASS - randomized, distinct combat-group colors cover all models, peripherals, deployables and alternate states.')
+
+// Representation copies retain artwork, states and group tint, with fresh GUIDs.
+function representationArmy(unitId,optionId=1,quantity=1,extra={}) {
+  const code=encodeArmyCode({sectorialId:701,sectorialSlug:'aleph',combatGroups:[{members:Array.from({length:quantity},()=>({unitId,groupId:1,optionId}))}]})
+  return exportTtsArmy({armyCode:code,pickColorIndex:()=>0,...extra})
+}
+for (const [unitId,optionId,count] of [[615,1,1],[1901,3,2]]) {
+  const army=representationArmy(unitId,optionId)
+  assert.equal(army.decoyCount,count)
+  assert.equal(army.modelCount,count+1)
+  const objects=army.saved.ObjectStates[0].ContainedObjects
+  for(let n=1;n<=count;n++)assert.ok(objects.some(o=>o.Nickname.endsWith(`Decoy ${n}`)))
+  for(const object of objects){verify(object);verifyTint(object,army.groupColors[0].color)}
+}
+const holo=representationArmy(198,1,2)
+assert.equal(holo.modelCount,6)
+assert.equal(holo.hologramCount,4)
+const sets=new Map()
+for(const object of holo.saved.ObjectStates[0].ContainedObjects) {
+  verify(object);verifyTint(object,holo.groupColors[0].color)
+  const notes=JSON.parse(object.GMNotes)
+  assert.equal(notes.representation,'holoprojector')
+  assert.ok(object.Nickname.endsWith(` · ${notes.copy}`))
+  for(const state of Object.values(object.States||{}))assert.ok(state.Nickname.endsWith(` · ${notes.copy}`))
+  const copies=sets.get(notes.setId)||[];copies.push(object);sets.set(notes.setId,copies)
+}
+assert.equal(sets.size,2,'duplicate purchases have separate numbered sets')
+for(const copies of sets.values()) {
+  assert.deepEqual(copies.map(o=>JSON.parse(o.GMNotes).copy),[1,2,3])
+  function artwork(object) {
+    const {GUID,Nickname,GMNotes,...rest}=object
+    if(rest.States)rest.States=Object.fromEntries(Object.entries(rest.States).map(([key,state])=>[key,artwork(state)]))
+    if(rest.AttachedObjects)rest.AttachedObjects=rest.AttachedObjects.map(artwork)
+    return rest
+  }
+  assert.deepEqual(artwork(copies[0]),artwork(copies[1]))
+  assert.deepEqual(artwork(copies[0]),artwork(copies[2]))
+}
+// Official profiles override the artwork catalogue's old special rules.
+const currentSforza={...missingUnit,id:198,name:'SFORZA',isc:'SFORZA'}
+const ordinary=representationArmy(198,1,1,{payload:{units:[currentSforza]},metadata:source.metadata})
+assert.equal(ordinary.modelCount,1)
+assert.equal(ordinary.hologramCount,0)
+const ruleMetadata={...source.metadata,
+  skills:[...source.metadata.skills,{id:99001,name:'Decoy (2)'}],
+  equips:[...source.metadata.equips,{id:99002,name:'Holoprojector'},{id:99003,name:'Holomask'}]}
+function currentRules(skills,equip) {
+  const unit=structuredClone(currentSforza)
+  Object.assign(unit.profileGroups[0].profiles[0],{skills:skills.map(id=>({id})),equip:equip.map(id=>({id}))})
+  return representationArmy(198,1,1,{payload:{units:[unit]},metadata:ruleMetadata})
+}
+const combined=currentRules([99001],[99002])
+assert.equal(combined.modelCount,5)
+assert.equal(combined.decoyCount,2)
+assert.equal(combined.hologramCount,2)
+assert.equal(currentRules([],[99003]).modelCount,1,'Holomask alone does not create holograms')
+const extrasResponse=ttsDiscordAttachment({armyCode:encodeArmyCode({sectorialId:701,sectorialSlug:'aleph',combatGroups:[{members:[{unitId:198,groupId:1,optionId:1},{unitId:1901,groupId:1,optionId:3}]}]})})
+assert.match(extrasResponse.text,/2 decoys · 2 Holoprojector copies/)
+console.log('PASS - Decoy 1/2 counts, numbered Holoprojector sets, independent repeats, inherited artwork/tints, fresh GUIDs and current-rule overrides.')

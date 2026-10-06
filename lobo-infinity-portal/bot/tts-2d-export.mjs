@@ -55,6 +55,17 @@ function sanitize(object) {
   for (const child of [...Object.values(object.States || {}), ...(object.AttachedObjects || [])]) sanitize(child)
   return object
 }
+function representationRules(profile,object) {
+  // Current Army skills/equipment take precedence over catalogue descriptions.
+  const text = profile ? [...(profile.skills || []),...(profile.equipment || [])].join(' ● ') : cleanName(object.Description)
+  const decoy = text.match(/\bDecoy(?:\s*\(\s*\+?\s*([12])\s*\)|\s+\+?\s*([12])\b)/i)
+  return { decoys:Number(decoy?.[1] || decoy?.[2] || 0), holoprojector:/\bHoloprojector\b/i.test(text) }
+}
+function labelRepresentation(object,label) {
+  object.Nickname = `${object.Nickname} · ${label}`
+  // Keep the number visible when switching to a silhouette/alternate form.
+  for (const state of Object.values(object.States || {})) labelRepresentation(state,label)
+}
 function score(row, faction) { return (row[4] === 5 ? 0 : row[4] === 4 ? 20 : 10) + (row[5] === faction ? 0 : Math.floor(row[5]/100) === Math.floor(faction/100) ? 1 : 2) }
 function resolveRows(key, faction, data) {
   const native = key.replace(/^\d+/, id => Number(id) >= 10000 ? Number(id) - 10000 : id)
@@ -113,6 +124,7 @@ function applySilhouette(object, size, skills, data) {
 
 export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatalog(), pickColorIndex = randomInt }) {
   const decoded = decodeArmyCode(armyCode), warnings = [], objects = []
+  let decoyCount = 0, hologramCount = 0
   const groupColors = chooseGroupColors(decoded.combatGroups,pickColorIndex)
   const colorByGroup = new Map(groupColors.map(group => [group.combatGroup,group.color]))
   const colorLegend = groupColors.map(group => `Group ${group.combatGroup}: ${group.name}`).join(' · ')
@@ -133,11 +145,12 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
   const add = (member, combatGroup, peripheral = false) => {
     const key = keyOf(member), official = officialMember(member,payload)
     const rows = resolveRows(key,decoded.sectorialId,catalog)
-    const profile = profileMap.get(member.combinedId)
+    const profile = profileMap.get(member.combinedId || `${decoded.sectorialId}-${member.unitId}-${member.groupId}-${member.optionId}-1`)
     const size = Number(official.base?.s ?? rows[0]?.[9])
-    let object
+    let object, catalogueDescription
     if (rows.length) {
       object = JSON.parse(catalog.expand(rows[0][11]))
+      catalogueDescription = object.Description
       const states = object.States || {}; let slot = Math.max(1,...Object.keys(states).map(Number))
       for (const row of rows.slice(1)) { const alternate = JSON.parse(catalog.expand(row[11])); if (!Object.values(states).some(s=>s.Nickname===alternate.Nickname)) states[String(++slot)] = alternate }
       object.States = states
@@ -163,7 +176,27 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
     object.Nickname = `${cleanName(object.Nickname)} · Group ${combatGroup}${peripheral ? ' · Peripheral' : ''}`
     object.GMNotes = JSON.stringify({ armyProfile:key,combatGroup,peripheral })
     tintObject(object,colorByGroup.get(combatGroup))
+    const rules = representationRules(profile,{ Description:catalogueDescription || object.Description })
+    const template = structuredClone(object)
+    const metadata = { armyProfile:key,combatGroup,peripheral }
+    const setId = randomBytes(6).toString('hex')
+    if (rules.holoprojector) {
+      labelRepresentation(object,'1')
+      object.GMNotes = JSON.stringify({ ...metadata,representation:'holoprojector',setId,copy:1 })
+    }
     sanitize(object); objects.push(object)
+    if (rules.holoprojector) for (let copy=2;copy<=3;copy++) {
+      const hologram = structuredClone(template)
+      labelRepresentation(hologram,String(copy))
+      hologram.GMNotes = JSON.stringify({ ...metadata,representation:'holoprojector',setId,copy })
+      sanitize(hologram); objects.push(hologram); hologramCount++
+    }
+    for (let copy=1;copy<=rules.decoys;copy++) {
+      const decoy = structuredClone(template)
+      labelRepresentation(decoy,`Decoy ${copy}`)
+      decoy.GMNotes = JSON.stringify({ ...metadata,representation:'decoy',setId,copy })
+      sanitize(decoy); objects.push(decoy); decoyCount++
+    }
     return key
   }
   for (const group of expanded.combatGroups) for (const member of group.members) {
@@ -188,14 +221,15 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
   const filename = `${name.replace(/[^a-zA-Z0-9_-]+/g,'-').slice(0,65) || 'infinity-army'}-tts-2d.json`
   const attachment = Buffer.from(JSON.stringify(saved))
   if (attachment.length > 9_000_000) throw Error('TTS army exceeds the Discord attachment size limit')
-  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, groupColors, colorLegend, saved }
+  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, decoyCount, hologramCount, groupColors, colorLegend, saved }
 }
 
 export function ttsDiscordAttachment(options) {
   try {
     const result = exportTtsArmy(options)
+    const extras = [result.decoyCount ? `${result.decoyCount} decoy${result.decoyCount === 1 ? '' : 's'}` : '',result.hologramCount ? `${result.hologramCount} Holoprojector copies` : ''].filter(Boolean).join(' · ')
     const notes = result.warnings.length ? `\nTTS asset notes: ${result.warnings.slice(0,4).join('; ')}${result.warnings.length>4?`; plus ${result.warnings.length-4} more (see model descriptions)`:''}` : ''
-    return { files:[result.file], text:`**TTS 2D army attached** · ${result.modelCount} objects. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.\n${result.colorLegend}${notes}` }
+    return { files:[result.file], text:`**TTS 2D army attached** · ${result.modelCount} objects. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.\n${result.colorLegend}${extras ? `\nIncluded: ${extras}.` : ''}${notes}` }
   } catch (error) {
     console.error('TTS 2D export failed:',error.message)
     return { files:[],text:`TTS export unavailable: ${error.message}. Your army list is still available.` }
