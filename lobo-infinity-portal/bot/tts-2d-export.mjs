@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
-import { randomBytes } from 'node:crypto'
+import { randomBytes, randomInt } from 'node:crypto'
 import { encodeArmyCode } from '../scripts/infinity-army-encode.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { resolveExactProfileGroup } from '../scripts/infinity-army-profile-resolution.mjs'
@@ -25,6 +25,29 @@ function loadCatalog() {
 }
 const keyOf = m => `${m.unitId}/${m.groupId}/${m.optionId}`
 const cleanName = text => String(text || '').replace(/\[[^\]]*\]/g, '').trim()
+// Bright tints from the spawner palette keep standee artwork readable.
+const GROUP_PALETTE = [
+  { name:'Red',color:{r:0.86,g:0.12,b:0.10} },
+  { name:'Blue',color:{r:0.15,g:0.53,b:1.00} },
+  { name:'Green',color:{r:0.20,g:0.70,b:0.17} },
+  { name:'Orange',color:{r:1.00,g:0.55,b:0.10} },
+  { name:'Yellow',color:{r:0.93,g:0.85,b:0.20} },
+  { name:'Teal',color:{r:0.13,g:0.70,b:0.67} },
+  { name:'Purple',color:{r:0.63,g:0.27,b:0.79} },
+  { name:'Pink',color:{r:0.96,g:0.44,b:0.81} },
+]
+function chooseGroupColors(groups,pickIndex) {
+  const available = [...GROUP_PALETTE]
+  return groups.map(group => {
+    const index = pickIndex(available.length)
+    if (!Number.isInteger(index) || index < 0 || index >= available.length) throw Error('Invalid group color selection')
+    return { combatGroup:group.combatGroup,...available.splice(index,1)[0] }
+  })
+}
+function tintObject(object,color) {
+  object.ColorDiffuse = { ...color }
+  for (const child of [...Object.values(object.States || {}),...(object.AttachedObjects || []),...(object.ContainedObjects || [])]) tintObject(child,color)
+}
 function sanitize(object) {
   object.GUID = randomBytes(3).toString('hex')
   object.LuaScript = ''; object.LuaScriptState = ''; object.XmlUI = ''
@@ -88,8 +111,11 @@ function applySilhouette(object, size, skills, data) {
   object.States = states
 }
 
-export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatalog() }) {
+export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatalog(), pickColorIndex = randomInt }) {
   const decoded = decodeArmyCode(armyCode), warnings = [], objects = []
+  const groupColors = chooseGroupColors(decoded.combatGroups,pickColorIndex)
+  const colorByGroup = new Map(groupColors.map(group => [group.combatGroup,group.color]))
+  const colorLegend = groupColors.map(group => `Group ${group.combatGroup}: ${group.name}`).join(' · ')
   const groups = decoded.combatGroups.map(group => ({ ...group, members: group.members.flatMap(member => {
     if (member.groupId !== 0) return [member]
     const unit = payload?.units?.find(u => Number(u.id) === member.unitId)
@@ -136,6 +162,7 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
     applySilhouette(object,size,profile?.skills,catalog)
     object.Nickname = `${cleanName(object.Nickname)} · Group ${combatGroup}${peripheral ? ' · Peripheral' : ''}`
     object.GMNotes = JSON.stringify({ armyProfile:key,combatGroup,peripheral })
+    tintObject(object,colorByGroup.get(combatGroup))
     sanitize(object); objects.push(object)
     return key
   }
@@ -151,24 +178,24 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
     }
     const rule = catalog.minelayers[`${decoded.sectorialId}/${key}`]
     if (rule && catalog.deployables[rule.model]) for (let n=0;n<rule.count;n++) {
-      const object = sanitize(JSON.parse(catalog.deployables[rule.model])); object.Nickname = `${cleanName(object.Nickname)} · Group ${group.combatGroup}`; objects.push(object)
+      const object = sanitize(JSON.parse(catalog.deployables[rule.model])); tintObject(object,colorByGroup.get(group.combatGroup)); object.Nickname = `${cleanName(object.Nickname)} · Group ${group.combatGroup}`; objects.push(object)
     }
   }
   const name = decoded.listName || 'Infinity army'
   const bag = { Name:'Bag',GUID:randomBytes(3).toString('hex'),Transform:{posX:0,posY:1,posZ:0,rotX:0,rotY:0,rotZ:0,scaleX:1,scaleY:1,scaleZ:1},
-    Nickname:`${name} · 2D army`,Description:'2D army models. Take models from this bag; combat groups appear in their names.',ColorDiffuse:{r:0.2,g:0.3,b:0.5},Locked:false,ContainedObjects:objects }
+    Nickname:`${name} · 2D army`,Description:`2D army models. Take models from this bag; combat groups appear in their names.\n${colorLegend}`,ColorDiffuse:{r:0.2,g:0.3,b:0.5},Locked:false,ContainedObjects:objects }
   const saved = { SaveName:bag.Nickname,VersionNumber:'',GameMode:'',Gravity:0.5,PlayArea:0.5,ObjectStates:[bag],LuaScript:'',LuaScriptState:'' }
   const filename = `${name.replace(/[^a-zA-Z0-9_-]+/g,'-').slice(0,65) || 'infinity-army'}-tts-2d.json`
   const attachment = Buffer.from(JSON.stringify(saved))
   if (attachment.length > 9_000_000) throw Error('TTS army exceeds the Discord attachment size limit')
-  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, saved }
+  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, groupColors, colorLegend, saved }
 }
 
 export function ttsDiscordAttachment(options) {
   try {
     const result = exportTtsArmy(options)
     const notes = result.warnings.length ? `\nTTS asset notes: ${result.warnings.slice(0,4).join('; ')}${result.warnings.length>4?`; plus ${result.warnings.length-4} more (see model descriptions)`:''}` : ''
-    return { files:[result.file], text:`**TTS 2D army attached** · ${result.modelCount} objects. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.${notes}` }
+    return { files:[result.file], text:`**TTS 2D army attached** · ${result.modelCount} objects. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.\n${result.colorLegend}${notes}` }
   } catch (error) {
     console.error('TTS 2D export failed:',error.message)
     return { files:[],text:`TTS export unavailable: ${error.message}. Your army list is still available.` }

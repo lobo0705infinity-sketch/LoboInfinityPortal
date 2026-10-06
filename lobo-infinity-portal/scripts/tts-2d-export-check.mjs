@@ -67,3 +67,25 @@ for (const [unitId,groupId,optionId,expected] of [[602,1,3,'Camouflage (0) S2'],
 const transformCode=encodeArmyCode({sectorialId:1001,sectorialSlug:'kosmoflot',combatGroups:[{members:[{unitId:1940,groupId:1,optionId:1}]}]})
 const transform=exportTtsArmy({armyCode:transformCode})
 assert.ok(Object.values(transform.saved.ObjectStates[0].ContainedObjects[0].States).some(state=>/IOANN BANN - DOG-WARRIOR/.test(state.Nickname)))
+
+// Draw without replacement; every object and state keeps its owner's tint.
+const drawSizes=[]
+const colored=exportTtsArmy({armyCode,payload,metadata:source.metadata,pickColorIndex:length=>{drawSizes.push(length);return 0}})
+assert.deepEqual(drawSizes,[8,7])
+assert.deepEqual(colored.groupColors.map(group=>[group.combatGroup,group.name]),[[1,'Red'],[2,'Blue']])
+function verifyTint(object,color) {
+  assert.deepEqual(object.ColorDiffuse,color)
+  for(const state of [...Object.values(object.States||{}),...(object.AttachedObjects||[]),...(object.ContainedObjects||[])])verifyTint(state,color)
+}
+for(const object of colored.saved.ObjectStates[0].ContainedObjects) {
+  const combatGroup=Number(object.Nickname.match(/Group (\d+)/)[1])
+  verifyTint(object,colored.groupColors.find(group=>group.combatGroup===combatGroup).color)
+}
+assert.match(colored.saved.ObjectStates[0].Description,/Group 1: Red · Group 2: Blue/)
+const different=exportTtsArmy({armyCode,payload,metadata:source.metadata,pickColorIndex:length=>length-1})
+assert.deepEqual(different.groupColors.map(group=>group.name),['Pink','Purple'])
+const oneGroup=exportTtsArmy({armyCode:mercCode,pickColorIndex:()=>0})
+assert.equal(oneGroup.groupColors.length,1)
+const colorResponse=ttsDiscordAttachment({armyCode,payload,metadata:source.metadata,pickColorIndex:()=>0})
+assert.match(colorResponse.text,/Group 1: Red · Group 2: Blue/)
+console.log('PASS - randomized, distinct combat-group colors cover all models, peripherals, deployables and alternate states.')
