@@ -5,6 +5,9 @@ import { loboWorkshopMaps, loboWorkshopMapSections } from '../shared/lobo-worksh
 const destination = fileURLToPath(new URL('../backend/WorkshopMapCatalog.gs', import.meta.url))
 const scopes = Object.fromEntries(loboWorkshopMapSections.map((section) => [section.id,
   section.layouts.flatMap((layout) => layout.saves.map((save) => save.slug))]))
+// Additional tables approved for League submissions, alongside the LL saves.
+scopes['event-current-league'].push(...loboWorkshopMaps
+  .filter((map) => [8, 19].includes(map.index)).map((map) => map.slug))
 const maps = loboWorkshopMaps.map((map) => ({
   slug: map.slug,
   label: `${map.name} — Save ${String(map.index).padStart(2, '0')}`,

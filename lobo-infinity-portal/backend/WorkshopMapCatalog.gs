@@ -237,7 +237,9 @@ const LIF_WORKSHOP_MAP_SCOPES = {
     "41-ll-map-11-dead-man-s-switch",
     "43-ll-map-13-data-harvest-double-bind",
     "44-ll-map-14-data-harvest-double-bind",
-    "47-ll-map-16-the-dig-provisioning"
+    "47-ll-map-16-the-dig-provisioning",
+    "08-normal-4-igl-underground",
+    "19-normal-14-igl"
   ],
   "event-august-2026-team-tournament": [
     "37-tt-map-1-outbreak",

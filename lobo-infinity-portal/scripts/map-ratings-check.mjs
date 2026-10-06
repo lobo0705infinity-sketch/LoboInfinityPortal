@@ -18,11 +18,17 @@ for (const file of ['GamePipelineReliability.gs', 'Constants.gs', 'WorkshopMapCa
 
 const options = (type) => Array.from(context.lifWorkshopMapChoices_(type))
 assert.equal(options('casual').length, 47)
-assert.equal(options('league').length, 16)
+assert.equal(options('league').length, 18)
 assert.equal(options('team-tournament').length, 3)
+for (const label of ['Autumn Underpass — Save 08', 'Foundry Blocks — Save 19']) {
+  assert.ok(options('league').includes(label))
+  assert.ok(context.lifWorkshopMapSlug_('league', label))
+}
 for (const section of loboWorkshopMapSections.slice(1)) {
   const type = section.id.includes('team-tournament') ? 'team-tournament' : 'league'
   const expected = section.layouts.flatMap((layout) => layout.saves.map((map) => map.slug)).sort()
+  if (type === 'league') expected.push('08-normal-4-igl-underground', '19-normal-14-igl')
+  expected.sort()
   const actual = options(type).map((label) => context.lifWorkshopMapSlug_(type, label)).sort()
   assert.deepEqual(actual, expected, `${type} choices match its map collection`)
 }
@@ -107,7 +113,7 @@ context.FormApp = { ItemType: { LIST: 'LIST' }, openById: (id) => forms.get(id) 
 vm.runInContext(functionSource(source('LeagueForm.gs'), 'synchronizeWorkshopMapSubmissionForms'), context)
 for (let pass = 0; pass < 2; pass += 1) {
   const result = context.synchronizeWorkshopMapSubmissionForms()
-  assert.deepEqual(Array.from(result, (item) => item.mapChoices), [16, 3, 47])
+  assert.deepEqual(Array.from(result, (item) => item.mapChoices), [18, 3, 47])
   for (const form of forms.values()) {
     assert.equal(form.items.length, 3, 'sync preserves old questions and creates each map question only once')
     assert.equal(form.items[0].getTitle(), 'Mission')
