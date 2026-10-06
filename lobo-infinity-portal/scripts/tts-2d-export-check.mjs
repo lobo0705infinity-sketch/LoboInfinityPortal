@@ -33,9 +33,10 @@ function verify(o) {
 }
 models.forEach(verify)
 const response=await createInfListResponse({armyCode,render:async()=>({ttsSource:{payload,metadata:source.metadata},officialArmyUrl:'https://example.test/army',readableImageBuffer:Buffer.from('png')}),withRenderSlot:fn=>fn()})
-assert.equal(response.files.length,2)
+assert.equal(response.files.length,3)
 assert.equal(response.files[0].name,'infinity-army-list-readable.png')
 assert.ok(response.files[1].name.endsWith('-tts-2d.json'))
+assert.equal(response.files[2].name,'tts-validation.txt')
 assert.match(response.embeds.at(-1).description,/Saved Objects/)
 
 // A missing art entry must retain the unit as a labelled proxy, using a

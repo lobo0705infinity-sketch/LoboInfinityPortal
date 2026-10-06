@@ -198,7 +198,8 @@ const slashHandler = createInfListInteractionHandler({
 assert.equal(await slashHandler(slashInteraction), true)
 assert.equal(slashInteraction.deferred, true)
 assert.deepEqual(slashRenderCalls, [testCode])
-assert.deepEqual(slashInteraction.edits, message.replies)
+assert.ok(message.replies[0].components[0].components[0].custom_id.startsWith('bot-report:'))
+assert.deepEqual(slashInteraction.edits, message.replies.map(({ components, ...response }) => response))
 
 const invalidSlash = mockInteraction('not$a$code')
 assert.equal(await slashHandler(invalidSlash), true)
@@ -249,7 +250,7 @@ await Promise.all(Array.from({ length: 5 }, () => withSlot(async () => {
 assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
-assert.equal(client.listenerCount(Events.InteractionCreate), 14)
+assert.equal(client.listenerCount(Events.InteractionCreate), 16)
 client.destroy()
 
 if (process.argv.includes('--live')) {
@@ -261,7 +262,7 @@ if (process.argv.includes('--live')) {
   assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
   assert.match(liveMessage.replies[0].content, /^(✅ \*\*LEGAL ARMY LIST\*\*|❌ \*\*ILLEGAL ARMY LIST\*\*|⚠️ \*\*ARMY LIST VALIDATION UNAVAILABLE\*\*)/)
-  assert.equal(liveMessage.replies[0].files.length, 4)
+  assert.equal(liveMessage.replies[0].files.length, 6)
   const readablePng = liveMessage.replies[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { installFeedbackCapture, createBotFeedbackHandler, ensureBotReportsCommand } from './bot-feedback.mjs'
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 // Railway production deployment: matchup command release 2026-09-21
 
@@ -107,7 +108,7 @@ export function formatWorkshopAnnouncement(item) {
 
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
-  client.setMaxListeners(14)
+  client.setMaxListeners(18)
   const handleMessage = createInfListMessageHandler()
   const handleInfList = createInfListInteractionHandler()
   const handleBuildList = createBuildListInteractionHandler()
@@ -123,6 +124,8 @@ export function createLobosLittleHelper() {
   const handleMatchupAutocomplete = createMatchupAutocompleteHandler()
   const handleMatchmaking = createMatchmakingInteractionHandler()
   const handleMatchmakingAutocomplete = createMatchmakingAutocompleteHandler()
+  client.on(Events.InteractionCreate, installFeedbackCapture)
+  client.on(Events.InteractionCreate, createBotFeedbackHandler())
   client.on(Events.MessageCreate, handleMessage)
   client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleBuildList)
@@ -156,6 +159,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   const client = createLobosLittleHelper()
   await client.login(token)
   try {
+    await ensureBotReportsCommand(client)
     const commands = await ensureMissionCommand(client)
     const infListCommands = await ensureInfListCommand(client)
     const buildListCommands = await ensureBuildListCommand(client)
