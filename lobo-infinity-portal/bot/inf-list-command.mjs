@@ -1,3 +1,5 @@
+import { reportableResponse } from './bot-feedback.mjs'
+import { ratingExplanations } from './rating-explanations.mjs'
 import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { InfListRenderError, renderInfListPng, validateArmyCode } from '../scripts/inf-list-render-poc.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
@@ -93,6 +95,8 @@ export async function createInfListResponse({
     const suffix = result.tacticalPages.length > 1 ? `-${index + 1}` : ''
     files.push({ attachment: tacticalPage.imageBuffer, name: `infinity-army-tactical-brief${suffix}.png` })
   }
+  const explanation = ratingExplanations(result.tacticalAnalysis, result.ttsSource?.metadata)
+  if (explanation && files.length < 8) files.push({ attachment: Buffer.from(explanation), name: 'rating-explanations.txt' })
   const tts = ttsDiscordAttachment({ armyCode: validatedArmyCode, ...result.ttsSource })
   files.push(...tts.files)
   return {
@@ -118,7 +122,11 @@ export function createInfListMessageHandler({
     }
 
     try {
-      await message.reply(await createInfListResponse({ armyCode: command.armyCode, render, withRenderSlot }))
+      const response = await createInfListResponse({ armyCode: command.armyCode, render, withRenderSlot })
+      let reportable = response
+      try { reportable = await reportableResponse(response, { command: '!!inf-list', inputs: { armyCode: command.armyCode }, guildId: message.guildId, requesterId: message.author?.id }) }
+      catch (error) { console.error('Bot report context could not be saved:', error.message) }
+      await message.reply(reportable)
     } catch (error) {
       await message.reply(messageForError(error))
     }

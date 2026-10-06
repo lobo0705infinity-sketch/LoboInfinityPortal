@@ -507,7 +507,8 @@ for (const [index, message] of messages.entries()) {
   assert.match(message.content, /Lieutenant plan/)
   assert.match(message.content, /BS Attack \(\+1 SD\)/)
   assert.match(message.content, /Open in Infinity Army/)
-  assert.equal(message.embeds.length, 1, 'the compact response includes TTS import instructions')
+  assert.equal(message.embeds.length, 2, 'response includes TTS import instructions and target explanations')
+  assert.match(message.embeds[1].description, /targets/)
   assert.ok(message.files[0].name.endsWith('-tts-2d.json'))
 }
 const calls = []

@@ -1,3 +1,4 @@
+import { validateTtsExport } from './tts-export-validation.mjs'
 import { readFileSync } from 'node:fs'
 import { gunzipSync } from 'node:zlib'
 import { randomBytes, randomInt } from 'node:crypto'
@@ -52,7 +53,7 @@ function sanitize(object) {
   object.GUID = randomBytes(3).toString('hex')
   object.LuaScript = ''; object.LuaScriptState = ''; object.XmlUI = ''
   object.Locked = false; object.Hands = false
-  for (const child of [...Object.values(object.States || {}), ...(object.AttachedObjects || [])]) sanitize(child)
+  for (const child of [...Object.values(object.States || {}), ...(object.AttachedObjects || []), ...(object.ContainedObjects || [])]) sanitize(child)
   return object
 }
 function representationRules(profile,object) {
@@ -123,7 +124,7 @@ function applySilhouette(object, size, skills, data) {
 }
 
 export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatalog(), pickColorIndex = randomInt }) {
-  const decoded = decodeArmyCode(armyCode), warnings = [], objects = []
+  const decoded = decodeArmyCode(armyCode), warnings = [], objects = [], manifest = []
   let decoyCount = 0, hologramCount = 0
   const groupColors = chooseGroupColors(decoded.combatGroups,pickColorIndex)
   const colorByGroup = new Map(groupColors.map(group => [group.combatGroup,group.color]))
@@ -184,18 +185,21 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
       labelRepresentation(object,'1')
       object.GMNotes = JSON.stringify({ ...metadata,representation:'holoprojector',setId,copy:1 })
     }
+    const camo = (profile?.skills || []).some(skill => /^Camouflage(?:\s|\(|$)/i.test(skill))
+    const record = (representation, copy) => manifest.push({ profile:key, combatGroup, camo, representation, copy })
+    record(rules.holoprojector ? 'holoprojector' : undefined, rules.holoprojector ? 1 : undefined)
     sanitize(object); objects.push(object)
     if (rules.holoprojector) for (let copy=2;copy<=3;copy++) {
       const hologram = structuredClone(template)
       labelRepresentation(hologram,String(copy))
       hologram.GMNotes = JSON.stringify({ ...metadata,representation:'holoprojector',setId,copy })
-      sanitize(hologram); objects.push(hologram); hologramCount++
+      record('holoprojector', copy); sanitize(hologram); objects.push(hologram); hologramCount++
     }
     for (let copy=1;copy<=rules.decoys;copy++) {
       const decoy = structuredClone(template)
       labelRepresentation(decoy,`Decoy ${copy}`)
       decoy.GMNotes = JSON.stringify({ ...metadata,representation:'decoy',setId,copy })
-      sanitize(decoy); objects.push(decoy); decoyCount++
+      record('decoy', copy); sanitize(decoy); objects.push(decoy); decoyCount++
     }
     return key
   }
@@ -211,25 +215,27 @@ export function exportTtsArmy({ armyCode, payload, metadata, catalog = loadCatal
     }
     const rule = catalog.minelayers[`${decoded.sectorialId}/${key}`]
     if (rule && catalog.deployables[rule.model]) for (let n=0;n<rule.count;n++) {
-      const object = sanitize(JSON.parse(catalog.deployables[rule.model])); tintObject(object,colorByGroup.get(group.combatGroup)); object.Nickname = `${cleanName(object.Nickname)} · Group ${group.combatGroup}`; objects.push(object)
+      const object = sanitize(JSON.parse(catalog.deployables[rule.model])); tintObject(object,colorByGroup.get(group.combatGroup)); object.Nickname = `${cleanName(object.Nickname)} · Group ${group.combatGroup}`; objects.push(object); manifest.push({ combatGroup:group.combatGroup })
     }
   }
   const name = decoded.listName || 'Infinity army'
   const bag = { Name:'Bag',GUID:randomBytes(3).toString('hex'),Transform:{posX:0,posY:1,posZ:0,rotX:0,rotY:0,rotZ:0,scaleX:1,scaleY:1,scaleZ:1},
     Nickname:`${name} · 2D army`,Description:`2D army models. Take models from this bag; combat groups appear in their names.\n${colorLegend}`,ColorDiffuse:{r:0.2,g:0.3,b:0.5},Locked:false,ContainedObjects:objects }
   const saved = { SaveName:bag.Nickname,VersionNumber:'',GameMode:'',Gravity:0.5,PlayArea:0.5,ObjectStates:[bag],LuaScript:'',LuaScriptState:'' }
+  const validation = validateTtsExport(saved, { expectedCount:manifest.length, groupColors, manifest, decoyCount, hologramCount })
   const filename = `${name.replace(/[^a-zA-Z0-9_-]+/g,'-').slice(0,65) || 'infinity-army'}-tts-2d.json`
   const attachment = Buffer.from(JSON.stringify(saved))
   if (attachment.length > 9_000_000) throw Error('TTS army exceeds the Discord attachment size limit')
-  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, decoyCount, hologramCount, groupColors, colorLegend, saved }
+  return { file:{ attachment,name:filename }, warnings:[...new Set(warnings)], modelCount:objects.length, decoyCount, hologramCount, groupColors, colorLegend, saved, validation, manifest }
 }
 
 export function ttsDiscordAttachment(options) {
   try {
     const result = exportTtsArmy(options)
     const extras = [result.decoyCount ? `${result.decoyCount} decoy${result.decoyCount === 1 ? '' : 's'}` : '',result.hologramCount ? `${result.hologramCount} Holoprojector copies` : ''].filter(Boolean).join(' · ')
-    const notes = result.warnings.length ? `\nTTS asset notes: ${result.warnings.slice(0,4).join('; ')}${result.warnings.length>4?`; plus ${result.warnings.length-4} more (see model descriptions)`:''}` : ''
-    return { files:[result.file], text:`**TTS 2D army attached** · ${result.modelCount} objects. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.\n${result.colorLegend}${extras ? `\nIncluded: ${extras}.` : ''}${notes}` }
+    const notes = result.warnings.length ? `\nTTS asset notes: ${result.warnings.slice(0,4).join('; ')}${result.warnings.length>4?`; plus ${result.warnings.length-4} more (see tts-validation.txt)`:''}` : ''
+    const report = `${result.validation}\nRemote assets are not downloaded by this check.\n\nAsset notes and substitutes:\n${result.warnings.join('\n') || 'None.'}`
+    return { files:[result.file, { attachment:Buffer.from(report), name:'tts-validation.txt' }], text:`**TTS 2D army attached** · ${result.modelCount} objects · validation passed. Save the JSON in TTS’s Saved Objects folder, then open Objects → Saved Objects.\n${result.colorLegend}${extras ? `\nIncluded: ${extras}.` : ''}${notes}` }
   } catch (error) {
     console.error('TTS 2D export failed:',error.message)
     return { files:[],text:`TTS export unavailable: ${error.message}. Your army list is still available.` }
