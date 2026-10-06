@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { reportableResponse, createBotFeedbackHandler, installFeedbackCapture } from '../bot/bot-feedback.mjs'
 import { PermissionFlagsBits } from 'discord.js'
+import { createInfListResponse } from '../bot/inf-list-command.mjs'
+import { classifyTacticalBrief } from '../bot/inf-list-tactical.mjs'
 import { ratingExplanations, unmetTargetExplanation } from '../bot/rating-explanations.mjs'
 import { validateTtsExport } from '../bot/tts-export-validation.mjs'
 const dir = await mkdtemp(join(tmpdir(), 'bot-feedback-test-'))
@@ -28,7 +30,7 @@ try {
   installFeedbackCapture(input); await input.editReply({content:'first'}); const first=sent.components[0].components[0].custom_id; await input.followUp({content:'second'}); assert.notEqual(sent.components[0].components[0].custom_id,first)
   delete process.env.BOT_FEEDBACK_PATH
 } finally { await rm(dir, { recursive:true, force:true }) }
-const explanations = ratingExplanations({ gunfighters:[{unitName:'Test',profileName:'Rifle',bs:12,skills:['Mimetism (-3)'],weapons:[{name:'Rifle',mode:''}], nonLinked:{grade:'A',rating:45,percentile:85,weaponsUsed:[{weapon:'Rifle',scoreContribution:45}]},fireteamLinked:{grade:'S',rating:60,percentile:97,weaponsUsed:[]}}]}, {weapons:[{id:1,name:'Rifle',distance:{a:{max:20,mod:0},b:{max:40,mod:3}},burst:3}]})
+const explanations = ratingExplanations({ categories: { gunfighters:[{unitName:'Test',profileName:'Rifle',bs:12,skills:['Mimetism (-3)'],weapons:[{name:'Rifle',mode:''}], nonLinked:{grade:'A',rating:45,percentile:85,weaponsUsed:[{weapon:'Rifle',scoreContribution:45}]},fireteamLinked:{grade:'S',rating:60,percentile:97,weaponsUsed:[]}}]} }, {weapons:[{id:1,name:'Rifle',distance:{a:{max:20,mod:0},b:{max:40,mod:3}},burst:3}]})
 assert.match(explanations,/Unlinked: A/); assert.match(explanations,/Linked: S/); assert.match(explanations,/8–16 inches \(\+3\)/); assert.match(explanations,/not win probabilities/)
 const shortfall = unmetTargetExplanation({quality:{sGunfighters:2,sAro:1,sCc:0,specialists:2,specialistTarget:4},points:299,swc:6}, {points:300,mustInclude:['Test']})
 assert.match(shortfall,/S ARO models: 1\/3 \(2 short\)/); assert.match(shortfall,/Required models: Test/); assert.match(shortfall,/not proof/)
@@ -38,3 +40,14 @@ const opts={expectedCount:1,groupColors:[{combatGroup:1,color:{r:1,g:0,b:0}}],ma
 assert.match(validateTtsExport(saved,opts),/Validated 1 objects/)
 for (const mutate of [s=>s.ObjectStates[0].ContainedObjects.pop(),s=>s.ObjectStates[0].ContainedObjects[0].States={},s=>s.ObjectStates[0].ContainedObjects[0].CustomImage.ImageURL='bad',s=>s.ObjectStates[0].ContainedObjects[0].GUID='cccccc',s=>s.ObjectStates[0].ContainedObjects[0].Nickname='Group 2']) {const broken=structuredClone(saved);mutate(broken);assert.throws(()=>validateTtsExport(broken,opts),/validation failed/)}
 console.log('Bot explanations, target shortfalls, export rejection and feedback workflow checks passed.')
+
+// Regression: the real classifier nests rated entries under categories. Verify
+// the command attaches explanations alongside the readable/tactical PNGs.
+const actualAnalysis = classifyTacticalBrief([], {}, [{status:'matched',key:'301:1:1:1:1',unitName:'TEST RATED MODEL',normal:45,nonLinked:{rating:45,grade:'A',percentile:85,weaponsUsed:[]}}])
+const commandResponse = await createInfListResponse({armyCode:'QUJDRA==', withRenderSlot:fn=>fn(), render:async()=>({tacticalAnalysis:actualAnalysis,readableImageBuffer:Buffer.from('png'),tacticalPages:[{imageBuffer:Buffer.from('tactical')}],officialArmyUrl:'https://example.test/army'})})
+const explanationFile = commandResponse.files.find(file=>file.name==='rating-explanations.txt')
+assert.ok(explanationFile, 'actual classifier response must attach explanations')
+assert.match(explanationFile.attachment.toString(), /TEST RATED MODEL/)
+assert.match(explanationFile.attachment.toString(), /Unlinked: A/)
+assert.match(ratingExplanations({categories:{}}), /No matched combat rating entries/)
+console.log('PASS - real tactical classifier output includes rating-explanations.txt in the Discord response.')
