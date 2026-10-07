@@ -31,7 +31,7 @@ try {
   delete process.env.BOT_FEEDBACK_PATH
 } finally { await rm(dir, { recursive:true, force:true }) }
 const explanations = ratingExplanations({ categories: { gunfighters:[{unitName:'Test',profileName:'Rifle',bs:12,skills:['Mimetism (-3)'],weapons:[{name:'Rifle',mode:''}], nonLinked:{grade:'A',rating:45,percentile:85,weaponsUsed:[{weapon:'Rifle',scoreContribution:45}]},fireteamLinked:{grade:'S',rating:60,percentile:97,weaponsUsed:[]}}]} }, {weapons:[{id:1,name:'Rifle',distance:{a:{max:20,mod:0},b:{max:40,mod:3}},burst:3}]})
-assert.match(explanations,/Unlinked: A/); assert.match(explanations,/Linked: S/); assert.match(explanations,/8–16 inches \(\+3\)/); assert.match(explanations,/not win probabilities/)
+assert.match(explanations,/Gunfighter: A alone/); assert.match(explanations,/S with Fireteam \+1 SD/); assert.match(explanations,/8–16 inches \(\+3\)/); assert.match(explanations,/not win probabilities/)
 const shortfall = unmetTargetExplanation({quality:{sGunfighters:2,sAro:1,sCc:0,specialists:2,specialistTarget:4},points:299,swc:6}, {points:300,mustInclude:['Test']})
 assert.match(shortfall,/S ARO models: 1\/3 \(2 short\)/); assert.match(shortfall,/Required models: Test/); assert.match(shortfall,/not proof/)
 const obj = {GUID:'aaaaaa',Name:'Custom_Token',CustomImage:{ImageURL:'https://example.com/model.png'},Nickname:'Test · Group 1',ColorDiffuse:{r:1,g:0,b:0},GMNotes:JSON.stringify({armyProfile:'1/1/1',combatGroup:1}),States:{2:{GUID:'bbbbbb',Nickname:'Camouflage',ColorDiffuse:{r:1,g:0,b:0}}}}
@@ -48,12 +48,11 @@ const commandResponse = await createInfListResponse({armyCode:'QUJDRA==', withRe
 const explanationFile = commandResponse.files.find(file=>file.name==='rating-explanations.txt')
 assert.ok(explanationFile, 'actual classifier response must attach explanations')
 assert.match(explanationFile.attachment.toString(), /TEST RATED MODEL/)
-assert.match(explanationFile.attachment.toString(), /Unlinked: A/)
+assert.match(explanationFile.attachment.toString(), /Gunfighter: A alone/)
 assert.match(ratingExplanations({categories:{}}), /No matched combat rating entries/)
 console.log('PASS - real tactical classifier output includes rating-explanations.txt in the Discord response.')
 
-// Human-readable regression: retain both real CC comparison pools without raw
-// engine JSON, duplicated skills, or unscaled weapon-contribution totals.
+// Concise, actionable explanations preserve scores without raw engine fields.
 const readable = ratingExplanations({categories:{
   valuableAro:[{unitName:'Tankhunter',skills:['Mimetism (-3)','Mimetism [-3]'],nonLinked:{grade:'S',rating:12.72,percentile:99.08,weaponsUsed:[{weapon:'Portable Autocannon',scoreContribution:2226.69}]}}],
   closeCombat:[{unitName:'Voronin',grade:'A',rating:28.86,percentile:81.26,states:[
@@ -61,12 +60,19 @@ const readable = ratingExplanations({categories:{
     {id:'ally-1',label:'One allied Trooper engaged',grade:'A',rating:48.24,percentile:86.83,weaponsUsed:[]}
   ]}]
 }})
-assert.match(readable,/Normal active-turn CC \(global profiles\): A/)
-assert.match(readable,/Normal active-turn CC: B/)
-assert.match(readable,/different pool/)
-assert.match(readable,/One allied Trooper engaged: A/)
+assert.match(readable,/CC: A/)
+assert.match(readable,/normal CC profiles/)
+assert.match(readable,/One allied Trooper engaged raises the score to 48.24/)
 assert.match(readable,/Faction-specific grades are not available/)
-assert.match(readable,/Main benchmark weapons\/actions: Portable Autocannon/)
-assert.equal((readable.match(/Mimetism/g)||[]).length,1)
-assert.doesNotMatch(readable,/2226\.69|scoreContribution|weaponsUsed|States:|undefined|NaN/)
-console.log('PASS - readable CC pools, conditional states, deduplicated skills and weapon labels.')
+assert.match(readable,/Tankhunter · Portable Autocannon/)
+assert.doesNotMatch(readable,/Recorded skills|Profile stats|2226\.69|scoreContribution|weaponsUsed|States:|undefined|NaN|CC: B/)
+for (const label of ['Best use:', 'What earns the rating:', 'What limits it:']) assert.equal(readable.split(label).length-1,2)
+const kazak = {unitName:'Veteran Kazak',profileName:'VETERAN KAZAK',combinedId:'test',weapons:[{name:'AP Heavy Machine Gun',mode:''}],nonLinked:{grade:'A',rating:33.89,percentile:91.17,weaponsUsed:[{weapon:'AP Heavy Machine Gun (AP)',scoreContribution:33.89}]},fireteamLinked:{grade:'S',rating:39.11,percentile:97,weaponsUsed:[]}}
+const approvedSample = ratingExplanations({categories:{gunfighters:[kazak],valuableAro:[{...kazak,nonLinked:{grade:'B',rating:4.25,percentile:67.06},fireteamLinked:{grade:'A',rating:7.37,percentile:91.36}}]}},{weapons:[{id:1,name:'AP Heavy Machine Gun',distance:{a:{max:40,mod:0},b:{max:80,mod:3}},burst:4}]})
+assert.match(approvedSample,/Gunfighter: A alone → S with Fireteam \+1 SD/)
+assert.match(approvedSample,/16–32 inches \(\+3\)/)
+assert.match(approvedSample,/top 9%/)
+assert.match(approvedSample,/33.89 to 39.11 \(about 15% higher\), around the top 3%/)
+assert.match(approvedSample,/ARO grade is B alone or A linked/)
+assert.doesNotMatch(ratingExplanations({categories:{gunfighters:[{unitName:'Unknown',nonLinked:{grade:'B',rating:0,percentile:null},fireteamLinked:{grade:'A',rating:2,percentile:null}}]}}),/NaN|Infinity|top 100%/)
+console.log('PASS - approved sample structure, range, score improvement, cross-role limits and conditional CC results.')
