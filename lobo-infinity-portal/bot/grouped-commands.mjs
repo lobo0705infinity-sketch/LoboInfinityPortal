@@ -74,11 +74,11 @@ const manager = interaction => Boolean(interaction.guildId && interaction.member
 const topics = {
   lists: {
     title: 'Army Lists',
-    description: '**/list analyse** — Army code → readable list, legality, brief summary and TTS export. Detail buttons open Tactical Brief, Ratings, Classifieds and TTS Notes privately.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options with Analyse This List and Create ID Sheet buttons. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list with private roster/details and connected actions.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`\n\nExisting `/inf-list`, `/build-list`, `/random-list`, `/inf-id` and `!!inf-list` still work.',
+    description: '**/list analyse** — Army code → readable list, legality, brief summary and TTS export. Detail buttons open Tactical Brief, Ratings, Classifieds and TTS Notes privately.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options with Analyse This List and Create ID Sheet buttons. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list with private roster/details and connected actions.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`\n\nThe `!!inf-list` message shortcut also works.',
   },
   combat: {
     title: 'Combat',
-    description: '**/combat matchup** — Compare two exact profiles in both attack directions. Start typing and select each loadout from autocomplete.\nExample: `/combat matchup model-1:<profile> model-2:<profile>`\n\n**/combat counters** — Find ARO counters against a target; optionally filter by army and range.\nExample: `/combat counters target:<profile> army:Corregidor range:16–24 inches`\n\nExisting `/matchup` and `/aro-counter` still work.',
+    description: '**/combat matchup** — Compare two exact profiles in both attack directions. Start typing and select each loadout from autocomplete.\nExample: `/combat matchup model-1:<profile> model-2:<profile>`\n\n**/combat counters** — Find ARO counters against a target; optionally filter by army and range.\nExample: `/combat counters target:<profile> army:Corregidor range:16–24 inches`',
   },
   reference: {
     title: 'Game Reference',
@@ -86,17 +86,17 @@ const topics = {
   },
   play: {
     title: 'Find a Game',
-    description: '**/play availability set** — Set a recurring day or weekday bundle in your time zone.\nExample: `/play availability set weekday:Monday start:7 PM end:10 PM timezone:America/New_York`\n\n**/play availability show** — Show your saved availability.\n**/play availability clear** — Remove a day or all days.\n\n**/play find now** — Post a one-off game request. Provide the date, start, end and time zone. Optional choices include format, game size and type of game.\nExample: `/play find now date:2026-10-10 start:7 PM end:10 PM timezone:America/New_York`\n\n**/play find close** — Close your latest open request.\n\nExisting `/availability` and `/find-game` still work.',
+    description: '**/play availability set** — Set a recurring day or weekday bundle in your time zone.\nExample: `/play availability set weekday:Monday start:7 PM end:10 PM timezone:America/New_York`\n\n**/play availability show** — Show your saved availability.\n**/play availability clear** — Remove a day or all days.\n\n**/play find now** — Post a one-off game request. Provide the date, start, end and time zone. Optional choices include format, game size and type of game.\nExample: `/play find now date:2026-10-10 start:7 PM end:10 PM timezone:America/New_York`\n\n**/play find close** — Close your latest open request.',
   },
   admin: {
     title: 'Server Manager Tools',
-    description: '**/admin bots** — Privately inventory bot accounts, webhook publishers, permissions and recent activity. Use `refresh:True` to rescan. Requires **Manage Server**.\n\n**/admin reports** — Privately download the latest 25 incorrect-answer reports for this server. Requires **Manage Server**.\n\nReports include the command inputs, answer context, reason and source message link. They do not automatically change the bot’s answers.\n\nExisting `/bot-reports` still works. Workshop monitoring runs automatically.',
+    description: '**/admin bots** — Privately inventory bot accounts, webhook publishers, permissions and recent activity. Use `refresh:True` to rescan. Requires **Manage Server**.\n\n**/admin reports** — Privately download the latest 25 incorrect-answer reports for this server. Requires **Manage Server**.\n\nReports include the command inputs, answer context, reason and source message link. They do not automatically change the bot’s answers.\n\nWorkshop monitoring runs automatically.',
   },
 }
 export function helpResponse(topic = 'home', isManager = false) {
   const selected = topics[topic]
   const buttons = [['lists', 'Army Lists'], ['combat', 'Combat'], ['reference', 'Game Reference'], ['play', 'Find a Game'], ...(isManager ? [['admin', 'Server Tools']] : [])]
-  const description = selected?.description || 'Choose what you want to do:\n\n**Army Lists** — analyse, build, randomize and identify.\n**Combat** — compare profiles and find counters.\n**Game Reference** — rules questions and missions.\n**Find a Game** — availability and game requests.\n\nGrouped commands and existing commands both work during the transition.'
+  const description = selected?.description || 'Choose what you want to do:\n\n**Army Lists** — analyse, build, randomize and identify.\n**Combat** — compare profiles and find counters.\n**Game Reference** — rules questions and missions.\n**Find a Game** — availability and game requests.\n\nUse `/list`, `/combat` and `/play` for grouped tools; `/rules` and `/mission` for reference.'
   return { embeds: [{ title: selected ? `Lobo’s Little Helper · ${selected.title}` : 'Lobo’s Little Helper · Command Guide', description, color: 0x8b6fed }], components: [{ type: 1, components: buttons.map(([id, label]) => ({ type: 2, style: topic === id ? 1 : 2, label, custom_id: `lobo-help:${id}` })) }], allowedMentions: { parse: [] } }
 }
 export function createHelpInteractionHandler() {
@@ -139,4 +139,44 @@ export async function ensureGroupedCommands(client) {
     }
   }
   return registered
+}
+
+
+export const LEGACY_SLASH_REPLACEMENTS = Object.freeze({
+  'inf-list': 'list', 'build-list': 'list', 'random-list': 'list', 'inf-id': 'list',
+  matchup: 'combat', 'aro-counter': 'combat', availability: 'play', 'find-game': 'play',
+  'bot-reports': 'admin',
+})
+
+// Only this application's explicitly superseded menu entries are retired.
+// Internal aliases and handlers remain available for grouped commands/buttons.
+export async function retireLegacySlashCommands(client) {
+  const applicationId = client.application.id
+  const owned = command => command.applicationId === applicationId
+  const legacy = command => owned(command) && command.type === 1 && Object.hasOwn(LEGACY_SLASH_REPLACEMENTS, command.name)
+  const scopes = []
+  for (const guild of client.guilds.cache.values()) {
+    const commands = await guild.commands.fetch()
+    const names = new Set([...commands.values()].filter(command => owned(command) && command.type === 1).map(command => command.name))
+    for (const replacement of new Set(Object.values(LEGACY_SLASH_REPLACEMENTS))) {
+      if (!names.has(replacement)) throw new Error(`Grouped replacement ${replacement} missing in guild ${guild.id}; legacy commands retained.`)
+    }
+    scopes.push({ scope: guild.id, manager: guild.commands, commands })
+  }
+  // Global deletions require the replacements in every connected guild.
+  if (!scopes.length) return { removed: [], remaining: [] }
+  scopes.push({ scope: 'global', manager: client.application.commands, commands: await client.application.commands.fetch() })
+  const removed = []
+  const remaining = []
+  for (const { scope, manager, commands } of scopes) {
+    for (const command of commands.values()) {
+      if (!legacy(command)) continue
+      await command.delete()
+      removed.push(`${scope}:${command.name}`)
+    }
+    const verified = await manager.fetch()
+    if ([...verified.values()].some(legacy)) throw new Error(`Legacy slash-command removal could not be verified in ${scope}.`)
+    remaining.push({ scope, names: [...verified.values()].filter(owned).map(command => command.name).sort() })
+  }
+  return { removed, remaining }
 }
