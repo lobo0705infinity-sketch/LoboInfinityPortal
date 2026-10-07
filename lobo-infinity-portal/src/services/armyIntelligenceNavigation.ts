@@ -1,4 +1,4 @@
-import { normalizeArmyForDisplay, resolveArmyIdentity } from './armyIdentity'
+import { normalizeArmyForDisplay, resolveArmyIdentity } from './armyIdentity.ts'
 
 export const armyIntelligencePath = '/army-intelligence'
 export const armyIntelligenceFactionParam = 'faction'
@@ -18,4 +18,11 @@ export function buildArmyIntelligenceFactionPath(faction: string) {
 
 export function readArmyIntelligenceFactionParam(searchParams: URLSearchParams) {
   return normalizeArmyForDisplay(searchParams.get(armyIntelligenceFactionParam) || '').trim()
+}
+
+export function buildArmyListsFactionPath(faction: string) {
+  const selectedFaction = normalizeArmyForDisplay(faction).trim()
+  const params = new URLSearchParams()
+  if (selectedFaction) params.set('faction', selectedFaction)
+  return `/army-lists${params.size ? `?${params.toString()}` : ''}`
 }

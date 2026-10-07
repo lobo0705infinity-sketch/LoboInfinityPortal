@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { armyListValue, filterAndSortArmyLists } from '../src/public/armyListDirectory.ts'
+import { buildArmyListsFactionPath } from '../src/services/armyIntelligenceNavigation.ts'
 import type { PublicArmyList } from '../src/public/snapshotTypes.ts'
 const lists = [
   { id: 'b', player: 'Bravo', playerDisplayName: 'Zulu', faction: 'Nomads', sectorial: 'Corregidor', mission: 'The Dig', date: '2026-10-01', opponent: 'Alpha', result: 'Win' },
@@ -24,3 +25,15 @@ for (const faction of ['PanOceania', 'StarCo', 'Force de Réponse Rapide Merovin
   assert.equal(filterAndSortArmyLists(aliases, '', faction, '', 'date', 'desc').length, 2, `${faction} must include both aliases`)
 }
 assert.equal(filterAndSortArmyLists(aliases, 'starco free company of the star', '', '', 'date', 'desc').length, 2)
+
+for (const faction of ['Corregidor', 'Ariadna', 'Starco Free Company Of The Star', 'Force de Réponse Rapide Merovingienne']) {
+  const target = new URL(buildArmyListsFactionPath(faction), 'https://portal.test')
+  assert.equal(target.pathname, '/army-lists')
+  const selected = target.searchParams.get('faction') || ''
+  const source = faction === 'Corregidor' || faction === 'Ariadna' ? lists : aliases
+  const rows = filterAndSortArmyLists(source, '', selected, '', 'date', 'desc')
+  assert.ok(rows.length > 0, `${faction} navigation preserves matching lists`)
+  assert.ok(rows.every(row => armyListValue(row, 'faction') === selected))
+}
+assert.equal(buildArmyListsFactionPath(''), '/army-lists')
+console.log('Known Lists faction navigation checks passed')

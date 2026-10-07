@@ -14,7 +14,7 @@ const locations = [
   ['Player Profile', read('src/pages/PlayerProfile.tsx'), 1],
   ['Army Intelligence', read('src/pages/ArmyIntelligence.tsx'), 1],
   ['Public Army Lists', read('src/public/ArmyListsTable.tsx'), 1],
-  ['Public Army Intelligence', read('src/public/SnapshotArmyIntelligence.tsx'), 1],
+  ['Public Army Intelligence', read('src/public/SnapshotArmyIntelligence.tsx'), 0],
 ] as const
 
 for (const [label, source, expected] of locations) {

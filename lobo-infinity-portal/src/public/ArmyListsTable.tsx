@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import { armyListValue, filterAndSortArmyLists, type ArmyListSort } from './armyListDirectory'
 import type { PublicArmyList } from './snapshotTypes'
@@ -6,11 +8,18 @@ import './ArmyListsTable.css'
 
 export default function ArmyListsTable({ lists }: { lists: PublicArmyList[] }) {
   const [query, setQuery] = useState('')
-  const [faction, setFaction] = useState('')
+  const [params, setParams] = useSearchParams()
+  const faction = normalizeArmyForDisplay(params.get('faction') || '').trim()
+  function setFaction(value: string) {
+    const next = new URLSearchParams(params)
+    if (value) next.set('faction', value)
+    else next.delete('faction')
+    setParams(next)
+  }
   const [mission, setMission] = useState('')
   const [sort, setSort] = useState<ArmyListSort>('date')
   const [direction, setDirection] = useState<'asc' | 'desc'>('desc')
-  const factions = [...new Set(lists.map(list => armyListValue(list, 'faction')).filter(Boolean))].sort()
+  const factions = [...new Set([...lists.map(list => armyListValue(list, 'faction')), faction].filter(Boolean))].sort()
   const missions = [...new Set(lists.map(list => list.mission).filter(Boolean))].sort()
   const columns: { key: ArmyListSort; label: string }[] = [
     { key: 'date', label: 'Date' }, { key: 'player', label: 'Player' },
