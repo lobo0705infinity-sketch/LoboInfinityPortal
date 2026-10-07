@@ -243,7 +243,7 @@ function RouteScrollReset() {
   const navigationType = useNavigationType()
 
   useEffect(() => {
-    if (navigationType === 'POP') {
+    if (navigationType === 'POP' || typeof location.state?.eventTabOffset === 'number') {
       return
     }
 
@@ -251,7 +251,7 @@ function RouteScrollReset() {
       left: 0,
       top: 0,
     })
-  }, [location.pathname, location.search, navigationType])
+  }, [location.pathname, location.search, location.state, navigationType])
 
   return null
 }

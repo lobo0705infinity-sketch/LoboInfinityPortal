@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type KeyboardEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { formatObjectiveScore, formatPlayerName } from '../services/formatting'
 import { getGameHeadline } from '../services/gameResults'
@@ -44,6 +44,10 @@ function GlobalSearch({
 }: GlobalSearchProps) {
   const auth = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const searchRef = useRef<HTMLDivElement>(null)
+  const routeKey = `${location.pathname}${location.search}${location.hash}`
+  const previousRoute = useRef(routeKey)
   const [query, setQuery] = useState('')
   const [uncontrolledMobileOpen, setUncontrolledMobileOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
@@ -127,7 +131,7 @@ function GlobalSearch({
       .slice(0, 8)
   }, [query, searchState])
 
-  function closeSearch() {
+  const closeSearch = useCallback(() => {
     setQuery('')
     setActiveIndex(0)
     if (mode === 'mobile' && onMobileClose) {
@@ -135,7 +139,31 @@ function GlobalSearch({
     } else {
       setUncontrolledMobileOpen(false)
     }
-  }
+  }, [mode, onMobileClose])
+
+  useEffect(() => {
+    function dismissOutside(event: PointerEvent | FocusEvent) {
+      if (event.target instanceof Node && !searchRef.current?.contains(event.target)) closeSearch()
+    }
+    function dismissEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === 'Escape') closeSearch()
+    }
+    document.addEventListener('pointerdown', dismissOutside)
+    document.addEventListener('focusin', dismissOutside)
+    document.addEventListener('keydown', dismissEscape)
+    return () => {
+      document.removeEventListener('pointerdown', dismissOutside)
+      document.removeEventListener('focusin', dismissOutside)
+      document.removeEventListener('keydown', dismissEscape)
+    }
+  }, [closeSearch])
+
+  useEffect(() => {
+    if (previousRoute.current !== routeKey) {
+      previousRoute.current = routeKey
+      closeSearch()
+    }
+  }, [routeKey, closeSearch])
 
   function openSearch() {
     setHasRequestedSearchData(true)
@@ -193,6 +221,7 @@ function GlobalSearch({
 
   return (
     <div
+      ref={searchRef}
       className={
         mode === 'mobile' && isMobileOpen
           ? 'global-search mobile-search mobile-search-open'

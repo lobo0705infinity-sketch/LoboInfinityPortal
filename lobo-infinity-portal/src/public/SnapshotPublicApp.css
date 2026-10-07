@@ -1339,6 +1339,22 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-link-grid a
 }
 
 /* Current League-only presentation: snapshot data and event behavior are preserved. */
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero > .snapshot-registration-hero-link {
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  clip: auto;
+  clip-path: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-event-hero > .snapshot-registration-hero-link:focus-visible {
+  outline: 3px solid #59cef1;
+  outline-offset: -5px;
+}
+
 main.snapshot-event-page[data-event="current-league-overview"] {
   gap: clamp(0.72rem, 1.45vw, 0.98rem);
 }

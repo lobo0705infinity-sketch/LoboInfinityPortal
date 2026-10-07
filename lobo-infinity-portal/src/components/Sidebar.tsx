@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { getDiscordCommunityLink } from '../config/communityLinks'
@@ -20,6 +21,8 @@ import { useSelectedEventNavigation } from './useSelectedEventNavigation'
 import { useSettings } from '../contexts/SettingsContext'
 
 function Sidebar() {
+  const sidebarRef = useRef<HTMLElement>(null)
+  const location = useLocation()
   const auth = useAuth()
   const { settings } = useSettings()
   const {
@@ -37,12 +40,23 @@ function Sidebar() {
     ? [{ external: true, icon: 'discord' as const, label: discordLink.label, to: discordLink.url }]
     : []
 
+  useLayoutEffect(() => {
+    const sidebar = sidebarRef.current
+    const active = sidebar?.querySelector<HTMLElement>('[aria-current="page"]')
+    if (!sidebar || !active || !sidebar.clientHeight) return
+    const bounds = sidebar.getBoundingClientRect()
+    const linkBounds = active.getBoundingClientRect()
+    if (linkBounds.top < bounds.top || linkBounds.bottom > bounds.bottom) {
+      sidebar.scrollTop += linkBounds.top - bounds.top - sidebar.clientHeight / 2 + linkBounds.height / 2
+    }
+  }, [location.pathname, location.search, location.hash, selectedEventId, eventOptions])
+
   function changeSelectedEvent(eventId: string) {
     selectEvent(eventId)
   }
 
   return (
-    <aside className="sidebar" aria-label="Portal navigation">
+    <aside ref={sidebarRef} className="sidebar" aria-label="Portal navigation">
       <div className="sidebar-brand-stack">
         <div className="sidebar-brand">
           <LeagueCrest compact />
@@ -228,6 +242,7 @@ function SidebarLink({
 
   return (
     <Link
+      aria-current={active ? 'page' : undefined}
       className={active ? 'sidebar-button active' : 'sidebar-button'}
       onClick={onNavigate}
       to={item.to}

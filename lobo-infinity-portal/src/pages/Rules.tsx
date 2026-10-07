@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import EventSectionTabs from '../components/EventSectionTabs'
 import {
   currentEventNavigation,
   getEventNavigationConfig,
@@ -56,6 +57,10 @@ function Rules() {
         {rulebook?.subtitle ? <h2>{rulebook.subtitle}</h2> : null}
         <p>{rulebook?.description ?? 'Loading event rules reference'}</p>
       </section>
+
+      <EventSectionTabs eventId={eventId}
+        teamTournament={rulebookId === 'teamTournament'}
+        items={rulebookId === 'teamTournament' ? ['overview', 'standings', 'results', 'rules'] : ['overview', 'registration', 'standings', 'schedule', 'rules']} />
 
       <section className="rules-layout" aria-label="Event rules reference">
         <nav className="panel rules-toc" aria-label="Rules table of contents">

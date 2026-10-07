@@ -259,6 +259,10 @@
 }
 
 .sidebar {
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
   position: sticky;
   top: 0;
   display: flex;
@@ -9436,6 +9440,7 @@
   .sidebar {
     position: static;
     min-height: auto;
+    height: auto;
     gap: 16px;
     border-right: 0;
     border-bottom: 1px solid var(--border);
@@ -12835,3 +12840,23 @@ a {
 }
 
 .army-intelligence-tactical-panel.is-ranking-panel { grid-column: 1 / -1; }
+
+/* Keep desktop navigation independent from the page scroll. */
+@media (min-width: 921px) {
+  .app-shell {
+    grid-template-columns: clamp(230px, 20vw, 300px) minmax(0, 1fr);
+  }
+
+  .app-shell > .sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100dvh;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-nav {
+    grid-template-columns: 1fr;
+  }
+}
