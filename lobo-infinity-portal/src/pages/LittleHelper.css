@@ -58,7 +58,7 @@
 .helper-showcase { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1fr); gap: clamp(25px, 5vw, 75px); align-items: center; min-height: 440px; scroll-margin-top: 90px; border-top: 1px solid var(--helper-line); padding: clamp(27px, 4vw, 54px) 0; }
 .helper-showcase-reverse .helper-showcase-copy { grid-column: 2; grid-row: 1; }
 .helper-showcase-reverse .helper-output { grid-column: 1; grid-row: 1; }
-.helper-showcase-copy h3 { margin: 14px 0 18px; font-size: clamp(2.5rem, 5vw, 5.4rem); line-height: 1; }
+.helper-showcase-copy h3 { margin: 14px 0 18px; font-size: clamp(1.65rem, 3.3vw, 3.4rem); line-height: 1; }
 .helper-showcase-copy h3 code { color: #fff; }
 .helper-showcase-copy > p { max-width: 57ch; margin: 0; color: #c5d0da; font-size: 1.05rem; line-height: 1.65; }
 .helper-input { display: grid; gap: 4px; margin: 24px 0 18px; border-left: 3px solid var(--helper-red); padding: 3px 0 3px 13px; }
@@ -146,3 +146,7 @@
   .helper-final-actions { grid-column: 1; width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .helper-button { transition: none; } }
+
+.helper-showcase-copy h3 code, .helper-more-grid code { overflow-wrap: anywhere; }
+.helper-example { margin-top: 20px !important; border: 1px solid var(--helper-line); border-radius: 4px; padding: 12px; background: #111e2b; overflow-wrap: anywhere; }
+.helper-example code { color: #80daf4; font-size: .85rem; }

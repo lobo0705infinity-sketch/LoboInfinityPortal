@@ -18,11 +18,11 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   <text x="69" y="368" font-family="Arial, sans-serif" font-size="24" fill="#c8d9e3">Infinity N5 answers, right where your games happen.</text>
   <g font-family="Arial, sans-serif" font-weight="700" font-size="22">
     <rect x="67" y="425" width="255" height="66" rx="5" fill="#18313f" stroke="#68d2ed" stroke-opacity=".7"/>
-    <text x="92" y="465" fill="#f4fbfd">/inf-list</text>
+    <text x="92" y="465" fill="#f4fbfd">/list analyse</text>
     <rect x="339" y="425" width="255" height="66" rx="5" fill="#18313f" stroke="#68d2ed" stroke-opacity=".7"/>
-    <text x="364" y="465" fill="#f4fbfd">/matchup</text>
+    <text x="364" y="465" fill="#f4fbfd">/combat matchup</text>
     <rect x="611" y="425" width="280" height="66" rx="5" fill="#18313f" stroke="#68d2ed" stroke-opacity=".7"/>
-    <text x="636" y="465" fill="#f4fbfd">/aro-counter</text>
+    <text x="636" y="465" fill="#f4fbfd">/combat counters</text>
   </g>
   <path d="M67 549h1066" stroke="#78b8ca" stroke-opacity=".35"/>
   <text x="67" y="585" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="2" fill="#8db4c4">ARMY LISTS  /  MATCHUPS  /  REACTIVE ANSWERS</text>
