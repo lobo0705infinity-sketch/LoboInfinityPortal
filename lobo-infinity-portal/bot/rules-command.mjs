@@ -45,7 +45,19 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
-  if (/^(?:can|may) (?:you|a trooper|a model) (?:guts prone|go prone (?:through|with|via|by failing) (?:a )?guts(?: roll)?) (?:if|when|while) (?:you are|they are|it is|in|youre) (?:in )?(?:the )?immobilized(?:[- ](?:a|b))?(?: state)?$/.test(words)) {
+  const camoSubject = '(?:(?:a |the )?(?:models?|troopers?|units?) (?:in|while in) (?:the )?(?:camo|camouflaged|camouflage)(?: state)?|(?:a |the )?(?:camouflaged|camo) (?:models?|troopers?|units?))'
+  const baggageRange = '(?:(?:a|an|the) (?:(?:allied|friendly) )?(?:unit|trooper|model) with baggage is (?:within|in) (?:(?:their|its|the) )?(?:zone of control|zoc)|(?:they are|it is) (?:within|in) (?:the )?(?:zone of control|zoc) of (?:(?:a|an|the) )?(?:(?:allied|friendly) )?(?:baggage (?:unit|trooper|model)|(?:unit|trooper|model) with baggage))'
+  if (new RegExp('^(?:do|does|can|may|will) ' + camoSubject + ' (?:reload|replenish ammunition|regain disposable uses) (?:during|in) (?:the )?states phase (?:if|when|while) ' + baggageRange + '$').test(words)) {
+    conclusion = 'YES'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'Yes. During the States Phase, a Camouflaged Trooper in the Zone of Control of an allied non-Null Baggage provider automatically cancels Unloaded or regains spent Disposable uses. This is Baggage’s automatic effect, not a declaration of the Reload Short Skill/ARO. Camouflaged does not prevent Automatic Equipment from functioning, and this replenishment does not reveal the marker. Non-Reloadable weapons or Equipment cannot be replenished. Already deployed items remain on the table.'
+    pages = ['Baggage', 'Unloaded_State', 'Camouflaged_State', 'Reload']
+  } else if (new RegExp('^(?:can|may) ' + camoSubject + ' declare (?:the )?reload(?: skill| short skill| short skill/aro)? (?:during|in) (?:the )?states phase$').test(words)) {
+    conclusion = 'NO'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'No. You cannot declare the Reload Short Skill/ARO during the States Phase. However, a Camouflaged Trooper can automatically regain spent Disposable uses through an allied non-Null Baggage provider in Zone of Control during that phase, without declaring Reload or revealing. Non-Reloadable items are excluded.'
+    pages = ['Reload', 'Baggage', 'Camouflaged_State']
+  } else if (/^(?:can|may) (?:you|a trooper|a model) (?:guts prone|go prone (?:through|with|via|by failing) (?:a )?guts(?: roll)?) (?:if|when|while) (?:you are|they are|it is|in|youre) (?:in )?(?:the )?immobilized(?:[- ](?:a|b))?(?: state)?$/.test(words)) {
     conclusion = 'NO'
     certainty = 'EXPLICIT RULES ANSWER'
     answer = 'No. A Trooper in Immobilized-A or Immobilized-B cannot make a Guts Roll, so it cannot voluntarily fail one or go Prone through Guts. The Guts Roll requirements explicitly exclude IMM States. A separate successful PH-6 Dodge can cancel ordinary IMM-A and permit Dodge movement, including going Prone; merely declaring Dodge does not allow that movement.'
