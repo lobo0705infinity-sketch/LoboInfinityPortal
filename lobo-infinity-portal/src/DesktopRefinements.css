@@ -80,3 +80,7 @@
 @media(min-width:921px){
  .app-shell main.snapshot-public-page[data-page="players"] .snapshot-player-directory-context,.app-shell .snapshot-table-badge,.app-shell .portal-shell .snapshot-filter-row label span{font-size:12px}
 }
+@media(min-width:921px){
+ .app-shell .portal-shell{align-content:start}
+ .app-shell .snapshot-team-tournament-roster a{font-size:12px}
+}
