@@ -3,7 +3,7 @@
 .artwork-full-heading { padding: 12px 24px; }
 .compact-artwork-heading h1, .artwork-full-heading h1 { margin: 3px 0 0; font-size: clamp(1.5rem, 2.6vw, 2.15rem); line-height: 1.15; color: #f2f6f8; }
 .compact-artwork-heading .eyebrow, .artwork-full-heading .eyebrow { margin: 0; color: #56d7ed; font-size: .7rem; }
-.artwork-size-control { display: block; width: 100%; text-align: left; cursor: pointer; padding: 10px 24px; font: inherit; font-size: .8rem; color: #7bdceb; background: transparent; border: 0; border-top: 1px solid #203640; }
+.artwork-size-control { min-height: 44px; box-sizing: border-box; display: block; width: 100%; text-align: left; cursor: pointer; padding: 10px 24px; font: inherit; font-size: .8rem; color: #7bdceb; background: transparent; border: 0; border-top: 1px solid #203640; }
 .artwork-size-control:hover { background: #152b37; }
 .artwork-size-control:focus-visible { outline: 2px solid #6cdef1; outline-offset: -3px; }
 .artwork-full-image { display: block; width: 100%; height: auto; object-fit: contain; }

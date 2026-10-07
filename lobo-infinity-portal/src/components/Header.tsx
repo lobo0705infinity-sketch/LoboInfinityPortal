@@ -69,17 +69,13 @@ function Header() {
           >
             <PortalIcon name="support" />
           </a>
-          {auth.authenticated ? (
-            <>
-              <GlobalSearch
-                isMobileOpen={isMobileSearchOpen}
-                mode="mobile"
-                onMobileClose={() => setIsMobileSearchOpen(false)}
-                onMobileOpen={() => setIsMobileSearchOpen(true)}
-              />
-              <NotificationCenter compact />
-            </>
-          ) : null}
+          <GlobalSearch
+            isMobileOpen={isMobileSearchOpen}
+            mode="mobile"
+            onMobileClose={() => setIsMobileSearchOpen(false)}
+            onMobileOpen={() => setIsMobileSearchOpen(true)}
+          />
+          <NotificationCenter compact />
           {auth.authenticated ? <ProfileMenu mobile /> : null}
         </div>
       </div>

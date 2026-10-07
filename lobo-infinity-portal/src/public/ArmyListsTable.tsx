@@ -30,7 +30,8 @@ export default function ArmyListsTable({ lists }: { lists: PublicArmyList[] }) {
       <label>Mission<select value={mission} onChange={event => setMission(event.target.value)}><option value="">All missions</option>{missions.map(value => <option key={value}>{value}</option>)}</select></label>
       <button type="button" onClick={() => { setQuery(''); setFaction(''); setMission('') }} disabled={!query && !faction && !mission}>Clear filters</button>
     </div>
-    <div className="army-list-summary"><p role="status">{rows.length} of {lists.length} lists</p><span>Click a heading to sort</span></div>
+    <div className="army-list-summary"><p role="status">{rows.length} of {lists.length} lists</p><span>Select a heading to sort</span></div>
+    <p className="army-list-scroll-hint">Swipe the table to see all columns. View list stays on the right.</p>
     <div className="army-list-table-scroll" role="region" aria-label="Army lists table" tabIndex={0}>
       <table className="army-list-table"><caption className="army-list-sr-only">Submitted army lists. Sort by selecting a column heading.</caption>
         <thead><tr>{columns.map(column => <th key={column.key} scope="col" aria-sort={sort === column.key ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button type="button" onClick={() => changeSort(column.key)}>{column.label}<span aria-hidden="true">{sort === column.key ? direction === 'asc' ? ' ↑' : ' ↓' : ' ↕'}</span></button></th>)}<th scope="col">Army list</th></tr></thead>

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { filterAndSortArmyLists } from '../src/public/armyListDirectory.ts'
+import { armyListValue, filterAndSortArmyLists } from '../src/public/armyListDirectory.ts'
 import type { PublicArmyList } from '../src/public/snapshotTypes.ts'
 const lists = [
   { id: 'b', player: 'Bravo', playerDisplayName: 'Zulu', faction: 'Nomads', sectorial: 'Corregidor', mission: 'The Dig', date: '2026-10-01', opponent: 'Alpha', result: 'Win' },
@@ -17,3 +17,10 @@ assert.equal(filterAndSortArmyLists(lists,'','Ariadna','The Dig','date','desc').
 assert.equal(filterAndSortArmyLists(lists,'data harvest','','','date','desc').length,1)
 assert.deepEqual(lists.map(x=>x.id),['b','a','c'], 'Sorting must not mutate snapshot data')
 console.log('Army list filtering and sorting checks passed')
+
+const aliases = ['Panoceania', 'PanOceania', 'Starco Free Company Of The Star', 'StarCo', 'Force De Reponse Rapide Merovingienne', 'Force de Réponse Rapide Merovingienne'].map((faction, index) => ({ ...lists[0], id: `alias-${index}`, sectorial: '', faction }))
+assert.equal(new Set(aliases.map(list => armyListValue(list, 'faction'))).size, 3)
+for (const faction of ['PanOceania', 'StarCo', 'Force de Réponse Rapide Merovingienne']) {
+  assert.equal(filterAndSortArmyLists(aliases, '', faction, '', 'date', 'desc').length, 2, `${faction} must include both aliases`)
+}
+assert.equal(filterAndSortArmyLists(aliases, 'starco free company of the star', '', '', 'date', 'desc').length, 2)
