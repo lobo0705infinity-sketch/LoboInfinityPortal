@@ -13,12 +13,12 @@ const human={id:'99',user:{id:'99',bot:false,username:'private human'}}
 const member=(id,name,permissions=[])=>({id,user:{id,username:name,bot:true},displayName:name,guild:{id:'123'},roles:{cache:map([{id:'123',name:'everyone'},{id:`role-${id}`,name:'bot role'}])},permissions:{has:p=>permissions.includes(p)}})
 const primary=member('1','Lobo’s Little Helper'),other=member('2','Other Bot',[PermissionFlagsBits.Administrator]),hidden=member('3','No managed role bot')
 let active=0,maxActive=0
-const messages=(channelId)=>map([{id:`${channelId}1`,author:{id:'1',username:'Lobo',bot:true},createdTimestamp:100,content:'PRIVATE MESSAGE'}, {id:`${channelId}2`,author:{id:'9',username:'League Publisher',bot:true},webhookId:'9',createdTimestamp:200,content:'WEBHOOK PRIVATE',embeds:[{title:'private title'}]}, {id:`${channelId}3`,author:human.user,content:'PRIVATE HUMAN'}])
+const messages=(channelId)=>map([{id:`${channelId}1`,author:{id:'1',username:'Lobo',bot:true},webhookId:'1',applicationId:'1',interactionMetadata:{type:2},createdTimestamp:100,content:'PRIVATE MESSAGE'}, {id:`${channelId}2`,author:{id:'9',username:'League Publisher',bot:true},webhookId:'9',createdTimestamp:200,content:'WEBHOOK PRIVATE',embeds:[{title:'private title'}]}, {id:`${channelId}3`,author:human.user,content:'PRIVATE HUMAN'}])
 const channel=(id,visible=true,permitted=true)=>({id,name:`channel-${id}`,viewable:visible,isTextBased:()=>true,permissionsFor:()=>({has:()=>permitted}),messages:{fetch:async()=>{active++;maxActive=Math.max(active,maxActive);await new Promise(r=>setTimeout(r,5));active--;return messages(id)}}})
 const guild={id:'123',name:'League',client:{user:{id:'1'}},members:{cache:map([primary,human]),me:primary,fetch:async({user})=>user==='2'?other:primary,list:async()=>map([primary,other,hidden,human])},roles:{fetch:async()=>map([{id:'r1',name:'Lobo',tags:{botId:'1'}},{id:'r2',name:'Other',tags:{botId:'2'}}])},fetchWebhooks:async()=>map([{id:'9',name:'League Publisher',channelId:'11',url:'https://discord.com/api/webhooks/9/SECRET',token:'SECRET',owner:human.user,applicationId:null}]),channels:{fetch:async()=>map([channel('11'),channel('12'),channel('13',false)])}}
 try{
   const report=await collectBotInventory(guild)
-  assert.equal(report.memberListComplete,true);assert.equal(report.bots.length,3);assert.equal(report.webhooks.length,1)
+  assert.equal(report.memberListComplete,true);assert.equal(report.bots.length,3);assert.equal(report.webhooks.length,1);assert.equal(report.webhooks.some(x=>x.id==='1'),false);assert.equal(report.bots.find(x=>x.id==='1').observations.length,2)
   assert.equal(report.bots.find(x=>x.id==='2').elevatedPermissions[0],'Administrator')
   assert.ok(report.bots.find(x=>x.id==='1').functions.some(x=>/three-option/.test(x)))
   assert.equal(report.bots.find(x=>x.id==='2').ownership,'unverified');assert.equal(report.webhooks[0].observations.length,2)

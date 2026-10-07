@@ -25,3 +25,5 @@ Reports retain names, IDs, roles, elevated permissions and activity counts/times
 A replacement must have verified functions, owner-controlled hosting/configuration, preserved state and schedules, and tested delivery. A name match, broad permission, or quiet recent-message sample is not proof of redundancy. No bot account, webhook, role, credential, volume or automation job is removed automatically by discovery.
 
 Checks: `scripts/bot-inventory-check.mjs` verifies bot/webhook separation, permissions, denied-source fallbacks, coverage, bounded scanning, secret exclusion, persistence, simultaneous refresh deduplication and the manager-only grouped command. The check runs in the production image.
+
+Discord application webhook replies and follow-ups are counted under their bot account rather than as separate webhook publishers.
