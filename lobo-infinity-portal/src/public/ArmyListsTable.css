@@ -15,8 +15,8 @@
 .army-list-table tbody tr:nth-child(even) { background: #10202b; }
 .army-list-table tbody tr:hover { background: #193441; }
 .army-list-table td:first-child, .army-list-table td:last-child { white-space: nowrap; }
-.army-list-table td:last-child button { display: inline-block; min-height: 44px; box-sizing: border-box; padding: 10px; border: 1px solid #37616d; border-radius: 6px; color: #7de4ee; font: inherit; background: #162b36; cursor: pointer; }
-.army-list-table td:last-child button:hover { background: #244753; }
+.army-list-table td:last-child :is(button, a) { min-height: 44px; box-sizing: border-box; padding: 10px; border: 1px solid #37616d; border-radius: 6px; color: #7de4ee; font: inherit; background: #162b36; cursor: pointer; text-decoration: none; }
+.army-list-table td:last-child :is(button, a):hover { background: #244753; }
 .army-list-table tr:last-child td { border-bottom: 0; }
 .army-list-unavailable { color: #9cb1bf; font-size: .8rem; }
 .army-list-empty { text-align: center; padding: 32px !important; }
@@ -44,4 +44,11 @@ main.snapshot-public-page[data-page="army-lists"] > .page-header h1 { font-size:
   .army-list-table td:last-child button { width: 100%; }
   .army-list-table .army-list-empty { display: block; }
   .army-list-table .army-list-empty::before { content: none; }
+}
+
+.army-list-directory .infinity-army-desktop-view { display: inline-block; }
+.army-list-directory .infinity-army-mobile-copy { display: none; }
+@media (max-width: 760px) {
+  .army-list-directory .infinity-army-desktop-view { display: none; }
+  .army-list-directory .infinity-army-mobile-copy { display: grid; }
 }
