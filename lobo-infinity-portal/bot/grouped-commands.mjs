@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType as Type, PermissionFlagsBits } from 'discord.js'
+import { KILL_COMMAND_DEFINITION } from './kill-command.mjs'
 import { INF_LIST_COMMAND_DEFINITION } from './inf-list-command.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION } from './build-list-command.mjs'
 import { RANDOM_LIST_COMMAND_DEFINITION } from './random-list-command.mjs'
@@ -10,6 +11,7 @@ import { AVAILABILITY_COMMAND_DEFINITION, FIND_GAME_COMMAND_DEFINITION } from '.
 const subcommand = (name, definition) => ({ name, description: definition.description, type: Type.Subcommand, options: structuredClone(definition.options || []) })
 const group = (name, definition) => ({ name, description: definition.description, type: Type.SubcommandGroup, options: structuredClone(definition.options || []) })
 export const GROUPED_COMMAND_DEFINITIONS = Object.freeze([
+  KILL_COMMAND_DEFINITION,
   { name: 'list', description: 'Analyse, build, randomize or identify an Infinity army', options: [
     subcommand('analyse', INF_LIST_COMMAND_DEFINITION), subcommand('build', BUILD_LIST_COMMAND_DEFINITION),
     subcommand('random', RANDOM_LIST_COMMAND_DEFINITION), subcommand('identify', INF_ID_COMMAND_DEFINITION),
@@ -96,7 +98,7 @@ const topics = {
 export function helpResponse(topic = 'home', isManager = false) {
   const selected = topics[topic]
   const buttons = [['lists', 'Army Lists'], ['combat', 'Combat'], ['reference', 'Game Reference'], ['play', 'Find a Game'], ...(isManager ? [['admin', 'Server Tools']] : [])]
-  const description = selected?.description || 'Choose what you want to do:\n\n**Army Lists** — analyse, build, randomize and identify.\n**Combat** — compare profiles and find counters.\n**Game Reference** — rules questions and missions.\n**Find a Game** — availability and game requests.\n\nUse `/list`, `/combat` and `/play` for grouped tools; `/rules` and `/mission` for reference.'
+  const description = selected?.description || 'Choose what you want to do:\n\n**Army Lists** — analyse, build, randomize and identify.\n**Combat** — compare profiles and find counters.\n**Game Reference** — rules questions and missions.\n**Find a Game** — availability and game requests.\n\nUse `/list`, `/combat` and `/play` for grouped tools; `/rules` and `/mission` for reference.\n\n**/kill lobo** — a dramatic exit. Tell everyone he died cool.'
   return { embeds: [{ title: selected ? `Lobo’s Little Helper · ${selected.title}` : 'Lobo’s Little Helper · Command Guide', description, color: 0x8b6fed }], components: [{ type: 1, components: buttons.map(([id, label]) => ({ type: 2, style: topic === id ? 1 : 2, label, custom_id: `lobo-help:${id}` })) }], allowedMentions: { parse: [] } }
 }
 export function createHelpInteractionHandler() {

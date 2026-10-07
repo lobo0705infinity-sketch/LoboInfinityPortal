@@ -1,5 +1,7 @@
 # Lobo’s Little Helper command groups
 
+`/kill lobo` posts the looping dramatic Lobo death GIF in the current channel with **TELL EVERYONE I DIED COOL.** Everyone can use it; it has no player, game or moderation effects. The animation is bundled with the worker and uploaded as a Discord attachment.
+
 Grouped commands replace the nine legacy slash-menu entries listed below. Compact responses, private detail views and connected actions reuse the existing handlers. Combat formulas and rating formats are unchanged.
 
 | Task | Grouped command | Retired slash command |

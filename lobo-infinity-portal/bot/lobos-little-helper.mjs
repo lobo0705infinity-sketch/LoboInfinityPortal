@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { createBotInventoryHandler, inventoryAtStartup } from './bot-inventory.mjs'
+import { createKillInteractionHandler } from './kill-command.mjs'
 import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands, retireLegacySlashCommands } from './grouped-commands.mjs'
 import { installFeedbackCapture, createBotFeedbackHandler, reportableResponse } from './bot-feedback.mjs'
@@ -142,6 +143,7 @@ export function createLobosLittleHelper() {
   client.on(Events.InteractionCreate, handleFeedback)
   client.on(Events.InteractionCreate, handleGrouped)
   client.on(Events.InteractionCreate, createHelpInteractionHandler())
+  client.on(Events.InteractionCreate, createKillInteractionHandler())
   client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleBuildList)
   client.on(Events.InteractionCreate, handleBuildListAutocomplete)

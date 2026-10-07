@@ -102,7 +102,7 @@ let creates=0,edits=0
 const sdkOption=o=>{const {max_length,...rest}=o;return {...rest,...(max_length?{maxLength:max_length}:{}),options:o.options?.map(sdkOption)}}
 const guild={id:'guild',commands:{fetch:async()=>registry,create:async d=>{creates++;const c={...d,id:d.name,options:d.options?.map(sdkOption),defaultMemberPermissions:d.defaultMemberPermissions?{bitfield:BigInt(d.defaultMemberPermissions)}:null,edit:async definition=>{edits++;Object.assign(c,definition);return c}};registry.set(d.name,c);return c}}}
 const client={guilds:{cache:new Collection([['guild',guild]])}}
-await ensureGroupedCommands(client);await ensureGroupedCommands(client);assert.equal(creates,5);assert.equal(edits,0);assert.ok(registry.has('legacy'))
+await ensureGroupedCommands(client);await ensureGroupedCommands(client);assert.equal(creates,GROUPED_COMMAND_DEFINITIONS.length);assert.equal(edits,0);assert.ok(registry.has('legacy'));assert.ok(registry.has('kill'))
 registry.get('list').options[0].options[0].maxLength=1
 await ensureGroupedCommands(client);assert.equal(edits,1,'input schema changes update the existing grouped command')
 console.log('PASS - grouped SDK routing, autocomplete, three-list output, scheduling, help permissions, feedback and additive registration.')

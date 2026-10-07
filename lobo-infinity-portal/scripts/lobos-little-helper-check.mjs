@@ -213,7 +213,7 @@ await Promise.all(Array.from({ length: 5 }, () => withSlot(async () => {
 assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
-assert.equal(client.listenerCount(Events.InteractionCreate), 19)
+assert.equal(client.listenerCount(Events.InteractionCreate), 20)
 assert.equal(client.listenerCount(Events.MessageCreate), 0)
 let messageReplies = 0
 for (const content of ['!!inf-list QUJDRA==', '!!inf-list', '!!build-list', '!!rules question', '!!anything']) {
