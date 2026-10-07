@@ -9,14 +9,10 @@ import {
   renderInfListPng,
 } from './inf-list-render-poc.mjs'
 import {
-  SUCCESS_TEXT,
-  USAGE_TEXT,
   INF_LIST_COMMAND_DEFINITION,
   createInfListInteractionHandler,
   createConcurrencyLimiter,
-  createInfListMessageHandler,
   ensureInfListCommand,
-  parseInfListCommand,
 } from '../bot/inf-list-command.mjs'
 import {
   BOT_NAME,
@@ -66,14 +62,6 @@ assert.deepEqual(fetchedUrls, ['https://api.corvusbelli.com/army/infinity/en/met
 assert.equal(officialData.metadata.skills[0].name, 'Skill')
 assert.equal(officialData.payload.units[0].id, 783)
 assert.equal(officialData.payload.url, 'https://api.corvusbelli.com/army/units/en/604')
-const renderCalls = []
-const handler = createInfListMessageHandler({
-  render: async (options) => {
-    renderCalls.push(options)
-    return { legality, officialArmyUrl, profilePages, readableImageBuffer, tacticalPages }
-  },
-})
-
 assert.equal(BOT_NAME, "Lobo's Little Helper")
 assert.equal(DISCORD_TOKEN_ENV, 'DISCORD_BOT_TOKEN')
 assert.deepEqual(REQUIRED_INTENTS, [
@@ -172,19 +160,6 @@ await ensureInfListCommand(commandClient)
 await ensureInfListCommand(commandClient)
 assert.equal(infListEdits, 1)
 assert.equal(registeredSlashCommands[0].options[1].name, 'mobile-gunfighter')
-assert.deepEqual(parseInfListCommand(`!!inf-list\r\n ${testCode}\r\n`), { armyCode: testCode })
-assert.equal(parseInfListCommand('!!inf-list-c anything'), null)
-assert.equal(parseInfListCommand('!!inf anything'), null)
-
-let message = mockMessage(`!!inf-list ${testCode}`)
-assert.equal(await handler(message), true)
-assert.deepEqual(renderCalls, [{ input: testCode }])
-assert.equal(message.replies.length, 1)
-assert.equal(message.replies[0].content, `${legalityText}\n\n[Open in Infinity Army](${officialArmyUrl})`)
-assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
-assert.equal(message.replies[0].files[0].name, 'infinity-army-list-readable.png')
-assert.equal(message.replies[0].files.length, 1)
-
 const slashRenderCalls = []
 const slashInteraction = mockInteraction(testCode)
 const slashHandler = createInfListInteractionHandler({
@@ -198,45 +173,33 @@ installFeedbackCapture(slashInteraction)
 assert.equal(await slashHandler(slashInteraction), true)
 assert.equal(slashInteraction.deferred, true)
 assert.deepEqual(slashRenderCalls, [testCode])
-assert.ok(message.replies[0].components.at(-1).components[0].custom_id.startsWith('bot-report:'))
-assert.deepEqual(slashInteraction.edits.map(({components,...response})=>response), message.replies.map(({ components, ...response }) => response))
+assert.ok(slashInteraction.edits[0].components.at(-1).components[0].custom_id.startsWith('bot-report:'))
+assert.equal(slashInteraction.edits[0].content, `${legalityText}\n\n[Open in Infinity Army](${officialArmyUrl})`)
+assert.equal(slashInteraction.edits[0].files[0].attachment, readableImageBuffer)
+assert.equal(slashInteraction.edits[0].files[0].name, 'infinity-army-list-readable.png')
+assert.equal(slashInteraction.edits[0].files.length, 1)
 
 const invalidSlash = mockInteraction('not$a$code')
 assert.equal(await slashHandler(invalidSlash), true)
 assert.equal(invalidSlash.deferred, true)
 assert.deepEqual(invalidSlash.edits, ["That doesn't look like a valid Infinity Army code."])
 
-message = mockMessage('!!inf-list')
-assert.equal(await handler(message), true)
-assert.deepEqual(message.replies, [USAGE_TEXT])
-
 for (const badInput of ['not$a$code', 'https://example.com/army/list/code']) {
-  message = mockMessage(`!!inf-list ${badInput}`)
-  assert.equal(await handler(message), true)
-  assert.deepEqual(message.replies, ["That doesn't look like a valid Infinity Army code."])
+  const invalid = mockInteraction(badInput)
+  assert.equal(await slashHandler(invalid), true)
+  assert.deepEqual(invalid.edits, ["That doesn't look like a valid Infinity Army code."])
 }
-
 for (const [code, expected] of [
   ['renderer_rejected', 'That Army code could not be rendered.'],
   ['renderer_timeout', 'The Army list renderer is temporarily unavailable. Try again shortly.'],
 ]) {
-  const failingHandler = createInfListMessageHandler({
-    render: async () => { throw new InfListRenderError(code, 'private upstream detail') },
+  const failingHandler = createInfListInteractionHandler({
+    render: async () => { throw new InfListRenderError(code, 'private upstream detail') }, logger: { error() {} },
   })
-  message = mockMessage(`!!inf-list ${testCode}`)
-  assert.equal(await failingHandler(message), true)
-  assert.deepEqual(message.replies, [expected])
+  const failed = mockInteraction(testCode)
+  assert.equal(await failingHandler(failed), true)
+  assert.deepEqual(failed.edits, [expected])
 }
-
-for (const ignored of ['hello', '!!inf thing', '!!inf-list-c thing', 'prefix !!inf-list thing']) {
-  message = mockMessage(ignored)
-  assert.equal(await handler(message), false)
-  assert.deepEqual(message.replies, [])
-}
-
-message = mockMessage(`!!inf-list ${testCode}`, { bot: true })
-assert.equal(await handler(message), false)
-assert.deepEqual(message.replies, [])
 
 let active = 0
 let maximumActive = 0
@@ -251,54 +214,41 @@ assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
 assert.equal(client.listenerCount(Events.InteractionCreate), 19)
+assert.equal(client.listenerCount(Events.MessageCreate), 0)
+let messageReplies = 0
+for (const content of ['!!inf-list QUJDRA==', '!!inf-list', '!!build-list', '!!rules question', '!!anything']) {
+  client.emit(Events.MessageCreate, { content, author: { bot: false }, reply: async () => { messageReplies++ } })
+}
+await new Promise(resolve => setImmediate(resolve))
+assert.equal(messageReplies, 0, 'prefix messages must not invoke commands or reply')
 client.destroy()
 
 if (process.argv.includes('--live')) {
   const memberFixtureSource = await readFile('scripts/infinity-army-member-format-check.mjs', 'utf8')
   const currentCode = memberFixtureSource.match(/const loboCode =\s*\n?\s*'([^']+)'/)?.[1]
   assert.ok(currentCode, 'Established current-format Lobo fixture was not found.')
-  const liveMessage = mockMessage(`!!inf-list ${currentCode}`)
-  let legacyRendered
-  assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
-  assert.equal(liveMessage.replies.length, 1)
-  assert.match(liveMessage.replies[0].content, /^(✅ \*\*LEGAL ARMY LIST\*\*|❌ \*\*ILLEGAL ARMY LIST\*\*|⚠️ \*\*ARMY LIST VALIDATION UNAVAILABLE\*\*)/)
-  assert.equal(liveMessage.replies[0].files.length, 2)
-  const readablePng = liveMessage.replies[0].files[0].attachment
+  const liveSlash = mockInteraction(currentCode)
+  let rendered
+  installFeedbackCapture(liveSlash)
+  assert.equal(await createInfListInteractionHandler({ render: async args => { rendered = await renderInfListPng(args); return rendered } })(liveSlash), true)
+  assert.equal(liveSlash.deferred, true)
+  assert.equal(liveSlash.edits.length, 1)
+  assert.match(liveSlash.edits[0].content, /^(✅ \*\*LEGAL ARMY LIST\*\*|❌ \*\*ILLEGAL ARMY LIST\*\*|⚠️ \*\*ARMY LIST VALIDATION UNAVAILABLE\*\*)/)
+  assert.equal(liveSlash.edits[0].files.length, 2)
+  const readablePng = liveSlash.edits[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
   assert.ok(readablePng.length > 10_000)
   assert.equal(readablePng.readUInt32BE(16), 686)
   assert.equal(readablePng.readUInt32BE(20), 651)
-  assert.ok(liveMessage.replies[0].files[1].name.endsWith('-tts-2d.json'))
-  const tacticalPng = legacyRendered.tacticalPages[0].imageBuffer
+  assert.ok(liveSlash.edits[0].files[1].name.endsWith('-tts-2d.json'))
+  const tacticalPng = rendered.tacticalPages[0].imageBuffer
   assert.equal(tacticalPng.readUInt32BE(16), 1440)
   assert.ok(tacticalPng.readUInt32BE(20) <= 7500)
-  assert.ok(legacyRendered.tacticalAnalysis.categories.gunfighters.length > 0)
-  const liveSlash = mockInteraction(currentCode)
-  let slashRendered
-  installFeedbackCapture(liveSlash)
-  assert.equal(await createInfListInteractionHandler({ render: async (args) => { slashRendered = await renderInfListPng(args); return slashRendered } })(liveSlash), true)
-  assert.equal(liveSlash.deferred, true)
-  assert.equal(liveSlash.edits.length, 1)
-  assert.equal(liveSlash.edits[0].content, liveMessage.replies[0].content)
-  assert.deepEqual(liveSlash.edits[0].files.map((file) => file.name), liveMessage.replies[0].files.map((file) => file.name))
-  assert.equal(slashRendered.officialArmyUrl, legacyRendered.officialArmyUrl)
-  assert.deepEqual(slashRendered.profilePages.map((page) => page.sections), legacyRendered.profilePages.map((page) => page.sections))
-  assert.deepEqual(slashRendered.profilePages.map((page) => [page.width, page.height]), legacyRendered.profilePages.map((page) => [page.width, page.height]))
+  assert.ok(rendered.tacticalAnalysis.categories.gunfighters.length > 0)
 }
 
-console.log(`PASS - ${BOT_NAME} preserves !!inf-list and registers its slash-command handlers, including /availability and /find-game${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
-
-function mockMessage(content, author = { bot: false }) {
-  return {
-    author,
-    content,
-    replies: [],
-    async reply(response) {
-      this.replies.push(response)
-    },
-  }
-}
+console.log(`PASS - ${BOT_NAME} handles army slash interactions, safe errors and concurrency; prefix message commands are removed${process.argv.includes('--live') ? ' with live renderer coverage' : ''}.`)
 
 function mockInteraction(armyCode) {
   return {

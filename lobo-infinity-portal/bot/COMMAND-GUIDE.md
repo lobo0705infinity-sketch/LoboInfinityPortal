@@ -29,7 +29,7 @@ Build still returns three options with summaries and TTS downloads. Each option 
 
 Detail buttons expire after seven days. Their snapshots survive worker restarts on the persistent volume. Other server members can open a public result privately; private-message results remain restricted to the original requester. Connected actions defer privately, reuse existing handlers and allow at most two concurrent button actions. Reports refer to the specific detail view or connected action, including its original message link.
 
-The `!!inf-list` message shortcut remains available. Internal legacy handler names are preserved for grouped routes and connected buttons.
+Message-prefix commands have been removed; use `/list analyse` to analyse an army. Internal legacy handler names are preserved for grouped routes and connected buttons.
 
 Checks: `node scripts/grouped-commands-check.mjs` exercises SDK option resolution, dispatch, autocomplete, three-list output, scheduling, permissions, help navigation, report inputs and additive/idempotent registration. It also runs in Dockerfile.bot. `node scripts/legacy-command-retirement-check.mjs` checks scoped deletion, replacement requirements, ownership, verification failures and idempotence.
 

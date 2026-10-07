@@ -9,7 +9,7 @@ import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 import { Client, Events, GatewayIntentBits } from 'discord.js'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { createInfListInteractionHandler, createInfListMessageHandler } from './inf-list-command.mjs'
+import { createInfListInteractionHandler } from './inf-list-command.mjs'
 import { createBuildListAutocompleteHandler, createBuildListInteractionHandler } from './build-list-command.mjs'
 import { createRandomListAutocompleteHandler, createRandomListInteractionHandler } from './random-list-command.mjs'
 import { createMissionInteractionHandler, ensureMissionCommand } from './mission-command.mjs'
@@ -111,7 +111,6 @@ export function formatWorkshopAnnouncement(item) {
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
   client.setMaxListeners(22)
-  const handleMessage = createInfListMessageHandler()
   const handleInfList = createInfListInteractionHandler()
   const handleBuildList = createBuildListInteractionHandler()
   const handleBuildListAutocomplete = createBuildListAutocompleteHandler()
@@ -143,7 +142,6 @@ export function createLobosLittleHelper() {
   client.on(Events.InteractionCreate, handleFeedback)
   client.on(Events.InteractionCreate, handleGrouped)
   client.on(Events.InteractionCreate, createHelpInteractionHandler())
-  client.on(Events.MessageCreate, handleMessage)
   client.on(Events.InteractionCreate, handleInfList)
   client.on(Events.InteractionCreate, handleBuildList)
   client.on(Events.InteractionCreate, handleBuildListAutocomplete)
@@ -181,7 +179,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const groupedCommands = await ensureGroupedCommands(client)
     const retired = await retireLegacySlashCommands(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} interactionListeners=${client.listenerCount(Events.InteractionCreate)} groupedCommands=${groupedCommands.map(command => `${command.guildId}:${command.name}:${command.id}`).join(',') || 'none'} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map(command => `${command.guildId}:${command.id}`).join(',') || 'none'} retiredLegacyCommands=${retired.removed.join(',') || 'none'} publicCommands=${retired.remaining.map(({scope,names}) => `${scope}:${names.join('|')}`).join(',')} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} messageCommandListeners=${client.listenerCount(Events.MessageCreate)} interactionListeners=${client.listenerCount(Events.InteractionCreate)} groupedCommands=${groupedCommands.map(command => `${command.guildId}:${command.name}:${command.id}`).join(',') || 'none'} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map(command => `${command.guildId}:${command.id}`).join(',') || 'none'} retiredLegacyCommands=${retired.removed.join(',') || 'none'} publicCommands=${retired.remaining.map(({scope,names}) => `${scope}:${names.join('|')}`).join(',')} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
@@ -230,7 +228,7 @@ async function run() {
   await startLobosLittleHelper()
 }
 
-const INF_LIST_DESCRIPTION = 'ready for /help, /list, /combat, /play, /admin and the existing !!inf-list, /inf-list, /build-list, /random-list, /mission, /inf-id, /rules, /aro-counter, /matchup, /availability, and /find-game (not connected in dry-run mode)'
+const INF_LIST_DESCRIPTION = 'ready for /help, /list, /combat, /play, /admin, /mission and /rules (not connected in dry-run mode)'
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await run()
