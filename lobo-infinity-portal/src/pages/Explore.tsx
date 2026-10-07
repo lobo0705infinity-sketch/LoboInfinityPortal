@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { Link } from 'react-router-dom'
 import PortalIcon from '../components/PortalIcon'
 import { communityItems } from '../components/sidebarNavigation'
@@ -35,11 +36,8 @@ const directory = communityItems.filter((item) => !featured.some((feature) => fe
 function Explore() {
   return (
     <main className="portal-shell portal-explore-page">
-      <header className="page-header">
-        <p className="eyebrow">Public portal</p>
-        <h1>Explore</h1>
-        <p>Follow a faction, a player, a mission, a TTS table, or the story behind a game.</p>
-      </header>
+      <CompactArtwork title="Explore" eyebrow="Public portal" src="/assets/portal-artwork/explore-approved-v1.webp"/>
+      <p>Follow a faction, a player, a mission, a TTS table, or the story behind a game.</p>
 
       <nav className="portal-explore-features" aria-label="Start exploring">
         {featured.map((item) => (

@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import './CompactArtwork.css'
 
-type Props = { title: string; eyebrow?: string; src: string; alt?: string }
+type Props = { title: string; eyebrow?: string; src: string; alt?: string; cropAspectRatio?: string }
 
 export default function CompactArtwork(props: Props) {
   const { pathname, search } = useLocation()
@@ -14,7 +14,7 @@ export default function CompactArtwork(props: Props) {
   return <ArtworkWithPreference key={preferenceKey} {...props} preferenceKey={preferenceKey}/>
 }
 
-function ArtworkWithPreference({ title, eyebrow, src, alt = title, preferenceKey }: Props & { preferenceKey: string }) {
+function ArtworkWithPreference({ title, eyebrow, src, alt = title, cropAspectRatio, preferenceKey }: Props & { preferenceKey: string }) {
   const artworkId = useId()
   const [reduced, setReduced] = useState(() => {
     try { return window.localStorage.getItem(preferenceKey) === 'reduced' } catch { return false }
@@ -27,7 +27,7 @@ function ArtworkWithPreference({ title, eyebrow, src, alt = title, preferenceKey
     try { window.localStorage.setItem(preferenceKey, next ? 'reduced' : 'full') } catch { /* The control still works when storage is unavailable. */ }
   }
   return <section className="compact-artwork" data-artwork-unavailable={failed || undefined}>
-    <div id={artworkId} hidden={reduced}>{failed ? <p className="compact-artwork-unavailable">Artwork is currently unavailable.</p> : <img className="artwork-full-image" src={src} alt={alt} onError={() => setFailedSource(src)}/>}</div>
+    <div id={artworkId} hidden={reduced} className={cropAspectRatio ? "artwork-cropped" : undefined} style={cropAspectRatio ? { aspectRatio: cropAspectRatio, overflow: "hidden" } : undefined}>{failed ? <p className="compact-artwork-unavailable">Artwork is currently unavailable.</p> : <img className="artwork-full-image" src={src} alt={alt} onError={() => setFailedSource(src)}/>}</div>
     <header className={reduced ? 'compact-artwork-heading' : 'artwork-full-heading'} style={reduced && !failed ? { backgroundImage: `linear-gradient(90deg, #0c1720 20%, rgba(12,23,32,.7) 58%, rgba(12,23,32,.12)), url("${src}")` } : undefined}>
       <div>{eyebrow && <p className="eyebrow">{eyebrow}</p>}<h1>{title}</h1></div>
     </header>

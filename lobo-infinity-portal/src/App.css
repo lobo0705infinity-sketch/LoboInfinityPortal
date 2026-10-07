@@ -12860,3 +12860,7 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Portal availability is a quiet status label, without button styling. */
+.header-status { border: 0; border-radius: 0; padding-inline: 4px; background: transparent; cursor: default; }
+.header-status .status-light { animation: none; }

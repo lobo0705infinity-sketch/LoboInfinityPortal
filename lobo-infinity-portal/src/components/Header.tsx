@@ -117,9 +117,9 @@ function Header() {
         <QuickJump />
         <NotificationCenter />
         {auth.authenticated ? <ProfileMenu /> : null}
-        <div className="header-status" aria-label="Portal status">
+        <div className="header-status" aria-label="Portal online" title="Portal online">
           <span className="status-light" />
-          <span>Live</span>
+          <span>Online</span>
         </div>
       </div>
       <Link

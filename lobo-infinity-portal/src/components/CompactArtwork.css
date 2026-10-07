@@ -9,3 +9,5 @@
 .artwork-full-image { display: block; width: 100%; height: auto; object-fit: contain; }
 .compact-artwork-unavailable { padding: 16px 24px; color: #abc0ce; }
 @media(max-width:600px) { .compact-artwork-heading { padding: 14px 16px; } .artwork-full-heading, .artwork-size-control { padding-inline: 16px; } }
+
+.artwork-cropped .artwork-full-image { height: auto; object-fit: initial; }

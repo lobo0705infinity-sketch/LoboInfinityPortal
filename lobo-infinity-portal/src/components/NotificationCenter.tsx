@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { LeagueNotification } from '../services/api'
 import { getNotifications, updateNotificationState } from '../services/lightApi'
@@ -46,6 +46,7 @@ function invalidateNotificationCache() {
 }
 
 function NotificationCenter({ compact = false }: { compact?: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [state, setState] = useState<NotificationState>({
     status: 'idle',
@@ -138,15 +139,22 @@ function NotificationCenter({ compact = false }: { compact?: boolean }) {
       }
     }
 
+    function handleOutsidePointer(event: PointerEvent) {
+      if (event.target instanceof Node && !containerRef.current?.contains(event.target)) setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handleOutsidePointer, true)
     window.addEventListener('keydown', handleKeyDown)
 
     return () => {
+      document.removeEventListener('pointerdown', handleOutsidePointer, true)
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen])
 
   return (
     <div
+      ref={containerRef}
       className={
         compact ? 'notification-center notification-center-compact' : 'notification-center'
       }
