@@ -15,6 +15,11 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['when can you voluntarily break a fireteam', 'YES', /before either player spends the next Order/],
+  ['Can I voluntarily cancel my Fireteam?', 'YES', /without spending an Order or Command Token/],
+  ['May you disband a link team in the reactive turn?', 'YES', /Active or Reactive Turn/],
+  ['How do I break a linked team?', 'YES', /entire Fireteam/],
+  ['Can I cancel a fireteam for free?', 'YES', /without spending an Order or Command Token/],
   ['Do models in camo state reload during the states phase if a unit with baggage is within zone of control', 'YES', /not a declaration of the Reload/],
   ['Do models in camo state reload during the states phase if a unit with baggage is within zone of control', 'YES', /does not reveal the marker/],
   ['Can a camouflaged trooper reload in the States Phase if an allied unit with Baggage is in ZoC?', 'YES', /Non-Reloadable/],
@@ -59,23 +64,28 @@ for (const question of [
   'Does a BS Attack through white noise trigger an MSV1 ARO?',
   'Can an MSV1 model see through smoke?',
   'Can you reset in immobilized-a state with a special scenario exception?',
+  'Can a single member voluntarily leave a Fireteam?',
+  'Can I cancel a Fireteam after the enemy spends an Order?',
+  'Can I break a Fireteam and form another one for free?',
 ]) {
   const result = await context.retrieveRulesReference({ question })
   assert.equal(result.fallback, true, question)
 }
-assert.equal(providerCalls, 8)
+assert.equal(providerCalls, 11)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
 assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
 assert.match(prompt, /Declaring Reload is a separate Attack declaration/)
-console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 8 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+assert.match(prompt, /must announce it before either player spends the Order/)
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 11 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
+  ['Can I cancel a Fireteam after the enemy spends an Order?', ['fireteam integrity']],
   ['Do models in camo state reload during the states phase if a unit with baggage is within zone of control', ['baggage', 'reload', 'unloaded state', 'camouflaged state']],
   ['Can an unconscious Baggage trooper replenish a camouflaged trooper?', ['baggage', 'reload', 'unloaded state', 'camouflaged state']],
   ['what happens if you do a transmutation but cant fit', ['replacing game elements', 'transmutation']],
@@ -92,8 +102,17 @@ for (const [question, expected] of [
 }
 console.log('Production corpus evidence checks passed.')
 
+for (const question of ['when can you voluntarily break a fireteam', 'How do I disband my link team?']) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  assert.match(evidence.text, /may voluntarily cancel the Fireteam without spending an Order or Command Token/)
+  assert.match(evidence.text, /before either player spends the Order/)
+}
+
 const repeatedQuestion = 'Do models in camo state reload during the states phase if a unit with baggage is within zone of control'
 const { retrieveRulesReference } = await import('../bot/rules-command.mjs')
+const fireteamRepeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRulesReference({ question: 'when can you voluntarily break a fireteam', deepSeek: async () => { throw new Error('Verified Fireteam cancellation must bypass the AI provider') } })))
+assert.equal(new Set(fireteamRepeated.map(result => result.deepSeek.answer)).size, 1)
+assert.ok(fireteamRepeated.every(result => result.deepSeek.conclusion === 'YES' && result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))
 const repeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRulesReference({ question: repeatedQuestion, deepSeek: async () => { throw new Error('Verified Baggage ruling must bypass the AI provider') } })))
 assert.equal(new Set(repeated.map(result => result.deepSeek.answer)).size, 1)
 assert.ok(repeated.every(result => result.deepSeek.conclusion === 'YES'))

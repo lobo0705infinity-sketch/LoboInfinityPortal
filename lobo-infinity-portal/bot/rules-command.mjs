@@ -45,6 +45,19 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  const voluntaryFireteam = /^(?:(?:when|how) (?:can|may|do) |(?:can|may) )(?:i|you|we|a player) (?:voluntarily )?(?:break|cancel|disband|dissolve) (?:a |the |my |your |our )?(?:fireteam|link team|linked team|link)(?: voluntarily)?(?: for free| in (?:the )?(?:active|reactive) turn)?$/.test(words)
+  if (voluntaryFireteam) {
+    conclusion = 'YES'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'You may voluntarily cancel the entire Fireteam in either the Active or Reactive Turn, without spending an Order or Command Token. Announce the cancellation before either player spends the next Order. You cannot wait until an enemy Order has been spent and then voluntarily cancel the Fireteam during that Order. This cancels the whole Fireteam; an individual member leaving follows separate Fireteam Integrity rules.'
+    pages = ['Fireteam_Integrity']
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED RULES ANSWER', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: { answer, conclusion, certainty, interpretationRequired: false, sources: [{ id: 'V0', title: 'Official Infinity N5.3 Wiki', section: 'Fireteam Integrity', url: 'https://infinitythewiki.com/Fireteam_Integrity' }] },
+    }
+  }
   const camoSubject = '(?:(?:a |the )?(?:models?|troopers?|units?) (?:in|while in) (?:the )?(?:camo|camouflaged|camouflage)(?: state)?|(?:a |the )?(?:camouflaged|camo) (?:models?|troopers?|units?))'
   const baggageRange = '(?:(?:a|an|the) (?:(?:allied|friendly) )?(?:unit|trooper|model) with baggage is (?:within|in) (?:(?:their|its|the) )?(?:zone of control|zoc)|(?:they are|it is) (?:within|in) (?:the )?(?:zone of control|zoc) of (?:(?:a|an|the) )?(?:(?:allied|friendly) )?(?:baggage (?:unit|trooper|model)|(?:unit|trooper|model) with baggage))'
   if (new RegExp('^(?:do|does|can|may|will) ' + camoSubject + ' (?:reload|replenish ammunition|regain disposable uses) (?:during|in) (?:the )?states phase (?:if|when|while) ' + baggageRange + '$').test(words)) {
