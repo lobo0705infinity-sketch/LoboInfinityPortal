@@ -1,5 +1,4 @@
 import { withResponseDetails, listActions, briefSummary } from './response-details.mjs'
-import { reportableResponse } from './bot-feedback.mjs'
 import { ratingExplanations } from './rating-explanations.mjs'
 import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { InfListRenderError, renderInfListPng, validateArmyCode } from '../scripts/inf-list-render-poc.mjs'
@@ -7,12 +6,10 @@ import { ApplicationCommandOptionType } from 'discord.js'
 import { formatInfListLegality } from './inf-list-legality.mjs'
 import { formatInfListClassifiedEmbeds } from './inf-list-classifieds.mjs'
 
-export const INF_LIST_COMMAND = '!!inf-list'
 export const INF_LIST_SLASH_COMMAND = 'inf-list'
 export const INF_LIST_OPTION = 'army-code'
 export const INF_LIST_MOBILE_OPTION = 'mobile-gunfighter'
 export const SUCCESS_TEXT = 'Here is a link to your army list'
-export const USAGE_TEXT = 'Usage: !!inf-list <army code>'
 export const INF_LIST_COMMAND_DEFINITION = Object.freeze({
   name: INF_LIST_SLASH_COMMAND,
   description: 'Create a readable Infinity Army list',
@@ -42,12 +39,6 @@ const unavailableRenderer = new Set([
   'renderer_timeout',
   'renderer_unavailable',
 ])
-
-export function parseInfListCommand(content) {
-  const match = String(content ?? '').match(/^!!inf-list(?:\s+([\s\S]*))?$/)
-  if (!match) return null
-  return { armyCode: match[1]?.trim() || '' }
-}
 
 export function createConcurrencyLimiter(limit = 2) {
   if (!Number.isInteger(limit) || limit < 1) throw new RangeError('Concurrency limit must be a positive integer.')
@@ -117,34 +108,6 @@ export async function createInfListResponse({
     },
     actions: { identify: listActions(validatedArmyCode).identify },
   })
-}
-
-export function createInfListMessageHandler({
-  render = renderInfListPng,
-  withRenderSlot = sharedRenderLimiter,
-} = {}) {
-  return async function handleInfListMessage(message) {
-    if (message?.author?.bot) return false
-
-    const command = parseInfListCommand(message?.content)
-    if (!command) return false
-    if (!command.armyCode) {
-      await message.reply(USAGE_TEXT)
-      return true
-    }
-
-    try {
-      const response = await createInfListResponse({ armyCode: command.armyCode, render, withRenderSlot })
-      let reportable = response
-      try { reportable = await reportableResponse(response, { command: '!!inf-list', inputs: { armyCode: command.armyCode }, guildId: message.guildId, requesterId: message.author?.id }) }
-      catch (error) { console.error('Bot report context could not be saved:', error.message) }
-      await message.reply(reportable)
-    } catch (error) {
-      await message.reply(messageForError(error))
-    }
-
-    return true
-  }
 }
 
 export function createInfListInteractionHandler({
