@@ -1,13 +1,4 @@
-type InteractionEntry = PerformanceEntry & {
-  duration?: number
-  interactionId?: number
-}
-
-type LayoutShiftEntry = PerformanceEntry & {
-  hadRecentInput?: boolean
-  value?: number
-}
-
+import { onCLS, onFCP, onINP, onLCP } from "web-vitals"
 export type RouteTransitionMetric = {
   durationMs: number
   path: string
@@ -48,34 +39,10 @@ export function initializePerformanceMonitoring() {
 
   monitoringInitialized = true
 
-  observePerformanceEntries('paint', (entry) => {
-    if (entry.name === 'first-contentful-paint') {
-      metrics.firstContentfulPaint = entry.startTime
-    }
-  })
-
-  observePerformanceEntries('largest-contentful-paint', (entry) => {
-    metrics.largestContentfulPaint = entry.startTime
-  })
-
-  observePerformanceEntries('layout-shift', (entry) => {
-    const shift = entry as LayoutShiftEntry
-
-    if (!shift.hadRecentInput) {
-      metrics.cumulativeLayoutShift += shift.value ?? 0
-    }
-  })
-
-  observePerformanceEntries('event', (entry) => {
-    const interaction = entry as InteractionEntry
-
-    if ((interaction.interactionId ?? 0) > 0) {
-      metrics.interactionToNextPaint = Math.max(
-        metrics.interactionToNextPaint,
-        interaction.duration ?? 0,
-      )
-    }
-  })
+  onCLS(metric=>{metrics.cumulativeLayoutShift=metric.value})
+  onFCP(metric=>{metrics.firstContentfulPaint=metric.value})
+  onINP(metric=>{metrics.interactionToNextPaint=metric.value})
+  onLCP(metric=>{metrics.largestContentfulPaint=metric.value})
 
   observePerformanceEntries('longtask', (entry) => {
     metrics.longTasks.push({

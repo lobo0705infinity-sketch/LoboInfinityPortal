@@ -98,6 +98,8 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
     }
   }
 
+  const detail=pathname.match(/^\/(players?|factions?|missions?|games?|maps)\/([^/]+)$/)
+  if(detail){const type=detail[1].replace(/s$/,'');const parent=type==='map'?'maps':`${type}s`;const label=({player:'Players',faction:'Factions',mission:'Missions',game:'Battle Reports',map:'Maps'} as Record<string,string>)[type];breadcrumbs.push({label:'Explore',to:'/explore'},{label,to:`/${parent}`},{label:type==='game'?`Report #${decodeSegment(detail[2])}`:decodeSegment(detail[2])});return breadcrumbs}
   if (pathname === '/army-intelligence') {
     breadcrumbs.push({ label: 'Explore', to: '/explore' })
     breadcrumbs.push({ label: 'Army Intelligence' })

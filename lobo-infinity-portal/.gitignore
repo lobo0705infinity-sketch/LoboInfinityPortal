@@ -31,3 +31,10 @@ public/release-fingerprint.json
 *.sw?
 
 .vercel
+
+# Reproducible optimized artwork generated before builds
+public/assets/responsive-artwork/
+src/config/responsiveArtwork.ts
+src/config/responsive-artwork-css.json
+src/data/portal-aro-ratings.json
+src/data/portal-gunfighter-ratings.json

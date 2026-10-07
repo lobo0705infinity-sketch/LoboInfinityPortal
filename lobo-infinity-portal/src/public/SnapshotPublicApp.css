@@ -511,7 +511,7 @@
 .snapshot-event-hero h1 {
   max-width: 14ch;
   margin: 0.35rem 0 0.7rem;
-  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-family: "Bebas Neue", Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(2.5rem, 6vw, 4.8rem);
   line-height: 0.92;
   text-transform: uppercase;
@@ -618,7 +618,7 @@
 .snapshot-metric-card strong {
   display: block;
   color: var(--text);
-  font-family: Rajdhani, Inter, sans-serif;
+  font-family: Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(1.25rem, 2vw, 1.85rem);
   line-height: 1.05;
 }
@@ -707,7 +707,7 @@
 
 .snapshot-empty-state strong {
   color: var(--text);
-  font-family: Rajdhani, Inter, sans-serif;
+  font-family: Rajdhani, "Inter Variable", sans-serif;
   font-size: 1.25rem;
   text-transform: uppercase;
 }
@@ -996,7 +996,7 @@ main.snapshot-public-page[data-page="dashboard"] > .page-header {
   border-color: rgba(76, 201, 240, 0.34);
   padding: 0;
   background-color: #05090d;
-  background-image: url("../assets/lobo-infinity-portal-hero.png");
+  background-image: url("/assets/responsive-artwork/13532312eb-1600.webp");
   background-position: 50% 20%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1364,7 +1364,7 @@ main.snapshot-event-page[data-event="current-league-overview"] > .snapshot-event
   aspect-ratio: 1672 / 760;
   padding: 0;
   background-color: #05080c;
-  background-image: url("../assets/current-league-overview-hero.png");
+  background-image: url("/assets/responsive-artwork/62c6a6d519-1600.webp");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1573,7 +1573,7 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-team
   border: 1px solid rgba(217, 54, 68, 0.34);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/team-tournament-overview-hero.png");
+  background-image: url("/assets/responsive-artwork/cf7e654e74-1600.webp");
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
@@ -1693,7 +1693,7 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs
 .snapshot-team-tournament-overview-heading h2 {
   margin: 0;
   color: #f8fbff;
-  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-family: "Bebas Neue", Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(1.2rem, 2.2vw, 1.48rem);
   letter-spacing: 0.035em;
 }
@@ -1739,7 +1739,7 @@ main.snapshot-event-page[data-event="team-tournament-overview"] > .snapshot-tabs
 .snapshot-team-tournament-team-card-heading h3 {
   margin: 0;
   color: #f8fbff;
-  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-family: "Bebas Neue", Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(1.12rem, 2vw, 1.38rem);
   letter-spacing: 0.035em;
   line-height: 1.05;
@@ -2083,7 +2083,7 @@ main.snapshot-event-page[data-event="current-league-schedule"] > .snapshot-event
   padding: 0;
   border-color: rgba(76, 201, 240, 0.3);
   background-color: #05080c;
-  background-image: url("../assets/current-league-schedule-hero.png");
+  background-image: url("/assets/responsive-artwork/d29cd54df2-1600.webp");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2335,7 +2335,7 @@ main.snapshot-event-page[data-event="current-league-registration"] > .snapshot-e
   padding: 0;
   overflow: hidden;
   background-color: #05080c;
-  background-image: url("../assets/current-league-registration-hero.png");
+  background-image: url("/assets/responsive-artwork/60a990ce9d-1600.webp");
   background-position: center 55%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2468,7 +2468,7 @@ main.snapshot-public-page[data-page="current-league-standings"] > .snapshot-stan
   border: 1px solid rgba(76, 201, 240, 0.3);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/current-league-standings-hero.png");
+  background-image: url("/assets/responsive-artwork/408b4d0f91-1600.webp");
   background-position: center 48%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2704,7 +2704,7 @@ main.snapshot-public-page[data-page="players"] > .snapshot-players-hero {
   border: 1px solid rgba(76, 201, 240, 0.32);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/players-hero.png");
+  background-image: url("/assets/responsive-artwork/caa0d4fcd2-1600.webp");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2843,7 +2843,7 @@ main.snapshot-public-page[data-page="players"] .snapshot-player-directory-contex
 
 main.snapshot-public-page[data-page="players"] .snapshot-player-directory-entry strong {
   color: #f8fbff;
-  font-family: Rajdhani, Inter, sans-serif;
+  font-family: Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(1.05rem, 1.45vw, 1.3rem);
   font-weight: 850;
   line-height: 1.05;
@@ -2901,7 +2901,7 @@ main.snapshot-public-page[data-page="missions"] > .snapshot-missions-hero {
   border: 1px solid rgba(133, 194, 98, 0.34);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/missions-hero.png");
+  background-image: url("/assets/responsive-artwork/14687b27e2-1600.webp");
   background-position: center 28%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -3060,7 +3060,7 @@ main.snapshot-public-page[data-page="streams"] > .snapshot-streams-hero {
   border: 1px solid rgba(76, 201, 240, 0.32);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/streams-hero.png");
+  background-image: url("/assets/responsive-artwork/10409c9dec-1600.webp");
   background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
@@ -3248,7 +3248,7 @@ main.snapshot-public-page[data-page="league-operations"] > .snapshot-league-oper
   border: 1px solid rgba(76, 201, 240, 0.32);
   border-radius: 12px;
   background-color: #05080c;
-  background-image: url("../assets/current-league-mission-map-hero.png");
+  background-image: url("/assets/responsive-artwork/2ed688251f-1600.webp");
   background-position: center 36%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -3312,7 +3312,7 @@ main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operat
 }
 
 main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission .eyebrow,
-main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission h1,
+main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission h2,
 main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission > p:not(.eyebrow) {
   position: relative;
   z-index: 1;
@@ -3324,7 +3324,7 @@ main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operat
   font-size: 0.66rem;
 }
 
-main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission h1 {
+main.snapshot-public-page[data-page="league-operations"] .snapshot-league-operations-mission h2 {
   margin-top: 0.42rem;
   color: #f8fbff;
   font-size: clamp(1.5rem, 2.65vw, 2.2rem);

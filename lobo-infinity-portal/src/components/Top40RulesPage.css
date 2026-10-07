@@ -34,7 +34,7 @@
   background: linear-gradient(145deg, rgba(14, 25, 34, 0.98), rgba(7, 12, 17, 0.96));
 }
 
-.top40-rules-intro h1 {
+.top40-rules-intro h2 {
   margin: 0.25rem 0 0.55rem;
   font-size: clamp(1.75rem, 4vw, 3rem);
   line-height: 1.08;

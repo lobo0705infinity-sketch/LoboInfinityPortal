@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import TablePagination, { useTablePagination } from '../components/TablePagination'
+import { Link, useSearchParams } from 'react-router-dom'
 import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import InfinityArmyLink from '../components/InfinityArmyLink'
 import { armyListValue, filterAndSortArmyLists, type ArmyListSort } from './armyListDirectory'
@@ -28,6 +29,7 @@ export default function ArmyListsTable({ lists }: { lists: PublicArmyList[] }) {
     ...(lists.some(list => armyListValue(list, 'result').trim()) ? [{ key: 'result' as const, label: 'Result' }] : []),
   ]
   const rows = filterAndSortArmyLists(lists, query, faction, mission, sort, direction)
+  const pagination = useTablePagination(rows,[query,faction,mission,sort,direction,lists.map(list=>list.id)])
   function changeSort(key: ArmyListSort) {
     setDirection(sort === key ? direction === 'asc' ? 'desc' : 'asc' : key === 'date' ? 'desc' : 'asc')
     setSort(key)
@@ -43,9 +45,10 @@ export default function ArmyListsTable({ lists }: { lists: PublicArmyList[] }) {
     <div className="army-list-table-scroll" role="region" aria-label="Army lists table" tabIndex={0}>
       <table className="army-list-table"><caption className="army-list-sr-only">Submitted army lists. Sort by selecting a column heading.</caption>
         <thead><tr>{columns.map(column => <th key={column.key} scope="col" aria-sort={sort === column.key ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button type="button" onClick={() => changeSort(column.key)}>{column.label}<span aria-hidden="true">{sort === column.key ? direction === 'asc' ? ' ↑' : ' ↓' : ' ↕'}</span></button></th>)}<th scope="col">Army list</th></tr></thead>
-        <tbody>{rows.length ? rows.map(list => <tr key={list.id}>{columns.map(column => <td key={column.key} data-label={column.label}>{column.key === 'date' ? formatListDate(list.date) : armyListValue(list, column.key) || '—'}</td>)}<td data-label="Army list">{list.armyLink ? <InfinityArmyLink mobileCopyOnly href={list.armyLink}>View List</InfinityArmyLink> : <span className="army-list-unavailable">Unavailable</span>}</td></tr>) : <tr><td colSpan={columns.length + 1} className="army-list-empty">{lists.length ? 'No lists match these filters.' : 'No army lists have been submitted yet.'}</td></tr>}</tbody>
+        <tbody>{rows.length ? pagination.rows.map(list => <tr key={list.id}>{columns.map(column => <td key={column.key} data-label={column.label}>{column.key === 'date' ? formatListDate(list.date) : column.key === 'player' ? <Link to={`/players/${encodeURIComponent(list.player)}`}>{armyListValue(list,column.key)}</Link> : column.key === 'faction' ? <Link to={`/factions/${encodeURIComponent(armyListValue(list,column.key))}`}>{armyListValue(list,column.key)}</Link> : armyListValue(list,column.key) || '—'}</td>)}<td data-label="Army list">{list.armyLink ? <InfinityArmyLink mobileCopyOnly href={list.armyLink}>View List</InfinityArmyLink> : <span className="army-list-unavailable">Unavailable</span>}</td></tr>) : <tr><td colSpan={columns.length + 1} className="army-list-empty">{lists.length ? 'No lists match these filters.' : 'No army lists have been submitted yet.'}</td></tr>}</tbody>
       </table>
     </div>
+    <TablePagination {...pagination}/>
   </section>
 }
 function formatListDate(value: string) {

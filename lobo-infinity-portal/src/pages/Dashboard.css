@@ -20,7 +20,7 @@
     #050608;
   background-size: 44px 44px, 44px 44px, auto, auto;
   color: #f4f6f8;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 .dashboard-facelift .dashboard-header {
@@ -63,7 +63,7 @@
 .dashboard-facelift h1,
 .dashboard-facelift h2,
 .dashboard-facelift h3 {
-  font-family: Rajdhani, Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: Rajdhani, "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -137,7 +137,7 @@
   min-height: 1.88em;
   margin: 0;
   color: #f4f6f8;
-  font-family: "Bebas Neue", Rajdhani, Inter, sans-serif;
+  font-family: "Bebas Neue", Rajdhani, "Inter Variable", sans-serif;
   font-size: clamp(2.25rem, 4.45vw, 4rem);
   line-height: 0.94;
 }

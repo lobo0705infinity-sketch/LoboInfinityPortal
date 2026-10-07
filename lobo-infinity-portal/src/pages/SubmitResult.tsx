@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -73,11 +74,7 @@ type PickerOption = {
 function SubmitResult() {
   return (
     <main className="portal-shell submit-game-page">
-      <header
-        aria-label="Game Submission. Log your battles. Fuel the league."
-        className="submit-game-hero"
-        role="img"
-      />
+      <CompactArtwork title="Submit Game" eyebrow="Log your battles. Fuel the league." src="/src/assets/game-submission-hero.png"/>
 
       <section className="submit-game-form-grid" aria-label="Google Forms game submissions">
         <GoogleFormLauncher

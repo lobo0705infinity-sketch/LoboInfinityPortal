@@ -29,7 +29,7 @@
   padding: clamp(1.1rem, 2.7vw, 2rem);
 }
 
-.top40-registration-summary h1,
+.top40-registration-summary h2,
 .top40-registration-summary p,
 .top40-registration-status h2,
 .top40-registration-status p,
@@ -38,7 +38,7 @@
   margin: 0;
 }
 
-.top40-registration-summary h1 {
+.top40-registration-summary h2 {
   margin-top: 0.35rem;
   color: #ffffff;
   font-size: clamp(1.65rem, 3vw, 2.6rem);

@@ -172,7 +172,7 @@
 .operator-badge-rank text,
 .operator-badge-name,
 .operator-badge-faction {
-  font-family: Inter, system-ui, sans-serif;
+  font-family: "Inter Variable", system-ui, sans-serif;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-anchor: middle;

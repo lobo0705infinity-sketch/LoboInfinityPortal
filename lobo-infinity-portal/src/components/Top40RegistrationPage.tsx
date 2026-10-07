@@ -60,7 +60,7 @@ export default function Top40RegistrationPage() {
       <section className="panel top40-registration-summary" aria-labelledby="top40-registration-title">
         <div>
           <p className="eyebrow">Lobo&apos;s American Top 40</p>
-          <h1 id="top40-registration-title">Tournament Registration</h1>
+          <h2 id="top40-registration-title">Tournament Registration</h2>
           <p>Register for the individual 300-point, double-elimination tournament open to players throughout the Americas.</p>
         </div>
         <a

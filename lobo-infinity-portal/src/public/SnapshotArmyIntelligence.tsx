@@ -303,7 +303,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
   if (rankedBenchmark) {
     const otherAroStates = aroStates.filter((state) => state.label !== rankedBenchmark.state)
     return <article className="army-intelligence-tactical-profile is-ranked">
-      <div className="army-intelligence-ranking-rank"><span>List rank</span><strong>#{rank}</strong></div>
+      <div className="army-intelligence-ranking-rank"><span>Submitted sample rank</span><strong>#{rank}</strong></div>
       <div className="army-intelligence-ranking-identity">
         <strong>{formatTacticalUnitName(profile.unit)}</strong>
         <span>{rankedBenchmark.weapon}</span>

@@ -32,6 +32,7 @@ export default function PortalGuide() {
       <video ref={player} className="portal-guide-video" controls playsInline preload={selected ? 'metadata' : 'none'}
         poster="/assets/portal-guide/poster-v1.jpg" onError={() => setFailed(true)} aria-label="Lobo Infinity Portal walkthrough with Bradley narration">
         <source src={`${videoUrl}#t=${start}`} type="video/mp4" />
+        <track kind="captions" src="/assets/portal-guide/captions-v1.vtt" srcLang="en" label="English"/>
         <track kind="chapters" src="/assets/portal-guide/chapters-v1.vtt" srcLang="en" label="Chapters" />
         Your browser does not support embedded video. <a href={videoUrl}>Open the walkthrough</a>.
       </video>

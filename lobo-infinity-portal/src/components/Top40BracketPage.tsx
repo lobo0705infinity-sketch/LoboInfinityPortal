@@ -34,7 +34,7 @@ export default function Top40BracketPage({
 
       <section className="panel top40-bracket-intro" aria-labelledby="top40-bracket-title">
         <p className="eyebrow">Lobo&apos;s American Top 40</p>
-        <h1 id="top40-bracket-title">Tournament Bracket</h1>
+        <h2 id="top40-bracket-title">Tournament Bracket</h2>
         <p>Forty players enter a complete double-elimination bracket. A player is eliminated after their second loss.</p>
       </section>
 

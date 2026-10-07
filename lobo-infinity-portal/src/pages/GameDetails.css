@@ -99,7 +99,7 @@
 .battle-report-hero h1 {
   margin: 8px 0 0;
   color: #f4f6f8;
-  font-family: Bebas Neue, Rajdhani, Inter, system-ui, sans-serif;
+  font-family: Bebas Neue, Rajdhani, "Inter Variable", system-ui, sans-serif;
   font-size: clamp(4.2rem, 10vw, 9.6rem);
   font-weight: 900;
   letter-spacing: 0;

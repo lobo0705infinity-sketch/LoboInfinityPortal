@@ -24,6 +24,8 @@ import { SettingsProvider } from './contexts/SettingsContext'
 import { recordRouteDiagnostic } from './services/diagnostics'
 import { recordComponentMount } from './services/rumMetrics'
 import './App.css'
+import './DesktopRefinements.css'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const Analytics = lazyRoute('Analytics', () => import('./pages/Analytics'))
 const ArmyIntelligence = lazyRoute('ArmyIntelligence', () => import('./pages/ArmyIntelligence'))
@@ -99,6 +101,8 @@ function AuthShell() {
   return (
     <SettingsProvider enabled={!commissionerRoute}>
       <div className="app-shell auth-ready">
+        <SpeedInsights />
+        <a className="skip-link" href="#main-content">Skip to content</a>
         <RouteMeta />
         <UserActivityTracker />
         <RouteScrollReset />
@@ -106,7 +110,7 @@ function AuthShell() {
         <div className="app-main">
           <Header />
           <Breadcrumbs />
-          <ApplicationErrorBoundary componentName="RouteContent" resetKey={routeKey}>
+          <div id="main-content" tabIndex={-1}><ApplicationErrorBoundary componentName="RouteContent" resetKey={routeKey}>
             <Suspense fallback={<RouteLoading />}>
               {!commissionerRoute ? <SnapshotPublicApp /> : !auth.authenticated ? <CommissionerLogin /> : <Routes>
                 <Route path="/" element={<MeasuredRoute name="Dashboard"><Dashboard /></MeasuredRoute>} />
@@ -230,6 +234,7 @@ function AuthShell() {
               </Routes>}
             </Suspense>
           </ApplicationErrorBoundary>
+          </div>
           <GlobalFooter />
         </div>
         <MobileBottomNavigation />

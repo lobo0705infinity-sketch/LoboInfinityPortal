@@ -57,7 +57,7 @@ export default function Top40ResultsPage() {
         <div className="top40-results-heading">
           <div>
             <p className="eyebrow">Tournament Record</p>
-            <h1 id="top40-latest-results-title">Latest Results</h1>
+            <h2 id="top40-latest-results-title">Latest Results</h2>
           </div>
           <div className="top40-results-filters" aria-label="Result filters">
             <label>

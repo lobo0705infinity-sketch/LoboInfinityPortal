@@ -27,7 +27,7 @@ assert.equal(parseCanonicalStreamDate('2026-08-02T04:00:00.000Z'), Date.UTC(2026
 const app = readFileSync(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
 const css = readFileSync(new URL('../src/public/SnapshotPublicApp.css', import.meta.url), 'utf8')
 const exporter = readFileSync(new URL('../backend/PublicSnapshotExporter.gs', import.meta.url), 'utf8')
-assert.match(app, /sortPublicStreamsByDate\(community\.streams as PublicStream\[\]\)/)
+assert.match(app, /sortPublicStreamsByDate\(\(community\.streams as PublicStream\[\]\)\.map/)
 assert.match(app, /className="snapshot-streams-thumbnail"/)
 assert.match(app, /className="snapshot-streams-watch"/)
 assert.match(css, /@media \(max-width: 760px\)/, 'public streams need a mobile projection')

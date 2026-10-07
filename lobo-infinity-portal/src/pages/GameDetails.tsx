@@ -488,8 +488,8 @@ function GameReview({ armyLists, game, intelligenceLists }: { armyLists: PublicS
         {!isDrawGame(game) ? <section className="battle-report-game-review-coaching" aria-labelledby="game-review-coaching-title">
           <h3 id="game-review-coaching-title">Coaching notes</h3>
           <div>
-            <article><strong>For {winner}</strong><p>{review.winnerCoaching}</p></article>
-            <article><strong>For {loser}</strong><p>{review.loserCoaching}</p></article>
+            <article><strong>For {winner}</strong><p>{stripCoachingName(review.winnerCoaching,winner)}</p></article>
+            <article><strong>For {loser}</strong><p>{stripCoachingName(review.loserCoaching,loser)}</p></article>
           </div>
         </section> : null}
 
@@ -525,9 +525,9 @@ function Scoreboard({
       <span>{isDraw ? 'Draw' : 'Final Score'}</span>
       <strong>
         <b>{primary.left}</b>
-        <em>{getScoreLabel(primary.label)}</em>
         <b>{primary.right}</b>
       </strong>
+      <em>{getScoreLabel(primary.label)}</em>
       <dl>
         {scores.map((score) => (
           <div key={score.label}>
@@ -762,3 +762,5 @@ function slugTitle(title: string) {
 }
 
 export default GameDetails
+
+function stripCoachingName(text:string,name:string){const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return text.replace(new RegExp(`^(?:For\\s+)?${escaped}\\s*[:—–-]\\s*`,'i'),'')}

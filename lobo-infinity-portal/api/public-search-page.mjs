@@ -19,6 +19,7 @@ export default async function handler(request, response) {
     return
   }
 
+  const templateResult = readTemplate(request).then(html=>({html,error:null}),error=>({html:null,error}))
   const dataset = publicDatasetForPath(pathname)
   let data = {}
   let snapshotAvailable = true
@@ -42,7 +43,9 @@ export default async function handler(request, response) {
   }
 
   try {
-    const html = renderPublicSearchHtml(await readTemplate(request), page)
+    const template = await templateResult
+    if(template.error)throw template.error
+    const html = renderPublicSearchHtml(template.html, page)
     response.setHeader('content-type', 'text/html; charset=utf-8')
     response.setHeader('x-content-type-options', 'nosniff')
     response.setHeader('cache-control', snapshotAvailable

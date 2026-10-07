@@ -29,7 +29,7 @@ export default function Top40RulesPage() {
       </nav>
       <section className="panel top40-rules-intro" aria-labelledby="event-rules-page-title">
         <p className="eyebrow">{top40Rulebook.eventType}</p>
-        <h1 id="event-rules-page-title">{top40Rulebook.title}</h1>
+        <h2 id="event-rules-page-title">{top40Rulebook.title}</h2>
         <p>{top40Rulebook.description}</p>
       </section>
       <section className="rules-layout" aria-label="American Top 40 rules reference">
