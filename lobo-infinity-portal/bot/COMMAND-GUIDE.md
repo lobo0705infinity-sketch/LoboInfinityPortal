@@ -1,10 +1,10 @@
 # Lobo’s Little Helper command groups
 
-The first organization release adds grouped commands alongside every existing command. The second release adds compact responses, private detail views and connected actions. Combat formulas and rating formats are unchanged.
+Grouped commands replace the nine legacy slash-menu entries listed below. Compact responses, private detail views and connected actions reuse the existing handlers. Combat formulas and rating formats are unchanged.
 
-| Task | Grouped command | Existing command |
+| Task | Grouped command | Retired slash command |
 |---|---|---|
-| Analyse an army | `/list analyse` | `/inf-list`, `!!inf-list` |
+| Analyse an army | `/list analyse` | `/inf-list` |
 | Generate three mission-guided options | `/list build` | `/build-list` |
 | Generate a random legal army | `/list random` | `/random-list` |
 | Print a model identification sheet | `/list identify` | `/inf-id` |
@@ -21,7 +21,7 @@ The first organization release adds grouped commands alongside every existing co
 
 Grouped commands reuse the current handlers and their options, autocomplete, rate/concurrency limits, deferred replies, downloads and error handling. Reports record the grouped name and nested options selected by the user. Availability and urgent requests still use the existing stores and scheduling feed.
 
-Registration creates or updates only the five new names: list, combat, play, help and admin. It does not bulk-replace or delete existing commands. Repeated starts avoid writes when the registered definitions match.
+Registration creates or updates list, combat, play, help and admin before retiring the nine explicitly superseded slash commands in guild and global scope. Only this application’s registrations are touched; unrelated commands remain. Removal is verified by fetching the live registrations again. Repeated starts avoid writes when definitions match and never recreate the retired entries.
 
 Army analysis initially shows legality, points/SWC, a short rating summary, the readable army image and the TTS JSON download. Tactical Brief, Ratings (including `rating-explanations.txt`), Classifieds (all 20 cards) and TTS Notes open privately. Create ID Sheet reuses the submitted army code.
 
@@ -29,9 +29,9 @@ Build still returns three options with summaries and TTS downloads. Each option 
 
 Detail buttons expire after seven days. Their snapshots survive worker restarts on the persistent volume. Other server members can open a public result privately; private-message results remain restricted to the original requester. Connected actions defer privately, reuse existing handlers and allow at most two concurrent button actions. Reports refer to the specific detail view or connected action, including its original message link.
 
-Existing command names have no removal date in this release.
+The `!!inf-list` message shortcut remains available. Internal legacy handler names are preserved for grouped routes and connected buttons.
 
-Checks: `node scripts/grouped-commands-check.mjs` exercises SDK option resolution, dispatch, autocomplete, three-list output, scheduling, permissions, help navigation, report inputs and additive/idempotent registration. It also runs in Dockerfile.bot.
+Checks: `node scripts/grouped-commands-check.mjs` exercises SDK option resolution, dispatch, autocomplete, three-list output, scheduling, permissions, help navigation, report inputs and additive/idempotent registration. It also runs in Dockerfile.bot. `node scripts/legacy-command-retirement-check.mjs` checks scoped deletion, replacement requirements, ownership, verification failures and idempotence.
 
 Second-release checks: `node scripts/response-details-check.mjs` covers cached downloads, reporting, permissions, expiry, connected actions and concurrency, and runs in Dockerfile.bot.
 
