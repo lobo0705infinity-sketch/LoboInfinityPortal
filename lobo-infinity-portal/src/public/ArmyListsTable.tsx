@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import TablePagination, { useTablePagination } from '../components/TablePagination'
+import TablePagination from '../components/TablePagination'
+import { useTablePagination } from '../components/useTablePagination'
 import { Link, useSearchParams } from 'react-router-dom'
 import { normalizeArmyForDisplay } from '../services/armyIdentity'
 import InfinityArmyLink from '../components/InfinityArmyLink'

@@ -1,5 +1,6 @@
 import PageLoading from '../components/PageLoading'
-import TablePagination, { useTablePagination } from '../components/TablePagination'
+import TablePagination from '../components/TablePagination'
+import { useTablePagination } from '../components/useTablePagination'
 import { presentStream } from './streamPresentation'
 import leagueOverviewArtwork from '../assets/current-league-overview-hero.png'
 import teamOverviewArtwork from '../assets/team-tournament-overview-hero.png'

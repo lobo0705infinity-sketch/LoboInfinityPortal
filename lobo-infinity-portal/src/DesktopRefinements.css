@@ -13,16 +13,17 @@
 .loading-heading {height:140px}.loading-cards {height:100px}.loading-table {height:280px}
 @keyframes loading-sheen {to{background-position:-200% 0}}
 @media(prefers-reduced-motion:reduce){.loading-placeholder{animation:none}}
-.battle-report-score > em {display:block;font-size:12px;font-style:normal;letter-spacing:.12em;text-transform:uppercase;text-align:center}
-.battle-report-score > strong {display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
-.battle-report-score > strong b {min-width:0;font-size:clamp(40px,7vw,92px);line-height:1;text-align:center}
+.app-shell .battle-report-score > em {display:block;font-size:12px;font-style:normal;letter-spacing:.12em;text-transform:uppercase;text-align:center}
+.app-shell .battle-report-score > strong {display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.app-shell .battle-report-score > strong b {min-width:0;font-size:clamp(40px,7vw,92px);line-height:1;text-align:center}
 @media(min-width:921px){
+ .app-shell {grid-template-columns:248px minmax(0,1fr)}
  .app-shell .sidebar {width:248px;background:#07131d;border-right:1px solid var(--border-quiet)}
  .app-shell .sidebar::before,.app-shell .sidebar::after {display:none}
- .app-shell .app-main {margin-left:248px;min-width:0}
- .app-shell .sidebar-link {min-height:40px;font-size:13px;border-radius:8px}
+ .app-shell .app-main {margin-left:0;min-width:0}
+ .app-shell .sidebar-button {min-height:40px;font-size:13px;border-radius:8px}
  .app-shell .sidebar-section-toggle {width:100%;display:flex;justify-content:space-between;border:0;background:none;padding:12px 4px;color:#afc6d4;font-size:12px;text-align:left;text-transform:uppercase;letter-spacing:.08em}
- .app-shell .app-header {min-height:76px;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:nowrap}
+ .app-shell .portal-header {min-height:76px;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:nowrap}
  .app-shell .header-title {display:none}
  .app-shell .header-actions {width:100%;flex-wrap:nowrap}
  .app-shell .portal-shell {padding:20px 24px;gap:24px}
@@ -53,3 +54,5 @@
  .app-shell main.snapshot-public-page[data-page="dashboard"]>.page-header {aspect-ratio:auto;min-height:280px;max-height:320px}
 }
 @media(min-width:921px) and (max-width:1200px){.app-shell .quick-jump,.app-shell .header-status{display:none}}
+
+@media(min-width:921px){.app-shell .portal-shell.snapshot-public-page .snapshot-metric-grid .snapshot-metric-card span{font-size:12px}.app-shell .portal-shell.snapshot-public-page .snapshot-metric-grid .snapshot-metric-card strong{font-size:24px}}

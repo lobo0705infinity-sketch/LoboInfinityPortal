@@ -1,6 +1,7 @@
+import { parseCanonicalStreamDate } from './streamOrdering.ts'
 import type { PublicGame } from './snapshotTypes'
 type Stream={date:string;division:string;mission:string;player1:string;player2:string;title:string;youtubeUrl:string}
-function day(value:string){const match=value.match(/^\d{4}-\d{2}-\d{2}/);if(match)return match[0];const date=new Date(value);return Number.isNaN(date.getTime())?'':date.toISOString().slice(0,10)}
+function day(value:string){const timestamp=parseCanonicalStreamDate(value);return timestamp===null?'':new Date(timestamp).toISOString().slice(0,10)}
 export function presentStream<T extends Stream>(stream:T,games:PublicGame[]):T{
  const normalized=stream.division.toLowerCase().replace(/[^a-z]/g,'');const division=['provingground','provinggrounds'].includes(normalized)?'Proving Grounds':stream.division
  const same=(a:string,b:string)=>a.trim().toLowerCase()===b.trim().toLowerCase()
