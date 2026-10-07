@@ -128,8 +128,8 @@ assert.deepEqual(await filterUnannouncedMapChanges(announcementChannel, [{ kind:
 const revisedMap = { ...mapFixture, contentSignature: 'FEDCBA98765432100123456789ABCDEF' }
 assert.deepEqual(await filterUnannouncedMapChanges(announcementChannel, [{ kind: 'updated', item: revisedMap }], 'bot-1'), [{ kind: 'updated', item: revisedMap }])
 const noHistoryChannel = { messages: { fetch: async () => { throw new Error('Missing Read Message History') } } }
-assert.deepEqual(await filterUnannouncedMapChanges(noHistoryChannel, [{ kind: 'added', item: mapFixture }], 'bot-1'), [{ kind: 'added', item: mapFixture }])
-assert.deepEqual(await filterUnannouncedWorkshopChanges(noHistoryChannel, [workshopFixture], 'bot-1'), [workshopFixture])
+await assert.rejects(filterUnannouncedMapChanges(noHistoryChannel, [{ kind: 'added', item: mapFixture }], 'bot-1'), /posts are deferred/)
+await assert.rejects(filterUnannouncedWorkshopChanges(noHistoryChannel, [workshopFixture], 'bot-1'), /posts are deferred/)
 assert.equal(MISSION_COMMAND_DEFINITION.name, 'mission')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].name, 'scenario')
 assert.equal(MISSION_COMMAND_DEFINITION.options[0].required, true)

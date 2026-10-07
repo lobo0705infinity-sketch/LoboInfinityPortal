@@ -11,6 +11,12 @@ export const STEAM_WORKSHOP_DETAILS_URL = 'https://api.steampowered.com/ISteamRe
 export const DEFAULT_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000
 export const DEFAULT_BASELINE_LOOKBACK_MS = 72 * 60 * 60 * 1000
 export const DEFAULT_STATE_PATH = resolve(import.meta.dirname, '..', '.tmp', 'rules-resource-watcher.json')
+export function resourceStatePath(env = process.env) {
+  if (env.INFINITY_RESOURCES_STATE_PATH) return env.INFINITY_RESOURCES_STATE_PATH
+  return env.RAILWAY_VOLUME_MOUNT_PATH
+    ? resolve(env.RAILWAY_VOLUME_MOUNT_PATH, 'rules-resource-watcher.json')
+    : DEFAULT_STATE_PATH
+}
 export const MAP_WATCHER_STATE_VERSION = 3
 
 export function sha256(value) {
@@ -209,7 +215,7 @@ async function resolveWorkshopMaps(workshops, previous, fetchImpl) {
 export async function checkRulesResources({
   url = process.env.INFINITY_MAPS_API_URL || DEFAULT_MAPS_API_URL,
   mapsPageUrl = process.env.INFINITY_MAPS_PAGE_URL || DEFAULT_MAPS_PAGE_URL,
-  statePath = process.env.INFINITY_RESOURCES_STATE_PATH || DEFAULT_STATE_PATH,
+  statePath = resourceStatePath(),
   fetchImpl = globalThis.fetch,
   workshopItemIds = parseWorkshopItemIds(process.env.INFINITY_WORKSHOP_ITEM_IDS || DEFAULT_WORKSHOP_ITEM_IDS),
   baselineLookbackMs = DEFAULT_BASELINE_LOOKBACK_MS,

@@ -15,6 +15,8 @@ RUN node scripts/bot-improvements-check.mjs
 RUN node scripts/grouped-commands-check.mjs
 RUN node scripts/response-details-check.mjs
 RUN node scripts/bot-inventory-check.mjs
+RUN node scripts/rules-resource-watcher-check.mjs
+RUN node scripts/delivery-jobs-check.mjs
 RUN npm run test:random-list
 RUN npm run test:inf-list-classifieds
 
