@@ -31,11 +31,10 @@ export default function ArmyListsTable({ lists }: { lists: PublicArmyList[] }) {
       <button type="button" onClick={() => { setQuery(''); setFaction(''); setMission('') }} disabled={!query && !faction && !mission}>Clear filters</button>
     </div>
     <div className="army-list-summary"><p role="status">{rows.length} of {lists.length} lists</p><span>Select a heading to sort</span></div>
-    <p className="army-list-scroll-hint">Swipe the table to see all columns. View list stays on the right.</p>
     <div className="army-list-table-scroll" role="region" aria-label="Army lists table" tabIndex={0}>
       <table className="army-list-table"><caption className="army-list-sr-only">Submitted army lists. Sort by selecting a column heading.</caption>
         <thead><tr>{columns.map(column => <th key={column.key} scope="col" aria-sort={sort === column.key ? direction === 'asc' ? 'ascending' : 'descending' : 'none'}><button type="button" onClick={() => changeSort(column.key)}>{column.label}<span aria-hidden="true">{sort === column.key ? direction === 'asc' ? ' ↑' : ' ↓' : ' ↕'}</span></button></th>)}<th scope="col">Army list</th></tr></thead>
-        <tbody>{rows.length ? rows.map(list => <tr key={list.id}>{columns.map(column => <td key={column.key}>{column.key === 'date' ? formatListDate(list.date) : armyListValue(list, column.key) || '—'}</td>)}<td>{list.armyLink ? <InfinityArmyLink href={list.armyLink}>View list<span className="army-list-sr-only"> by {armyListValue(list, 'player')}</span></InfinityArmyLink> : <span className="army-list-unavailable">Unavailable</span>}</td></tr>) : <tr><td colSpan={columns.length + 1} className="army-list-empty">{lists.length ? 'No lists match these filters.' : 'No army lists have been submitted yet.'}</td></tr>}</tbody>
+        <tbody>{rows.length ? rows.map(list => <tr key={list.id}>{columns.map(column => <td key={column.key} data-label={column.label}>{column.key === 'date' ? formatListDate(list.date) : armyListValue(list, column.key) || '—'}</td>)}<td data-label="Army list">{list.armyLink ? <InfinityArmyLink copyOnly href={list.armyLink}>Copy Army Code</InfinityArmyLink> : <span className="army-list-unavailable">Unavailable</span>}</td></tr>) : <tr><td colSpan={columns.length + 1} className="army-list-empty">{lists.length ? 'No lists match these filters.' : 'No army lists have been submitted yet.'}</td></tr>}</tbody>
       </table>
     </div>
   </section>
