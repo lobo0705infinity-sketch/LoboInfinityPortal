@@ -20,7 +20,7 @@ const memberRecord = (member, primaryId) => ({
 
 // This is a read-only inventory. Permissions and recent activity are evidence,
 // not proof of a bot's hosting, owner, complete functions, or redundancy.
-export async function collectBotInventory(guild, {primaryId=guild.client.user.id, now=()=>Date.now(), maxChannels=30, historyLimit=50, maxMemberPages=10, budgetMs=60000}={}) {
+export async function collectBotInventory(guild, {primaryId=guild.client.user.id, now=()=>Date.now(), maxChannels=100, historyLimit=50, maxMemberPages=10, budgetMs=60000}={}) {
   const started=now(), bots=new Map(), webhooks=new Map(), checks=[]
   let memberListComplete=false
   const addMember=member=>{if(member.user?.bot)bots.set(member.user.id,memberRecord(member,primaryId))}
@@ -69,9 +69,13 @@ export async function collectBotInventory(guild, {primaryId=guild.client.user.id
       scanned++
       for(const message of values(messages)){
         if(!message.author?.bot && !message.webhookId)continue
-        const map=message.webhookId?webhooks:bots,id=message.webhookId || message.author.id
+        // Discord uses application webhooks for slash replies and follow-ups.
+        // A verified bot member or application response is still that bot.
+        const isApplicationReply=bots.get(message.author.id)?.membership==='current' || message.applicationId===message.author.id || Boolean(message.interactionMetadata)
+        const isWebhook=Boolean(message.webhookId && !isApplicationReply)
+        const map=isWebhook?webhooks:bots,id=isWebhook?message.webhookId:message.author.id
         let record=map.get(id)
-        if(!record){record={id,name:clean(message.author.username),type:message.webhookId?'webhook':'bot',...(message.webhookId?{channelId:channel.id}:{membership:'observed in recent history',ownership:'unverified'}),observations:[]};map.set(id,record)}
+        if(!record){record={id,name:clean(message.author.username),type:isWebhook?'webhook':'bot',...(isWebhook?{channelId:channel.id}:{membership:'observed in recent history',ownership:'unverified'}),observations:[]};map.set(id,record)}
         const timestamp=message.createdTimestamp || 0
         if(timestamp>(record.lastObservedAt || 0))record.lastObservedAt=timestamp
         let observed=record.observations.find(x=>x.channelId===channel.id)
