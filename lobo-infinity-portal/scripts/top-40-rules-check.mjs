@@ -6,6 +6,7 @@ import { chromium } from 'playwright'
 
 const eventHome = await readFile(new URL('../src/pages/EventHome.tsx', import.meta.url), 'utf8')
 const publicApp = await readFile(new URL('../src/public/SnapshotPublicApp.tsx', import.meta.url), 'utf8')
+const eventTabs = await readFile(new URL('../src/components/EventSectionTabs.tsx', import.meta.url), 'utf8')
 const source = await readFile(new URL('../src/components/Top40RulesPage.tsx', import.meta.url), 'utf8')
 const styles = await readFile(new URL('../src/components/Top40RulesPage.css', import.meta.url), 'utf8')
 const rulebook = await readFile(new URL('../src/content/rulebooks/top40.ts', import.meta.url), 'utf8')
@@ -37,7 +38,8 @@ assert.match(styles, /\.top40-rules-hero img[\s\S]*width: 100%;[\s\S]*height: au
 assert.doesNotMatch(styles, /object-fit:\s*cover|filter:|\.top40-rules-hero::(?:before|after)/)
 assert.match(source, /current-league-rules-page top40-rules-page/)
 assert.match(source, /height="941"[\s\S]*width="1671"/)
-assert.match(publicApp, /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{eventId\}\/rules`/)
+assert.match(publicApp, /import PublicTabs from '..\/components\/EventSectionTabs'/)
+assert.match(eventTabs, /item === 'rules' && eventId === 'event-lobo-s-american-top-40'\s*\? `\/event\/\$\{eventId\}\/rules`/)
 
 for (const id of sectionIds) assert.ok(rulebook.includes(`id: '${id}'`), `missing section: ${id}`)
 for (const text of [
