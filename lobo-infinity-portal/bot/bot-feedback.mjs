@@ -14,7 +14,7 @@ async function pruneContexts(dir) {
   }
 }
 const directory = () => process.env.BOT_FEEDBACK_PATH || '/data/bot-feedback'
-const commands = new Set(['rules', 'matchup', 'inf-list', 'build-list', 'random-list'])
+const commands = new Set(['list', 'combat', 'rules', 'matchup', 'inf-list', 'build-list', 'random-list'])
 const safeId = value => /^[a-f0-9-]{36}$/.test(value)
 const optionsOf = options => (options || []).map(({ name, value, options }) => ({ name, ...(value == null ? {} : { value }), ...(options ? { options: optionsOf(options) } : {}) }))
 const outputOf = payload => ({ content: payload.content || '', embeds: (payload.embeds || []).map(x => x.toJSON?.() || x), files: (payload.files || []).map(x => ({ name: x.name || 'attachment', ...(Buffer.isBuffer(x.attachment) && /\.txt$/.test(x.name || '') ? { text: x.attachment.toString('utf8') } : Buffer.isBuffer(x.attachment) ? { bytes:x.attachment.length, sha256:createHash('sha256').update(x.attachment).digest('hex') } : {}) })) })
