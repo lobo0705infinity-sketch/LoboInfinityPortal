@@ -56,3 +56,10 @@
 @media(min-width:921px) and (max-width:1200px){.app-shell .quick-jump,.app-shell .header-status{display:none}}
 
 @media(min-width:921px){.app-shell .portal-shell.snapshot-public-page .snapshot-metric-grid .snapshot-metric-card span{font-size:12px}.app-shell .portal-shell.snapshot-public-page .snapshot-metric-grid .snapshot-metric-card strong{font-size:24px}}
+
+@media(min-width:921px){
+ .app-shell .portal-shell :is(.snapshot-card,.snapshot-metric-card,.snapshot-faction-directory-card,.snapshot-team-tournament-team-card,.lobo-map-card){border-radius:12px;border-color:var(--border-quiet);box-shadow:none}
+ .app-shell .portal-shell .snapshot-team-tournament-team-card :is(.eyebrow,.snapshot-team-tournament-team-captain span,.snapshot-team-tournament-team-restriction span,.snapshot-team-tournament-roster>span){font-size:12px}
+ .app-shell .portal-shell .snapshot-team-tournament-team-card-heading>span {font-size:12px;max-width:7rem}
+ .app-shell .battle-report :is(.eyebrow,dt,.battle-report-hero-tag,.battle-report-eyebrow){font-size:12px}
+}

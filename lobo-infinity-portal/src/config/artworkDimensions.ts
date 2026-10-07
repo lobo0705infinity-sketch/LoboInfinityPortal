@@ -1,3 +1,5 @@
+import leagueOverviewArtwork from '../assets/current-league-overview-hero.png'
+import teamOverviewArtwork from '../assets/team-tournament-overview-hero.png'
 import artwork0 from '../assets/current-league-standings-hero.png'
 import artwork1 from '../assets/current-league-schedule-hero.png'
 import artwork2 from '../assets/current-league-registration-hero.png'
@@ -11,6 +13,9 @@ import artwork9 from '../assets/team-tournament-rules-hero.png'
 
 // Intrinsic dimensions reserve the full artwork space before images load.
 const dimensions: Record<string, readonly [number, number]> = {
+  [leagueOverviewArtwork]: [1672, 940],
+  [teamOverviewArtwork]: [1597, 985],
+  '/src/assets/game-submission-hero.png': [1536, 1024],
   [artwork0]: [1672, 941],
   [artwork1]: [1536, 1024],
   [artwork2]: [1536, 1024],

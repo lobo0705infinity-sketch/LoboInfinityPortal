@@ -157,7 +157,7 @@ export default function SnapshotArmyIntelligence() {
 
     <details className="snapshot-intelligence-data-status" id="data-status">
       <summary>Data status and methodology</summary>
-      <p>{data.decodedLists} decoded lists across {data.options.length} indexed armies. {data.pendingLists} pending; {data.failedLists} could not be decoded and are excluded from the analysis. These are patterns in submitted lists, not a complete picture of every army.</p>
+      <p>{data.decodedLists} decoded {data.decodedLists===1?'list':'lists'} across {data.options.length} indexed {data.options.length===1?'army':'armies'}. {data.pendingLists} pending; {data.failedLists} could not be decoded and are excluded from the analysis. These are patterns in submitted lists, not a complete picture of every army.</p>
     </details>
 
     {selected
