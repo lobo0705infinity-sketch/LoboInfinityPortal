@@ -63,3 +63,20 @@
  .app-shell .portal-shell .snapshot-team-tournament-team-card-heading>span {font-size:12px;max-width:7rem}
  .app-shell .battle-report :is(.eyebrow,dt,.battle-report-hero-tag,.battle-report-eyebrow){font-size:12px}
 }
+
+.app-shell .battle-report-score dl div{padding:8px 4px;min-width:0}
+.app-shell .battle-report-score dl dt{font-size:12px;letter-spacing:.05em}
+.app-shell .battle-report-score dl dd{font-size:16px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.app-shell .battle-report-score dl abbr{text-decoration:none}
+@media(min-width:921px){
+ .app-shell .battle-report-hero::before,.app-shell .battle-report-hero::after{display:none}
+ .app-shell .battle-report-participant h2{font-size:clamp(24px,2.1vw,32px);line-height:1.15}
+ .app-shell .sidebar-nav{gap:4px}
+ .app-shell .sidebar-button{min-height:40px;padding:8px 12px}
+ .app-shell .sidebar-icon{width:20px;height:20px}
+}
+
+.snapshot-player-army a,.snapshot-player-army a:visited,.army-list-table td a,.army-list-table td a:visited{color:#7bdceb}
+@media(min-width:921px){
+ .app-shell main.snapshot-public-page[data-page="players"] .snapshot-player-directory-context,.app-shell .snapshot-table-badge,.app-shell .portal-shell .snapshot-filter-row label span{font-size:12px}
+}

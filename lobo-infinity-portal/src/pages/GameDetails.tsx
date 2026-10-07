@@ -531,7 +531,7 @@ function Scoreboard({
       <dl>
         {scores.map((score) => (
           <div key={score.label}>
-            <dt title={getScoreLabel(score.label)}>{getScoreLabel(score.label)}</dt>
+            <dt><abbr title={getScoreLabel(score.label)} aria-label={getScoreLabel(score.label)}>{score.label}</abbr></dt>
             <dd>{score.left}–{score.right}</dd>
           </div>
         ))}
