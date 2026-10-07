@@ -1,3 +1,4 @@
+import StreamThumbnail from '../components/StreamThumbnail'
 import PageLoading from '../components/PageLoading'
 import TablePagination from '../components/TablePagination'
 import { useTablePagination } from '../components/useTablePagination'
@@ -418,7 +419,7 @@ function StreamsDirectory(){
         <tbody>{streams.map((stream,index)=>{
           const thumbnail=getYouTubeThumbnailUrl(stream.youtubeUrl)
           return <tr key={`${stream.youtubeUrl}-${index}`}>
-            <td className="snapshot-streams-thumbnail">{thumbnail?<img src={thumbnail} alt={`Thumbnail for ${stream.player1} versus ${stream.player2}`} loading="lazy" width="320" height="180"/>:<span>Preview unavailable</span>}</td>
+            <td className="snapshot-streams-thumbnail">{thumbnail?<StreamThumbnail src={thumbnail} alt={`Thumbnail for ${stream.player1} versus ${stream.player2}`}/>:<span>Preview unavailable</span>}</td>
             <td><strong>{stream.player1} <span>vs</span> {stream.player2}</strong>{stream.title?<small>{stream.title}</small>:null}</td>
             <td>{formatDate(stream.date)}</td><td>{stream.division}</td><td><span className="snapshot-streams-mission">{stream.mission}</span></td>
             <td><a className="snapshot-streams-watch" aria-label={`Watch ${stream.player1} versus ${stream.player2}`} href={stream.youtubeUrl} target="_blank" rel="noopener noreferrer">Watch</a></td>
