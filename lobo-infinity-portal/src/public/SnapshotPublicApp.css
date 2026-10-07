@@ -3446,3 +3446,11 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-re
   .snapshot-mobile-game-mission { color: #b9cbd7; font-size: .82rem; }
   .snapshot-mobile-game-score { color: #f7fbff; font-size: .78rem; font-weight: 800; }
 }
+
+.snapshot-mission-reference-unavailable {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-muted, #afc6d4);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
