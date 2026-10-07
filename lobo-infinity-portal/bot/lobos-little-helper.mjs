@@ -50,7 +50,7 @@ async function recentBotMessages(channel, botUserId) {
     const recent = await channel.messages.fetch({ limit: 100 })
     return [...recent.values()].filter((message) => message.author?.id === botUserId)
   } catch {
-    return []
+    throw new Error('Announcement history could not be checked; map/workshop posts are deferred to avoid duplicates.')
   }
 }
 

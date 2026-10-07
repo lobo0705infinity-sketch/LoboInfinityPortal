@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { deliveryJobReport } from './delivery-jobs.mjs'
 import { PermissionFlagsBits } from 'discord.js'
 
 const directory = () => process.env.BOT_INVENTORY_PATH || '/data/bot-inventory'
@@ -87,7 +88,7 @@ export async function collectBotInventory(guild, {primaryId=guild.client.user.id
   await Promise.all([scan(),scan()])
   checks.push({source:'recent message sample',complete:scanned===eligible.length&&failed===0&&eligible.length===totalTextChannels,scannedChannels:scanned,totalTextChannels,readableChannels:eligible.length,failedChannels:failed,historyLimit,maxChannels,reason:'Sampled messages do not establish inactivity or all responsibilities. Threads and older history are not included.'})
   const sorted=records=>values(records).sort((a,b)=>a.name.localeCompare(b.name))
-  return {version:1,guildId:guild.id,guildName:clean(guild.name),at:new Date(now()).toISOString(),primaryBotId:primaryId,memberListComplete,bots:sorted(bots),webhooks:sorted(webhooks),checks,
+  return {version:1,guildId:guild.id,guildName:clean(guild.name),at:new Date(now()).toISOString(),primaryBotId:primaryId,memberListComplete,bots:sorted(bots),webhooks:sorted(webhooks),checks,delivery:await deliveryJobReport(),
     production:{primaryService:'Railway / LoboInfinityPortal',repository:'lobo0705infinity-sketch/LoboInfinityPortal',portalAnnouncements:'Apps Script DiscordApi.gs webhook, delivered by the Automation Queue'},
     decision:'Keep Lobo’s Little Helper as the primary bot. No other publisher is proven redundant by this inventory. Do not retire a bot based only on its name, permissions, or an empty recent-message sample.'}
 }
@@ -113,7 +114,7 @@ export async function loadBotInventory(guildId,{dir=directory()}={}) {
 export function inventoryResponse(inventory) {
   const names=inventory.bots.filter(x=>x.membership==='current').map(x=>clean(x.name)).join(', ') || 'No current bot members verified'
   const incomplete=inventory.checks.filter(x=>!x.complete).length
-  const content=`**Bot inventory · ${clean(inventory.guildName)}**\nPrimary bot: **Lobo’s Little Helper**\nVerified current bots: ${names}\nObserved webhook publishers: ${inventory.webhooks.length}\n\n${incomplete?`${incomplete} inventory sources have limited coverage. `:''}The attached report separates bot accounts, webhook publishers, permissions and sampled activity. It contains no message text, webhook tokens or webhook URLs.\n\nUse \`/admin bots refresh:True\` to rescan. Other publishers need verified functions and ownership before retirement.`
+  const content=`**Bot inventory · ${clean(inventory.guildName)}**\nPrimary bot: **Lobo’s Little Helper**\nVerified current bots: ${names}\nObserved webhook publishers: ${inventory.webhooks.length}\n\n${incomplete?`${incomplete} inventory sources have limited coverage. `:''}The attached report separates bot accounts, webhook publishers, permissions, sampled activity, delivery jobs and schedules. It contains no message text, webhook tokens or webhook URLs.\n\nUse \`/admin bots refresh:True\` to rescan. Other publishers need verified functions and ownership before retirement.`
   return {content:content.slice(0,1950),files:[{name:'bot-inventory.json',attachment:Buffer.from(JSON.stringify(inventory,null,2))}],allowedMentions:{parse:[]}}
 }
 export function createBotInventoryHandler({load=loadBotInventory,refresh=refreshBotInventory,logger=console,now=()=>Date.now()}={}) {
@@ -136,6 +137,7 @@ export async function inventoryAtStartup(client,{refresh=refreshBotInventory,log
   for(const guild of client.guilds.cache.values()){
     try {
       const inventory=await refresh(guild)
+      logger.info(`Bot delivery jobs: ${JSON.stringify(inventory.delivery)}`)
       // Never log webhook objects, raw messages or arbitrary upstream errors.
       logger.info(`Bot inventory: ${JSON.stringify({guildId:guild.id,bots:inventory.bots.map(({id,name,membership,elevatedPermissions})=>({id,name,membership,elevatedPermissions})),webhooks:inventory.webhooks.map(({id,name,channelId})=>({id,name,channelId})),memberListComplete:inventory.memberListComplete,checks:inventory.checks})}`)
     }catch{logger.error('Bot inventory could not be collected at startup.')}

@@ -54,7 +54,7 @@ try{
   await createGroupedCommandHandler({handlers:{'bot-inventory':stale}})(new Interaction());assert.equal(refreshed,2)
   const fail=new Interaction();await createGroupedCommandHandler({handlers:{'bot-inventory':createBotInventoryHandler({load:async()=>{throw Error('disk')},refresh:async()=>{throw Error('SECRET')},logger:quiet})}})(fail);assert.match(fail.output.content,/could not be refreshed/);assert.doesNotMatch(fail.output.content,/SECRET/)
   const logs=[];await inventoryAtStartup({guilds:{cache:map([guild])}},{refresh:async()=>report,logger:{info:x=>logs.push(x),error:x=>logs.push(x)}})
-  assert.match(logs[0],/Other Bot/);assert.doesNotMatch(logs[0],/SECRET|PRIVATE|api\/webhooks/)
+  assert.match(logs.join('\n'),/Other Bot/);assert.match(logs.join('\n'),/Bot delivery jobs/);assert.doesNotMatch(logs.join('\n'),/SECRET|PRIVATE|api\/webhooks/)
   const admin=ApplicationCommandManager.transformCommand(GROUPED_COMMAND_DEFINITIONS.find(x=>x.name==='admin'))
   assert.equal(admin.default_member_permissions,PermissionFlagsBits.ManageGuild.toString());assert.equal(admin.options.find(x=>x.name==='bots').options[0].type,5)
   assert.match(helpResponse('admin',true).embeds[0].description,/admin bots/)
