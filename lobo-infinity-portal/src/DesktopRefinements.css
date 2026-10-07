@@ -87,3 +87,8 @@
 
 .app-shell main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail img{height:auto}
 .app-shell main.snapshot-public-page[data-page="streams"] .snapshot-streams-thumbnail span{font-size:12px}
+@media(min-width:921px){
+ .app-shell main.snapshot-intelligence-page :is(.snapshot-intelligence-selector,.snapshot-intelligence-controls,.snapshot-intelligence-explorer-controls) label{font-size:12px}
+ .app-shell main.snapshot-intelligence-page :is(.snapshot-intelligence-selector,.snapshot-intelligence-controls,.snapshot-intelligence-explorer-controls) :is(select,input){font-size:14px}
+ .app-shell main.snapshot-intelligence-page .interactive-metric-card-label{font-size:12px}
+}
