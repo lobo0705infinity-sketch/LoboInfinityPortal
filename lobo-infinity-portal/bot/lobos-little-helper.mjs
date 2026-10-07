@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createBotInventoryHandler, inventoryAtStartup } from './bot-inventory.mjs'
 import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands } from './grouped-commands.mjs'
 import { installFeedbackCapture, createBotFeedbackHandler, ensureBotReportsCommand, reportableResponse } from './bot-feedback.mjs'
@@ -127,9 +128,10 @@ export function createLobosLittleHelper() {
   const handleMatchmaking = createMatchmakingInteractionHandler()
   const handleMatchmakingAutocomplete = createMatchmakingAutocompleteHandler()
   const handleFeedback = createBotFeedbackHandler()
+  const handleBotInventory = createBotInventoryHandler()
   const handleGrouped = createGroupedCommandHandler({ handlers: {
     'inf-list': handleInfList, 'build-list': handleBuildList, 'random-list': handleRandomList, 'inf-id': handleInfId,
-    'matchup': handleMatchup, 'aro-counter': handleAroVs, 'availability': handleMatchmaking, 'find-game': handleMatchmaking, 'bot-reports': handleFeedback,
+    'matchup': handleMatchup, 'aro-counter': handleAroVs, 'availability': handleMatchmaking, 'find-game': handleMatchmaking, 'bot-reports': handleFeedback, 'bot-inventory': handleBotInventory,
   }, autocompleteHandlers: {
     'build-list': handleBuildListAutocomplete, 'random-list': handleRandomListAutocomplete,
     'matchup': handleMatchupAutocomplete, 'aro-counter': handleAroCounterAutocomplete,
@@ -191,6 +193,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }
+  void inventoryAtStartup(client)
   startRulesResourceWatcher({
     logger: console,
     onChange: async ({ changes }) => {

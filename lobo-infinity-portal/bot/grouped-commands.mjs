@@ -23,13 +23,14 @@ export const GROUPED_COMMAND_DEFINITIONS = Object.freeze([
   { name: 'help', description: 'Browse Lobo’s Little Helper commands and examples' },
   { name: 'admin', description: 'Server manager tools for Lobo’s Little Helper', defaultMemberPermissions: PermissionFlagsBits.ManageGuild.toString(), options: [
     { name: 'reports', description: 'Privately review recent incorrect-answer reports for this server', type: Type.Subcommand },
+    { name: 'bots', description: 'Privately inventory server bots, webhook publishers and permissions', type: Type.Subcommand, options: [{name:'refresh',description:'Rescan the server instead of using the recent saved inventory',type:Type.Boolean}] },
   ] },
 ])
 const routes = {
   list: { analyse: 'inf-list', build: 'build-list', random: 'random-list', identify: 'inf-id' },
   combat: { matchup: 'matchup', counters: 'aro-counter' },
   play: { availability: 'availability', find: 'find-game' },
-  admin: { reports: 'bot-reports' },
+  admin: { reports: 'bot-reports', bots: 'bot-inventory' },
 }
 
 export function groupedCommandRoute(interaction) {
@@ -89,7 +90,7 @@ const topics = {
   },
   admin: {
     title: 'Server Manager Tools',
-    description: '**/admin reports** — Privately download the latest 25 incorrect-answer reports for this server. Requires **Manage Server**.\n\nReports include the command inputs, answer context, reason and source message link. They do not automatically change the bot’s answers.\n\nExisting `/bot-reports` still works. Workshop monitoring runs automatically.',
+    description: '**/admin bots** — Privately inventory bot accounts, webhook publishers, permissions and recent activity. Use `refresh:True` to rescan. Requires **Manage Server**.\n\n**/admin reports** — Privately download the latest 25 incorrect-answer reports for this server. Requires **Manage Server**.\n\nReports include the command inputs, answer context, reason and source message link. They do not automatically change the bot’s answers.\n\nExisting `/bot-reports` still works. Workshop monitoring runs automatically.',
   },
 }
 export function helpResponse(topic = 'home', isManager = false) {
