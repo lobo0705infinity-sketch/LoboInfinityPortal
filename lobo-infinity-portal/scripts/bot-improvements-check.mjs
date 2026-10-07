@@ -51,3 +51,22 @@ assert.match(explanationFile.attachment.toString(), /TEST RATED MODEL/)
 assert.match(explanationFile.attachment.toString(), /Unlinked: A/)
 assert.match(ratingExplanations({categories:{}}), /No matched combat rating entries/)
 console.log('PASS - real tactical classifier output includes rating-explanations.txt in the Discord response.')
+
+// Human-readable regression: retain both real CC comparison pools without raw
+// engine JSON, duplicated skills, or unscaled weapon-contribution totals.
+const readable = ratingExplanations({categories:{
+  valuableAro:[{unitName:'Tankhunter',skills:['Mimetism (-3)','Mimetism [-3]'],nonLinked:{grade:'S',rating:12.72,percentile:99.08,weaponsUsed:[{weapon:'Portable Autocannon',scoreContribution:2226.69}]}}],
+  closeCombat:[{unitName:'Voronin',grade:'A',rating:28.86,percentile:81.26,states:[
+    {id:'normal',label:'Normal active-turn CC',grade:'B',rating:28.86,percentile:76.06,weaponsUsed:[{weapon:'AP CC Weapon',scoreContribution:230.87}]},
+    {id:'ally-1',label:'One allied Trooper engaged',grade:'A',rating:48.24,percentile:86.83,weaponsUsed:[]}
+  ]}]
+}})
+assert.match(readable,/Normal active-turn CC \(global profiles\): A/)
+assert.match(readable,/Normal active-turn CC: B/)
+assert.match(readable,/different pool/)
+assert.match(readable,/One allied Trooper engaged: A/)
+assert.match(readable,/Faction-specific grades are not available/)
+assert.match(readable,/Main benchmark weapons\/actions: Portable Autocannon/)
+assert.equal((readable.match(/Mimetism/g)||[]).length,1)
+assert.doesNotMatch(readable,/2226\.69|scoreContribution|weaponsUsed|States:|undefined|NaN/)
+console.log('PASS - readable CC pools, conditional states, deduplicated skills and weapon labels.')
