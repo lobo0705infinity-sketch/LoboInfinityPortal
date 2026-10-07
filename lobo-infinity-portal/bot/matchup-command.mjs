@@ -1,3 +1,4 @@
+import { withResponseDetails } from './response-details.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { resolve } from 'node:path'
 import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
@@ -48,12 +49,14 @@ export function createMatchupInteractionHandler({ compare = compareMatchup, rend
     if (!interaction?.isChatInputCommand?.() || interaction.commandName !== MATCHUP_COMMAND) return false
     try {
       await interaction.deferReply()
-      const result = await compare({
-        modelOne: interaction.options.getString(MODEL_ONE_OPTION, true).trim(),
-        modelTwo: interaction.options.getString(MODEL_TWO_OPTION, true).trim(),
-      })
+      const modelOne = interaction.options.getString(MODEL_ONE_OPTION, true).trim()
+      const modelTwo = interaction.options.getString(MODEL_TWO_OPTION, true).trim()
+      const result = await compare({ modelOne, modelTwo })
       const images = await render({ result })
-      await interaction.editReply({ content: `**Matchup · ${shortName(result.first.name)} vs ${shortName(result.second.name)}**`, files: images.map((image) => ({ attachment: image.imageBuffer, name: image.name })), allowedMentions: { parse: [] } })
+      await interaction.editReply(withResponseDetails({ content: `**Matchup · ${shortName(result.first.name)} vs ${shortName(result.second.name)}**`, files: images.map((image) => ({ attachment: image.imageBuffer, name: image.name })), allowedMentions: { parse: [] } }, { actions: {
+        counter1: { label: 'Counters: Model 1', command: 'aro-counter', values: { target: result.first.id || modelOne } },
+        counter2: { label: 'Counters: Model 2', command: 'aro-counter', values: { target: result.second.id || modelTwo } },
+      } }))
     } catch (error) {
       logger.error?.('Matchup request failed:', error)
       const message = { content: error?.code === 'profile_not_found' ? error.message : 'The matchup engine is temporarily unavailable.' }
