@@ -7,7 +7,7 @@ const styles = read('src/public/SnapshotPublicApp.css')
 
 assert.match(publicApp, /path="\/league-operations" element=\{<LeagueOperations \/>\}/)
 assert.match(publicApp, /function LeagueOperations\(\).*?data-page="league-operations"/s)
-assert.match(publicApp, /snapshot-league-operations-hero" role="img" aria-label="Current League Mission and Map"><\/header>/)
+assert.ok(publicApp.includes('<CompactArtwork title="Mission & Map" eyebrow="Current League" src={operationsArtwork}/>'))
 assert.doesNotMatch(publicApp, /snapshot-league-operations-hero-copy/)
 assert.doesNotMatch(styles, /snapshot-league-operations-hero-copy/)
 assert.match(publicApp, /source\?\.missions\.slice\(0,2\)/)

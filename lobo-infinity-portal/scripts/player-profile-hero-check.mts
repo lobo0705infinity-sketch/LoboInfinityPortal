@@ -100,8 +100,9 @@ async function verifyRenderedProfiles() {
     await mockSnapshot(failedPage, 'ALEPH')
     await failedPage.route('**/assets/player-profile-heroes/aleph.png*', (route) => route.abort())
     await failedPage.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'commit' })
-    await failedPage.waitForSelector('.snapshot-player-profile-fallback')
-    assert.equal(await failedPage.locator('.snapshot-player-profile-hero img').count(), 0)
+    await failedPage.locator('.compact-artwork summary').click()
+    await failedPage.waitForSelector('.compact-artwork[data-artwork-unavailable]')
+    assert.equal(await failedPage.locator('.compact-artwork img').count(), 0)
     assert.equal(await failedPage.getByRole('heading', { name: 'Test Pilot' }).count(), 1)
     await failedPage.close()
   } finally {
@@ -124,7 +125,8 @@ async function verifyProfile(pagePromise: Promise<Page>, port: number, preferred
   const page = await pagePromise
   await mockSnapshot(page, preferredArmy)
   await page.goto(`http://127.0.0.1:${port}/players/Test%20Pilot`, { waitUntil: 'commit' })
-  const image = page.locator('.snapshot-player-profile-hero img')
+  await page.locator('.compact-artwork summary').click()
+  const image = page.locator('.compact-artwork img')
   try {
     await image.waitFor({ timeout: 10_000 })
   } catch {
@@ -137,7 +139,7 @@ async function verifyProfile(pagePromise: Promise<Page>, port: number, preferred
   assert.equal(await page.getByText('Game History', { exact: true }).count(), 1)
   assert.equal(await page.getByText('8-2-1', { exact: true }).count(), 1)
   const layout = await page.evaluate(() => {
-    const img = document.querySelector('.snapshot-player-profile-hero img') as HTMLImageElement
+    const img = document.querySelector('.compact-artwork img') as HTMLImageElement
     return {
       complete: img.complete && img.naturalWidth > 0,
       currentSrc: img.currentSrc,

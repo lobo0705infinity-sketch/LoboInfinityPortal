@@ -1,0 +1,14 @@
+.compact-artwork { margin: 0; border: 1px solid #29434e; border-radius: 12px; overflow: hidden; background: #0c1720; }
+.compact-artwork-heading { min-height: 96px; box-sizing: border-box; display: flex; align-items: center; padding: 16px 24px; background-size: cover; background-position: right 42%; }
+.compact-artwork-heading h1 { margin: 3px 0 0; font-size: clamp(1.5rem, 2.6vw, 2.15rem); line-height: 1.15; color: #f2f6f8; }
+.compact-artwork-heading .eyebrow { margin: 0; color: #56d7ed; font-size: .7rem; }
+.compact-artwork-disclosure summary { cursor: pointer; padding: 8px 24px; font-size: .75rem; color: #7bdceb; border-top: 1px solid #203640; list-style: none; }
+.compact-artwork-disclosure summary::-webkit-details-marker { display: none; }
+.compact-artwork-disclosure summary:hover { background: #152b37; }
+.compact-artwork-disclosure summary:focus-visible { outline: 2px solid #6cdef1; outline-offset: -3px; }
+.compact-artwork-disclosure img { display: block; width: 100%; height: auto; object-fit: contain; }
+.compact-artwork-disclosure .artwork-collapse, .compact-artwork-disclosure[open] .artwork-expand { display: none; }
+.compact-artwork-disclosure[open] .artwork-collapse { display: inline; }
+@media(max-width:600px) { .compact-artwork-heading { padding: 14px 16px; } .compact-artwork-disclosure summary { padding-inline: 16px; } }
+
+.compact-artwork-unavailable { padding: 16px 24px; color: #abc0ce; }

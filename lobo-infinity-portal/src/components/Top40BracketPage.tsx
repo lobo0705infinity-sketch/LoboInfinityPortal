@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { Link } from 'react-router-dom'
 import {
   buildCapabilityNavigation,
@@ -23,14 +24,7 @@ export default function Top40BracketPage({
 
   return (
     <main className="portal-shell event-overview-shell top40-bracket-page" data-event-section="bracket">
-      <figure className="panel top40-bracket-hero" aria-label="Lobo's American Top 40 Bracket artwork">
-        <img
-          alt="Lobo's American Top 40 Bracket"
-          height="941"
-          src="/assets/events/top-40-bracket.png"
-          width="1672"
-        />
-      </figure>
+      <CompactArtwork title="Tournament Bracket" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-bracket.png"/>
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (

@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { Link } from 'react-router-dom'
 import top40Rulebook from '../content/rulebooks/top40'
 import type { RuleContent } from '../content/rulebooks/types'
@@ -20,14 +21,7 @@ export default function Top40RulesPage() {
       className="portal-shell event-overview-shell current-league-rules-page top40-rules-page"
       data-event-section="rules"
     >
-      <figure className="panel top40-rules-hero" aria-label="Lobo's American Top 40 Rules artwork">
-        <img
-          alt="Lobo's American Top 40 Rules"
-          height="941"
-          src="/assets/events/top-40-rules.png?v=e49f616a"
-          width="1671"
-        />
-      </figure>
+      <CompactArtwork title="Rules" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-rules.png?v=e49f616a"/>
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (
           <Link key={`${item.label}-${item.href}`} to={item.href}>{item.label}</Link>

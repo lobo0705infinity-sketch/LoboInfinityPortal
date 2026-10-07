@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { Link } from 'react-router-dom'
 import {
   buildCapabilityNavigation,
@@ -41,14 +42,7 @@ export default function Top40RegistrationPage() {
 
   return (
     <main className="portal-shell event-overview-shell top40-registration-page" data-event="top40-registration">
-      <figure className="panel top40-registration-hero" aria-label="Lobo's American Top 40 Registration artwork">
-        <img
-          alt="Lobo's American Top 40 Registration"
-          height="941"
-          src="/assets/events/top-40-registration.png"
-          width="1672"
-        />
-      </figure>
+      <CompactArtwork title="Registration" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-registration.png"/>
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {navigation.map((item) => (

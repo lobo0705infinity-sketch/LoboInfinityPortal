@@ -429,7 +429,8 @@ if (browserBaseUrl) {
         await page.getByRole('navigation', { name: 'Event navigation' }).getByRole('link', { name: 'Registration' }).getAttribute('aria-current'),
         'page',
       )
-      const image = page.locator('.top40-registration-hero img')
+      await page.locator('.compact-artwork summary').click()
+      const image = page.locator('.compact-artwork img')
       await image.waitFor()
       assert.equal(await image.evaluate((node) => node.complete && node.naturalWidth === 1672 && node.naturalHeight === 941), true)
       assert.equal(await image.evaluate((node) => getComputedStyle(node).objectFit), 'contain')

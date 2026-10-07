@@ -37,7 +37,7 @@ assert.doesNotMatch(eventHome, /function Top40Rules\(|No Automatic Forfeits|Ther
 assert.match(styles, /\.top40-rules-hero img[\s\S]*width: 100%;[\s\S]*height: auto;[\s\S]*object-fit: contain;/)
 assert.doesNotMatch(styles, /object-fit:\s*cover|filter:|\.top40-rules-hero::(?:before|after)/)
 assert.match(source, /current-league-rules-page top40-rules-page/)
-assert.match(source, /height="941"[\s\S]*width="1671"/)
+assert.match(source, /<CompactArtwork title="Rules"/)
 assert.match(publicApp, /import PublicTabs from '..\/components\/EventSectionTabs'/)
 assert.match(eventTabs, /item === 'rules' && eventId === 'event-lobo-s-american-top-40'\s*\? `\/event\/\$\{eventId\}\/rules`/)
 
@@ -87,7 +87,8 @@ if (browserBaseUrl) {
         assert.equal(await page.locator(`.rules-toc a[href="#${id}"]`).count(), 1)
         assert.equal(await page.locator(`#${id}`).count(), 1)
       }
-      const image = page.locator('.top40-rules-hero img')
+      await page.locator('.compact-artwork summary').click()
+      const image = page.locator('.compact-artwork img')
       await image.waitFor()
       assert.equal(await image.evaluate((node) => node.complete && node.naturalWidth > 0), true)
       assert.equal(await image.evaluate((node) => getComputedStyle(node).objectFit), 'contain')

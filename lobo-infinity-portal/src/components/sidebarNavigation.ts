@@ -80,11 +80,6 @@ export const communityItems: NavigationItem[] = [
     to: '/players',
   },
   {
-    icon: 'compare',
-    label: 'Compare Players',
-    to: '/compare',
-  },
-  {
     icon: 'factions',
     label: 'Factions',
     to: '/factions',
@@ -103,11 +98,6 @@ export const communityItems: NavigationItem[] = [
     icon: 'army',
     label: 'Army Lists',
     to: '/army-lists',
-  },
-  {
-    icon: 'analytics',
-    label: 'Statistics',
-    to: '/analytics',
   },
 ]
 

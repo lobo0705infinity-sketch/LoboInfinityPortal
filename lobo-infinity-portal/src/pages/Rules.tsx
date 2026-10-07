@@ -1,3 +1,6 @@
+import CompactArtwork from '../components/CompactArtwork'
+import leagueRulesArtwork from '../assets/current-league-rules-hero.png'
+import teamRulesArtwork from '../assets/team-tournament-rules-hero.png'
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import EventSectionTabs from '../components/EventSectionTabs'
@@ -51,12 +54,7 @@ function Rules() {
 
   return (
     <main className={`portal-shell${pageClassName}`}>
-      <section className="page-header" aria-labelledby="rules-title">
-        <p className="eyebrow">{rulebook?.eventType ?? 'Rules Reference'}</p>
-        <h1 id="rules-title">{rulebook?.title ?? eventConfig.label}</h1>
-        {rulebook?.subtitle ? <h2>{rulebook.subtitle}</h2> : null}
-        <p>{rulebook?.description ?? 'Loading event rules reference'}</p>
-      </section>
+      <CompactArtwork title={rulebook?.title ?? eventConfig.label} eyebrow={rulebook?.eventType ?? "Rules Reference"} src={rulebookId === "teamTournament" ? teamRulesArtwork : leagueRulesArtwork}/>
 
       <EventSectionTabs eventId={eventId}
         teamTournament={rulebookId === 'teamTournament'}

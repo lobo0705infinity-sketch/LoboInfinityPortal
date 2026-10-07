@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { buildCapabilityNavigation, getEventNavigationConfig } from '../config/eventNavigation'
@@ -30,14 +31,7 @@ export default function Top40ResultsPage() {
 
   return (
     <main className="portal-shell snapshot-public-page top40-results-page" data-event-section="results">
-      <figure className="panel top40-results-hero" aria-label="Lobo's American Top 40 Results artwork">
-        <img
-          alt="Lobo's American Top 40 Results"
-          height="941"
-          src="/assets/events/top-40-results.png?v=6a394557"
-          width="1672"
-        />
-      </figure>
+      <CompactArtwork title="Results" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-results.png?v=6a394557"/>
 
       <nav className="snapshot-tabs" aria-label="Event sections">
         {navigation.map((item) => (

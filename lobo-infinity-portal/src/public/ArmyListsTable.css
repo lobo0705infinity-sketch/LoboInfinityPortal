@@ -1,0 +1,29 @@
+.army-list-directory { width: 100%; min-width: 0; padding: 20px; box-sizing: border-box; border: 1px solid #29434e; border-radius: 12px; background: #0c1720; }
+.army-list-filters { display: grid; grid-template-columns: minmax(200px, 2fr) minmax(160px, 1fr) minmax(160px, 1fr) auto; gap: 14px; align-items: end; }
+.army-list-filters label { display: grid; gap: 7px; color: #abc0ce; font-size: .8rem; }
+.army-list-filters input, .army-list-filters select { width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid #35515e; border-radius: 7px; background: #08131c; color: #e6eff5; padding: 11px 12px; font: inherit; }
+.army-list-filters button { border: 1px solid #35515e; border-radius: 7px; background: #162b36; color: #c6e9ee; padding: 11px 12px; cursor: pointer; }
+.army-list-filters button:disabled { opacity: .45; cursor: default; }
+.army-list-summary { display: flex; justify-content: space-between; gap: 12px; align-items: center; color: #9cb1bf; font-size: .8rem; margin: 16px 0 10px; }
+.army-list-summary p { margin: 0; }
+.army-list-table-scroll { overflow-x: auto; border: 1px solid #29434e; border-radius: 8px; }
+.army-list-table { width: 100%; min-width: 680px; border-collapse: collapse; table-layout: auto; text-align: left; }
+.army-list-table th { background: #17303c; text-align: left; white-space: nowrap; }
+.army-list-table th, .army-list-table td { padding: 13px 16px; border-bottom: 1px solid #233945; font-size: .88rem; }
+.army-list-table th button { display: flex; justify-content: space-between; gap: 12px; width: 100%; border: 0; background: transparent; padding: 0; color: #cce8ef; font: inherit; font-weight: 700; cursor: pointer; text-align: left; }
+.army-list-table td { color: #d6e2eb; overflow-wrap: anywhere; max-width: 300px; }
+.army-list-table tbody tr:nth-child(even) { background: #10202b; }
+.army-list-table tbody tr:hover { background: #193441; }
+.army-list-table td:first-child, .army-list-table td:last-child { white-space: nowrap; }
+.army-list-table td:last-child a { display: inline-block; padding: 6px 10px; border: 1px solid #37616d; border-radius: 6px; color: #7de4ee; text-decoration: none; }
+.army-list-table td:last-child a:hover { background: #244753; }
+.army-list-table tr:last-child td { border-bottom: 0; }
+.army-list-unavailable { color: #9cb1bf; font-size: .8rem; }
+.army-list-empty { text-align: center; padding: 32px !important; }
+.army-list-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.army-list-directory :focus-visible { outline: 2px solid #72dbe8; outline-offset: 3px; }
+@media(max-width:1000px) { .army-list-filters { grid-template-columns: 1fr 1fr; } }
+@media(max-width:600px) { .army-list-directory { padding: 12px; } .army-list-filters { grid-template-columns: 1fr; } .army-list-summary { align-items: start; flex-direction: column; gap: 4px; } }
+
+main.snapshot-public-page[data-page="army-lists"] > .page-header { min-height: 96px; box-sizing: border-box; padding: 16px 24px; }
+main.snapshot-public-page[data-page="army-lists"] > .page-header h1 { font-size: clamp(1.5rem, 2.6vw, 2.15rem); }
