@@ -33,6 +33,7 @@ function LittleHelper() {
           </p>
           <div className="helper-actions">
             <DiscordCommunityLink className="helper-button helper-button-primary" icon>Join Discord to try it <span aria-hidden="true">↗</span></DiscordCommunityLink>
+            <Link className="helper-button helper-button-secondary" to="/portal-guide?chapter=little-helper">Watch the bot walkthrough <span aria-hidden="true">▶</span></Link>
             <a className="helper-button helper-button-secondary" href="#helper-commands">See the commands <span aria-hidden="true">↓</span></a>
           </div>
           <p className="helper-hero-note">Start in the Lobo Infinity League Discord · Type /help for the private command guide</p>

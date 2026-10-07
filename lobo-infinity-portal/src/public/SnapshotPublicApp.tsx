@@ -28,6 +28,7 @@ import { getGameParticipants } from './gameParticipants'
 import { getPublicTeamTournamentParticipants, orderPublicTeamTournamentGames, orderPublicTeamTournamentStandings } from './teamTournamentPresentation'
 import type { PublicArmyList, PublicCommunity, PublicEvent, PublicFaction, PublicGame, PublicMission, PublicPlayer, PublicSchedule, PublicStanding, PublicStandingsDivision, PublicTeamTournamentStanding } from './snapshotTypes'
 import './SnapshotPublicApp.css'
+import '../pages/PortalGuide.css'
 
 const SubmitResult = lazy(() => import('../pages/SubmitResult'))
 const SubmitArmyList = lazy(() => import('../pages/SubmitArmyList'))
@@ -35,6 +36,7 @@ const PublicGameDetails = lazy(() => import('../pages/GameDetails'))
 const Rules = lazy(() => import('../pages/Rules'))
 const MobileMenu = lazy(() => import('../pages/MobileMenu'))
 const Explore = lazy(() => import('../pages/Explore'))
+const PortalGuide = lazy(() => import('../pages/PortalGuide'))
 const LittleHelper = lazy(() => import('../pages/LittleHelper'))
 const MapLibrary = lazy(() => import('./MapLibrary'))
 
@@ -58,6 +60,7 @@ export default function SnapshotPublicApp() {
     <Route path="/missions" element={<Missions />} />
     <Route path="/menu" element={<Suspense fallback={<Loading />}><MobileMenu /></Suspense>} />
     <Route path="/explore" element={<Suspense fallback={<Loading />}><Explore /></Suspense>} />
+    <Route path="/portal-guide" element={<Suspense fallback={<Loading />}><PortalGuide /></Suspense>} />
     <Route path="/little-helper" element={<Suspense fallback={<Loading />}><LittleHelper /></Suspense>} />
     <Route path="/missions/:missionName" element={<MissionProfile />} />
     <Route path="/mission/:missionName" element={<MissionProfile />} />
@@ -135,6 +138,11 @@ function Dashboard() {
         </nav>
         <p className="snapshot-dashboard-public-note"><strong>What can I use without joining the league?</strong> Browse Army Intelligence, battle reports, players, factions, missions, streams, and public event results. Register for an event when you want to participate; casual games have a separate submission form.</p>
       </section>
+      <Link className="portal-walkthrough-card" to="/portal-guide">
+        <img src="/assets/portal-guide/poster-v1.jpg" alt="" width="640" height="360" loading="lazy" />
+        <span><small>New to the portal?</small><strong>Watch the portal walkthrough</strong><span>4 minutes · Events, reports, factions, players, missions, and Discord tools</span></span>
+        <b aria-hidden="true">▶</b>
+      </Link>
       {featuredReport ? <section className="snapshot-dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
         <div>
           <p className="eyebrow">Featured battle report · BR-{featuredReport.id}</p>

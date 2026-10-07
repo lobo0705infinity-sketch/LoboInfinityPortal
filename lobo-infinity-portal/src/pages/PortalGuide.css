@@ -1,0 +1,21 @@
+.portal-guide-page { display: grid; gap: 1.25rem; }
+.portal-guide-page .page-header { min-height: 0; }
+.portal-guide-video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #070d16; border: 1px solid rgba(76,201,240,.3); border-radius: 14px; }
+.portal-guide-player-note { color: var(--text-soft); font-size: .9rem; line-height: 1.6; }
+.portal-guide-chapters h2 { font-size: 1.2rem; }
+.portal-guide-chapters nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; }
+.portal-guide-chapters button { display: flex; align-items: center; gap: .65rem; text-align: left; font: inherit; color: var(--text); border: 1px solid rgba(76,201,240,.22); border-radius: 10px; padding: .85rem; background: rgba(12,28,40,.85); cursor: pointer; }
+.portal-guide-chapters time { color: #91e8ff; font-variant-numeric: tabular-nums; }
+.portal-guide-chapters button > span:last-child { margin-left: auto; }
+.portal-guide-chapters button:hover, .portal-guide-chapters button:focus-visible, .portal-guide-chapters button[aria-current] { border-color: #91e8ff; background: rgba(35,69,86,.8); }
+.portal-guide-transcript { border: 1px solid rgba(76,201,240,.22); border-radius: 12px; padding: 1rem; line-height: 1.65; }
+.portal-guide-transcript summary { cursor: pointer; font-weight: 700; }
+.portal-walkthrough-card { display: grid; grid-template-columns: 160px minmax(0,1fr) auto; gap: 1.2rem; align-items: center; color: var(--text); text-decoration: none; border: 1px solid rgba(76,201,240,.35); background: linear-gradient(120deg,#122c3d,#09111b); border-radius: 14px; padding: 1rem; }
+.portal-walkthrough-card img { width: 100%; height: auto; border-radius: 8px; }
+.portal-walkthrough-card strong, .portal-walkthrough-card small, .portal-walkthrough-card span > span { display: block; }
+.portal-walkthrough-card strong { font-size: 1.2rem; margin: .25rem 0; }
+.portal-walkthrough-card small, .portal-walkthrough-card span > span { color: var(--text-soft); }
+.portal-walkthrough-card b { color: #91e8ff; font-size: 1.5rem; }
+.portal-walkthrough-card:hover, .portal-walkthrough-card:focus-visible { border-color: #91e8ff; }
+@media(max-width:900px) { .portal-guide-chapters nav { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:640px) { .portal-guide-chapters nav { grid-template-columns: 1fr; } .portal-walkthrough-card { grid-template-columns: 90px minmax(0,1fr); gap: .7rem; padding: .8rem; } .portal-walkthrough-card b { display: none; } .portal-walkthrough-card strong { font-size: 1rem; } .portal-walkthrough-card span > span { font-size: .8rem; } }

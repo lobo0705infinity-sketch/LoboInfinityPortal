@@ -5,6 +5,12 @@ import './Explore.css'
 
 const featured = [
   {
+    title: 'Portal Guide',
+    description: 'Watch the four-minute walkthrough or jump to a chapter.',
+    icon: 'rules' as const,
+    to: '/portal-guide',
+  },
+  {
     title: 'Army Intelligence',
     description: 'Explore submitted lists, model usage, specialists, and tactical roles.',
     icon: 'army' as const,

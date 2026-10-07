@@ -53,6 +53,7 @@ export function getJoinCommunityNavigationItem(
 }
 
 export const communityItems: NavigationItem[] = [
+  { icon: 'rules', label: 'Portal Guide', to: '/portal-guide' },
   {
     icon: 'discord',
     label: "Lobo's Little Helper",
