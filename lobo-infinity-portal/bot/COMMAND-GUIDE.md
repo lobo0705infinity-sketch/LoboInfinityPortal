@@ -13,6 +13,7 @@ The first organization release adds grouped commands alongside every existing co
 | Set/read/remove recurring availability | `/play availability set/show/clear` | `/availability set/show/clear` |
 | Post/close a one-off game request | `/play find now/close` | `/find-game now/close` |
 | Review incorrect-answer reports | `/admin reports` | `/bot-reports` |
+| Inventory server bots and webhook publishers | `/admin bots` | — |
 
 `/rules` and `/mission` remain direct reference commands. `/mission` uses the `scenario` input.
 
@@ -33,3 +34,5 @@ Existing command names have no removal date in this release.
 Checks: `node scripts/grouped-commands-check.mjs` exercises SDK option resolution, dispatch, autocomplete, three-list output, scheduling, permissions, help navigation, report inputs and additive/idempotent registration. It also runs in Dockerfile.bot.
 
 Second-release checks: `node scripts/response-details-check.mjs` covers cached downloads, reporting, permissions, expiry, connected actions and concurrency, and runs in Dockerfile.bot.
+
+`/admin bots` downloads a private inventory for the current server. `refresh:True` rescans; otherwise a saved report no older than one hour is used. Manage Server is checked when invoked. The worker also inventories at startup. Managed bot roles and REST member listing identify accounts, while webhook metadata and up to 50 recent messages in each of 30 readable text channels identify publishers. It uses existing permissions and marks unavailable sources or partial coverage. No message text, webhook token, or webhook URL is saved. This command does not modify roles, bot membership, webhook names, or automation settings.
