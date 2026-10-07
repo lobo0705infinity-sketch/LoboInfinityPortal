@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands } from './grouped-commands.mjs'
-import { installFeedbackCapture, createBotFeedbackHandler, ensureBotReportsCommand } from './bot-feedback.mjs'
+import { installFeedbackCapture, createBotFeedbackHandler, ensureBotReportsCommand, reportableResponse } from './bot-feedback.mjs'
 import { loadMobilityCatalog } from './mobility-catalog-store.mjs'
 // Railway production deployment: matchup command release 2026-09-21
 
@@ -109,7 +110,7 @@ export function formatWorkshopAnnouncement(item) {
 
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
-  client.setMaxListeners(20)
+  client.setMaxListeners(22)
   const handleMessage = createInfListMessageHandler()
   const handleInfList = createInfListInteractionHandler()
   const handleBuildList = createBuildListInteractionHandler()
@@ -134,6 +135,9 @@ export function createLobosLittleHelper() {
     'matchup': handleMatchupAutocomplete, 'aro-counter': handleAroCounterAutocomplete,
     'availability': handleMatchmakingAutocomplete, 'find-game': handleMatchmakingAutocomplete,
   } })
+  client.on(Events.InteractionCreate, createDetailInteractionHandler({ handlers: {
+    'inf-list': handleInfList, 'inf-id': handleInfId, 'aro-counter': handleAroVs,
+  }, report: reportableResponse }))
   client.on(Events.InteractionCreate, installFeedbackCapture)
   client.on(Events.InteractionCreate, handleFeedback)
   client.on(Events.InteractionCreate, handleGrouped)

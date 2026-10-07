@@ -1,3 +1,4 @@
+import { withResponseDetails, listActions } from './response-details.mjs'
 import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { getCurrentArmySource, searchBuildListFactions } from './build-list-command.mjs'
@@ -34,7 +35,12 @@ export async function buildRandomListResponse({ faction, points, swc, getSource 
     points, swc })
   const classifiedCoverage = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
   const tts = ttsDiscordAttachment({ armyCode: list.code, payload: source.payload, metadata: source.metadata })
-  return { ...formatRandomArmyList(list), files: tts.files, embeds: appendTtsEmbed(formatInfListClassifiedEmbeds(classifiedCoverage), tts) }
+  const response = { ...formatRandomArmyList(list), files: tts.files, embeds: appendTtsEmbed(formatInfListClassifiedEmbeds(classifiedCoverage), tts) }
+  return withResponseDetails(response, { initial: { content: `**Random list · ${list.faction}**\n${list.points}/${list.pointsLimit} pts · ${list.swc}/${list.swcLimit} requested SWC · ${list.legality.totals.troopers}/15 troopers\n\n[Open in Infinity Army](${list.url})\n-# Random roster; use Analyse This List for tactical ratings.`, files: tts.files.filter(file => file.name.endsWith('-tts-2d.json')) }, views: {
+    roster: { label: 'Army Roster', payload: { content: response.content } },
+    classifieds: { label: 'Classifieds', payload: { embeds: formatInfListClassifiedEmbeds(classifiedCoverage) } },
+    tts: { label: 'TTS Notes', payload: { embeds: [{ description: tts.text.slice(0,4000) }], files: tts.files.filter(file => file.name === 'tts-validation.txt') } },
+  }, actions: listActions(list.code) })
 }
 
 export function createRandomListAutocompleteHandler({ searchFaction = searchRandomListFactions, logger = console } = {}) {

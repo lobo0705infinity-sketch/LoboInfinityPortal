@@ -73,7 +73,7 @@ const manager = interaction => Boolean(interaction.guildId && interaction.member
 const topics = {
   lists: {
     title: 'Army Lists',
-    description: '**/list analyse** — Army code → readable list, legality, tactical brief, ratings, classifieds and TTS export.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`\n\nExisting `/inf-list`, `/build-list`, `/random-list`, `/inf-id` and `!!inf-list` still work.',
+    description: '**/list analyse** — Army code → readable list, legality, brief summary and TTS export. Detail buttons open Tactical Brief, Ratings, Classifieds and TTS Notes privately.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options with Analyse This List and Create ID Sheet buttons. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list with private roster/details and connected actions.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`\n\nExisting `/inf-list`, `/build-list`, `/random-list`, `/inf-id` and `!!inf-list` still work.',
   },
   combat: {
     title: 'Combat',

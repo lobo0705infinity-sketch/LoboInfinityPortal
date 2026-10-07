@@ -30,6 +30,7 @@ import {
   mapAnnouncementMarker,
   workshopAnnouncementMarker,
 } from '../bot/lobos-little-helper.mjs'
+import { installFeedbackCapture } from '../bot/bot-feedback.mjs'
 import { GatewayIntentBits } from 'discord.js'
 import { Events } from 'discord.js'
 import { MISSION_COMMAND_DEFINITION } from '../bot/mission-command.mjs'
@@ -179,12 +180,10 @@ let message = mockMessage(`!!inf-list ${testCode}`)
 assert.equal(await handler(message), true)
 assert.deepEqual(renderCalls, [{ input: testCode }])
 assert.equal(message.replies.length, 1)
-assert.equal(message.replies[0].content, `${legalityText}\n\n${SUCCESS_TEXT}\n\n[Open in Infinity Army](${officialArmyUrl})`)
+assert.equal(message.replies[0].content, `${legalityText}\n\n[Open in Infinity Army](${officialArmyUrl})`)
 assert.equal(message.replies[0].files[0].attachment, readableImageBuffer)
 assert.equal(message.replies[0].files[0].name, 'infinity-army-list-readable.png')
-assert.equal(message.replies[0].files[1].attachment, tacticalPages[0].imageBuffer)
-assert.equal(message.replies[0].files[1].name, 'infinity-army-tactical-brief.png')
-assert.equal(message.replies[0].files.length, 2)
+assert.equal(message.replies[0].files.length, 1)
 
 const slashRenderCalls = []
 const slashInteraction = mockInteraction(testCode)
@@ -195,11 +194,12 @@ const slashHandler = createInfListInteractionHandler({
   },
   logger: { error() {} },
 })
+installFeedbackCapture(slashInteraction)
 assert.equal(await slashHandler(slashInteraction), true)
 assert.equal(slashInteraction.deferred, true)
 assert.deepEqual(slashRenderCalls, [testCode])
-assert.ok(message.replies[0].components[0].components[0].custom_id.startsWith('bot-report:'))
-assert.deepEqual(slashInteraction.edits, message.replies.map(({ components, ...response }) => response))
+assert.ok(message.replies[0].components.at(-1).components[0].custom_id.startsWith('bot-report:'))
+assert.deepEqual(slashInteraction.edits.map(({components,...response})=>response), message.replies.map(({ components, ...response }) => response))
 
 const invalidSlash = mockInteraction('not$a$code')
 assert.equal(await slashHandler(invalidSlash), true)
@@ -250,7 +250,7 @@ await Promise.all(Array.from({ length: 5 }, () => withSlot(async () => {
 assert.equal(maximumActive, 2)
 
 const client = createLobosLittleHelper()
-assert.equal(client.listenerCount(Events.InteractionCreate), 18)
+assert.equal(client.listenerCount(Events.InteractionCreate), 19)
 client.destroy()
 
 if (process.argv.includes('--live')) {
@@ -262,27 +262,21 @@ if (process.argv.includes('--live')) {
   assert.equal(await createInfListMessageHandler({ render: async (args) => { legacyRendered = await renderInfListPng(args); return legacyRendered } })(liveMessage), true)
   assert.equal(liveMessage.replies.length, 1)
   assert.match(liveMessage.replies[0].content, /^(✅ \*\*LEGAL ARMY LIST\*\*|❌ \*\*ILLEGAL ARMY LIST\*\*|⚠️ \*\*ARMY LIST VALIDATION UNAVAILABLE\*\*)/)
-  assert.equal(liveMessage.replies[0].files.length, 6)
+  assert.equal(liveMessage.replies[0].files.length, 2)
   const readablePng = liveMessage.replies[0].files[0].attachment
   assert.ok(Buffer.isBuffer(readablePng))
   assert.equal(readablePng.subarray(0, 4).toString('hex'), '89504e47')
   assert.ok(readablePng.length > 10_000)
   assert.equal(readablePng.readUInt32BE(16), 686)
   assert.equal(readablePng.readUInt32BE(20), 651)
-  const tacticalPng = liveMessage.replies[0].files[1].attachment
-  assert.equal(liveMessage.replies[0].files[1].name, 'infinity-army-tactical-brief.png')
+  assert.ok(liveMessage.replies[0].files[1].name.endsWith('-tts-2d.json'))
+  const tacticalPng = legacyRendered.tacticalPages[0].imageBuffer
   assert.equal(tacticalPng.readUInt32BE(16), 1440)
   assert.ok(tacticalPng.readUInt32BE(20) <= 7500)
-  assert.deepEqual(Object.keys(legacyRendered.tacticalAnalysis.categories), ['apex', 'competent', 'hacking', 'valuableAro', 'disposableAro', 'alternative', 'defensive'])
-  assert.equal(Object.values(legacyRendered.tacticalAnalysis.categories).every((entries) => entries.length > 0), true)
-  for (const [index, file] of liveMessage.replies[0].files.slice(2).entries()) {
-    assert.equal(file.name, `infinity-army-profiles-${index + 1}.png`)
-    assert.ok(Buffer.isBuffer(file.attachment))
-    assert.equal(file.attachment.subarray(0, 4).toString('hex'), '89504e47')
-    assert.ok(file.attachment.length > 10_000)
-  }
+  assert.ok(legacyRendered.tacticalAnalysis.categories.gunfighters.length > 0)
   const liveSlash = mockInteraction(currentCode)
   let slashRendered
+  installFeedbackCapture(liveSlash)
   assert.equal(await createInfListInteractionHandler({ render: async (args) => { slashRendered = await renderInfListPng(args); return slashRendered } })(liveSlash), true)
   assert.equal(liveSlash.deferred, true)
   assert.equal(liveSlash.edits.length, 1)
@@ -316,6 +310,7 @@ function mockInteraction(armyCode) {
     options: { getString: (name, required) => name === 'army-code' && required ? armyCode : null },
     async deferReply() { this.deferred = true },
     async editReply(response) { this.edits.push(response) },
+    async followUp(response) { this.edits.push(response) },
     async reply(response) { this.replied = true; this.edits.push(response) },
   }
 }

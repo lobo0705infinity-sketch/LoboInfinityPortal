@@ -1,3 +1,6 @@
+import { withResponseDetails, listActions } from './response-details.mjs'
+import { assessGeneratedListClassifieds } from './generated-list-classifieds.mjs'
+import { formatInfListClassifiedEmbeds } from './inf-list-classifieds.mjs'
 import { unmetTargetExplanation } from './rating-explanations.mjs'
 import { ttsDiscordAttachment } from './tts-2d-export.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
@@ -169,7 +172,13 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
       .flatMap(value => String(value).split(',').map(name => name.trim()).filter(Boolean)), points, teamTypeEvidence, count: 3 })
   return lists.map((list, index) => {
     const tts = ttsDiscordAttachment({ armyCode: list.code, payload: source.payload, metadata: source.metadata })
-    return { allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1), files: tts.files, embeds: [{ description: tts.text.slice(0,3500) }, { description: unmetTargetExplanation(list, { points, mustInclude }).slice(0,2000) }] }
+    const response = { allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1), files: tts.files, embeds: [{ description: tts.text.slice(0,3500) }, { description: unmetTargetExplanation(list, { points, mustInclude }).slice(0,2000) }] }
+    const classifieds = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
+    return withResponseDetails(response, { initial: { content: response.content, files: tts.files.filter(file => file.name.endsWith('-tts-2d.json')) }, views: {
+      notes: { label: 'Build Notes', payload: { embeds: [{ description: unmetTargetExplanation(list, { points, mustInclude }).slice(0,2000) }] } },
+      classifieds: { label: 'Classifieds', payload: { embeds: formatInfListClassifiedEmbeds(classifieds) } },
+      tts: { label: 'TTS Notes', payload: { embeds: [{ description: tts.text.slice(0,4000) }], files: tts.files.filter(file => file.name === 'tts-validation.txt') } },
+    }, actions: listActions(list.code) })
   })
 }
 

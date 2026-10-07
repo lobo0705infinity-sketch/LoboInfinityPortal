@@ -1,3 +1,4 @@
+import { withResponseDetails, listActions, briefSummary } from './response-details.mjs'
 import { reportableResponse } from './bot-feedback.mjs'
 import { ratingExplanations } from './rating-explanations.mjs'
 import { appendTtsEmbed, ttsDiscordAttachment } from './tts-2d-export.mjs'
@@ -99,12 +100,23 @@ export async function createInfListResponse({
   if (explanation && files.length < 8) files.push({ attachment: Buffer.from(explanation), name: 'rating-explanations.txt' })
   const tts = ttsDiscordAttachment({ armyCode: validatedArmyCode, ...result.ttsSource })
   files.push(...tts.files)
-  return {
+  const response = {
     allowedMentions: { repliedUser: false },
     content: `${formatInfListLegality(result.legality)}\n\n${SUCCESS_TEXT}\n\n[Open in Infinity Army](${result.officialArmyUrl})`,
     embeds: appendTtsEmbed(formatInfListClassifiedEmbeds(result.classifiedCoverage), tts),
     files,
   }
+  const summary = briefSummary(result.tacticalAnalysis, result.classifiedCoverage)
+  return withResponseDetails(response, {
+    initial: { content: `${formatInfListLegality(result.legality)}\n\n${summary ? summary + '\n\n' : ''}[Open in Infinity Army](${result.officialArmyUrl})`, files: files.filter(file => file.name === 'infinity-army-list-readable.png' || file.name.endsWith('-tts-2d.json')), embeds: [] },
+    views: {
+      tactical: { label: 'Tactical Brief', payload: { content: 'Tactical brief for this submitted list.', files: files.filter(file => file.name.startsWith('infinity-army-tactical-brief')) } },
+      ratings: { label: 'Ratings', payload: { content: 'Combat rating explanations for this submitted list.', files: files.filter(file => file.name === 'rating-explanations.txt') } },
+      classifieds: { label: 'Classifieds', payload: { embeds: formatInfListClassifiedEmbeds(result.classifiedCoverage) } },
+      tts: { label: 'TTS Notes', payload: { embeds: [{ description: tts.text.slice(0,4000) }], files: tts.files.filter(file => file.name === 'tts-validation.txt') } },
+    },
+    actions: { identify: listActions(validatedArmyCode).identify },
+  })
 }
 
 export function createInfListMessageHandler({

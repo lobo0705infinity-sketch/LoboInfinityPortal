@@ -1,3 +1,4 @@
+import { prepareInteractiveResponse } from './response-details.mjs'
 import { randomUUID, createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile, appendFile, readdir, stat, unlink } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -21,6 +22,7 @@ const outputOf = payload => ({ content: payload.content || '', embeds: (payload.
 
 export async function reportableResponse(payload, context, { dir = directory() } = {}) {
   if (typeof payload === 'string') payload = { content: payload }
+  payload = await prepareInteractiveResponse(payload, context)
   const id = randomUUID()
   await mkdir(join(dir, 'contexts'), { recursive: true })
   await pruneContexts(dir)
