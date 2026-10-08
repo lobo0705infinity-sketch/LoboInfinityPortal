@@ -87,7 +87,7 @@ if (browserBaseUrl) {
         assert.equal(await page.locator(`.rules-toc a[href="#${id}"]`).count(), 1)
         assert.equal(await page.locator(`#${id}`).count(), 1)
       }
-      await page.getByRole('button', { name: 'Reduce artwork', exact: true }).waitFor()
+      await page.getByRole('button', { name: 'Use compact artwork', exact: true }).waitFor()
       const image = page.locator('.compact-artwork img')
       await image.waitFor()
       assert.equal(await image.evaluate((node) => node.complete && node.naturalWidth > 0), true)

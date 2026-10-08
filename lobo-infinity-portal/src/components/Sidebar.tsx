@@ -1,3 +1,4 @@
+import { navigationItemActive } from './navigationState'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -161,14 +162,15 @@ function SidebarSection({
   onNavigate?: () => void
 }) {
   const location = useLocation()
-  const active = items.some(item=>location.pathname===item.to.split('?')[0] || location.pathname.startsWith(`${item.to.split('?')[0]}/`))
-  const [expanded,setExpanded] = useState<boolean|null>(null)
-  const open=expanded??active
+  const active = items.some(item=>navigationItemActive(item.to,location.pathname,location.search))
+  const route=`${location.pathname}${location.search}`
+  const [expanded,setExpanded] = useState<{route:string;open:boolean}|null>(null)
+  const open=expanded?.route===route?expanded.open:active
   const labelId = `sidebar-${label.toLowerCase().replace(/\s+/g, '-')}`
 
   return (
     <section className="sidebar-section" aria-labelledby={labelId}>
-      <button type="button" className="sidebar-section-toggle" id={labelId} aria-expanded={open} aria-controls={`${labelId}-links`} onClick={()=>setExpanded(!open)}>{label}<span aria-hidden="true">{open?"−":"+"}</span></button>
+      <button type="button" className="sidebar-section-toggle" id={labelId} aria-expanded={open} aria-controls={`${labelId}-links`} onClick={()=>setExpanded({route,open:!open})}>{label}<span aria-hidden="true">{open?"−":"+"}</span></button>
       <div id={`${labelId}-links`} hidden={!open}>
       {items.map((item) => (
         <SidebarLink
@@ -227,8 +229,7 @@ function SidebarLink({
   onNavigate?: () => void
 }) {
   const location = useLocation()
-  const [path,query=''] = item.to.split('?')
-  const active = (location.pathname===path || (path!=='/' && location.pathname.startsWith(`${path}/`))) && [...new URLSearchParams(query)].every(([key,value])=>new URLSearchParams(location.search).get(key)===value)
+  const active = navigationItemActive(item.to,location.pathname,location.search)
 
   if (item.external) {
     return (

@@ -8,7 +8,9 @@ import type { ArmyIntelligenceDecodedEntry, ArmyIntelligenceList } from './api'
 
 export type TacticalCategoryId = 'apex' | 'competent' | 'apexCc' | 'hacking' | 'vision' | 'valuableAro' | 'disposableAro' | 'alternative' | 'defensive'
 
-type BenchmarkState = {
+type BenchmarkRanks = {globalRank?:number; globalTotal?:number; factionRank?:number; factionTotal?:number}
+
+type BenchmarkState = BenchmarkRanks & {
   grade: string
   percentile: number
   rating: number
@@ -28,8 +30,8 @@ export type TacticalProfile = {
   unit: string
   weapons: Array<{ burst: number | null; effectiveBurst: number | null; effectiveDice: number | null; name: string }>
   aro?: { fireteam?: BenchmarkState; normal?: BenchmarkState }
-  gunfighter?: { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
-  closeCombat?: { grade: string; percentile: number; rating: number; weapon: string }
+  gunfighter?: BenchmarkRanks & { grade: string; percentile: number; rating: number; state: 'fireteam' | 'normal'; weapon: string }
+  closeCombat?: BenchmarkRanks & { grade: string; percentile: number; rating: number; weapon: string }
   mobility?: { mov: number[] | null; score: number; travel: number | null }
   linkability: 'verified' | 'verified-false' | 'unknown'
   roles: TacticalCategoryId[]
@@ -122,14 +124,14 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     return standard || heavyRocketLauncher || portableAutocannon
   }
   const gunfighterCategories = hasBenchmarkRatings
-    ? [category('apex', 'Gunfighter Rankings', 'Benchmark-ranked against the shared defensive suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasQualifyingBenchmark(gunfighterRating(entry)), 'No exact Grade B-or-better gunfighter benchmark matches were found in this sample.')]
+    ? [category('apex', 'Gunfighter Rankings', 'Benchmark-ranked against the shared defensive suite. Showing Grade B or higher. Global and in-faction ranks compare benchmarked profiles in the same linked or non-linked state; submitted-list popularity measures observed use.', (entry) => hasQualifyingBenchmark(gunfighterRating(entry)), 'No exact Grade B-or-better gunfighter benchmark matches were found in this sample.')]
     : [
         category('apex', 'Apex Gunfighters', 'Effective dice include native Burst, BS Attack (+Burst), native +SD, verified Fireteam +1SD, and valid combinations. Qualifies at effective B5; BS 14+ with effective B4+; or BS 13 with effective B4+ plus MSV 1–3, Mimetism (-3/-6), BS Attack (-3), or Albedo (-3/-6).', qualifiesAsApex, hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
         category('competent', 'Competent Gunfighters', 'BS 12 or 13 profiles whose effective dice reach 4 through an approved gunfighter weapon, BS Attack (+Burst), native +SD, Fireteam +1SD, or a combination. Heavy Rocket Launchers and enhanced Portable Autocannons use their verified special cases; Apex Gunfighters are excluded.', (entry) => !qualifiesAsApex(entry) && qualifiesAsCompetent(entry), hasApexMetadata ? undefined : 'BS and canonical weapon Burst are unavailable in this decoded sample, so no profile can be verified.'),
       ]
 
   const closeCombatCategory = hasCloseCombatRatings
-    ? category('apexCc', 'Close Combat Rankings', 'Benchmark-ranked against the shared close-combat defender suite. Showing Grade B or higher, with list rank, rating, grade, and global percentile.', (entry) => hasQualifyingBenchmark(closeCombatRating(entry)), 'No exact Grade B-or-better close-combat benchmark matches were found in this sample.')
+    ? category('apexCc', 'Close Combat Rankings', 'Benchmark-ranked against the shared close-combat defender suite. Showing Grade B or higher. Global and in-faction ranks compare benchmarked profiles in the same linked or non-linked state; submitted-list popularity measures observed use.', (entry) => hasQualifyingBenchmark(closeCombatRating(entry)), 'No exact Grade B-or-better close-combat benchmark matches were found in this sample.')
     : category('apexCc', 'Apex Close Combat Fighters', 'CC 22+ profiles with Martial Arts, Natural Born Warrior, Berserk (+3), or CC Attack (+B).', (entry) => Number(entry.cc) >= 22 && entry.skills.some((skill) => [martialArts, naturalBornWarrior, berserkPlusThree, ccAttackBurst].some((rule) => rule.test(normalize(skill)))))
 
 
@@ -181,7 +183,7 @@ function gunfighterRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile[
     .sort(([, left], [, right]) => right.rating - left.rating)[0] || []
   if (!rating || (state !== 'normal' && state !== 'fireteam')) return undefined
   const weapon = [...rating.weaponsUsed].sort((left, right) => right.scoreContribution - left.scoreContribution || left.weapon.localeCompare(right.weapon))[0]?.weapon || 'No selected weapon'
-  return { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, state, weapon }
+  return { ...rating, state, weapon }
 }
 
 function consolidateGunfighterRankings(rows: Array<{ entry: ArmyIntelligenceDecodedEntry; listIndexes: Set<number>; profile: TacticalProfile }>, listCount: number): TacticalProfile[] {
@@ -211,7 +213,7 @@ function consolidateGunfighterRankings(rows: Array<{ entry: ArmyIntelligenceDeco
 function closeCombatRating(entry: ArmyIntelligenceDecodedEntry): TacticalProfile['closeCombat'] {
   const key = String(entry.combinedId || '').replaceAll('-', ':')
   const rating = (portalCloseCombatRatings.ratings as Record<string, { grade: string; percentile: number; rating: number; weapon: string }>)[key]
-  return rating ? { grade: rating.grade, percentile: rating.percentile, rating: rating.rating, weapon: rating.weapon } : undefined
+  return rating ? { ...rating } : undefined
 }
 
 function hasQualifyingBenchmark(rating: { grade?: string } | undefined) {

@@ -429,7 +429,7 @@ if (browserBaseUrl) {
         await page.getByRole('navigation', { name: 'Event navigation' }).getByRole('link', { name: 'Registration' }).getAttribute('aria-current'),
         'page',
       )
-      await page.getByRole('button', { name: 'Reduce artwork', exact: true }).waitFor()
+      await page.getByRole('button', { name: 'Use compact artwork', exact: true }).waitFor()
       const image = page.locator('.compact-artwork img')
       await image.waitFor()
       assert.equal(await image.evaluate((node) => node.complete && node.naturalWidth === 1672 && node.naturalHeight === 941), true)

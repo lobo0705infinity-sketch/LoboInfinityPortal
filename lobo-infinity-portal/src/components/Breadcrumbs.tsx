@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { getEventNavigationConfig } from '../config/eventNavigation'
+import { readArmyIntelligenceFactionParam } from '../services/armyIntelligenceNavigation'
 import { communityItems } from './sidebarNavigation'
 
 type Breadcrumb = {
@@ -30,6 +31,7 @@ const eventScopedRoutes: Record<string, string> = {
 function Breadcrumbs() {
   const location = useLocation()
   const breadcrumbs = buildBreadcrumbs(location.pathname, location.search)
+  const returnTo=typeof location.state?.directoryReturnTo==='string' && /^\/(army-lists|games)(?:\?|$)/.test(location.state.directoryReturnTo)?location.state.directoryReturnTo:''
 
   if (breadcrumbs.length <= 1) {
     return null
@@ -37,6 +39,7 @@ function Breadcrumbs() {
 
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">
+      {returnTo ? <Link className="directory-return" to={returnTo}>← Back to {returnTo.startsWith('/army-lists')?'Army Lists':'Battle Reports'}</Link> : null}
       {breadcrumbs.map((breadcrumb, index) => {
         const isCurrent = index === breadcrumbs.length - 1
 
@@ -85,6 +88,15 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
     return breadcrumbs
   }
 
+  const detail=pathname.match(/^\/(players?|factions?|missions?|games?|maps)\/([^/]+)$/)
+  if(detail){const type=detail[1].replace(/s$/,'');const parent=type==='map'?'maps':`${type}s`;const label=({player:'Players',faction:'Factions',mission:'Missions',game:'Battle Reports',map:'Maps'} as Record<string,string>)[type];const event=getEventNavigationConfig(queryEventId);if(event){breadcrumbs.push({label:'All Events',to:'/events'},{label:event.label,to:`/event/${encodeURIComponent(event.id)}`})}else{breadcrumbs.push({label:'Explore',to:'/explore'})}breadcrumbs.push({label,to:`/${parent}${queryEventId&&type==='mission'?`?eventId=${encodeURIComponent(queryEventId)}`:''}`},{label:type==='game'?`Report #${decodeSegment(detail[2])}`:decodeSegment(detail[2])});return breadcrumbs}
+  if (pathname === '/army-intelligence') {
+    breadcrumbs.push({ label: 'Explore', to: '/explore' })
+    breadcrumbs.push({ label: 'Army Intelligence', to: '/army-intelligence' })
+    const faction=readArmyIntelligenceFactionParam(searchParams);if(faction)breadcrumbs.push({label:faction})
+    return breadcrumbs
+  }
+
   if (queryEventId) {
     const event = getEventNavigationConfig(queryEventId)
     if (event) {
@@ -96,14 +108,6 @@ function buildBreadcrumbs(pathname: string, search: string): Breadcrumb[] {
       breadcrumbs.push({ label: eventScopedRoutes[pathname] ?? routeLabels[pathname] ?? formatSegment(pathname) })
       return breadcrumbs
     }
-  }
-
-  const detail=pathname.match(/^\/(players?|factions?|missions?|games?|maps)\/([^/]+)$/)
-  if(detail){const type=detail[1].replace(/s$/,'');const parent=type==='map'?'maps':`${type}s`;const label=({player:'Players',faction:'Factions',mission:'Missions',game:'Battle Reports',map:'Maps'} as Record<string,string>)[type];breadcrumbs.push({label:'Explore',to:'/explore'},{label,to:`/${parent}`},{label:type==='game'?`Report #${decodeSegment(detail[2])}`:decodeSegment(detail[2])});return breadcrumbs}
-  if (pathname === '/army-intelligence') {
-    breadcrumbs.push({ label: 'Explore', to: '/explore' })
-    breadcrumbs.push({ label: 'Army Intelligence' })
-    return breadcrumbs
   }
 
   const communityItem = communityItems.find((item) => item.to === pathname)

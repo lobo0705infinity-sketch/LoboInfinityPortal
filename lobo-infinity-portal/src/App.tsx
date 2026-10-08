@@ -25,6 +25,7 @@ import { recordRouteDiagnostic } from './services/diagnostics'
 import { recordComponentMount } from './services/rumMetrics'
 import './App.css'
 import './DesktopRefinements.css'
+import SnapshotUpdated from './components/SnapshotUpdated'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 
 const Analytics = lazyRoute('Analytics', () => import('./pages/Analytics'))
@@ -235,6 +236,7 @@ function AuthShell() {
             </Suspense>
           </ApplicationErrorBoundary>
           </div>
+          {!commissionerRoute && <SnapshotUpdated/>}
           <GlobalFooter />
         </div>
         <MobileBottomNavigation />

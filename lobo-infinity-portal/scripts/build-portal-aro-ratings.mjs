@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { addBenchmarkRanks } from './benchmark-ranking.mjs'
 import { writeFile } from 'node:fs/promises'
 import { readArtifact } from './benchmark-artifacts.mjs'
 
@@ -11,5 +12,5 @@ const ratings = Object.fromEntries(source.entries.map((entry) => [entry.key, Obj
   weaponsUsed: state.weaponsUsed || [],
 }]))]))
 
-await writeFile('src/data/portal-aro-ratings.json', `${JSON.stringify({ benchmarkVersion: source.benchmarkVersion, fingerprint: source.fingerprint, ratings })}\n`)
+await writeFile('src/data/portal-aro-ratings.json', `${JSON.stringify({ benchmarkVersion: source.benchmarkVersion, fingerprint: source.fingerprint, ratings: addBenchmarkRanks(ratings) })}\n`)
 console.log(`Built portal ARO ratings for ${Object.keys(ratings).length} exact profiles.`)

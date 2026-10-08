@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import { getPublicSnapshotDataset, type PublicSnapshotDataset } from '../services/publicSnapshot'
 
 export function useSnapshotData<T>(dataset: PublicSnapshotDataset) {
-  const [state, setState] = useState<{ data?: T; error?: string }>({})
-  useEffect(() => {
-    const controller = new AbortController()
-    getPublicSnapshotDataset<T>(dataset, controller.signal)
-      .then((data) => setState({ data }))
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) setState({ error: error instanceof Error ? error.message : `Could not load ${dataset}.json` })
-      })
-    return () => controller.abort()
-  }, [dataset])
-  return state
+  const [attempt,setAttempt]=useState(0)
+  const [state,setState]=useState<{data?:T;error?:string}>({})
+  useEffect(()=>{
+    let active=true
+    getPublicSnapshotDataset<T>(dataset).then(data=>{if(active){setState({data});window.dispatchEvent(new Event('lobo:snapshot-ready'))}}).catch((error:unknown)=>{
+      if(active)setState({error:error instanceof Error?error.message:'The requested data is unavailable.'})
+    })
+    return ()=>{active=false}
+  },[dataset,attempt])
+  const retry=()=>{setState({});setAttempt(value=>value+1)}
+  return {...state,retry}
 }

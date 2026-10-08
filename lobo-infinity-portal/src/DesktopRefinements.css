@@ -92,3 +92,14 @@
  .app-shell main.snapshot-intelligence-page :is(.snapshot-intelligence-selector,.snapshot-intelligence-controls,.snapshot-intelligence-explorer-controls) :is(select,input){font-size:14px}
  .app-shell main.snapshot-intelligence-page .interactive-metric-card-label{font-size:12px}
 }
+
+.snapshot-updated { margin: 8px 24px 20px; font-size: 13px; color: #abc1cf; }
+.army-intelligence-ranking-rank { display:flex; flex-direction:column; gap:4px; }
+.army-intelligence-ranking-rank small { color:#abc1cf; font-size:12px; }
+.army-intelligence-ranking-rank span:not(:first-child) { margin-top:12px; }
+@media(min-width:921px) {
+ .app-shell .portal-shell table tbody tr:nth-child(even) > td { background-color:rgba(128,180,207,.045); }
+ .app-shell .portal-shell table tbody tr:hover > td,.app-shell .portal-shell table tbody tr:focus-within > td { background-color:rgba(65,184,213,.12); }
+ .app-shell .portal-shell table tbody tr { transition:background-color .12s ease; }
+}
+@media(prefers-reduced-motion:reduce) { .app-shell .portal-shell table tbody tr { transition:none; } }

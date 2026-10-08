@@ -10,4 +10,6 @@
 .compact-artwork-unavailable { padding: 16px 24px; color: #abc0ce; }
 @media(max-width:600px) { .compact-artwork-heading { padding: 14px 16px; } .artwork-full-heading, .artwork-size-control { padding-inline: 16px; } }
 
-.artwork-cropped .artwork-full-image { height: auto; object-fit: initial; }
+.artwork-cropped .artwork-full-image { height: 100%; width: 100%; object-fit: cover; object-position: center 42%; }
+
+.compact-artwork-heading h1 { text-shadow: 0 2px 10px #06111c; max-width: 32ch; }

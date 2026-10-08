@@ -1,3 +1,4 @@
+import { addBenchmarkRanks } from './benchmark-ranking.mjs'
 import { gunzipSync } from 'node:zlib'
 import { readFile, writeFile } from 'node:fs/promises'
 
@@ -19,5 +20,8 @@ for (const entry of source.entries || []) {
   }
 }
 
-await writeFile('src/data/portal-close-combat-ratings.json', `${JSON.stringify({ schemaVersion: source.schemaVersion, ratings })}\n`)
+const ranked = addBenchmarkRanks(Object.fromEntries(Object.entries(ratings).map(([key,value])=>[key,{normal:value}])))
+const rankedRatings = Object.fromEntries(Object.entries(ranked).map(([key,states])=>[key,states.normal]))
+
+await writeFile('src/data/portal-close-combat-ratings.json', `${JSON.stringify({ schemaVersion: source.schemaVersion, ratings: rankedRatings })}\n`)
 console.log(`Wrote ${Object.keys(ratings).length} portal close-combat benchmark aliases.`)

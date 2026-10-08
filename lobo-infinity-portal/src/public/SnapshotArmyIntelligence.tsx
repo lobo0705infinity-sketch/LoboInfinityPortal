@@ -107,7 +107,7 @@ export default function SnapshotArmyIntelligence() {
   const [params, setParams] = useSearchParams()
   const selected = readArmyIntelligenceFactionParam(params)
 
-  if (summary.error) return <PageState title="Army Intelligence unavailable" message={summary.error} error />
+  if (summary.error) return <PageState title="Army Intelligence unavailable" message={summary.error} error retry={summary.retry} />
   if (!summary.data) return <PageState title="Loading Army Intelligence" message="Loading public coverage and faction options..." />
 
   const data = summary.data[0]
@@ -178,7 +178,7 @@ function ArmyIntelligenceDetail({ selected }: { selected: string }) {
   const [sort, setSort] = useState<UsageSort>('alphabetical')
 
 
-  if (detail.error) return <PageState compact error title="Detail could not be loaded" message="The immutable Army Intelligence detail file is unavailable. No live fallback was attempted." />
+  if (detail.error) return <PageState compact error title="Detail could not be loaded" message="The selected army could not be loaded. Check your connection and retry." retry={detail.retry} />
   if (!detail.data) return <PageState compact title={`Loading ${selected}`} message="Loading persisted profiles, lists, and composition data..." />
 
   const scope = selectScope(detail.data, selected)
@@ -249,12 +249,12 @@ function IntelligenceBrief({ analysis, faction }: { analysis: ReturnType<typeof 
   return <section className="panel snapshot-intelligence-brief-panel" aria-labelledby="snapshot-intelligence-brief-title">
     <div className="snapshot-intelligence-brief-header"><span>{analysis.mode}</span><h2 id="snapshot-intelligence-brief-title">{faction}</h2></div>
     {analysis.listCount < 3 ? <p className="army-intelligence-sample-notice">Only {analysis.listCount} decoded {analysis.listCount === 1 ? 'list is' : 'lists are'} available. These are observed capabilities, not reliable faction trends.</p> : null}
-    <p className="army-intelligence-role-notice">Profiles may appear in multiple sections when they perform multiple tactical roles. Quantities represent models, not classifications.</p>
+    <p className="army-intelligence-role-notice">Global rank compares distinct benchmarked profiles across all armies; in-faction rank compares the selected army. Both use the displayed combat state and share ranks for equal scores. Popularity is the share of the selected submitted lists containing the profile, not a measure of combat strength. Profiles may appear in multiple tactical roles.</p>
     <SnapshotBriefNavigator analysis={analysis} onChange={setView} value={view} />
     <div className="army-intelligence-tactical-grid">{visibleCategories.map((category) => <article className={`army-intelligence-tactical-panel ${category.id === 'apex' || category.id === 'apexCc' || category.id === 'valuableAro' || category.id === 'disposableAro' ? 'is-ranking-panel' : ''}`} id={`snapshot-intelligence-${category.id}`} key={category.id}>
       <header><h3>{category.title}</h3><p>{category.description}</p></header>
       {category.id === 'hacking' ? <p className="army-intelligence-category-total"><strong>{analysis.hackerListCount}</strong> of {analysis.listCount} decoded lists contain at least one Hacker.</p> : null}
-      {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile, index) => <SnapshotTacticalProfile category={category.id} key={profile.profileId} profile={profile} rank={index + 1} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
+      {category.profiles.length ? <div className="army-intelligence-tactical-profiles">{category.profiles.map((profile) => <SnapshotTacticalProfile category={category.id} key={profile.profileId} profile={profile} listTotal={analysis.listCount} />)}</div> : <p className="army-intelligence-tactical-empty">{category.unavailableReason || 'No qualifying profiles were found in the submitted decoded sample.'}</p>}
       {category.id === 'hacking' && analysis.perListNetworks.length ? <div className="army-intelligence-network-lists">{analysis.perListNetworks.map((row, index) => <p key={`${index}:${row.components.join('|')}`}><span>{row.components.join(' · ')}</span></p>)}</div> : null}
     </article>)}</div>
   </section>
@@ -273,7 +273,7 @@ function formatRankingPercentile(value: number) {
   return `${rounded}${suffix}`
 }
 
-function SnapshotTacticalProfile({ category, profile, rank }: { category: string; profile: TacticalProfile; rank: number }) {
+function SnapshotTacticalProfile({ category, profile, listTotal }: { category: string; profile: TacticalProfile; listTotal: number }) {
   const directBenchmark = category === 'apex' ? profile.gunfighter : category === 'apexCc' ? profile.closeCombat : undefined
   const aroBenchmark = category === 'valuableAro' || category === 'disposableAro' ? profile.aro : undefined
   const aroStates = aroBenchmark ? [
@@ -284,6 +284,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
   const bestAroWeapons = bestAroState ? Array.from(new Set(bestAroState.weaponsUsed.map((weapon) => weapon.weapon).filter(Boolean))).slice(0, 3) : []
   const rankedBenchmark = directBenchmark
     ? {
+        ...directBenchmark,
         grade: directBenchmark.grade,
         percentile: directBenchmark.percentile,
         rating: directBenchmark.rating,
@@ -292,6 +293,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
       }
     : bestAroState
       ? {
+          ...bestAroState,
           grade: bestAroState.grade,
           percentile: bestAroState.percentile,
           rating: bestAroState.rating,
@@ -303,7 +305,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
   if (rankedBenchmark) {
     const otherAroStates = aroStates.filter((state) => state.label !== rankedBenchmark.state)
     return <article className="army-intelligence-tactical-profile is-ranked">
-      <div className="army-intelligence-ranking-rank"><span>Submitted sample rank</span><strong>#{rank}</strong></div>
+      <div className="army-intelligence-ranking-rank"><span>Global benchmark rank</span><strong>{rankedBenchmark.globalRank ? `#${rankedBenchmark.globalRank}` : 'Unavailable'}</strong><small>{rankedBenchmark.globalTotal ? `of ${rankedBenchmark.globalTotal} profiles` : 'No rank data'}</small><span>In-faction benchmark rank</span><strong>{rankedBenchmark.factionRank ? `#${rankedBenchmark.factionRank}` : 'Unavailable'}</strong><small>{rankedBenchmark.factionTotal ? `of ${rankedBenchmark.factionTotal} profiles` : 'No rank data'}</small></div>
       <div className="army-intelligence-ranking-identity">
         <strong>{formatTacticalUnitName(profile.unit)}</strong>
         <span>{rankedBenchmark.weapon}</span>
@@ -314,7 +316,7 @@ function SnapshotTacticalProfile({ category, profile, rank }: { category: string
       </div>
       <div className="army-intelligence-ranking-score"><span>Benchmark rating</span><strong>{rankedBenchmark.rating.toFixed(2)}</strong></div>
       <div className={`army-intelligence-ranking-grade is-grade-${rankedBenchmark.grade.toLowerCase()}`}><span>Grade</span><strong>{rankedBenchmark.grade}</strong><small>Global: {formatRankingPercentile(rankedBenchmark.percentile)} percentile</small></div>
-      <footer><span>{profile.listCount} {profile.listCount === 1 ? 'list' : 'lists'} · {Math.round(profile.percentage)}% usage</span>{profile.roles.length > 1 ? <span>MULTI-ROLE</span> : null}</footer>
+      <footer><span>Submitted-list popularity: {profile.listCount} of {listTotal} lists ({Math.round(profile.percentage)}%)</span>{profile.roles.length > 1 ? <span>MULTI-ROLE</span> : null}</footer>
     </article>
   }
 
@@ -396,8 +398,8 @@ function Panel({ eyebrow, title, children, className = '' }: { eyebrow: string; 
 
 function Empty({ message }: { message: string }) { return <div className="snapshot-intelligence-empty"><strong>No matching data</strong><p>{message}</p></div> }
 
-function PageState({ title, message, compact = false, error = false }: { title: string; message: string; compact?: boolean; error?: boolean }) {
-  return <section className={`panel snapshot-intelligence-state${compact ? ' compact' : ''}${error ? ' error' : ''}`} role={error ? 'alert' : undefined}><span className="snapshot-intelligence-state-mark" aria-hidden="true">{error ? '!' : 'i'}</span><div><h2>{title}</h2><p>{message}</p></div></section>
+function PageState({ title, message, compact = false, error = false, retry }: { title: string; message: string; compact?: boolean; error?: boolean; retry?:()=>void }) {
+  return <section className={`panel snapshot-intelligence-state${compact ? ' compact' : ''}${error ? ' error' : ''}`} role={error ? 'alert' : undefined}><span className="snapshot-intelligence-state-mark" aria-hidden="true">{error ? '!' : 'i'}</span><div><h2>{title}</h2><p>{message}</p>{retry?<button type="button" onClick={retry}>Retry</button>:null}</div></section>
 }
 
 function selectScope(groups: DetailGroup[], selected: string) {
