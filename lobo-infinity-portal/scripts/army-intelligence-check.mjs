@@ -103,8 +103,8 @@ assert.match(
 )
 assert.match(
   backend,
-  /getAllRecentGameObjectsForEvent\("all", "casual"\)/,
-  'Backend must explicitly include casual recent-game army codes.',
+  /getAllRecentGameObjectsFromCanonicalResponses\(\)/,
+  'Backend must discover league and casual army codes from authoritative submissions.',
 )
 assert.match(
   backend,

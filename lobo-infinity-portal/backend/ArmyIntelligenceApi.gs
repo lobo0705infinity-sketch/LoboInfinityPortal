@@ -1271,20 +1271,22 @@ function buildArmyIntelligenceSources() {
       getArmyIntelligencePlayerFactionKey
     );
 
+  // Generated Game Analytics can lag behind submissions or a header migration.
+  // Discover both league and casual rosters from the same authoritative rows
+  // used by the public game/list exporter, preserving their canonical game IDs.
   const games =
-    typeof getAllRecentGameObjects === "function"
-      ? getAllRecentGameObjects()
-      : [];
-
-  const casualGames =
-    typeof getAllRecentGameObjectsForEvent === "function"
-      ? getAllRecentGameObjectsForEvent("all", "casual")
-      : [];
+    typeof getAllRecentGameObjectsFromCanonicalResponses === "function"
+      ? getAllRecentGameObjectsFromCanonicalResponses().map(function(game) {
+          return buildRecentGameResponse(game);
+        })
+      : typeof getAllRecentGameObjects === "function"
+        ? getAllRecentGameObjects()
+        : [];
 
   return CanonicalSourceDiscovery.discover({
     deduplicateGames: true,
     formatGameType: formatArmyIntelligenceGameType,
-    games: games.concat(casualGames),
+    games: games,
     hashArmyCode: getArmyIntelligenceHash,
     includeArmyListId: true,
     normalizeAll: true,
@@ -1391,7 +1393,7 @@ function getArmyIntelligencePlayerFactionKey(player, faction) {
 
   const factionKey =
     normalizeArmyIntelligenceKeyPart(
-      canonicalizeArmyParentFaction(faction)
+      canonicalizeArmyName(faction)
     );
 
   return playerKey && factionKey
