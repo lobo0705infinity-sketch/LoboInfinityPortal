@@ -16,9 +16,10 @@ export function useRememberedScroll() {
       }
     })
     const save = () => { try { sessionStorage.setItem(key,JSON.stringify({windowY:window.scrollY,tableY:element?.scrollTop || 0,tableX:element?.scrollLeft || 0})) } catch { /* Storage is optional. */ } }
+    element?.addEventListener('click',save)
     window.addEventListener('scroll',save,{passive:true})
     element?.addEventListener('scroll',save,{passive:true})
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll',save); element?.removeEventListener('scroll',save) }
+    return () => { cancelAnimationFrame(frame); window.removeEventListener('scroll',save); element?.removeEventListener('scroll',save); element?.removeEventListener('click',save) }
   },[key])
   return ref
 }

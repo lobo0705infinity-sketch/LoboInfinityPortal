@@ -254,6 +254,12 @@ function RouteScrollReset() {
       return
     }
 
+    if (['/army-lists', '/games'].includes(location.pathname)) {
+      try {
+        if (sessionStorage.getItem(`lobo:directory-scroll:v1:${location.pathname}${location.search}`)) return
+      } catch { /* Scroll restoration is optional when storage is unavailable. */ }
+    }
+
     window.scrollTo({
       left: 0,
       top: 0,
