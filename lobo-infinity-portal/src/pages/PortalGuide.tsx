@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { portalGuideChapters } from './portalGuideChapters'
 import './PortalGuide.css'
 
-const videoUrl = '/assets/portal-guide/walkthrough-bradley-v1.mp4'
+const videoUrl = '/assets/portal-guide/walkthrough-bradley-v2.mp4'
 
 export default function PortalGuide() {
   const player = useRef<HTMLVideoElement>(null)
@@ -24,20 +24,21 @@ export default function PortalGuide() {
 
   return <main className="portal-shell portal-guide-page">
     <header className="page-header">
-      <p className="eyebrow">Get started · 4 minutes</p>
+      <p className="eyebrow">Get started · 5 minutes</p>
       <h1>Portal Guide</h1>
       <p>Find a game, prepare for it, submit your result, and explore the Lobo community.</p>
     </header>
     <section aria-label="Portal walkthrough video">
       <video ref={player} className="portal-guide-video" controls playsInline preload={selected ? 'metadata' : 'none'}
-        poster="/assets/portal-guide/poster-v1.jpg" onError={() => setFailed(true)} aria-label="Lobo Infinity Portal walkthrough with Bradley narration">
+        poster="/assets/portal-guide/poster-v2.jpg" onError={() => setFailed(true)} aria-label="Lobo Infinity Portal walkthrough with Bradley narration">
         <source src={`${videoUrl}#t=${start}`} type="video/mp4" />
-        <track kind="captions" src="/assets/portal-guide/captions-v1.vtt" srcLang="en" label="English"/>
-        <track kind="chapters" src="/assets/portal-guide/chapters-v1.vtt" srcLang="en" label="Chapters" />
+        <track kind="captions" src="/assets/portal-guide/captions-v2.vtt" srcLang="en" label="English"/>
+        <track kind="chapters" src="/assets/portal-guide/chapters-v2.vtt" srcLang="en" label="Chapters" />
         Your browser does not support embedded video. <a href={videoUrl}>Open the walkthrough</a>.
       </video>
       {failed ? <p role="alert">The video could not load. <a href={videoUrl}>Open the video directly</a> or try again.</p> : null}
       <p className="portal-guide-player-note">{selected ? `Ready at ${selected.title}. Press play to watch.` : 'Press play to start, or choose a chapter below.'} <a href={videoUrl}>Open video</a></p>
+      <p className="portal-guide-player-note">Bradley narrates the tour. Short sections with on-screen instructions explain the updated controls.</p>
     </section>
     <section className="portal-guide-chapters" aria-labelledby="portal-guide-chapters-title">
       <h2 id="portal-guide-chapters-title">Jump to a chapter</h2>
@@ -51,9 +52,10 @@ export default function PortalGuide() {
         <span>{chapter.title}</span><span aria-hidden="true">▶</span>
       </button>)}</nav>
     </section>
-    <details className="portal-guide-transcript"><summary>Read the narration</summary>
+    <details className="portal-guide-transcript"><summary>Read narration and on-screen instructions</summary>
 <p>Welcome to the Lobo Infinity Portal. This walkthrough shows you how to find a game, prepare for it, submit your result, and explore the community.</p>
 <p>On the dashboard, scroll to Choose Your First Move. These three cards take you to Army Intelligence, a battle report, or the events page. Public browsing is open to everyone.</p>
+<p><strong>On-screen guide — Navigation and artwork:</strong> Use the links above a page to return to its parent section. Choose Show full artwork or Use compact artwork to change the illustration size.</p>
 <p>Select All Events in the sidebar. Open the event you want to join and check its registration status. For casual games, use the Game Network or find players on Discord.</p>
 <p>Use the event selector in the sidebar to choose your competition. The links below it lead to that event. In Standings, choose your division to see the players and recorded scores.</p>
 <p>Before arranging a league game, open Mission and Map. Check the date range, the active missions, and the assigned maps. View Mission opens the scenario details from Mission Geist.</p>
@@ -63,7 +65,11 @@ export default function PortalGuide() {
 <p>Open Battle Reports to browse recorded games. Each row shows the players, mission, and scores. Click the game number to open the full report.</p>
 <p>The report shows the objective points, tournament points, and victory points. Scroll for the mission summary, map, highlights, and review. Battle stories are fictionalized; use the recorded results and player notes for the factual account.</p>
 <p>Open Army Intelligence. Choose a faction or sectorial, or try the Corregidor example. This page explores submitted lists, common profiles, specialist coverage, and battlefield roles.</p>
+<p><strong>On-screen guide — Known Army Lists:</strong> In Army Intelligence, select Known Army Lists to open Army Lists with your faction already selected.</p>
+<p><strong>On-screen guide — Desktop:</strong> View List opens the roster in Corvus Belli Infinity Army. Search, filter by faction or mission, and select column headings to sort.</p>
+<p><strong>On-screen guide — Mobile:</strong> Tap Copy Army Code, then paste the code into Infinity Army’s import tool. The Known Army Lists route keeps the selected faction.</p>
 <p>Use Combat, Defense, Control, or All to browse tactical roles. Read the exact weapon and linked status next to each rating. The global percentile shows its standing in the wider benchmark, while usage describes submitted lists.</p>
+<p><strong>On-screen guide — Rank comparisons:</strong> Global rank compares profiles across all armies. In-faction rank compares profiles within your selected army. Compare matching weapons and combat states.</p>
 <p>Open Factions to explore armies and sectorials through their recorded league results. Scroll to the army you want, then open its card for a closer look. Read the game count alongside its record and win rate: these describe games submitted to the portal.</p>
 <p>Open Players to browse the community. Use the event filter for All Events or a specific competition. Each card shows a player’s division, game count, and record. Open a card to view their profile, then scroll to Game History to explore their recorded games.</p>
 <p>Open Missions and choose an event, or leave All Events selected. View Mission opens the available scenario details. Click a mission name for its analysis, including recorded games, first-turn win rate, faction performance, and recent battle reports. Read the number of games alongside each percentage.</p>

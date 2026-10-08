@@ -1,0 +1,205 @@
+{
+  "version": 2,
+  "duration": 300.5,
+  "narration": "Original Bradley recording; added guides have on-screen text only",
+  "scenes": [
+    {
+      "id": "welcome",
+      "title": "Welcome",
+      "start": 0.0,
+      "duration": 8.858,
+      "frame": "frames-final/welcome.jpg",
+      "originalStart": 0,
+      "onscreen": false
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "start": 8.858,
+      "duration": 11.976,
+      "frame": "frames-final/dashboard.jpg",
+      "originalStart": 8.858,
+      "onscreen": false
+    },
+    {
+      "id": "navigation",
+      "title": "Navigation & artwork",
+      "start": 20.834,
+      "duration": 16,
+      "frame": "frames-final/navigation.jpg",
+      "onscreen": true,
+      "text": "Find your way back. Use the links above the page. Artwork control. Switch between full and compact artwork."
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "start": 36.834,
+      "duration": 11.077,
+      "frame": "frames-final/events.jpg",
+      "originalStart": 20.834,
+      "onscreen": false
+    },
+    {
+      "id": "standings",
+      "title": "Standings",
+      "start": 47.911,
+      "duration": 10.742,
+      "frame": "frames-final/standings.jpg",
+      "originalStart": 31.911,
+      "onscreen": false
+    },
+    {
+      "id": "mission-map",
+      "title": "Mission & Map",
+      "start": 58.653,
+      "duration": 11.528,
+      "frame": "frames-final/mission-map.jpg",
+      "originalStart": 42.653,
+      "onscreen": false
+    },
+    {
+      "id": "tts-maps",
+      "title": "TTS Map Library",
+      "start": 70.181,
+      "duration": 11.949,
+      "frame": "frames-final/tts-maps.jpg",
+      "originalStart": 54.181,
+      "onscreen": false
+    },
+    {
+      "id": "table-details",
+      "title": "Table details",
+      "start": 82.13,
+      "duration": 11.722,
+      "frame": "frames-final/table-details.jpg",
+      "originalStart": 66.13,
+      "onscreen": false
+    },
+    {
+      "id": "submit-game",
+      "title": "Submit Game",
+      "start": 93.852,
+      "duration": 14.384,
+      "frame": "frames-final/submit-game.jpg",
+      "originalStart": 77.852,
+      "onscreen": false
+    },
+    {
+      "id": "battle-reports",
+      "title": "Battle Reports",
+      "start": 108.236,
+      "duration": 9.188,
+      "frame": "frames-final/battle-reports.jpg",
+      "originalStart": 92.236,
+      "onscreen": false
+    },
+    {
+      "id": "report-details",
+      "title": "Report details",
+      "start": 117.424,
+      "duration": 14.294,
+      "frame": "frames-final/report-details.jpg",
+      "originalStart": 101.424,
+      "onscreen": false
+    },
+    {
+      "id": "army-intelligence",
+      "title": "Army Intelligence",
+      "start": 131.718,
+      "duration": 12.211,
+      "frame": "frames-final/army-intelligence.jpg",
+      "originalStart": 115.718,
+      "onscreen": false
+    },
+    {
+      "id": "known-lists",
+      "title": "Known Army Lists",
+      "start": 143.929,
+      "duration": 10,
+      "frame": "frames-final/known-lists.jpg",
+      "onscreen": true,
+      "text": "From Army Intelligence. Select Known Army Lists. Faction already selected. Arrive on Army Lists with your army filter set."
+    },
+    {
+      "id": "army-lists",
+      "title": "Army Lists on desktop",
+      "start": 153.929,
+      "duration": 10,
+      "frame": "frames-final/army-lists.jpg",
+      "onscreen": true,
+      "text": "View List. Opens the roster in Corvus Belli Infinity Army. Find a list. Search, filter by faction or mission, and sort headings."
+    },
+    {
+      "id": "mobile-lists",
+      "title": "Army Lists on mobile",
+      "start": 163.929,
+      "duration": 15,
+      "frame": "frames-final/mobile-lists.jpg",
+      "onscreen": true,
+      "text": "Copy Army Code. Tap to copy, then paste into Infinity Army’s import tool. Same faction filter. Known Army Lists keeps your selected army."
+    },
+    {
+      "id": "rankings",
+      "title": "Rankings",
+      "start": 178.929,
+      "duration": 14.92,
+      "frame": "frames-final/rankings.jpg",
+      "originalStart": 127.929,
+      "onscreen": false
+    },
+    {
+      "id": "rank-comparisons",
+      "title": "Global & in-faction ranks",
+      "start": 193.849,
+      "duration": 12,
+      "frame": "frames-final/rank-comparisons.jpg",
+      "onscreen": true,
+      "text": "Global rank. Compares profiles across all armies. In-faction rank. Compares profiles within the selected army. Compare like with like. Match the weapon and combat state."
+    },
+    {
+      "id": "factions",
+      "title": "Factions",
+      "start": 205.849,
+      "duration": 14.847,
+      "frame": "frames-final/factions.jpg",
+      "originalStart": 142.849,
+      "onscreen": false
+    },
+    {
+      "id": "players",
+      "title": "Players",
+      "start": 220.696,
+      "duration": 16.609,
+      "frame": "frames-final/players.jpg",
+      "originalStart": 157.696,
+      "onscreen": false
+    },
+    {
+      "id": "missions",
+      "title": "Missions",
+      "start": 237.305,
+      "duration": 18.984,
+      "frame": "frames-final/missions.jpg",
+      "originalStart": 174.305,
+      "onscreen": false
+    },
+    {
+      "id": "little-helper",
+      "title": "Lobo’s Little Helper",
+      "start": 256.289,
+      "duration": 31.374,
+      "frame": "frames-final/little-helper.jpg",
+      "originalStart": 193.289,
+      "onscreen": false
+    },
+    {
+      "id": "next-move",
+      "title": "Your next move",
+      "start": 287.663,
+      "duration": 12.837,
+      "frame": "frames-final/next-move.jpg",
+      "originalStart": 224.663,
+      "onscreen": false
+    }
+  ]
+}
