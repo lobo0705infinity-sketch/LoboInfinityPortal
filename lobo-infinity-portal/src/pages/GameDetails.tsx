@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { loboWorkshopMapBySlug } from '../../shared/lobo-workshop-maps.mjs'
 import EntityPreviousNext from '../components/EntityPreviousNext'
 import InfinityArmyLink from '../components/InfinityArmyLink'
@@ -40,6 +40,13 @@ type BattleParticipant = {
   faction: string
   result: string
   scoreTone: 'cyan' | 'red'
+}
+
+function BattleReportsReturnLink({ children }: { children: ReactNode }) {
+  const location = useLocation()
+  const saved = location.state?.directoryReturnTo
+  const returnTo = typeof saved === 'string' && /^\/games(?:\?|$)/.test(saved) ? saved : '/games'
+  return <Link to={returnTo}>{children}</Link>
 }
 
 function GameDetails() {
@@ -175,7 +182,7 @@ function GameDetails() {
           <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
             <Link to="/">Dashboard</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/games">Battle Reports</Link>
+            <BattleReportsReturnLink>Battle Reports</BattleReportsReturnLink>
           </nav>
           <section className="battle-report-hero">
             <Skeleton label="Battle report loading" rows={8} />
@@ -277,7 +284,7 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
         <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
           <Link to="/">Dashboard</Link>
           <span aria-hidden="true">/</span>
-          <Link to="/games">Battle Reports</Link>
+          <BattleReportsReturnLink>Battle Reports</BattleReportsReturnLink>
           {game.division ? (
             <>
               <span aria-hidden="true">/</span>
@@ -407,7 +414,7 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
 
         <nav className="battle-report-footer-nav" aria-label="Battle report footer navigation">
           <EntityPreviousNext current={game.id} type="match" />
-          <Link to="/games">Back to Battle Reports</Link>
+          <BattleReportsReturnLink>Back to Battle Reports</BattleReportsReturnLink>
         </nav>
       </article>
     </main>
@@ -747,7 +754,7 @@ function GameNotFound() {
         <nav className="battle-report-breadcrumb" aria-label="Battle report navigation">
           <Link to="/">Dashboard</Link>
           <span aria-hidden="true">/</span>
-          <Link to="/games">Battle Reports</Link>
+          <BattleReportsReturnLink>Battle Reports</BattleReportsReturnLink>
         </nav>
         <section className="dashboard-state" aria-label="Game not found">
           <p role="alert">Game not found.</p>
