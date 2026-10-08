@@ -263,6 +263,7 @@ function RouteScrollReset() {
     window.scrollTo({
       left: 0,
       top: 0,
+      behavior: 'instant',
     })
   }, [location.pathname, location.search, location.state, navigationType])
 

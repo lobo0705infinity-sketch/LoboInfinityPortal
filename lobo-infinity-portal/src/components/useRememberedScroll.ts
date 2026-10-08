@@ -11,8 +11,8 @@ export function useRememberedScroll() {
     try { saved = JSON.parse(sessionStorage.getItem(key) || 'null') || undefined } catch { /* Storage is optional. */ }
     const frame = requestAnimationFrame(() => {
       if (saved && [saved.windowY,saved.tableY,saved.tableX].every(Number.isFinite)) {
-        window.scrollTo(0,saved.windowY)
-        if (element) { element.scrollTop=saved.tableY; element.scrollLeft=saved.tableX }
+        window.scrollTo({left:0,top:saved.windowY,behavior:'instant'})
+        element?.scrollTo({left:saved.tableX,top:saved.tableY,behavior:'instant'})
       }
     })
     const save = () => { try { sessionStorage.setItem(key,JSON.stringify({windowY:window.scrollY,tableY:element?.scrollTop || 0,tableX:element?.scrollLeft || 0})) } catch { /* Storage is optional. */ } }
