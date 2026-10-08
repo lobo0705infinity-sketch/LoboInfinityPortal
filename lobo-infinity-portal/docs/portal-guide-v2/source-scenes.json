@@ -1,0 +1,89 @@
+{
+  "scenes": [
+    {
+      "id": "welcome",
+      "title": "Welcome",
+      "originalStart": 0
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "originalStart": 8.858
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "originalStart": 20.834
+    },
+    {
+      "id": "standings",
+      "title": "Standings",
+      "originalStart": 31.911
+    },
+    {
+      "id": "mission-map",
+      "title": "Mission & Map",
+      "originalStart": 42.653
+    },
+    {
+      "id": "tts-maps",
+      "title": "TTS Map Library",
+      "originalStart": 54.181
+    },
+    {
+      "id": "table-details",
+      "title": "Table details",
+      "originalStart": 66.13
+    },
+    {
+      "id": "submit-game",
+      "title": "Submit Game",
+      "originalStart": 77.852
+    },
+    {
+      "id": "battle-reports",
+      "title": "Battle Reports",
+      "originalStart": 92.236
+    },
+    {
+      "id": "report-details",
+      "title": "Report details",
+      "originalStart": 101.424
+    },
+    {
+      "id": "army-intelligence",
+      "title": "Army Intelligence",
+      "originalStart": 115.718
+    },
+    {
+      "id": "rankings",
+      "title": "Rankings",
+      "originalStart": 127.929
+    },
+    {
+      "id": "factions",
+      "title": "Factions",
+      "originalStart": 142.849
+    },
+    {
+      "id": "players",
+      "title": "Players",
+      "originalStart": 157.696
+    },
+    {
+      "id": "missions",
+      "title": "Missions",
+      "originalStart": 174.305
+    },
+    {
+      "id": "little-helper",
+      "title": "Lobo\u2019s Little Helper",
+      "originalStart": 193.289
+    },
+    {
+      "id": "next-move",
+      "title": "Your next move",
+      "originalStart": 224.663
+    }
+  ]
+}

@@ -1,192 +1,205 @@
 {
   "version": 2,
-  "status": "Awaiting full new narration and remaining current-screen captures; not deployed",
-  "sourceVerifiedAt": "2026-10-08T03:45:32.434545+00:00",
+  "duration": 300.5,
+  "narration": "Original Bradley recording; added guides have on-screen text only",
   "scenes": [
     {
       "id": "welcome",
       "title": "Welcome",
-      "narration": "Welcome to the Lobo Infinity Portal. This walkthrough shows you how to find a game, prepare for it, submit your result, and explore the community.",
+      "start": 0.0,
+      "duration": 8.858,
+      "frame": "frames-final/welcome.jpg",
       "originalStart": 0,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/welcome.wav",
-      "frameFile": "frames/welcome.jpg"
+      "onscreen": false
     },
     {
       "id": "dashboard",
       "title": "Dashboard",
-      "narration": "On the dashboard, Choose Your First Move takes you to Army Intelligence, a battle report, or events. Public browsing is open to everyone. Use Explore to find the portal\u2019s other tools and directories.",
+      "start": 8.858,
+      "duration": 11.976,
+      "frame": "frames-final/dashboard.jpg",
       "originalStart": 8.858,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/dashboard.wav",
-      "frameFile": "frames/dashboard.jpg"
+      "onscreen": false
     },
     {
       "id": "navigation",
-      "title": "Navigation and page controls",
-      "narration": "The links above the page show where you are and let you return to a parent section. On pages with an artwork control, choose Show full artwork or Use compact artwork; your preference carries across supported pages. Check Data last updated when interpreting results. If a page reports a loading error, use its Retry button.",
-      "visual": "Show breadcrumbs and the artwork toggle on Army Lists, then show the data cutoff in the footer. Show Retry only if a real error state is available.",
-      "audioFile": "audio/navigation.wav",
-      "frameFile": "frames/navigation.jpg"
+      "title": "Navigation & artwork",
+      "start": 20.834,
+      "duration": 16,
+      "frame": "frames-final/navigation.jpg",
+      "onscreen": true,
+      "text": "Find your way back. Use the links above the page. Artwork control. Switch between full and compact artwork."
     },
     {
       "id": "events",
       "title": "Events",
-      "narration": "Select All Events in the sidebar. Open the event you want to join and check its registration status. For casual games, use the Game Network or find players on Discord.",
+      "start": 36.834,
+      "duration": 11.077,
+      "frame": "frames-final/events.jpg",
       "originalStart": 20.834,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/events.wav",
-      "frameFile": "frames/events.jpg"
+      "onscreen": false
     },
     {
       "id": "standings",
       "title": "Standings",
-      "narration": "Use the event selector in the sidebar to choose your competition. The links below it lead to that event. In Standings, choose your division to see the players and recorded scores.",
+      "start": 47.911,
+      "duration": 10.742,
+      "frame": "frames-final/standings.jpg",
       "originalStart": 31.911,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/standings.wav",
-      "frameFile": "frames/standings.jpg"
+      "onscreen": false
     },
     {
       "id": "mission-map",
       "title": "Mission & Map",
-      "narration": "Before arranging a league game, open Mission and Map. Check the date range, the active missions, and the assigned maps. View Mission opens the scenario details from Mission Geist.",
+      "start": 58.653,
+      "duration": 11.528,
+      "frame": "frames-final/mission-map.jpg",
       "originalStart": 42.653,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/mission-map.wav",
-      "frameFile": "frames/mission-map.jpg"
+      "onscreen": false
     },
     {
       "id": "tts-maps",
       "title": "TTS Map Library",
-      "narration": "Open the T T S Map Library to preview tables. Scroll down to search by map name, filter by named mission setup, or sort by highest rated. Check the collection for your event.",
+      "start": 70.181,
+      "duration": 11.949,
+      "frame": "frames-final/tts-maps.jpg",
       "originalStart": 54.181,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/tts-maps.wav",
-      "frameFile": "frames/tts-maps.jpg"
+      "onscreen": false
     },
     {
       "id": "table-details",
       "title": "Table details",
-      "narration": "Open a table card to inspect its terrain. The overhead view shows the layout, and the angled view shows heights and cover. Use the Workshop collection link, then match the bag name shown here.",
+      "start": 82.13,
+      "duration": 11.722,
+      "frame": "frames-final/table-details.jpg",
       "originalStart": 66.13,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/table-details.wav",
-      "frameFile": "frames/table-details.jpg"
+      "onscreen": false
     },
     {
       "id": "submit-game",
       "title": "Submit Game",
-      "narration": "After playing, select Submit Game. Choose the form that matches your game: League, Team Tournament, Casual, or Top Forty. Each button opens its own Google Form. Check your scores with your opponent before submitting.",
+      "start": 93.852,
+      "duration": 14.384,
+      "frame": "frames-final/submit-game.jpg",
       "originalStart": 77.852,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/submit-game.wav",
-      "frameFile": "frames/submit-game.jpg"
+      "onscreen": false
     },
     {
       "id": "battle-reports",
       "title": "Battle Reports",
-      "narration": "Open Battle Reports to browse recorded games. Each row shows the players, mission, and scores. Click the game number to open the full report.",
+      "start": 108.236,
+      "duration": 9.188,
+      "frame": "frames-final/battle-reports.jpg",
       "originalStart": 92.236,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/battle-reports.wav",
-      "frameFile": "frames/battle-reports.jpg"
+      "onscreen": false
     },
     {
       "id": "report-details",
       "title": "Report details",
-      "narration": "The report shows the objective points, tournament points, and victory points. Scroll for the mission summary, map, highlights, and review. Battle stories are fictionalized; use the recorded results and player notes for the factual account.",
+      "start": 117.424,
+      "duration": 14.294,
+      "frame": "frames-final/report-details.jpg",
       "originalStart": 101.424,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/report-details.wav",
-      "frameFile": "frames/report-details.jpg"
+      "onscreen": false
     },
     {
       "id": "army-intelligence",
       "title": "Army Intelligence",
-      "narration": "Open Army Intelligence. Choose a faction or sectorial, or try the Corregidor example. This page explores submitted lists, common profiles, specialist coverage, and battlefield roles.",
+      "start": 131.718,
+      "duration": 12.211,
+      "frame": "frames-final/army-intelligence.jpg",
       "originalStart": 115.718,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/army-intelligence.wav",
-      "frameFile": "frames/army-intelligence.jpg"
+      "onscreen": false
     },
     {
       "id": "known-lists",
       "title": "Known Army Lists",
-      "narration": "In Army Intelligence, select Known Army Lists to open the Army Lists page. The faction filter is already set to the faction or sectorial you were viewing. From here, search the submitted lists or narrow them by mission. Clear filters when you want to browse other armies.",
-      "visual": "Show Known Army Lists summary card, then the verified filtered Army Lists page.",
-      "audioFile": "audio/known-lists.wav",
-      "frameFile": "frames/known-lists.jpg"
+      "start": 143.929,
+      "duration": 10,
+      "frame": "frames-final/known-lists.jpg",
+      "onscreen": true,
+      "text": "From Army Intelligence. Select Known Army Lists. Faction already selected. Arrive on Army Lists with your army filter set."
     },
     {
       "id": "army-lists",
       "title": "Army Lists on desktop",
-      "narration": "On a desktop, choose View List to open the roster in Corvus Belli Infinity Army. You can also open Army Lists directly from the sidebar. Use its search, faction, and mission filters to find a list, and select a column heading to sort the table.",
-      "visual": "Highlight View List and the search, faction and mission filters on the current desktop page.",
-      "audioFile": "audio/army-lists.wav",
-      "frameFile": "frames/army-lists.jpg"
+      "start": 153.929,
+      "duration": 10,
+      "frame": "frames-final/army-lists.jpg",
+      "onscreen": true,
+      "text": "View List. Opens the roster in Corvus Belli Infinity Army. Find a list. Search, filter by faction or mission, and sort headings."
     },
     {
       "id": "mobile-lists",
       "title": "Army Lists on mobile",
-      "narration": "On a phone, the action is Copy Army Code. Tap it to copy the list\u2019s code, then paste that code into Infinity Army\u2019s import tool. Army Intelligence\u2019s Known Army Lists link still takes you to the same faction-filtered Army Lists page.",
-      "visual": "Capture actual responsive mobile Army Lists layout and demonstrate Copy Army Code with its copied confirmation. Do not substitute a cropped desktop screenshot.",
-      "audioFile": "audio/mobile-lists.wav",
-      "frameFile": "frames/mobile-lists.jpg"
+      "start": 163.929,
+      "duration": 15,
+      "frame": "frames-final/mobile-lists.jpg",
+      "onscreen": true,
+      "text": "Copy Army Code. Tap to copy, then paste into Infinity Army’s import tool. Same faction filter. Known Army Lists keeps your selected army."
     },
     {
       "id": "rankings",
       "title": "Rankings",
-      "narration": "Use Combat, Defense, Control, or All to browse tactical roles. Global benchmark rank compares a profile across all armies. In-faction benchmark rank compares it within the army you selected. Check the exact weapon and combat state, such as non-linked or Fireteam plus one special die. The benchmark rating, letter grade, and global percentile describe combat performance. Submitted-list popularity tells you how often players used that profile. Compare matching combat states, and read each rank\u2019s total number of profiles.",
+      "start": 178.929,
+      "duration": 14.92,
+      "frame": "frames-final/rankings.jpg",
       "originalStart": 127.929,
-      "visual": "Show current ranking cards; highlight global rank, in-faction rank, weapon, combat state, rating, grade, percentile and submitted-list popularity in that order.",
-      "audioFile": "audio/rankings.wav",
-      "frameFile": "frames/rankings.jpg"
+      "onscreen": false
+    },
+    {
+      "id": "rank-comparisons",
+      "title": "Global & in-faction ranks",
+      "start": 193.849,
+      "duration": 12,
+      "frame": "frames-final/rank-comparisons.jpg",
+      "onscreen": true,
+      "text": "Global rank. Compares profiles across all armies. In-faction rank. Compares profiles within the selected army. Compare like with like. Match the weapon and combat state."
     },
     {
       "id": "factions",
       "title": "Factions",
-      "narration": "Open Factions to explore armies and sectorials through games recorded on the portal. Open an army\u2019s card for its results and recent reports. Read the game count alongside the record and win rate. These numbers describe submitted games, rather than every game played by that faction.",
+      "start": 205.849,
+      "duration": 14.847,
+      "frame": "frames-final/factions.jpg",
       "originalStart": 142.849,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/factions.wav",
-      "frameFile": "frames/factions.jpg"
+      "onscreen": false
     },
     {
       "id": "players",
       "title": "Players",
-      "narration": "Open Players to browse the community. Use the event filter for All Events or a specific competition. Each card shows a player\u2019s division, game count, and record. Open a card to view their profile, then scroll to Game History to explore their recorded games.",
+      "start": 220.696,
+      "duration": 16.609,
+      "frame": "frames-final/players.jpg",
       "originalStart": 157.696,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/players.wav",
-      "frameFile": "frames/players.jpg"
+      "onscreen": false
     },
     {
       "id": "missions",
       "title": "Missions",
-      "narration": "Open Missions and choose an event, or leave All Events selected. View Mission opens the available scenario details. Click a mission name for its analysis, including recorded games, first-turn win rate, faction performance, and recent battle reports. Read the number of games alongside each percentage.",
+      "start": 237.305,
+      "duration": 18.984,
+      "frame": "frames-final/missions.jpg",
       "originalStart": 174.305,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/missions.wav",
-      "frameFile": "frames/missions.jpg"
+      "onscreen": false
     },
     {
       "id": "little-helper",
-      "title": "Lobo\u2019s Little Helper",
-      "narration": "Open Lobo\u2019s Little Helper for the updated guide and Discord link. In Discord, start with slash help. Use slash list analyse with an Army code for a readable roster, legality summary, and two D Tabletop Simulator export. Tactical Brief, Ratings, Classifieds, and T T S Notes open privately through buttons. Use slash combat matchup to compare two profiles, slash combat counters for reactive answers, and slash play for availability and game requests.",
+      "title": "Lobo’s Little Helper",
+      "start": 256.289,
+      "duration": 31.374,
+      "frame": "frames-final/little-helper.jpg",
       "originalStart": 193.289,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/little-helper.wav",
-      "frameFile": "frames/little-helper.jpg"
+      "onscreen": false
     },
     {
       "id": "next-move",
       "title": "Your next move",
-      "narration": "You are ready to use the portal. Find an event or an opponent, check your mission and map, play your game, and submit the result. Return for reports, rankings, and inspiration for your next list.",
+      "start": 287.663,
+      "duration": 12.837,
+      "frame": "frames-final/next-move.jpg",
       "originalStart": 224.663,
-      "visual": "Capture the current page and action described in the narration.",
-      "audioFile": "audio/next-move.wav",
-      "frameFile": "frames/next-move.jpg"
+      "onscreen": false
     }
   ]
 }
