@@ -23,6 +23,20 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 169, printedPage: '169',
+  section: 'POSSESSED STATE', headings: ['POSSESSED STATE', 'CANCELLATION'],
+  structuredBlockTypes: ['CANCELLATION'], canonicalTerm: 'possessed state',
+  text: 'POSSESSED STATE\nCANCELLATION\nIn the owning player’s Tactical Phase, during the Executive Use of Command Tokens step, the player can automatically cancel this state by spending 1 Command Token. The Possessed State is automatically canceled if the owning player successfully affects the Possessed Trooper with the Total Control Hacking Program.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 61, printedPage: '61',
+  section: 'TOTAL CONTROL', headings: ['TOTAL CONTROL', 'REQUIREMENTS', 'EFFECTS'],
+  structuredBlockTypes: ['REQUIREMENTS', 'EFFECTS'], canonicalTerm: 'total control',
+  text: 'TOTAL CONTROL\nThe target must be an enemy TAG, or a TAG in Possessed State. If this Program is used against a TAG in Possessed State, any failed Saving Roll cancels the target’s Possessed State, causing them to enter Normal State, and the Possessed State Token is removed.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 134, printedPage: '134',
   section: 'FIRETEAM INTEGRITY — VOLUNTARY CANCELLATION',
   headings: ['FIRETEAM INTEGRITY', 'FIRETEAM CANCELLATION'],
