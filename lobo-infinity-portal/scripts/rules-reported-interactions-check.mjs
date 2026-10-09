@@ -15,6 +15,10 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['does a nanoscreen model gain the +6 to save from vitroferro deployable cover', 'NO', /No Cover prohibits Partial Cover MODs/],
+  ['Can a trooper with Nanoscreen gain +6 to saving rolls from Vitroferro cover?', 'NO', /does not produce \+9/],
+  ['Does Nanoscreen stack with Vitroferro cover?', 'NO', /Nanoscreen still imposes -3 BS/],
+  ['Can a model with No Cover claim the cover bonus from Vitroferro deployable cover?', 'NO', /cannot gain its \+6/],
   ['can an engineer clear the state of total control (possessed state) from a tag', 'NO', /cannot cancel Possessed State/],
   ['Can an Engineer cancel Possessed State?', 'NO', /1 Command Token/],
   ['Can my Engineer remove possession from my TAG?', 'NO', /fail a Saving Roll/],
@@ -92,6 +96,7 @@ const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-servic
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
+  ['Does Nanoscreen stack with Vitroferro cover?', ['nanoscreen', 'no cover', 'deployable cover']],
   ['How can my Engineer get a TAG back after Total Control?', ['possessed state', 'engineer', 'total control']],
   ['Can I cancel a Fireteam after the enemy spends an Order?', ['fireteam integrity']],
   ['Do models in camo state reload during the states phase if a unit with baggage is within zone of control', ['baggage', 'reload', 'unloaded state', 'camouflaged state']],
@@ -128,3 +133,18 @@ const repeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRules
 assert.equal(new Set(repeated.map(result => result.deepSeek.answer)).size, 1)
 assert.ok(repeated.every(result => result.deepSeek.conclusion === 'YES'))
 console.log('Repeated production-corpus Baggage answers remain identical without an AI call.')
+
+for (const question of [
+  'does a nanoscreen model gain the +6 to save from vitroferro deployable cover',
+  'Can a trooper with Nanoscreen gain +6 to saving rolls from Vitroferro cover?',
+]) {
+  const result = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Verified No Cover ruling must bypass AI') } })
+  assert.equal(result.deepSeek.conclusion, 'NO')
+  assert.ok(result.deepSeek.sources.some(source => source.url.endsWith('/No_Cover')))
+}
+for (const question of [
+  'Can a Nanoscreen model without No Cover gain the +6 to save from Vitroferro deployable cover?',
+  'Can a Nanoscreen model gain the +6 to save from Vitroferro deployable cover under a special scenario exception?',
+  'Does Nanoscreen protect against a Comms Attack?',
+]) assert.equal(context.verifiedRulesInteraction(question, corpus), null, question)
+console.log('Nanoscreen/Vitroferro ruling, controlling evidence, and exception routing passed.')

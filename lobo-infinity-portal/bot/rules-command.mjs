@@ -74,7 +74,14 @@ export function verifiedRulesInteraction(question, corpus) {
   }
   const camoSubject = '(?:(?:a |the )?(?:models?|troopers?|units?) (?:in|while in) (?:the )?(?:camo|camouflaged|camouflage)(?: state)?|(?:a |the )?(?:camouflaged|camo) (?:models?|troopers?|units?))'
   const baggageRange = '(?:(?:a|an|the) (?:(?:allied|friendly) )?(?:unit|trooper|model) with baggage is (?:within|in) (?:(?:their|its|the) )?(?:zone of control|zoc)|(?:they are|it is) (?:within|in) (?:the )?(?:zone of control|zoc) of (?:(?:a|an|the) )?(?:(?:allied|friendly) )?(?:baggage (?:unit|trooper|model)|(?:unit|trooper|model) with baggage))'
-  if (new RegExp('^(?:do|does|can|may|will) ' + camoSubject + ' (?:reload|replenish ammunition|regain disposable uses) (?:during|in) (?:the )?states phase (?:if|when|while) ' + baggageRange + '$').test(words)) {
+  const nanoscreenSubject = '(?:(?:a|the|my) nanoscreen (?:model|trooper|unit)|(?:a|the|my) (?:model|trooper|unit) with (?:a )?nanoscreen)'
+  if (new RegExp('^(?:does|can|may|will) ' + nanoscreenSubject + ' (?:gain|receive|get|benefit from|claim) (?:the )?(?:\\+?6(?: (?:to )?(?:save|saving rolls?))?|saving roll bonus|cover bonus) from (?:a |the )?vitroferro(?: deployable)? cover$').test(words)
+    || /^(?:does|can|will) nanoscreen stack with (?:the )?(?:\+6(?: save)? from )?vitroferro(?: deployable)? cover$/.test(words)
+    || /^(?:can|does|will) (?:a |the )?(?:model|trooper|unit) with no cover (?:gain|receive|get|benefit from|claim) (?:the )?(?:\+?6(?: (?:to )?(?:save|saving rolls?))?|saving roll bonus|cover bonus) from (?:a |the )?vitroferro(?: deployable)? cover$/.test(words)) {
+    conclusion = 'NO'
+    answer = 'No. Standard Nanoscreen troopers have No Cover. No Cover prohibits Partial Cover MODs, and Deployable Cover (Vitroferro) grants a variant of Partial Cover, so these troopers cannot gain its +6 Saving Roll MOD, even in Silhouette contact. Against an ordinary BS Attack, Nanoscreen still imposes -3 BS on the attacker and grants +3 to the user’s Saving Roll; it does not produce +9 by stacking with Vitroferro. Nanoscreen does not apply against BS Attacks with the Comms Attack Trait or against CC Attacks. If a scenario explicitly changes No Cover or the profile, that exception must be checked separately.'
+    pages = ['No_Cover', 'Deployable_Cover', 'Nanoscreen']
+  } else if (new RegExp('^(?:do|does|can|may|will) ' + camoSubject + ' (?:reload|replenish ammunition|regain disposable uses) (?:during|in) (?:the )?states phase (?:if|when|while) ' + baggageRange + '$').test(words)) {
     conclusion = 'YES'
     certainty = 'EXPLICIT RULES ANSWER'
     answer = 'Yes. During the States Phase, a Camouflaged Trooper in the Zone of Control of an allied non-Null Baggage provider automatically cancels Unloaded or regains spent Disposable uses. This is Baggage’s automatic effect, not a declaration of the Reload Short Skill/ARO. Camouflaged does not prevent Automatic Equipment from functioning, and this replenishment does not reveal the marker. Non-Reloadable weapons or Equipment cannot be replenished. Already deployed items remain on the table.'
