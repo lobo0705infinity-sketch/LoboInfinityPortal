@@ -15,6 +15,10 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['when does nfb stop applying?', 'DEPENDS', /until the new effect is canceled or voluntarily deactivated/],
+  ['When does Negative Feedback end?', 'DEPENDS', /revealing the hacker ends Cybermask/],
+  ['a trooper with mimetism is in cybermask. An active enemy trooper declares discover shoot against them. Does Mim reactivate after the successful discover roll or only after the order resolution?', 'YES', /same Order/],
+  ['Does Mimetism return for the shot after successful Discover + BS Attack against Cybermask?', 'YES', /suppresses Mimetism for the Discover Roll/],
   ['does a nanoscreen model gain the +6 to save from vitroferro deployable cover', 'NO', /No Cover prohibits Partial Cover MODs/],
   ['Can a trooper with Nanoscreen gain +6 to saving rolls from Vitroferro cover?', 'NO', /does not produce \+9/],
   ['Does Nanoscreen stack with Vitroferro cover?', 'NO', /Nanoscreen still imposes -3 BS/],
@@ -64,6 +68,8 @@ for (const [question, conclusion, detail] of cases) {
 assert.equal(providerCalls, 0)
 assert.equal(benchmarkCalls, 0)
 for (const question of [
+  'Does Mimetism return for the shot after successful Discover + BS Attack against Cybermask under a scenario exception?',
+  'Does Mimetism return for the shot after successful Discover + BS Attack against Cybermask with White Noise?',
   'Can an Engineer cancel Possessed State under a special scenario exception?',
   'Can an Engineer cancel Isolated State?',
   'Can an Engineer repair a wound on a Possessed TAG?',
@@ -82,7 +88,7 @@ for (const question of [
   const result = await context.retrieveRulesReference({ question })
   assert.equal(result.fallback, true, question)
 }
-assert.equal(providerCalls, 14)
+assert.equal(providerCalls, 16)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
@@ -90,12 +96,14 @@ assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
 assert.match(prompt, /Declaring Reload is a separate Attack declaration/)
 assert.match(prompt, /must announce it before either player spends the Order/)
-console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 14 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 16 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
+  ['when does nfb stop applying?', ['negative feedback', 'cybermask']],
+  ['Does Mim reactivate after a successful discover shoot against cybermask?', ['negative feedback', 'cybermask', 'impersonation state']],
   ['Does Nanoscreen stack with Vitroferro cover?', ['nanoscreen', 'no cover', 'deployable cover']],
   ['How can my Engineer get a TAG back after Total Control?', ['possessed state', 'engineer', 'total control']],
   ['Can I cancel a Fireteam after the enemy spends an Order?', ['fireteam integrity']],
@@ -148,3 +156,13 @@ for (const question of [
   'Does Nanoscreen protect against a Comms Attack?',
 ]) assert.equal(context.verifiedRulesInteraction(question, corpus), null, question)
 console.log('Nanoscreen/Vitroferro ruling, controlling evidence, and exception routing passed.')
+
+for (const question of [
+  'when does nfb stop applying?',
+  'a trooper with mimetism is in cybermask. An active enemy trooper declares discover shoot against them. Does Mim reactivate after the successful discover roll or only after the order resolution?',
+]) {
+  const results = await Promise.all(Array.from({ length: 3 }, () => retrieveRulesReference({ question, deepSeek: async () => { throw new Error('NFB regression must bypass the AI provider') } })))
+  assert.equal(new Set(results.map(result => result.deepSeek.answer)).size, 1)
+  assert.ok(results.every(result => result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))
+}
+console.log('Both reported NFB questions return consistent production-corpus answers without an AI call.')

@@ -75,7 +75,21 @@ export function verifiedRulesInteraction(question, corpus) {
   const camoSubject = '(?:(?:a |the )?(?:models?|troopers?|units?) (?:in|while in) (?:the )?(?:camo|camouflaged|camouflage)(?: state)?|(?:a |the )?(?:camouflaged|camo) (?:models?|troopers?|units?))'
   const baggageRange = '(?:(?:a|an|the) (?:(?:allied|friendly) )?(?:unit|trooper|model) with baggage is (?:within|in) (?:(?:their|its|the) )?(?:zone of control|zoc)|(?:they are|it is) (?:within|in) (?:the )?(?:zone of control|zoc) of (?:(?:a|an|the) )?(?:(?:allied|friendly) )?(?:baggage (?:unit|trooper|model)|(?:unit|trooper|model) with baggage))'
   const nanoscreenSubject = '(?:(?:a|the|my) nanoscreen (?:model|trooper|unit)|(?:a|the|my) (?:model|trooper|unit) with (?:a )?nanoscreen)'
-  if (new RegExp('^(?:does|can|may|will) ' + nanoscreenSubject + ' (?:gain|receive|get|benefit from|claim) (?:the )?(?:\\+?6(?: (?:to )?(?:save|saving rolls?))?|saving roll bonus|cover bonus) from (?:a |the )?vitroferro(?: deployable)? cover$').test(words)
+  if (/^(?:when does|when will|when can|at what point does) (?:nfb|negative feedback)(?: suppression)? (?:stop applying|end|stop|cease applying)$/.test(words)) {
+    conclusion = 'DEPENDS'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'NFB prevents simultaneous use of multiple NFB abilities. Activating one overrides the trooper’s other NFB abilities until the new effect is canceled or voluntarily deactivated. The exact cancellation condition depends on that ability. For Cybermask, its NFB suppresses Mimetism while the hacker is in IMP-2; revealing the hacker ends Cybermask and its suppression.'
+    pages = ['Labels#Negative_Feedback_(NFB)', 'Cybermask']
+  } else if (/\bcyber ?mask\b/.test(words) && /\b(?:mimetism|mim)\b/.test(words)
+    && /discover/.test(words) && /shoot|shot|bs attack/.test(words)
+    && /reactivat|regain|return|apply|applies/.test(words)
+    && /successful|succeeds|success/.test(words)
+    && !/imp-1|impersonation-1|biometric|exception|scenario|white noise|albedo|holoprojector/.test(words)) {
+    conclusion = 'YES'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'Mimetism applies to the BS Attack after a successful Discover in the same Order. Cybermask’s NFB suppresses Mimetism for the Discover Roll while the hacker is in IMP-2. Successful Discover cancels IMP-2 and ends Cybermask, so Mimetism applies to the subsequent shot; it does not wait until the next Order. Discover + BS Attack is expressly allowed against IMP-2, and Impersonation cancellation applies to the entire Order.'
+    pages = ['Cybermask', 'Labels#Negative_Feedback_(NFB)', 'Impersonation_State', 'Discover']
+  } else if (new RegExp('^(?:does|can|may|will) ' + nanoscreenSubject + ' (?:gain|receive|get|benefit from|claim) (?:the )?(?:\\+?6(?: (?:to )?(?:save|saving rolls?))?|saving roll bonus|cover bonus) from (?:a |the )?vitroferro(?: deployable)? cover$').test(words)
     || /^(?:does|can|will) nanoscreen stack with (?:the )?(?:\+6(?: save)? from )?vitroferro(?: deployable)? cover$/.test(words)
     || /^(?:can|does|will) (?:a |the )?(?:model|trooper|unit) with no cover (?:gain|receive|get|benefit from|claim) (?:the )?(?:\+?6(?: (?:to )?(?:save|saving rolls?))?|saving roll bonus|cover bonus) from (?:a |the )?vitroferro(?: deployable)? cover$/.test(words)) {
     conclusion = 'NO'
