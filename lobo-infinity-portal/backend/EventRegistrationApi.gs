@@ -186,6 +186,7 @@ function registerForIndividualDoubleEliminationEvent(eventId, params) {
       });
 
     if (
+      !capacity.unlimited &&
       countRegisteredEventParticipants(eventId) >=
       capacity.maximumPlayers
     )
@@ -598,6 +599,7 @@ function upsertManagedEventRegistrationRow(eventId, user, params, status) {
         );
 
       if (
+        !capacity.unlimited &&
         countRegisteredEventParticipants(eventId) >=
         capacity.maximumPlayers
       )
@@ -1058,6 +1060,7 @@ function resolveEventRegistrationStatus(eventId, event, player) {
     getEventRegistrationCapacity(event);
 
   if (
+    !capacity.unlimited &&
     capacity.maximumPlayers > 0 &&
     getEventRegistrationRows(eventId).filter(function(registration) {
       return registration.status === "Registered";
@@ -1081,7 +1084,8 @@ function getEventRegistrationCapacity(event) {
     rules.match(/max(?:imum)? teams\s*[:=]\s*(\d+)/i);
 
   return {
-    unlimited: !playerMatch && !teamMatch,
+    // Top 40 accepts all applicants; maximumPlayers still limits the final bracket.
+    unlimited: event.id === "event-lobo-s-american-top-40" || (!playerMatch && !teamMatch),
     maximumPlayers: playerMatch ? Number(playerMatch[1]) || 0 : 0,
     maximumTeams: teamMatch ? Number(teamMatch[1]) || 0 : 0,
     waitlistEnabled: /waitlist/i.test(rules)
@@ -1104,6 +1108,7 @@ function getEventRegistrationStatusLabel(event, capacity, registeredCount) {
     return "Registration Closed";
 
   if (
+    !capacity.unlimited &&
     capacity.maximumPlayers > 0 &&
     registeredCount >= capacity.maximumPlayers
   )

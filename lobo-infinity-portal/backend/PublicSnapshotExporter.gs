@@ -19,7 +19,6 @@ const PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS = [
   "Lobo Portal User Name",
   "Lobo Portal Name"
 ];
-const PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT = 40;
 const PUBLIC_SNAPSHOT_PUBLIC_FILES = [
   "snapshot.json", "players.json", "games.json", "events.json",
   "missions.json", "mission-catalog.json", "factions.json", "standings.json", "army-lists.json",
@@ -533,16 +532,15 @@ function normalizePublicSnapshotTop40Header_(value) {
 function buildPublicSnapshotTop40Registrations_(source, generatedAt) {
   const seen = {};
   const players = [];
-  (source && source.names ? source.names : []).some(function(rawValue) {
+  (source && source.names ? source.names : []).forEach(function(rawValue) {
     const raw = String(rawValue || "");
-    if (/[\u0000-\u001f\u007f]/.test(raw)) return false;
+    if (/[\u0000-\u001f\u007f]/.test(raw)) return;
     const name = raw.trim().replace(/\s+/g, " ");
-    if (!name || name.length > 80) return false;
+    if (!name || name.length > 80) return;
     const normalized = name.toLowerCase();
-    if (seen[normalized]) return false;
+    if (seen[normalized]) return;
     seen[normalized] = true;
     players.push({ name: name, position: players.length + 1 });
-    return players.length >= PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT;
   });
   return {
     generatedAt: generatedAt,
@@ -1994,7 +1992,7 @@ function validatePublicSnapshotDatasets_(datasets, gameContext) {
 }
 
 function validatePublicSnapshotTop40Registrations_(registration, sourceCutoff) {
-  if (!registration || !Array.isArray(registration.players) || registration.players.length > 40)
+  if (!registration || !Array.isArray(registration.players))
     throw new Error("Public Top 40 registration snapshot is invalid.");
   if (!registration.generatedAt || Number.isNaN(new Date(registration.generatedAt).getTime()))
     throw new Error("Public Top 40 registration generation timestamp is invalid.");

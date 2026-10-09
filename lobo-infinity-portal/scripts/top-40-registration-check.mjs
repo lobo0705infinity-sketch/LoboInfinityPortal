@@ -36,10 +36,10 @@ assert.ok(eventNavigationSource.includes(`registrationUrl: '${registrationFormUr
 assert.match(dedicatedPageSource, /target="_blank"/)
 assert.match(dedicatedPageSource, /rel="noopener noreferrer"/)
 assert.match(dedicatedPageSource, /REGISTER NOW/)
-assert.match(dedicatedPageSource, /\{full \? 'FULL' : 'OPEN'\}/)
-assert.match(dedicatedPageSource, /\{count\} \/ 40 PLAYERS REGISTERED/)
+assert.match(dedicatedPageSource, /<strong>OPEN<\/strong>/)
+assert.match(dedicatedPageSource, /\{count\} PLAYERS REGISTERED/)
 assert.match(dedicatedPageSource, /No players registered yet\./)
-assert.match(dedicatedPageSource, /reached its 40-player capacity/)
+assert.match(dedicatedPageSource, /Registration is uncapped/)
 assert.match(dedicatedPageSource, /Updated twice daily/)
 assert.match(dedicatedPageSource, /Last updated:/)
 assert.match(dedicatedPageSource, /useSnapshotData<PublicTop40Registration>\('top-40-registrations'\)/)
@@ -70,7 +70,7 @@ function extractFunction(source, name) {
 const snapshotGeneratedAt = '2026-09-07T22:00:00.000Z'
 
 function buildSanitizedRegistration(names) {
-  const context = { PUBLIC_SNAPSHOT_TOP40_REGISTRATION_LIMIT: 40 }
+  const context = {}
   vm.createContext(context)
   vm.runInContext(
     extractFunction(publicSnapshotExporterSource, 'buildPublicSnapshotTop40Registrations_'),
@@ -142,12 +142,12 @@ assert.deepEqual(JSON.parse(JSON.stringify(buildSanitizedRegistration([
   players: [{ name: 'Alpha Wolf', position: 1 }, { name: 'Bravo', position: 2 }],
 })
 
-for (const count of [40, 45]) {
+for (const count of [40, 41, 65]) {
   const registration = buildSanitizedRegistration(
     Array.from({ length: count }, (_, index) => `Player ${index + 1}`),
   )
-  assert.equal(registration.players.length, 40)
-  assert.equal(registration.players[39].position, 40)
+  assert.equal(registration.players.length, count)
+  assert.equal(registration.players[count - 1].position, count)
 }
 
 const privacyFixture = buildSanitizedRegistration(['Public Player'])
@@ -204,10 +204,10 @@ assert.match(registrationPageSource, /!individualTournament \|\| data\.registrat
 assert.match(apiSource, /itsName\?: string/)
 assert.match(apiSource, /itsName: getString\(record, 'itsName'\)/)
 
-function createHarness({ eventType = 'Individual Double Elimination', rows = [] } = {}) {
+function createHarness({ eventType = 'Individual Double Elimination', eventId = 'event-lobo-s-american-top-40', rows = [] } = {}) {
   const state = {
     event: {
-      id: 'event-top-40',
+      id: eventId,
       registration: 'Registration Open',
       rules: 'Maximum Players: 40',
       type: eventType,
@@ -273,7 +273,7 @@ function createHarness({ eventType = 'Individual Double Elimination', rows = [] 
 function request(overrides = {}) {
   return {
     parameter: {
-      eventId: 'event-top-40',
+      eventId: 'event-lobo-s-american-top-40',
       faction: 'ALEPH',
       itsName: '  Lobo ITS  ',
       player: 'Lobo',
@@ -339,8 +339,8 @@ for (const [field, value] of [['player', ''], ['itsName', '   '], ['faction', 'U
     player: `Player ${index + 1}`,
     status: 'Registered',
   }))
-  const { context, state } = createHarness({ rows })
-  const response = context.registerForEvent(request())
+  const { context, state } = createHarness({ rows, eventId: 'event-top-40' })
+  const response = context.registerForEvent(request({ eventId: 'event-top-40' }))
   assert.equal(response.code, 'CAPACITY_FULL')
   assert.equal(state.writes, 0)
 
@@ -372,6 +372,32 @@ for (const [field, value] of [['player', ''], ['itsName', '   '], ['faction', 'U
   assert.equal(state.rows.find((row) => row.player === 'Player 1').status, 'Removed')
 }
 
+for (const count of [40, 64]) {
+  const rows = Array.from({ length: count }, (_, index) => ({ player: `Player ${index + 1}`, status: 'Registered' }))
+  const { context, state } = createHarness({ rows })
+  assert.equal(context.registerForEvent(request()).success, true)
+  context.upsertManagedEventRegistrationRow('event-lobo-s-american-top-40', { leaguePlayer: 'Commissioner Add' }, {}, 'Registered')
+  assert.equal(state.rows.filter((row) => row.status === 'Registered').length, count + 2)
+  const capacity = context.getEventRegistrationCapacity(state.event)
+  assert.equal(capacity.unlimited, true)
+  assert.equal(capacity.maximumPlayers, 40, 'Final bracket capacity remains 40.')
+  assert.equal(context.getEventRegistrationStatusLabel(state.event, capacity, count + 2), 'Registration Open')
+}
+
+{
+  const { context } = createHarness()
+  const bracketSource = readFileSync(new URL('../backend/DoubleEliminationBracketApi.gs', import.meta.url), 'utf8')
+  vm.runInContext(extractFunction(bracketSource, 'buildEventBracketReadiness_'), context)
+  const event = { id: 'event-lobo-s-american-top-40', rules: 'Maximum Players: 40', registration: 'Registration Closed' }
+  const applicants = Array.from({ length: 65 }, (_, index) => ({ player: `Applicant ${index + 1}`, status: 'Registered', seed: index + 1 }))
+  assert.equal(context.buildEventBracketReadiness_(event, applicants).ready, false)
+  const selected = applicants.map((entry, index) => ({ ...entry, status: index < 40 ? 'Registered' : 'Waitlisted' }))
+  const readiness = context.buildEventBracketReadiness_(event, selected)
+  assert.equal(readiness.ready, true, 'Cuts allow a 40-player bracket while retaining all 65 applicants.')
+  assert.equal(readiness.registeredCount, 40)
+  assert.equal(readiness.capacity, 40)
+}
+
 assert.match(registrationSource, /function withdrawEventRegistration[\s\S]*?if \(!auth\.authenticated\)/)
 assert.match(registrationSource, /itsName: row\["ITS Name"\] \|\| ""/)
 assert.doesNotMatch(registrationSource, /ITS ID|\bELO\b/)
@@ -389,9 +415,9 @@ if (browserBaseUrl) {
         width: 1280,
       },
       {
-        count: 40,
-        players: Array.from({ length: 40 }, (_, index) => ({ position: index + 1, name: `Player ${index + 1}` })),
-        status: 'FULL',
+        count: 65,
+        players: Array.from({ length: 65 }, (_, index) => ({ position: index + 1, name: `Player ${index + 1}` })),
+        status: 'OPEN',
         width: 390,
       },
     ]) {
@@ -420,7 +446,7 @@ if (browserBaseUrl) {
       }))
       await page.goto(`${browserBaseUrl}/event/event-lobo-s-american-top-40/registration`, { waitUntil: 'domcontentloaded' })
       await page.locator('#top40-registration-title').waitFor()
-      await page.getByText(`${scenario.count} / 40 PLAYERS REGISTERED`).waitFor()
+      await page.getByText(`${scenario.count} PLAYERS REGISTERED`).waitFor()
       await page.getByText(scenario.status, { exact: true }).waitFor()
       assert.equal(await page.locator('.top40-registration-list li').count(), scenario.count)
       assert.equal(await page.getByRole('link', { name: 'REGISTER NOW' }).getAttribute('href'), registrationFormUrl)
@@ -444,7 +470,7 @@ if (browserBaseUrl) {
       assert.equal(requests.filter((url) => /public-snapshots\/current\.json/.test(url)).length, 1)
       assert.equal(requests.filter((url) => /top-40-registrations\.json/.test(url)).length, 1)
       assert.equal(requests.some((url) => /public-event-projection|script\.google|docs\.google\.com\/forms|spreadsheets|registration(?:-data)?\/api/i.test(url)), false)
-      if (scenario.status === 'FULL') await page.getByText('reached its 40-player capacity', { exact: false }).waitFor()
+      await page.getByText('Registration is uncapped.', { exact: false }).waitFor()
       await page.close()
     }
   } finally {
