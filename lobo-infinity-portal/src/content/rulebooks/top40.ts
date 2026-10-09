@@ -6,7 +6,7 @@ export const top40Rulebook: Rulebook = {
   id: 'top-40',
   title: 'Lobo’s American Top 40 Rules',
   sections: [
-    { id: 'eligibility-and-field', title: '1. Eligibility and Field', body: [{ type: 'unordered', items: ['The tournament is open to players throughout the Americas.', 'The field is limited to a maximum of 40 players.'] }] },
+    { id: 'eligibility-and-field', title: '1. Eligibility and Field', body: [{ type: 'unordered', items: ['The tournament is open to players throughout the Americas.', 'Registration is uncapped and may exceed 40 players.', 'After registration closes, the Commissioner selects the final tournament field.', 'The field is limited to a maximum of 40 players.'] }] },
     { id: 'tournament-format-and-seeding', title: '2. Tournament Format and Seeding', body: [{ type: 'unordered', items: ['The tournament uses an individual double-elimination format.', 'Players are manually seeded using Corvus Belli rankings.', 'A player is eliminated after their second match loss.'] }] },
     { id: 'army-points', title: '3. Army Points', body: [{ type: 'paragraph', text: 'Every match is played at 300 points.' }] },
     { id: 'army-lists', title: '4. Army Lists', body: [{ type: 'unordered', items: ['Players choose the army list they will use at the time of each game.', 'Players are not required to lock one specific list for the entire tournament unless the Tournament Organizer announces an additional requirement before the event begins.'] }] },

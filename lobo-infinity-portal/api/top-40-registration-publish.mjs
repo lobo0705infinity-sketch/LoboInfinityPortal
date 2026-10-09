@@ -91,7 +91,6 @@ function validateRegistration(value) {
   if (Object.keys(value).sort().some((key) => !['generatedAt', 'players'].includes(key))) {
     throw new Error('Top 40 registration projection exposes unsupported fields.')
   }
-  if (value.players.length > 40) throw new Error('Top 40 registration capacity exceeded.')
   const seen = new Set()
   const players = value.players.map((player, index) => {
     if (!player || typeof player !== 'object' || Array.isArray(player)) throw new Error('Invalid Top 40 registration.')

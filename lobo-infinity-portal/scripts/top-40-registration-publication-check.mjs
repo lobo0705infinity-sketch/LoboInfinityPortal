@@ -34,10 +34,11 @@ const pointer = {
   sourceCutoff: currentCutoff,
   basePath: `public-snapshots/${currentId}/`,
 }
+const applicants = Array.from({ length: 65 }, (_, index) => ({ name: `Applicant ${index + 1}`, position: index + 1 }))
 const uploads = []
 const reads = []
 const result = await publishTop40RegistrationSnapshot({
-  data: { players: [{ name: 'Alpha', position: 1 }, { name: 'Lobo', position: 2 }] },
+  data: { players: applicants },
 }, {
   now: () => nextDate,
   headObject: async (pathname) => {
@@ -65,10 +66,7 @@ assert.deepEqual(reads.sort(), PUBLIC_SNAPSHOT_FILES.filter((name) => name !== '
 assert.equal(uploads.length, PUBLIC_SNAPSHOT_FILES.length + 1)
 assert.equal(uploads.at(-1).pathname, 'public-snapshots/current.json')
 const published = Object.fromEntries(uploads.slice(0, -1).map((upload) => [upload.pathname.split('/').at(-1), JSON.parse(upload.text)]))
-assert.deepEqual(published['top-40-registrations.json'].data.players, [
-  { name: 'Alpha', position: 1 },
-  { name: 'Lobo', position: 2 },
-])
+assert.deepEqual(published['top-40-registrations.json'].data.players, applicants)
 assert.deepEqual(published['players.json'].data, oldFiles['players.json'].data)
 for (const filename of PUBLIC_SNAPSHOT_FILES.filter((name) => !['snapshot.json', 'top-40-registrations.json'].includes(name))) {
   assert.deepEqual(published[filename].data, oldFiles[filename].data)

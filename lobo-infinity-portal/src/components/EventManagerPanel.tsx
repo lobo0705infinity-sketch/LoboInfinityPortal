@@ -576,6 +576,7 @@ function EventManagerPanelInner({
     return (
       <div className="event-manager">
         <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Top 40 Operations</h2></div>
+        <p>Registration accepts more than 40 players. After closing registration, keep selected players Registered and mark other applicants Waitlisted in Event Manager. Seed the final field of up to 40 players before generating the bracket.</p>
         {isIndividualDoubleElimination ? <><TournamentSeedingPanel canManage={canManage} key={`${data.selectedEvent.id}-${data.generatedAt}`} onSave={saveSeeding} participants={data.participants} working={workingAction !== ''} /><BracketGenerationPanel canManage={canManage} eventId={data.selectedEvent.id} /></> : <p>This tool is available for the Top 40 event only.</p>}
       </div>
     )

@@ -21,7 +21,6 @@ function isPublicTop40Registration(value: unknown): value is PublicTop40Registra
   return typeof registration.generatedAt === 'string'
     && !Number.isNaN(Date.parse(registration.generatedAt))
     && Array.isArray(registration.players)
-    && registration.players.length <= 40
     && registration.players.every((player, index) => (
       player
       && typeof player.name === 'string'
@@ -38,7 +37,6 @@ export default function Top40RegistrationPage() {
   const config = getEventNavigationConfig(TOP_40_EVENT_ID)
   const navigation = config ? buildCapabilityNavigation(config) : []
   const count = registration?.players.length
-  const full = count === 40
 
   return (
     <main className="portal-shell event-overview-shell top40-registration-page" data-event="top40-registration">
@@ -74,14 +72,13 @@ export default function Top40RegistrationPage() {
       </section>
 
       <section className="top40-registration-grid">
-        <article className={`panel top40-registration-status ${full ? 'is-full' : 'is-open'}`}>
+        <article className="panel top40-registration-status is-open">
           <p className="eyebrow">Registration Status</p>
           {registration ? <>
-            <strong>{full ? 'FULL' : 'OPEN'}</strong>
-            <h2>{count} / 40 PLAYERS REGISTERED</h2>
-            {full
-              ? <p>The tournament field has reached its 40-player capacity.</p>
-              : <p>Registration remains open while places are available.</p>}
+            <strong>OPEN</strong>
+            <h2>{count} PLAYERS REGISTERED</h2>
+            <p>Registration is uncapped. After registration closes, the Commissioner will select the final field of up to 40 players.</p>
+            <p>Registration does not guarantee selection.</p>
           </> : <h2>Registration list is temporarily unavailable.</h2>}
         </article>
 
