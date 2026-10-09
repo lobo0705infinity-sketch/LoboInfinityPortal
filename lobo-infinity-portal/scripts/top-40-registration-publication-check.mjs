@@ -14,6 +14,8 @@ const oldFiles = Object.fromEntries(PUBLIC_SNAPSHOT_FILES.map((filename) => [fil
     ? { generatedAt: currentCutoff, players: [{ name: 'Alpha', position: 1 }] }
     : [{ preserved: filename }],
 }]))
+// Existing snapshots exceed the HTTP upload limit; the roster-only request does not.
+oldFiles['players.json'].data = [{ preserved: 'players.json', content: 'x'.repeat(5_000_000) }]
 delete oldFiles['top-40-registrations.json']
 oldFiles['snapshot.json'] = {
   schemaVersion: 1,

@@ -77,6 +77,9 @@ export async function publishTop40RegistrationSnapshot(rawBody, {
   if (latest.snapshotId !== current.snapshotId) throw new Error('Current snapshot changed during Top 40 publication; retry safely.')
 
   return publishPublicSnapshot({ snapshotId, sourceCutoff, files, activate: true }, {
+    // Files are assembled server-side from the existing immutable snapshot,
+    // rather than received as a full HTTP publication request.
+    assembled: true,
     compareCurrent: false,
     fetchObject,
     headObject,
