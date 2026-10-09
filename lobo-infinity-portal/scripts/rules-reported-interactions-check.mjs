@@ -15,6 +15,10 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['can an engineer clear the state of total control (possessed state) from a tag', 'NO', /cannot cancel Possessed State/],
+  ['Can an Engineer cancel Possessed State?', 'NO', /1 Command Token/],
+  ['Can my Engineer remove possession from my TAG?', 'NO', /fail a Saving Roll/],
+  ['Does the Engineer skill remove Total Control from a TAG?', 'NO', /Silhouette contact does not remove Possessed/],
   ['when can you voluntarily break a fireteam', 'YES', /before either player spends the next Order/],
   ['Can I voluntarily cancel my Fireteam?', 'YES', /without spending an Order or Command Token/],
   ['May you disband a link team in the reactive turn?', 'YES', /Active or Reactive Turn/],
@@ -56,6 +60,9 @@ for (const [question, conclusion, detail] of cases) {
 assert.equal(providerCalls, 0)
 assert.equal(benchmarkCalls, 0)
 for (const question of [
+  'Can an Engineer cancel Possessed State under a special scenario exception?',
+  'Can an Engineer cancel Isolated State?',
+  'Can an Engineer repair a wound on a Possessed TAG?',
   'Can a camouflaged trooper reload in the States Phase if an allied unit with Baggage is in ZoC but unconscious?',
   'Can a camouflaged trooper reload in the States Phase if an allied unit with Baggage is in ZoC and the weapon is Non-Reloadable?',
   'Can a camouflaged trooper declare Reload in the Active Turn?',
@@ -71,7 +78,7 @@ for (const question of [
   const result = await context.retrieveRulesReference({ question })
   assert.equal(result.fallback, true, question)
 }
-assert.equal(providerCalls, 11)
+assert.equal(providerCalls, 14)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
@@ -79,12 +86,13 @@ assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
 assert.match(prompt, /Declaring Reload is a separate Attack declaration/)
 assert.match(prompt, /must announce it before either player spends the Order/)
-console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 11 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 14 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
+  ['How can my Engineer get a TAG back after Total Control?', ['possessed state', 'engineer', 'total control']],
   ['Can I cancel a Fireteam after the enemy spends an Order?', ['fireteam integrity']],
   ['Do models in camo state reload during the states phase if a unit with baggage is within zone of control', ['baggage', 'reload', 'unloaded state', 'camouflaged state']],
   ['Can an unconscious Baggage trooper replenish a camouflaged trooper?', ['baggage', 'reload', 'unloaded state', 'camouflaged state']],
@@ -110,6 +118,9 @@ for (const question of ['when can you voluntarily break a fireteam', 'How do I d
 
 const repeatedQuestion = 'Do models in camo state reload during the states phase if a unit with baggage is within zone of control'
 const { retrieveRulesReference } = await import('../bot/rules-command.mjs')
+const possessedRepeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRulesReference({ question: 'can an engineer clear the state of total control (possessed state) from a tag', deepSeek: async () => { throw new Error('Verified Possessed ruling must bypass the AI provider') } })))
+assert.equal(new Set(possessedRepeated.map(result => result.deepSeek.answer)).size, 1)
+assert.ok(possessedRepeated.every(result => result.deepSeek.conclusion === 'NO' && result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))
 const fireteamRepeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRulesReference({ question: 'when can you voluntarily break a fireteam', deepSeek: async () => { throw new Error('Verified Fireteam cancellation must bypass the AI provider') } })))
 assert.equal(new Set(fireteamRepeated.map(result => result.deepSeek.answer)).size, 1)
 assert.ok(fireteamRepeated.every(result => result.deepSeek.conclusion === 'YES' && result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))

@@ -45,6 +45,20 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  const engineerPossessed = /^(?:can|could|may|does|will) (?:a |an |the |my |your )?engineer(?: skill| special skill)? (?:clear|cancel|remove|repair|fix|end)(?:s)? (?:the |a )?(?:state of )?(?:total control(?: possessed(?: state)?)?|possessed(?: state)?|possession)(?: state)?(?: (?:from|on|of) (?:a |an |the |my |your |our )?(?:tag|trooper|model))?$/.test(words)
+  if (engineerPossessed) {
+    conclusion = 'NO'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'No. An Engineer cannot cancel Possessed State, including when Total Control caused it. Engineer only cancels states whose own rules allow it. To regain control of your TAG, spend 1 Command Token during your Tactical Phase’s Executive Use of Command Tokens step, or successfully use your own Total Control against the Possessed TAG and cause it to fail a Saving Roll. A Normal WIP Engineer Roll in Silhouette contact does not remove Possessed.'
+    pages = ['Possessed_State', 'Engineer', 'Total_Control']
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED RULES ANSWER', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: { answer, conclusion, certainty, interpretationRequired: false,
+        sources: pages.map((page, index) => ({ id: 'V' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })) },
+    }
+  }
   const voluntaryFireteam = /^(?:(?:when|how) (?:can|may|do) |(?:can|may) )(?:i|you|we|a player) (?:voluntarily )?(?:break|cancel|disband|dissolve) (?:a |the |my |your |our )?(?:fireteam|link team|linked team|link)(?: voluntarily)?(?: for free| in (?:the )?(?:active|reactive) turn)?$/.test(words)
   if (voluntaryFireteam) {
     conclusion = 'YES'
