@@ -52,6 +52,7 @@ function combatProfileSignature(profile) {
     structure: profile.structure,
     troopType: profile.troopType,
     coverEligible: profile.coverEligible,
+    foxholeState: profile.foxholeState,
     markerState: profile.markerState,
     hiddenDeploymentState: profile.hiddenDeploymentState,
     skills: profile.skills,

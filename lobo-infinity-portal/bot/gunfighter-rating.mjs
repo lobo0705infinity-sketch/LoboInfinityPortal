@@ -396,7 +396,7 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   // Smoke targets a table point, not the enemy Trooper.
   if (!mode.smoke && !mode.eclipse) {
     const cover = !has(skills, 'marksmanship') && !mode.ignoresCover ? coverBenefits(defender, settings.cover).hit : 0
-    const mimetism = mimetismModifier(defenderSkills, equipment)
+    const mimetism = mimetismModifier(defenderSkills, equipment, defender.foxholeState !== false)
     modifiers += cover + mimetism
     if (cover) modifierSources.push(formatModifier('Cover', cover))
     if (mimetism) modifierSources.push(formatModifier('Mimetism / MSV', mimetism))
@@ -508,8 +508,12 @@ function addOutcome(map, hits, criticals, probability) { const key = `${hits}:${
 function parseOutcomeKey(key) { const [hits, criticals] = String(key).split(':').map(Number); return { hits, criticals } }
 function expectedOutcomeValue(outcomes, field) { return [...outcomes].reduce((sum, [key, probability]) => sum + parseOutcomeKey(key)[field] * probability, 0) }
 
-function mimetismModifier(defenderSkills, attackerEquipment) {
-  const mimetism = defenderSkills.includes('mimetism -6') ? -6 : defenderSkills.includes('mimetism -3') ? -3 : 0
+function mimetismModifier(defenderSkills, attackerEquipment, foxholeState = true) {
+  // Stationary shooting benchmarks assume Sappers deployed in Foxhole State.
+  // Leaving the state removes its granted Mimetism, without changing native traits.
+  // Source: https://infinitythewiki.com/Foxhole_State
+  const foxhole = foxholeState && (defenderSkills.includes('sapper') || defenderSkills.includes('foxhole state'))
+  const mimetism = defenderSkills.includes('mimetism -6') ? -6 : defenderSkills.includes('mimetism -3') || foxhole ? -3 : 0
   const msv = attackerEquipment.find((value) => /^multispectral visor l([123])$/.test(value))
   if (!msv) return mimetism
   const level = Number(msv.match(/l([123])$/)?.[1])

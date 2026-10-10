@@ -23,6 +23,7 @@ catalog.source = {
 }
 catalog.methodology = {
   normal: 'Unlinked active turn, no assumed marker state, no external support.',
+  sapper: 'Stationary Sapper profiles assume Foxhole State: Mimetism (-3), subject to MSV; no stacking with native Mimetism. Cancelling Foxhole removes its granted Mimetism.',
   fireteam: 'Eligible profiles only; conditional +1SD, separate from native weapon modifiers.',
   weighting: 'Declared archetype weights; variants and linked/unlinked copies split each share.',
   score: 'Expected capped damage plus state utility and retaliation; not a kill probability.',
