@@ -2482,6 +2482,183 @@
           "style": "TABLE_SCENARIO"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-524",
+      "category": "FIRETEAM_COMBAT_GROUP_TRANSFERS",
+      "canonicalQuestion": "Does a three-member Fireteam remain intact if I move its leader and one other member to a different Combat Group?",
+      "approvedAnswer": "No. Each Trooper moved to a different Combat Group automatically leaves the Fireteam. Moving the Fireteam Leader therefore cancels the entire original Fireteam, even if another member moves alongside the leader into the same destination Combat Group. The two moved Troopers do not remain linked. Creating a new legal Duo costs one additional Command Token and must meet the army Fireteams Chart and Coherency requirements. A new Haris normally requires three Troopers at creation; the general two-member minimum only allows an existing Fireteam to continue after losing members. Number 2 does not preserve a Fireteam when its leader changes Combat Groups: it applies when the leader enters Isolated or a Null State.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 132,
+          "section": "FIRETEAMS — BASIC RULES"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-10-10",
+      "fuzzyRequiredTerms": [
+        "fireteam",
+        "combat group"
+      ],
+      "fuzzyExcludedTerms": [
+        "neither",
+        "non leader",
+        "not the leader"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-524-q1",
+          "question": "If I spend two command token to change groups of two members, leader include, of an fireteam of three The fireteam is still good but with just the two members moved ?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q2",
+          "question": "If I move the leader and one other member of a three-man Haris to another Combat Group, do they stay linked?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q3",
+          "question": "Does moving the Fireteam Leader to a different Combat Group cancel the whole Fireteam?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q4",
+          "question": "If the leader changes Combat Groups along with another member, does the Fireteam survive?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q5",
+          "question": "Can Number 2 save a Fireteam when its leader changes Combat Groups?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q6",
+          "question": "Can I move all members of a Fireteam to another Combat Group and keep it intact?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q7",
+          "question": "What if there are 5 members of a fireteam and you move 2 including the fireteam leader?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-524-q8",
+          "question": "What if there are 5 members of a fireteam and you move 2 but one is the fireteam leader?",
+          "style": "PLAYER_WORDING"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-525",
+      "category": "FIRETEAM_COMBAT_GROUP_TRANSFERS",
+      "canonicalQuestion": "Does a five-member Fireteam remain intact with three members if two non-leaders move to a different Combat Group?",
+      "approvedAnswer": "Yes. The two non-leaders moved to a different Combat Group automatically leave the Fireteam, but the original Fireteam remains with its leader and the other two members, provided they maintain Coherency and no other cancellation condition or special rule applies. It remains a three-member Core; losing members does not turn it into a Haris or Duo. Recalculate its bonuses for the remaining members and their composition. The two moved Troopers are no longer linked, even if both arrive in the same destination Combat Group. They can form a new legal Duo only by spending one additional Command Token and meeting the army Fireteams Chart and Coherency requirements.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 132,
+          "section": "FIRETEAMS — BASIC RULES"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-10-10",
+      "fuzzyRequiredTerms": [
+        "fireteam",
+        "combat group"
+      ],
+      "fuzzyExcludedTerms": [
+        "leader include"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-525-q1",
+          "question": "What if there are 5 members of a fireteam and you move 2 but neither of which is the fireteam leader?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-525-q2",
+          "question": "If I move two non-leaders out of a five-man Core into another Combat Group, does the original link remain?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-525-q3",
+          "question": "I change Combat Groups for two members of a five-person Fireteam, neither is the leader. Do the other three stay linked?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-525-q4",
+          "question": "Does moving two Fireteam members who are not the leader cancel the five-member Core?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-525-q5",
+          "question": "If two non-leaders change Combat Groups, do the remaining three need another Command Token to stay linked?",
+          "style": "PLAYER_WORDING"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-526",
+      "category": "FIRETEAM_COMBAT_GROUP_TRANSFERS",
+      "canonicalQuestion": "Can an existing Haris continue with two members after one non-leader leaves?",
+      "approvedAnswer": "Yes. An existing three-member Haris can continue with two members, including its leader, provided they maintain Coherency and no cancellation condition or special rule applies. It remains a two-member Haris, not a Duo, and its bonuses are recalculated for the remaining members. The Fireteams Chart minimum applies when creating the Fireteam, so losing a required non-leader does not normally cancel it; FT Master may impose its own exception. No additional Command Token is needed merely to maintain this surviving Haris. By contrast, creating a new Haris normally requires three Troopers and a Command Token during the game.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 134,
+          "section": "FIRETEAM INTEGRITY"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 132,
+          "section": "FIRETEAMS — BASIC RULES"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "approvedBy": "Jake Strangeway (Lobo)",
+      "approvedAt": "2026-10-10",
+      "fuzzyRequiredTerms": [
+        "haris"
+      ],
+      "fuzzyExcludedTerms": [
+        "leader and one other"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-526-q1",
+          "question": "Can a Haris remain linked with two members after losing a non-leader?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-526-q2",
+          "question": "If a non-leader in a Haris changes Combat Groups, do the leader and remaining member stay linked?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "new-topic-2-526-q5",
+          "question": "Can an existing Haris continue with two Troopers?",
+          "style": "PLAYER_WORDING"
+        }
+      ]
     }
   ]
 }

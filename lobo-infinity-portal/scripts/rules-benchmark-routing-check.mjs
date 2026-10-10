@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1403)
+assert.equal(index.canonicalCases, 1406)
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
@@ -24,6 +24,22 @@ for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expan
       }
     }
   }
+}
+
+// Combat Group transfers must distinguish leader cancellation from non-leader loss.
+for (const [question, expectedId, conclusion, required] of [
+  ['If I move the leader and one other member of a three-man Haris to another Combat Group, do they stay linked?', 'new-topic-2-524', 'NO', /cancels the entire original Fireteam/i],
+  ['What if there are 5 members of a fireteam and you move 2 including the fireteam leader?', 'new-topic-2-524', 'NO', /cancels the entire original Fireteam/i],
+  ['What if there are 5 members of a fireteam and you move 2 but neither of which is the fireteam leader?', 'new-topic-2-525', 'YES', /remains a three-member Core/i],
+  ['If I move two non-leaders out of a five-man Core into another Combat Group, does the original link remain?', 'new-topic-2-525', 'YES', /two moved Troopers are no longer linked/i],
+  ['Can an existing Haris continue with two members after one non-leader leaves?', 'new-topic-2-526', 'YES', /remains a two-member Haris, not a Duo/i],
+]) {
+  const match = await findApprovedRulesAnswer(question)
+  assert.equal(match?.id, expectedId, question)
+  assert.equal(match?.conclusion, conclusion, question)
+  assert.match(match?.answer || '', required, question)
+  const response = await retrieveRulesReference({ question, deepSeek: { async answer() { throw new Error('Fireteam benchmark must not call a paid provider') } } })
+  assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
 }
 
 assert.equal(await findApprovedRulesAnswer('purple bananas orbit a quantum teapot'), null)
