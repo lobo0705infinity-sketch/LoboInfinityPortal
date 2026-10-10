@@ -348,11 +348,12 @@ const shasInput = { ...input, payload: shasPayload, sectorialId: 603,
 const shasProfiles = availableProfiles(shasInput)
 const haiduk = shasProfiles.find(item => item.optionName === 'HAIDUK' && item.label.includes('MULTI Sniper Rifle'))
 assert.deepEqual([haiduk.gunfighterGrade, haiduk.aroGrade, haiduk.linkedGunfighterGrade, haiduk.linkedAroGrade],
-  ['B', 'C', 'A', 'A'], 'the linked Haiduk benchmark must not be confused with its unlinked grade')
+  ['A', 'B', 'S', 'A'], 'Foxhole Haiduk grades must retain distinct linked and unlinked benchmarks')
 const haidukPair = [{ ...haiduk, combatGroup: 1 }, { ...haiduk, combatGroup: 1 }]
 const haidukDuo = proposedFireteams(haidukPair, shasPayload.fireteamChart)
 assert.equal(haidukDuo[0]?.type, 'DUO')
-assert.deepEqual([roleCoverage(haidukPair).gunfighters, roleCoverage(haidukPair).aro], [0, 0])
+assert.deepEqual([roleCoverage(haidukPair).gunfighters, roleCoverage(haidukPair).aro], [2, 0],
+  'unlinked Foxhole Haiduks now qualify as gunfighters without filling ARO slots')
 assert.deepEqual([roleCoverage(haidukPair, haidukDuo).gunfighters, roleCoverage(haidukPair, haidukDuo).aro], [2, 0],
   'two linked Haiduks fill gunfighter slots, but cannot simultaneously fill ARO slots')
 const speculo = shasProfiles.find(item => item.optionName === 'SPECULO KILLER' && item.points === 29)
