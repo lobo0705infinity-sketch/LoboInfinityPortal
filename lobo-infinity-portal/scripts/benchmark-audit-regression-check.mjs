@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import { readArtifact } from './benchmark-artifacts.mjs'
+import { buildOfficialCombatSource } from '../bot/official-combat-source.mjs'
 import { ARO_STATE_VALUES, STATE_VALUES, buildAttackPool, evaluateGunfighterProfile, evaluateAroProfile, evaluateAttackCandidate, expectedEffectFromHits, benchmarkDefenderWeights, resolveFaceToFace } from '../bot/gunfighter-rating.mjs'
 import { resolveOpposedPools, resolveWeaponEffect, buildCloseCombatPool } from '../bot/close-combat-benchmark.mjs'
 import { buildGunfighterBenchmarkCatalog } from '../bot/gunfighter-benchmark-catalog.mjs'
@@ -27,6 +29,31 @@ assert.equal(ARO_STATE_VALUES.stunned, .5, 'ARO Stun utility reflects its reacti
 for (const spelling of ['Mimetism(-3)', 'Mimetism (-3)', 'Mimetism -3', 'Mimetism[−3]']) assert.equal(pool(p, { ...p, skills: [spelling] }).target, 6)
 assert.equal(pool({ ...p, equipment: ['Multispectral Visor L1'] }, { ...p, skills: ['Mimetism(-6)'] }).target, 6)
 assert.equal(pool({ ...p, equipment: ['Multispectral Visor L2'] }, { ...p, skills: ['Mimetism(-6)'] }).target, 9)
+// Foxhole is a benchmark state assumption, not a mutation of printed skills.
+const sapper = { ...p, skills: ['Sapper'] }
+assert.equal(pool(p, sapper).target, 6, 'Sapper applies Foxhole Mimetism -3')
+assert.equal(pool(p, sapper, mode, 0, true).target, 6, 'Reactive fire uses the same Foxhole modifier')
+assert.equal(pool(p, { ...sapper, foxholeState: false }).target, 9, 'Cancelling Foxhole removes granted Mimetism')
+assert.equal(pool(p, { ...p, skills: ['Foxhole State'] }).target, 6)
+assert.equal(pool(p, { ...sapper, skills: ['Sapper', 'Mimetism (-3)'] }).target, 6, 'Mimetism does not stack')
+assert.equal(pool(p, { ...sapper, skills: ['Sapper', 'Mimetism (-6)'] }).target, 3, 'Stronger native Mimetism is preserved')
+assert.equal(pool(p, { ...sapper, skills: ['Sapper', 'Mimetism (-6)'], foxholeState: false }).target, 3)
+for (const level of [1, 2, 3]) assert.equal(pool({ ...p, equipment: [`Multispectral Visor L${level}`] }, sapper).target, 9, 'MSV removes Foxhole Mimetism -3')
+const mimic = { ...p, skills: ['Mimetism (-3)'] }
+near(rating(sapper).rating, rating(mimic).rating, 'Gunfighter Sapper rating matches equivalent Mimetism profile')
+near(evaluateAroProfile(sapper, [p], options).states[0].rating, evaluateAroProfile(mimic, [p], options).states[0].rating, 'ARO Sapper rating matches equivalent Mimetism profile')
+assert.deepEqual(sapper.skills, ['Sapper'], 'Printed profile stays unchanged')
+
+const sapperSource = buildOfficialCombatSource(await readArtifact('data/infinity-army/benchmark-official-source.json.gz.b64'))
+const officialSappers = sapperSource.profiles.filter(profile => profile.skills.some(skill => /^sapper$/i.test(skill)))
+assert.ok(officialSappers.length > 0, 'Official capture must exercise Sapper profiles')
+for (const profile of officialSappers) {
+  const equivalent = { ...profile, skills: [...profile.skills.filter(skill => !/^sapper$/i.test(skill)), 'Mimetism (-3)'] }
+  assert.equal(pool(p, profile).target, pool(p, equivalent).target, `Foxhole modifier covers ${profile.id}`)
+  assert.equal(pool(p, { ...profile, foxholeState: false }).target, pool(p, { ...profile, skills: profile.skills.filter(skill => !/^sapper$/i.test(skill)) }).target, `Cancellation covers ${profile.id}`)
+}
+console.log(`PASS: Foxhole Mimetism applies to all ${officialSappers.length} official Sapper profile identities.`)
+
 assert.equal(pool({ ...p, skills: ['Marksmanship'] }).target, 12)
 near(effect().total, effect({ ...mode, marksmanship: true }).total, 'Marksmanship never removes save cover')
 assert.equal(pool(p, { ...p, skills: ['No Cover'] }).target, 12)

@@ -18,6 +18,7 @@ const catalog = buildAroBenchmarkCatalog({
   profiles: source.profiles, attackers, officialDataVersion: source.datasetId,
   options: { sourceProfiles: 'exact-official-identities', attackerCount: 30, rulesVersion: source.rulesVersion },
 })
+catalog.methodology = { sapper: 'Stationary Sapper profiles assume Foxhole State with Mimetism (-3), subject to MSV and without stacking native Mimetism.' }
 catalog.source = { datasetId: source.datasetId, captureFingerprint: source.captureFingerprint, rulesVersion: source.rulesVersion, gunfighterCatalogFingerprint: gunfighter.fingerprint }
 const output = resolve(args.output || 'data/infinity-army/aro-benchmark-catalog.json.gz.b64')
 await writeArtifact(output, catalog, { plain: false })

@@ -3,7 +3,7 @@ import { evaluateAroProfile } from './gunfighter-rating.mjs'
 import { canonicalProfileKey } from './gunfighter-benchmark-catalog.mjs'
 
 export const ARO_CATALOG_SCHEMA = 'infinity-aro-benchmark-v1'
-export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v6-shared-rules'
+export const ARO_BENCHMARK_VERSION = 'aro-benchmark-v7-foxhole-mimetism'
 
 export function selectBenchmarkAttackers(profiles, gunfighterCatalog, { limit = 30 } = {}) {
   const catalogByKey = new Map(gunfighterCatalog.entries.map((entry) => [entry.key, entry]))
@@ -145,6 +145,7 @@ function applyRelativeRatings(entries, evaluationCache) {
 function combatSignature(profile, specialDice) {
   return JSON.stringify({
     bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    foxholeState: profile.foxholeState,
     troopType: profile.troopType, coverEligible: profile.coverEligible, markerState: profile.markerState, hiddenDeploymentState: profile.hiddenDeploymentState,
     vitality: profile.vitality, structure: profile.structure,
     skills: profile.skills, equipment: profile.equipment, weapons: profile.weapons,
@@ -155,9 +156,10 @@ function combatSignature(profile, specialDice) {
 
 function attackerSignature(profile, specialDice) {
   // Total Reaction is reactive-only, but Neurocinetics also restricts active B.
-  const relevant = (values = []) => values.filter((value) => /bs attack|mimetism|marksmanship|warhorse|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo|neurocinetics|cover/i.test(String(value))).sort()
+  const relevant = (values = []) => values.filter((value) => /sapper|foxhole|bs attack|mimetism|marksmanship|warhorse|surprise attack|dodge|no wound incapacitation|dogged|immunity|multispectral visor|x visor|albedo|neurocinetics|cover/i.test(String(value))).sort()
   return JSON.stringify({
     bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts,
+    foxholeState: profile.foxholeState,
     troopType: profile.troopType, coverEligible: profile.coverEligible,
     vitality: profile.vitality, structure: profile.structure,
     skills: relevant(profile.skills), equipment: relevant(profile.equipment), weapons: profile.weapons,
