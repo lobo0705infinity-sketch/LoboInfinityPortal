@@ -572,6 +572,11 @@
           "id": "new-topic-2-506-q18",
           "question": "Does Request Tacball need a roll?",
           "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-506-q19",
+          "question": "does reqest tacbal require a ph tst",
+          "style": "PLAYER_SHORTHAND"
         }
       ]
     },
@@ -1984,11 +1989,6 @@
           "style": "TABLE_SCENARIO"
         },
         {
-          "id": "new-topic-2-517-q3",
-          "question": "Does Request a Tacball require both players to have Team-Ops?",
-          "style": "RULES_CHECK"
-        },
-        {
           "id": "new-topic-2-517-q4",
           "question": "Can one-sided Team-Ops deploy a Tacball?",
           "style": "PLAYER_SHORTHAND"
@@ -1999,9 +1999,9 @@
           "style": "TABLE_SCENARIO"
         },
         {
-          "id": "new-topic-2-517-q6",
-          "question": "Do Tacball Classified Objectives need both players to have Team-Ops?",
-          "style": "RULES_CHECK"
+          "id": "new-topic-2-517-q7",
+          "question": "can u dropp tacbal if only one player has tacopps",
+          "style": "PLAYER_SHORTHAND"
         }
       ]
     },
@@ -2657,6 +2657,127 @@
           "id": "new-topic-2-526-q5",
           "question": "Can an existing Haris continue with two Troopers?",
           "style": "PLAYER_WORDING"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-527",
+      "category": "ITS_INTERACTION",
+      "canonicalQuestion": "Do both players need Team-Ops to use a Tacball?",
+      "approvedAnswer": "No. Your opponent does not need Team-Ops for you to Request and use your Tacball. Your requesting Trooper must have Infinity Team-Ops; Request a Tacball is usable only in the second Game Round and once per player per game. The requirement for both players to have Team-Ops applies only to Tacball Classified Objectives, not to deploying or using the Tacball.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 29,
+          "section": "REQUEST A TACBALL"
+        },
+        {
+          "sourceId": "its-season-18",
+          "page": 30,
+          "section": "TACBALL CLASSIFIED OBJECTIVES"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-527-q1",
+          "question": "do both you and your opponent both have to have a team ops inorder to use a tac ball?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-527-q2",
+          "question": "Do both players need Team-Ops to use a Tacball?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-527-q3",
+          "question": "Do I need my opponent to have Team-Ops to request a Tacball?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-527-q4",
+          "question": "Do both you and your opponent have to have Team-Ops in order to use a Tacball?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-527-q5",
+          "question": "Can I use a Tacball without my opponent having Team-Ops?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-527-q6",
+          "question": "do both players hafta have tacops to use tacbal",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q7",
+          "question": "do me and my opponant need team opps for a tac ball",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q8",
+          "question": "do both players need teamops inorder to use tacball",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q9",
+          "question": "does my oponent need tacops for me to use a tacbal",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q10",
+          "question": "Do both armies need Team Ops before I can deploy a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q11",
+          "question": "Must both players include Team-Ops to request a Tacball?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-527-q12",
+          "question": "Does Request a Tacball require both players to have Team-Ops?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-528",
+      "category": "ITS_INTERACTION",
+      "canonicalQuestion": "Do Tacball Classified Objectives need both players to have Team-Ops?",
+      "approvedAnswer": "Tacball Classified Objectives apply only if both players have Team-Ops Units in their Army Lists. If only one player has Team-Ops, neither player uses that Classified Objectives chart. This restriction does not prevent the player with Infinity Team-Ops from Requesting and using a Tacball.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "its-season-18",
+          "page": 30,
+          "section": "TACBALL CLASSIFIED OBJECTIVES"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-528-q1",
+          "question": "Do Tacball Classified Objectives need both players to have Team-Ops?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-528-q2",
+          "question": "Can I use Tacball Classified Objectives if only I have Team-Ops?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-528-q3",
+          "question": "Do both players need Team-Ops for the Tacball Classified Objectives chart?",
+          "style": "RULES_CHECK"
+        },
+        {
+          "id": "new-topic-2-528-q4",
+          "question": "do both playrs need team opps for tacbal clasified objectives",
+          "style": "PLAYER_SHORTHAND"
         }
       ]
     }

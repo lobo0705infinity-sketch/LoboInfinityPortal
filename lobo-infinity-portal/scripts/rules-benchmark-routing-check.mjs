@@ -8,7 +8,21 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1406)
+assert.equal(index.canonicalCases, 1408)
+
+const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
+for (const [id, conclusion] of [['new-topic-2-527', 'NO'], ['new-topic-2-528', 'DEPENDS']]) {
+  const item = tacballDocument.cases.find((entry) => entry.id === id)
+  for (const { question } of item.queryVariants) {
+    const response = await retrieveRulesReference({ question, deepSeek: { async answer() { throw new Error('Tacball benchmark must not call a paid provider') } } })
+    assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
+    assert.equal(response.benchmark.id, id, question)
+    assert.equal(response.deepSeek.conclusion, conclusion, question)
+    assert.match(response.deepSeek.answer, /Classified Objectives/i, question)
+    const answer = formatRulesDiscordResponse(response).embeds[0].fields.find((field) => field.name === 'ANSWER').value
+    assert.ok(answer.length <= 1024, question)
+  }
+}
 
 for (const file of ['rules-adjudicator-benchmark.json', 'rules-adjudicator-expansion-400.json', 'rules-adjudicator-new-topics-400.json', 'rules-adjudicator-new-topics-500.json', 'rules-benchmark-approved-updates-2026-09-15.json']) {
   const document = JSON.parse(await readFile(resolve(root, 'data/infinity-rules', file), 'utf8'))
