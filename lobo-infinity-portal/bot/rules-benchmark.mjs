@@ -78,6 +78,15 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
   const exact = index.exact.get(normalized) || index.exact.get(corrected)
   if (exact) return result(exact, 1, corrected === normalized ? 'EXACT' : 'TYPO_CORRECTED_EXACT')
 
+  // A yes/no requirement question and a one-sided permission question share
+  // nearly all their words, but need opposite conclusions. Route their intent
+  // before fuzzy scoring so an ambiguous score cannot send them to the AI.
+  const tacballIntent = tacballTeamOpsIntent(question)
+  if (tacballIntent) {
+    const entry = index.entries.find((candidate) => candidate.familyId === tacballIntent)
+    if (entry) return result(entry, 1, 'TACBALL_TEAM_OPS_INTENT')
+  }
+
   const queryTokens = tokenSet(corrected)
   if (queryTokens.size < 2) return null
   const families = new Map()
@@ -94,6 +103,24 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
 
 function answerRecord(item, values) {
   return Object.freeze({ id: item.id, category: item.category, fuzzyRequiredTerms: item.fuzzyRequiredTerms, fuzzyExcludedTerms: item.fuzzyExcludedTerms, ...values })
+}
+
+function tacballTeamOpsIntent(question) {
+  const text = String(question || '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\btac\s*ball?s?\b|\btacbal\b/g, 'tacball')
+    .replace(/\bteam\s*op{1,2}s?\b|\btacop{1,2}s?\b|\btac\s*ops\b/g, 'teamops')
+    .replace(/\bclasified\b/g, 'classified')
+    .replace(/\bopponant\b|\boponent\b/g, 'opponent')
+    .replace(/\bplayrs\b/g, 'players')
+    .replace(/\breqest\b/g, 'request')
+  if (!/\btacball\b/.test(text) || !/\bteamops\b/.test(text)) return null
+  // Other Tacball mechanics must retain their own evidence and routing.
+  if (/\b(?:attack|shoot|target|destroy|hack|range|damage|weapon|move|round|ph|roll|token|size|silhouette)\b/.test(text)) return null
+  if (/\bclassified\b/.test(text) && /\b(?:both|only|one|opponent)\b/.test(text)) return 'new-topic-2-528'
+  if (!/\b(?:need|needs|require|requires|have to|must|hafta)\b/.test(text)) return null
+  if (/\bboth\b/.test(text) || /\bopponent\b/.test(text)) return 'new-topic-2-527'
+  return null
 }
 
 function indexed(record, question) {

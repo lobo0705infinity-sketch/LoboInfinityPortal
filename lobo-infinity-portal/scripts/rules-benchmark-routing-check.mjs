@@ -11,6 +11,27 @@ const index = await loadRulesBenchmark({ force: true })
 assert.equal(index.canonicalCases, 1408)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
+// These are deliberately absent from the benchmark's exact variants. They
+// exercise intent routing, including the second reported production failure.
+for (const [question, id, conclusion] of [
+  ['do both and your opponent both have to have a team ops in order to use a tac ball', 'new-topic-2-527', 'NO'],
+  ['do both me and the other player need team ops before using tac ball', 'new-topic-2-527', 'NO'],
+  ['must both players bring teamops so I can request my tacball', 'new-topic-2-527', 'NO'],
+  ['do both playrs hafta include team opps to use tacbal', 'new-topic-2-527', 'NO'],
+  ['does my opponant need tacopps before I can use tac ball', 'new-topic-2-527', 'NO'],
+  ['do both players require team ops for tacball classified objectives', 'new-topic-2-528', 'DEPENDS'],
+  ['can only one player have teamops and use tacball clasified objectives', 'new-topic-2-528', 'DEPENDS'],
+]) {
+  const response = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Tacball intent routing must not call a paid provider') } })
+  assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(response.benchmark.id, id, question)
+  assert.equal(response.deepSeek.conclusion, conclusion, question)
+}
+for (const question of [
+  'Do both Team-Ops need to roll PH to request a Tacball?',
+  'Can my Team-Ops shoot both targets with a Tacball?',
+  'Must both players request a Tacball in the second round?',
+]) assert.notEqual((await findApprovedRulesAnswer(question))?.matchType, 'TACBALL_TEAM_OPS_INTENT', question)
 for (const [id, conclusion] of [['new-topic-2-527', 'NO'], ['new-topic-2-528', 'DEPENDS']]) {
   const item = tacballDocument.cases.find((entry) => entry.id === id)
   for (const { question } of item.queryVariants) {
