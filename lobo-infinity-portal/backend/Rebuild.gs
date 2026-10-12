@@ -70,6 +70,7 @@ function rebuildEverything() {
 function onFormSubmit(e) {
   if (!e || !e.range) throw new Error("A spreadsheet submission event is required.");
   const sheet = e.range.getSheet();
+  if (typeof isTop40PortalRegistrationSheet_ === "function" && isTop40PortalRegistrationSheet_(sheet)) return handleTop40RegistrationFormSubmit(e);
   if (sheet.getName() !== CONFIG.SHEETS.FORM) return handleLoboFormSubmit(e);
   return withGamePipelineLock_(function() {
     ensureCanonicalGameIdentities_(sheet);

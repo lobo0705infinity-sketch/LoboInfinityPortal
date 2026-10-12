@@ -1,6 +1,7 @@
 
 function handleLoboFormSubmit(e) {
   if (!e || !e.range || !e.namedValues) throw new Error("A spreadsheet form-submit event is required.");
+  if (typeof isTop40PortalRegistrationSheet_ === "function" && isTop40PortalRegistrationSheet_(e.range.getSheet())) return handleTop40RegistrationFormSubmit(e);
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
