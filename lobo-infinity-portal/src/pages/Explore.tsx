@@ -6,6 +6,12 @@ import './Explore.css'
 
 const featured = [
   {
+    title: 'Aurora VII · Race for the Gate',
+    description: 'Explore the campaign map, current briefing, terrain references, and public story.',
+    icon: 'maps' as const,
+    to: '/campaign/aurora-vii',
+  },
+  {
     title: 'Portal Guide',
     description: 'Watch the four-minute walkthrough or jump to a chapter.',
     icon: 'rules' as const,

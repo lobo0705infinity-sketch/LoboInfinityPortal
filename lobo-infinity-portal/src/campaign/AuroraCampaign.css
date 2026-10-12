@@ -1,0 +1,49 @@
+.aurora-campaign { display: grid; gap: 1.2rem; min-width: 0; }
+.aurora-hero { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: clamp(1.2rem, 3vw, 2.5rem); border: 1px solid #42536b; border-radius: 12px; background: radial-gradient(ellipse at 85% 10%, #263e49, #0d1b2b 70%); }
+.aurora-hero h1 { font-size: clamp(2.7rem, 7vw, 5rem); margin: .2rem 0; letter-spacing: .06em; line-height: 1.1; }
+.aurora-hero h1 span { color: #f2c478; }
+.aurora-hero p { margin: .45rem 0; color: #c5d5df; }
+.aurora-hero .aurora-subtitle { color: #80def6; letter-spacing: .18em; font-weight: 700; }
+.aurora-hero-actions { display: grid; gap: 1rem; }
+.aurora-campaign a { color: #91e4ff; }
+.aurora-tabs { display: flex; flex-wrap: wrap; gap: .6rem; }
+.aurora-tabs a { padding: .7rem .9rem; border: 1px solid #3d5264; border-radius: 7px; text-decoration: none; color: #d2dfe8; }
+.aurora-tabs a.active { border-color: #f2c478; color: #f2c478; background: #29303a; }
+.aurora-turn-strip { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .7rem; padding: .9rem 1.1rem; background: #122131; border: 1px solid #35495d; border-radius: 8px; color: #c2d5e0; }
+.aurora-panel { padding: clamp(1rem, 2vw, 1.5rem); min-width: 0; overflow-wrap: anywhere; }
+.aurora-panel h2 { margin: 0 0 .9rem; font-size: clamp(1.2rem, 2.2vw, 1.6rem); }
+.aurora-panel h3 { margin: .6rem 0; }
+.aurora-panel p, .aurora-panel li { color: #c5d5df; }
+.aurora-panel p { margin: .7rem 0; }
+.aurora-overview-grid, .aurora-map-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 1.2rem; align-items: start; }
+.aurora-overview-grid > div { display: grid; gap: 1.2rem; }
+.aurora-map-grid { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.aurora-map-surface { position: relative; min-width: 0; overflow: hidden; border-radius: 10px; background: #06121f; }
+.aurora-map-surface > img { display: block; width: 100%; height: auto; }
+.aurora-map-surface > button { position: absolute; transform: translate(-50%, -50%); display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 2px solid #bbdef0; background: #0e2032; border-radius: 50%; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 2px 7px #000; }
+.aurora-map-surface > button[aria-pressed=true] { background: #ecb557; color: #121d27; border-color: #fff0c8; }
+.aurora-map-surface > button.is-vulnerable { border-color: #ff876c; }
+.aurora-territory-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+.aurora-territory-picker button { display: flex; justify-content: space-between; gap: .7rem; min-height: 44px; text-align: left; padding: .7rem; border: 1px solid #40536a; border-radius: 7px; background: #172739; color: #e1ebf2; cursor: pointer; }
+.aurora-territory-picker button[aria-pressed=true] { border-color: #efbe73; background: #38312a; }
+.aurora-territory-picker span { color: #efbe73; white-space: nowrap; }
+.aurora-territory-picker button { flex-wrap: wrap; }
+.aurora-facts { margin: .7rem 0; }
+.aurora-facts > div { display: grid; grid-template-columns: 1fr 1.2fr; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid #34475a; }
+.aurora-facts dt { color: #aebfce; }.aurora-facts dd { margin: 0; }
+.aurora-tag { border-left: 3px solid #efbe73; padding-left: .7rem; }
+.aurora-reference-grid, .aurora-mission-grid, .aurora-rules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+.aurora-reference-grid figure { margin: .5rem 0; min-width: 0; }
+.aurora-reference-grid img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.aurora-reference-grid figcaption { margin: .65rem 0; font-weight: 600; }.aurora-reference-grid figcaption span { display: block; color: #a6bbca; font-weight: 400; font-size: .85rem; }
+.aurora-panel details { padding: .9rem 0; border-top: 1px solid #34475a; }.aurora-panel summary { cursor: pointer; min-height: 30px; color: #e4eef5; }
+.aurora-important { border-left: 3px solid #efbe73; padding: .7rem 1rem; background: #222832; }
+.aurora-primary { display: inline-block; padding: .8rem 1rem; background: #b68b49; color: #101b28 !important; font-weight: 700; border-radius: 7px; text-decoration: none; }
+.aurora-location-list { padding: 0; list-style: none; }.aurora-location-list li { display: grid; gap: .35rem; padding: .8rem 0; border-top: 1px solid #34475a; }.aurora-location-list span { color: #a7c0d0; }
+.aurora-rotation { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }.aurora-rotation article { padding: 1rem; background: #122131; border-radius: 7px; }.aurora-rotation span { color: #aac0d0; }
+.aurora-notice { padding: 1rem; border: 1px solid #aa8954; border-radius: 8px; }.aurora-prose { white-space: pre-line; }.aurora-source-note, .aurora-muted { color: #a8bfcc; font-size: .9rem; }
+.aurora-admin-form { display: grid; gap: 1.2rem; }.aurora-admin-form label { display: grid; gap: .4rem; }.aurora-admin-form input, .aurora-admin-form textarea, .aurora-admin-form select { min-width: 0; width: 100%; }.aurora-admin-form textarea { min-height: 100px; }.aurora-admin-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }.aurora-admin-territory { padding: 1rem 0; border-top: 1px solid #34475a; }.aurora-admin-checks { display: flex; flex-wrap: wrap; gap: 1rem; }.aurora-admin-checks label { display: flex; align-items: center; gap: .6rem; min-height: 44px; }.aurora-admin-checks input { width: 18px; height: 18px; }.aurora-admin-totals { display: grid; gap: .7rem; }.aurora-admin-total-row { display: grid; grid-template-columns: 2fr 1.5fr .7fr .7fr auto; gap: .6rem; align-items: end; }
+@media (max-width: 850px) { .aurora-hero { flex-direction: column; align-items: flex-start; gap: .7rem; }.aurora-hero-actions { display: flex; flex-wrap: wrap; }.aurora-overview-grid, .aurora-map-grid { grid-template-columns: 1fr; }.aurora-territory-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 540px) { .aurora-reference-grid, .aurora-mission-grid, .aurora-rules-grid, .aurora-rotation, .aurora-admin-columns { grid-template-columns: 1fr; }.aurora-territory-picker { grid-template-columns: 1fr; }.aurora-admin-total-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }.aurora-tabs a { padding: .65rem; }.aurora-hero h1 { font-size: 2.8rem; } }
+@media (pointer: coarse) { .aurora-map-surface > button { width: 44px; height: 44px; }.aurora-panel summary { min-height: 44px; } }
+@media (max-width: 540px) { .aurora-map-surface > button { display: none; } }

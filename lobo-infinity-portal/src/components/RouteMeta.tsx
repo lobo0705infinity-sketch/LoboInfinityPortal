@@ -64,6 +64,11 @@ function applyMeta(meta: { title: string; description: string; canonicalPath?: s
 }
 
 function getRouteMeta(pathname: string) {
+  if (pathname.startsWith('/campaign/aurora-vii')) return {
+    title: 'Aurora VII — Race for the Gate | Lobo Infinity Portal',
+    description: 'Explore the Aurora VII narrative campaign: twelve territories, current missions, public standings, terrain references, and released story chapters.',
+    canonicalPath: pathname,
+  }
   const publicPage = describePublicSearchPage(pathname)
   if (publicPage) return publicPage
 

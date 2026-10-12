@@ -1,4 +1,5 @@
 const routeLoaders = new Map<string, () => Promise<unknown>>([
+  ['/campaign/aurora-vii', () => import('../campaign/AuroraCampaign')],
   ['/', () => import('../pages/Dashboard')],
   ['/analytics', () => import('../pages/Analytics')],
   ['/army-intelligence', () => import('../pages/ArmyIntelligence')],

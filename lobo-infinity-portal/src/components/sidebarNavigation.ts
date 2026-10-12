@@ -53,6 +53,7 @@ export function getJoinCommunityNavigationItem(
 }
 
 export const communityItems: NavigationItem[] = [
+  { icon: 'maps', label: 'Aurora VII Campaign', to: '/campaign/aurora-vii' },
   { icon: 'rules', label: 'Portal Guide', to: '/portal-guide' },
   {
     icon: 'discord',
@@ -102,6 +103,7 @@ export const communityItems: NavigationItem[] = [
 ]
 
 export const commissionerItems: NavigationItem[] = [
+  { icon: 'maps', label: 'Aurora VII Publication', to: '/commissioner/aurora-vii' },
   {
     icon: 'dashboard',
     label: 'Command Center',
