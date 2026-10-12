@@ -47,3 +47,16 @@
 @media (max-width: 540px) { .aurora-reference-grid, .aurora-mission-grid, .aurora-rules-grid, .aurora-rotation, .aurora-admin-columns { grid-template-columns: 1fr; }.aurora-territory-picker { grid-template-columns: 1fr; }.aurora-admin-total-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }.aurora-tabs a { padding: .65rem; }.aurora-hero h1 { font-size: 2.8rem; } }
 @media (pointer: coarse) { .aurora-map-surface > button { width: 44px; height: 44px; }.aurora-panel summary { min-height: 44px; } }
 @media (max-width: 540px) { .aurora-map-surface > button { display: none; } }
+.aurora-story-intro { padding: 1rem 0; max-width: 78ch; }
+.aurora-story-intro h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.2; margin: .4rem 0 .8rem; }
+.aurora-story-intro p { color: #c5d5df; line-height: 1.7; }
+.aurora-story-intro nav { display: flex; flex-wrap: wrap; gap: .7rem 1.3rem; margin-top: 1rem; }
+.aurora-story-history article { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 1rem; padding: 1.5rem 0; border-top: 1px solid #34475a; }
+.aurora-story-number { color: #efbe73; font-size: 1.7rem; font-weight: 700; }
+.aurora-story-history .aurora-prose { max-width: 80ch; line-height: 1.8; }
+.aurora-motivation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.aurora-motivation-grid article { padding: 1rem 1.2rem; border: 1px solid #34475a; border-radius: 8px; background: #122131; }
+.aurora-motivation-grid h3 { color: #efbe73; }
+.aurora-motivation-grid p { line-height: 1.7; }
+.aurora-campaign #aurora-history, .aurora-campaign #aurora-factions, .aurora-campaign #aurora-releases { scroll-margin-top: 6rem; }
+@media (max-width: 540px) { .aurora-motivation-grid { grid-template-columns: 1fr; }.aurora-story-history article { grid-template-columns: 1fr; gap: .1rem; } }

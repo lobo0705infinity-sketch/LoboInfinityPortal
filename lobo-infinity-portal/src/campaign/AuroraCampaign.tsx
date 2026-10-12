@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { Link, NavLink, useParams } from 'react-router-dom'
 import { AURORA_TERRITORIES, AURORA_TURNS, AURORA_DOCTRINES } from '../../shared/aurora-public.mjs'
+import { AURORA_HISTORY, AURORA_MOTIVATIONS } from '../../shared/aurora-story.mjs'
 import { emptyAuroraState } from '../../shared/aurora-public-state.mjs'
 import { useAuroraPublication } from './useAuroraPublication'
 import type { AuroraPublicState } from './auroraTypes'
@@ -69,7 +70,13 @@ function CampaignBattles({ eventId }: { eventId: string }) {
 
 function CampaignStory({ state }: { state: AuroraPublicState }) {
   const latest = state.story.at(-1)
-  return <><Panel title={latest?.title || 'The story begins on Aurora VII'}>{latest ? <><p className="eyebrow">Published chapter · {latest.turn ? `Turn ${latest.turn}` : 'Campaign opening'}</p><Paragraphs text={latest.body}/></> : <><p>Aurora VII is a young colonial world on the edge of the Human Sphere. Its growing settlements, extraordinary resources, and unfamiliar ecosystems have attracted governments, corporations, scientists, prospectors, and independent powers.</p><p>O-12 brokered the Aurora Initiative to keep that competition peaceful. Armed security and expedition forces have blurred the line between protecting an interest and controlling it. Territorial disputes are becoming battles, and the unexplained Signal threatens to turn colonial rivalry into something much larger.</p><p>The first Turn’s story release has not yet been published.</p></>}</Panel>{state.story.length > 1 ? <Panel title="Previous public chapters">{state.story.slice(0, -1).reverse().map(chapter => <details key={chapter.turn}><summary>Turn {chapter.turn} · {chapter.title}</summary><Paragraphs text={chapter.body}/></details>)}</Panel> : null}</>
+  return <>
+    <section className="aurora-story-intro"><p className="eyebrow">The public campaign chronicle</p><h2>A world everyone wants. A mystery no one understands.</h2><p>Aurora VII was supposed to be a shared frontier. Now its settlements, resources, and independence are becoming the stakes of a war. This is the world your force is stepping into.</p><nav aria-label="Story chapters"><a href="#aurora-history">The colony’s history</a><a href="#aurora-factions">Why your faction is here</a><a href="#aurora-releases">Campaign dispatches</a></nav></section>
+    {latest ? <Panel title={latest.title}><p className="eyebrow">Latest published dispatch · {latest.turn ? `Turn ${latest.turn}` : 'Campaign opening'}</p><Paragraphs text={latest.body}/></Panel> : null}
+    <section id="aurora-history" className="panel aurora-panel aurora-story-history"><p className="eyebrow">Before the first battle</p><h2>A Brief History of Aurora VII</h2>{AURORA_HISTORY.map((chapter, index) => <article key={chapter.title}><span className="aurora-story-number" aria-hidden="true">0{index + 1}</span><div><h3>{chapter.title}</h3><Paragraphs text={chapter.body}/></div></article>)}</section>
+    <section id="aurora-factions" className="panel aurora-panel"><p className="eyebrow">Competing interests</p><h2>Why your faction is here</h2><p>Everyone has a public reason to be on Aurora VII. Some intentions are clearer than others.</p><div className="aurora-motivation-grid">{AURORA_MOTIVATIONS.map(item => <article key={item.faction}><h3>{item.faction}</h3><p>{item.body}</p></article>)}</div></section>
+    <section id="aurora-releases" className="panel aurora-panel"><p className="eyebrow">As the campaign unfolds</p><h2>Campaign dispatches</h2>{state.story.length ? <>{state.story.slice().reverse().map(chapter => <details key={chapter.turn}><summary>{chapter.turn ? `Turn ${chapter.turn}` : 'Campaign opening'} · {chapter.title}</summary><Paragraphs text={chapter.body}/></details>)}<p>The next dispatch will appear when the GM releases it.</p></> : <p>The opening Turn’s dispatch has not yet been released. As play unfolds, this chronicle will carry the published story chapters alongside the changing map and campaign results.</p>}<Link to={`${AURORA_PATH}/map`}>Explore the places these factions are fighting over →</Link></section>
+  </>
 }
 
 function CampaignRules() {
