@@ -33,6 +33,7 @@ const Top40RulesPage = lazy(() => import('../components/Top40RulesPage'))
 const Top40RegistrationPage = lazy(() => import('../components/Top40RegistrationPage'))
 const Top40BracketPage = lazy(() => import('../components/Top40BracketPage'))
 const Top40ResultsPage = lazy(() => import('./Top40ResultsPage'))
+const Top40PreparationPage = lazy(() => import('./Top40PreparationPage'))
 import teamTournamentStandingsHero from '../assets/team-tournament-standings-hero.png'
 import { resolvePlayerProfileHero, type PlayerProfileHeroArtwork } from '../config/playerProfileHeroArtwork'
 import { CANONICAL_ARMY_REGISTRY } from '../config/armies'
@@ -92,6 +93,8 @@ export default function SnapshotPublicApp() {
     <Route path="/league-operations" element={<LeagueOperations />} />
     <Route path="/streams" element={<StreamsDirectory />} />
     <Route path="/events" element={<Events />} />
+    <Route path="/event/event-lobo-s-american-top-40" element={<Top40PreparationPage />} />
+    <Route path="/event/event-lobo-s-american-top-40/overview" element={<Top40PreparationPage />} />
     <Route path="/event/event-lobo-s-american-top-40/rules" element={<Top40RulesPage />} />
     <Route path="/event/event-lobo-s-american-top-40/registration" element={<Top40RegistrationPage />} />
     <Route path="/event/event-lobo-s-american-top-40/bracket" element={<Top40BracketPage />} />
