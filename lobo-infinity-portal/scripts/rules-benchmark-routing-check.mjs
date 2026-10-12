@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1408)
+assert.equal(index.canonicalCases, 1410)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
 // These are deliberately absent from the benchmark's exact variants. They
@@ -40,6 +40,21 @@ for (const [id, conclusion] of [['new-topic-2-527', 'NO'], ['new-topic-2-528', '
     assert.equal(response.benchmark.id, id, question)
     assert.equal(response.deepSeek.conclusion, conclusion, question)
     assert.match(response.deepSeek.answer, /Classified Objectives/i, question)
+    const answer = formatRulesDiscordResponse(response).embeds[0].fields.find((field) => field.name === 'ANSWER').value
+    assert.ok(answer.length <= 1024, question)
+  }
+}
+
+
+// Recamo vs Hidden Deployment: use the actual production answer path, never AI.
+for (const id of ['new-topic-2-529', 'new-topic-2-530']) {
+  const item = tacballDocument.cases.find((entry) => entry.id === id)
+  for (const question of [item.canonicalQuestion, ...item.queryVariants.map((entry) => entry.question)]) {
+    const response = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Recamo benchmark must not call a paid provider') } })
+    assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
+    assert.equal(response.benchmark.id, id, question)
+    assert.match(response.deepSeek.answer, /Normal Roll/i, question)
+    assert.match(response.deepSeek.answer, /Order/i, question)
     const answer = formatRulesDiscordResponse(response).embeds[0].fields.find((field) => field.name === 'ANSWER').value
     assert.ok(answer.length <= 1024, question)
   }

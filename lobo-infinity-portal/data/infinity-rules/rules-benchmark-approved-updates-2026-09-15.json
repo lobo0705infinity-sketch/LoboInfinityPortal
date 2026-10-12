@@ -2780,6 +2780,191 @@
           "style": "PLAYER_SHORTHAND"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-529",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Does recamouflaging fail when a Hidden Deployment trooper reveals in LoF to shoot?",
+      "approvedAnswer": "Yes. If an enemy Hidden Deployment Trooper reveals as a Model or Marker with LoF to you when you declare the Long Skill to return to Camouflaged State, your recamo fails: you must be outside enemy Models’ and Markers’ LoF. The Order is spent and you remain a Model. If that Trooper declares a valid BS Attack ARO, it makes a Normal Roll, not a Face to Face Roll; recamo does not oppose the shot. The attack does not have to hit—revealing with LoF is enough. A Trooper with Camouflage can instead appear as a Camouflaged Marker to block recamo without shooting; firing reveals its Model. If it stays in Hidden Deployment, or reveals without LoF to you, its presence alone does not prevent recamo. The wiki’s regaining Impersonation example explicitly illustrates the failed Order and Normal Roll.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE — ACTIVATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE — CANCELLATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 167,
+          "section": "IMPERSONATION EXAMPLE: REGAINING IMPERSONATION VS HIDDEN DEPLOYMENT"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "fuzzyRequiredTerms": [
+        "recamo"
+      ],
+      "fuzzyExcludedTerms": [
+        "without lof",
+        "no lof",
+        "stays hidden",
+        "stays in hidden",
+        "remain hidden"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-529-q1",
+          "question": "If you try to recamo in front of a hd model and it reveals to fire does the recamo automatically fail?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q2",
+          "question": "Does recamouflaging fail when a Hidden Deployment trooper reveals in LoF to shoot?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q3",
+          "question": "If a hidden deployment sniper reveals to shoot my recamo attempt, does the Order get wasted?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q4",
+          "question": "Does recamo fail even if the hidden deployment model misses its shot?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q5",
+          "question": "Is the shot a Normal Roll when a Hidden Deployment trooper reveals to fire at a recamouflaging model?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q6",
+          "question": "Do I remain a model if an HD trooper reveals in line of fire during my recamo Order?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q7",
+          "question": "Can a Hidden Deployment trooper reveal with LoF and prevent me returning to Camouflaged State?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q8",
+          "question": "Does an HD model revealing to shoot stop recamo even without a hit?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q9",
+          "question": "Does a hidden trooper shooting at my attempt to re-camouflage make it fail?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q10",
+          "question": "if i recamo infront of a hd model and it reveels to fier does recamo automaticaly fail",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-529-q11",
+          "question": "does re camo fail if hidden deploment reveals to shoot",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-529-q12",
+          "question": "recammo in front of hd trooper, it shoots and misses, do i still fail",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-529-q13",
+          "question": "hd sniper pops out in lof while i recamo, normal roll or face to face",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-529-q14",
+          "question": "Does a hidden deployment model have to hit me to stop my recamo?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q15",
+          "question": "If an enemy reveals from Hidden Deployment in LoF while I spend a Long Skill to regain camouflage, what happens?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-529-q16",
+          "question": "Can an HD trooper come out as a camo marker in LoF just to stop my recamo without shooting?",
+          "style": "TABLE_SCENARIO"
+        }
+      ]
+    },
+    {
+      "id": "new-topic-2-530",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "Does a trooper staying in Hidden Deployment automatically prevent recamo?",
+      "approvedAnswer": "An enemy that stays in Hidden Deployment is considered not to be on the table, so its presence alone does not prevent you returning to Camouflaged State. Likewise, revealing without LoF to you does not block recamo by the LoF requirement. Assuming you satisfy the other requirements, you can recamo. To block it this way, the opponent must place the Hidden Deployment Trooper’s Model or Marker on the table with LoF when you declare your intention to return to Marker State. That reveal makes your recamo fail and spends your Order; a valid shooting ARO is a Normal Roll and need not hit.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 157,
+          "section": "CAMOUFLAGED STATE — ACTIVATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 161,
+          "section": "HIDDEN DEPLOYMENT STATE — CANCELLATION"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 167,
+          "section": "IMPERSONATION EXAMPLE: REGAINING IMPERSONATION VS HIDDEN DEPLOYMENT"
+        }
+      ],
+      "reviewStatus": "AUTO_VERIFIED_EXPLICIT",
+      "fuzzyRequiredTerms": [
+        "hidden"
+      ],
+      "fuzzyExcludedTerms": [
+        "reveals to fire",
+        "reveal to fire",
+        "reveals to attack",
+        "reveal to attack"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-530-q1",
+          "question": "Does a trooper staying in Hidden Deployment automatically prevent recamo?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-530-q2",
+          "question": "Does recamo automatically fail if an HD model stays hidden?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-530-q3",
+          "question": "Can I recamo if an enemy remains in Hidden Deployment and does not reveal?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-530-q4",
+          "question": "If an HD trooper reveals without LoF to me, does its presence alone stop recamo?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-530-q5",
+          "question": "does recamo fail if hidden deploment doesnt reveal",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-530-q6",
+          "question": "Can I return to Camouflaged State while an enemy HD model chooses not to reveal?",
+          "style": "TABLE_SCENARIO"
+        }
+      ]
     }
   ]
 }
