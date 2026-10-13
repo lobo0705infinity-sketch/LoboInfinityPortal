@@ -46,17 +46,36 @@ function importTop40PortalRegistrationRow_(sheet, rowNumber, log) {
   const width = sheet.getLastColumn();
   const headers = sheet.getRange(1, 1, 1, width).getDisplayValues()[0];
   const values = sheet.getRange(rowNumber, 1, 1, width).getDisplayValues()[0];
-  let handle;
-  try { handle = readTop40PortalHandle_(headers, values); }
+  let handle, existing;
+  try {
+    handle = readTop40PortalHandle_(headers, values);
+    existing = findTop40ExistingPortalPlayer_(handle);
+  }
   catch (error) {
     lifWriteImportLog_(log, key, TOP40_PORTAL_REGISTRATION_TYPE, rowNumber, "Rejected", error.message);
     return { rejected: true, responseRow: rowNumber };
   }
-  const result = createCanonicalPlayer(handle);
+  const result = existing || createCanonicalPlayer(handle);
   if (!result.success && !result.duplicate) throw new Error("Portal player registration failed.");
   lifWriteImportLog_(log, key, TOP40_PORTAL_REGISTRATION_TYPE, result.row || "", result.duplicate ? "Duplicate" : "Imported",
     result.duplicate ? "Existing portal player retained; no profile changes." : "Top 40 registration created an active portal player.");
   return { created: !result.duplicate, existing: !!result.duplicate, responseRow: rowNumber };
+}
+
+function findTop40ExistingPortalPlayer_(handle) {
+  const sheet = lifGetTargetSpreadsheet_().getSheetByName(CONFIG.SHEETS.PLAYERS);
+  if (!sheet) throw new Error("Players sheet not found.");
+  const rows = sheet.getDataRange().getValues();
+  const columns = getPlayerRegistryColumns(rows[0] || []);
+  const key = String(handle).trim().toLowerCase();
+  const normalize = function(value) { return String(value || "").trim().toLowerCase(); };
+  const candidates = rows.slice(1).map(function(row, index) {
+    return { name: String(row[columns.player] || "").trim(), display: String(row[columns.displayName] || "").trim(), row: index + 2 };
+  }).filter(function(item) { return item.name; });
+  const exact = candidates.filter(function(item) { return normalize(item.name) === key; });
+  const matches = exact.length ? exact : candidates.filter(function(item) { return normalize(item.display) === key; });
+  if (matches.length > 1) throw new Error("This display name matches multiple players. Enter your canonical portal handle.");
+  return matches.length ? { success: false, duplicate: true, player: matches[0].name, row: matches[0].row } : null;
 }
 
 function syncTop40PortalPlayerChoices_() {
@@ -81,6 +100,7 @@ function reconcileTop40PortalRegistrations() {
       if (imported.alreadyProcessed) result.alreadyProcessed += 1;
       if (imported.rejected) result.rejectedRows.push(row);
     }
+    if (typeof invalidatePlayerRegistryCache === "function") invalidatePlayerRegistryCache();
     if (result.created) syncTop40PortalPlayerChoices_();
     Logger.log("TOP40_PORTAL_REGISTRATION " + JSON.stringify(result));
     return result;
