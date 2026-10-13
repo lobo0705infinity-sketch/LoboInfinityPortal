@@ -431,7 +431,7 @@ function attackAvailability(attack) {
 }
 
 function buildLegalAros(defender, attacker, range, settings, attackingMode, fireteamSpecialDice = 0) {
-  if (defender.state === 'imm-b') return [{ id: 'no-aro', type: 'none' }]
+  if (defender.state === 'imm-b') return [{ id: 'Reset (normal; does not evade shot)', type: 'none' }]
   const dodge = dodgePool(defender)
   if (defender.state === 'imm-a') { dodge.modifiers -= 6; dodge.target = successValue(dodge.baseTarget, dodge.modifiers); dodge.criticalTarget = dodge.target; dodge.modifierSources = ['IMM-A -6'] }
   const results = [{ id: 'dodge', type: 'dodge', pool: dodge }]

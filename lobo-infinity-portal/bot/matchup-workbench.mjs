@@ -100,7 +100,7 @@ function ccCandidates(attacker,defender) {
     const active=buildCloseCombatPool(attacker,defender,weapon,{id:'normal',type:'face-to-face'})
     const responses=(defender.ccWeapons||[]).map(w=>({id:w.name,type:'cc',weapon:w,pool:buildCloseCombatPool(defender,attacker,w,{id:'reactive',type:'face-to-face'},{active:false,opponentWeapon:weapon})}))
     if(defender.state!=='imm-b'){const d=dodgePool(defender),level=Number(profileTraits(attacker).map(t=>t.match(/martial arts (?:l|level)?\s*(\d)/)?.[1]).find(Boolean)||0),ccMod=profileTraits(attacker).reduce((sum,t)=>sum-Number(t.match(/cc attack\s*-(\d+)/)?.[1]||0),0),mod=d.modifiers+(MARTIAL_ARTS[level]?.opponent||0)+ccMod+Number(weapon.opponentMod||0)+(defender.state==='imm-a'?-6:0);responses.push({id:'Dodge',type:'dodge',pool:{burst:1,specialDice:d.specialDice,successValue:successValue(d.baseTarget,mod)}})}
-    responses.push({id:'No ARO',type:'none'})
+    responses.push({id:defender.state==='imm-b'?'Reset (normal; does not evade CC)':'No ARO',type:'none'})
     for(const response of responses){
       if(['imm-a','imm-b'].includes(defender.state)&&response.type==='cc')continue
       // Defender's weapon MODs must also affect the active CC pool.
@@ -113,7 +113,7 @@ function ccCandidates(attacker,defender) {
   return results
 }
 export function hackingPrograms(profile,source) {
-  if(profile.state==='isolated')return []
+  if(['isolated','imm-a','imm-b'].includes(profile.state))return []
   const devices=source ? new Map([[100,'Hacking Device'],[101,'Hacking Device Plus'],[145,'Killer Hacking Device'],[182,'EVO Hacking Device']]) : new Map()
   const traits=[...(profile.skills||[]),...(profile.equipment||[])]
   return (source.hacking||[]).filter(p=>Number(p.burst)>0&&Number.isFinite(Number(p.damage))&&p.damage!=='-'&&((p.devices||[]).some(id=>traits.some(t=>t===devices.get(id)||t.startsWith(`${devices.get(id)} `)))||traits.some(t=>normalize(t).includes(normalize(p.name)))))
@@ -124,7 +124,7 @@ export function hackingPrograms(profile,source) {
     })
 }
 function hackingCandidates(attacker,defender,source) {
-  if(['isolated','imm-a'].includes(attacker.state))return []
+  if(['isolated','imm-a','imm-b'].includes(attacker.state))return []
   const traits=profileTraits(defender), hacker=traits.includes('hacker')||traits.some(t=>/hacking device/.test(t))
   const legal=(p,t)=>!p.target?.length||p.target.includes(t.troopType)||(p.target.includes('Hacker')&&profileTraits(t).some(s=>s==='hacker'||/hacking device/.test(s)))
   const pool=(p,user,target,active=true)=>{
@@ -136,9 +136,9 @@ function hackingCandidates(attacker,defender,source) {
   for(const p of hackingPrograms(attacker,source).filter(p=>legal(p,defender))){
     const responses=[{id:'Reset',type:'reset',pool:{burst:1,specialDice:0,target:successValue(defender.wip,defender.state==='isolated'?-9:defender.state==='imm-b'||defender.state==='targeted'?-3:0),source:'Reset'}} ,{id:'No ARO',type:'none'}]
     if(defender.state==='imm-a')responses.splice(0,1)
-    if(hacker&&defender.state!=='imm-a')for(const q of hackingPrograms(defender,source).filter(q=>legal(q,attacker)))responses.push({id:q.name,type:'hacking',program:q,pool:pool(q,defender,attacker,false)})
+    if(hacker&&!['imm-a','imm-b'].includes(defender.state))for(const q of hackingPrograms(defender,source).filter(q=>legal(q,attacker)))responses.push({id:q.name,type:'hacking',program:q,pool:pool(q,defender,attacker,false)})
     // Zero Pain is a defensive upgrade: no saving roll or damage.
-    if(!['isolated','imm-a'].includes(defender.state)&&[...(defender.skills||[]),...(defender.equipment||[])].some(x=>/zero pain/i.test(x)))responses.push({id:'Zero Pain',type:'reset',pool:{burst:2,specialDice:0,target:defender.wip,source:'Zero Pain'},opponentMod:-3})
+    if(!['isolated','imm-a','imm-b'].includes(defender.state)&&[...(defender.skills||[]),...(defender.equipment||[])].some(x=>/zero pain/i.test(x)))responses.push({id:'Zero Pain',type:'reset',pool:{burst:2,specialDice:0,target:defender.wip,source:'Zero Pain'},opponentMod:-3})
     for(const r of responses){
       const a=pool(p,attacker,defender);const opponentMod=r.program?.opponentMod||r.opponentMod||0;if(opponentMod)a.target=successValue(a.baseTarget,a.target-a.baseTarget+opponentMod);a.criticalTarget=a.target
       if(r.pool&&p.opponentMod)r.pool={...r.pool,target:successValue(r.pool.baseTarget??defender.wip,r.pool.target-(r.pool.baseTarget??defender.wip)+p.opponentMod)}
