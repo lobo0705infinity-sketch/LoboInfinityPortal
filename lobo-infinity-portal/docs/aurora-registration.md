@@ -1,10 +1,24 @@
 # Aurora VII league registration
 
-Portal: `/campaign/aurora-vii/register`. The portal displays live count-only
-availability and helps the player choose a faction. Registration completes in
-Lobo's Discord server with `/aurora register faction:<choice> player:<portal name>`.
-The Discord interaction provides the verified account identity; no typed Discord
-ID or username is trusted and no additional OAuth credentials are required.
+Portal: `/campaign/aurora-vii/register`. Players choose a faction, enter their
+player name and click Register. Discord asks for `identify guilds.join` consent,
+then redirects back to the portal. The bot joins non-members to Lobo's server,
+checks the current capacity and saves the registration before assigning the role.
+Existing members are reused. No slash command is required for portal signup.
+
+Setup: add `https://lobo-infinity-portal.vercel.app/api/aurora-signup?action=callback`
+to the existing bot application's OAuth2 redirects. Set `DISCORD_CLIENT_SECRET`
+on the existing Railway bot service (never in frontend/Vercel public variables).
+The application ID is obtained from the running bot. Until configured, the portal
+shows the setup issue and disables Register; existing Discord commands still work.
+
+OAuth uses a ten-minute single-use random state bound to an HttpOnly browser
+cookie. Identity comes from Discord's authenticated API, never from form values.
+Access/refresh tokens are never persisted or returned to the browser. A signed
+Secure HttpOnly SameSite=Lax identity cookie lasts one hour. Non-members join only
+after consenting. Join failures create no reservation. The final serialized write
+checks capacity again after consent, so a newly full faction cannot overfill.
+A server restart expires outstanding OAuth intents; players can retry safely.
 
 Allowed factions are PanOceania, Yu Jing, O-12, Combined Army, NA2, Tohaa, JSA,
 Ariadna, ALEPH and Haqqislam. Nomads and sectorial entries are not registration
@@ -42,7 +56,7 @@ if deletion fails, the role is restored where possible and the record stays.
 
 The Railway HTTP listener binds `PORT` or 8080 and exposes only
 `GET /aurora-vii/registration`. It publishes faction counts, the current limit and
-availability. It has no write API and never publishes names or Discord IDs. The
+availability. It never publishes names or Discord IDs. The separate `/aurora-vii/portal` endpoint provides browser-bound OAuth and authenticated signup through `/api/aurora-signup`. The
 Vercel endpoint `/api/aurora-registration` validates and projects this count-only
 response. It returns 503 when live counts are unavailable; the portal disables
 the handoff controls instead of treating unavailable counts as empty factions.

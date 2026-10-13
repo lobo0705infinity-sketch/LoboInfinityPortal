@@ -222,7 +222,7 @@
     "test:desktop-experience": "node --experimental-strip-types scripts/desktop-experience-check.mjs",
     "test:aurora-campaign": "node tests/aurora-publication-check.mjs",
     "test:top-40-portal-registration": "node scripts/top-40-portal-registration-check.mjs",
-    "test:aurora-registration": "node scripts/aurora-registration-check.mjs"
+    "test:aurora-registration": "node scripts/aurora-registration-check.mjs && node scripts/aurora-portal-registration-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
