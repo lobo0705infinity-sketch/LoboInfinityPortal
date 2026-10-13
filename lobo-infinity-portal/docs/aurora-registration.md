@@ -51,6 +51,22 @@ The bot rechecks current capacity for every signup even if portal counts are old
 The registration UI adds no Discord announcements or messages to other members.
 Command confirmations and status responses are private to the invoking player.
 
+## Private faction channels
+
+The bot also creates one `Aurora VII — Factions` category and ten text channels
+named with the faction IDs. This requires Manage Channels as well as Manage Roles.
+The category denies View Channel to @everyone. Each text channel has exactly
+three overwrites: @everyone denied View Channel, the bot account allowed access,
+and its matching campaign faction role allowed viewing, posting and history.
+Other faction roles have no access grant. Server owners and administrators retain
+Discord's normal permission bypass. Registration/withdrawal changes the role and
+therefore channel access automatically. No separate per-player overwrite is used.
+
+Setup retries once a minute and verifies actual Discord overwrites before marking
+`channelsReady`. It reuses existing channels in that category and repairs extra
+access grants. A missing channel-management permission does not block league
+registration. Only the campaign category and channels are reconciled.
+
 ## Verification
 
 `npm run test:aurora-registration` checks concurrency at capacity, duplicate

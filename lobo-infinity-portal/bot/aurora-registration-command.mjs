@@ -1,6 +1,7 @@
 import { createServer } from 'node:http'
 import { ApplicationCommandOptionType as Type, PermissionFlagsBits } from 'discord.js'
 import { createRegistrationStore } from './aurora-registration-store.mjs'
+import { provisionFactionChannels } from './aurora-faction-channels.mjs'
 import { AURORA_DISCORD_GUILD_ID, AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
 
 export const AURORA_COMMAND_DEFINITION = {
@@ -34,6 +35,7 @@ export async function provisionCampaignRoles(guild) {
 export function createAuroraRegistrationService({ store = createRegistrationStore(process.env.AURORA_REGISTRATION_PATH || '/data/aurora-vii-registrations.json'), logger = console } = {}) {
   let guild, roles = new Map(), available = false, issue = 'Campaign registration is starting. Please try again shortly.'
   let queue = Promise.resolve(), timer, server
+  let channelCount = 0, channelsReady = false, channelIssue = ''
   const serialize = action => { const result = queue.then(action); queue = result.catch(() => {}); return result }
   async function setupRoles() {
     if (!guild) throw Error('Campaign Discord server is unavailable.')
@@ -57,6 +59,16 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
       for (const player of await store.pending()) {
         try { await assign(player) }
         catch { logger.error?.('Aurora VII: a reserved registration is awaiting Discord role assignment; it will be retried.') }
+      }
+      try {
+        const channels = await provisionFactionChannels(guild, roles)
+        channelCount = channels.size
+        if (!channelsReady) logger.info?.(`Aurora VII private faction channels verified: ${channelCount}; matching faction role only, plus bot and server administrators.`)
+        channelsReady = true; channelIssue = ''
+      } catch (error) {
+        channelsReady = false
+        if (channelIssue !== error.message) logger.error?.(`Aurora VII faction channel setup: ${error.message}`)
+        channelIssue = error.message
       }
     })
   }
@@ -112,7 +124,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
   }
   return {
     handler,
-    summary: async () => ({ ...await store.summary(), available, issue }),
+    summary: async () => ({ ...await store.summary(), available, issue, channelsReady, channelCount }),
     async start(client, { port = Number(process.env.PORT || 8080), serve = true } = {}) {
       guild = client.guilds.cache.get(AURORA_DISCORD_GUILD_ID)
       if (!guild) throw Error('Aurora VII server is not connected to this bot.')
@@ -126,7 +138,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
           if (request.method !== 'GET' || request.url !== '/aurora-vii/registration') { response.writeHead(404); response.end('{"error":"Not found"}'); return }
-          try { response.end(JSON.stringify({ ...await store.summary(), available, issue })) }
+          try { response.end(JSON.stringify({ ...await store.summary(), available, issue, channelsReady, channelCount })) }
           catch { response.writeHead(503); response.end('{"error":"Registration is temporarily unavailable."}') }
         })
         await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '0.0.0.0', resolve) })
