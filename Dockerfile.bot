@@ -15,6 +15,7 @@ RUN node scripts/bot-improvements-check.mjs
 RUN node scripts/grouped-commands-check.mjs
 RUN node scripts/aurora-registration-check.mjs
 RUN node scripts/aurora-faction-channels-check.mjs
+RUN node scripts/aurora-ariadna-briefing-check.mjs
 RUN node scripts/kill-command-check.mjs
 RUN node scripts/legacy-command-retirement-check.mjs
 RUN npm run test:lobos-little-helper
