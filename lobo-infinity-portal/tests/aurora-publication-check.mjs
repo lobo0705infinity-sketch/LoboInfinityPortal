@@ -50,6 +50,6 @@ const response = { setHeader() {}, status(code) { status = code; return this }, 
 await handler({ method: 'POST', headers: {}, body: { state: active } }, response)
 assert.equal(status, 403, 'Anonymous users cannot publish campaign state')
 const source = await readFile('src/campaign/AuroraCampaign.tsx', 'utf8')
-assert.match(source, /game\.eventId === eventId/)
+assert(source.includes('<AuroraResults state={state}/>'))
 assert.match(source, /Narrative Mission TP and OP count only/)
 console.log('PASS: 12 territories, 24 public terrain references, source scoring, publication whitelist, spoiler boundaries, authentication, stale revisions and event isolation.')

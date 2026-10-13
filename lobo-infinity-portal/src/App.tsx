@@ -6,7 +6,7 @@ import {
   type ComponentType,
   type ReactNode,
 } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigationType, useParams } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigationType, useParams } from 'react-router-dom'
 import AuthProvider, { useAuth } from './auth/AuthContext'
 import ApplicationErrorBoundary from './components/ApplicationErrorBoundary'
 import Breadcrumbs from './components/Breadcrumbs'
@@ -36,6 +36,7 @@ const AutomationCenter = lazyRoute('AutomationCenter', () => import('./pages/Aut
 const CommunityManager = lazyRoute('CommunityManager', () => import('./pages/CommunityManager'))
 const CommissionerArmyListLinks = lazyRoute('CommissionerArmyListLinks', () => import('./pages/CommissionerArmyListLinks'))
 const CommissionerDashboard = lazyRoute('CommissionerDashboard', () => import('./pages/CommissionerDashboard'))
+const AuroraRegistration = lazyRoute('AuroraRegistration', () => import('./campaign/AuroraRegistration'))
 const AuroraPublisher = lazyRoute('AuroraPublisher', () => import('./campaign/AuroraPublisher'))
 const CommissionerEventManager = lazyRoute('CommissionerEventManager', () => import('./pages/CommissionerEventManager'))
 const CommissionerEventOperations = lazyRoute('CommissionerEventOperations', () => import('./pages/CommissionerEventOperations'))
@@ -153,6 +154,7 @@ function AuthShell() {
                 <Route path="/event/:eventId/tournament" element={<MeasuredRoute name="TeamTournament"><TeamTournament /></MeasuredRoute>} />
                 <Route path="/event/:eventId/:section" element={<MeasuredRoute name="EventHome"><EventHome /></MeasuredRoute>} />
                 <Route path="/commissioner" element={<MeasuredRoute name="CommissionerDashboard"><CommissionerDashboard /></MeasuredRoute>} />
+                <Route path="/commissioner/aurora-vii/registration" element={<main className="portal-shell aurora-campaign"><header className="page-header"><h1>Aurora VII registration form</h1><p>View the live player registration form and current faction availability. Campaign registration uses Discord separately from commissioner sign-in.</p><Link to="/commissioner/aurora-vii">Back to campaign administration →</Link></header><AuroraRegistration /></main>} />
                 <Route path="/commissioner/aurora-vii" element={<MeasuredRoute name="AuroraPublisher"><AuroraPublisher /></MeasuredRoute>} />
                 <Route path="/commissioner/army-list-links" element={<MeasuredRoute name="CommissionerArmyListLinks"><CommissionerArmyListLinks /></MeasuredRoute>} />
                 <Route path="/commissioner/game-center" element={<CommissionerLauncher

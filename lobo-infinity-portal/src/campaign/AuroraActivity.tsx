@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { locationActivity, type Activity } from '../../shared/aurora-activity.mjs'
 const COLORS:Record<string,string>={'PanOceania':'#63bafa','Yu Jing':'#f5b64d','Ariadna':'#9cca79','ALEPH':'#c5a1ff','Haqqislam':'#d5c785','O-12':'#81dce0','JSA':'#f4818e','Nomads':'#f96e64','NA2':'#b9c3d0','Tohaa':'#70d6ac','Combined Army':'#df7cb6'}
 export function useCampaignActivity(turn:number) {
@@ -7,7 +8,7 @@ export function useCampaignActivity(turn:number) {
     const controller=new AbortController()
     async function load(){
       if(document.visibilityState==='hidden')return
-      try{const r=await fetch('/api/aurora-activity',{cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('Confirmed game activity is not available yet. Published Turn totals remain below.');const v=await r.json();if(!Array.isArray(v.games)||!Array.isArray(v.totals)||v.turn!==turn)throw Error('Waiting for confirmed results for this Turn.');if(!controller.signal.aborted){setData(v);setError('');setUpdated(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}))}}
+      try{const r=await fetch('/api/aurora-activity',{cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('Confirmed game activity is temporarily unavailable. Try refreshing.');const v=await r.json();if(!Array.isArray(v.games)||!Array.isArray(v.totals)||v.turn!==turn)throw Error('Waiting for confirmed results for this Turn.');if(!controller.signal.aborted){setData(v);setError('');setUpdated(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}))}}
       catch(e){if(!controller.signal.aborted)setError((e as Error).message)}
     }
     void load();const timer=setInterval(()=>void load(),60000);const visible=()=>void load();document.addEventListener('visibilitychange',visible)
@@ -24,9 +25,9 @@ export function LocationActivity({activity,location,knownCount,sample=false}:{ac
   const {rows,games,leaders,count}=locationActivity(activity,location),max=Math.max(1,...rows.map(r=>r.tp)),narrative=location==='narrative'
   return <div className="aurora-battlefront">
     <div className="aurora-battlefront-heading"><span className="eyebrow">{narrative?'Narrative activity':'Fighting this Turn'}</span><strong>{knownCount?`${count} confirmed ${count===1?'battle':'battles'}`:'Published totals'}</strong></div>
-    {!narrative?<p className="aurora-front-leader"><span>Leading Conquest faction</span><strong>{leaders.length?leaders.join(' / '):'No leader yet'}</strong>{leaders.length>1?<small>Tied on TP and OP</small>:null}</p>:null}
+    {!narrative?<p className="aurora-front-leader"><span>Provisional Conquest leader</span><strong>{leaders.length?leaders.join(' / '):'No leader yet'}</strong>{leaders.length>1?<small>Tied on TP and OP</small>:null}</p>:null}
     {rows.length?<div className="aurora-faction-bars">{rows.map(row=><div key={row.faction}><div className="aurora-bar-label"><strong>{row.faction}</strong><span>{row.tp} TP · {row.op} OP</span></div><div className="aurora-bar-track"><span style={{width:`${row.tp/max*100}%`,background:COLORS[row.faction]||'#91e4ff'}}/></div>{!narrative&&['NA2','Tohaa','Combined Army'].includes(row.faction)?<small>Faction system · no direct territorial Influence</small>:null}</div>)}</div>:<p>No {knownCount?'confirmed battles':'published totals'} at this location this Turn.</p>}
     <p className="aurora-muted">{narrative?'Narrative results stay separate from territorial Influence.':'Conquest TP = Influence; OP breaks ties. Private faction plans are excluded. Control changes when Lobo resolves the Turn.'}</p>
-    {games.length?<details open><summary>Recent {sample?'sample':'confirmed'} battles</summary><ul className="aurora-front-battles">{games.slice(0,5).map(g=><li key={g.id}><strong>{g.playerA.name} vs {g.playerB.name}</strong><span>{g.opA}–{g.opB} OP · {g.tpA}–{g.tpB} TP</span><small>{g.mission} · {g.date}</small></li>)}</ul></details>:null}
+    {games.length?<details open><summary>Recent {sample?'sample':'confirmed'} battles</summary><ul className="aurora-front-battles">{games.slice(0,5).map(g=><li key={g.id}><strong>{g.playerA.name} vs {g.playerB.name}</strong><span>{g.opA}–{g.opB} OP · {g.tpA}–{g.tpB} TP</span><small>{g.mission} · {g.date}</small>{!sample ? <Link to={`/campaign/aurora-vii/standings#battle-${g.id}`}>View confirmed battle →</Link> : null}</li>)}</ul></details>:null}
   </div>
 }

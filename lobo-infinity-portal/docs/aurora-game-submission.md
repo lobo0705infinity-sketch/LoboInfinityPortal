@@ -13,3 +13,28 @@ Secret-objective claims are separate, visible only to the claimant and commissio
 Private games are stored on the existing single-replica Railway volume at `/data/aurora-vii-games.json`. Writes serialize, fsync and rename atomically. Corrupt storage fails closed. Confirmed submission totals are separate from GM-published bulletin totals and ordinary portal game records. Narrative TP/OP never contributes to territorial totals. No map display changes are included.
 
 Checks: `npm run test:aurora-games`, `npm run test:aurora-registration`, production build, and `node scripts/aurora-games-browser-check.mjs`. The browser check uses an isolated temporary ledger and simulated identities; it sends no real messages and writes no production games.
+
+## Campaign player experience
+
+The Standings & Battles page and map use the same confirmed-game activity feed.
+Battle cards show the public score record and link players to the authenticated
+review/correction page. Narrative TP/OP remains separate. Live totals are not
+added to the separately published GM checkpoint. Campaign VP and territory control
+remain GM-published results, with live Conquest leaders marked provisional.
+
+Before Turn 1, the overview prioritizes registration and explains when game
+reporting opens. Player Rules include the TP calculation and an 8–6 OP example.
+Mobile interior pages use a compact header and page selector; the map fits the
+screen with activity markers and a full-size territory selector.
+
+Commissioners can open the live registration form at
+`/commissioner/aurora-vii/registration`, linked from campaign administration.
+Commissioner authentication and player Discord registration remain distinct.
+
+After building, run `scripts/aurora-campaign-experience-check.mjs` with
+`CAMPAIGN_TEST_CHROMIUM` when a system Chromium is used. Its local fixture build
+requires a non-secret `VITE_API_URL` such as `http://localhost/api/fixture`.
+The test mocks commissioner authentication locally and checks actual temporary
+ledger confirmation, battle history, narrative separation, failed refreshes,
+mobile navigation/map selection and commissioner registration access. It sends
+no production games, claims or Discord messages.
