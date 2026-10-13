@@ -13,6 +13,20 @@ Discuss targets, match scheduling, and any GM-issued Secret Objective in this ch
 
 **Before each game:** confirm the mission, Campaign Location, and current Event rules. Afterwards, report the result accurately.`
 const profiles = {
+  nomads: {
+    title: '🔴 NOMADS — DISRUPT THE POWERS', color: 0xc74646,
+    why: `Aurora VII’s future depends on who controls its information as much as who occupies its territory. Communications, independent networks, and access to knowledge can all become instruments of control when the colony depends on systems managed by the Hyperpowers or ALEPH.
+
+Our forces defend the freedom of independent communities to exchange information and act for themselves. We are here to prevent another power from becoming the colony’s unavoidable intermediary—and to challenge anyone trying to turn an early lead into permanent dominance.`,
+    plan: `At **Turn start**, count the territories held by each faction. Every faction tied for the largest number is a qualifying target for **Disrupt the Powers**.
+
+For example, if PanOceania and Yu Jing each begin the Turn with three territories, while every other faction holds fewer, capturing a Vulnerable Territory from either one qualifies. A faction’s Campaign VP or the number of games it plays does not determine whether it is a target.
+
+We must **capture** the territory when the Turn resolves. Winning an individual game or successfully defending our own holding is not enough. The target is determined by ownership at Turn start; it does not change as games are reported.
+
+Check which qualifying enemy holdings are among the four announced Vulnerable Territories, then concentrate our Influence where a capture is achievable. If no qualifying target is Vulnerable, pursue useful territory and the announced Narrative Mission without assuming every victory earns the Doctrine bonus.`,
+    motto: 'Keep the networks free. Challenge the leaders. Break their hold.',
+  },
   pano: {
     title: '🔵 PANOCEANIA — COLONIAL SUPREMACY', color: 0x4a9bc8,
     why: `PanOceanian investment has helped build Aurora VII’s transport, communications, and colonial infrastructure. Our forces are here to protect those interests and turn them into lasting influence over the colony’s future.

@@ -95,7 +95,7 @@ in both Vercel and bot builds and uses only temporary storage and mocked Discord
 
 Commissioner-approved briefings are published as one embed in each matching
 private faction text channel and pinned after Discord read-back verification.
-The ten drafts cover current motivations, scoring and coordination; they do not
+The eleven drafts cover current motivations, scoring and coordination; they do not
 reveal future story or assign Secret Objectives. Each publication has its own
 private volume checkpoint and bot-authored marker. The existing Ariadna checkpoint
 and exact approved wording are reused. Manage Messages is required to pin an
@@ -106,5 +106,6 @@ Discord links, never briefing text.
 
 Nomads registration assigns `Aurora VII — Nomads`, granting access to the private
 `nomads` text channel. Existing registrations and unlocked tiers are preserved.
-Nomads has no automatic briefing publication until commissioner-approved content
-is added; the ten existing approved briefings remain unchanged.
+The commissioner-requested Nomads briefing explains Disrupt the Powers, including
+tied leaders and the Turn-start ownership check. It is posted and pinned once in
+the verified private Nomads channel using the same durable publication flow.

@@ -9,9 +9,9 @@ import { AURORA_REGISTRATION_FACTIONS, AURORA_DISCORD_GUILD_ID } from '../shared
 import { AURORA_DOCTRINES } from '../shared/aurora-public.mjs'
 const directory = await mkdtemp(join(tmpdir(), 'faction-briefings-'))
 try {
-  assert.deepEqual(AURORA_FACTION_BRIEFINGS.map(item => item.id), AURORA_REGISTRATION_FACTIONS.filter(item => item.id !== 'nomads').map(item => item.id))
-  assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.marker)).size, 10)
-  assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.path)).size, 10)
+  assert.deepEqual(AURORA_FACTION_BRIEFINGS.map(item => item.id), AURORA_REGISTRATION_FACTIONS.map(item => item.id))
+  assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.marker)).size, AURORA_REGISTRATION_FACTIONS.length)
+  assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.path)).size, AURORA_REGISTRATION_FACTIONS.length)
   const ariadna = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'ariadna')
   assert.equal(ariadna.content, ARIADNA_BRIEFING); assert.equal(ariadna.marker, ARIADNA_BRIEFING_MARKER)
   assert.equal(ariadna.path, '/data/aurora-vii-ariadna-briefing.json')
@@ -42,12 +42,15 @@ try {
     await assert.rejects(publish({ ...channel, name: faction.id === 'pano' ? 'ariadna' : 'pano' }, 'bot'), /only in its campaign/)
     await assert.rejects(publish({ ...channel, guild: { id: 'foreign' } }, 'bot'), /only in its campaign/)
   }
-  assert.equal(sends, 10); assert.equal(pins, 10)
+  assert.equal(sends, AURORA_REGISTRATION_FACTIONS.length); assert.equal(pins, AURORA_REGISTRATION_FACTIONS.length)
+  const nomads = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'nomads').content
+  assert(nomads.includes('Disrupt the Powers') && nomads.includes('Turn start') && nomads.includes('Every faction tied'))
+  assert(nomads.includes('We must **capture**') && nomads.includes('Campaign VP or the number of games'))
   const na2 = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'na2').content
   assert(na2.includes('every non-Employer faction') && na2.includes('Employer’s totals are ignored'))
   const tohaa = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'tohaa').content
   assert(tohaa.includes('complete 5 Tohaa TP') && tohaa.includes('Remainder TP does not carry over'))
   const ca = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'combined-army').content
   assert(ca.includes('does not change normal territorial ownership') && ca.includes('not already Infiltrated'))
-  console.log('PASS: ten faction-specific briefings, exact channel/server routing, Conquest doctrines, three special scoring systems, no future reveals, embed limits, approved Ariadna reuse, no mentions, verified pins and restart idempotence.')
+  console.log('PASS: eleven faction-specific briefings, exact channel/server routing, Conquest doctrines, three special scoring systems, no future reveals, embed limits, approved Ariadna reuse, no mentions, verified pins and restart idempotence.')
 } finally { await rm(directory, { recursive: true, force: true }) }
