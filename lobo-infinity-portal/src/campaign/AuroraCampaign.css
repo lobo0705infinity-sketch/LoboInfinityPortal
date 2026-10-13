@@ -24,10 +24,19 @@
 .aurora-map-surface > button[aria-pressed=true] { background: #ecb557; color: #121d27; border-color: #fff0c8; }
 .aurora-map-surface > button.is-vulnerable { border-color: #ff876c; }
 .aurora-territory-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
-.aurora-territory-picker button { display: flex; justify-content: space-between; gap: .7rem; min-height: 44px; text-align: left; padding: .7rem; border: 1px solid #40536a; border-radius: 7px; background: #172739; color: #e1ebf2; cursor: pointer; }
-.aurora-territory-picker button[aria-pressed=true] { border-color: #efbe73; background: #38312a; }
-.aurora-territory-picker span { color: #efbe73; white-space: nowrap; }
-.aurora-territory-picker button { flex-wrap: wrap; }
+.aurora-territory-card { min-width: 0; border: 1px solid #40536a; border-radius: 7px; background: #172739; }
+.aurora-territory-card > summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .7rem; min-height: 44px; text-align: left; padding: .7rem; color: #e1ebf2; cursor: pointer; list-style: none; }
+.aurora-territory-card > summary::-webkit-details-marker { display: none; }
+.aurora-territory-card > summary > span:last-child { color: #efbe73; white-space: nowrap; }
+.aurora-territory-card > summary:hover { background: #22384c; border-radius: 7px; }
+.aurora-territory-card > summary:focus-visible { outline: 2px solid #efbe73; outline-offset: -3px; border-radius: 7px; }
+.aurora-territory-card[data-selected=true] { border-color: #efbe73; }
+.aurora-territory-card[open] { grid-column: 1 / -1; background: #192a3a; }
+.aurora-location-description { padding: 0 1.2rem 1.2rem; border-top: 1px solid #40536a; overflow-wrap: anywhere; }
+.aurora-location-description .aurora-prose { max-width: 95ch; line-height: 1.8; color: #c5d5df; }
+.aurora-location-description .eyebrow { color: #efbe73; margin-top: 1rem; }
+.aurora-location-description > a { display: block; margin-top: .8rem; }
+.aurora-campaign #aurora-terrain-references { scroll-margin-top: 6rem; min-width: 0; }
 .aurora-facts { margin: .7rem 0; }
 .aurora-facts > div { display: grid; grid-template-columns: 1fr 1.2fr; gap: .75rem; padding: .6rem 0; border-bottom: 1px solid #34475a; }
 .aurora-facts dt { color: #aebfce; }.aurora-facts dd { margin: 0; }
