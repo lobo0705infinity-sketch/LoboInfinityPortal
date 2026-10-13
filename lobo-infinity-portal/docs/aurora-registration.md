@@ -26,10 +26,11 @@ choices. Players register under a parent faction.
 
 Each faction initially has five places. When all ten factions reach the current
 limit, the limit permanently increases by five. This repeats without an overall
-player cap. A withdrawal releases one place but never lowers an unlocked tier.
-One Discord account and one normalized player name can register once. Changing
-factions requires `/aurora withdraw` followed by another registration, subject to
-the current capacity. `/aurora status` privately reports the account's signup.
+player cap. Commissioner transfers release the old faction place but never lower an unlocked tier.
+One Discord account and one normalized player name can register once. Faction choices are locked for players. Only the Discord server owner (Lobo)
+can use `/aurora change-faction player:<member> faction:<choice>`, subject to the
+current capacity. The old self-service withdrawal command is removed and stale
+invocations are denied without modifying the ledger or roles. `/aurora status` privately reports the account's signup.
 
 The bot creates ten roles named `Aurora VII — <Faction>` in the configured Lobo
 guild only. Roles have no permission grants and are not mentionable by default.
@@ -50,9 +51,10 @@ shared storage before adding replicas. Include the ledger in volume backups.
 Registration is persisted as pending before role assignment. Pending places count
 towards the limit. Failed role requests are retried every minute and on restart.
 Repeating the same signup reuses the reservation. Role requests are idempotent;
-only successful assignment marks the record assigned. A player can withdraw a
-pending place too. Withdrawal removes the role before deleting the ledger record;
-if deletion fails, the role is restored where possible and the record stays.
+only successful assignment marks the record assigned. Players cannot withdraw or change their own faction. Commissioner transfers
+persist the new faction as pending, then remove mismatched campaign roles before
+assigning the new role. Failed role reconciliation retries after restart and
+every minute. The player identity, name, signup date and unlocked tier are preserved.
 
 The Railway HTTP listener binds `PORT` or 8080 and exposes only
 `GET /aurora-vii/registration`. It publishes faction counts, the current limit and
@@ -73,7 +75,7 @@ The category denies View Channel to @everyone. Each text channel has exactly
 three overwrites: @everyone denied View Channel, the bot account allowed access,
 and its matching campaign faction role allowed viewing, posting and history.
 Other faction roles have no access grant. Server owners and administrators retain
-Discord's normal permission bypass. Registration/withdrawal changes the role and
+Discord's normal permission bypass. Registration and commissioner transfers change the role and
 therefore channel access automatically. No separate per-player overwrite is used.
 
 Setup retries once a minute and verifies actual Discord overwrites before marking

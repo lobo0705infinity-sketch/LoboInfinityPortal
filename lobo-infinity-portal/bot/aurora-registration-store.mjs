@@ -34,7 +34,7 @@ export function createRegistrationStore(path) {
       const state = advanceRegistrationCap(await read())
       const previous = state.players.find(player => player.userId === input.userId)
       if (previous) {
-        if (previous.faction !== input.faction) throw Error('You are already registered for another faction. Withdraw first if you want to change factions.')
+        if (previous.faction !== input.faction) throw Error('You are already registered for another faction. Contact Lobo to request a faction change.')
         return previous
       }
       if (!/^\d{17,20}$/.test(input.userId) || !AURORA_REGISTRATION_FACTIONS.some(faction => faction.id === input.faction)) throw Error('Choose one of the ten eligible campaign factions.')
@@ -44,6 +44,17 @@ export function createRegistrationStore(path) {
       if (state.players.filter(player => player.faction === input.faction).length >= state.cap) throw Error(`That faction has reached ${state.cap} players. It reopens when every faction reaches ${state.cap}.`)
       const player = { userId: input.userId, name, faction: input.faction, registeredAt: new Date().toISOString(), roleStatus: 'pending' }
       state.players.push(player); advanceRegistrationCap(state); await write(state)
+      return player
+    }),
+    changeFaction: (userId, faction) => serialized(async () => {
+      const state = advanceRegistrationCap(await read())
+      const player = state.players.find(value => value.userId === userId)
+      if (!player) throw Error('That Discord player is not registered for Aurora VII.')
+      if (!AURORA_REGISTRATION_FACTIONS.some(value => value.id === faction)) throw Error('Choose one of the ten eligible campaign factions.')
+      if (player.faction === faction) return player
+      if (state.players.filter(value => value.faction === faction).length >= state.cap) throw Error(`That faction has reached ${state.cap} players. Choose an available faction.`)
+      player.faction = faction; player.roleStatus = 'pending'
+      advanceRegistrationCap(state); await write(state)
       return player
     }),
     assigned: userId => serialized(async () => {

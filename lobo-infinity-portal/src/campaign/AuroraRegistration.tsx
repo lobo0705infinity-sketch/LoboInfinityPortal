@@ -87,6 +87,6 @@ export default function AuroraRegistration() {
         {notice ? <p role="status">{notice}</p> : null}
       </div>
     </section>
-    <section className="panel aurora-panel"><h2>Your campaign registration</h2><p>Your confirmation appears above after the bot completes your signup. One Discord account can register once, and player names must be unique.</p><p>To change factions, use <strong>/aurora withdraw</strong> in Discord first, then register for an available faction. Withdrawing removes your campaign role and releases your place.</p><p>Not in the server yet? <a href={LOBO_DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">Join Lobo’s Discord ↗</a></p></section>
+    <section className="panel aurora-panel"><h2>Your campaign registration</h2><p>Your confirmation appears above after the bot completes your signup. One Discord account can register once, and player names must be unique.</p><p>Your faction choice is locked after registration. Only <strong>Lobo, the commissioner</strong>, can approve and make a faction change. Contact Lobo if you need a correction.</p><p>Not in the server yet? <a href={LOBO_DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">Join Lobo’s Discord ↗</a></p></section>
   </>
 }

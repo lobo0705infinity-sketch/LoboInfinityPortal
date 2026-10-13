@@ -8,6 +8,7 @@ export type NavigationItem = {
 }
 
 export const topLevelItems: NavigationItem[] = [
+  { icon: 'maps', label: 'Aurora VII Campaign', to: '/campaign/aurora-vii' },
   {
     icon: 'dashboard',
     label: 'Dashboard',
@@ -53,7 +54,6 @@ export function getJoinCommunityNavigationItem(
 }
 
 export const communityItems: NavigationItem[] = [
-  { icon: 'maps', label: 'Aurora VII Campaign', to: '/campaign/aurora-vii' },
   { icon: 'rules', label: 'Portal Guide', to: '/portal-guide' },
   {
     icon: 'discord',

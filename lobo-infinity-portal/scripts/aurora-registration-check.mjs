@@ -47,12 +47,12 @@ try {
   const roleMap = new Map(), created = [], assignments = []
   let denyAssignment = false, allowRoles = true
   const guild = {
-    id: AURORA_DISCORD_GUILD_ID,
+    id: AURORA_DISCORD_GUILD_ID, ownerId: '987654321098765432',
     members: {
       fetchMe: async () => ({ permissions: { has: () => allowRoles } }),
       fetch: async userId => ({ roles: {
         add: async roleId => { if (denyAssignment) throw Error('Discord failure'); assignments.push({ userId, roleId }) },
-        remove: async () => {},
+        remove: async roleId => { assignments.push({ userId, removed: roleId }) },
       } }),
     },
     roles: {
@@ -88,8 +88,39 @@ try {
   const wrongServer = interaction('register', 'other'); await service.handler(wrongServer)
   assert.match(wrongServer.replies[0].content, /Lobo’s Discord/)
   const withdraw = interaction('withdraw'); await service.handler(withdraw)
-  assert.equal((await service.summary()).total, 0)
+  assert.equal((await service.summary()).total, 1)
+  assert.match(withdraw.replies[0].content, /controlled by Lobo/)
+  const denied = interaction('change-faction'); await service.handler(denied)
+  assert.match(denied.replies[0].content, /Only Lobo/)
+  assert.equal((await serviceStore.player(user.userId)).faction, 'ariadna')
+  const change = interaction('change-faction')
+  change.user.id = guild.ownerId
+  change.options.getUser = () => ({ id: user.userId })
+  change.options.getString = () => 'yu-jing'
+  const beforeRoles = assignments.length
+  await service.handler(change)
+  assert.match(change.replies[0].content, /Yu Jing/)
+  assert.equal((await serviceStore.player(user.userId)).faction, 'yu-jing')
+  assert.equal((await serviceStore.player(user.userId)).roleStatus, 'assigned')
+  assert(assignments.slice(beforeRoles).some(value => value.removed === [...roleMap.values()].find(role => role.name.endsWith('Ariadna')).id))
+  const replay = interaction('register'); await service.handler(replay)
+  assert.match(replay.replies[0].content, /Contact Lobo/)
+  assert.equal((await service.summary()).total, 1)
+  denyAssignment = true
+  change.options.getString = () => 'o-12'
+  await service.handler(change)
+  assert.equal((await serviceStore.player(user.userId)).roleStatus, 'pending')
+  denyAssignment = false; await service.recover()
+  assert.equal((await serviceStore.player(user.userId)).roleStatus, 'assigned')
+  assert.equal((await serviceStore.player(user.userId)).faction, 'o-12')
+  for (let i = 0; i < 5; i++) await serviceStore.register(player('pano'))
+  await assert.rejects(serviceStore.changeFaction(user.userId, 'pano'), /reached 5/)
+  assert.equal((await serviceStore.player(user.userId)).faction, 'o-12')
+  await assert.rejects(serviceStore.changeFaction(user.userId, 'nomads'), /eligible/)
+  await assert.rejects(serviceStore.changeFaction('111111111111111111', 'ariadna'), /not registered/)
+  assert(!AURORA_COMMAND_DEFINITION.options.some(value => value.name === 'withdraw'))
+  assert(AURORA_COMMAND_DEFINITION.options.some(value => value.name === 'change-faction'))
   service.stop()
   assert.equal(AURORA_COMMAND_DEFINITION.options[0].options[0].choices.length, 10)
-  console.log('PASS: concurrency, duplicate identity/name checks, exact faction allowlist, 5/10/15/20 tiers, restart persistence, withdrawals, corrupt-ledger safety, count-only projection, role creation/permissions, assignment retries and server scope.')
+  console.log('PASS: concurrency, duplicate identity/name checks, exact faction allowlist, 5/10/15/20 tiers, restart persistence, withdrawals, corrupt-ledger safety, count-only projection, role creation/permissions, assignment retries, server scope, blocked player withdrawals, commissioner-only transfers, old role removal, pending transfer recovery and full-faction transfer rejection.')
 } finally { await rm(directory, { recursive: true, force: true }) }

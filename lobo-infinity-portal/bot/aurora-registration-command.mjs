@@ -15,7 +15,10 @@ export const AURORA_COMMAND_DEFINITION = {
       { name: 'player', description: 'Your Lobo Portal player name', type: Type.String, required: true, minLength: 1, maxLength: 80 },
     ] },
     { name: 'status', description: 'See your registration and available faction places', type: Type.Subcommand },
-    { name: 'withdraw', description: 'Cancel your registration and remove your campaign role', type: Type.Subcommand },
+    { name: 'change-faction', description: 'Commissioner only: move a registered player to another faction', type: Type.Subcommand, options: [
+      { name: 'player', description: 'The registered Discord player', type: Type.User, required: true },
+      { name: 'faction', description: 'The new campaign faction', type: Type.String, required: true, choices: AURORA_REGISTRATION_FACTIONS.map(faction => ({ name: faction.name, value: faction.id })) },
+    ] },
   ],
 }
 export const campaignRoleName = faction => `Aurora VII — ${faction.name}`
@@ -50,6 +53,11 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
   async function assign(player) {
     const role = roles.get(player.faction)
     const member = await guild.members.fetch(player.userId)
+    // Remove every other campaign role before granting the authoritative faction.
+    // Pending transfers survive restarts and retry this reconciliation safely.
+    for (const [factionId, other] of roles) if (factionId !== player.faction && (!member.roles.cache || member.roles.cache.has(other.id))) {
+      await member.roles.remove(other.id, 'Aurora VII faction role reconciliation')
+    }
     await member.roles.add(role.id, 'Aurora VII faction registration')
     await store.assigned(player.userId)
   }
@@ -124,14 +132,22 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
           ].join('\n')); return
         }
         if (command === 'withdraw') {
-          const player = await store.player(interaction.user.id)
-          if (!player) { await reply('You are not registered for Aurora VII.'); return }
+          await reply('Faction changes and withdrawals are controlled by Lobo. Contact the commissioner.'); return
+        }
+        if (command === 'change-faction') {
+          if (interaction.user.id !== guild.ownerId) { await reply('Only Lobo, the server owner, can change campaign factions.'); return }
           await setupRoles()
-          const member = await guild.members.fetch(interaction.user.id)
-          await member.roles.remove(roles.get(player.faction).id, 'Player withdrew from Aurora VII')
-          try { await store.remove(player.userId) }
-          catch (error) { await member.roles.add(roles.get(player.faction).id, 'Restore role after registration storage failure').catch(() => {}); throw error }
-          await reply('You have withdrawn from Aurora VII. Your campaign role has been removed and your faction place is available again.'); return
+          const user = interaction.options.getUser('player', true)
+          const faction = interaction.options.getString('faction', true)
+          const player = await store.changeFaction(user.id, faction)
+          const selected = AURORA_REGISTRATION_FACTIONS.find(value => value.id === player.faction)
+          try {
+            await assign(player)
+            await reply(`${player.name} is now registered for **${selected.name}**. Their faction role and private channel access have been updated.`)
+          } catch {
+            await reply(`${player.name} has been moved to **${selected.name}**. Discord role reconciliation is pending and will retry automatically.`)
+          }
+          return
         }
         if (command !== 'register') throw Error('Unknown campaign command.')
         if (!available) throw Error(issue)
@@ -151,7 +167,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
     } catch (error) {
       // Expected registration errors are safe player-facing text; storage and
       // Discord errors must not leak paths, IDs or credentials.
-      const message = /^(You are already|Choose one|Enter a player|That player|That faction|Registration is temporarily)/.test(error.message) ? error.message : 'Registration could not be completed. Your existing place has not been changed. Please try again or contact Lobo.'
+      const message = /^(You are already|Choose one|Enter a player|That player|That faction|Registration is temporarily|That Discord)/.test(error.message) ? error.message : 'Registration could not be completed. Your existing place has not been changed. Please try again or contact Lobo.'
       await reply(message)
     }
     return true
