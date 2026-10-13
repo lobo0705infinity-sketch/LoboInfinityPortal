@@ -193,7 +193,11 @@ ${confidential}
 
 **Secure our foothold. Defend our gains. Advance the State Empire.**`
 
-export const AURORA_FACTION_BRIEFINGS = AURORA_REGISTRATION_FACTIONS.map(faction => {
+export const AURORA_FACTION_BRIEFINGS = AURORA_REGISTRATION_FACTIONS
+  // Publish only commissioner-approved briefing content. New factions may register
+  // and coordinate in their channel before a briefing has been approved.
+  .filter(faction => faction.id === 'ariadna' || faction.id === 'yu-jing' || profiles[faction.id] || special[faction.id])
+  .map(faction => {
   let content, color = 0x71854a
   if (faction.id === 'ariadna') content = ARIADNA_BRIEFING
   else if (faction.id === 'yu-jing') { content = YU_JING_BRIEFING; color = 0xe2a34a }

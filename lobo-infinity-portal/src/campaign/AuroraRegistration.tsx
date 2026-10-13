@@ -64,7 +64,7 @@ export default function AuroraRegistration() {
     <section className="panel aurora-panel">
       <p className="eyebrow">Join the Aurora VII league</p><h2>Choose your faction</h2>
       <p>Choose your faction, enter your player name, and click Register. Lobo’s Little Helper records your signup and automatically assigns your <strong>Aurora VII — Faction</strong> role and private faction channel access.</p>
-      <p>Each faction starts with five places. When all ten factions reach five players, every faction opens to ten. The same pattern continues at fifteen, twenty, and beyond.</p>
+      <p>Each faction starts with five places. When every campaign faction reaches five players, every faction opens to ten. The same pattern continues at fifteen, twenty, and beyond.</p>
       <div className="aurora-registration-status" aria-live="polite">
         {error ? <p role="alert">{error}</p> : summary ? <p><strong>{summary.total} players registered · Current limit: {summary.cap} per faction</strong><br/>The next batch opens at {summary.cap + 5} when every faction reaches {summary.cap} players.{!summary.available ? <><br/>{summary.issue}</> : null}</p> : <p>Checking available faction places…</p>}
         <button type="button" onClick={() => void reload()}>Refresh faction counts</button>

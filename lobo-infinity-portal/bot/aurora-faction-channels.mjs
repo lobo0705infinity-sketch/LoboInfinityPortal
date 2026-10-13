@@ -16,7 +16,7 @@ export async function provisionFactionChannels(guild, roles) {
   if (guild.id !== AURORA_DISCORD_GUILD_ID) throw Error('Faction channels belong only in Lobo’s server.')
   const me = await guild.members.fetchMe()
   if (!me.permissions.has(P.ManageChannels) || !me.permissions.has(P.ManageRoles)) throw Error('Lobo’s Little Helper needs Manage Channels and Manage Roles to create private faction channels.')
-  if (roles.size !== 10) throw Error('All ten campaign roles must be ready before faction channels are created.')
+  if (roles.size !== AURORA_REGISTRATION_FACTIONS.length || AURORA_REGISTRATION_FACTIONS.some(faction => !roles.has(faction.id))) throw Error('All campaign faction roles must be ready before faction channels are created.')
   const channels = await guild.channels.fetch()
   const categories = [...channels.values()].filter(channel => channel?.type === ChannelType.GuildCategory && channel.name === AURORA_FACTION_CATEGORY)
   if (categories.length > 1) throw Error('Duplicate Aurora VII faction categories need to be resolved by Lobo.')

@@ -38,7 +38,7 @@ export function createRegistrationStore(path) {
         if (previous.faction !== input.faction) throw Error('You are already registered for another faction. Contact Lobo to request a faction change.')
         return previous
       }
-      if (!/^\d{17,20}$/.test(input.userId) || !AURORA_REGISTRATION_FACTIONS.some(faction => faction.id === input.faction)) throw Error('Choose one of the ten eligible campaign factions.')
+      if (!/^\d{17,20}$/.test(input.userId) || !AURORA_REGISTRATION_FACTIONS.some(faction => faction.id === input.faction)) throw Error('Choose an eligible campaign faction.')
       const name = String(input.name || '').normalize('NFKC').trim()
       if (!name || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name)) throw Error('Enter a player name between 1 and 80 characters.')
       if (state.players.some(player => player.name.toLocaleLowerCase('en-US') === name.toLocaleLowerCase('en-US'))) throw Error('That player name is already registered. Contact Lobo if it belongs to you.')
@@ -51,7 +51,7 @@ export function createRegistrationStore(path) {
       const state = advanceRegistrationCap(await read())
       const player = state.players.find(value => value.userId === userId)
       if (!player) throw Error('That Discord player is not registered for Aurora VII.')
-      if (!AURORA_REGISTRATION_FACTIONS.some(value => value.id === faction)) throw Error('Choose one of the ten eligible campaign factions.')
+      if (!AURORA_REGISTRATION_FACTIONS.some(value => value.id === faction)) throw Error('Choose an eligible campaign faction.')
       if (player.faction === faction) return player
       if (state.players.filter(value => value.faction === faction).length >= state.cap) throw Error(`That faction has reached ${state.cap} players. Choose an available faction.`)
       player.faction = faction; player.roleStatus = 'pending'

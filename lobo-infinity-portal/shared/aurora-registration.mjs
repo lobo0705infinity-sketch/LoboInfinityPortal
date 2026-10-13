@@ -5,6 +5,7 @@ export const AURORA_REGISTRATION_FACTIONS = Object.freeze([
   { id: 'na2', name: 'NA2' }, { id: 'tohaa', name: 'Tohaa' },
   { id: 'jsa', name: 'JSA' }, { id: 'ariadna', name: 'Ariadna' },
   { id: 'aleph', name: 'ALEPH' }, { id: 'haqqislam', name: 'Haqqislam' },
+  { id: 'nomads', name: 'Nomads' },
 ])
 export function registrationCounts(state) {
   return AURORA_REGISTRATION_FACTIONS.map(faction => ({ ...faction,

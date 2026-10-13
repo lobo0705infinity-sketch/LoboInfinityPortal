@@ -21,10 +21,10 @@ checks capacity again after consent, so a newly full faction cannot overfill.
 A server restart expires outstanding OAuth intents; players can retry safely.
 
 Allowed factions are PanOceania, Yu Jing, O-12, Combined Army, NA2, Tohaa, JSA,
-Ariadna, ALEPH and Haqqislam. Nomads and sectorial entries are not registration
+Ariadna, ALEPH, Haqqislam and Nomads. Sectorial entries are not registration
 choices. Players register under a parent faction.
 
-Each faction initially has five places. When all ten factions reach the current
+Each faction initially has five places. When all campaign factions reach the current
 limit, the limit permanently increases by five. This repeats without an overall
 player cap. Commissioner transfers release the old faction place but never lower an unlocked tier.
 One Discord account and one normalized player name can register once. Faction choices are locked for players. Only the Discord server owner (Lobo)
@@ -32,7 +32,7 @@ can use `/aurora change-faction player:<member> faction:<choice>`, subject to th
 current capacity. The old self-service withdrawal command is removed and stale
 invocations are denied without modifying the ledger or roles. `/aurora status` privately reports the account's signup.
 
-The bot creates ten roles named `Aurora VII — <Faction>` in the configured Lobo
+The bot creates eleven roles named `Aurora VII — <Faction>` in the configured Lobo
 guild only. Roles have no permission grants and are not mentionable by default.
 The bot needs Manage Roles and must be above these roles in the hierarchy. If
 existing campaign role names are ambiguous, privileged or unmanageable, signup
@@ -69,7 +69,7 @@ Command confirmations and status responses are private to the invoking player.
 
 ## Private faction channels
 
-The bot also creates one `Aurora VII — Factions` category and ten text channels
+The bot also creates one `Aurora VII — Factions` category and eleven text channels
 named with the faction IDs. This requires Manage Channels as well as Manage Roles.
 The category denies View Channel to @everyone. Each text channel has exactly
 three overwrites: @everyone denied View Channel, the bot account allowed access,
@@ -103,3 +103,8 @@ unpinned post. Missing permission leaves the existing post pending and is retrie
 each minute without reposting. Completed publication does not override later
 moderator edits or unpins. Public status contains only completion flags and
 Discord links, never briefing text.
+
+Nomads registration assigns `Aurora VII — Nomads`, granting access to the private
+`nomads` text channel. Existing registrations and unlocked tiers are preserved.
+Nomads has no automatic briefing publication until commissioner-approved content
+is added; the ten existing approved briefings remain unchanged.

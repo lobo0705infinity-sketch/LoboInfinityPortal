@@ -4,7 +4,7 @@ import { createPortalRegistration, PORTAL_ORIGIN, PORTAL_CALLBACK } from '../bot
 let time = 1000, registration = null, joined = 0, calls = 0, locked = false, failJoin = false
 const id = '123456789012345678'
 const handler = createPortalRegistration({ clientId: '987654321098765432', secret: 'test-secret', now: () => time,
-  summary: async () => ({ factions: [{ id: 'ariadna', locked }] }), player: async () => registration,
+  summary: async () => ({ factions: [{ id: 'ariadna', locked }, { id: 'nomads', locked }] }), player: async () => registration,
   joinServer: async (userId, token) => { assert.equal(userId, id); assert.equal(token, 'private-token'); if (failJoin) throw Error('Join failed'); joined++ },
   register: async input => { assert.equal(input.userId, id); assert.equal(joined > 0, true); calls++; if (locked) throw Error('That faction is full.'); registration = { ...input, roleStatus: 'assigned' }; return registration },
   fetchObject: async (url, options) => {
@@ -21,7 +21,8 @@ async function request(action, { method = 'GET', body, cookie = '', origin = POR
 const input = { faction: 'ariadna', name: 'Player', userId: '999999999999999999' }
 assert.equal((await request('start', { method: 'POST', body: input, origin: 'https://evil.example' })).code, 403)
 assert.equal((await request('register', { method: 'POST', body: input })).code, 401)
-assert.equal((await request('start', { method: 'POST', body: { ...input, faction: 'nomads' } })).code, 400)
+assert.equal((await request('start', { method: 'POST', body: { ...input, faction: 'invalid-faction' } })).code, 400)
+assert.equal((await request('start', { method: 'POST', body: { ...input, faction: 'nomads' } })).code, 200)
 locked = true
 assert.equal((await request('start', { method: 'POST', body: input })).code, 400)
 locked = false
@@ -60,3 +61,14 @@ assert.equal(verified.headers.location,`${PORTAL_ORIGIN}${returnPath}&signup=ver
 assert.match(verified.headers['set-cookie'][1],/Path=\/api;/)
 assert.equal(handler.session({headers:{cookie:verified.headers['set-cookie'][1].split(';')[0]}}).id,id)
 console.log('PASS: verification link survives login; API-wide signed session; verification never registers or changes factions.')
+
+registration = null
+const nomadsStart = await request('start', { method: 'POST', body: { ...input, faction: 'nomads' } })
+const nomadsState = new URL(JSON.parse(nomadsStart.text).authorizeUrl).searchParams.get('state')
+const nomadsComplete = await request('callback', { query: `&state=${nomadsState}&code=test`, cookie: `aurora_state=${nomadsState}` })
+assert.match(nomadsComplete.headers.location, /complete/)
+assert.equal(registration.faction, 'nomads')
+assert.equal(registration.roleStatus, 'assigned')
+const nomadsCookie = nomadsComplete.headers['set-cookie'][1].split(';')[0]
+assert.equal(JSON.parse((await request('status', { cookie: nomadsCookie })).text).registration.faction, 'nomads')
+console.log('PASS: Nomads OAuth signup completes and returns the assigned campaign faction.')

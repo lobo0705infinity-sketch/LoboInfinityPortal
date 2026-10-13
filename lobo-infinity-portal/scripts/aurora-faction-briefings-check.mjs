@@ -9,7 +9,7 @@ import { AURORA_REGISTRATION_FACTIONS, AURORA_DISCORD_GUILD_ID } from '../shared
 import { AURORA_DOCTRINES } from '../shared/aurora-public.mjs'
 const directory = await mkdtemp(join(tmpdir(), 'faction-briefings-'))
 try {
-  assert.deepEqual(AURORA_FACTION_BRIEFINGS.map(item => item.id), AURORA_REGISTRATION_FACTIONS.map(item => item.id))
+  assert.deepEqual(AURORA_FACTION_BRIEFINGS.map(item => item.id), AURORA_REGISTRATION_FACTIONS.filter(item => item.id !== 'nomads').map(item => item.id))
   assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.marker)).size, 10)
   assert.equal(new Set(AURORA_FACTION_BRIEFINGS.map(item => item.path)).size, 10)
   const ariadna = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'ariadna')

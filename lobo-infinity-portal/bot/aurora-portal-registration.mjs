@@ -34,7 +34,7 @@ export function createPortalRegistration({ clientId, secret = process.env.DISCOR
     return JSON.parse(value)
   }
   function validate(input) {
-    if (!AURORA_REGISTRATION_FACTIONS.some(faction => faction.id === input.faction)) throw Error('Choose one of the ten eligible campaign factions.')
+    if (!AURORA_REGISTRATION_FACTIONS.some(faction => faction.id === input.faction)) throw Error('Choose an eligible campaign faction.')
     const name = String(input.name || '').normalize('NFKC').trim()
     if (!name || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name)) throw Error('Enter a player name between 1 and 80 characters.')
     return { faction: input.faction, name }

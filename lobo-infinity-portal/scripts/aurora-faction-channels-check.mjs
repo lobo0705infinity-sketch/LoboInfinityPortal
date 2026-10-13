@@ -22,7 +22,7 @@ const guild = {
   },
 }
 const provisioned = await provisionFactionChannels(guild, roles)
-assert.equal(provisioned.size, 10); assert.equal(created.length, 11)
+assert.equal(provisioned.size, factions.length); assert.equal(created.length, factions.length + 1)
 assert.equal(created[0].name, AURORA_FACTION_CATEGORY); assert.equal(created[0].type, ChannelType.GuildCategory)
 for (const faction of factions) {
   const channel = channels.get(provisioned.get(faction.id))
@@ -37,13 +37,15 @@ for (const faction of factions) {
   assert(overwrites.some(value => value.id === 'bot-member' && value.type === OverwriteType.Member))
   assert(!overwrites.some(value => [...roles.values()].some(role => role.id === value.id && role.id !== roles.get(faction.id).id)))
 }
+assert(provisioned.has('nomads'))
+await assert.rejects(provisionFactionChannels(guild, new Map([...roles].filter(([id]) => id !== 'nomads'))), /All campaign faction roles/)
 await provisionFactionChannels(guild, roles)
-assert.equal(created.length, 11); assert.equal(updates, 0)
+assert.equal(created.length, factions.length + 1); assert.equal(updates, 0)
 // An accidental extra faction grant is removed, without recreating channels.
 channels.get(provisioned.get('pano')).permissionOverwrites.cache.set('wrong-role', { id: 'wrong-role', type: OverwriteType.Role, allow: { bitfield: P.ViewChannel }, deny: { bitfield: 0n } })
 await provisionFactionChannels(guild, roles); assert.equal(updates, 1)
 permitted = false
 await assert.rejects(provisionFactionChannels(guild, roles), /Manage Channels/)
-assert.equal(created.length, 11)
+assert.equal(created.length, factions.length + 1)
 await assert.rejects(provisionFactionChannels({ ...guild, id: 'another-server' }, roles), /Lobo’s server/)
-console.log('PASS: ten text channels in one private category, exact role access, bot maintenance access, no cross-faction grants, idempotence, overwrite repair, permission gating and server scope.')
+console.log('PASS: all campaign faction text channels in one private category, exact role access, bot maintenance access, no cross-faction grants, idempotence, overwrite repair, permission gating and server scope.')
