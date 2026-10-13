@@ -16,7 +16,7 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
   const games = [...(live.data?.games ?? [])].sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id))
   return <section className="panel aurora-panel">
 
-    <h2>Results</h2>
+    <div className="aurora-results-art"><h2>Results</h2><img src="/assets/aurora-vii/v1/battle-archive.webp" width="1536" height="1024" alt="A command room overlooking Aurora VII, with holographic battle archives on its console"/></div>
 
     {live.error ? <p role="alert">{live.error} {live.data ? 'The results below are from the last successful check.' : 'Live totals are unavailable; they are not assumed to be zero.'}</p> : null}
     {!live.data && !live.error ? <p role="status">Loading confirmed campaign results…</p> : live.data ? <>

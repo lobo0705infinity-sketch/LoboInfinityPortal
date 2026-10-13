@@ -28,6 +28,7 @@ export function createCampaignGameStore(path,{now=()=>new Date()}={}) {
     activity:turn=>run(async()=>{const s=await read(),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved));return {turn,totals:campaignTotals(games,turn),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB}))}}),
     submit:(input,player,opponent,publication)=>run(async()=>{
       const s=await read();if(!player||!opponent||player.userId===opponent.userId)fail('Choose another registered campaign player.')
+      if(player.faction===opponent.faction)fail('Choose an opponent from a different campaign faction. Same-faction games are prohibited.')
       if(publication.turn)s.turns[publication.turn]=publication
       const state=input.turn===publication.turn?publication:s.turns[input.turn];if(!state)fail('This Turn has not been announced.')
       const late=input.turn!==publication.turn||Boolean(state.deadline&&now().getTime()>Date.parse(state.deadline)),project=p=>({id:p.userId,name:p.name,faction:p.faction})
@@ -39,6 +40,7 @@ export function createCampaignGameStore(path,{now=()=>new Date()}={}) {
       if(input.revision!==g.revision)fail('This game changed. Reload it before reviewing the result.')
       if(!admin&&![g.playerA.id,g.playerB.id].includes(userId))fail('Only the two registered players can review this game.')
       if(!admin&&g.status==='rejected')fail('This game was rejected. Contact Lobo.')
+      if(g.playerA.faction===g.playerB.faction&&!['reject','correction'].includes(input.action))fail('Choose an opponent from a different campaign faction. Same-faction games are prohibited.')
       let reason=''
       if(input.action==='confirm'){
         if(!admin&&g.playerB.id!==userId)fail('Only the registered opponent or Lobo can confirm this game.')

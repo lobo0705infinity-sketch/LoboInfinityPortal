@@ -58,3 +58,5 @@ scoring, confirmation, correction, privacy and commissioner controls are unchang
 
 The experience check also verifies the focused shell, compact record rows,
 320px phone layout, map position, guide access and portal navigation restoration.
+
+Campaign games require opponents from different registered factions. Same-faction opponents are excluded from the form and rejected by the ledger for both Territory Battles and Narrative Missions, including late submissions. The commissioner cannot approve a same-faction result.

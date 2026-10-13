@@ -10,8 +10,9 @@ import {emptyAuroraState} from '../shared/aurora-public-state.mjs'
 const directory=await mkdtemp(join(tmpdir(),'aurora-browser-')),store=createCampaignGameStore(join(directory,'games.json'))
 const state={...emptyAuroraState(),turn:1,deadline:'2026-12-01T23:59:00-05:00'};state.territories.forEach((t,i)=>t.vulnerable=i<4)
 const a={userId:'111111111111111111',name:'Test submitter',faction:'ariadna'},b={userId:'222222222222222222',name:'Test opponent',faction:'pano'}
+const teammate={userId:'333333333333333333',name:'Test teammate',faction:a.faction}
 let account=a
-const service=createCampaignGameService({store,registrations:{player:async id=>[a,b].find(p=>p.userId===id),players:async()=>[a,b]},identity:()=>({id:account.userId}),notify:async()=>{throw Error('DM disabled')},fetchObject:async()=>({ok:true,json:async()=>({state})})})
+const service=createCampaignGameService({store,registrations:{player:async id=>[a,b,teammate].find(p=>p.userId===id),players:async()=>[a,b,teammate]},identity:()=>({id:account.userId}),notify:async()=>{throw Error('DM disabled')},fetchObject:async()=>({ok:true,json:async()=>({state})})})
 const mime={'.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.woff2':'font/woff2','.json':'application/json','.html':'text/html'}
 const server=createServer(async(req,res)=>{
   if(req.url.startsWith('/api/aurora-games?')){req.url=req.url.replace('/api/aurora-games','/aurora-vii/games');req.headers.origin='https://lobo-infinity-portal.vercel.app';res.setHeader('content-type','application/json');return service.handler(req,res)}
@@ -25,6 +26,8 @@ const root=`http://127.0.0.1:${server.address().port}`,browser=await chromium.la
 try{
   const page=await browser.newPage({viewport:{width:1280,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message))
   await page.goto(`${root}/campaign/aurora-vii/submit`)
+  await page.getByRole('combobox',{name:'Opponent',exact:true}).waitFor()
+  assert.equal(await page.locator(`select[name=opponent] option[value="${teammate.userId}"]`).count(),0,'Same-faction opponents excluded')
   await page.getByRole('combobox',{name:'Opponent',exact:true}).selectOption(b.userId)
   await page.getByRole('combobox',{name:'Campaign Location',exact:true}).selectOption('nova-prospect')
   await page.getByRole('combobox',{name:'Mission played',exact:true}).selectOption('Claim the Frontier')
