@@ -12905,3 +12905,9 @@ a {
 @media (max-width: 920px) and (orientation: landscape) and (max-height: 540px) {
   .app-shell { --mobile-header-height: 54px; }
 }
+
+/* Campaign routes render without the surrounding league navigation. */
+.app-shell.aurora-focused-shell { display:block; min-height:100dvh; background:#0c1218; }
+.aurora-focused-shell .app-main { margin:0; padding:0; min-height:100dvh; background:#0c1218; }
+.aurora-focused-shell #main-content { padding:0; background:none; }
+.aurora-focused-shell .app-main::before,.aurora-focused-shell #main-content::before { display:none; }

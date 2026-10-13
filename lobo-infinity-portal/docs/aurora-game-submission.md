@@ -38,3 +38,23 @@ The test mocks commissioner authentication locally and checks actual temporary
 ledger confirmation, battle history, narrative separation, failed refreshes,
 mobile navigation/map selection and commissioner registration access. It sends
 no production games, claims or Discord messages.
+
+## Focused campaign layout
+
+Aurora VII public routes use a compact campaign header and three primary links:
+Campaign, Map and Results. Missions, rules, story, registration and commissioner
+tools remain available under Information. My Games and the campaign-specific
+primary action remain accessible in the header. The unrelated portal sidebar,
+league navigation, generic game submission, breadcrumbs and mobile bottom bar
+are omitted only on Aurora VII public routes; leaving the campaign restores them.
+
+The overview combines one current status with a short briefing and map preview.
+The map shows its selected territory and confirmed activity near the top; full
+location descriptions and terrain guides are available on permanent territory
+pages. Map options, narrative activity and supporting rules use disclosures.
+Public battle history uses expandable rows, and hash links open the matching
+confirmed record. Empty results use a single explanatory state. Campaign
+scoring, confirmation, correction, privacy and commissioner controls are unchanged.
+
+The experience check also verifies the focused shell, compact record rows,
+320px phone layout, map position, guide access and portal navigation restoration.

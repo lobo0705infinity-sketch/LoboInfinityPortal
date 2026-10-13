@@ -33,7 +33,6 @@ export default function AuroraGames({submit=false,admin=false}:{submit?:boolean;
   const games=data?.games.slice().reverse().sort((a,b)=>Number(b.id===gameId)-Number(a.id===gameId)||Number(b.status==='awaiting_confirmation'&&b.playerB.id===data.player?.id)-Number(a.status==='awaiting_confirmation'&&a.playerB.id===data.player?.id))||[]
   return <section className="panel aurora-panel aurora-games">
     <h2>{admin?'Commissioner · Campaign games & private claims':submit?'Submit Campaign Game':'My Campaign Games'}</h2>
-    {!admin?<p><Link to={`${ROOT}/submit`}>Submit a game</Link> · <Link to={`${ROOT}/games`}>My games & confirmations</Link></p>:null}
     <button type="button" disabled={busy} onClick={()=>setRefresh(n=>n+1)}>Refresh games</button>
     {error?<p role="alert">{error}</p>:null}{message?<p role="status">{message}</p>:null}
     {loginNeeded?<><button className="aurora-primary" type="button" disabled={busy} onClick={()=>void login()}>{busy?'Opening Discord…':'Verify my Discord account'}</button><p>Use the Discord account registered for Aurora VII.{signedIn?<> This account is not registered. <Link to={`${ROOT}/register`}>Register</Link> or verify your other account.</>:null}</p></>:!data?<p>Loading campaign games…</p>:<>

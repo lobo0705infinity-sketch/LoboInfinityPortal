@@ -158,3 +158,102 @@
   .aurora-mobile-marker[data-activity=high] { box-shadow:0 0 18px 10px #f9855955; }
   .aurora-mobile-marker .aurora-battle-badge { top:-10px; right:-9px; min-width:14px; font-size:10px; padding:0 3px; }
 }
+
+/* Focused campaign pages share the portal's identity with quieter navigation. */
+.aurora-focused-shell .aurora-campaign { width:min(1200px,100%); min-height:100dvh; margin:0 auto; padding:24px 32px 18px; gap:24px; background:#0c1218; }
+.aurora-back-portal { width:fit-content; font-size:.8rem; color:#93a4b2 !important; text-decoration:none; }
+.aurora-focused-header { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.aurora-focused-header h1 { margin:0; font-size:2rem; line-height:1.1; letter-spacing:.08em; }
+.aurora-focused-header h1 span { color:#d5b875; }
+.aurora-focused-header p { margin:6px 0 0; color:#9eaebc; font-size:.9rem; }
+.aurora-header-actions { display:flex; align-items:center; gap:18px; }
+.aurora-header-actions > a { min-height:44px; display:inline-flex; align-items:center; text-decoration:none; font-size:.9rem; }
+.aurora-campaign .aurora-primary { background:#d5b875; color:#111820; border:0; padding:11px 18px; border-radius:7px; box-shadow:none; }
+.aurora-campaign-status { margin:-12px 0 -6px; font-size:.85rem; color:#aebbc6; }
+.aurora-focused-nav { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #27333d; }
+.aurora-focused-nav > div { display:flex; gap:24px; }
+.aurora-focused-nav a,.aurora-information-menu > summary { display:inline-flex; align-items:center; min-height:44px; padding:8px 0; text-decoration:none; color:#acbac5; border-bottom:2px solid transparent; font-size:.95rem; }
+.aurora-focused-nav a.active,.aurora-information-menu > summary.is-current { color:#f4f0e6; border-bottom-color:#d5b875; }
+.aurora-information-menu { position:relative; }
+.aurora-information-menu > summary { cursor:pointer; gap:8px; }
+.aurora-information-menu > summary::after { content:'⌄'; }
+.aurora-information-menu[open] > div { position:absolute; z-index:20; top:48px; right:0; display:grid; min-width:210px; padding:8px; background:#17222c; border:1px solid #35434e; border-radius:10px; box-shadow:0 12px 30px #0006; }
+.aurora-information-menu > div a { padding:10px 14px; border:0; border-radius:6px; }
+.aurora-information-menu > div a:hover { background:#24323e; }
+.aurora-focused-shell .aurora-campaign .aurora-panel { border:0; padding:0; background:none; box-shadow:none; border-radius:0; }
+.aurora-campaign .aurora-panel h2 { margin-bottom:14px; }
+.aurora-campaign .aurora-panel p { line-height:1.6; }
+.aurora-campaign .aurora-games,.aurora-campaign .aurora-registration { padding:24px; background:#111b24; border:1px solid #26343f; border-radius:14px; max-width:1000px; width:100%; margin:0 auto; }
+.aurora-overview-focus { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:48px; align-items:center; padding:20px 0 32px; }
+.aurora-overview-focus h2 { max-width:15ch; font-size:clamp(1.8rem,3.1vw,2.9rem); line-height:1.15; margin:12px 0 20px; }
+.aurora-overview-focus p { line-height:1.65; color:#c0cbd4; }
+.aurora-overview-planet { display:block; text-decoration:none; }
+.aurora-overview-planet img { display:block; width:100%; height:auto; border-radius:12px; }
+.aurora-overview-planet > span { display:block; margin-top:14px; color:#b2cad7; }
+.aurora-overview-targets { padding:0; list-style:none; }
+.aurora-overview-targets li { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; padding:10px 0; border-bottom:1px solid #27343e; }
+.aurora-overview-targets li span { color:#9fafbd; font-size:.85rem; }
+.aurora-map-heading { display:flex; gap:20px; align-items:center; justify-content:space-between; }
+.aurora-map-heading h2 { margin:0; font-size:1.4rem; }
+.aurora-map-heading .aurora-location-select { width:340px; max-width:100%; }
+.aurora-map-grid { gap:24px; grid-template-columns:minmax(0,1.85fr) minmax(260px,.9fr); }
+.aurora-map-grid > .aurora-panel { padding:20px; background:#111b24; border-radius:12px; }
+.aurora-map-surface { border:0; border-radius:12px; overflow:hidden; }
+.aurora-map-bottom { display:flex; justify-content:space-between; align-items:start; gap:20px; }
+.aurora-map-bottom > p { margin:0; font-size:.8rem; }
+.aurora-map-options { max-width:420px; font-size:.85rem; }
+.aurora-map-options > summary { min-height:44px; cursor:pointer; }
+.aurora-map-options button { margin:8px 8px 0 0; min-height:44px; }
+.aurora-map-legend { margin:12px 0; gap:8px 16px; }
+.aurora-info-section { border-top:1px solid #27343e; padding:6px 0; }
+.aurora-info-section > summary { min-height:44px; cursor:pointer; display:list-item; padding:12px 4px; font-weight:600; color:#d6e0e8; }
+.aurora-info-section > p { line-height:1.6; color:#b4c3cd; }
+.aurora-battlefront { margin:18px 0; border-top-color:#293843; }
+.aurora-battlefront-heading > strong { border:0; padding:0; font-weight:500; font-size:.9rem; }
+.aurora-front-leader { padding:12px 0; background:none; }
+.aurora-faction-bars { gap:14px; }
+.aurora-sample-notice { margin:0; color:#e6c57f; font-size:.85rem; }
+.aurora-public-battles { gap:0; }
+.aurora-battle-row { padding:14px 0; border-bottom:1px solid #293640; scroll-margin-top:24px; }
+.aurora-battle-row > summary { display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:44px; cursor:pointer; }
+.aurora-battle-row > summary small { display:block; color:#97aab9; font-size:.8rem; margin-top:5px; }
+.aurora-battle-score { text-align:right; font-size:1.2rem; white-space:nowrap; }
+.aurora-battle-details { padding:12px 0 0; }
+.aurora-results-empty { padding:24px 0; max-width:50ch; }
+.aurora-focused-footer { display:flex; flex-wrap:wrap; gap:24px; margin-top:32px; padding:20px 0 0; border-top:1px solid #27333d; }
+.aurora-focused-footer a { text-decoration:none; color:#8fa2b1; font-size:.8rem; min-height:32px; }
+@media(max-width:850px) {
+  .aurora-overview-focus { grid-template-columns:1fr; gap:24px; }
+  .aurora-overview-focus h2 { max-width:22ch; font-size:2rem; }
+  .aurora-map-grid { grid-template-columns:1fr; }
+  .aurora-map-bottom { flex-direction:column; gap:8px; }
+}
+@media(max-width:540px) {
+  .aurora-focused-shell .aurora-campaign { padding:18px 18px 12px; gap:20px; }
+  .aurora-focused-header { gap:8px; }
+  .aurora-focused-header h1 { font-size:1.4rem; }
+  .aurora-focused-header p { font-size:.75rem; }
+  .aurora-header-actions { gap:10px; }
+  .aurora-header-actions > a { font-size:.78rem; }
+  .aurora-header-actions .aurora-primary { padding:10px 12px; }
+  .aurora-focused-nav > div { gap:18px; }
+  .aurora-focused-nav a,.aurora-information-menu > summary { font-size:.85rem; }
+  .aurora-map-heading { align-items:stretch; flex-direction:column; gap:12px; }
+  .aurora-map-heading .aurora-location-select { width:100%; }
+  .aurora-overview-focus { padding:6px 0 12px; }
+  .aurora-overview-focus h2 { font-size:1.8rem; }
+  .aurora-campaign .aurora-games,.aurora-campaign .aurora-registration { padding:18px; }
+  .aurora-battle-row > summary { gap:12px; }
+}
+.aurora-short-action { display:none; }
+.aurora-focused-header h1,.aurora-header-actions > a { white-space:nowrap; }
+@media(max-width:540px) {
+  .aurora-focused-header h1 { font-size:1.25rem; }
+  .aurora-full-action { display:none; }
+  .aurora-short-action { display:inline; }
+}
+.aurora-map-options button,.aurora-info-section button { padding:10px 14px; border:1px solid #354552; border-radius:6px; background:#17222c; color:#dbe5ed; cursor:pointer; font:inherit; }
+.aurora-map-options button:hover,.aurora-info-section button:hover { background:#24323e; }
+.aurora-information-menu[open] > summary::after { transform:rotate(180deg); }
+.aurora-header-actions a[aria-current=page] { color:#f4f0e6; text-decoration:underline; text-underline-offset:5px; }
+@media(max-width:540px) { .aurora-focused-header h1 { font-size:clamp(1.1rem,5vw,1.25rem); letter-spacing:.05em; } }

@@ -62,7 +62,7 @@ export default function AuroraRegistration() {
     finally { setBusy(false) }
   }
   return <>
-    <section className="panel aurora-panel">
+    <section className="panel aurora-panel aurora-registration">
       <p className="eyebrow">Join the Aurora VII league</p><h2>Choose your faction</h2>
       <p>Choose your faction, enter your player name, and click Register. Lobo’s Little Helper records your signup and automatically assigns your <strong>Aurora VII — Faction</strong> role and private faction channel access.</p>
       <p>Each faction starts with five places. When every campaign faction reaches five players, every faction opens to ten. The same pattern continues at fifteen, twenty, and beyond.</p>

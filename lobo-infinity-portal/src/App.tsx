@@ -84,6 +84,7 @@ function AuthShell() {
   const auth = useAuth()
   const location = useLocation()
   const routeKey = `${location.pathname}${location.search}${location.hash}`
+  const campaignRoute = location.pathname === '/campaign/aurora-vii' || location.pathname.startsWith('/campaign/aurora-vii/')
   const commissionerRoute =
     location.pathname.startsWith('/commissioner') ||
     location.pathname === '/diagnostics' ||
@@ -103,16 +104,15 @@ function AuthShell() {
 
   return (
     <SettingsProvider enabled={!commissionerRoute}>
-      <div className="app-shell auth-ready">
+      <div className={`app-shell auth-ready${campaignRoute ? ' aurora-focused-shell' : ''}`}>
         <SpeedInsights />
         <a className="skip-link" href="#main-content">Skip to content</a>
         <RouteMeta />
         <UserActivityTracker />
         <RouteScrollReset />
-        <Sidebar />
+        {!campaignRoute ? <Sidebar /> : null}
         <div className="app-main">
-          <Header />
-          <Breadcrumbs />
+          {!campaignRoute ? <><Header /><Breadcrumbs /></> : null}
           <div id="main-content" tabIndex={-1}><ApplicationErrorBoundary componentName="RouteContent" resetKey={routeKey}>
             <Suspense fallback={<RouteLoading />}>
               {!commissionerRoute ? <SnapshotPublicApp /> : !auth.authenticated ? <CommissionerLogin /> : <Routes>
@@ -240,10 +240,10 @@ function AuthShell() {
             </Suspense>
           </ApplicationErrorBoundary>
           </div>
-          {!commissionerRoute && <SnapshotUpdated/>}
-          <GlobalFooter />
+          {!commissionerRoute && !campaignRoute && <SnapshotUpdated/>}
+          {!campaignRoute ? <GlobalFooter /> : null}
         </div>
-        <MobileBottomNavigation />
+        {!campaignRoute ? <MobileBottomNavigation /> : null}
       </div>
     </SettingsProvider>
   )
