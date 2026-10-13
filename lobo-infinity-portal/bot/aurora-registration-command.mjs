@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { ApplicationCommandOptionType as Type, PermissionFlagsBits } from 'discord.js'
 import { createRegistrationStore } from './aurora-registration-store.mjs'
 import { provisionFactionChannels } from './aurora-faction-channels.mjs'
+import { createPortalRegistration } from './aurora-portal-registration.mjs'
 import { createFactionBriefingPublisher } from './aurora-faction-briefing-publisher.mjs'
 import { AURORA_FACTION_BRIEFINGS } from './aurora-faction-briefings.mjs'
 import { AURORA_DISCORD_GUILD_ID, AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
@@ -52,6 +53,17 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
     await member.roles.add(role.id, 'Aurora VII faction registration')
     await store.assigned(player.userId)
   }
+  async function registerPortal({ userId, faction, name }) {
+    return serialize(async () => {
+      if (!available) throw Error(issue)
+      try { await guild.members.fetch(userId) }
+      catch { throw Error('Join Lobo’s Discord server before registering, then try again.') }
+      const player = await store.register({ userId, faction, name })
+      try { await assign(player) } catch { /* Durable reservation is recovered by the existing timer. */ }
+      return store.player(userId)
+    })
+  }
+  let portal
   async function recover() {
     return serialize(async () => {
       try {
@@ -154,11 +166,20 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
       if (existing) await existing.edit(AURORA_COMMAND_DEFINITION)
       else await guild.commands.create(AURORA_COMMAND_DEFINITION)
       await recover()
+      portal = createPortalRegistration({ clientId: client.application?.id || client.user?.id, register: registerPortal, joinServer: async (userId, accessToken) => {
+        try { await guild.members.fetch(userId); return } catch { /* Discord OAuth consent permits joining. */ }
+        await guild.members.add(userId, { accessToken })
+      }, player: userId => store.player(userId), summary: () => store.summary() })
       timer = setInterval(() => recover().catch(() => logger.error?.('Aurora VII recovery is temporarily unavailable.')), 60000); timer.unref()
       if (serve) {
         server = createServer(async (request, response) => {
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
+          if (request.url?.startsWith('/aurora-vii/portal?')) {
+            try { await portal(request, response) }
+            catch { response.writeHead(503); response.end('{"error":"Registration is temporarily unavailable."}') }
+            return
+          }
           if (request.method !== 'GET' || request.url !== '/aurora-vii/registration') { response.writeHead(404); response.end('{"error":"Not found"}'); return }
           try { response.end(JSON.stringify({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing: briefings.ariadna, briefings })) }
           catch { response.writeHead(503); response.end('{"error":"Registration is temporarily unavailable."}') }
