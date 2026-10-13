@@ -1,8 +1,4 @@
-import { readFile, mkdir, open, rename } from 'node:fs/promises'
-import { dirname } from 'node:path'
-import { randomUUID } from 'node:crypto'
-import { PermissionFlagsBits } from 'discord.js'
-import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
+import { createFactionBriefingPublisher } from './aurora-faction-briefing-publisher.mjs'
 
 export const ARIADNA_BRIEFING_MARKER = 'Aurora VII · Ariadna faction briefing · v1'
 export const ARIADNA_BRIEFING = `## 🐺 ARIADNA — FACTION BRIEFING
@@ -41,50 +37,5 @@ Discuss targets, match scheduling, and any GM-issued Secret Objective in this ch
 **Protect our people. Hold the frontier.**`
 
 export function createAriadnaBriefingPublisher({ path = '/data/aurora-vii-ariadna-briefing.json' } = {}) {
-  let completed
-  const link = (channelId, messageId) => `https://discord.com/channels/${AURORA_DISCORD_GUILD_ID}/${channelId}/${messageId}`
-  async function save(record) {
-    await mkdir(dirname(path), { recursive: true, mode: 0o700 })
-    const temporary = `${path}.${randomUUID()}.tmp`, file = await open(temporary, 'wx', 0o600)
-    try { await file.writeFile(JSON.stringify(record)); await file.sync() } finally { await file.close() }
-    await rename(temporary, path)
-  }
-  return async function publish(channel, botUserId) {
-    if (channel.guild.id !== AURORA_DISCORD_GUILD_ID || channel.name !== 'ariadna') throw Error('Ariadna briefing must be posted only in its campaign faction channel.')
-    if (completed) return completed
-    let record
-    try {
-      record = JSON.parse(await readFile(path, 'utf8'))
-      if (record.marker !== ARIADNA_BRIEFING_MARKER || record.channelId !== channel.id || !/^\d+$/.test(record.messageId) || typeof record.pinned !== 'boolean') throw Error('Invalid briefing publication record.')
-    } catch (error) { if (error.code !== 'ENOENT') throw error }
-    if (record?.pinned) return completed = { posted: true, pinned: true, url: link(channel.id, record.messageId) }
-    const matchesBriefing = message => message.author?.id === botUserId && message.embeds?.some(embed => embed.footer?.text === ARIADNA_BRIEFING_MARKER && embed.description === ARIADNA_BRIEFING)
-    let message
-    if (record) {
-      message = await channel.messages.fetch(record.messageId)
-      if (!matchesBriefing(message)) throw Error('Stored briefing message does not match the authorized draft.')
-    } else {
-      let matches = [], before
-      for (let page = 0; page < 50; page++) {
-        const recent = await channel.messages.fetch({ limit: 100, ...(before ? { before } : {}) })
-        matches = [...recent.values()].filter(matchesBriefing)
-        if (matches.length || recent.size < 100) break
-        if (page === 49) throw Error('Briefing history could not be checked completely; posting deferred to avoid duplicates.')
-        before = recent.last().id
-      }
-      if (matches.length > 1) throw Error('Duplicate Ariadna briefing messages need review before pinning.')
-      message = matches[0] || await channel.send({ embeds: [{ description: ARIADNA_BRIEFING, color: 0x71854a, footer: { text: ARIADNA_BRIEFING_MARKER } }], allowedMentions: { parse: [] } })
-      record = { marker: ARIADNA_BRIEFING_MARKER, channelId: channel.id, messageId: message.id, pinned: false }
-      await save(record)
-    }
-    const me = await channel.guild.members.fetchMe()
-    if (!message.pinned && !channel.permissionsFor(me).has(PermissionFlagsBits.ManageMessages)) return { posted: true, pinned: false, needsManageMessages: true, url: link(channel.id, message.id) }
-    if (!message.pinned) await message.pin('Commissioner requested the Ariadna faction briefing be pinned')
-    const verified = await channel.messages.fetch(message.id)
-    if (!verified.pinned || !matchesBriefing(verified)) throw Error('Ariadna briefing pin could not be verified.')
-    await save({ ...record, pinned: true })
-    // This is a one-time authorized publication, not a rule that overrides a
-    // moderator's later choice to edit or unpin the message.
-    return completed = { posted: true, pinned: true, url: link(channel.id, message.id) }
-  }
+  return createFactionBriefingPublisher({ path, factionId: 'ariadna', marker: ARIADNA_BRIEFING_MARKER, content: ARIADNA_BRIEFING })
 }

@@ -2,7 +2,8 @@ import { createServer } from 'node:http'
 import { ApplicationCommandOptionType as Type, PermissionFlagsBits } from 'discord.js'
 import { createRegistrationStore } from './aurora-registration-store.mjs'
 import { provisionFactionChannels } from './aurora-faction-channels.mjs'
-import { createAriadnaBriefingPublisher } from './aurora-ariadna-briefing.mjs'
+import { createFactionBriefingPublisher } from './aurora-faction-briefing-publisher.mjs'
+import { AURORA_FACTION_BRIEFINGS } from './aurora-faction-briefings.mjs'
 import { AURORA_DISCORD_GUILD_ID, AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
 
 export const AURORA_COMMAND_DEFINITION = {
@@ -37,8 +38,9 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
   let guild, roles = new Map(), available = false, issue = 'Campaign registration is starting. Please try again shortly.'
   let queue = Promise.resolve(), timer, server
   let channelCount = 0, channelsReady = false, channelIssue = ''
-  let ariadnaBriefing = { posted: false, pinned: false }, briefingIssue = ''
-  const publishAriadnaBriefing = createAriadnaBriefingPublisher()
+  const briefings = Object.fromEntries(AURORA_FACTION_BRIEFINGS.map(faction => [faction.id, { posted: false, pinned: false }]))
+  const briefingIssues = new Map()
+  const briefingPublishers = new Map(AURORA_FACTION_BRIEFINGS.map(faction => [faction.id, createFactionBriefingPublisher({ ...faction, factionId: faction.id })]))
   const serialize = action => { const result = queue.then(action); queue = result.catch(() => {}); return result }
   async function setupRoles() {
     if (!guild) throw Error('Campaign Discord server is unavailable.')
@@ -68,17 +70,21 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
         channelCount = channels.size
         if (!channelsReady) logger.info?.(`Aurora VII private faction channels verified: ${channelCount}; matching faction role only, plus bot and server administrators.`)
         channelsReady = true; channelIssue = ''
-        if (!ariadnaBriefing.pinned) {
+        for (const faction of AURORA_FACTION_BRIEFINGS) {
+          if (briefings[faction.id].pinned) continue
           try {
-            const channel = await guild.channels.fetch(channels.get('ariadna'))
-            ariadnaBriefing = await publishAriadnaBriefing(channel, guild.client.user.id)
-            const issue = ariadnaBriefing.needsManageMessages ? 'Manage Messages is required to pin the posted Ariadna briefing.' : ''
-            if (issue && briefingIssue !== issue) logger.error?.(`Aurora VII Ariadna briefing: ${issue}`)
-            if (ariadnaBriefing.pinned) logger.info?.(`Aurora VII Ariadna briefing posted and pin verified: ${ariadnaBriefing.url}`)
-            briefingIssue = issue
+            const channel = await guild.channels.fetch(channels.get(faction.id))
+            const previous = briefings[faction.id]
+            briefings[faction.id] = await briefingPublishers.get(faction.id)(channel, guild.client.user.id)
+            const result = briefings[faction.id]
+            if (result.posted && !previous.posted) logger.info?.(`Aurora VII ${faction.name} briefing posted: ${result.url}`)
+            const issue = result.needsManageMessages ? 'Manage Messages is required to pin the posted faction briefing.' : ''
+            if (issue && briefingIssues.get(faction.id) !== issue) logger.error?.(`Aurora VII ${faction.name} briefing: ${issue}`)
+            if (result.pinned) logger.info?.(`Aurora VII ${faction.name} briefing pin verified: ${result.url}`)
+            briefingIssues.set(faction.id, issue)
           } catch (error) {
-            if (briefingIssue !== error.message) logger.error?.(`Aurora VII Ariadna briefing: ${error.message}`)
-            briefingIssue = error.message
+            if (briefingIssues.get(faction.id) !== error.message) logger.error?.(`Aurora VII ${faction.name} briefing: ${error.message}`)
+            briefingIssues.set(faction.id, error.message)
           }
         }
       } catch (error) {
@@ -140,7 +146,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
   }
   return {
     handler,
-    summary: async () => ({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing }),
+    summary: async () => ({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing: briefings.ariadna, briefings }),
     async start(client, { port = Number(process.env.PORT || 8080), serve = true } = {}) {
       guild = client.guilds.cache.get(AURORA_DISCORD_GUILD_ID)
       if (!guild) throw Error('Aurora VII server is not connected to this bot.')
@@ -154,7 +160,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
           if (request.method !== 'GET' || request.url !== '/aurora-vii/registration') { response.writeHead(404); response.end('{"error":"Not found"}'); return }
-          try { response.end(JSON.stringify({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing })) }
+          try { response.end(JSON.stringify({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing: briefings.ariadna, briefings })) }
           catch { response.writeHead(503); response.end('{"error":"Registration is temporarily unavailable."}') }
         })
         await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '0.0.0.0', resolve) })

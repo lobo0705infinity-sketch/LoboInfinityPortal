@@ -74,3 +74,16 @@ identities and names, exact faction choices, all tier transitions through 20,
 restarts, withdrawals, corrupt-ledger safety, public projection privacy, role
 creation permissions, retry recovery, and Discord server scoping. The check runs
 in both Vercel and bot builds and uses only temporary storage and mocked Discord.
+
+## Faction briefing publication
+
+Commissioner-approved briefings are published as one embed in each matching
+private faction text channel and pinned after Discord read-back verification.
+The ten drafts cover current motivations, scoring and coordination; they do not
+reveal future story or assign Secret Objectives. Each publication has its own
+private volume checkpoint and bot-authored marker. The existing Ariadna checkpoint
+and exact approved wording are reused. Manage Messages is required to pin an
+unpinned post. Missing permission leaves the existing post pending and is retried
+each minute without reposting. Completed publication does not override later
+moderator edits or unpins. Public status contains only completion flags and
+Discord links, never briefing text.
