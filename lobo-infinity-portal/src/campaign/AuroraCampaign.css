@@ -55,7 +55,21 @@
 .aurora-story-number { color: #efbe73; font-size: 1.7rem; font-weight: 700; }
 .aurora-story-history .aurora-prose { max-width: 80ch; line-height: 1.8; }
 .aurora-motivation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-.aurora-motivation-grid article { padding: 1rem 1.2rem; border: 1px solid #34475a; border-radius: 8px; background: #122131; }
+ .aurora-motivation-grid { align-items: start; }
+.aurora-motivation-grid .aurora-faction-card { padding: 0; border: 1px solid #34475a; border-radius: 8px; background: #122131; overflow: hidden; }
+.aurora-faction-card > summary { padding: 1rem 1.2rem; list-style: none; cursor: pointer; }
+.aurora-faction-card > summary::-webkit-details-marker { display: none; }
+.aurora-faction-card > summary:hover { background: #1b3042; }
+.aurora-faction-card > summary:focus-visible { outline: 2px solid #efbe73; outline-offset: -3px; border-radius: 8px; }
+.aurora-faction-card[open] { border-color: #b68b49; }
+.aurora-faction-expand { display: flex; align-items: center; justify-content: space-between; gap: .7rem; color: #91e4ff; font-weight: 600; margin-top: 1rem; }
+.aurora-faction-chevron { font-size: 1.3rem; line-height: 1; }
+.aurora-faction-close { display: none; }
+.aurora-faction-card[open] .aurora-faction-read { display: none; }
+.aurora-faction-card[open] .aurora-faction-close { display: inline; }
+.aurora-faction-card[open] .aurora-faction-chevron { transform: rotate(180deg); }
+.aurora-faction-brief { padding: 0 1.2rem 1rem; border-top: 1px solid #34475a; }
+.aurora-faction-brief .aurora-prose { line-height: 1.8; }
 .aurora-motivation-grid h3 { color: #efbe73; }
 .aurora-motivation-grid p { line-height: 1.7; }
 .aurora-campaign #aurora-history, .aurora-campaign #aurora-factions, .aurora-campaign #aurora-releases { scroll-margin-top: 6rem; }
