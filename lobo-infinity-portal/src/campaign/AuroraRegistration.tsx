@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AURORA_REGISTRATION_FACTIONS, type RegistrationSummary } from '../../shared/aurora-registration.mjs'
 import { LOBO_DISCORD_INVITE_URL } from '../config/communityLinks'
+import './AuroraCampaign.css'
 
 type Signup = { name: string; faction: string; roleStatus: string }
 export default function AuroraRegistration() {
