@@ -50,7 +50,7 @@ export default function AuroraPublisher() {
 
   if (!draft) return <main className="portal-shell aurora-campaign"><header className="page-header"><h1>Aurora VII publication</h1></header><p>{error || 'Loading the current public campaign state…'}</p>{error ? <button type="button" onClick={reload}>Try again</button> : null}</main>
   return <main className="portal-shell aurora-campaign"><header className="page-header"><p className="eyebrow">Commissioner · Public campaign bulletin</p><h1>Aurora VII publication</h1><p>Copy approved public results from your campaign Sheet. Resolve control, rewards, objectives, and faction systems in your GM records before publishing.</p><Link to="/campaign/aurora-vii" target="_blank">Open the public campaign →</Link></header>
-    <div className="aurora-notice"><p>Every field on this screen becomes public. Keep private choices, objective tables, faction briefings, and future Events or story chapters outside this publication.</p></div>
+    <div className="aurora-notice"><p>Every field in the public bulletin form below becomes public. Secret-objective claims in the game review panel remain private. Keep private choices, objective tables, faction briefings, and future Events or story chapters outside this publication.</p></div>
     {error ? <div role="alert"><p>{error} Your draft has not been published.</p><button type="button" onClick={reload}>Reload public state</button></div> : null}
     <AuroraGames admin/>
     <form className="aurora-admin-form" onSubmit={event => { event.preventDefault(); void publish() }}>
