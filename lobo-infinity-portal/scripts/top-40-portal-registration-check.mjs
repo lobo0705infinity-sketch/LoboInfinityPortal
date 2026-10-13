@@ -22,6 +22,8 @@ assert.equal(context.findTop40ExistingPortalPlayer_(' wax ').player,'aro_wax');
 names.set('second_wax',{player:'second_wax',displayName:'Wax',active:true});
 assert.throws(()=>context.findTop40ExistingPortalPlayer_('Wax'),/multiple players/);
 assert.equal(context.findTop40ExistingPortalPlayer_('aro_wax').player,'aro_wax');
+names.set('snakes / lucas',{player:'Snakes / Lucas',active:true});
+assert.equal(context.findTop40ExistingPortalPlayer_('Snakes').player,'Snakes / Lucas');
 assert.equal(context.importTop40PortalRegistrationRow_(sheet,4,{}).rejected,true)
 assert.equal(context.importTop40PortalRegistrationRow_(sheet,5,{}).rejected,true)
 assert.throws(()=>context.readTop40PortalHandle_(['Lobo Portal Name','Lobo Portal User Name'],['One','Two']),/Conflicting/)

@@ -67,7 +67,10 @@ function findTop40ExistingPortalPlayer_(handle) {
   if (!sheet) throw new Error("Players sheet not found.");
   const rows = sheet.getDataRange().getValues();
   const columns = getPlayerRegistryColumns(rows[0] || []);
-  const key = String(handle).trim().toLowerCase();
+  const submittedKey = String(handle).trim().toLowerCase();
+  // Identity explicitly confirmed by the Commissioner on 2026-10-12.
+  const confirmedAliases = { "snakes": "Snakes / Lucas" };
+  const key = String(confirmedAliases[submittedKey] || handle).trim().toLowerCase();
   const normalize = function(value) { return String(value || "").trim().toLowerCase(); };
   const candidates = rows.slice(1).map(function(row, index) {
     return { name: String(row[columns.player] || "").trim(), display: String(row[columns.displayName] || "").trim(), row: index + 2 };
