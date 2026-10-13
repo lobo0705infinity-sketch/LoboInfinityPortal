@@ -80,7 +80,7 @@ const topics = {
   },
   combat: {
     title: 'Combat',
-    description: '**/combat matchup** — Compare two exact profiles in both attack directions. Start typing and select each loadout from autocomplete.\nExample: `/combat matchup model-1:<profile> model-2:<profile>`\n\n**/combat counters** — Find ARO counters against a target; optionally filter by army and range.\nExample: `/combat counters target:<profile> army:Corregidor range:16–24 inches`',
+    description: '**/combat matchup** — Interactive shooting, close combat and hacking comparisons. Select exact profiles or import a calculator link; use the result controls for weapons, AROs, range, states, cover and presets.\nExample: `/combat matchup model-1:<profile> model-2:<profile>`\n\n**/combat counters** — Find ARO counters against a target; optionally filter by army and range.\nExample: `/combat counters target:<profile> army:Corregidor range:16–24 inches`',
   },
   reference: {
     title: 'Game Reference',

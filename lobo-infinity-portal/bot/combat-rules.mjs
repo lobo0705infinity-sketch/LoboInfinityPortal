@@ -26,7 +26,9 @@ export function effectiveDurability(profile, weapon) {
   const base = Math.max(1, Number(profile.vitality || profile.structure || 1))
   const traits = profileTraits(profile)
   const shock = weapon.shock && Number(profile.vitality || 0) > 0 && base === 1 && !traits.includes('immunity shock')
-  return base + (!shock && (traits.includes('no wound incapacitation') || traits.includes('dogged')) ? 1 : 0)
+  const remaining = profile.remainingWounds == null ? base : Number(profile.remainingWounds)
+  if (profile.inNwi) return 1
+  return Math.max(1, remaining + (!shock && (traits.includes('no wound incapacitation') || traits.includes('dogged')) ? 1 : 0))
 }
 
 export function savingProfile(weapon, target, { cover = false } = {}) {
@@ -92,7 +94,7 @@ export function savingProfile(weapon, target, { cover = false } = {}) {
 // change capped damage, neutralization or state probability.
 export function resolveSavingEffects(outcomes, weapon, target, settings = {}) {
   const w = savingProfile(weapon, target, settings)
-  const cap = Math.max(1, Math.ceil(w.durability))
+  const cap = Math.max(1, Math.ceil(w.durability), Number(settings.damageCap || 0))
   let expectedWounds = 0, expectedCappedWounds = 0, neutralizeProbability = 0, stateProbability = 0, failureProbability = 0
   const woundDistribution = Array(cap + 1).fill(0)
   for (const [key, probability] of outcomes) {
@@ -122,13 +124,14 @@ export function resolveSavingEffects(outcomes, weapon, target, settings = {}) {
     if (!w.nonLethal) {
       expectedWounds += probability * rawWounds
       distribution.forEach((p, wounds) => {
-        const damage = wounds && w.deadState ? w.durability : wounds
+        const damage = wounds && w.deadState ? cap : wounds
         woundDistribution[Math.min(cap, damage)] += probability * p
         expectedCappedWounds += probability * p * Math.min(damage, w.durability)
         if (damage >= w.durability) neutralizeProbability += probability * p
       })
     }
   }
+  woundDistribution[0] += Math.max(0, 1 - woundDistribution.reduce((sum, p) => sum + p, 0))
   if (w.nonLethal) woundDistribution[0] = 1
   return { expectedWounds, expectedCappedWounds, neutralizeProbability, stateProbability, failureProbability, woundDistribution, nonLethal: w.nonLethal, durability: w.durability, states: w.states }
 }

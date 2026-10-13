@@ -1,3 +1,4 @@
+import { startWorkbench } from './matchup-interactive.mjs'
 import { withResponseDetails } from './response-details.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { resolve } from 'node:path'
@@ -12,10 +13,15 @@ export const MODEL_ONE_OPTION = 'model-1'
 export const MODEL_TWO_OPTION = 'model-2'
 export const MATCHUP_COMMAND_DEFINITION = Object.freeze({
   name: MATCHUP_COMMAND,
-  description: 'Compare two exact profiles in both attack directions',
+  description: 'Interactive shooting, CC and hacking odds with weapons, states and saved presets',
   options: [
-    { name: MODEL_ONE_OPTION, description: 'Start typing and select the exact first profile', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
-    { name: MODEL_TWO_OPTION, description: 'Start typing and select the exact second profile', required: true, type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: MODEL_ONE_OPTION, description: 'Start typing and select the exact first profile', required: false, type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: MODEL_TWO_OPTION, description: 'Start typing and select the exact second profile', required: false, type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: 'alternative', description: 'Optional second attacker to compare against the same defender', type: ApplicationCommandOptionType.String, autocomplete: true },
+    { name: 'calculator-link', description: 'Import profiles, cover and range from infinitythecalculator.com', type: ApplicationCommandOptionType.String, max_length: 1500 },
+    { name: 'range', description: 'Starting range band (change later with controls)', type: ApplicationCommandOptionType.String, choices: ['0-8','8-16','16-24','24-32','32-40','40-48','48-96'].map(value=>({name:value+' inches',value})) },
+    { name: 'combat-type', description: 'Shooting, engaged close combat, or hacking in Hacking Area', type: ApplicationCommandOptionType.String, choices: [{name:'Shooting',value:'shooting'},{name:'Close combat',value:'cc'},{name:'Hacking',value:'hacking'}] },
+    { name: 'goal', description: 'Goal used to choose the best attack and defensive ARO', type: ApplicationCommandOptionType.String, choices: [{name:'Neutralize target',value:'neutralize'},{name:'Cause damage',value:'damage'},{name:'Kill outright',value:'kill'},{name:'Inflict state',value:'state'}] },
   ],
 })
 
@@ -47,6 +53,7 @@ export async function compareMatchup({ modelOne, modelTwo } = {}) {
 export function createMatchupInteractionHandler({ compare = compareMatchup, render = renderMatchupImages, logger = console } = {}) {
   return async function handleMatchup(interaction) {
     if (!interaction?.isChatInputCommand?.() || interaction.commandName !== MATCHUP_COMMAND) return false
+    if (compare === compareMatchup && render === renderMatchupImages) return startWorkbench(interaction)
     try {
       await interaction.deferReply()
       const modelOne = interaction.options.getString(MODEL_ONE_OPTION, true).trim()
@@ -77,13 +84,15 @@ export function createMatchupAutocompleteHandler({ search = searchMatchupProfile
 
 export async function searchMatchupProfiles(query) {
   const source = await loadCombatSource()
-  const needle = normalize(query)
-  const seen = new Set()
+  const words = normalize(query).split(' ').filter(Boolean)
   return source.profiles
-    .filter((profile) => profile.weapons?.some((weapon) => weapon.modes?.length) && (!needle || normalize(profile.name).includes(needle)))
-    .map((profile) => ({ name: `${profile.name} · ${profile.weapons.map((weapon) => weapon.name).join(', ')}`.slice(0, 100), value: profile.id }))
-    .filter((choice) => !seen.has(choice.name) && seen.add(choice.name))
-    .slice(0, 25)
+    .filter(profile => profile.weapons?.some(weapon => weapon.modes?.length) && words.every(word=>normalize([profile.name,profile.armyName,...profile.skills,...profile.weapons.map(w=>w.name)].join(' ')).includes(word)))
+    .map(profile => {
+      const role=(profile.skills || []).filter(s=>/lieutenant|hacker|chain of command|forward observer|paramedic|doctor|engineer/i.test(s)).join(', ')
+      const name=`${profile.armyName?.slice(0,24)||profile.sectorialId} · ${profile.name.slice(0,32)} · ${role?role.slice(0,18)+' · ':''}${profile.weapons.map(w=>w.name).join(', ')}`
+      return {name:name.slice(0,100),value:profile.id}
+    })
+    .slice(0,25)
 }
 
 function evaluateDirection(attacker, defender) {
@@ -185,7 +194,7 @@ function numericSkillModifier(skills, pattern) {
 
 async function loadCombatSource() {
   combatSourcePromise ||= readArtifact(resolve(import.meta.dirname, '..', 'data', 'infinity-army', 'benchmark-official-source.json.gz.b64'))
-    .then(buildOfficialCombatSource)
+    .then(capture => { const source=buildOfficialCombatSource(capture);const names=new Map(capture.metadata.factions.map(f=>[Number(f.id),f.name]));return {...source,profiles:source.profiles.map(p=>({...p,armyName:names.get(p.sectorialId)}))} })
     .then((source) => ({ ...source, profiles: markMatchupFireteamCapabilities(source.profiles) }))
   return combatSourcePromise
 }
@@ -203,4 +212,4 @@ function resolveProfile(profiles, query) {
 
 function shortName(value) { return String(value || '').split('—').at(-1).trim() || String(value || '').trim() }
 function normalize(value) { return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() }
-function matches(command) { return command.description === MATCHUP_COMMAND_DEFINITION.description && command.options?.length === 2 && command.options?.every((option) => option.autocomplete === true && option.required === true) }
+function matches(command) { return command.description === MATCHUP_COMMAND_DEFINITION.description && command.options?.length === MATCHUP_COMMAND_DEFINITION.options.length }

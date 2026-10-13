@@ -18,6 +18,7 @@ import { createMissionInteractionHandler, ensureMissionCommand } from './mission
 import { createInfIdInteractionHandler } from './inf-id-command.mjs'
 import { createRulesInteractionHandler, ensureRulesCommand } from './rules-command.mjs'
 import { createAroCounterAutocompleteHandler, createAroVsInteractionHandler } from './aro-vs-command.mjs'
+import { createWorkbenchInteractionHandler } from './matchup-interactive.mjs'
 import { createMatchupAutocompleteHandler, createMatchupInteractionHandler } from './matchup-command.mjs'
 import {
   createMatchmakingAutocompleteHandler,
@@ -159,6 +160,7 @@ export function createLobosLittleHelper() {
   client.on(Events.InteractionCreate, handleAroVs)
   client.on(Events.InteractionCreate, handleAroCounterAutocomplete)
   client.on(Events.InteractionCreate, handleMatchup)
+  client.on(Events.InteractionCreate, createWorkbenchInteractionHandler())
   client.on(Events.InteractionCreate, handleMatchupAutocomplete)
   client.on(Events.InteractionCreate, handleMatchmaking)
   client.on(Events.InteractionCreate, handleMatchmakingAutocomplete)
@@ -187,7 +189,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
     const groupedCommands = await ensureGroupedCommands(client)
     const retired = await retireLegacySlashCommands(client)
     const guildIds = [...client.guilds.cache.keys()]
-    process.stdout.write(`${BOT_NAME} ready: botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} messageCommandListeners=${client.listenerCount(Events.MessageCreate)} interactionListeners=${client.listenerCount(Events.InteractionCreate)} groupedCommands=${groupedCommands.map(command => `${command.guildId}:${command.name}:${command.id}`).join(',') || 'none'} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map(command => `${command.guildId}:${command.id}`).join(',') || 'none'} retiredLegacyCommands=${retired.removed.join(',') || 'none'} publicCommands=${retired.remaining.map(({scope,names}) => `${scope}:${names.join('|')}`).join(',')} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
+    process.stdout.write(`${BOT_NAME} ready: matchupWorkbench=2026-10-13 botUserId=${client.user.id} applicationId=${client.application.id} guildIds=${guildIds.join(',') || 'none'} messageCommandListeners=${client.listenerCount(Events.MessageCreate)} interactionListeners=${client.listenerCount(Events.InteractionCreate)} groupedCommands=${groupedCommands.map(command => `${command.guildId}:${command.name}:${command.id}`).join(',') || 'none'} missionCommands=${commands.map((command) => `${command.guildId}:${command.id}`).join(',') || 'none'} rulesCommands=${rulesCommands.map(command => `${command.guildId}:${command.id}`).join(',') || 'none'} retiredLegacyCommands=${retired.removed.join(',') || 'none'} publicCommands=${retired.remaining.map(({scope,names}) => `${scope}:${names.join('|')}`).join(',')} gunfighterBenchmark=${gunfighterCatalog.benchmarkVersion || 'unknown'} gunfighterCatalog=${gunfighterCatalog.fingerprint || 'unknown'} aroBenchmark=${aroCatalog.benchmarkVersion || 'unknown'} aroCatalog=${aroCatalog.fingerprint || 'unknown'} mobilityCatalog=${mobilityCatalog?.fingerprint || 'unavailable'} closeCombatBenchmark=${closeCombatCatalog.benchmarkVersion || 'unknown'} closeCombatCatalog=${closeCombatCatalog.fingerprint || 'unknown'}\n`)
   } catch {
     process.stderr.write(`${BOT_NAME} could not register slash commands.\n`)
   }

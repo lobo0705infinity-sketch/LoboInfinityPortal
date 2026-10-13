@@ -214,6 +214,7 @@ export function evaluateAttackCandidate({ attacker, defender, weapon, mode, rang
     range: range.id,
     attack,
     optimalResponse,
+    responses,
     score: optimalResponse.attackerScore,
   }
 }
@@ -397,7 +398,9 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   if (!mode.smoke && !mode.eclipse) {
     const cover = !has(skills, 'marksmanship') && !mode.ignoresCover ? coverBenefits(defender, settings.cover).hit : 0
     const mimetism = mimetismModifier(defenderSkills, equipment, defender.foxholeState !== false)
-    modifiers += cover + mimetism
+    const targeted = defender.targeted ? 3 : 0
+    modifiers += cover + mimetism + targeted
+    if (targeted) modifierSources.push('Targeted +3')
     if (cover) modifierSources.push(formatModifier('Cover', cover))
     if (mimetism) modifierSources.push(formatModifier('Mimetism / MSV', mimetism))
   }
@@ -409,6 +412,7 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const nativeBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(mode.burst)
   const burstBonus = (!aro || fullBurstAro) && !neuroActive ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) : 0
   const burst = Math.max(1, Math.min(6, nativeBurst + burstBonus))
+  if (burstBonus) modifierSources.push('Native Burst +' + burstBonus + 'B')
   const nativeSpecialDice = numericModifier(skills, /bs attack\s*\(?\s*\+?(\d+)\s*sd\s*\)?$/)
   const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + nativeSpecialDice + fireteamSpecialDice
   if (Number(mode.specialDice || 0)) modifierSources.push('Weapon +' + Number(mode.specialDice) + 'SD')
@@ -427,7 +431,12 @@ function attackAvailability(attack) {
 }
 
 function buildLegalAros(defender, attacker, range, settings, attackingMode, fireteamSpecialDice = 0) {
-  const results = [{ id: 'dodge', type: 'dodge', pool: dodgePool(defender) }]
+  if (defender.state === 'imm-b') return [{ id: 'no-aro', type: 'none' }]
+  const dodge = dodgePool(defender)
+  if (defender.state === 'imm-a') { dodge.modifiers -= 6; dodge.target = successValue(dodge.baseTarget, dodge.modifiers); dodge.criticalTarget = dodge.target; dodge.modifierSources = ['IMM-A -6'] }
+  const results = [{ id: 'dodge', type: 'dodge', pool: dodge }]
+  if (settings.includeNoAro) results.push({ id: 'no-aro', type: 'none' })
+  if (defender.state === 'imm-a') return results
   const attackerHasMsv = tokens(attacker.equipment).some((value) => /^multispectral visor l[123]$/.test(value))
   for (const weapon of defender.weapons) for (const mode of weapon.modes) {
     if (mode.deployable) continue
@@ -553,7 +562,7 @@ function applyOpponentFtfModifier(pool, opponent, opponentAction, protectedProfi
   return { ...pool, modifiers, modifierSources, target, criticalTarget: target }
 }
 
-function dodgePool(profile) {
+export function dodgePool(profile) {
   const skills = tokens(profile.skills)
   const fixed = skills.find((value) => /^dodge ph=\d+$/.test(value))
   const dodgeBonus = skills.map((value) => Number(value.match(/^dodge\s*\+(\d+)$/)?.[1] || 0)).reduce((best, value) => Math.max(best, value), 0)

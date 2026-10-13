@@ -13,6 +13,7 @@ RUN npm run test:build-list
 RUN node scripts/tts-2d-export-check.mjs
 RUN node scripts/bot-improvements-check.mjs
 RUN node scripts/grouped-commands-check.mjs
+RUN npm run test:matchup-workbench
 RUN npm run test:aurora-games
 RUN npm run test:aurora-registration
 RUN node scripts/aurora-faction-channels-check.mjs
