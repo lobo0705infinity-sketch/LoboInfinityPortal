@@ -27,6 +27,7 @@ export function createRegistrationStore(path) {
     try { await directory.sync() } finally { await directory.close() }
   }
   return {
+    players: () => serialized(async () => (await read()).players),
     summary: () => serialized(async () => publicRegistration(advanceRegistrationCap(await read()))),
     pending: () => serialized(async () => (await read()).players.filter(player => player.roleStatus === 'pending')),
     player: userId => serialized(async () => (await read()).players.find(player => player.userId === userId)),

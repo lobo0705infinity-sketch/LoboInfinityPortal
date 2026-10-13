@@ -35,7 +35,7 @@ const complete = await request('callback', { query, cookie: `aurora_state=${stat
 assert.match(complete.headers.location, /complete/); assert.equal(calls, 1); assert.equal(joined, 1)
 assert(!complete.text.includes('private-token'))
 const cookie = complete.headers['set-cookie'][1].split(';')[0]
-assert.match(cookie, /aurora_session=/)
+assert.match(cookie, /aurora_session_v2=/)
 const status = await request('status', { cookie })
 assert.equal(JSON.parse(status.text).registration.faction, 'ariadna'); assert(!status.text.includes(id))
 assert.equal(JSON.parse((await request('status', { cookie: `${cookie}tamper` })).text).account, null)
@@ -52,3 +52,11 @@ assert.equal(calls, countBefore)
 time += 3600001
 assert.equal(JSON.parse((await request('status', { cookie })).text).account, null)
 console.log('PASS: browser-bound OAuth state, identify+join consent, automatic join before registration, spoofed identity ignored, closed factions, post-confirmation capacity check, join failure, callback replay, tampered/expired session, private token and identity projection.')
+time=1000;failJoin=false
+const returnPath='/campaign/aurora-vii/games?game=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+const login=await request('login',{method:'POST',body:{returnPath}}),loginState=new URL(JSON.parse(login.text).authorizeUrl).searchParams.get('state'),before=calls,joinedBefore=joined
+const verified=await request('callback',{query:`&state=${loginState}&code=test`,cookie:`aurora_state=${loginState}`})
+assert.equal(verified.headers.location,`${PORTAL_ORIGIN}${returnPath}&signup=verified`);assert.equal(calls,before);assert.equal(joined,joinedBefore)
+assert.match(verified.headers['set-cookie'][1],/Path=\/api;/)
+assert.equal(handler.session({headers:{cookie:verified.headers['set-cookie'][1].split(';')[0]}}).id,id)
+console.log('PASS: verification link survives login; API-wide signed session; verification never registers or changes factions.')

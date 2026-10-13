@@ -103,3 +103,10 @@
 .aurora-registration-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1rem}
 .aurora-registration-actions button:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:540px){.aurora-registration-factions{grid-template-columns:1fr}.aurora-registration-actions>*{width:100%;box-sizing:border-box;text-align:center}}
+.aurora-submit-actions{display:flex;flex-wrap:wrap;align-items:center;gap:1rem}
+.aurora-game-review{border:1px solid #405365;border-radius:12px;padding:1.25rem;margin:1.25rem 0;overflow-wrap:anywhere}
+.aurora-game-review label,.aurora-verification label{display:grid;gap:.5rem;margin:1rem 0}
+.aurora-game-review textarea,.aurora-game-review input,.aurora-game-review select,.aurora-verification input,.aurora-game-form input,.aurora-game-form select,.aurora-game-form textarea{width:100%;max-width:100%;box-sizing:border-box;padding:.75rem;min-height:44px;border:1px solid #52677a;border-radius:8px;color:#edf4fa;background:#132231;font:inherit}
+.aurora-game-review textarea{min-height:90px}.aurora-game-review button{margin:.4rem .6rem .4rem 0}.aurora-score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.aurora-score-grid>div{display:grid;gap:.4rem;padding:1rem;border-radius:10px;background:rgba(70,138,169,.12)}.aurora-verification{margin:1rem 0}.aurora-game-review details{margin:1rem 0}.aurora-game-review code{white-space:pre-wrap;word-break:break-all}
+.aurora-games button{min-height:44px;padding:.6rem .9rem;border:1px solid #52677a;border-radius:8px;background:#203445;color:#edf4fa;font:inherit;cursor:pointer}.aurora-games button.aurora-primary{background:#c39850;color:#101923;border-color:#e7c68c;font-weight:700}.aurora-games button:disabled{opacity:.55;cursor:default}.aurora-games :is(input,select,textarea,button):focus-visible{outline:2px solid #edc77f;outline-offset:3px}
+@media(max-width:550px){.aurora-score-grid{grid-template-columns:1fr}.aurora-game-review{padding:.8rem}.aurora-submit-actions{align-items:stretch;flex-direction:column}}

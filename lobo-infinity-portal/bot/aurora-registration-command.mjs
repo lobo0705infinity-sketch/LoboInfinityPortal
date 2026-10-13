@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { ApplicationCommandOptionType as Type, PermissionFlagsBits } from 'discord.js'
 import { createRegistrationStore } from './aurora-registration-store.mjs'
 import { provisionFactionChannels } from './aurora-faction-channels.mjs'
+import { createCampaignGameService } from './aurora-game-service.mjs'
 import { createPortalRegistration } from './aurora-portal-registration.mjs'
 import { createFactionBriefingPublisher } from './aurora-faction-briefing-publisher.mjs'
 import { AURORA_FACTION_BRIEFINGS } from './aurora-faction-briefings.mjs'
@@ -71,7 +72,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
       return store.player(userId)
     })
   }
-  let portal
+  let portal, games
   async function recover() {
     return serialize(async () => {
       try {
@@ -186,11 +187,21 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
         try { await guild.members.fetch(userId); return } catch { /* Discord OAuth consent permits joining. */ }
         await guild.members.add(userId, { accessToken })
       }, player: userId => store.player(userId), summary: () => store.summary() })
+      games = createCampaignGameService({ registrations: store, identity: request => portal.session(request), notify: async game => {
+        const member = await guild.members.fetch(game.playerB.id)
+        await member.send({ content: `Aurora VII: ${game.playerA.name} submitted your ${game.mission} game (${game.opA}–${game.opB} OP). Review and confirm, or request a correction: https://lobo-infinity-portal.vercel.app/campaign/aurora-vii/games?game=${game.id}`, allowedMentions: { parse: [] } })
+      } })
+      void games.deliver().catch(() => logger.error?.('Aurora VII game notifications are temporarily unavailable.'))
       timer = setInterval(() => recover().catch(() => logger.error?.('Aurora VII recovery is temporarily unavailable.')), 60000); timer.unref()
       if (serve) {
         server = createServer(async (request, response) => {
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
+          if (request.url?.startsWith('/aurora-vii/games?')) {
+            try { await games.handler(request, response) }
+            catch { response.writeHead(503); response.end('{"error":"Campaign games are temporarily unavailable."}') }
+            return
+          }
           if (request.url?.startsWith('/aurora-vii/portal?')) {
             try { await portal(request, response) }
             catch { response.writeHead(503); response.end('{"error":"Registration is temporarily unavailable."}') }

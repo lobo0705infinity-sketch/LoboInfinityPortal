@@ -11,6 +11,9 @@
     },
     "api/public-search-page.mjs": {
       "includeFiles": "dist/app-shell.html"
+    },
+    "api/aurora-games.mjs": {
+      "maxDuration": 60
     }
   },
   "headers": [
