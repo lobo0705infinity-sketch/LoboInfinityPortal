@@ -83,3 +83,23 @@
 .aurora-motivation-grid p { line-height: 1.7; }
 .aurora-campaign #aurora-history, .aurora-campaign #aurora-factions, .aurora-campaign #aurora-releases { scroll-margin-top: 6rem; }
 @media (max-width: 540px) { .aurora-motivation-grid { grid-template-columns: 1fr; }.aurora-story-history article { grid-template-columns: 1fr; gap: .1rem; } }
+
+.aurora-registration-status{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem;background:#132231;border-radius:12px;margin:1.5rem 0}
+.aurora-registration-status p{margin:0;flex:1 1 260px}
+.aurora-registration-factions{border:0;padding:0;margin:1.5rem 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+.aurora-registration-factions legend{font-weight:700;margin-bottom:.75rem}
+.aurora-registration-factions label{display:flex;align-items:center;gap:.8rem;padding:1rem;border:1px solid #415363;border-radius:10px;cursor:pointer}
+.aurora-registration-factions label[data-selected="true"]{border-color:#eacb82;background:#263241}
+.aurora-registration-factions label[data-locked="true"]{opacity:.65;cursor:not-allowed}
+.aurora-registration-factions label>span{min-width:0;display:grid;gap:.4rem}
+.aurora-registration-factions label>span>span{font-size:.85rem;color:#b3c0cc}
+.aurora-registration-factions input{accent-color:#eacb82;flex:0 0 auto}
+.aurora-registration-factions label:focus-within{outline:2px solid #eacb82;outline-offset:3px}
+.aurora-registration-name{display:grid;gap:.6rem;max-width:32rem;font-weight:700}
+.aurora-registration-name input{padding:.9rem;border:1px solid #415363;border-radius:8px;background:#132231;color:#fff;font:inherit;min-width:0;width:100%;box-sizing:border-box}
+.aurora-registration-next{margin-top:1.5rem;border-top:1px solid #415363;padding-top:1rem}
+.aurora-registration-next li{padding-bottom:.5rem}
+.aurora-registration-command{display:block;white-space:pre-wrap;overflow-wrap:anywhere;padding:1rem;background:#132231;border-radius:8px}
+.aurora-registration-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1rem}
+.aurora-registration-actions button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:540px){.aurora-registration-factions{grid-template-columns:1fr}.aurora-registration-actions>*{width:100%;box-sizing:border-box;text-align:center}}

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createBotInventoryHandler, inventoryAtStartup } from './bot-inventory.mjs'
 import { createKillInteractionHandler } from './kill-command.mjs'
+import { createAuroraRegistrationService } from './aurora-registration-command.mjs'
 import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands, retireLegacySlashCommands } from './grouped-commands.mjs'
 import { installFeedbackCapture, createBotFeedbackHandler, reportableResponse } from './bot-feedback.mjs'
@@ -112,6 +113,9 @@ export function formatWorkshopAnnouncement(item) {
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
   client.setMaxListeners(22)
+  const auroraRegistration = createAuroraRegistrationService()
+  client.auroraRegistration = auroraRegistration
+  client.on(Events.InteractionCreate, auroraRegistration.handler)
   const handleInfList = createInfListInteractionHandler()
   const handleBuildList = createBuildListInteractionHandler()
   const handleBuildListAutocomplete = createBuildListAutocompleteHandler()
@@ -175,6 +179,8 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   if (!closeCombatCatalog) throw new Error('The bundled close-combat benchmark catalog could not be loaded.')
   const client = createLobosLittleHelper()
   await client.login(token)
+  try { await client.auroraRegistration.start(client) }
+  catch (error) { process.stderr.write(`Aurora VII registration could not start: ${error.message}\n`) }
   try {
     const commands = await ensureMissionCommand(client)
     const rulesCommands = await ensureRulesCommand(client)
