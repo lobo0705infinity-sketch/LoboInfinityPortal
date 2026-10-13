@@ -35,7 +35,7 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
       </details>)}</div></> : <p className="aurora-results-empty">{state.turn ? 'Play a game, record both scores, and confirm the result. Your campaign’s battle history and totals will appear here.' : 'Confirmed games and standings will appear here when the campaign begins.'}</p>}
     </> : null}
     {games.length ? <p className="aurora-muted">Live TP/OP progress · Campaign VP and control are resolved by Lobo. Narrative totals stay separate.</p> : null}
-    <details className="aurora-info-section"><summary>Results information & refresh</summary><p>Only confirmed or commissioner-approved results count. Late and possible duplicate games also need Lobo’s approval.</p>{live.updated ? <p>Checked at {live.updated} · Refreshes every minute.</p> : null}<button type="button" onClick={live.reload}>Refresh live results</button></details>
+    <details className="aurora-info-section"><summary>Results information & refresh</summary><p>Only confirmed or commissioner-approved results count. Late and possible duplicate games also need Lobo’s approval.</p>{live.updated ? <p>Checked at {live.updated} · Refreshes every five minutes. Public results may be cached for up to one minute.</p> : null}<button type="button" onClick={live.reload}>Refresh live results</button></details>
     {state.totals.length ? <details><summary>GM-published results reference</summary><p>This is a separately published checkpoint, not additional games. It is not added to the live totals above.</p><ul>{state.totals.map(r => <li key={`${r.location}:${r.faction}`}>{locationName(r.location)} · {r.faction}: {r.tp} TP · {r.op} OP</li>)}</ul></details> : null}
   </section>
 }

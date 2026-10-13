@@ -14,16 +14,23 @@ const {default:handler}=await import('../api/aurora-activity.mjs')
 const originalFetch=globalThis.fetch
 try {
   globalThis.fetch=async()=>({ok:true,json:async()=>({turn:1,totals:[],games:[{id:'1',turn:1,date:'2026-10-13',location:'korin-range',mission:'Test',playerA:{name:'A',faction:'aleph',id:'private-a'},playerB:{name:'B',faction:'pano',id:'private-b'},opA:8,opB:2,tpA:5,tpB:0,secretClaims:['secret'],notes:'private notes'}],claims:['secret']})})
-  let result,code
-  const response={setHeader(){},status(value){code=value;return this},json(value){result=value}}
+  let result,code;const headers={}
+  const response={setHeader(key,value){headers[key.toLowerCase()]=value},status(value){code=value;return this},json(value){result=value}}
   await handler({method:'GET'},response)
   assert.equal(code,200)
+  assert.equal(headers['vercel-cdn-cache-control'],'public, s-maxage=60')
+  assert.equal(headers['cache-control'],'public, max-age=0, must-revalidate')
+  await handler({method:'GET',url:'/api/aurora-activity?refresh=1'},response)
+  assert.equal(headers['cache-control'],'no-store')
+  assert.equal(headers['vercel-cdn-cache-control'],'no-store')
   assert(!JSON.stringify(result).includes('secret'))
   assert(!JSON.stringify(result).includes('private'))
   globalThis.fetch=async()=>({ok:false})
   await handler({method:'GET'},response)
   assert.equal(code,503)
+  assert.equal(headers['cache-control'],'no-store')
+  assert.equal(headers['vercel-cdn-cache-control'],'no-store')
   await handler({method:'POST'},response)
   assert.equal(code,405)
-  console.log('PASS: public activity projection removes private fields and fails closed.')
+  console.log('PASS: public activity projection removes private fields, shares successful public responses, bypasses caching for manual refresh and never caches failures.')
 } finally {globalThis.fetch=originalFetch}

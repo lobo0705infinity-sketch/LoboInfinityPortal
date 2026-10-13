@@ -10,12 +10,13 @@ import { createCampaignGameStore } from '../bot/aurora-game-store.mjs'
 const directory = await mkdtemp(join(tmpdir(), 'aurora-experience-'))
 const store = createCampaignGameStore(join(directory, 'games.json'))
 let state = emptyAuroraState(), failActivity = false
+const activityRequests=[]
 const a = {userId:'111111111111111111',name:'Verified A',faction:'nomads'}, b = {userId:'222222222222222222',name:'Verified B',faction:'aleph'}
 const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json','.woff2':'font/woff2'}
 const server = createServer(async (req,res) => {
  const send=(value,status=200)=>{res.writeHead(status,{'content-type':'application/json'});res.end(JSON.stringify(value))}
  if(req.url.startsWith('/api/aurora-campaign'))return send({revision:'test',publishedAt:'',state})
- if(req.url.startsWith('/api/aurora-activity'))return failActivity ? send({error:'Unavailable'},503) : send(await store.activity(state.turn))
+ if(req.url.startsWith('/api/aurora-activity')){activityRequests.push(req.url);return failActivity ? send({error:'Unavailable'},503) : send(await store.activity(state.turn))}
  if(req.url.startsWith('/api/aurora-registration'))return send({cap:5,total:0,available:true,factions:AURORA_REGISTRATION_FACTIONS.map(f=>({...f,count:0,locked:false}))})
  if(req.url.startsWith('/api/aurora-signup'))return send({ready:true,account:null,registration:null})
  if(req.url.startsWith('/api/aurora-games'))return send({error:'Sign in with your campaign Discord account.'},401)
@@ -29,6 +30,7 @@ const browser=await chromium.launch({headless:true,...(process.env.CAMPAIGN_TEST
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}), errors=[];page.on('pageerror',e=>errors.push(e.message))
  const mockRoute=async route=>{const req=route.request();let body;try{body=req.postDataJSON()}catch{};if(body?.action==='session'||new URLSearchParams(req.postData()||'').get('action')==='session'||new URL(req.url()).searchParams.get('action')==='session')return route.fulfill({contentType:'application/json',body:JSON.stringify({success:true,authenticated:true,permissions:{},user:{role:'Commissioner',displayName:'Test commissioner',enabled:true}})});if(!req.url().startsWith(root))return route.abort();return route.continue()}
+ await page.clock.install()
  await page.route('**/*',mockRoute)
  await page.goto(`${root}/campaign/aurora-vii`)
  await page.getByRole('heading',{name:'Your faction. Your foothold. Your campaign.'}).waitFor()
@@ -44,10 +46,27 @@ try{
  await page.goto(`${root}/campaign/aurora-vii/standings`)
  await page.getByText('0 confirmed games this Turn.',{exact:true}).waitFor()
  assert.equal(await page.getByText('Verified A vs Verified B',{exact:true}).count(),0)
+ const checks=activityRequests.length
+ await page.clock.runFor(60000)
+ assert.equal(activityRequests.length,checks,'No one-minute polling')
+ const periodic=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/aurora-activity')
+ await page.clock.runFor(240001);await periodic
+ assert.equal(activityRequests.length,checks+1,'One check at five minutes')
+ assert.equal(activityRequests.at(-1),'/api/aurora-activity')
+ await page.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,value:'hidden'});document.dispatchEvent(new Event('visibilitychange'))})
+ await page.clock.runFor(300000)
+ assert.equal(activityRequests.length,checks+1,'Hidden pages do not poll')
+ const returned=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/aurora-activity')
+ await page.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,value:'visible'});document.dispatchEvent(new Event('visibilitychange'))});await returned
+ assert.equal(activityRequests.length,checks+2,'Return to visible page catches up')
+ await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')))
+ assert.equal(activityRequests.length,checks+2,'Recent visibility checks are throttled')
  await store.act({id:first.id,revision:first.revision,action:'confirm'},b.userId,false)
  await page.getByText('Results information & refresh',{exact:true}).click()
  await page.getByRole('button',{name:'Refresh live results'}).click()
  await page.getByText('Verified A vs Verified B',{exact:true}).waitFor()
+ assert.equal(activityRequests.at(-1),'/api/aurora-activity?refresh=1','Manual refresh requests uncached results')
+ await page.clock.resume()
  assert.equal(await page.locator(`#battle-${first.id}`).count(),1)
  assert.equal(await page.locator(`#battle-${first.id}`).getAttribute('open'),null)
  await page.locator(`#battle-${first.id} > summary`).click()

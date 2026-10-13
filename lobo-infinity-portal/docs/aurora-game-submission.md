@@ -60,3 +60,5 @@ The experience check also verifies the focused shell, compact record rows,
 320px phone layout, map position, guide access and portal navigation restoration.
 
 Campaign games require opponents from different registered factions. Same-faction opponents are excluded from the form and rejected by the ledger for both Territory Battles and Narrative Missions, including late submissions. The commissioner cannot approve a same-faction result.
+
+Public Map and Results activity checks run every five minutes while visible. Visibility changes within that interval do not trigger extra checks. Successful public activity is shared in Vercel’s CDN for 60 seconds; browser caching is disabled. Manual Refresh uses a fixed uncached refresh endpoint to get current results. Errors, game submissions, participant reviews, and private claims remain uncached. The portal snapshot schedule is unchanged.

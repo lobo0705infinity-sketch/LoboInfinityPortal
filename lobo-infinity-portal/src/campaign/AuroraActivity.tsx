@@ -6,12 +6,15 @@ export function useCampaignActivity(turn:number) {
   const [data,setData]=useState<Activity|null>(null),[error,setError]=useState(''),[updated,setUpdated]=useState(''),[refresh,setRefresh]=useState(0)
   useEffect(()=>{
     const controller=new AbortController()
-    async function load(){
-      if(document.visibilityState==='hidden')return
-      try{const r=await fetch('/api/aurora-activity',{cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('Confirmed game activity is temporarily unavailable. Try refreshing.');const v=await r.json();if(!Array.isArray(v.games)||!Array.isArray(v.totals)||v.turn!==turn)throw Error('Waiting for confirmed results for this Turn.');if(!controller.signal.aborted){setData(v);setError('');setUpdated(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}))}}
+    let loading=false,lastCheck=0
+    async function load(manual=false){
+      if(document.visibilityState==='hidden'||loading||(!manual&&Date.now()-lastCheck<300000))return
+      loading=true;lastCheck=Date.now()
+      try{const r=await fetch(manual?'/api/aurora-activity?refresh=1':'/api/aurora-activity',{cache:manual?'no-store':'default',credentials:'omit',signal:controller.signal});if(!r.ok)throw Error('Confirmed game activity is temporarily unavailable. Try refreshing.');const v=await r.json();if(!Array.isArray(v.games)||!Array.isArray(v.totals)||v.turn!==turn)throw Error('Waiting for confirmed results for this Turn.');if(!controller.signal.aborted){setData(v);setError('');setUpdated(new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}))}}
       catch(e){if(!controller.signal.aborted)setError((e as Error).message)}
+      finally{loading=false}
     }
-    void load();const timer=setInterval(()=>void load(),60000);const visible=()=>void load();document.addEventListener('visibilitychange',visible)
+    void load(refresh>0);const timer=setInterval(()=>void load(),300000);const visible=()=>void load();document.addEventListener('visibilitychange',visible)
     return()=>{controller.abort();clearInterval(timer);document.removeEventListener('visibilitychange',visible)}
   },[turn,refresh])
   return {data:data?.turn===turn?data:null,error,updated,reload:()=>setRefresh(n=>n+1)}
