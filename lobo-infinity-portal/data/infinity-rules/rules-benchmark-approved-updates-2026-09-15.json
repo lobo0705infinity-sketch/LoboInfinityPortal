@@ -2965,6 +2965,81 @@
           "style": "TABLE_SCENARIO"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-531",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "what happens if a msv1 user shoots through white noise at an albedo user?",
+      "approvedAnswer": "MSV1 cannot initiate a LoF-requiring shot through White Noise, including against Albedo. Only if the MSV1 trooper is targeted by a BS Attack through the zone can it draw LoF back to that attacker, treating the zone as Poor Visibility (-6). MSV1 cannot reduce that -6; also apply the target’s Albedo MOD and other applicable MODs, subject to the normal total MOD cap. This normally permits return fire in Reactive Turn, but also permits a second Short Skill BS Attack in Active Turn after receiving a BS Attack ARO. It is conditional on being attacked, not restricted to Reactive Turn. Discover alone does not enable it. This assumes no additional exception such as Sixth Sense.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 144,
+          "section": "VISIBILITY CONDITIONS — WHITE NOISE ZONE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 119,
+          "section": "ALBEDO"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "fuzzyRequiredTerms": [
+        "msv1",
+        "white noise",
+        "albedo"
+      ],
+      "fuzzyExcludedTerms": [
+        "sixth sense",
+        "eclipse",
+        "speculative",
+        "intuitive",
+        "scenario"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-531-q1",
+          "question": "what happens if a msv1 user shoots through white noise at an albedo user?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q2",
+          "question": "Can MSV1 shoot an Albedo user through White Noise in the Active Turn?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q3",
+          "question": "Can MSV1 return fire through White Noise at an Albedo trooper?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q4",
+          "question": "Is shooting an Albedo user through White Noise with MSV1 only possible in reactive?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q5",
+          "question": "An Albedo model shoots my MSV1 through White Noise. What modifiers apply to my ARO?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q6",
+          "question": "My active MSV1 moves and an Albedo enemy shoots through White Noise as an ARO. Can I shoot back?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q7",
+          "question": "Can an MSV1 trooper initiate a BS Attack through White Noise against Albedo?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-531-q8",
+          "question": "Does MSV1 reduce the White Noise penalty when returning fire at Albedo?",
+          "style": "TABLE_SCENARIO"
+        }
+      ]
     }
   ]
 }

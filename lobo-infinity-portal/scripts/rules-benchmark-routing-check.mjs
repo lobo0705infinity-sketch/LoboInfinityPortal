@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1410)
+assert.equal(index.canonicalCases, 1411)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
 // These are deliberately absent from the benchmark's exact variants. They
@@ -574,3 +574,23 @@ assert.equal(calls, 3, 'All CC Burst/ARO phrasings must bypass the provider')
 console.log('PASS - ambiguous CC +1B/ARO questions distinguish profile MODs, Martial Arts, and multiple-combatant bonuses.')
 
 console.log(`PASS - ${index.canonicalCases} trusted benchmark rulings route before DeepSeek; unmatched questions fall back exactly once.`)
+
+// Reported MSV1/White Noise/Albedo interaction: require the attack trigger in both turns.
+const whiteNoiseCase = tacballDocument.cases.find(entry => entry.id === 'new-topic-2-531')
+for (const { question } of whiteNoiseCase.queryVariants) {
+  const response = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('White Noise benchmark must bypass paid AI') } })
+  assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(response.benchmark.id, whiteNoiseCase.id, question)
+  assert.match(response.deepSeek.answer, /cannot initiate/)
+  assert.match(response.deepSeek.answer, /targeted by a BS Attack/)
+  assert.match(response.deepSeek.answer, /second Short Skill.*Active Turn/)
+  assert.match(response.deepSeek.answer, /cannot reduce that -6/)
+  assert.match(response.deepSeek.answer, /Albedo MOD/)
+  const answer = formatRulesDiscordResponse(response).embeds[0].fields.find(field => field.name === 'ANSWER').value
+  assert.ok(answer.length <= 1024, question)
+}
+for (const question of [
+  'Can MSV1 shoot an Albedo user through White Noise with Sixth Sense?',
+  'Can MSV1 shoot an Albedo user through Eclipse?',
+]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, whiteNoiseCase.id, question)
+console.log('White Noise/Albedo benchmark: trigger, both turns, modifiers, exceptions, and Discord output passed.')
