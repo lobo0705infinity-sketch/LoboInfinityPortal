@@ -25,7 +25,16 @@ for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 2, `${m
 const grouped = loboWorkshopMapSections.flatMap(section => section.layouts.flatMap(layout => layout.saves.map(map => map.id)))
 assert.equal(grouped.length, 40)
 assert.equal(new Set(grouped).size, 40)
-assert.deepEqual(loboWorkshopMapSections.map(section => section.layouts.reduce((n, layout) => n + layout.saves.length, 0)), [28, 8, 4])
+assert.equal(loboWorkshopMapSections.length, 20)
+assert.deepEqual(loboWorkshopMapSections.map(section => section.title), [...missions.keys()].sort((a, b) => a.localeCompare(b)))
+for (const section of loboWorkshopMapSections) {
+  assert.equal(section.layouts.length, 2)
+  for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
+}
+for (const map of loboWorkshopMaps) {
+  assert.equal(map.previewKind, 'tts')
+  assert.notEqual(map.overhead, map.angled)
+}
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
 const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit')

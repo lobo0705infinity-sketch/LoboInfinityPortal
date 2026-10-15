@@ -17,16 +17,13 @@ const currentByLabel = new Map(loboWorkshopMaps.flatMap(map =>
   [map.slug, map.workshopBagName, map.workshopName].map(label => [normalize(label), map])))
 export const resolveLoboWorkshopMapLabel = label => currentByLabel.get(normalize(label)) || resolveLegacyLabel(label)
 
-const definitions = [
-  { id: 'standard', title: 'Standard and split deployment', description: 'Two terrain setups per mission using straight deployment edges or split deployment zones.', matches: map => /Standard|Split/.test(map.family) },
-  { id: 'diagonal', title: 'Diagonal deployment', description: 'Two setups per diagonal mission, with circular deployment templates in opposing corners.', matches: map => map.family === 'Diagonal deployment' },
-  { id: 'objective-room', title: 'Objective rooms', description: 'Two setups per room mission, with an 8-inch objective room and open entrance approaches.', matches: map => map.family === 'Objective rooms' },
-]
-export const loboWorkshopMapSections = definitions.map(({ matches, ...section }) => {
-  const layouts = new Map()
-  for (const map of loboWorkshopMaps.filter(matches)) {
-    if (!layouts.has(map.layoutKey)) layouts.set(map.layoutKey, { layoutKey: map.layoutKey, name: map.name, saves: [] })
-    layouts.get(map.layoutKey).saves.push(map)
-  }
-  return { ...section, eventUrl: null, layouts: [...layouts.values()] }
-})
+const missionNames = [...new Set(loboWorkshopMaps.flatMap(map => map.missionSetups))]
+  .sort((a, b) => a.localeCompare(b))
+export const loboWorkshopMapSections = missionNames.map(title => ({
+  id: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+  title,
+  description: `Two terrain setups for ${title}.`,
+  eventUrl: null,
+  layouts: loboWorkshopMaps.filter(map => map.missionSetups.includes(title))
+    .map(map => ({ layoutKey: map.layoutKey, name: map.name, saves: [map] })),
+}))

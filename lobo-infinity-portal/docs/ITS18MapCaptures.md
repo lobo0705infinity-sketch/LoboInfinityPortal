@@ -1,6 +1,6 @@
 # Fresh ITS18 map captures
 
-Publication is on hold until fresh screenshots are available for the current Workshop collection: 40 setups, 20 missions, 16 terrain layouts. The Workshop update verified on 2026-10-15 at 06:45:36 UTC has matching bag names, object IDs and loader scripts.
+The October 15 capture batch has been received and imported: 80 screenshots covering 40 setups, 20 missions and 16 terrain layouts. The browser groups the setups alphabetically by mission, two per mission. The Workshop update verified on 2026-10-15 at 06:45:36 UTC has matching bag names, object IDs and loader scripts.
 
 Use the updated automatic Windows capture package: `public/assets/maps/its18-20261015T064536Z/Lobo-TTS-Map-Capture.zip`. It reuses the previous PowerShell helper and TTS external-editor connection, with all 40 current setups, matching portal filenames, restored alternate states, deployment markings and consistent camera orientation.
 
@@ -27,6 +27,6 @@ Put the 80 images into one folder. Import them with:
 node scripts/import-workshop-map-captures.mjs /path/to/captures
 ```
 
-The importer validates the complete batch before updating the catalogue and writes versioned WebP assets. Review the resulting pages on desktop and mobile before publishing. Existing photos dated September 28 remain on historical map pages and must not stand in for revised setups. The diagrams currently in the draft are explicitly labelled as diagrams.
+The importer validates the complete batch before updating the catalogue and writes versioned WebP assets. Review the resulting pages on desktop and mobile before publishing. Existing photos dated September 28 remain on historical map pages and must not stand in for revised setups. All current setup pages now show the fresh overhead and angled TTS screenshots; original diagrams remain stored as reference assets.
 
 Google Forms for historical events keep their existing map scopes. This update changes the current portal map browser and preserves old report links and ratings; it does not silently reassign tables in completed events.

@@ -36,7 +36,7 @@
 .lobo-map-collection-heading p:not(.eyebrow) { max-width: 70ch; margin: 0; color: var(--text-soft, #c1cad5); line-height: 1.45; }
 .lobo-map-collection-meta { display: grid; justify-items: end; gap: .35rem; flex: none; color: #a8c0cc; font-size: .82rem; }
 .lobo-map-collection-meta a { color: #8fe3f6; font-weight: 800; text-decoration: none; }
-.lobo-maps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+.lobo-maps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .lobo-map-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; background: #0e1b27; text-decoration: none; transition: border-color .15s, transform .15s; }
 .lobo-map-card:hover, .lobo-map-card:focus-visible { border-color: #8fe3f6; transform: translateY(-2px); }
 .lobo-map-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #15222b; }
@@ -95,3 +95,6 @@
 .lobo-map-card[data-preview="diagram"] img { object-fit: contain; background: #f1f1ed; }
 
 .lobo-map-detail[data-preview="diagram"] .lobo-map-detail-hero img { object-fit: contain; background: #f1f1ed; }
+
+/* Square previews keep the full board visible while trimming peripheral grass. */
+.lobo-map-card[data-preview="tts"] img { height: auto; aspect-ratio: 1; object-fit: cover; }
