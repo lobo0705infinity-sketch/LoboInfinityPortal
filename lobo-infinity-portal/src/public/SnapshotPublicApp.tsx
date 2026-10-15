@@ -162,11 +162,11 @@ function Dashboard() {
         </nav>
         <p className="snapshot-dashboard-public-note"><strong>What can I use without joining the league?</strong> Browse Army Intelligence, battle reports, players, factions, missions, streams, and public event results. Register for an event when you want to participate; casual games have a separate submission form.</p>
       </section>
-      <Link className="portal-walkthrough-card" to="/portal-guide">
+      <a className="portal-walkthrough-card" href="https://www.youtube.com/watch?v=9doT_9mcISQ" target="_blank" rel="noopener noreferrer">
         <img src="/assets/portal-guide/poster-v2.jpg" alt="" width="640" height="360" loading="lazy" />
-        <span><small>New to the portal?</small><strong>Watch the portal walkthrough</strong><span>5 minutes · Events, reports, factions, players, missions, and Discord tools</span></span>
+        <span><small>New to the portal?</small><strong>Watch the portal walkthrough on YouTube</strong><span>7:36 · Events, reports, army tools, and the Aurora VII campaign</span></span>
         <b aria-hidden="true">▶</b>
-      </Link>
+      </a>
       {featuredReport ? <section className="snapshot-dashboard-featured-report" aria-labelledby="dashboard-featured-report-title">
         <div>
           <p className="eyebrow">Featured battle report · BR-{featuredReport.id}</p>

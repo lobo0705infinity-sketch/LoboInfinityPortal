@@ -13,7 +13,7 @@ const featured = [
   },
   {
     title: 'Portal Guide',
-    description: 'Watch the four-minute walkthrough or jump to a chapter.',
+    description: 'Watch the updated walkthrough on YouTube or jump to a chapter.',
     icon: 'rules' as const,
     to: '/portal-guide',
   },

@@ -2,111 +2,136 @@ export const portalGuideChapters = [
   {
     "id": "welcome",
     "title": "Welcome",
-    "start": 0.0
+    "start": 0
   },
   {
     "id": "dashboard",
-    "title": "Dashboard",
-    "start": 8.858
+    "title": "Start on the dashboard",
+    "start": 11.32
   },
   {
     "id": "navigation",
-    "title": "Navigation & artwork",
-    "start": 20.834
+    "title": "Navigation and artwork",
+    "start": 26.2
   },
   {
     "id": "events",
-    "title": "Events",
-    "start": 36.834
+    "title": "Find your next game",
+    "start": 44.02
   },
   {
     "id": "standings",
-    "title": "Standings",
-    "start": 47.911
+    "title": "Follow your event",
+    "start": 58.06
   },
   {
     "id": "mission-map",
-    "title": "Mission & Map",
-    "start": 58.653
+    "title": "Prepare for a league game",
+    "start": 74.26
   },
   {
     "id": "tts-maps",
-    "title": "TTS Map Library",
-    "start": 70.181
+    "title": "Choose a TTS table",
+    "start": 88.96
   },
   {
     "id": "table-details",
-    "title": "Table details",
-    "start": 82.13
+    "title": "Inspect the terrain",
+    "start": 107.02
   },
   {
     "id": "submit-game",
-    "title": "Submit Game",
-    "start": 93.852
+    "title": "Report an ordinary game",
+    "start": 121.62
   },
   {
     "id": "battle-reports",
-    "title": "Battle Reports",
-    "start": 108.236
+    "title": "Find a battle report",
+    "start": 137.04
   },
   {
     "id": "report-details",
-    "title": "Report details",
-    "start": 117.424
+    "title": "Read the full report",
+    "start": 150.3
   },
   {
     "id": "army-intelligence",
-    "title": "Army Intelligence",
-    "start": 131.718
-  },
-  {
-    "id": "known-lists",
-    "title": "Known Army Lists",
-    "start": 143.929
+    "title": "Explore Army Intelligence",
+    "start": 170.0
   },
   {
     "id": "army-lists",
-    "title": "Army Lists on desktop",
-    "start": 153.929
+    "title": "Browse and open army lists",
+    "start": 188.16
   },
   {
     "id": "mobile-lists",
-    "title": "Army Lists on mobile",
-    "start": 163.929
+    "title": "Use lists on your phone",
+    "start": 202.98
   },
   {
     "id": "rankings",
-    "title": "Rankings",
-    "start": 178.929
-  },
-  {
-    "id": "rank-comparisons",
-    "title": "Global & in-faction ranks",
-    "start": 193.849
+    "title": "Understand profile rankings",
+    "start": 215.24
   },
   {
     "id": "factions",
-    "title": "Factions",
-    "start": 205.849
+    "title": "Explore faction results",
+    "start": 237.2
   },
   {
     "id": "players",
-    "title": "Players",
-    "start": 220.696
+    "title": "Meet the players",
+    "start": 251.54
   },
   {
     "id": "missions",
-    "title": "Missions",
-    "start": 237.305
+    "title": "Explore missions and streams",
+    "start": 264.5
+  },
+  {
+    "id": "campaign",
+    "title": "Aurora VII campaign",
+    "start": 283.18
+  },
+  {
+    "id": "campaign-register",
+    "title": "Join a campaign faction",
+    "start": 299.1
+  },
+  {
+    "id": "campaign-missions",
+    "title": "Read the current briefing",
+    "start": 318.2
+  },
+  {
+    "id": "campaign-map",
+    "title": "Follow fighting on the map",
+    "start": 334.52
+  },
+  {
+    "id": "campaign-games",
+    "title": "Report and confirm a campaign game",
+    "start": 353.64
+  },
+  {
+    "id": "campaign-results",
+    "title": "Campaign results and private claims",
+    "start": 377.54
   },
   {
     "id": "little-helper",
-    "title": "Lobo’s Little Helper",
-    "start": 256.289
+    "title": "Discord list and combat tools",
+    "start": 394.18
+  },
+  {
+    "id": "helper-reference",
+    "title": "Rules, missions and finding a game",
+    "start": 422.62
   },
   {
     "id": "next-move",
     "title": "Your next move",
-    "start": 287.663
+    "start": 444.7
   }
 ] as const
