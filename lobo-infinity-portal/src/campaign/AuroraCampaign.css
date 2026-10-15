@@ -273,8 +273,3 @@
 .aurora-promo-card > span > span { font-size: .9rem; color: #a8d9ec; }
 .aurora-promo-card:hover { border-color: #a8d9ec; }
 .aurora-promo-card:focus-visible { outline: 3px solid #a8d9ec; outline-offset: 4px; }
-
-/* Keep long campaign rules readable while containing table scrolling on phones. */
-.aurora-info-section .table-wrapper table { width: 100%; min-width: 36rem; }
-.aurora-info-section .table-wrapper th,
-.aurora-info-section .table-wrapper td { padding: .65rem .75rem; vertical-align: top; }
