@@ -11,3 +11,9 @@ Before the first publication, the site displays unannounced state, not invented 
 Authentication uses the existing commissioner session verifier. The API rejects unknown fields at every level, future chapter Turn numbers, invalid links, unsupported factions and territories, and stale revisions. All fields on the publication screen are public. Private GM records are maintained elsewhere and must never be imported into this screen.
 
 Run `node tests/aurora-publication-check.mjs` and the normal `npm run build:vercel` release checks. Terrain images are extracted exclusively from the supplied public territory guide; the planetary map comes from the public player guide. Assets use a versioned path so future replacements do not conflict with immutable asset caching.
+
+## Faction decisions and mercenary rules
+
+The public Player Rules explain the Faction Commander/deputy decision process and the current Credit-funded NA2 contracts. Factions select their own representatives and tell the GM privately; the portal does not assign commander permissions or publish private selections. Commanders seek consensus, make the final call by the GM deadline when needed, and submit one official set of faction decisions. Players remain free to choose legal games; rules judgments and scoring remain with the GM.
+
+All eight Conquest factions, Tohaa and Combined Army may hire NA2 from six-Credit campaign treasuries. Current balances, bids, accepted terms and purchases stay outside public publication state. Mercenary support and contract outcomes are manually resolved by the GM; raw reported TP/OP remain earned game totals. Do not copy the GM guide, combined tracking workbook, sample private briefings or master archive into public assets.
