@@ -1,6 +1,8 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { loboWorkshopMaps, loboWorkshopMapSections } from '../shared/lobo-workshop-maps.mjs'
+// Historical event forms retain their original scope independently of the
+// revised ITS18 map browser; completed events must keep their saved choices.
+import { loboWorkshopMaps, loboWorkshopMapSections } from '../shared/lobo-workshop-maps-legacy.mjs'
 
 const destination = fileURLToPath(new URL('../backend/WorkshopMapCatalog.gs', import.meta.url))
 const scopes = Object.fromEntries(loboWorkshopMapSections.map((section) => [section.id,

@@ -91,3 +91,7 @@
 .lobo-maps-page a:focus-visible, .lobo-maps-page button:focus-visible, .lobo-maps-page input:focus-visible, .lobo-maps-page select:focus-visible { outline: 3px solid #f2c35a; outline-offset: 2px; }
 @media (max-width: 920px) { .lobo-maps-hero { grid-template-columns: 1fr; } .lobo-maps-hero-image { min-height: 260px; } .lobo-maps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 650px) { .lobo-maps-hero { padding: .7rem; } .lobo-maps-hero-copy { padding: .7rem; } .lobo-maps-hero-image { min-height: 205px; } .lobo-maps-grid, .lobo-map-detail-view-grid, .lobo-map-detail-info { grid-template-columns: 1fr; } .lobo-map-collection-heading { align-items: start; flex-direction: column; } .lobo-map-collection-meta { justify-items: start; } .lobo-map-detail-heading { display: grid; } .lobo-map-detail-heading > a { justify-self: start; } .lobo-map-detail-hero { aspect-ratio: 16 / 10; } .lobo-map-detail-adjacent strong { font-size: .85rem; } }
+
+.lobo-map-card[data-preview="diagram"] img { object-fit: contain; background: #f1f1ed; }
+
+.lobo-map-detail[data-preview="diagram"] .lobo-map-detail-hero img { object-fit: contain; background: #f1f1ed; }

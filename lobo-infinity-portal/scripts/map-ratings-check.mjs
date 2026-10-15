@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import vm from 'node:vm'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-import { loboWorkshopMaps, loboWorkshopMapSections } from '../shared/lobo-workshop-maps.mjs'
+import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
+import { loboWorkshopMapSections } from '../shared/lobo-workshop-maps-legacy.mjs'
 
 const source = (file) => readFileSync(new URL(`../backend/${file}`, import.meta.url), 'utf8')
 const context = vm.createContext({
