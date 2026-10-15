@@ -3040,6 +3040,85 @@
           "style": "TABLE_SCENARIO"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-532",
+      "category": "NEW_MULTI_RULE_INTERACTIONS",
+      "canonicalQuestion": "what happens if an MSV1 trooper gets shot through white noise by a trooper with albedo -3 and he returns fire. the MSV1 trooper is in a fire team and has sixth sense. What negative mods does he apply?",
+      "approvedAnswer": "When an MSV1 trooper with Sixth Sense is targeted by a BS Attack through White Noise and returns fire at that attacker, Sixth Sense cancels the resulting -6 Poor Visibility MOD: White Noise applies 0. Albedo still applies its listed MOD; Sixth Sense does not cancel Albedo. Against Albedo (-3), apply -3, not -9. Against Albedo (-6), apply -6. Range, Partial Cover and other applicable MODs remain: Albedo (-3) plus Partial Cover gives -6 before Range and applicable Fireteam bonuses. This assumes the trooper currently has Sixth Sense, including any valid Fireteam grant. The incoming BS Attack is required; this does not grant permission to initiate a shot through White Noise.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "DEPENDS",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 111,
+          "section": "SIXTH SENSE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 144,
+          "section": "VISIBILITY CONDITIONS — WHITE NOISE ZONE"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 119,
+          "section": "ALBEDO"
+        },
+        {
+          "sourceId": "infinity-faq-n5-v0.1",
+          "page": 2,
+          "section": "SPECIAL SKILLS FAQ"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "fuzzyRequiredTerms": [
+        "msv1",
+        "white noise",
+        "albedo",
+        "sixth sense"
+      ],
+      "fuzzyExcludedTerms": [
+        "eclipse",
+        "speculative",
+        "intuitive"
+      ],
+      "queryVariants": [
+        {
+          "id": "new-topic-2-532-q1",
+          "question": "what happens if an MSV1 trooper gets shot through white noise by a trooper with albedo -3 and he returns fire. the MSV1 trooper is in a fire team and has sixth sense. What negative mods does he apply?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q2",
+          "question": "Can MSV1 shoot an Albedo user through White Noise with Sixth Sense?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q3",
+          "question": "My linked MSV1 has Sixth Sense and returns fire through White Noise at Albedo -3. What MODs apply?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q4",
+          "question": "Does Sixth Sense cancel Albedo -3 as well as White Noise for an MSV1 ARO?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q5",
+          "question": "With MSV1 and Sixth Sense, what penalty applies when returning fire through White Noise against Albedo -6?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q6",
+          "question": "If the Albedo -3 attacker has cover, what negative modifiers does my MSV1 with Sixth Sense take returning fire through White Noise?",
+          "style": "TABLE_SCENARIO"
+        },
+        {
+          "id": "new-topic-2-532-q7",
+          "question": "Does a fireteam MSV1 with sixth sense take -9 when an albedo -3 enemy shoots through white noise?",
+          "style": "TABLE_SCENARIO"
+        }
+      ]
     }
   ]
 }

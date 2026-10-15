@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1411)
+assert.equal(index.canonicalCases, 1412)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
 // These are deliberately absent from the benchmark's exact variants. They
@@ -594,3 +594,23 @@ for (const question of [
   'Can MSV1 shoot an Albedo user through Eclipse?',
 ]) assert.notEqual((await findApprovedRulesAnswer(question))?.id, whiteNoiseCase.id, question)
 console.log('White Noise/Albedo benchmark: trigger, both turns, modifiers, exceptions, and Discord output passed.')
+
+// Sixth Sense removes White Noise, never the separate Albedo equipment MOD.
+const sixthSenseCase = tacballDocument.cases.find(entry => entry.id === 'new-topic-2-532')
+for (const question of [...sixthSenseCase.queryVariants.map(v => v.question),
+  'A multispectral visor level 1 model with sixth sense is attacked through white noise by albedo -3. How does its response work?']) {
+  const response = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Sixth Sense benchmark must bypass paid AI') } })
+  assert.equal(response.answerSource, 'APPROVED_BENCHMARK', question)
+  assert.equal(response.benchmark.id, sixthSenseCase.id, question)
+  assert.match(response.deepSeek.answer, /White Noise applies 0/)
+  assert.match(response.deepSeek.answer, /Sixth Sense does not cancel Albedo/)
+  assert.match(response.deepSeek.answer, /apply -3, not -9/)
+  assert.match(response.deepSeek.answer, /Partial Cover gives -6/)
+  assert.match(response.deepSeek.answer, /incoming BS Attack is required/)
+  const field = formatRulesDiscordResponse(response).embeds[0].fields.find(field => field.name === 'ANSWER').value
+  assert.ok(field.length <= 1024)
+  assert.match(field, /White Noise applies 0/)
+  assert.match(field, /does not cancel Albedo/)
+}
+assert.notEqual((await findApprovedRulesAnswer('MSV1 with Sixth Sense against Albedo through Eclipse'))?.id, sixthSenseCase.id)
+console.log('PASS - Sixth Sense/White Noise/Albedo routing and Discord answer.')

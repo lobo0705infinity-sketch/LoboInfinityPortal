@@ -87,6 +87,14 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
     if (entry) return result(entry, 1, 'TACBALL_TEAM_OPS_INTENT')
   }
 
+  // Keep this visibility exception separate from the no-Sixth-Sense ruling.
+  if (/\bmsv ?1\b|multispectral visor(?: level)? 1/.test(corrected)
+    && ['white noise', 'albedo', 'sixth sense'].every(term => corrected.includes(term))
+    && !/eclipse|speculative|intuitive/.test(corrected)) {
+    const entry = index.entries.find(candidate => candidate.familyId === 'new-topic-2-532')
+    if (entry) return result(entry, 1, 'WHITE_NOISE_SIXTH_SENSE_INTENT')
+  }
+
   const queryTokens = tokenSet(corrected)
   if (queryTokens.size < 2) return null
   const families = new Map()
