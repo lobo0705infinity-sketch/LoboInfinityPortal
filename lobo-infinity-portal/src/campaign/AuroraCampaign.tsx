@@ -17,6 +17,7 @@ import { campaignScore } from '../../shared/aurora-games.mjs'
 import { useCampaignActivity, sampleActivity, LocationActivity } from './AuroraActivity'
 import { locationActivity } from '../../shared/aurora-activity.mjs'
 import { LOBO_DISCORD_INVITE_URL } from '../config/communityLinks'
+import { AURORA_FACTION_PROMOS, AURORA_TRAILER_ID, LOBO_YOUTUBE_CHANNEL_URL, youtubeWatchUrl } from '../config/promoVideos'
 import './AuroraCampaign.css'
 
 export const AURORA_PATH = '/campaign/aurora-vii'
@@ -35,8 +36,8 @@ export default function AuroraCampaign() {
     {publication ? <p className="aurora-campaign-status">{state.turn ? `Turn ${state.turn} of 6 · ${AURORA_TURNS[state.turn - 1].title}${state.deadline ? ` · Ends ${formatDate(state.deadline)}` : ''}` : 'Registration open · Turn 1 awaiting announcement'}</p> : null}
     <nav className="aurora-focused-nav" aria-label="Aurora VII navigation"><div><NavLink end to={AURORA_PATH}>Campaign</NavLink><NavLink to={`${AURORA_PATH}/map`} className={section === 'territories' ? 'active' : undefined}>Map</NavLink><NavLink to={`${AURORA_PATH}/standings`}>Results</NavLink></div><details key={section} className="aurora-information-menu"><summary className={['rules','story','missions','register'].includes(section) ? 'is-current' : undefined}>Information</summary><div><Link to={`${AURORA_PATH}/missions`}>Mission briefing</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><Link to={`${AURORA_PATH}/story`}>Campaign Story</Link><Link to={`${AURORA_PATH}/register`}>Registration</Link><Link to="/commissioner/aurora-vii">Commissioner tools</Link></div></details></nav>
     {error ? <div className="aurora-notice" role="status"><p>{error} Public reference material remains available; campaign status below is not confirmed.</p><button onClick={reload} type="button">Try again</button></div> : !publication ? <p role="status">Loading the latest public campaign briefing…</p> : null}
-    {!known ? <Panel title="Campaign page not found"><Link to={AURORA_PATH}>Return to Aurora VII →</Link></Panel> : section === 'map' || section === 'territories' ? <CampaignMap key={territoryId || "map"} state={state} initialTerritory={territoryId}/> : section === 'register' ? <AuroraRegistration/> : section === 'submit' ? <>{!state.turn ? <Panel title="Game reporting opens with Turn 1"><p>Register now. Lobo will announce the active Turn, its deadline, four Vulnerable Territories and mission briefing before game submissions open.</p><Link to={`${AURORA_PATH}/register`}>Open campaign registration →</Link></Panel> : null}<AuroraGames submit/></> : section === 'games' ? <AuroraGames/> : section === 'missions' ? <CampaignMissions state={state}/> : section === 'standings' ? <CampaignStandings state={state}/> : section === 'story' ? <CampaignStory state={state}/> : section === 'rules' ? <CampaignRules/> : <CampaignOverview state={state}/>}
-    <footer className="aurora-focused-footer"><Link to="/">Lobo Infinity Portal</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><a href={LOBO_DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">Discord ↗</a></footer>
+    {!known ? <Panel title="Campaign page not found"><Link to={AURORA_PATH}>Return to Aurora VII →</Link></Panel> : section === 'map' || section === 'territories' ? <CampaignMap key={territoryId || "map"} state={state} initialTerritory={territoryId}/> : section === 'register' ? <AuroraRegistration/> : section === 'submit' ? <>{!state.turn ? <Panel title="Game reporting opens with Turn 1"><p>Register now. Lobo will announce the active Turn, its deadline, four Vulnerable Territories and mission briefing before game submissions open.</p><Link to={`${AURORA_PATH}/register`}>Open campaign registration →</Link></Panel> : null}<AuroraGames submit/></> : section === 'games' ? <AuroraGames/> : section === 'missions' ? <CampaignMissions state={state}/> : section === 'standings' ? <CampaignStandings state={state}/> : section === 'story' ? <CampaignStory state={state}/> : section === 'rules' ? <CampaignRules/> : <><CampaignOverview state={state}/><CampaignPromos/></>}
+    <footer className="aurora-focused-footer"><Link to="/">Lobo Infinity Portal</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><a href={LOBO_DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">Discord ↗</a><a href={LOBO_YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer">YouTube ↗</a></footer>
   </main>
 }
 
@@ -57,6 +58,25 @@ function CampaignOverview({ state }: { state: AuroraPublicState }) {
       <Link to={`${AURORA_PATH}/missions`}>Open this Turn’s complete briefing →</Link>
     </>}
   </div><Link className="aurora-overview-planet" to={`${AURORA_PATH}/map`}><img src="/assets/aurora-vii/v1/frontier-gate.webp" width="1536" height="1024" alt="An expedition approaches Aurora VII’s luminous gate above a frontier settlement"/><span>Explore the campaign map →</span></Link></section>
+}
+
+function PromoVideo({ videoId, title }: { videoId: string; title: string }) {
+  return <a className="aurora-promo-card" href={youtubeWatchUrl(videoId)} target="_blank" rel="noopener noreferrer">
+    <img src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`} width="480" height="360" loading="lazy" alt=""/>
+    <span><strong>{title}</strong><span>Watch on YouTube ↗</span></span>
+  </a>
+}
+
+function CampaignPromos() {
+  return <section className="panel aurora-panel" aria-labelledby="aurora-promos-title">
+    <p className="eyebrow">Race for the Gate</p><h2 id="aurora-promos-title">Watch the campaign promos</h2>
+    <p>Discover Aurora VII, then see why your faction is joining the fight.</p>
+    <div className="aurora-promo-feature"><PromoVideo videoId={AURORA_TRAILER_ID} title="Aurora VII · Campaign trailer"/></div>
+    <details className="aurora-info-section"><summary>Choose your faction · 11 promo videos</summary>
+      <div className="aurora-promo-grid">{AURORA_FACTION_PROMOS.map(video => <PromoVideo key={video.faction} videoId={video.videoId} title={video.faction}/>)}</div>
+    </details>
+    <a href={LOBO_YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer">Visit the Lobo Infinity YouTube channel ↗</a>
+  </section>
 }
 
 function CampaignMap({ state, initialTerritory }: { state: AuroraPublicState; initialTerritory?: string }) {
@@ -110,7 +130,7 @@ function CampaignStory({ state }: { state: AuroraPublicState }) {
     <section className="aurora-story-intro"><p className="eyebrow">The public campaign chronicle</p><h2>A world everyone wants. A mystery no one understands.</h2><p>Aurora VII was supposed to be a shared frontier. Now its settlements, resources, and independence are becoming the stakes of a war. This is the world your force is stepping into.</p></section>
     {latest ? <Panel title={latest.title}><p className="eyebrow">Latest published dispatch · {latest.turn ? `Turn ${latest.turn}` : 'Campaign opening'}</p><Paragraphs text={latest.body}/></Panel> : null}
     <details className="aurora-info-section"><summary>The colony’s history</summary><section id="aurora-history" className="panel aurora-panel aurora-story-history"><p className="eyebrow">Before the first battle</p><h2>A Brief History of Aurora VII</h2>{AURORA_HISTORY.map((chapter, index) => <article key={chapter.title}><span className="aurora-story-number" aria-hidden="true">0{index + 1}</span><div><h3>{chapter.title}</h3><Paragraphs text={chapter.body}/></div></article>)}</section></details>
-    <section id="aurora-factions" className="panel aurora-panel"><p className="eyebrow">Competing interests</p><h2>Why your faction is here</h2><p>Everyone has a public reason to be on Aurora VII. Some intentions are clearer than others.</p><div className="aurora-motivation-grid">{AURORA_MOTIVATIONS.map(item => <details className="aurora-faction-card" key={item.faction}><summary><h3>{item.faction}</h3><p>{item.body}</p><span className="aurora-faction-expand"><span className="aurora-faction-read">Read faction brief</span><span className="aurora-faction-close">Close faction brief</span><span className="aurora-faction-chevron" aria-hidden="true">⌄</span></span></summary><div className="aurora-faction-brief"><Paragraphs text={item.brief}/></div></details>)}</div></section>
+    <section id="aurora-factions" className="panel aurora-panel"><p className="eyebrow">Competing interests</p><h2>Why your faction is here</h2><p>Everyone has a public reason to be on Aurora VII. Some intentions are clearer than others.</p><div className="aurora-motivation-grid">{AURORA_MOTIVATIONS.map(item => <details className="aurora-faction-card" key={item.faction}><summary><h3>{item.faction}</h3><p>{item.body}</p><span className="aurora-faction-expand"><span className="aurora-faction-read">Read faction brief</span><span className="aurora-faction-close">Close faction brief</span><span className="aurora-faction-chevron" aria-hidden="true">⌄</span></span></summary><div className="aurora-faction-brief"><Paragraphs text={item.brief}/>{AURORA_FACTION_PROMOS.filter(video => video.faction === item.faction).map(video => <p key={video.faction}><a href={youtubeWatchUrl(video.videoId)} target="_blank" rel="noopener noreferrer">Watch the {video.faction} promo on YouTube ↗</a></p>)}</div></details>)}</div></section>
     <section id="aurora-releases" className="panel aurora-panel"><p className="eyebrow">As the campaign unfolds</p><h2>Campaign dispatches</h2>{state.story.length ? <>{state.story.slice().reverse().map(chapter => <details key={chapter.turn}><summary>{chapter.turn ? `Turn ${chapter.turn}` : 'Campaign opening'} · {chapter.title}</summary><Paragraphs text={chapter.body}/></details>)}<p>The next dispatch will appear when the GM releases it.</p></> : <p>The opening Turn’s dispatch has not yet been released. As play unfolds, this chronicle will carry the published story chapters alongside the changing map and campaign results.</p>}<Link to={`${AURORA_PATH}/map`}>Explore the places these factions are fighting over →</Link></section>
   </>
 }

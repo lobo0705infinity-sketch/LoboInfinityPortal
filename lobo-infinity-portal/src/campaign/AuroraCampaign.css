@@ -263,3 +263,13 @@
 .aurora-results-art img { display:block; width:min(48%,440px); height:auto; border-radius:10px; }
 .aurora-results-art h2 { margin:0; }
 @media(max-width:600px) { .aurora-results-art { flex-direction:column; align-items:flex-start; gap:16px; } .aurora-results-art img { width:100%; max-width:440px; } }
+
+/* Campaign videos stay compact and load without embedded players. */
+.aurora-promo-feature { max-width: 32rem; margin: 1rem 0; }
+.aurora-promo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; margin: 1rem 0; }
+.aurora-promo-card { display: block; overflow: hidden; border: 1px solid #415466; border-radius: 10px; background: #101d2b; color: #eef4f8; text-decoration: none; }
+.aurora-promo-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.aurora-promo-card > span { display: grid; gap: .35rem; padding: .8rem; }
+.aurora-promo-card > span > span { font-size: .9rem; color: #a8d9ec; }
+.aurora-promo-card:hover { border-color: #a8d9ec; }
+.aurora-promo-card:focus-visible { outline: 3px solid #a8d9ec; outline-offset: 4px; }
