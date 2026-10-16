@@ -46,11 +46,15 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
-  const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you) (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:(?:the|that|this) )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)$/.test(words)
+  const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you)(?: (with|without) stealth)? (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:(?:the|that|this) )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)(?: (with|without) stealth| if (?:it|i|the trooper) (has|have|uses|use) stealth(?: and (?:stays?|remains?) (?:outside|out of) (?:the markers? |its )?(?:lof|line of fire))?)?$/.exec(words)
   if (cautiousImpersonation) {
-    conclusion = 'YES'
-    answer = 'Yes, provided the impersonator remains unrevealed. IMP-1 and IMP-2 markers are considered allied, so their ZoC does not itself prevent Cautious Movement from suppressing AROs. This follows from combining Impersonation and Cautious Movement. Normally, begin and end outside all other enemy Models’ and Markers’ LoF and ZoC; a Hackable model must also begin and end outside enemy Hacking Areas. Do not enter contact with the Impersonation marker. If it reveals with an Attack ARO, Impersonation cancellation applies to the whole Order: reassess LoF/ZoC and resolve AROs normally when the endpoints fail those conditions. Stealth can modify ZoC/Hacking Area restrictions; ordinary Cautious Movement eligibility restrictions still apply.'
-    pages = ['Cautious_Movement', 'Impersonation_State', 'Stealth']
+    const usesStealth = !cautiousImpersonation.includes('without') && (cautiousImpersonation.includes('with') || Boolean(cautiousImpersonation[3]))
+    conclusion = usesStealth ? 'YES' : 'NO'
+    answer = (usesStealth
+      ? 'Yes, with applicable Stealth while remaining outside the marker’s LoF and meeting the other Cautious Movement conditions. '
+      : 'No without Stealth: starting or ending in the opposing Impersonation Marker’s ZoC prevents Cautious Movement from suppressing AROs. With applicable Stealth and outside its LoF, yes. ')
+      + 'Recommended table ruling, not an explicit official clarification: count it as an enemy Marker for this check; allied targeting protection does not override that. A marker declining to react changes nothing: other enemies with an ARO opportunity may react normally. You may still declare the Skill without its ARO protection. Stealth allows ZoC/Hacking Area exceptions but does not work against Sixth Sense or Combat Instinct. Other endpoint LoF/ZoC, Hackable model Hacking Area, and user eligibility restrictions still apply as modified by Stealth.'
+    pages = ['Cautious_Movement', 'Impersonation_State', 'Stealth', 'Alignment']
     return {
       question: String(question).trim(),
       versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
@@ -311,3 +315,4 @@ function scrubDiscordPayload(value, key = '') { if (Array.isArray(value)) return
 function truncate(value, max) { const text = String(value ?? ''); return text.length <= max ? text : `${text.slice(0, Math.max(0, max - 1)).replace(/\s+\S*$/, '').trim()}…` }
 function normalizeConclusion(value) { const normalized = String(value || '').trim().toUpperCase(); if (normalized === 'RULE') return 'INTERPRETATION'; return ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(normalized) ? normalized : 'UNRESOLVED' }
 function matches(command) { const option = command.options?.[0]; return command.description === RULES_COMMAND_DEFINITION.description && command.options?.length === 1 && option?.name === RULES_OPTION && option?.required === true && option?.type === ApplicationCommandOptionType.String && option?.maxLength === 1000 }
+

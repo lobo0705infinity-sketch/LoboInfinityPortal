@@ -15,10 +15,15 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
-  ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', 'YES', /considered allied/],
-  ['Can unit cautious move inside enemy zoc, but that enemy is in impersonation?', 'YES', /considered allied/],
-  ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'YES', /remains unrevealed/],
-  ['May a trooper declare Cautious Movement inside the Zone of Control of an IMPersonation-2 marker?', 'YES', /whole Order/],
+  ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', 'NO', /No without Stealth/],
+  ['Can unit cautious move inside enemy zoc, but that enemy is in impersonation?', 'NO', /No without Stealth/],
+  ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'NO', /enemy Marker for this check/],
+  ['May a trooper declare Cautious Movement inside the Zone of Control of an IMPersonation-2 marker?', 'NO', /declining to react changes nothing/],
+  ['Can a trooper without Stealth use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'NO', /other enemies with an ARO opportunity/],
+  ['Can a trooper with Stealth use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'YES', /remaining outside the marker’s LoF/],
+  ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker with Stealth?', 'YES', /Sixth Sense or Combat Instinct/],
+  ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker without Stealth?', 'NO', /starting or ending/],
+  ['Can unit cautious move inside enemy zoc, but that enemy is in impersonation if it has stealth and stays outside its LoF?', 'YES', /other Cautious Movement conditions/],
   ['when does nfb stop applying?', 'DEPENDS', /until the new effect is canceled or voluntarily deactivated/],
   ['When does Negative Feedback end?', 'DEPENDS', /revealing the hacker ends Cybermask/],
   ['a trooper with mimetism is in cybermask. An active enemy trooper declares discover shoot against them. Does Mim reactivate after the successful discover roll or only after the order resolution?', 'YES', /same Order/],
@@ -74,11 +79,13 @@ assert.equal(benchmarkCalls, 0)
 const cautious = await context.retrieveRulesReference({ question: cases[0][0] })
 assert.equal(cautious.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION')
 assert.equal(cautious.deepSeek.interpretationRequired, true)
-assert.deepEqual(Array.from(cautious.deepSeek.sources, item => item.section), ['Cautious Movement', 'Impersonation State', 'Stealth'])
+assert.deepEqual(Array.from(cautious.deepSeek.sources, item => item.section), ['Cautious Movement', 'Impersonation State', 'Stealth', 'Alignment'])
 const cautiousPayload = context.formatRulesDiscordResponse(cautious)
 const cautiousText = cautiousPayload.embeds[0].fields.find(field => field.name === 'ANSWER').value
 assert.match(cautiousText, /Hackable model/)
-assert.match(cautiousText, /Attack ARO/)
+assert.match(cautiousText, /Recommended table ruling, not an explicit official clarification/)
+assert.match(cautiousText, /declining to react changes nothing/)
+assert.doesNotMatch(cautiousText, /provided the impersonator remains unrevealed/)
 assert.match(cautiousText, /eligibility restrictions/)
 for (const question of [
   'Can I use Cautious Movement within the ZoC of an enemy Impersonation marker if it reveals?',
@@ -110,6 +117,10 @@ for (const question of [
 assert.equal(providerCalls, 20)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
+assert.match(prompt, /Without Stealth, starting or ending inside its ZoC prevents ARO suppression/)
+assert.match(prompt, /With applicable Stealth and outside the marker’s LoF/)
+assert.match(prompt, /not an explicit official clarification/)
+assert.doesNotMatch(prompt, /derive the ZoC interaction from that status/)
 assert.match(prompt, /Discover is not a BS Attack/)
 assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
@@ -166,6 +177,21 @@ const direct = fakeInteraction()
 await createRulesInteractionHandler({ retrieve: async () => quickResult, logger: quietLogger })(direct)
 assert.deepEqual(direct.calls.map(call => call[0]), ['reply'])
 assert.equal(direct.deferred, false)
+for (const [question, conclusion] of cases.slice(0, 9)) {
+  const result = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Cautious/Stealth ruling must bypass AI') } })
+  assert.equal(result.deepSeek.conclusion, conclusion, question)
+  const payload = formatRulesDiscordResponseForTest(result)
+  assert.match(payload, /eligibility restrictions still apply as modified by Stealth\.$/)
+  const interaction = fakeInteraction()
+  interaction.options = { getString: () => question }
+  await createRulesInteractionHandler({ logger: quietLogger })(interaction)
+  assert.deepEqual(interaction.calls.map(call => call[0]), ['reply'], question)
+}
+function formatRulesDiscordResponseForTest(result) {
+  return context.formatRulesDiscordResponse(result).embeds[0].fields.find(field => field.name === 'ANSWER').value
+}
+console.log('All 9 Cautious Movement/Stealth variants return the corrected ruling directly without AI or truncation.')
+
 let finishAnswer
 const slowAnswer = new Promise(resolve => { finishAnswer = resolve })
 const slow = fakeInteraction()
@@ -221,3 +247,4 @@ for (const question of [
   assert.ok(results.every(result => result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))
 }
 console.log('Both reported NFB questions return consistent production-corpus answers without an AI call.')
+
