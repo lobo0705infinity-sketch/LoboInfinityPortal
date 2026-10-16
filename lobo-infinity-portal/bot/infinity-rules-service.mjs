@@ -23,6 +23,20 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 171, printedPage: '171',
+  section: 'TARGETED STATE', headings: ['TARGETED STATE', 'EFFECTS', 'CANCELLATION'],
+  structuredBlockTypes: ['EFFECTS', 'CANCELLATION'], canonicalTerm: 'targeted state',
+  text: 'TARGETED STATE\nAny Trooper declaring a BS Attack, Comms Attack, or Discover against a Trooper in Targeted State gains a +3 MOD to the Attribute used. Targeted Troopers apply a -3 WIP MOD to Reset rolls. While Targeted, Cautious Movement may not be declared and Stealth may not be used. Automatic Special Skills and Automatic Equipment function normally. The state is canceled by a successful Normal or Face to Face Reset applying -3 WIP, or an Engineer or equivalent Skill in Silhouette contact spending a Short Skill and passing the required Roll.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 166, printedPage: '166',
+  section: 'IMPERSONATION STATE — ACTIVATION', headings: ['IMPERSONATION STATE', 'ACTIVATION'],
+  structuredBlockTypes: ['ACTIVATION'], canonicalTerm: 'impersonation state',
+  text: 'IMPERSONATION STATE — ACTIVATION\nAutomatic during Deployment for Troopers with Impersonation, passing any necessary WIP Roll. During the Active Turn, Troopers with the Impersonation Skill may only return to this state by spending a Long Skill while outside the LoF of enemy Markers or Troopers. This state may also be activated as indicated by Special Skills, Hacking Programs, etc.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 77, printedPage: '77',
   section: 'CAUTIOUS MOVEMENT', headings: ['CAUTIOUS MOVEMENT', 'EFFECTS'],
   structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cautious movement',
@@ -491,3 +505,4 @@ function inferInteractionConclusion(question,spec,evidence){
   if(/\b(?:if|unless|only|provided that|when)\b/.test(text))return{label:'CONDITIONAL',explanation:'The selected controlling clause makes the interaction depend on an explicit condition.'}
   return{label:'NOT EXPLICITLY RESOLVED',explanation:'The activated corpus contains related rules but no unambiguous controlling interaction clause.'}
 }
+

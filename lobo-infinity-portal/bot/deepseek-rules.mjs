@@ -59,6 +59,9 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   // Activate every controlling clause for the interactions whose individual
   // fragments are easily confused by lexical retrieval.
   const interactionTerms = new Set()
+  if (/\btargeted\b/i.test(question) && /impersonat|cyber ?mask|\bimp[- ]?[12]\b/i.test(question)) {
+    ;['targeted state', 'impersonation state', 'cybermask'].forEach((term) => interactionTerms.add(term))
+  }
   if (/cautious\s+mov(?:e|ement)/i.test(question) && /impersonat|\bimp[- ]?[12]\b/i.test(question)) {
     ;['cautious movement', 'impersonation state', 'stealth'].forEach((term) => interactionTerms.add(term))
   }
@@ -112,6 +115,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     formatRulesModelContext(modelResolution),
     modelResolution?.models?.length ? 'A model name does not identify a single loadout unless the Army context lists exactly one loadout or the question explicitly identifies one. Alternate physical/state forms grouped beneath one loadout are not separate loadout choices. Use the initial/deployment form for Deployment Phase eligibility; when relevant facts differ between possible loadouts or current states, report DEPENDS and describe the differing outcomes.' : '',
     'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
+    'Targeted State is a persistent game state, not proof of current enemy LoF. Targeted does not itself prevent entering Impersonation State or using Cybermask. Check their normal activation requirements and any other stated restrictions; do not invent enemy LoF because the Trooper is Targeted. Entering Impersonation or using Cybermask does not cancel Targeted: its +3 Discover MOD and prohibitions on Stealth and Cautious Movement persist. Do not generalize this permission to Camouflaged State or other marker states without checking their own requirements.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'For Cautious Movement near an opposing Impersonation marker, apply the recommended table ruling: the marker counts as enemy for the endpoint check despite its allied targeting protection. Without Stealth, starting or ending inside its ZoC prevents ARO suppression; its choice not to react does not protect the mover from other eligible AROs. With applicable Stealth and outside the marker’s LoF, Cautious Movement can suppress AROs inside its ZoC/Hacking Area if all other conditions pass. Check Sixth Sense, Combat Instinct, other enemies, and user eligibility. Distinguish permission to declare the Skill from suppressing AROs. State that the Impersonation interaction is a recommended table ruling, not an explicit official clarification; label it EVIDENCE-BOUNDED INTERPRETATION. Cite Cautious Movement, Impersonation, Stealth, and Alignment when supported by the selected evidence. Never justify an unconditional yes merely because the marker remains unrevealed, or assume an Attack ARO exists when Cautious Movement suppresses it. Questions where the mover is impersonating are a separate interaction.',
     'Deployable Cover grants Partial Cover or a specified variant; Vitroferro replaces its ordinary +3 Saving Roll MOD with +6. Check No Cover before granting that benefit: a Trooper with No Cover cannot receive Partial Cover MODs, including Vitroferro. Nanoscreen has separate BS and Saving Roll MODs and does not itself grant permission to claim Partial Cover. Do not assume Nanoscreen overrides No Cover, or grant +9 without checking the actual profile and restrictions. Keep hypothetical profiles without No Cover and explicit scenario exceptions on the evidence path.',
@@ -370,4 +374,5 @@ export async function readUsage(path, logger = console) {
   }
 }
 export async function writeUsage(path, usage) { await mkdir(dirname(path), { recursive: true }); const temp = `${path}.${process.pid}.tmp`; await writeFile(temp, `${JSON.stringify({ records: usage.records })}\n`, 'utf8'); await rename(temp, path) }
+
 

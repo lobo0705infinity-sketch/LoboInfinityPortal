@@ -248,3 +248,48 @@ for (const question of [
 }
 console.log('Both reported NFB questions return consistent production-corpus answers without an AI call.')
 
+const targetedCases = [
+  'can a targeted model enter impersonation state?',
+  'Can a Targeted trooper re-enter Impersonation?',
+  'May my targeted unit return to the Impersonation-1 state?',
+  'Can a model in Targeted State enter Impersonation-2?',
+  'Could a trooper while in the Targeted state regain Impersonation?',
+  'Can a targeted model use Cybermask?',
+  'Can my trooper in Targeted State declare Cybermask?',
+]
+for (const question of targetedCases) {
+  const result = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Targeted/Impersonation correction must bypass AI') } })
+  assert.equal(result.deepSeek.conclusion, 'YES', question)
+  assert.equal(result.deepSeek.certainty, 'EXPLICIT RULES ANSWER')
+  assert.equal(result.deepSeek.interpretationRequired, false)
+  assert.match(result.deepSeek.answer, /being Targeted does not mean.*currently in enemy LoF/)
+  assert.match(result.deepSeek.answer, /outside the LoF of enemy Markers or Troopers/)
+  assert.match(result.deepSeek.answer, /Targeted remains in effect/)
+  assert.match(result.deepSeek.answer, /\+3 Discover MOD/)
+  assert.ok(result.deepSeek.sources.some(source => source.url.endsWith('/Targeted_State')))
+  const interaction = fakeInteraction()
+  interaction.options = { getString: () => question }
+  await createRulesInteractionHandler({ logger: quietLogger })(interaction)
+  assert.deepEqual(interaction.calls.map(call => call[0]), ['reply'], question)
+  const rendered = interaction.calls[0][1].embeds[0].fields.find(field => field.name === 'ANSWER').value
+  assert.ok(rendered.length <= 1024)
+  assert.match(rendered, /Targeted still prohibits Stealth and Cautious Movement\.$/)
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  for (const term of ['targeted state', 'impersonation state', 'cybermask']) {
+    assert.ok(productionCorpus.chunks.some((chunk, index) => chunk.canonicalTerm === term
+      && evidence.evidenceIds.has('C' + String(index + 1).padStart(4, '0'))), 'missing evidence: ' + term)
+  }
+}
+for (const question of [
+  'Can a Targeted model enter Impersonation State while in enemy LoF?',
+  'Can a Targeted model enter Impersonation State while Immobilized-B?',
+  'Can a Targeted model enter Impersonation State under a special scenario exception?',
+  'Can a Targeted model enter Camouflaged State?',
+  'Can a Targeted model use Stealth?',
+  'Can a Targeted model enter Impersonation State and clear Targeted?',
+]) assert.equal(context.verifiedRulesInteraction(question, corpus), null, question)
+assert.match(prompt, /Targeted State is a persistent game state, not proof of current enemy LoF/)
+assert.match(prompt, /Do not generalize this permission to Camouflaged State/)
+console.log('Targeted/Impersonation: 7 direct no-AI answers, retained state effects, complete citations/evidence, untruncated Discord replies, and 6 exception fallbacks passed.')
+
+

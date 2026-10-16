@@ -93,7 +93,14 @@ export function verifiedRulesInteraction(question, corpus) {
   const camoSubject = '(?:(?:a |the )?(?:models?|troopers?|units?) (?:in|while in) (?:the )?(?:camo|camouflaged|camouflage)(?: state)?|(?:a |the )?(?:camouflaged|camo) (?:models?|troopers?|units?))'
   const baggageRange = '(?:(?:a|an|the) (?:(?:allied|friendly) )?(?:unit|trooper|model) with baggage is (?:within|in) (?:(?:their|its|the) )?(?:zone of control|zoc)|(?:they are|it is) (?:within|in) (?:the )?(?:zone of control|zoc) of (?:(?:a|an|the) )?(?:(?:allied|friendly) )?(?:baggage (?:unit|trooper|model)|(?:unit|trooper|model) with baggage))'
   const nanoscreenSubject = '(?:(?:a|the|my) nanoscreen (?:model|trooper|unit)|(?:a|the|my) (?:model|trooper|unit) with (?:a )?nanoscreen)'
-  if (/^(?:when does|when will|when can|at what point does) (?:nfb|negative feedback)(?: suppression)? (?:stop applying|end|stop|cease applying)$/.test(words)) {
+  const targetedSubject = '(?:(?:a |the |my )?targeted (?:model|trooper|unit)|(?:a |the |my )?(?:model|trooper|unit) (?:in|while in) (?:the )?targeted(?: state)?)'
+  if (new RegExp('^(?:can|may|could) ' + targetedSubject + ' (?:enter|re-enter|reenter|return to|regain) (?:the )?impersonation(?:[- ](?:1|2))?(?: state)?$').test(words)
+    || new RegExp('^(?:can|may|could) ' + targetedSubject + ' (?:use|declare) cyber ?mask$').test(words)) {
+    conclusion = 'YES'
+    certainty = 'EXPLICIT RULES ANSWER'
+    answer = 'Yes. Targeted State does not prevent entering Impersonation, and being Targeted does not mean the Trooper is currently in enemy LoF. A Trooper with Impersonation can return to that state in its Active Turn by spending a Long Skill while outside the LoF of enemy Markers or Troopers. A Hacker with Cybermask can likewise enter IMP-2 by meeting that program’s requirements. Targeted remains in effect: entering Impersonation or using Cybermask does not cancel it. The +3 Discover MOD against the Targeted Trooper still applies, and Targeted still prohibits Stealth and Cautious Movement.'
+    pages = ['Targeted_State', 'Impersonation_State', 'Cybermask']
+  } else if (/^(?:when does|when will|when can|at what point does) (?:nfb|negative feedback)(?: suppression)? (?:stop applying|end|stop|cease applying)$/.test(words)) {
     conclusion = 'DEPENDS'
     certainty = 'EXPLICIT RULES ANSWER'
     answer = 'NFB prevents simultaneous use of multiple NFB abilities. Activating one overrides the trooper’s other NFB abilities until the new effect is canceled or voluntarily deactivated. The exact cancellation condition depends on that ability. For Cybermask, its NFB suppresses Mimetism while the hacker is in IMP-2; revealing the hacker ends Cybermask and its suppression.'
@@ -315,4 +322,5 @@ function scrubDiscordPayload(value, key = '') { if (Array.isArray(value)) return
 function truncate(value, max) { const text = String(value ?? ''); return text.length <= max ? text : `${text.slice(0, Math.max(0, max - 1)).replace(/\s+\S*$/, '').trim()}…` }
 function normalizeConclusion(value) { const normalized = String(value || '').trim().toUpperCase(); if (normalized === 'RULE') return 'INTERPRETATION'; return ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(normalized) ? normalized : 'UNRESOLVED' }
 function matches(command) { const option = command.options?.[0]; return command.description === RULES_COMMAND_DEFINITION.description && command.options?.length === 1 && option?.name === RULES_OPTION && option?.required === true && option?.type === ApplicationCommandOptionType.String && option?.maxLength === 1000 }
+
 
