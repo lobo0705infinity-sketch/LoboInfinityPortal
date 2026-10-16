@@ -293,3 +293,47 @@ assert.match(prompt, /Do not generalize this permission to Camouflaged State/)
 console.log('Targeted/Impersonation: 7 direct no-AI answers, retained state effects, complete citations/evidence, untruncated Discord replies, and 6 exception fallbacks passed.')
 
 
+
+const continuousCoverQuestions = [
+  'when rolling a save from continuous damage, do you still roll with cover?',
+  'if shot in cover with a continuous weapon do you get the bonus to armor on subsequent saves:',
+  'if shot in cover with a continuous damage weapon do you get the bonus to armour on subsequent saves?',
+  'Do you keep the cover bonus on subsequent continuous damage saves?',
+  'Can I apply partial cover to repeated saving rolls from continuous damage?',
+  'Does partial cover apply to continuous damage saving rolls?',
+  'Does cover carry over to subsequent continuous damage saves?',
+  'Do continuous damage saves benefit from partial cover?',
+]
+for (const question of continuousCoverQuestions) {
+  const result = await retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Continuous Damage/Cover correction must bypass AI') } })
+  assert.equal(result.deepSeek.conclusion, 'YES', question)
+  assert.equal(result.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION')
+  assert.match(result.deepSeek.answer, /every subsequent Continuous Damage save/)
+  assert.match(result.deepSeek.answer, /Template Weapons do not grant/)
+  assert.equal(result.deepSeek.sources.length, 4)
+  const interaction = fakeInteraction()
+  interaction.options = { getString: () => question }
+  await createRulesInteractionHandler({ logger: quietLogger })(interaction)
+  assert.deepEqual(interaction.calls.map(call => call[0]), ['reply'], question)
+  const rendered = interaction.calls[0][1].embeds[0].fields.find(field => field.name === 'ANSWER').value
+  assert.ok(rendered.length <= 1024)
+  assert.match(rendered, /Other rules that deny the cover bonus still apply\.$/)
+}
+for (const question of [
+  'Does cover apply to continuous damage saving rolls from a flamethrower?',
+  'Does cover apply to continuous damage saving rolls with No Cover?',
+  'Does cover apply to continuous damage saving rolls under a special scenario exception?',
+  'Does cover apply to continuous damage saving rolls and can I use Guts?',
+  'Can I get cover on saves?',
+]) assert.equal(context.verifiedRulesInteraction(question, corpus), null, question)
+console.log('Continuous Damage/Cover: 8 no-AI direct replies, template exception, complete Discord output, and 5 unrelated/exception fallbacks passed.')
+
+for (const question of continuousCoverQuestions.slice(0, 2)) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  for (const term of ['cover', 'template weapons and equipment']) {
+    assert.ok(productionCorpus.chunks.some((chunk, index) => chunk.canonicalTerm === term
+      && evidence.evidenceIds.has('C' + String(index + 1).padStart(4, '0'))), 'missing Continuous Damage evidence: ' + term)
+  }
+  assert.match(evidence.text, /Cover grants \+3 to Saving Rolls/)
+}
+console.log('Cover and template exclusion evidence selected for both screenshot questions.')

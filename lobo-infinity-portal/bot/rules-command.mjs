@@ -46,6 +46,21 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  // Cover continues to modify the repeated Saving Rolls of the same attack.
+  // Anchor the supported questions so unrelated compound exceptions use evidence.
+  const continuousCover = /^(?:when rolling (?:a )?sav(?:e|ing roll) from continuous damage do you still roll with cover|if shot in cover with a continuous(?: damage)? weapon do you get the bonus to armo[u]?r on subsequent saves|(?:do|does|can) (?:you|i|a trooper|a model) (?:still )?(?:get|keep|receive|apply) (?:the )?(?:partial )?cover(?: bonus| modifier| mod)? (?:on|for|to|against) (?:(?:subsequent|repeated|additional) )?(?:continuous damage )?(?:saves|saving rolls)(?: (?:from|against|for) continuous damage)?|does (?:partial )?cover(?: bonus)? (?:apply|carry over) (?:to|on|against) (?:(?:subsequent|repeated|additional) )?continuous damage(?: saves| saving rolls)?|do continuous damage (?:saves|saving rolls) (?:get|benefit from) (?:partial )?cover)$/.test(words)
+  if (continuousCover && /\bcontinuous\b/.test(words)) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED RULES ANSWER', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: {
+        conclusion: 'YES', certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true,
+        answer: 'Yes. If Partial Cover applied to the original attack, keep its +3 Saving Roll MOD on every subsequent Continuous Damage save. Cover affects Saving Rolls as well as the attacker’s BS Roll; Continuous Damage requires further Saving Rolls and does not remove that MOD. This follows from combining the Cover and Continuous Damage rules. Exception: Template Weapons do not grant the +3 Partial Cover Saving Roll MOD, so there is no cover bonus on their initial or subsequent saves. Other rules that deny the cover bonus still apply.',
+        sources: ['Ballistic_Skills#Cover', 'Saving_Roll_(SR)', 'Traits#Continuous_Damage', 'Template_Weapons_and_Equipment'].map((page, index) => ({ id: 'V' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+      },
+    }
+  }
   const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you)(?: (with|without) stealth)? (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:(?:the|that|this) )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)(?: (with|without) stealth| if (?:it|i|the trooper) (has|have|uses|use) stealth(?: and (?:stays?|remains?) (?:outside|out of) (?:the markers? |its )?(?:lof|line of fire))?)?$/.exec(words)
   if (cautiousImpersonation) {
     const usesStealth = !cautiousImpersonation.includes('without') && (cautiousImpersonation.includes('with') || Boolean(cautiousImpersonation[3]))

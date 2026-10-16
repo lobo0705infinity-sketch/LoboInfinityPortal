@@ -23,6 +23,21 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 41, printedPage: '41',
+  section: 'COVER — SAVING ROLL MOD', headings: ['COVER', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cover',
+  text: 'PARTIAL COVER\nIf the target is in Partial Cover, the attacker applies a -3 MOD to their BS Attack Roll and the target applies a +3 MOD to its Saving Roll, if necessary.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 44, printedPage: '44',
+  section: 'TEMPLATE WEAPONS — PARTIAL COVER', headings: ['TEMPLATE WEAPONS AND EQUIPMENT', 'IMPORTANT'],
+  structuredBlockTypes: ['IMPORTANT'], canonicalTerm: 'template weapons and equipment',
+  text: 'TEMPLATE WEAPONS AND EQUIPMENT\nTroopers affected by a Template Weapon do not benefit from the +3 MOD to the Saving Roll for Partial Cover.',
+},
+
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 171, printedPage: '171',
   section: 'TARGETED STATE', headings: ['TARGETED STATE', 'EFFECTS', 'CANCELLATION'],
   structuredBlockTypes: ['EFFECTS', 'CANCELLATION'], canonicalTerm: 'targeted state',
