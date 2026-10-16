@@ -21,9 +21,10 @@ export async function ensureRulesCommand(client) {
 }
 
 export async function retrieveRulesReference({ question, deepSeek = createDeepSeekRulesAnswer() }) {
-  const [corpus, modelResolution] = await Promise.all([loadProductionRulesCorpus(), resolveRulesModelMentions(question)])
+  const corpus = await loadProductionRulesCorpus()
   const verified = verifiedRulesInteraction(question, corpus)
   if (verified) return verified
+  const modelResolution = await resolveRulesModelMentions(question)
   // Approved benchmark answers describe rules concepts, not the selected Army
   // profile. A named model must take the evidence-bounded path so its actual
   // profile facts participate in the answer.
@@ -45,7 +46,7 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
-  const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you) (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:the )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)$/.test(words)
+  const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you) (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:(?:the|that|this) )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)$/.test(words)
   if (cautiousImpersonation) {
     conclusion = 'YES'
     answer = 'Yes, provided the impersonator remains unrevealed. IMP-1 and IMP-2 markers are considered allied, so their ZoC does not itself prevent Cautious Movement from suppressing AROs. This follows from combining Impersonation and Cautious Movement. Normally, begin and end outside all other enemy Models’ and Markers’ LoF and ZoC; a Hackable model must also begin and end outside enemy Hacking Areas. Do not enter contact with the Impersonation marker. If it reveals with an Attack ARO, Impersonation cancellation applies to the whole Order: reassess LoF/ZoC and resolve AROs normally when the endpoints fail those conditions. Stealth can modify ZoC/Hacking Area restrictions; ordinary Cautious Movement eligibility restrictions still apply.'
@@ -219,13 +220,26 @@ function publicFireteamIdentityResult(question, corpus) {
   }
 }
 
-export function createRulesInteractionHandler({ retrieve = retrieveRulesReference, logger = console } = {}) {
+export function createRulesInteractionHandler({ retrieve = retrieveRulesReference, logger = console, quickReplyMs = 1200 } = {}) {
   return async function handleRules(interaction) {
     if (!interaction?.isChatInputCommand?.() || interaction.commandName !== RULES_COMMAND) return false
     try {
-      await interaction.deferReply(); const question = interaction.options.getString(RULES_OPTION, true).trim()
-      if (!question) { await interaction.editReply({ content: 'Please provide an Infinity rules question.' }); return true }
-      await interaction.editReply(formatRulesDiscordResponse(await retrieve({ question })))
+      const question = interaction.options.getString(RULES_OPTION, true).trim()
+      if (!question) { await interaction.reply({ content: 'Please provide an Infinity rules question.' }); return true }
+      const pending = Symbol('pending')
+      const answerPromise = retrieve({ question })
+      let timer, result
+      try {
+        result = await Promise.race([answerPromise, new Promise(resolve => { timer = setTimeout(() => resolve(pending), quickReplyMs) })])
+      } finally { clearTimeout(timer) }
+      if (result === pending) {
+        await interaction.deferReply()
+        result = await answerPromise
+      }
+      logger.info?.(`Infinity rules response: source=${result.answerSource || result.status || 'UNKNOWN'} delivery=${interaction.deferred ? 'deferred' : 'direct'}`)
+      const payload = formatRulesDiscordResponse(result)
+      if (interaction.deferred) await interaction.editReply(payload)
+      else await interaction.reply(payload)
     } catch (error) {
       logger.error?.('Infinity rules request failed:', error); const message = { content: 'The Infinity rules assistant is temporarily unavailable.' }
       try { if (interaction.deferred || interaction.replied) await interaction.editReply(message); else await interaction.reply({ ...message, ephemeral: true }) } catch (replyError) { logger.error?.('Infinity rules Discord error response failed:', replyError) }

@@ -16,6 +16,7 @@ const context = vm.createContext({
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
   ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', 'YES', /considered allied/],
+  ['Can unit cautious move inside enemy zoc, but that enemy is in impersonation?', 'YES', /considered allied/],
   ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'YES', /remains unrevealed/],
   ['May a trooper declare Cautious Movement inside the Zone of Control of an IMPersonation-2 marker?', 'YES', /whole Order/],
   ['when does nfb stop applying?', 'DEPENDS', /until the new effect is canceled or voluntarily deactivated/],
@@ -150,7 +151,32 @@ for (const question of ['when can you voluntarily break a fireteam', 'How do I d
 }
 
 const repeatedQuestion = 'Do models in camo state reload during the states phase if a unit with baggage is within zone of control'
-const { retrieveRulesReference } = await import('../bot/rules-command.mjs')
+const { retrieveRulesReference, createRulesInteractionHandler } = await import('../bot/rules-command.mjs')
+const quickResult = await retrieveRulesReference({ question: cases[0][0], deepSeek: async () => { throw new Error('Fixed answer must not call AI') } })
+function fakeInteraction() {
+  return { commandName: 'rules', deferred: false, replied: false, calls: [],
+    isChatInputCommand: () => true, options: { getString: () => cases[0][0] },
+    async reply(payload) { this.replied = true; this.calls.push(['reply', payload]) },
+    async deferReply() { this.deferred = true; this.calls.push(['defer']) },
+    async editReply(payload) { this.calls.push(['edit', payload]) },
+  }
+}
+const quietLogger = { info() {}, error() {} }
+const direct = fakeInteraction()
+await createRulesInteractionHandler({ retrieve: async () => quickResult, logger: quietLogger })(direct)
+assert.deepEqual(direct.calls.map(call => call[0]), ['reply'])
+assert.equal(direct.deferred, false)
+let finishAnswer
+const slowAnswer = new Promise(resolve => { finishAnswer = resolve })
+const slow = fakeInteraction()
+slow.deferReply = async function () { this.deferred = true; this.calls.push(['defer']); finishAnswer(quickResult) }
+await createRulesInteractionHandler({ retrieve: () => slowAnswer, logger: quietLogger, quickReplyMs: 1 })(slow)
+assert.deepEqual(slow.calls.map(call => call[0]), ['defer', 'edit'])
+const failed = fakeInteraction()
+await createRulesInteractionHandler({ retrieve: async () => { throw new Error('test failure') }, logger: quietLogger })(failed)
+assert.deepEqual(failed.calls.map(call => call[0]), ['reply'])
+assert.match(failed.calls[0][1].content, /temporarily unavailable/)
+console.log('Fast rules answers reply directly; slow answers defer safely; retrieval failures reply without leaving a thinking indicator.')
 for (const question of cases.slice(0, 3).map(item => item[0])) {
   const results = await Promise.all(Array.from({ length: 3 }, () => retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Verified Cautious Movement interaction must bypass AI') } })))
   assert.equal(new Set(results.map(result => result.deepSeek.answer)).size, 1)
