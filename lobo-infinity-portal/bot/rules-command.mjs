@@ -45,6 +45,19 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you) (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:the )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)$/.test(words)
+  if (cautiousImpersonation) {
+    conclusion = 'YES'
+    answer = 'Yes, provided the impersonator remains unrevealed. IMP-1 and IMP-2 markers are considered allied, so their ZoC does not itself prevent Cautious Movement from suppressing AROs. This follows from combining Impersonation and Cautious Movement. Normally, begin and end outside all other enemy Models’ and Markers’ LoF and ZoC; a Hackable model must also begin and end outside enemy Hacking Areas. Do not enter contact with the Impersonation marker. If it reveals with an Attack ARO, Impersonation cancellation applies to the whole Order: reassess LoF/ZoC and resolve AROs normally when the endpoints fail those conditions. Stealth can modify ZoC/Hacking Area restrictions; ordinary Cautious Movement eligibility restrictions still apply.'
+    pages = ['Cautious_Movement', 'Impersonation_State', 'Stealth']
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED RULES ANSWER', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: { answer, conclusion, certainty, interpretationRequired: true,
+        sources: pages.map((page, index) => ({ id: 'V' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })) },
+    }
+  }
   const engineerPossessed = /^(?:can|could|may|does|will) (?:a |an |the |my |your )?engineer(?: skill| special skill)? (?:clear|cancel|remove|repair|fix|end)(?:s)? (?:the |a )?(?:state of )?(?:total control(?: possessed(?: state)?)?|possessed(?: state)?|possession)(?: state)?(?: (?:from|on|of) (?:a |an |the |my |your |our )?(?:tag|trooper|model))?$/.test(words)
   if (engineerPossessed) {
     conclusion = 'NO'

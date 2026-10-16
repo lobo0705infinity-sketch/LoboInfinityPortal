@@ -21,6 +21,20 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 // plain-text extraction reliably. Each excerpt is checked against the matching
 // official N5.3 wiki page as well as the activated PDF.
 const rulesSupplements = Object.freeze([
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 77, printedPage: '77',
+  section: 'CAUTIOUS MOVEMENT', headings: ['CAUTIOUS MOVEMENT', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cautious movement',
+  text: 'CAUTIOUS MOVEMENT\nLong Skill. Movement, No LoF, No Roll.\nThe user moves up to its first MOV value. To avoid generating AROs, both the starting and ending positions must be outside every enemy Model and Marker’s LoF and ZoC. Otherwise AROs are generated normally. A Hackable Trooper in Model form must also start and finish outside enemy Hackers’ Hacking Areas; this additional restriction does not apply to non-Hackable models. Follow General Movement Rules and Moving and Measuring. TAGs, Remotes, Vehicles, motorcycle users, Aerial users and Troopers in Targeted State cannot declare this Skill.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 166, printedPage: '166',
+  section: 'IMPERSONATION STATE — ALLIED MARKERS', headings: ['IMPERSONATION STATE', 'IMPORTANT'],
+  structuredBlockTypes: ['IMPORTANT'], canonicalTerm: 'impersonation state',
+  text: 'IMPERSONATION STATE — ALLIED MARKERS\nAn unrevealed IMP-1 or IMP-2 marker is considered an Allied Trooper by its enemies. Troopers cannot enter Silhouette contact with an enemy Impersonation marker. Impersonation markers have 360-degree LoF. An Attack or any Skill requiring a Roll cancels the impersonator’s state. This cancellation applies across the entire declared Order, including when the revealing Skill is performed at the end.',
+},
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 174, "printedPage": "174", "section": "NEGATIVE FEEDBACK (NFB)", "headings": ["NEGATIVE FEEDBACK (NFB)", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "negative feedback", "text": "NEGATIVE FEEDBACK (NFB)\nUsing an NFB Skill, Equipment, Hacking Program or special rule is incompatible with other NFB elements. Activating one overrides the trooper’s other NFB elements until the new effect is canceled or voluntarily deactivated. A trooper may have only one active NFB element during an Order."},
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 59, "printedPage": "59", "section": "CYBERMASK", "headings": ["CYBERMASK", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "cybermask", "text": "CYBERMASK\nCybermask is a Long Skill with NFB and No Roll. The user must be outside enemy Trooper or Marker LoF. It replaces the hacker with an IMP-2 Marker. Its effects persist until the hacker is revealed under the Impersonation-2 rules. While in IMP-2, its NFB prevents applying other NFB abilities, including Mimetism, Albedo and Holoprojector."},
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 166, "printedPage": "166", "section": "IMPERSONATION STATE — DISCOVER", "headings": ["IMPERSONATION STATE — DISCOVER", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "impersonation state", "text": "IMPERSONATION STATE — DISCOVER\nDiscover + BS Attack is permitted against IMP-2. A successful Discover replaces the IMP-2 Marker with its model and cancels Impersonation State. IMP-1 instead becomes IMP-2 after a successful ordinary Discover, and cannot be targeted with this maneuver."},

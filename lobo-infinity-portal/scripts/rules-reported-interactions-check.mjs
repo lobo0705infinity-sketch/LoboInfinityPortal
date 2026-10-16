@@ -15,6 +15,9 @@ const context = vm.createContext({
 })
 vm.runInContext(source.replace(/^import .*$/gm, '').replace(/\bexport /g, ''), context)
 const cases = [
+  ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', 'YES', /considered allied/],
+  ['Can I use Cautious Movement within the ZoC of an enemy Impersonation marker?', 'YES', /remains unrevealed/],
+  ['May a trooper declare Cautious Movement inside the Zone of Control of an IMPersonation-2 marker?', 'YES', /whole Order/],
   ['when does nfb stop applying?', 'DEPENDS', /until the new effect is canceled or voluntarily deactivated/],
   ['When does Negative Feedback end?', 'DEPENDS', /revealing the hacker ends Cybermask/],
   ['a trooper with mimetism is in cybermask. An active enemy trooper declares discover shoot against them. Does Mim reactivate after the successful discover roll or only after the order resolution?', 'YES', /same Order/],
@@ -67,6 +70,21 @@ for (const [question, conclusion, detail] of cases) {
 }
 assert.equal(providerCalls, 0)
 assert.equal(benchmarkCalls, 0)
+const cautious = await context.retrieveRulesReference({ question: cases[0][0] })
+assert.equal(cautious.deepSeek.certainty, 'EVIDENCE-BOUNDED INTERPRETATION')
+assert.equal(cautious.deepSeek.interpretationRequired, true)
+assert.deepEqual(Array.from(cautious.deepSeek.sources, item => item.section), ['Cautious Movement', 'Impersonation State', 'Stealth'])
+const cautiousPayload = context.formatRulesDiscordResponse(cautious)
+const cautiousText = cautiousPayload.embeds[0].fields.find(field => field.name === 'ANSWER').value
+assert.match(cautiousText, /Hackable model/)
+assert.match(cautiousText, /Attack ARO/)
+assert.match(cautiousText, /eligibility restrictions/)
+for (const question of [
+  'Can I use Cautious Movement within the ZoC of an enemy Impersonation marker if it reveals?',
+  'Can a TAG use Cautious Movement within the ZoC of an enemy Impersonation marker?',
+  'Can I use Cautious Movement inside an enemy camouflage marker ZoC?',
+  'Can my impersonating trooper use Cautious Movement within an enemy ZoC?',
+]) assert.equal((await context.retrieveRulesReference({ question })).fallback, true, question)
 for (const question of [
   'Does Mimetism return for the shot after successful Discover + BS Attack against Cybermask under a scenario exception?',
   'Does Mimetism return for the shot after successful Discover + BS Attack against Cybermask with White Noise?',
@@ -88,7 +106,7 @@ for (const question of [
   const result = await context.retrieveRulesReference({ question })
   assert.equal(result.fallback, true, question)
 }
-assert.equal(providerCalls, 16)
+assert.equal(providerCalls, 20)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Discover is not a BS Attack/)
@@ -96,12 +114,14 @@ assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
 assert.match(prompt, /Declaring Reload is a separate Attack declaration/)
 assert.match(prompt, /must announce it before either player spends the Order/)
-console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 16 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 20 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
 for (const [question, expected] of [
+  ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', ['cautious movement', 'impersonation state', 'stealth']],
+  ['Can I use Cautious Movement near an IMP-2 marker if it reveals with an ARO?', ['cautious movement', 'impersonation state', 'stealth']],
   ['when does nfb stop applying?', ['negative feedback', 'cybermask']],
   ['Does Mim reactivate after a successful discover shoot against cybermask?', ['negative feedback', 'cybermask', 'impersonation state']],
   ['Does Nanoscreen stack with Vitroferro cover?', ['nanoscreen', 'no cover', 'deployable cover']],
@@ -131,6 +151,15 @@ for (const question of ['when can you voluntarily break a fireteam', 'How do I d
 
 const repeatedQuestion = 'Do models in camo state reload during the states phase if a unit with baggage is within zone of control'
 const { retrieveRulesReference } = await import('../bot/rules-command.mjs')
+for (const question of cases.slice(0, 3).map(item => item[0])) {
+  const results = await Promise.all(Array.from({ length: 3 }, () => retrieveRulesReference({ question, deepSeek: async () => { throw new Error('Verified Cautious Movement interaction must bypass AI') } })))
+  assert.equal(new Set(results.map(result => result.deepSeek.answer)).size, 1)
+  assert.ok(results.every(result => result.deepSeek.certainty === 'EVIDENCE-BOUNDED INTERPRETATION'))
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  assert.match(evidence.text, /considered an Allied Trooper/)
+  assert.match(evidence.text, /both the starting and ending positions/)
+  assert.match(evidence.text, /enemy Hackers’ Hacking Areas/)
+}
 const possessedRepeated = await Promise.all(Array.from({ length: 6 }, () => retrieveRulesReference({ question: 'can an engineer clear the state of total control (possessed state) from a tag', deepSeek: async () => { throw new Error('Verified Possessed ruling must bypass the AI provider') } })))
 assert.equal(new Set(possessedRepeated.map(result => result.deepSeek.answer)).size, 1)
 assert.ok(possessedRepeated.every(result => result.deepSeek.conclusion === 'NO' && result.deepSeek.certainty === 'EXPLICIT RULES ANSWER'))
