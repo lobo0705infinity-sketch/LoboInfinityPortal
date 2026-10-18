@@ -8,9 +8,11 @@ from pathlib import Path
 import re
 import zipfile
 
+from map_markings import repair_markings, install_markings
+
 
 DEPLOYMENT = "Deployment: take this bag into the normal Infinity mod and drop it onto its map deployment spot."
-MAT_SCALE = 24 * 48 / 47  # Calibrated from the user's in-game 47-inch measurement.
+MAT_SCALE = 24  # Original 48-inch tile geometry; the apparent inset was a drawn outline.
 
 
 def angle(value):
@@ -73,6 +75,7 @@ def canonical_records(bag):
 
 def repair_bag(bag):
     records = canonical_records(bag)
+    install_markings(bag, records)
     objects = bag.get("ContainedObjects", [])
     if set(records) != {o["GUID"] for o in objects}:
         raise ValueError(f"Placement/inventory mismatch: {bag.get('Nickname')}")
@@ -95,13 +98,8 @@ def repair_bag(bag):
 
 
 def calibrate_mat(obj, position):
-    transform = obj.get('Transform', {})
-    if (obj.get('Name') == 'Custom_Tile' and
-        abs(transform.get('scaleX', 0) - 24) < .0001 and
-        abs(transform.get('scaleZ', 0) - 24) < .0001 and
-        abs(position[0]) < .1 and abs(position[2]) < .1):
-        transform['scaleX'] = MAT_SCALE
-        transform['scaleZ'] = MAT_SCALE
+    # Preserve original mat geometry; correct the scaled drawing overlay instead.
+    repair_markings(obj)
 
 
 def repair_table(table):
@@ -155,7 +153,8 @@ def build_portal(root, destination):
         "Open the normal Infinity mod and drop that saved bag onto its map deployment spot.\n\n"
         "Use the normal Infinity stage controls to clear the previous map. "
         "If an older map is already stuck busy, start from a fresh load of the normal Infinity mod.\n\n"
-        "The exports use 0 <= angle < 360 and CRLF placement records. "
+        "R6 removes the oversized gray perimeter and converts mission line widths into mat-local units. "
+        "Original mat dimensions are retained. The exports use 0 <= angle < 360 and CRLF placement records. "
         "Terrain positions, GUIDs, mission contents and layouts are preserved. "
         "Spare mission tokens use a side tray within the Stage's clear area. "
         "Automated compatibility checks do not substitute for live TTS verification.\n"
@@ -170,7 +169,7 @@ def build_portal(root, destination):
     # The collection save is distributed inside the archive, not duplicated on hosting.
     library_path.unlink()
     catalog["download"] = f"/assets/maps/{destination}/{archive.name}"
-    catalog["downloadRevision"] = "2026-10-18-alignment-fix-r2"
+    catalog["downloadRevision"] = "2026-10-18-marking-width-fix-r6"
     catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
     print(f"Built {len(catalog['maps'])} drop-zone bags and collection: {output}")
 
@@ -178,7 +177,7 @@ def build_portal(root, destination):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--portal-root", type=Path)
-    parser.add_argument("--destination", default="its18-alignment-20261018-r2")
+    parser.add_argument("--destination", default="its18-markings-20261018-r6")
     parser.add_argument("--table", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()

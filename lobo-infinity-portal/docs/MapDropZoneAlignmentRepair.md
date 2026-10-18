@@ -63,3 +63,38 @@ and smaller floor tiles are not resized.
 
 Reference for Unity's near-zero Euler presentation:
 https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Quaternion.cs
+
+
+## R6 — confirmed drawing overlay error
+
+Live screenshots of R3–R5 showed the pale frame persisted after replacing the
+primitive with an edge-to-edge textured mesh and shrinking the support beneath
+it. R6 removed the gray vector perimeter and corrected object-local line widths;
+the user's October 18 02:37:45 UTC screenshot shows the artwork exposed to its
+edges, with thin mission strokes. This confirms the visual repair on that map;
+it is not a ruler measurement or live verification of all maps.
+
+The old export converted line points with `positionToLocal`, but retained the
+world stroke width of 0.045 as a local width. At parent X/Z scale 24, this draws
+about 1.08 inches wide. A perimeter centered on each edge masks about 0.54 inches
+on each side, explaining the roughly 47-inch visible picture on a 48-inch mat.
+The same bug made the orange mission lines thick.
+
+All 40 ITS18 marking surfaces (39 native tiles and The Iron Yard mesh) now omit
+the gray perimeter and divide mission stroke widths by the parent X/Z scale.
+The R2 48/47 tile enlargement was unnecessary and has been reversed. Original
+mat assets, support geometry, terrain placement, objectives, GUIDs and alternate
+states are retained; Greenwood's multipart floor is unaffected. The experimental
+R4 mesh and R5 support resizing are not used in the final exports.
+
+Regression requirements for future map exports:
+
+- Convert both coordinates and widths when attaching world-space drawings to objects.
+- Keep the printed artwork unobscured at the full 48-inch boundary.
+- Never infer rendered or visible dimensions from the scale field alone.
+- Execute the actual mat Lua, in addition to Stage placement simulation.
+- Record visual confirmation separately from ruler and per-map live checks.
+
+Run `python scripts/map-marking-width-check.py` (requires lupa) to execute every
+exported mat's complete onLoad script and verify 70 mission strokes at the
+0.045-inch target. Downloads use the immutable R6 directory.

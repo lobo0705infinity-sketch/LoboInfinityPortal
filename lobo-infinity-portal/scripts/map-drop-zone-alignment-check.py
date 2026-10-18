@@ -147,7 +147,7 @@ def main():
     assert unity_rotation(0, 359.9986, 0)[1] < 0
     records = 0
     reserves = 0
-    calibrated_mats = 0
+    original_size_tile_mats = 0
     bags = []
     with zipfile.ZipFile(ROOT / ("public" + catalog["download"])) as archive:
         for entry in catalog["maps"]:
@@ -183,16 +183,17 @@ def main():
                     assert abs(value - f32(value)) < .0005
                     assert value == 0 or .01 <= value <= 359.99
                     assert abs((value - old[guid][i] + 180) % 360 - 180) <= .005001
-            # Only rotation fields may change within scenery, including alternate states.
+            # Allow canonical rotations and the corrected marking script; preserve all scenery.
+            repair["install_markings"](original_bag, actual)
             normalized = json.loads(json.dumps(original_bag["ContainedObjects"]))
             for obj in normalized:
                 repair["normalize_transforms"](obj)
                 repair['calibrate_mat'](obj, actual[obj['GUID']])
-                if obj['Transform'].get('scaleX') == repair['MAT_SCALE']:
-                    calibrated_mats += 1
-                    assert abs(obj['Transform']['scaleX'] / 24 * 47 - 48) < .000001
+                if obj.get('Name') == 'Custom_Tile' and 'LOBO_MISSION_LINES' in obj.get('LuaScript', ''):
+                    original_size_tile_mats += 1
+                    assert obj['Transform']['scaleX'] == obj['Transform']['scaleZ'] == 24
             assert normalized == bag["ContainedObjects"]
-    result = {"bags": len(bags), "placementRecords": records, "reserveTokensRelocated": reserves, "calibratedMats": calibrated_mats, "assetParity": True, "liveTtsVerified": False}
+    result = {"bags": len(bags), "placementRecords": records, "reserveTokensRelocated": reserves, "originalSizeTileMats": original_size_tile_mats, "assetParity": True, "liveTtsVerified": False}
     if "--receiver" in sys.argv:
         receiver = sys.argv[sys.argv.index("--receiver") + 1]
         # First reproduce the bug, using the real loader and one signed-angle record.

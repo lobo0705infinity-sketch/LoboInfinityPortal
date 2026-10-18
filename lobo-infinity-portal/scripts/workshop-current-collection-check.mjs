@@ -41,6 +41,15 @@ for (const map of loboWorkshopMaps) {
     }
   }
   assert.deepEqual(ids, new Set(bag.ContainedObjects.map(object => object.GUID)))
+  const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
+  assert.equal(surfaces.length, 1, `${map.slug} has one mission marking surface`)
+  for (const surface of surfaces) {
+    assert.equal(surface.Transform.scaleX, 24, `${map.slug} keeps original mat dimensions`)
+    assert.equal(surface.Transform.scaleZ, 24)
+    assert.ok(surface.LuaScript.includes('thickness=line.thickness/lineScale'), `${map.slug} converts stroke widths to local units`)
+    assert.ok(!surface.LuaScript.includes('thickness=line.thickness}'), `${map.slug} avoids oversized strokes`)
+  }
+
 }
 assert.equal(missions.size, 20)
 for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 2, `${mission} has two distinct layouts`)
