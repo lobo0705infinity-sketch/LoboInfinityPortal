@@ -10,13 +10,17 @@ import zipfile
 
 
 DEPLOYMENT = "Deployment: take this bag into the normal Infinity mod and drop it onto its map deployment spot."
+MAT_SCALE = 24 * 48 / 47  # Calibrated from the user's in-game 47-inch measurement.
 
 
 def angle(value):
     value = float(value)
     if not math.isfinite(value):
         raise ValueError("Non-finite map rotation")
-    return round(value % 360, 4) % 360
+    # Match native Stage exports' hundredth-degree precision. Unity leaves
+    # negative Euler values within ~0.00573 degrees of zero negative on readback;
+    # simply wrapping -0.0014 to 359.9986 therefore does not round-trip.
+    return round(value % 360, 2) % 360
 
 
 def positions(bag):
@@ -86,7 +90,18 @@ def repair_bag(bag):
     bag["Description"] = description.rstrip() + "\n\n" + DEPLOYMENT
     for obj in objects:
         normalize_transforms(obj)
+        calibrate_mat(obj, records[obj['GUID']])
     return bag
+
+
+def calibrate_mat(obj, position):
+    transform = obj.get('Transform', {})
+    if (obj.get('Name') == 'Custom_Tile' and
+        abs(transform.get('scaleX', 0) - 24) < .0001 and
+        abs(transform.get('scaleZ', 0) - 24) < .0001 and
+        abs(position[0]) < .1 and abs(position[2]) < .1):
+        transform['scaleX'] = MAT_SCALE
+        transform['scaleZ'] = MAT_SCALE
 
 
 def repair_table(table):
@@ -155,7 +170,7 @@ def build_portal(root, destination):
     # The collection save is distributed inside the archive, not duplicated on hosting.
     library_path.unlink()
     catalog["download"] = f"/assets/maps/{destination}/{archive.name}"
-    catalog["downloadRevision"] = "2026-10-18-alignment-fix"
+    catalog["downloadRevision"] = "2026-10-18-alignment-fix-r2"
     catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
     print(f"Built {len(catalog['maps'])} drop-zone bags and collection: {output}")
 
@@ -163,7 +178,7 @@ def build_portal(root, destination):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--portal-root", type=Path)
-    parser.add_argument("--destination", default="its18-alignment-20261018")
+    parser.add_argument("--destination", default="its18-alignment-20261018-r2")
     parser.add_argument("--table", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()

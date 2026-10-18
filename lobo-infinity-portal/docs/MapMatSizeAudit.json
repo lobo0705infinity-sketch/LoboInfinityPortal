@@ -1,0 +1,510 @@
+{
+  "mapsAudited": 41,
+  "sameTileSetting": 39,
+  "geometryBasedSurfacesAt48Inches": 2,
+  "measurementBasis": "User measured the visible Custom_Tile mat at 47 by 47 inches. This audit does not claim live measurement of every map.",
+  "maps": [
+    {
+      "map": "SET_ITS18 Akial Interference \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10007d",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Annihilation \u2014 Rustline Market \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100132",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Area Of Interest \u2014 Cargo Crossroads \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1002d1",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Battleground \u2014 Freight Terminal \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10042c",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 B-Pong \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1004b5",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Corporate Appropriation \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100501",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Critical Intervention \u2014 NeoTerran Command \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1005cd",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Crossing Lines \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1006b3",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Cutthroat \u2014 Dustline Outpost \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10083d",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Data-Harvest \u2014 Concrete Labyrinth \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10090f",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Double Bind \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1009fd",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Double Bind \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100a49",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Evacuation \u2014 Freight Terminal \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100b31",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Hardlock \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100b85",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Last Launch \u2014 Meridian Blocks \u2014 NEW LAYOUT",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100ca2",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Neutralization \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100d2f",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Outbreak \u2014 Neon Exchange \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100e32",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Provisioning \u2014 Skyrail Exchange \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100ef6",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Superiority \u2014 Switchback Quarter \u2014 NEW LAYOUT",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "7300a0",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 The Dig \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "101059",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Uplink Center \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1010ab",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Uplink Center \u2014 Dustline Outpost \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "101141",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_Greenwood River Crossing",
+      "surfaceType": "Three mesh floor sections",
+      "meshWidthInches": 48,
+      "meshDepthInches": 48,
+      "resized": false,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Akial Interference \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1000c7",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Area Of Interest \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10031f",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Annihilation \u2014 The Iron Yard \u2014 REVISED",
+      "surfaceType": "Custom_Model",
+      "meshWidthInches": 48,
+      "meshDepthInches": 48,
+      "resized": false,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Battleground \u2014 Foundry Blocks \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1003a1",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 B-Pong \u2014 Concrete Labyrinth \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100469",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Corporate Appropriation \u2014 Concrete Labyrinth \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "10053d",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Critical Intervention \u2014 Bastion Courtyard \u2014 NEW LAYOUT",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "400001",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Crossing Lines \u2014 Canal Quarter \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100787",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Cutthroat \u2014 Foundry Blocks \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "1008be",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Data-Harvest \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100986",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Evacuation \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100ab9",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Hardlock \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100bf7",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Last Launch \u2014 NeoTerran Command \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100c88",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Neutralization \u2014 Tidal Turbines \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100da4",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Outbreak \u2014 Skyrail Exchange \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100e95",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Provisioning \u2014 Azure Circuit \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "100f46",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 Superiority \u2014 Meridian Blocks \u2014 NEW LAYOUT",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "730001",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "SET_ITS18 The Dig \u2014 Skyrail Exchange \u2014 REVISED",
+      "surfaceType": "Custom_Tile",
+      "surfaceGuid": "101007",
+      "oldScaleXZ": 24,
+      "newScaleXZ": 24.51063829787234,
+      "widthAssessment": "Shared primitive and setting with the user-measured 47-inch mat; per-map live measurement pending",
+      "targetWidthInches": 48,
+      "targetDepthInches": 48,
+      "liveTtsVerified": false
+    }
+  ],
+  "meshEvidence": [
+    {
+      "map": "Iron Yard",
+      "meshExtentX": 2.0,
+      "meshExtentZ": 2.0,
+      "worldWidthInches": 48.0,
+      "worldDepthInches": 48.0,
+      "liveTtsVerified": false
+    },
+    {
+      "map": "Greenwood River Crossing",
+      "parts": [
+        {
+          "part": "River Foundation",
+          "lo": [
+            -20.350521,
+            0.0,
+            -24.0
+          ],
+          "hi": [
+            20.705503,
+            0.0,
+            24.0
+          ]
+        },
+        {
+          "part": "West Bank",
+          "lo": [
+            -24.0,
+            0.0,
+            -24.0
+          ],
+          "hi": [
+            15.295651,
+            0.65,
+            24.0
+          ]
+        },
+        {
+          "part": "East Bank",
+          "lo": [
+            -15.453377,
+            0.0,
+            -24.0
+          ],
+          "hi": [
+            24.0,
+            0.65,
+            24.0
+          ]
+        }
+      ],
+      "worldWidthInches": 48.0,
+      "worldDepthInches": 48.0,
+      "liveTtsVerified": false
+    }
+  ]
+}

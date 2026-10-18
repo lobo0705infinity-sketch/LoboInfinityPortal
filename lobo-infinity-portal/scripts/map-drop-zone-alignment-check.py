@@ -1,6 +1,7 @@
 """Verify shipped SET_ bags against the normal Infinity stage's placement contract."""
 
 import json
+import math
 from pathlib import Path
 import runpy
 import struct
@@ -16,6 +17,38 @@ def f32(value):
     return struct.unpack("<f", struct.pack("<f", value))[0]
 
 
+def unity_rotation(x, y, z):
+    """Model float32 quaternion storage, Z-X-Y Euler recovery and near-zero reads.
+
+    Unity's public Quaternion.cs uses a ~0.00573-degree negative threshold when
+    presenting Euler values. This is a simulation, not Unity or TTS execution.
+    """
+    import numpy as np
+    from scipy.spatial.transform import Rotation
+
+    q = Rotation.from_euler('zxy', [z, x, y], degrees=True).as_quat().astype(np.float32)
+    matrix = Rotation.from_quat(q).as_matrix()
+    sine = min(1., max(-1., -matrix[1, 2]))
+    pitch = math.asin(sine)
+    if abs(sine) > 1 - 1e-10:
+        pitch = math.copysign(math.pi / 2, sine)
+        yaw = math.atan2(-matrix[2, 0], matrix[0, 0])
+        roll = 0.
+    else:
+        yaw = math.atan2(matrix[0, 2], matrix[2, 2])
+        roll = math.atan2(matrix[1, 0], matrix[1, 1])
+    result = []
+    threshold = math.degrees(.0001)
+    for value in [pitch, yaw, roll]:
+        value = math.degrees(value)
+        if value < -threshold:
+            value += 360
+        elif value > 360 - threshold:
+            value -= 360
+        result.append(f32(value))
+    return result
+
+
 def stage_test(bags, receiver):
     """Execute the unmodified Workshop Stage logic with mocked TTS physics/storage.
 
@@ -27,6 +60,7 @@ def stage_test(bags, receiver):
 
     runtime = LuaRuntime(unpack_returned_tuples=True)
     runtime.globals().float32 = f32
+    runtime.globals().engineRotation = lambda x, y, z: runtime.table_from(unity_rotation(x, y, z))
     runtime.execute("""
         WORLD={};VARS={hld=0};MESSAGES={};CALLBACKS={};PRINTS={}
         Global={getVar=function(k) return VARS[k] end,setVar=function(k,v) VARS[k]=v end}
@@ -53,7 +87,7 @@ def stage_test(bags, receiver):
                 obj.getPosition=function() return p end
                 obj.getRotation=function() return r end
                 obj.setPosition=function(v) p={float32(v[1]),float32(v[2]),float32(v[3])} end
-                obj.setRotation=function(v) r={float32(v[1]%360),float32(v[2]%360),float32(v[3]%360)} end
+                obj.setRotation=function(v) r=engineRotation(v[1],v[2],v[3]) end
                 obj.getName=function() return '' end
                 obj.lock=function() end;obj.setScale=function() end
                 obj.destruct=function() WORLD[obj.guid]=nil end
@@ -109,8 +143,11 @@ def main():
     assert angle(-.18) == 359.82
     assert angle(360) == 0
     assert angle(-.000000003) == 0
+    assert angle(359.9986) == 0
+    assert unity_rotation(0, 359.9986, 0)[1] < 0
     records = 0
     reserves = 0
+    calibrated_mats = 0
     bags = []
     with zipfile.ZipFile(ROOT / ("public" + catalog["download"])) as archive:
         for entry in catalog["maps"]:
@@ -136,6 +173,7 @@ def main():
                 records += 1
                 if expected[guid][:3] != old[guid][:3]:
                     reserves += 1
+                    assert abs(old[guid][2]) >= 26
                     assert values[0] == 32 and abs(values[2]) <= 24
                 assert all(abs(values[i] - expected[guid][i]) < .000001 for i in range(3))
                 assert abs(values[0]) < 44 and abs(values[1]) < 26 and abs(values[2]) < 26
@@ -143,13 +181,18 @@ def main():
                     value = values[i]
                     assert 0 <= value < 360
                     assert abs(value - f32(value)) < .0005
-                    assert abs((value - old[guid][i] + 180) % 360 - 180) <= .000051
+                    assert value == 0 or .01 <= value <= 359.99
+                    assert abs((value - old[guid][i] + 180) % 360 - 180) <= .005001
             # Only rotation fields may change within scenery, including alternate states.
             normalized = json.loads(json.dumps(original_bag["ContainedObjects"]))
             for obj in normalized:
                 repair["normalize_transforms"](obj)
+                repair['calibrate_mat'](obj, actual[obj['GUID']])
+                if obj['Transform'].get('scaleX') == repair['MAT_SCALE']:
+                    calibrated_mats += 1
+                    assert abs(obj['Transform']['scaleX'] / 24 * 47 - 48) < .000001
             assert normalized == bag["ContainedObjects"]
-    result = {"bags": len(bags), "placementRecords": records, "reserveTokensRelocated": reserves, "terrainAndAssetParity": True, "liveTtsVerified": False}
+    result = {"bags": len(bags), "placementRecords": records, "reserveTokensRelocated": reserves, "calibratedMats": calibrated_mats, "assetParity": True, "liveTtsVerified": False}
     if "--receiver" in sys.argv:
         receiver = sys.argv[sys.argv.index("--receiver") + 1]
         # First reproduce the bug, using the real loader and one signed-angle record.
@@ -161,9 +204,14 @@ def main():
         bad["LuaScript"] = "\r\n".join(rows) + "\r\n"
         baseline = stage_test([bad], receiver)
         assert baseline[0]["alignmentFailures"] > 0
+        # Reproduce the first repair's missed near-zero wrap before testing R2.
+        fields[4] = "359.9986"
+        rows[0] = ",".join(fields)
+        bad["LuaScript"] = "\r\n".join(rows) + "\r\n"
+        assert stage_test([bad], receiver)[0]["alignmentFailures"] > 0
         deployed = stage_test(bags, receiver)
         assert all(item["alignmentFailures"] == 0 for item in deployed)
-        result.update(actualStageLuaExecuted=True, badRotationReproduced=True, deployClearCycles=len(deployed), alignmentFailures=0)
+        result.update(actualStageLuaExecuted=True, badRotationReproduced=True, nearZeroWrapReproduced=True, quaternionReadbackModeled=True, deployClearCycles=len(deployed), alignmentFailures=0)
     print(json.dumps(result, indent=2))
 
 

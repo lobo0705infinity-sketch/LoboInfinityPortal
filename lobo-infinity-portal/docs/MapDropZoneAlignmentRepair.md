@@ -6,7 +6,7 @@ The normal Infinity mod's Stage compares each saved rotation directly to
 object consumes 100 alignment attempts, printing `Failed Alignment.` before the
 Stage moves to the next object. The Stage remains busy during the process.
 
-The repaired exports use canonical angles in [0, 360), four decimal places,
+The repaired exports use canonical angles in [0, 360), two decimal places,
 and native CRLF-delimited SET_ placement records. Individual downloads are
 Saved Objects bags; the ZIP also includes a collection game save and instructions.
 Versioned download paths avoid serving older immutable cached files.
@@ -43,3 +43,23 @@ or physics verification.
 The existing `updatedAt` catalogue field remains the original Workshop timestamp.
 `downloadRevision` identifies this repaired export; publication here does not
 update the Steam Workshop item automatically.
+
+## R2 — Unity readback and mat calibration
+
+The first test only wrapped Euler numbers; it did not model quaternion storage
+and Unity's near-zero Euler presentation. Unity can present 359.9986 as a
+small negative angle, still failing the Stage's direct comparison. R2 rounds
+rotations to hundredths of a degree, as native Stage exports do, and adds a
+regression that reproduces the first repair's missed boundary case. The optional
+Lua harness now models quaternion storage, Z-X-Y recovery and near-zero reads;
+it remains a simulation, not an execution inside Unity or TTS.
+
+The user measured a scale-24 mat as 47 inches per side in TTS. R2 applies
+48/47 to X and Z on the 39 centered scale-24 Custom_Tile mats, producing
+a scale of 24.51063829787234. Y thickness, terrain sizes, terrain placement
+and objective locations are unchanged. The 48-inch result is calibrated from
+that measurement and still needs in-game remeasurement. Mesh-based mats
+and smaller floor tiles are not resized.
+
+Reference for Unity's near-zero Euler presentation:
+https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Quaternion.cs
