@@ -61,6 +61,24 @@ export function verifiedRulesInteraction(question, corpus) {
       },
     }
   }
+  // Match only the general elevation question; named rules and scenario
+  // exceptions must still go through the complete evidence path.
+  const heightCover = /^(?:(?:when|how) (?:do|does|can) (?:you|i|a trooper|a model) (?:get|gain|receive|benefit from) (?:partial )?cover (?:from|due to|because of) (?:height|elevation|high ground)|(?:does|can) (?:height|elevation|high ground) (?:give|grant|provide) (?:you )?(?:partial )?cover|(?:do|does|can) (?:you|i|a trooper|a model) (?:get|gain|receive|benefit from) (?:partial )?cover (?:on|from) (?:a |an |the )?(?:roof|rooftop|platform|elevated position|higher position))$/.test(words)
+  if (heightCover) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED RULES ANSWER', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: {
+        conclusion: 'DEPENDS', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: 'It depends on Line of Fire. You get Partial Cover when scenery you are touching obscures part of your Silhouette from the attacker. The roof or platform you stand on can itself provide that cover against an enemy below: you do not need a parapet or to be Prone. A typical example is your entire Silhouette being above the attacker’s, with the roof blocking their view of its lower part. Merely being higher is not automatic cover: if the attacker can see your whole Silhouette, you need another qualifying obstruction. If scenery blocks all LoF, you have Total Cover. Partial Cover normally gives -3 to the attacker’s BS Roll and +3 to your Saving Roll; cover-denying rules still apply.',
+        sources: [
+          { id: 'H1', title: 'Official Infinity N5.3 Wiki', section: 'Cover — Partial Cover', url: 'https://infinitythewiki.com/Ballistic_Skills#Cover' },
+          { id: 'H2', title: 'Official Infinity N5.3 Wiki', section: 'Line of Fire and Cover — elevated-position diagrams', url: 'https://infinitythewiki.com/Ballistic_Skills#Line_of_Fire_and_Cover' },
+        ],
+      },
+    }
+  }
   const cautiousImpersonation = /^(?:can|may) (?:a unit|unit|a trooper|a model|i|you)(?: (with|without) stealth)? (?:use |declare |perform )?cautious (?:move|movement) (?:inside|within|in) (?:an? |the )?(?:enemys? |enemy )?(?:zoc|zone of control) (?:but (?:(?:the|that|this) )?enemy is in impersonation(?: state)?|of (?:an? |the )?(?:enemy )?(?:impersonation(?:-1|-2)? marker|impersonator)(?: in impersonation state)?)(?: (with|without) stealth| if (?:it|i|the trooper) (has|have|uses|use) stealth(?: and (?:stays?|remains?) (?:outside|out of) (?:the markers? |its )?(?:lof|line of fire))?)?$/.exec(words)
   if (cautiousImpersonation) {
     const usesStealth = !cautiousImpersonation.includes('without') && (cautiousImpersonation.includes('with') || Boolean(cautiousImpersonation[3]))

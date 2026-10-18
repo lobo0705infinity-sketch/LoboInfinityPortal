@@ -35,9 +35,12 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     if (/destroy|damage|wound|normal|combined|n\s*\+\s*e\s*\/\s*m/i.test(question)) terms.add('combined ammunition')
     corpus.chunks.filter((chunk) => chunk.sourceId === 'infinity-rules-n5.3' && terms.has(chunk.canonicalTerm)).forEach(add)
   }
-  // A lexical ranker can otherwise omit the controlling page when ordinary
-  // language mentions several rules at once. Always activate the best official
-  // evidence for every confidently resolved concept and dependency first.
+  // The complete Cover definition must survive the evidence limit even when
+  // terminology retrieval returns numerous unrelated mentions of cover.
+  if (/\bcover\b/i.test(question) && /height|elevat|higher|high ground|roof|platform|prone/i.test(question)) {
+    corpus.chunks.filter(chunk => chunk.section === 'COVER — CONTACT AND OBSCURATION').forEach(add)
+  }
+  // Select evidence for every confidently resolved concept and dependency.
   selectTerminologyEvidence(corpus, terminology).forEach(add)
   // Select the restored permission for informal break/disband/link wording.
   if (/\b(?:fireteams?|link(?:ed)? teams?|links?)\b/i.test(question) && /\b(?:break|cancel\w*|disband\w*|dissolv\w*|voluntar\w*)\b/i.test(question)) {
@@ -59,6 +62,9 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   // Activate every controlling clause for the interactions whose individual
   // fragments are easily confused by lexical retrieval.
   const interactionTerms = new Set()
+  if (/\bcover\b/i.test(question) && /height|elevat|higher|high ground|roof|platform|prone/i.test(question)) {
+    ;['cover', 'partial cover', 'line of fire', 'prone state', 'no cover', 'climb'].forEach(term => interactionTerms.add(term))
+  }
   if (/\bcontinuous(?: damage)?\b/i.test(question) && /\bcover\b/i.test(question)) {
     ;['continuous damage', 'cover', 'saving roll', 'template weapons and equipment'].forEach(term => interactionTerms.add(term))
   }
@@ -120,6 +126,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
     'Targeted State is a persistent game state, not proof of current enemy LoF. Targeted does not itself prevent entering Impersonation State or using Cybermask. Check their normal activation requirements and any other stated restrictions; do not invent enemy LoF because the Trooper is Targeted. Entering Impersonation or using Cybermask does not cancel Targeted: its +3 Discover MOD and prohibitions on Stealth and Cautious Movement persist. Do not generalize this permission to Camouflaged State or other marker states without checking their own requirements.',
     'Partial Cover grants +3 to Saving Rolls as well as -3 to the attacker’s BS Roll. If it applied to the original attack, retain that Saving Roll MOD on subsequent Continuous Damage rolls; the Continuous Damage trait does not remove it. Template Weapons deny the Partial Cover Saving Roll MOD on both initial and repeated saves. Check any other stated cover-denying rule. This interaction follows from combining the rules; do not label it an explicit FAQ clarification. Never claim Cover only modifies the attack roll.',
+    'For Cover from height, apply contact and obscuration to the roof or platform itself: the supporting surface can provide Partial Cover against an attacker below without a parapet and without being Prone. Height alone is not automatic Cover; if the attacker sees the whole Silhouette there is no Partial Cover from that surface. General when/how questions require explaining these conditions, not an unconditional NO. Check actual LoF geometry and any cover-denying rules, including No Cover and Climb. Do not invent a Prone-only elevation exception.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
     'For Cautious Movement near an opposing Impersonation marker, apply the recommended table ruling: the marker counts as enemy for the endpoint check despite its allied targeting protection. Without Stealth, starting or ending inside its ZoC prevents ARO suppression; its choice not to react does not protect the mover from other eligible AROs. With applicable Stealth and outside the marker’s LoF, Cautious Movement can suppress AROs inside its ZoC/Hacking Area if all other conditions pass. Check Sixth Sense, Combat Instinct, other enemies, and user eligibility. Distinguish permission to declare the Skill from suppressing AROs. State that the Impersonation interaction is a recommended table ruling, not an explicit official clarification; label it EVIDENCE-BOUNDED INTERPRETATION. Cite Cautious Movement, Impersonation, Stealth, and Alignment when supported by the selected evidence. Never justify an unconditional yes merely because the marker remains unrevealed, or assume an Attack ARO exists when Cautious Movement suppresses it. Questions where the mover is impersonating are a separate interaction.',
     'Deployable Cover grants Partial Cover or a specified variant; Vitroferro replaces its ordinary +3 Saving Roll MOD with +6. Check No Cover before granting that benefit: a Trooper with No Cover cannot receive Partial Cover MODs, including Vitroferro. Nanoscreen has separate BS and Saving Roll MODs and does not itself grant permission to claim Partial Cover. Do not assume Nanoscreen overrides No Cover, or grant +9 without checking the actual profile and restrictions. Keep hypothetical profiles without No Cover and explicit scenario exceptions on the evidence path.',

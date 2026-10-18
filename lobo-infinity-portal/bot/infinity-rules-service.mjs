@@ -24,6 +24,13 @@ const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 41, printedPage: '41',
+  section: 'COVER — CONTACT AND OBSCURATION', headings: ['COVER', 'PARTIAL COVER', 'TOTAL COVER'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cover',
+  text: 'COVER\nThe target is in Partial Cover when they are in contact with a piece of scenery that partially obscures their Silhouette. Total Cover completely blocks LoF to the target’s Silhouette.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 41, printedPage: '41',
   section: 'COVER — SAVING ROLL MOD', headings: ['COVER', 'EFFECTS'],
   structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cover',
   text: 'PARTIAL COVER\nIf the target is in Partial Cover, the attacker applies a -3 MOD to their BS Attack Roll and the target applies a +3 MOD to its Saving Roll, if necessary.',

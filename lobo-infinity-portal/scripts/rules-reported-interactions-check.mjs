@@ -64,6 +64,12 @@ const cases = [
   ['can you reset in immobilized-a state in the reactive turn?', 'NO', /cannot be declared/],
   ['does discover through white noise triggers bs attack aro from msv 1 model', 'NO', /Discover is not a BS Attack/],
   ['Does Discover through White Noise allow a BS Attack ARO from an MSV1 trooper?', 'NO', /cannot draw LoF/],
+  ['when do you get cover from height?', 'DEPENDS', /roof or platform you stand on/],
+  ['When do I gain Partial Cover from elevation?', 'DEPENDS', /do not need a parapet or to be Prone/],
+  ['Does height grant cover?', 'DEPENDS', /Merely being higher is not automatic cover/],
+  ['Can elevation provide Partial Cover?', 'DEPENDS', /whole Silhouette/],
+  ['Do you get cover on a roof?', 'DEPENDS', /blocks all LoF/],
+  ['Can a trooper gain cover from an elevated position?', 'DEPENDS', /cover-denying rules still apply/],
 ]
 for (const [question, conclusion, detail] of cases) {
   const result = await context.retrieveRulesReference({ question })
@@ -114,7 +120,13 @@ for (const question of [
   const result = await context.retrieveRulesReference({ question })
   assert.equal(result.fallback, true, question)
 }
-assert.equal(providerCalls, 20)
+for (const question of [
+  'Does an Impetuous trooper get cover from height?',
+  'Do I get cover on a roof while using Climb?',
+  'Can I gain cover from height against a template weapon?',
+  'Does height grant cover under a special scenario exception?',
+]) assert.equal((await context.retrieveRulesReference({ question })).fallback, true, question)
+assert.equal(providerCalls, 24)
 const prompt = await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8')
 assert.match(prompt, /intersect the allowed declarations/)
 assert.match(prompt, /Without Stealth, starting or ending inside its ZoC prevents ARO suppression/)
@@ -126,7 +138,7 @@ assert.match(prompt, /defender’s Dodge/)
 assert.match(prompt, /automatic Baggage replenishment during the States Phase/)
 assert.match(prompt, /Declaring Reload is a separate Attack declaration/)
 assert.match(prompt, /must announce it before either player spends the Order/)
-console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 20 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
+console.log('Rules interaction regressions passed: ' + cases.length + ' corrections, 24 unrelated/exception fallbacks, Discord payloads, and AI guidance.')
 
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
@@ -337,3 +349,15 @@ for (const question of continuousCoverQuestions.slice(0, 2)) {
   assert.match(evidence.text, /Cover grants \+3 to Saving Rolls/)
 }
 console.log('Cover and template exclusion evidence selected for both screenshot questions.')
+
+for (const question of ['When do you get cover from height?', 'Does a trooper on a roof get cover against an enemy below?', 'Does an Impetuous model get cover from elevation?']) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question)
+  const { entries } = JSON.parse(evidence.text.split('\n').at(-1))
+  assert.ok(entries.some(entry => /in contact with a piece of scenery that partially obscures/.test(entry.text)), question)
+  assert.match(evidence.text, /without a parapet and without being Prone/)
+}
+const heightResult = await context.retrieveRulesReference({ question: 'when do you get cover from height?' })
+assert.equal(heightResult.deepSeek.conclusion, 'DEPENDS')
+assert.equal(heightResult.deepSeek.sources.length, 2)
+assert.ok(heightResult.deepSeek.sources.some(source => source.url.endsWith('#Line_of_Fire_and_Cover')))
+console.log('Height cover regressions passed: conditional answer, roof contact, diagram citations, evidence retrieval and exception routing.')
