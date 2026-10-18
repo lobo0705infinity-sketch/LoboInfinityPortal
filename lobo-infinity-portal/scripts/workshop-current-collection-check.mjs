@@ -18,7 +18,28 @@ for (const map of loboWorkshopMaps) {
     assert.ok(existsSync(fileURLToPath(new URL(`../public${url}`, import.meta.url))), url)
   }
   const save = JSON.parse(readFileSync(fileURLToPath(new URL(`../public${map.download}`, import.meta.url)), 'utf8'))
-  assert.equal(save.ObjectStates.length, map.objectCount, `${map.slug} count matches its downloadable save`)
+  assert.equal(save.ObjectStates.length, 1, `${map.slug} downloads a single map bag`)
+  const bag = save.ObjectStates[0]
+  assert.equal(bag.Name, 'Bag')
+  assert.equal(bag.GUID, map.guid)
+  assert.equal(bag.ContainedObjects.length, map.objectCount, `${map.slug} inventory matches the catalogue`)
+  assert.ok(bag.LuaScript.startsWith('--'), `${map.slug} uses the native drop-zone format`)
+  const rows = bag.LuaScript.split('\r\n')
+  assert.equal(rows.pop(), '', `${map.slug} terminates placement records with CRLF`)
+  const ids = new Set()
+  for (const row of rows) {
+    assert.match(row, /^--[0-9a-f]{6}(,-?\d+\.\d{6}){6}$/)
+    const [id, ...fields] = row.slice(2).split(',')
+    assert.ok(!ids.has(id), `${map.slug} has no repeated placement GUID`)
+    ids.add(id)
+    const [x, y, z, ...rotation] = fields.map(Number)
+    assert.ok(Math.abs(x) < 44 && Math.abs(y) < 26 && Math.abs(z) < 26, `${map.slug}: ${id} stays inside the Stage clear zone`)
+    for (const angle of rotation) {
+      assert.ok(angle >= 0 && angle < 360, `${map.slug}: ${id} uses canonical Euler angles`)
+      assert.ok(Math.abs(angle - Math.fround(angle)) < 0.0005, `${map.slug}: ${id} meets the Stage alignment tolerance`)
+    }
+  }
+  assert.deepEqual(ids, new Set(bag.ContainedObjects.map(object => object.GUID)))
 }
 assert.equal(missions.size, 20)
 for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 2, `${mission} has two distinct layouts`)

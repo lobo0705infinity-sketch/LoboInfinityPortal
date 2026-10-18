@@ -53,10 +53,11 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <h1>See the table before you deploy.</h1>
         <p>Explore {loboWorkshopMaps.length} setups for {missionCount} ITS Season 18 missions across {layoutCount} terrain layouts. Filter by mission, inspect the setup, and load its matching Workshop bag.</p>
         <div className="lobo-maps-hero-actions">
-          <a download href={LOBO_WORKSHOP_DOWNLOAD_URL}>Download all setups</a>
+          <a download href={LOBO_WORKSHOP_DOWNLOAD_URL}>Download all map bags</a>
           <a href="#browse-maps">Browse the maps <span aria-hidden="true">↓</span></a>
           <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Open Steam Workshop <span aria-hidden="true">↗</span></a>
         </div>
+        <p>Download a bag to TTS Saved Objects, then drop it onto the normal Infinity mod’s map deployment spot. Start with a fresh table if an older map is stuck busy.</p>
         <span className="lobo-maps-hero-count">{layoutCount} layouts <span aria-hidden="true">·</span> {loboWorkshopMaps.length} setups <span aria-hidden="true">·</span> {missionCount} missions</span>
       </div>
       <Link aria-label={`Explore ${featured.name}`} className="lobo-maps-hero-image" to={`/maps/${featured.slug}`}>
@@ -118,8 +119,9 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'standard'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>{map.isCurrent === false ? `Historical Workshop save ${map.index}` : `Workshop setup ${String(map.index).padStart(2, '0')} / ${loboWorkshopMaps.length}`}</span></nav>
     <header className="lobo-map-detail-heading">
       <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopBagName}</p>{map.isCurrent === false ? <p>This is a historical Workshop save. <Link to="/maps">Browse the revised ITS18 collection.</Link></p> : null}<p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Inspect this mission setup before loading its matching bag in Tabletop Simulator.</p></div>
-      <div>{map.download ? <a download href={map.download}>Download this setup</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
+      <div>{map.download ? <a download href={map.download}>Download map bag</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
     </header>
+    {map.isCurrent === false ? null : <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
     <a aria-label={`Open full-size ${map.previewKind === 'diagram' ? 'setup diagram' : 'angled preview'} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
     {map.previewKind === 'diagram' ? <p className="lobo-maps-source-note">This is a footprint diagram of the revised setup. Fresh overhead and angled TTS screenshots are pending.</p> : <section aria-labelledby="map-views-title" className="lobo-map-detail-views">
       <div className="lobo-maps-section-heading"><div><p className="eyebrow">Two ways to read the table</p><h2 id="map-views-title">Terrain previews</h2></div></div>
