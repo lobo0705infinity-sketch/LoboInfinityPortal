@@ -17,3 +17,12 @@ Run `node tests/aurora-publication-check.mjs` and the normal `npm run build:verc
 The public Player Rules explain the Faction Commander/deputy decision process and briefly state that Conquest factions, Tohaa and Combined Army can hire NA2. Contract terms, Credit rules, support calculations and services belong in individual faction guides, not the public rules page. Factions select their own representatives and tell the GM privately; the portal does not assign commander permissions or publish private selections. Commanders seek consensus, make the final call by the GM deadline when needed, and submit one official set of faction decisions. Players remain free to choose legal games; rules judgments and scoring remain with the GM.
 
 All eight Conquest factions, Tohaa and Combined Army may hire NA2 from six-Credit campaign treasuries. Current balances, bids, accepted terms and purchases stay outside public publication state. Mercenary support and contract outcomes are manually resolved by the GM; raw reported TP/OP remain earned game totals. Do not copy the GM guide, combined tracking workbook, sample private briefings or master archive into public assets.
+
+## Campaign location selection
+
+Players may agree to play in one of the current Turn’s Vulnerable Territories or the active Narrative Mission. If they cannot agree, both secretly bid Command Tokens and reveal simultaneously.
+
+- Different bids: the higher bidder loses the number of Command Tokens they bid and chooses the location. The lower bidder keeps their Command Tokens.
+- Equal bids: both players lose the number of Command Tokens they bid, then roll off. The die-roll winner chooses the location.
+
+For a territory battle, then make a separate Face-to-Face roll; the winner chooses one of the Turn’s two ordinary missions. A Narrative game uses the active Narrative Mission sheet. Campaign location selection does not assign a particular tabletop terrain layout.

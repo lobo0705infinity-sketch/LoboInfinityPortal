@@ -1,3 +1,4 @@
+import CampaignLocationRules from './CampaignLocationRules'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { AURORA_TERRITORIES, AURORA_TURNS } from '../../shared/aurora-public.mjs'
@@ -63,6 +64,7 @@ function Submission({data,onSaved}:{data:Data;onSaved:()=>void}){
   if(!state.turn)return <p>Submissions open when Lobo announces the active Campaign Turn and its four Vulnerable Territories.</p>
   if(draft){const opponent=data.players.find(p=>p.id===draft.opponent)!;const scored=campaignScore(draft.opA,draft.opB);return <div className="aurora-game-review"><h3>Review both players’ scores</h3><p>Turn {draft.turn} · {draft.date} · {locationName(draft.kind==='narrative'?'narrative':draft.location)} · {draft.mission}</p><ScoreReview a={data.player!} b={opponent} opA={draft.opA} opB={draft.opB} tpA={scored.tpA} tpB={scored.tpB}/><p>{scored.result}. TP: victory 4, draw 2, defeat 0; +1 for scoring at least 5 OP; +1 for a defeat by no more than 2 OP.</p><p>Map: {draft.map||'Not provided'}</p>{draft.notes?<p>{draft.notes}</p>:null}<p>One submission covers both players. Your opponent confirms or requests a correction. Private objectives are claimed separately.</p>{error?<p role="alert">{error}</p>:null}<button type="button" disabled={busy} onClick={()=>setDraft(null)}>Back to form</button><button type="button" className="aurora-primary" disabled={busy} onClick={()=>void save()}>{busy?'Saving…':'Submit for opponent confirmation'}</button></div>}
   return <form className="aurora-admin-form aurora-game-form" onSubmit={e=>{e.preventDefault();const f=new FormData(e.currentTarget),text=(key:string)=>String(f.get(key)||'');if(!score||!selectedMission){setError('Choose a mission and enter both scores.');return}const next={turn,kind,mission:selectedMission,opA:Number(opA),opB:Number(opB),opponent:text('opponent'),date:text('date'),location:text('location'),map:text('map'),notes:text('notes'),armyA:text('armyA'),armyB:text('armyB'),photos:text('photos')};setFormValues(next);setDraft(next)}}>
+    <CampaignLocationRules/>
     <div className="aurora-admin-columns">
       <label>Campaign Turn<select aria-label="Campaign Turn" value={turn} onChange={e=>{setTurn(Number(e.target.value));setMission('')}}>{data.turns.map(t=><option key={t.turn} value={t.turn}>Turn {t.turn}{t.turn===data.state.turn?' · Active':' · Late approval required'}</option>)}</select></label>
       <label>Your registered player<input readOnly value={`${data.player!.name} · ${factionName(data.player!.faction)}`}/></label>

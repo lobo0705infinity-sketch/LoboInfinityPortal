@@ -11,6 +11,7 @@ import { resolveMissionGeistNavigation } from '../config/missionGeistNavigation'
 import type { MissionGeistCatalog } from '../services/publicSnapshot'
 import AuroraRegistration from './AuroraRegistration'
 import AuroraGames from './AuroraGames'
+import CampaignLocationRules from './CampaignLocationRules'
 import AuroraResults from './AuroraResults'
 import { AURORA_REGISTRATION_FACTIONS } from '../../shared/aurora-registration.mjs'
 import { campaignScore } from '../../shared/aurora-games.mjs'
@@ -50,7 +51,7 @@ function CampaignOverview({ state }: { state: AuroraPublicState }) {
   return <section className="aurora-overview-focus"><div>
     <p className="eyebrow">{state.turn ? 'This Turn' : 'A shared frontier. A growing conflict.'}</p>
     <h2>{state.turn ? 'Choose where your next battle matters.' : 'Your faction. Your foothold. Your campaign.'}</h2>
-    <p>{state.turn ? 'Play an announced territory battle or the active Narrative Mission. One player records both scores; the opponent confirms the result.' : `Join one of ${AURORA_REGISTRATION_FACTIONS.length} factions, including Nomads, and coordinate in your private Discord channel. Every confirmed battle contributes to the campaign.`}</p>
+    <p>{state.turn ? 'Agree with your opponent on a Vulnerable Territory or the active Narrative Mission; if you cannot agree, use blind Command Token bidding. One player records both scores; the opponent confirms the result.' : `Join one of ${AURORA_REGISTRATION_FACTIONS.length} factions, including Nomads, and coordinate in your private Discord channel. Every confirmed battle contributes to the campaign.`}</p>
     <p>Choose a Faction Commander and deputy in your private faction channel. <Link to={`${AURORA_PATH}/rules#faction-commanders`}>How faction decisions work →</Link></p>
     {!state.turn ? <><p className="aurora-muted">Twelve weeks · Six Turns · Eleven factions</p><p>Game reporting opens with Lobo’s Turn 1 briefing.</p><Link to={`${AURORA_PATH}/rules`}>How the campaign works →</Link></> : <>
       <h3>Vulnerable Territories</h3><ul className="aurora-overview-targets">{vulnerable.map(item => { const territory = AURORA_TERRITORIES.find(t => t.id === item.id)!; return <li key={item.id}><Link to={`${AURORA_PATH}/territories/${item.id}`}>{territory.name}</Link><span>{territory.vp} VP · {item.controller || 'Controller not announced'}</span></li> })}</ul>
@@ -103,7 +104,7 @@ function CampaignMap({ state, initialTerritory }: { state: AuroraPublicState; in
 
 function TerritoryGuide({ territory }: { territory: Territory }) {
   return <>
-    <div id="aurora-terrain-references"><Panel title={`${territory.name} terrain references`}><p>These are construction guides, not mandatory terrain placements. Build a balanced 48″ × 48″ Infinity N5 battlefield and preserve this territory’s character.</p><div className="aurora-reference-grid">{territory.layouts.map((label: string, index: number) => { const src = `/assets/aurora-vii/v1/territory-${String(territory.number).padStart(2, '0')}-${index === 0 ? 'a' : 'b'}.svg`; return <figure key={label}><a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size reference: ${label}`}><img src={src} width="900" height="900" loading="lazy" alt={`${territory.name} reference ${index === 0 ? 'A' : 'B'}: ${label}`}/></a><figcaption>{territory.number}{index === 0 ? 'A' : 'B'} · {label}<span>Open the image for the full reference.</span></figcaption></figure> })}</div><ul>{territory.notes.map((note: string) => <li key={note}>{note}</li>)}</ul><details><summary>Shared table-building principles</summary><ul><li>Provide substantial total-cover positions and several protected exits from each Deployment Zone.</li><li>Keep important routes broad enough for TAGs and other large Silhouettes.</li><li>Use real Line of Fire blockers; scatter supplements them.</li><li>Protect usable midfield objectives and avoid uninterrupted Deployment Zone fire corridors.</li><li>Preserve the different densities, elevations, and water or wilderness character of each territory.</li></ul></details></Panel></div>
+    <div id="aurora-terrain-references"><Panel title={`${territory.name} terrain references`}><p><Link to={`${AURORA_PATH}/rules#campaign-location-selection`}>Choose the campaign location by agreement or blind Command Token bidding →</Link></p><p>These are construction guides, not mandatory terrain placements. Build a balanced 48″ × 48″ Infinity N5 battlefield and preserve this territory’s character.</p><div className="aurora-reference-grid">{territory.layouts.map((label: string, index: number) => { const src = `/assets/aurora-vii/v1/territory-${String(territory.number).padStart(2, '0')}-${index === 0 ? 'a' : 'b'}.svg`; return <figure key={label}><a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size reference: ${label}`}><img src={src} width="900" height="900" loading="lazy" alt={`${territory.name} reference ${index === 0 ? 'A' : 'B'}: ${label}`}/></a><figcaption>{territory.number}{index === 0 ? 'A' : 'B'} · {label}<span>Open the image for the full reference.</span></figcaption></figure> })}</div><ul>{territory.notes.map((note: string) => <li key={note}>{note}</li>)}</ul><details><summary>Shared table-building principles</summary><ul><li>Provide substantial total-cover positions and several protected exits from each Deployment Zone.</li><li>Keep important routes broad enough for TAGs and other large Silhouettes.</li><li>Use real Line of Fire blockers; scatter supplements them.</li><li>Protect usable midfield objectives and avoid uninterrupted Deployment Zone fire corridors.</li><li>Preserve the different densities, elevations, and water or wilderness character of each territory.</li></ul></details></Panel></div>
   </>
 }
 
@@ -111,8 +112,9 @@ function CampaignMissions({ state }: { state: AuroraPublicState }) {
   const catalog = useSnapshotData<MissionGeistCatalog>('mission-catalog')
   const turn = AURORA_TURNS.find(item => item.turn === state.turn)
   return <>
+    <CampaignLocationRules/>
     {!turn ? <Panel title="Mission briefing"><p>Lobo will release the Turn 1 missions and battlefield rules when the campaign begins.</p><Link to={`${AURORA_PATH}/rules`}>Read the Player Rules →</Link></Panel> : <>
-      <Panel title="This Turn’s ordinary missions"><div className="aurora-mission-grid">{turn.missions.map((mission: { name: string; reference: string }) => <article key={mission.name}><h3>{mission.name}</h3>{mission.reference !== mission.name ? <p className="aurora-muted">{mission.reference}</p> : null}<MissionReference mission={mission.reference} catalog={catalog.data}/></article>)}</div><p>Make a Face-to-Face die roll before a territory game. The winner chooses one of these two missions.</p></Panel>
+      <Panel title="This Turn’s ordinary missions"><div className="aurora-mission-grid">{turn.missions.map((mission: { name: string; reference: string }) => <article key={mission.name}><h3>{mission.name}</h3>{mission.reference !== mission.name ? <p className="aurora-muted">{mission.reference}</p> : null}<MissionReference mission={mission.reference} catalog={catalog.data}/></article>)}</div><p>After choosing the campaign location by agreement or blind Command Token bidding, make a separate Face-to-Face die roll for a territory game. The winner chooses one of these two missions.</p></Panel>
       {state.narrativeMission ? <Panel title="Current Narrative Mission"><h3>{state.narrativeMission.title}</h3><Paragraphs text={state.narrativeMission.briefing}/>{state.narrativeMission.reward ? <p><strong>Announced reward:</strong> {state.narrativeMission.reward}</p> : null}{state.narrativeMission.sheetUrl ? <a href={state.narrativeMission.sheetUrl} target="_blank" rel="noopener noreferrer">Open the current mission sheet ↗</a> : <p>The mission sheet has not been published.</p>}</Panel> : null}
       <p className="aurora-muted">Narrative Mission TP and OP count only toward the Narrative Mission. They do not generate territorial Influence or count toward NA2 Contracts, Tohaa Hidden Hand TP, or CA Infiltration.</p>
     </>}
@@ -139,6 +141,7 @@ function CampaignStory({ state }: { state: AuroraPublicState }) {
 function CampaignRules() {
   const example = campaignScore(8, 6)
   return <>
+    <CampaignLocationRules/>
     <Panel title="Game scores & Tournament Points">
       <p>Enter each player’s Objective Points (OP), from 0 to 10. The form determines the result and calculates Tournament Points (TP) automatically.</p>
       <div className="table-wrapper"><table><thead><tr><th scope="col">Condition</th><th scope="col">TP earned</th></tr></thead><tbody>
@@ -155,7 +158,7 @@ function CampaignRules() {
         <li>The Commander coordinates recommended targets and submits one official set of faction decisions to the GM.</li>
         <li>This includes NA2 offers and acceptance, Credit spending, Tohaa Hidden Hand choices, CA Infiltration targets, and any faction choices required by an assigned Secret Objective.</li>
         <li>NA2’s Commander chooses which contract to accept and which service to buy.</li>
-        <li>Players remain free to arrange games and choose among legal campaign options. Recommended targets guide coordination.</li>
+        <li>Players remain free to arrange games. Opponents choose the campaign location by agreement or blind Command Token bidding. Recommended targets guide coordination.</li>
         <li>The GM interprets rules and confirms scoring. If both Commander and deputy are unavailable, contact the GM before the decision deadline.</li>
       </ul>
       <p>Keep contract terms, spending, objectives and specialist selections in the private faction channel and submit them privately to the GM.</p>

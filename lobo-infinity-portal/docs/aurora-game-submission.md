@@ -62,3 +62,12 @@ The experience check also verifies the focused shell, compact record rows,
 Campaign games require opponents from different registered factions. Same-faction opponents are excluded from the form and rejected by the ledger for both Territory Battles and Narrative Missions, including late submissions. The commissioner cannot approve a same-faction result.
 
 Public Map and Results activity checks run every five minutes while visible. Visibility changes within that interval do not trigger extra checks. Successful public activity is shared in Vercel’s CDN for 60 seconds; browser caching is disabled. Manual Refresh uses a fixed uncached refresh endpoint to get current results. Errors, game submissions, participant reviews, and private claims remain uncached. The portal snapshot schedule is unchanged.
+
+## Campaign location selection
+
+Players may agree to play in one of the current Turn’s Vulnerable Territories or the active Narrative Mission. If they cannot agree, both secretly bid Command Tokens and reveal simultaneously.
+
+- Different bids: the higher bidder loses the number of Command Tokens they bid and chooses the location. The lower bidder keeps their Command Tokens.
+- Equal bids: both players lose the number of Command Tokens they bid, then roll off. The die-roll winner chooses the location.
+
+For a territory battle, then make a separate Face-to-Face roll; the winner chooses one of the Turn’s two ordinary missions. A Narrative game uses the active Narrative Mission sheet. Campaign location selection does not assign a particular tabletop terrain layout.
