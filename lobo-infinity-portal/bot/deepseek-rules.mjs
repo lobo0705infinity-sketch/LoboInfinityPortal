@@ -27,6 +27,11 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   const originals = new Map(corpus.chunks.map((chunk, index) => [key(chunk), { chunk, index }]))
   const selected = new Map()
   const add = (candidate) => { const original = originals.get(key(candidate)); if (original) selected.set(original.index, original.chunk) }
+  // The bounded PDF excerpt ends at the T2 heading. Prioritize the restored
+  // complete clause, including its exception for the extra Critical save.
+  if (/\bt2\b/i.test(question)) {
+    corpus.chunks.filter(chunk => chunk.canonicalTerm === 't2 ammunition').forEach(add)
+  }
   // PDF text extraction dropped the main E/M effects clause. Keep its restored
   // excerpt and the relevant state/deployable clauses together for these questions.
   if (/\be\s*\/\s*m\b|\belectromagnetic\b|\bem\b/i.test(question)) {
@@ -128,6 +133,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Partial Cover grants +3 to Saving Rolls as well as -3 to the attacker’s BS Roll. If it applied to the original attack, retain that Saving Roll MOD on subsequent Continuous Damage rolls; the Continuous Damage trait does not remove it. Template Weapons deny the Partial Cover Saving Roll MOD on both initial and repeated saves. Check any other stated cover-denying rule. This interaction follows from combining the rules; do not label it an explicit FAQ clarification. Never claim Cover only modifies the attack roll.',
     'For Cover from height, apply contact and obscuration to the roof or platform itself: the supporting surface can provide Partial Cover against an attacker below without a parapet and without being Prone. Height alone is not automatic Cover; if the attacker sees the whole Silhouette there is no Partial Cover from that surface. General when/how questions require explaining these conditions, not an unconditional NO. Check actual LoF geometry and any cover-denying rules, including No Cover and Climb. Do not invent a Prone-only elevation exception.',
     'Read across every relevant rule and exception yourself. Do not ask the caller to search, retrieve, validate, or interpret rules for you.',
+    'For ammunition calculations, distinguish hits, Saving Rolls per hit, additional Critical saves, and Wounds per failed save. T2 is one save per hit, inflicting 2 Wounds on failure; its extra Critical save inflicts only 1 Wound on failure. A single T2 Critical therefore requires two saves, not three. Failing both causes 3 Wounds (2 + 1). Identify the dice before rolling. Do not substitute Double Action mechanics or silently change the number of failures in the question. Questions asking how many Wounds are EXPLANATORY and should begin with the numerical result, not Yes.',
     'For Cautious Movement near an opposing Impersonation marker, apply the recommended table ruling: the marker counts as enemy for the endpoint check despite its allied targeting protection. Without Stealth, starting or ending inside its ZoC prevents ARO suppression; its choice not to react does not protect the mover from other eligible AROs. With applicable Stealth and outside the marker’s LoF, Cautious Movement can suppress AROs inside its ZoC/Hacking Area if all other conditions pass. Check Sixth Sense, Combat Instinct, other enemies, and user eligibility. Distinguish permission to declare the Skill from suppressing AROs. State that the Impersonation interaction is a recommended table ruling, not an explicit official clarification; label it EVIDENCE-BOUNDED INTERPRETATION. Cite Cautious Movement, Impersonation, Stealth, and Alignment when supported by the selected evidence. Never justify an unconditional yes merely because the marker remains unrevealed, or assume an Attack ARO exists when Cautious Movement suppresses it. Questions where the mover is impersonating are a separate interaction.',
     'Deployable Cover grants Partial Cover or a specified variant; Vitroferro replaces its ordinary +3 Saving Roll MOD with +6. Check No Cover before granting that benefit: a Trooper with No Cover cannot receive Partial Cover MODs, including Vitroferro. Nanoscreen has separate BS and Saving Roll MODs and does not itself grant permission to claim Partial Cover. Do not assume Nanoscreen overrides No Cover, or grant +9 without checking the actual profile and restrictions. Keep hypothetical profiles without No Cover and explicit scenario exceptions on the evidence path.',
     'Engineer cancels only states whose own cancellation rules permit Engineer, not every state affecting a STR Trooper. Read the named state’s cancellation conditions before granting a repair. Possessed is not canceled by Engineer or a GizmoKit: its ordinary cancellation methods are 1 Command Token during the owning player’s Tactical Phase Executive Use step, or the owning player’s Total Control causing a failed Saving Roll on the Possessed TAG. Total Control is the program; Possessed is the state. Do not confuse Possessed with Isolated or Immobilized.',
@@ -385,5 +391,6 @@ export async function readUsage(path, logger = console) {
   }
 }
 export async function writeUsage(path, usage) { await mkdir(dirname(path), { recursive: true }); const temp = `${path}.${process.pid}.tmp`; await writeFile(temp, `${JSON.stringify({ records: usage.records })}\n`, 'utf8'); await rename(temp, path) }
+
 
 

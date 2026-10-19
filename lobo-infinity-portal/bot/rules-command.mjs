@@ -46,6 +46,21 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  // Bound this correction to a single plain T2 Critical with both saves failed.
+  // Other failure combinations, extra hits and special interactions need evidence.
+  const t2BothFailed = /^(?:if (?:you|i) get crit by t2(?: ammunition)? and fail both (?:saves|saving rolls) how many wounds (?:do|would) (?:you|i) take|(?:how many wounds (?:do|would) (?:you|i) take|what happens) (?:if|when|from) (?:you|i) (?:get|am|are) (?:crit by t2|hit by a t2 critical)(?: ammunition)? and fail both (?:saves|saving rolls)|(?:a |one |single )?t2 crit(?:ical)?(?: hit)? (?:and |with )?(?:both|all two) (?:saves|saving rolls) fail(?:ed)?(?: how many wounds)?)$/.test(words)
+  if (t2BothFailed) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'VERIFIED RULES ANSWER', answerSource: 'VERIFIED_RULES',
+      deepSeek: {
+        questionType: 'EXPLANATORY', conclusion: 'INTERPRETATION', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: '3 Wounds. A single T2 Critical requires two Saving Rolls: one for the hit and one additional roll for the Critical. Failing the hit’s save inflicts 2 Wounds; failing the extra Critical save inflicts only 1 Wound. Failing both therefore causes 2 + 1 = 3 Wounds. Identify which die is which before rolling. T2 does not cause two saves per ordinary hit.',
+        sources: [{ id: 'T2', title: 'Official Infinity Wiki', section: 'T2 Ammunition — Roll and Effects', url: 'https://infinitythewiki.com/T2_Ammunition' }],
+      },
+    }
+  }
   // Cover continues to modify the repeated Saving Rolls of the same attack.
   // Anchor the supported questions so unrelated compound exceptions use evidence.
   const continuousCover = /^(?:when rolling (?:a )?sav(?:e|ing roll) from continuous damage do you still roll with cover|if shot in cover with a continuous(?: damage)? weapon do you get the bonus to armo[u]?r on subsequent saves|(?:do|does|can) (?:you|i|a trooper|a model) (?:still )?(?:get|keep|receive|apply) (?:the )?(?:partial )?cover(?: bonus| modifier| mod)? (?:on|for|to|against) (?:(?:subsequent|repeated|additional) )?(?:continuous damage )?(?:saves|saving rolls)(?: (?:from|against|for) continuous damage)?|does (?:partial )?cover(?: bonus)? (?:apply|carry over) (?:to|on|against) (?:(?:subsequent|repeated|additional) )?continuous damage(?: saves| saving rolls)?|do continuous damage (?:saves|saving rolls) (?:get|benefit from) (?:partial )?cover)$/.test(words)
@@ -301,11 +316,12 @@ export function formatRulesDiscordResponse(result) {
     const certainty = result.deepSeek.certainty === 'EVIDENCE-BOUNDED INTERPRETATION' ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULES ANSWER'
     const answer = scrubInternalIds(result.deepSeek.answer) || 'The rules assistant did not return an answer.'
     const provenance = result.answerSource === 'APPROVED_BENCHMARK' ? '**APPROVED BENCHMARK ANSWER**\n' : ''
-    fields.push({ name: 'ANSWER', value: truncate(`${provenance}**${certainty}**\n**${conclusion}**\n${answer}`, 1024), inline: false })
+    const verdict = result.deepSeek.questionType === 'EXPLANATORY' ? '' : `**${conclusion}**\n`
+    fields.push({ name: 'ANSWER', value: truncate(`${provenance}**${certainty}**\n${verdict}${answer}`, 1024), inline: false })
     const citations = formatCitations(result.deepSeek.sources || []); if (citations) fields.push({ name: 'OFFICIAL SOURCES', value: truncate(citations, 1024), inline: false })
   } else fields.push({ name: 'STATUS', value: `**${result.status || 'AI RULES ANSWER UNAVAILABLE'}**\n${result.limitation || 'No answer was returned.'}`, inline: false })
   const versions = (result.versions || []).map((item) => item.label).join(' • ')
-  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.answerSource === 'EVIDENCE_BOUNDED_RULES' ? 'Evidence-bounded interpretation of official rules; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
+  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.answerSource === 'VERIFIED_RULES' ? 'Verified official rules answer; no provider call.' : result.answerSource === 'EVIDENCE_BOUNDED_RULES' ? 'Evidence-bounded interpretation of official rules; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
   return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • ${method}`, 2048) } }], allowedMentions: { parse: [] } })
 }
 
@@ -355,5 +371,6 @@ function scrubDiscordPayload(value, key = '') { if (Array.isArray(value)) return
 function truncate(value, max) { const text = String(value ?? ''); return text.length <= max ? text : `${text.slice(0, Math.max(0, max - 1)).replace(/\s+\S*$/, '').trim()}…` }
 function normalizeConclusion(value) { const normalized = String(value || '').trim().toUpperCase(); if (normalized === 'RULE') return 'INTERPRETATION'; return ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(normalized) ? normalized : 'UNRESOLVED' }
 function matches(command) { const option = command.options?.[0]; return command.description === RULES_COMMAND_DEFINITION.description && command.options?.length === 1 && option?.name === RULES_OPTION && option?.required === true && option?.type === ApplicationCommandOptionType.String && option?.maxLength === 1000 }
+
 
 

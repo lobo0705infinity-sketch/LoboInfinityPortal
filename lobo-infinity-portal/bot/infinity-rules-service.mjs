@@ -23,6 +23,13 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 67, printedPage: '67',
+  section: 'T2 AMMUNITION — SAVING ROLLS AND CRITICALS', headings: ['T2 AMMUNITION', 'ROLL', 'EFFECTS'],
+  structuredBlockTypes: ['ROLL', 'EFFECTS'], canonicalTerm: 't2 ammunition',
+  text: 'T2 AMMUNITION\nAfter a successful attack using T2 Ammunition, the target must make a Saving Roll per hit suffered. Each failed Saving Roll against T2 Ammunition inflicts 2 Wounds on the target. Critical hits with T2 Ammunition cause the target to make an additional Saving Roll. Failing this additional Saving Roll inflicts only 1 additional Wound on the target. Before rolling, identify which die is the hit save and which is the extra Critical save.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 41, printedPage: '41',
   section: 'COVER — CONTACT AND OBSCURATION', headings: ['COVER', 'PARTIAL COVER', 'TOTAL COVER'],
   structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'cover',
@@ -527,4 +534,5 @@ function inferInteractionConclusion(question,spec,evidence){
   if(/\b(?:if|unless|only|provided that|when)\b/.test(text))return{label:'CONDITIONAL',explanation:'The selected controlling clause makes the interaction depend on an explicit condition.'}
   return{label:'NOT EXPLICITLY RESOLVED',explanation:'The activated corpus contains related rules but no unambiguous controlling interaction clause.'}
 }
+
 

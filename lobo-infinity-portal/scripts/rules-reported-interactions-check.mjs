@@ -361,3 +361,40 @@ assert.equal(heightResult.deepSeek.conclusion, 'DEPENDS')
 assert.equal(heightResult.deepSeek.sources.length, 2)
 assert.ok(heightResult.deepSeek.sources.some(source => source.url.endsWith('#Line_of_Fire_and_Cover')))
 console.log('Height cover regressions passed: conditional answer, roof contact, diagram citations, evidence retrieval and exception routing.')
+
+const t2Questions = [
+  'if you get crit by T2 and fail both saves, how many wounds do you take?',
+  'If I get crit by T2 and fail both saving rolls, how many Wounds do I take?',
+  'How many wounds do you take if you get crit by T2 and fail both saves?',
+  'What happens when you are hit by a T2 critical and fail both saves?',
+  'One T2 critical hit with both saves failed: how many wounds?',
+]
+for (const question of t2Questions) {
+  const before = providerCalls
+  const result = await context.retrieveRulesReference({ question })
+  assert.equal(result.answerSource, 'VERIFIED_RULES', question)
+  assert.equal(providerCalls, before, question)
+  assert.match(result.deepSeek.answer, /^3 Wounds\./)
+  assert.match(result.deepSeek.answer, /two Saving Rolls/)
+  assert.match(result.deepSeek.answer, /extra Critical save inflicts only 1 Wound/)
+  const rendered = JSON.stringify(context.formatRulesDiscordResponse(result))
+  assert.doesNotMatch(rendered, /\*\*YES\*\*|\*\*INTERPRETATION\*\*|all three saves/)
+  assert.match(rendered, /Verified official rules answer; no provider call/)
+  assert.match(rendered, /T2_Ammunition/)
+}
+for (const question of [
+  'T2 critical, I fail only one save. How many wounds?',
+  'Two T2 critical hits and both saves fail: how many wounds?',
+  'If you get crit by T2 and fail both saves, how many wounds do you take with Immunity?',
+  'If you get crit by T2 and fail both saves, how many wounds do you take and can I use NWI?',
+]) assert.equal((await context.retrieveRulesReference({ question })).fallback, true, question)
+for (const question of [...t2Questions, 'T2 crit with Immunity: what happens?']) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question, { maxEvidenceCharacters: 1000 })
+  const { entries } = JSON.parse(evidence.text.split('\n').at(-1))
+  assert.equal(entries[0].section, 'T2 AMMUNITION — SAVING ROLLS AND CRITICALS')
+  assert.match(entries[0].text, /only 1 additional Wound/)
+  assert.match(entries[0].text, /Saving Roll per hit/)
+  assert.match(evidence.text, /two saves, not three/)
+}
+console.log('T2 regressions passed: exact report and paraphrases, two saves/three Wounds, no misleading YES, exception routing and complete prioritized evidence.')
+
