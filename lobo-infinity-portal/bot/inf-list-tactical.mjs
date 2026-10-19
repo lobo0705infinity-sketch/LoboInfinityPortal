@@ -283,7 +283,7 @@ function markup(analysis, blocks, pageIndex, pageCount) {
 }
 
 function categoryMarkup({ key, title, entries }, analysis) {
-  const summary = ['mobileGunfighters', 'mobileLinked'].includes(key) ? `<div class="summary">85% anchored Gunfighter + 15% raw Mobility · Gunfighter 50 = 100 · not a win probability${key === 'mobileLinked' ? ' · requires an active legal Fireteam' : ''}</div>` : key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
+  const summary = key === 'gunfighters' ? '<div class="summary">In-faction and global ranks compare scored selectable profiles. Ties share rank. Linked +1SD requires a legal Fireteam.</div>' : ['mobileGunfighters', 'mobileLinked'].includes(key) ? `<div class="summary">85% anchored Gunfighter + 15% raw Mobility · Gunfighter 50 = 100 · not a win probability${key === 'mobileLinked' ? ' · requires an active legal Fireteam' : ''}</div>` : key === 'mobility' ? '<div class="summary">0–100 movement index · independent of combat ratings · legal paths and landings assumed</div>' : key === 'hacking' ? `<div class="summary"><b>NETWORK:</b> ${analysis.networkSummary.hackers} Hackers · ${analysis.networkSummary.pitcherCarriers} Pitcher · ${analysis.networkSummary.fastPandaCarriers} FastPanda · ${analysis.networkSummary.deployableRepeaterCarriers} Deployable Repeater · ${analysis.networkSummary.repeaterCarriers} Repeater</div>` : ''
   const content = entries.length ? `<div class="grid"${['gunfighters', 'closeCombat'].includes(key) ? ' style="grid-template-columns:1fr 1fr"' : ''}>${entries.map((entry, index) => entryMarkup(key, entry, index)).join('')}</div>` : `<div class="empty">${emptyMessage}</div>`
   const fullWidth = analysis.gunfighterBenchmark?.available || analysis.closeCombatBenchmark?.available ? ' style="grid-column:1/-1"' : ''
   return `<section class="category category-${escapeHtml(key)}"${fullWidth}><h3><span>${escapeHtml(title)}</span><small>${entries.length} exact profile${entries.length === 1 ? '' : 's'}</small></h3>${summary}${content}</section>`
@@ -330,7 +330,7 @@ function mobilityEntryMarkup(entry, index) {
   return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}${m.form ? ` · ${escapeHtml(m.form)}` : ''}</p></div><strong>${m.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">${distances.map(escapeHtml).join(' · ')}</div><p>×${entry.quantity}</p></article>`
 }
 
-function gunfighterEntryMarkup(entry, index) {
+export function gunfighterEntryMarkup(entry, index) {
   const states = [
     entry.nonLinked ? { label: 'NON-LINKED', ...entry.nonLinked } : null,
     entry.fireteamLinked ? { label: 'LINKED +1SD', ...entry.fireteamLinked } : null,
@@ -342,10 +342,17 @@ function gunfighterEntryMarkup(entry, index) {
   const weapons = visibleWeapons.length
     ? `${visibleWeapons.map(escapeHtml).join(' · ')}${overflow > 0 ? ` · +${overflow} more` : ''}`
     : 'Weapon data unavailable'
-  const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
+  const rows = states.map((state) => `<div class="rating-row" style="flex-wrap:wrap"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div>${gunfighterRankMarkup(state.ranking)}</div>`).join('')
   const displayName = entry.profileName || entry.unitName
   const unitDetail = entry.profileName && normalized(entry.profileName) !== normalized(entry.unitName) ? `<p>${escapeHtml(entry.unitName)}</p>` : ''
-  return `<article class="gunfighter-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${rows}</div>${entry.mobility?.status === 'rated' ? `<div class="weapon-line"><span>MOBILITY</span>${entry.mobility.score.toFixed(1)}/100 · MOV ${entry.mobility.mov.join('–')}″</div>` : ''}</article>`
+  return `<article class="gunfighter-card"><div class="gunfighter-rank"><small style="display:block;color:#aeb8c1;font-size:10px;letter-spacing:1px">LIST</small>#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${rows}</div>${entry.mobility?.status === 'rated' ? `<div class="weapon-line"><span>MOBILITY</span>${entry.mobility.score.toFixed(1)}/100 · MOV ${entry.mobility.mov.join('–')}″</div>` : ''}</article>`
+}
+
+function gunfighterRankMarkup(ranking) {
+  const valid = value => Number.isInteger(value?.rank) && Number.isInteger(value?.total) && value.rank > 0 && value.rank <= value.total
+  if (!valid(ranking?.faction) || !valid(ranking?.global)) return ''
+  const position = value => `#${value.rank.toLocaleString('en-US')}/${value.total.toLocaleString('en-US')}`
+  return `<span class="comparison-rank" style="flex:0 0 100%;color:#9edbe7;font-size:12px;line-height:1.3;font-weight:800;text-align:right">IN FACTION ${position(ranking.faction)} · GLOBAL ${position(ranking.global)}</span>`
 }
 
 export function closeCombatEntryMarkup(entry, index) {

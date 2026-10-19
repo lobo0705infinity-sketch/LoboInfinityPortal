@@ -14,6 +14,7 @@ import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { loadGunfighterBenchmarkCatalog } from '../bot/gunfighter-catalog-store.mjs'
 import { rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
+import { loadBundledGunfighterRankings } from '../bot/gunfighter-rankings.mjs'
 import { loadAroBenchmarkCatalog } from '../bot/aro-catalog-store.mjs'
 import { rankArmyAros } from '../bot/aro-benchmark-catalog.mjs'
 import { loadCloseCombatCatalog } from '../bot/close-combat-catalog-store.mjs'
@@ -354,7 +355,12 @@ export async function renderInfListPng({ input, outputPath, mobileGunfighter = f
       expandComposite: true,
     }))
     const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
-    const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4 }) : []
+    let gunfighterRankings = null
+    if (gunfighterCatalog) {
+      try { gunfighterRankings = await loadBundledGunfighterRankings(gunfighterCatalog) }
+      catch (error) { console.warn('Gunfighter rankings unavailable:', error) }
+    }
+    const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4, rankings: gunfighterRankings }) : []
     const aroCatalog = await loadAroBenchmarkCatalog()
     const aroRatings = aroCatalog ? rankArmyAros(aroCatalog, decoded) : []
     const closeCombatCatalog = await loadCloseCombatCatalog()
