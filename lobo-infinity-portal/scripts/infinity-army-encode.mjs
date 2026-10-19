@@ -14,7 +14,12 @@ export function encodeArmyCode({ sectorialId, sectorialSlug, listName = 'Generat
     parts.push(vli(index + 1), vli(1), vli(0), vli(group.members.length), vli(0))
     for (const [memberIndex, member] of group.members.entries()) {
       parts.push(vli(member.unitId), vli(member.groupId), vli(member.optionId))
-      parts.push(Buffer.from(memberIndex < group.members.length - 1 ? [0, 0, 0] : [0, 0]))
+      const modifiers = member.modifiers || []
+      if (modifiers.length) {
+        parts.push(Buffer.from([0, 1]), vli(modifiers.length))
+        for (const modifier of modifiers) parts.push(encodedString(typeof modifier === 'string' ? modifier : JSON.stringify(modifier)))
+        if (memberIndex < group.members.length - 1) parts.push(vli(0))
+      } else parts.push(Buffer.from(memberIndex < group.members.length - 1 ? [0, 0, 0] : [0, 0]))
     }
   }
 

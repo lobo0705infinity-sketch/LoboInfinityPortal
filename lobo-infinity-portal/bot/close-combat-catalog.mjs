@@ -83,7 +83,7 @@ function closeCombatKey(member) {
   return values.every(Number.isInteger) ? values.join(':') : ''
 }
 
-function compactResult(profile, result) {
+export function compactResult(profile, result) {
   return {
     key: profile.aliases[0]?.key || profile.id,
     combatIdentity: JSON.stringify([profile.cc, profile.ph, profile.arm, profile.bts, profile.vitality, profile.structure, profile.troopType, profile.skills.slice().sort(), profile.equipment?.slice().sort(), profile.weapons]),

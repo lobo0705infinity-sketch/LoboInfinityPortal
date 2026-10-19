@@ -1,3 +1,4 @@
+import { applyTeamOpsToUnit, teamOpsUpgradeLabels } from './team-ops-upgrades.mjs'
 import { canonicalMemberships, eligibleLevel2Teams } from './fireteam-list-eligibility.mjs'
 import { lookupMobileGunfighter } from './mobile-gunfighter.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
@@ -70,9 +71,11 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
   }
   const fireteamMembershipsByUnitId = canonicalFireteamMembershipsByUnitId(officialPayloads)
 
-  return members.map((member) => {
+  return members.map((member, rosterPosition) => {
     const card = member.compositeComponent ? {} : cardQueues.get(member.combinedId)?.shift() || {}
-    const unit = unitById.get(Number(member.unitId))
+    const sourceUnit = unitById.get(Number(member.unitId))
+    const payload = officialPayloads.find(p => p.units?.some(u => Number(u.id) === Number(member.unitId)))
+    const unit = applyTeamOpsToUnit(sourceUnit, member, metadata, payload)
     const group = resolveExactProfileGroup(unit, member, { profileName: card.profileName })
     const option = group?.options?.find((item) => Number(item.id) === Number(member.optionId))
     const profileId = Number(member.combinedId.split('-').at(-1))
@@ -109,6 +112,13 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       else if (weapons[existingIndex].burst === null && recovered) weapons[existingIndex] = { ...recovered, modifiers: weapons[existingIndex].modifiers || recovered.modifiers }
     }
     return {
+      rosterPosition: rosterPosition + 1,
+      modifiers: member.modifiers || [],
+      teamOpsUpgrades: teamOpsUpgradeLabels(member.modifiers, metadata, payload),
+      upgradeSignature: JSON.stringify(member.modifiers || []),
+      groupId: Number(group?.id ?? member.groupId),
+      optionId: Number(member.optionId),
+      profileId,
       combatGroup: member.combatGroup,
       bs: finiteNumber(base?.bs ?? card.bs),
       cc: finiteNumber(base?.cc ?? card.cc),
@@ -120,6 +130,10 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
       linkability: officialPayloads.length ? (fireteamMemberships.length ? 'verified-linkable' : 'verified-not-linkable') : 'unavailable',
       profileName: option?.name || card.profileName || group?.isc || unit?.isc || unit?.name || 'Profile unavailable',
       ph: finiteNumber(base?.ph),
+      wip: finiteNumber(base?.wip),
+      arm: finiteNumber(base?.arm),
+      bts: finiteNumber(base?.bts),
+      mov: base?.move?.map(x => x / 2.5),
       points: finiteNumber(option?.points ?? card.points),
       skills,
       structure: base?.str === true,
@@ -134,14 +148,14 @@ export function buildSubmittedProfiles({ armyCode, cards = [], officialPayloads 
 }
 
 export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [], aroRatings = [], closeCombatRatings = [], mobilityCatalog = null, mobileCatalog = null) {
-  const aggregated = aggregateExactProfiles(profiles).map(profile => ({ ...profile, mobility: lookupMobility(mobilityCatalog, profile.combinedId) }))
+  const aggregated = aggregateExactProfiles(profiles).map(profile => ({ ...profile, mobility: profile.upgradedMobility || lookupMobility(mobilityCatalog, profile.combinedId) }))
   const eligibleFireteams = eligibleLevel2Teams(profiles)
   const result = Object.fromEntries(categories.map(([key]) => [key, []]))
   result.gunfighters = mergeGunfighterRatings(aggregated, gunfighterRatings)
   result.closeCombat = mergeCloseCombatRatings(aggregated, closeCombatRatings)
   result.mobility = aggregated.filter(profile => profile.mobility?.status === 'rated').sort((a, b) => b.mobility.score - a.mobility.score || profileSort(a, b)).slice(0, 6)
   for (const [key, state] of [['mobileGunfighters', 'normal'], ['mobileLinked', 'fireteam']]) {
-    result[key] = mobileCatalog ? aggregated.map(profile => ({ ...profile, mobileRating: lookupMobileGunfighter(mobileCatalog, profile.combinedId, state) })).filter(profile => profile.mobileRating && (state === 'normal' || (profile.fireteamTeams || []).some(team => eligibleFireteams.get(profile.combinedId)?.has(team)))).sort((a, b) => b.mobileRating.score - a.mobileRating.score || profileSort(a, b)).slice(0, 4) : []
+    result[key] = mobileCatalog ? aggregated.map(profile => ({ ...profile, mobileRating: profile.upgradedMobile ? profile.upgradedMobile[state] : lookupMobileGunfighter(mobileCatalog, profile.combinedId, state) })).filter(profile => profile.mobileRating && (state === 'normal' || (profile.fireteamTeams || []).some(team => eligibleFireteams.get(profile.combinedId)?.has(team)))).sort((a, b) => b.mobileRating.score - a.mobileRating.score || profileSort(a, b)).slice(0, 4) : []
   }
   for (const profile of aggregated) {
     const enhancements = preferredMatches(profile.skills, [gunfighterMimetismToken, gunfighterMsvToken, bsAttackMinusThreeToken, albedoToken])
@@ -308,6 +322,10 @@ function entryMarkup(key, entry, index = 0) {
   return `<article><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>×${entry.quantity}</strong></div>${secondary ? `<div class="detail">${secondary}</div>` : ''}<div class="badges">${multiRole}${entry.badges.map((badge) => `<span class="badge">${escapeHtml(badge)}</span>`).join('')}${fireteam}</div>${otherRoles.length ? `<div class="also">Also classified as: ${otherRoles.map((role) => escapeHtml(categories.find(([candidate]) => candidate === role)?.[1] || role)).join(' · ')}</div>` : ''}</article>`
 }
 
+function upgradeMarkup(entry) {
+  return entry.teamOpsUpgrades?.length ? `<div class="weapon-line"><span>TEAM-OPS UPGRADE</span>${entry.teamOpsUpgrades.map(escapeHtml).join(' · ')}</div>` : ''
+}
+
 function aroEntryMarkup(entry, index) {
   const states = [
     entry.nonLinked ? { label: 'NON-LINKED', ...entry.nonLinked } : null,
@@ -316,18 +334,18 @@ function aroEntryMarkup(entry, index) {
   const best = [...states].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0))[0] || {}
   const weapons = unique(states.flatMap((state) => (state.weaponsUsed || []).map((weapon) => weapon.weapon).filter(Boolean))).slice(0, 3)
   const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
-  return `<article class="gunfighter-card aro-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)} · ${value(entry.points)} pts · ×${entry.quantity}</p></div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>ARO WEAPON${weapons.length === 1 ? '' : 'S'}</span>${weapons.length ? weapons.map(escapeHtml).join(' · ') : 'Dodge/no-effect response selected most often'}</div><div class="rating-table">${rows}</div></article>`
+  return `<article class="gunfighter-card aro-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)} · ${value(entry.points)} pts · ×${entry.quantity}</p></div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>ARO WEAPON${weapons.length === 1 ? '' : 'S'}</span>${weapons.length ? weapons.map(escapeHtml).join(' · ') : 'Dodge/no-effect response selected most often'}</div>${upgradeMarkup(entry)}<div class="rating-table">${rows}</div></article>`
 }
 
 function mobileGunfighterMarkup(entry, index) {
   const r = entry.mobileRating
-  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>${r.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">Gunfighter ${r.gunfighter.toFixed(2)} (${r.gunfighterNormalized.toFixed(1)}/100 anchored) · Mobility ${r.mobility.toFixed(1)}/100</div><div class="also">Percentiles (informational): Gunfighter ${r.gunfighterPercentile.toFixed(1)} · Mobility ${r.mobilityPercentile.toFixed(1)}</div><p>×${entry.quantity}</p></article>`
+  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}</p></div><strong>${r.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">Gunfighter ${r.gunfighter.toFixed(2)} (${r.gunfighterNormalized.toFixed(1)}/100 anchored) · Mobility ${r.mobility.toFixed(1)}/100</div><div class="also">Percentiles (informational): Gunfighter ${r.gunfighterPercentile.toFixed(1)} · Mobility ${r.mobilityPercentile.toFixed(1)}</div>${upgradeMarkup(entry)}<p>×${entry.quantity}</p></article>`
 }
 
 function mobilityEntryMarkup(entry, index) {
   const m = entry.mobility
   const distances = [`MOV ${m.mov.join('–')}″`, `Travel ${m.travel}″`, m.jump !== null ? `Jump + action ${m.jump}″` : '', m.climb !== null ? `Climb + action ${m.climb}″` : ''].filter(Boolean)
-  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}${m.form ? ` · ${escapeHtml(m.form)}` : ''}</p></div><strong>${m.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">${distances.map(escapeHtml).join(' · ')}</div><p>×${entry.quantity}</p></article>`
+  return `<article><div class="entry-head"><div><h4>#${index + 1} ${escapeHtml(entry.unitName)}</h4><p>${escapeHtml(entry.profileName)}${m.form ? ` · ${escapeHtml(m.form)}` : ''}</p></div><strong>${m.score.toFixed(1)}<small>/100</small></strong></div><div class="detail">${distances.map(escapeHtml).join(' · ')}</div>${upgradeMarkup(entry)}<p>×${entry.quantity}</p></article>`
 }
 
 function gunfighterEntryMarkup(entry, index) {
@@ -345,7 +363,7 @@ function gunfighterEntryMarkup(entry, index) {
   const rows = states.map((state) => `<div class="rating-row"><span class="rating-state">${state.label}</span><div class="rating-metrics"><b>${escapeHtml(state.grade || '—')}</b><strong>${formatRating(state.rating)}</strong><small>${formatPercentile(state.percentile)}</small></div></div>`).join('')
   const displayName = entry.profileName || entry.unitName
   const unitDetail = entry.profileName && normalized(entry.profileName) !== normalized(entry.unitName) ? `<p>${escapeHtml(entry.unitName)}</p>` : ''
-  return `<article class="gunfighter-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${rows}</div>${entry.mobility?.status === 'rated' ? `<div class="weapon-line"><span>MOBILITY</span>${entry.mobility.score.toFixed(1)}/100 · MOV ${entry.mobility.mov.join('–')}″</div>` : ''}</article>`
+  return `<article class="gunfighter-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(best.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(best.grade || '—')}</div></div><div class="weapon-line"><span>WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div>${upgradeMarkup(entry)}<div class="rating-table">${rows}</div>${entry.mobility?.status === 'rated' ? `<div class="weapon-line"><span>MOBILITY</span>${entry.mobility.score.toFixed(1)}/100 · MOV ${entry.mobility.mov.join('–')}″</div>` : ''}</article>`
 }
 
 export function closeCombatEntryMarkup(entry, index) {
@@ -358,7 +376,7 @@ export function closeCombatEntryMarkup(entry, index) {
   const mobility = entry.mobility?.status === 'rated' ? `<div class="weapon-line"><span>MOBILITY</span>${entry.mobility.score.toFixed(1)}/100 · MOV ${entry.mobility.mov.join('–')}″</div>` : ''
   const displayName = entry.profileName || entry.unitName
   const unitDetail = entry.profileName && normalized(entry.profileName) !== normalized(entry.unitName) ? `<p>${escapeHtml(entry.unitName)}</p>` : ''
-  return `<article class="gunfighter-card close-combat-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(primary.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(primary.grade || '—')}</div></div><div class="weapon-line"><span>CC WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div><div class="rating-table">${row}</div>${mobility}</article>`
+  return `<article class="gunfighter-card close-combat-rating-card"><div class="gunfighter-rank">#${index + 1}</div><div class="entry-head"><div><h4>${escapeHtml(displayName)}</h4>${unitDetail}</div><div class="grade grade-${escapeHtml(String(primary.grade || 'na').toLowerCase())}"><span>GRADE</span>${escapeHtml(primary.grade || '—')}</div></div><div class="weapon-line"><span>CC WEAPON${visibleWeapons.length === 1 ? '' : 'S'}</span>${weapons}</div>${upgradeMarkup(entry)}<div class="rating-table">${row}</div>${mobility}</article>`
 }
 
 function styles() { return `*{box-sizing:border-box}html,body{margin:0;background:#070b10;color:#eef2f6;font-family:Arial,sans-serif}.brief{width:${imageWidth}px;padding:48px 52px 38px;background:radial-gradient(circle at 90% 0,#263540 0,transparent 32%),#0b1117;border-top:12px solid #a7242b}header{padding:0 4px 30px;border-bottom:3px solid #53616d}.brand{color:#df3942;font-size:20px;font-weight:900;letter-spacing:5px}h1{margin:9px 0 2px;font-size:50px;line-height:1;letter-spacing:2px}header h2{margin:0;color:#aeb8c1;font-size:25px;letter-spacing:3px}header p{margin:12px 0 0;color:#dfe6eb;font-size:21px;font-weight:700}header .role-note{color:#aeb8c1;font-size:16px;font-weight:600}.categories{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}.category{border:2px solid #53616d;background:#111a22;break-inside:avoid}.category:nth-child(1),.category:nth-child(2){grid-column:span 1}.category:nth-child(n+3){grid-column:1/-1}.category h3{display:flex;align-items:center;justify-content:space-between;margin:0;padding:13px 17px;background:#202c36;border-left:9px solid #c42e37;font-size:26px;letter-spacing:1px;text-transform:uppercase}.category h3 small{color:#aeb8c1;font-size:15px;letter-spacing:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px}.category:nth-child(-n+2) .grid{grid-template-columns:1fr}.summary{padding:10px 15px;background:#701a20;color:#fff;font-size:17px}.empty{padding:26px 18px;color:#9faab3;font-size:20px;font-style:italic}article{position:relative;min-width:0;padding:13px 15px;border:1px solid #40505d;border-left:6px solid #7f919f;background:#17222b}.entry-head{display:flex;gap:12px;justify-content:space-between}.entry-head div{min-width:0}h4{margin:0;color:#fff;font-size:21px;line-height:1.1;overflow-wrap:anywhere;text-transform:uppercase}.entry-head p{margin:4px 0 0;color:#b9c5cd;font-size:17px;line-height:1.2;overflow-wrap:anywhere}.entry-head strong{flex:none;color:#ef454f;font-size:24px}.detail{margin-top:9px;color:#fff;font-size:17px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border:1px solid #8e9ba5;border-radius:3px;background:#263640;color:#e8edf0;font-size:14px;font-weight:800}.multi-role{border-color:#50c7df;background:#123f49}.fireteam{border-color:#db3942;background:#5e171c}.also{margin-top:8px;color:#9edbe7;font-size:14px;font-weight:700}.gunfighter-card{padding:16px 16px 14px 66px;border-left-color:#df3942;background:linear-gradient(135deg,#1a2832,#111a22)}.gunfighter-rank{position:absolute;left:14px;top:16px;color:#ef454f;font-size:29px;font-weight:950;letter-spacing:-1px}.gunfighter-card .entry-head{min-height:48px}.gunfighter-card .entry-head>div:first-child{padding-right:8px}.gunfighter-card .entry-head p{font-size:13px;color:#91a0aa}.grade{display:flex;flex:none;flex-direction:column;align-items:center;justify-content:center;min-width:60px;width:60px;height:56px;border:2px solid #48c8df;border-radius:4px;background:#0e3943;color:#fff;font-size:28px;font-weight:950;line-height:.8}.grade span{margin-bottom:5px;color:#aeeef8;font-size:10px;letter-spacing:1px}.grade-s{border-color:#f0c44f;background:#624a0b}.grade-a{border-color:#53d18c;background:#155036}.grade-b{border-color:#56bde8;background:#174963}.grade-c{border-color:#b8c35c;background:#464b1d}.grade-d,.grade-f{border-color:#d36a6f;background:#552025}.weapon-line{margin-top:11px;padding:7px 9px;background:#0d151b;color:#f2f5f7;font-size:14px;font-weight:800;line-height:1.25}.weapon-line span{margin-right:8px;color:#ef454f;font-size:11px;letter-spacing:1px}.rating-table{margin-top:8px;border-top:1px solid #40505d}.rating-row{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:39px;padding:7px 2px;border-bottom:1px solid #30404c}.rating-state{min-width:0;color:#b9c5cd;font-size:13px;font-weight:900;letter-spacing:.4px;white-space:nowrap}.rating-metrics{display:grid;grid-template-columns:28px 58px 104px;gap:8px;align-items:center;flex:none}.rating-metrics b{color:#75d7e7;text-align:center;font-size:17px}.rating-metrics strong{color:#fff;text-align:right;font-size:17px}.rating-metrics small{color:#9edbe7;text-align:right;font-size:11px;font-weight:800;white-space:nowrap}footer{padding-top:18px;text-align:right;color:#8e9aa4;font-size:14px;font-weight:800;letter-spacing:2px}` }
@@ -366,7 +384,7 @@ function styles() { return `*{box-sizing:border-box}html,body{margin:0;backgroun
 function aggregateExactProfiles(profiles) {
   const map = new Map()
   for (const profile of profiles) {
-    const key = profile.combinedId ? `${profile.combinedId}|${loadoutSignature(profile)}` : loadoutSignature(profile)
+    const key = profile.combinedId ? `${profile.combinedId}|${profile.upgradeSignature || ""}|${loadoutSignature(profile)}` : loadoutSignature(profile)
     const existing = map.get(key)
     if (existing) existing.quantity += 1
     else map.set(key, { ...profile, quantity: 1 })
@@ -377,7 +395,7 @@ function aggregateExactProfiles(profiles) {
 function mergeGunfighterRatings(profiles, ratings) {
   return (ratings || []).filter((rating) => rating?.status === 'matched' && rating.normal != null).map((rating) => {
     const key = String(rating.key || '')
-    const profile = profiles.find((candidate) => canonicalKeyFromCombinedId(candidate.combinedId) === key)
+    const profile = profiles.find((candidate) => canonicalKeyFromCombinedId(candidate.combinedId) === key && (!rating.upgradeSignature || candidate.upgradeSignature === rating.upgradeSignature))
     return {
       ...(profile || { combinedId: key, unitName: rating.unitName || 'Profile unavailable', profileName: rating.profileName || '', quantity: 1, weapons: [], skills: [], equipment: [] }),
       badges: [],
@@ -391,7 +409,7 @@ function mergeGunfighterRatings(profiles, ratings) {
 
 function mergeCloseCombatRatings(profiles, ratings) {
   return (ratings || []).filter((rating) => rating?.status === 'matched' && Number.isFinite(rating.rating)).map((rating) => {
-    const profile = profiles.find((candidate) => closeCombatKeyFromCombinedId(candidate.combinedId) === String(rating.key || ''))
+    const profile = profiles.find((candidate) => closeCombatKeyFromCombinedId(candidate.combinedId) === String(rating.key || '') && (!rating.upgradeSignature || candidate.upgradeSignature === rating.upgradeSignature))
     return {
       ...(profile || { combinedId: rating.key, unitName: rating.unitName || 'Profile unavailable', profileName: rating.profileName || '', quantity: 1, weapons: [], skills: [], equipment: [] }),
       badges: [],
@@ -404,9 +422,9 @@ function mergeCloseCombatRatings(profiles, ratings) {
 }
 
 function attachAroRatings(result, ratings) {
-  const byKey = new Map((ratings || []).filter((rating) => rating?.status === 'matched').map((rating) => [String(rating.key), rating]))
+  const byKey = new Map((ratings || []).filter((rating) => rating?.status === 'matched').map((rating) => [`${rating.key}|${rating.upgradeSignature || ""}`, rating]))
   for (const category of ['valuableAro', 'disposableAro']) for (const entry of result[category]) {
-    const rating = byKey.get(canonicalKeyFromCombinedId(entry.combinedId))
+    const rating = byKey.get(`${canonicalKeyFromCombinedId(entry.combinedId)}|${entry.upgradeSignature || ""}`) || byKey.get(`${canonicalKeyFromCombinedId(entry.combinedId)}|`)
     if (!rating) continue
     entry.nonLinked = rating.nonLinked || null
     entry.fireteamLinked = rating.fireteamLinked || null
@@ -561,12 +579,12 @@ function loadoutSignature(profile) {
 function addMultiRoleMetadata(result) {
   const memberships = new Map()
   for (const [key] of categories.filter(([id]) => !['mobility', 'mobileGunfighters', 'mobileLinked'].includes(id))) for (const profile of result[key]) {
-    const id = `${profile.combinedId}|${loadoutSignature(profile)}`
+    const id = `${profile.combinedId}|${profile.upgradeSignature || ""}|${loadoutSignature(profile)}`
     const roles = memberships.get(id) || []
     roles.push(key)
     memberships.set(id, roles)
   }
-  for (const [key] of categories) result[key] = result[key].map((profile) => ({ ...profile, roles: memberships.get(`${profile.combinedId}|${loadoutSignature(profile)}`) || [key] }))
+  for (const [key] of categories) result[key] = result[key].map((profile) => ({ ...profile, roles: memberships.get(`${profile.combinedId}|${profile.upgradeSignature || ""}|${loadoutSignature(profile)}`) || [key] }))
 }
 function loadoutDetail(entry) {
   const parts = unique([...(entry.weapons || []).map(weaponDisplay), ...(entry.skills || []), ...(entry.equipment || [])].filter(Boolean))

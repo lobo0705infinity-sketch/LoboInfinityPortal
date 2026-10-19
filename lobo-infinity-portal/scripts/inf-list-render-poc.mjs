@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { rateSubmittedTeamOps } from '../bot/team-ops-ratings.mjs'
 import { loadMobileGunfighterCatalog } from '../bot/mobile-gunfighter-store.mjs'
 import { loadMobilityCatalog } from '../bot/mobility-catalog-store.mjs'
 
@@ -13,11 +14,8 @@ import { buildCanonicalDataset } from './infinity-army-canonical-dataset.mjs'
 import { resolveExactProfileGroup } from './infinity-army-profile-resolution.mjs'
 import { validateInfListLegality } from '../bot/inf-list-legality.mjs'
 import { loadGunfighterBenchmarkCatalog } from '../bot/gunfighter-catalog-store.mjs'
-import { rankArmyGunfighters } from '../bot/gunfighter-benchmark-catalog.mjs'
 import { loadAroBenchmarkCatalog } from '../bot/aro-catalog-store.mjs'
-import { rankArmyAros } from '../bot/aro-benchmark-catalog.mjs'
 import { loadCloseCombatCatalog } from '../bot/close-combat-catalog-store.mjs'
-import { rankSubmittedCloseCombat } from '../bot/close-combat-catalog.mjs'
 
 const rendererOrigin = 'https://infinity.2nirwana.de'
 const rendererPath = '/cards/generate'
@@ -354,12 +352,10 @@ export async function renderInfListPng({ input, outputPath, mobileGunfighter = f
       expandComposite: true,
     }))
     const gunfighterCatalog = await loadGunfighterBenchmarkCatalog()
-    const gunfighterRatings = gunfighterCatalog ? rankArmyGunfighters(gunfighterCatalog, decoded, { limit: 4 }) : []
     const aroCatalog = await loadAroBenchmarkCatalog()
-    const aroRatings = aroCatalog ? rankArmyAros(aroCatalog, decoded) : []
     const closeCombatCatalog = await loadCloseCombatCatalog()
-    const closeCombatRatings = closeCombatCatalog ? rankSubmittedCloseCombat(closeCombatCatalog, submittedProfiles, { sectorialId: decoded.sectorialId, limit: 4 }) : []
     const mobilityCatalog = await loadMobilityCatalog()
+    const { gunfighterRatings, aroRatings, closeCombatRatings } = await rateSubmittedTeamOps({ decoded, profiles: submittedProfiles, metadata, payload: classificationData.payload, gunfighterCatalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
     const mobileCatalog = mobileGunfighter ? await loadMobileGunfighterCatalog() : null
     if (mobileGunfighter && (!mobileCatalog || mobileCatalog.gunfighterFingerprint !== gunfighterCatalog?.fingerprint || mobileCatalog.mobilityFingerprint !== mobilityCatalog?.fingerprint)) throw new InfListRenderError('classification_unavailable', 'Mobile Gunfighter catalog is unavailable or out of date.')
     const tacticalAnalysis = classifyTacticalBrief(submittedProfiles, {

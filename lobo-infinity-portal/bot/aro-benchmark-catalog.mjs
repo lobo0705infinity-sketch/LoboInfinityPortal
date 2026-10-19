@@ -107,7 +107,7 @@ export function rankArmyAros(catalog, decodedArmy) {
   })
 }
 
-function compactResult(result) {
+export function compactResult(result) {
   return {
     states: result.states.map((state) => ({
       id: state.id,
@@ -142,7 +142,7 @@ function applyRelativeRatings(entries, evaluationCache) {
   }
 }
 
-function combatSignature(profile, specialDice) {
+export function combatSignature(profile, specialDice) {
   return JSON.stringify({
     bs: profile.bs, wip: profile.wip, ph: profile.ph, arm: profile.arm, bts: profile.bts,
     foxholeState: profile.foxholeState,
