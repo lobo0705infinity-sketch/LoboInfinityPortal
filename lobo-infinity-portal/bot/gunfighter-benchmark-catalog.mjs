@@ -41,7 +41,7 @@ export function buildGunfighterBenchmarkCatalog({ profiles, defenders, officialD
   }
 }
 
-function combatProfileSignature(profile) {
+export function combatProfileSignature(profile) {
   return JSON.stringify({
     bs: profile.bs,
     wip: profile.wip,
@@ -124,7 +124,7 @@ function integer(value, label) {
   return number
 }
 
-function compactResult(result) {
+export function compactResult(result) {
   return {
     profileId: result.profileId,
     name: result.name,
