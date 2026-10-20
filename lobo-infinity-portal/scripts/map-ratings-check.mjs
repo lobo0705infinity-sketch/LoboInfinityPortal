@@ -121,7 +121,9 @@ for (let pass = 0; pass < 2; pass += 1) {
   }
 }
 
-const sameLayout = loboWorkshopMaps.filter((map) => map.layoutKey === loboWorkshopMaps[24].layoutKey)
+const repeatedLayout = loboWorkshopMaps.find((candidate) =>
+  loboWorkshopMaps.filter((map) => map.layoutKey === candidate.layoutKey).length >= 2)
+const sameLayout = loboWorkshopMaps.filter((map) => map.layoutKey === repeatedLayout?.layoutKey)
 assert.ok(sameLayout.length >= 2, 'fixture includes a terrain layout with two saves')
 const otherMap = loboWorkshopMaps.find((map) => map.layoutKey !== sameLayout[0].layoutKey)
 const ratings = buildMapRatings([
@@ -139,3 +141,4 @@ assert.equal(ratings.get(sameLayout[0].layoutKey).rank, 1)
 assert.equal(ratings.get(otherMap.layoutKey).rank, 2)
 
 console.log('Workshop form scopes, saved map ratings, and layout rankings passed.')
+

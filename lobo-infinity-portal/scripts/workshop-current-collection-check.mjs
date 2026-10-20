@@ -6,7 +6,7 @@ import { buildMapRatings } from '../src/public/mapRatings.ts'
 
 assert.equal(loboWorkshopMaps.length, 40)
 assert.equal(new Set(loboWorkshopMaps.map(map => map.id)).size, 40)
-assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 16)
+assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 25)
 const missions = new Map()
 for (const map of loboWorkshopMaps) {
   assert.equal(map.missionSetups.length, 1)
@@ -44,8 +44,10 @@ for (const map of loboWorkshopMaps) {
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
   assert.equal(surfaces.length, 1, `${map.slug} has one mission marking surface`)
   for (const surface of surfaces) {
-    assert.equal(surface.Transform.scaleX, 24, `${map.slug} keeps original mat dimensions`)
-    assert.equal(surface.Transform.scaleZ, 24)
+    const expectedScale = map.slug === 'uplink-center-1-satellite' ? 48.03 : 24
+    if (expectedScale === 48.03) assert.equal(surface.Name, 'BlockSquare')
+    assert.equal(surface.Transform.scaleX, expectedScale, `${map.slug} keeps original mat or street-foundation dimensions`)
+    assert.equal(surface.Transform.scaleZ, expectedScale)
     assert.ok(surface.LuaScript.includes('thickness=line.thickness/lineScale'), `${map.slug} converts stroke widths to local units`)
     assert.ok(!surface.LuaScript.includes('thickness=line.thickness}'), `${map.slug} avoids oversized strokes`)
   }
@@ -63,12 +65,34 @@ for (const section of loboWorkshopMapSections) {
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
-  assert.equal(map.previewKind, 'tts')
-  assert.notEqual(map.overhead, map.angled)
+  if (map.slug.endsWith('-satellite')) {
+    assert.equal(map.previewKind, 'diagram')
+    assert.equal(map.overhead, map.diagram)
+    assert.equal(map.angled, map.diagram)
+  } else {
+    assert.equal(map.previewKind, 'tts')
+    assert.notEqual(map.overhead, map.angled)
+  }
 }
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 9)
+assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
 const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit')
 const ratings = buildMapRatings([{ id: 1, mapSlug: legacyAzure.slug, mapRating: 5 }, { id: 2, mapSlug: azure.slug, mapRating: 3 }])
 assert.deepEqual(ratings.get(azure.layoutKey), { average: 4, count: 2, rank: 1 })
+for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-satellite'))) {
+  const prior = loboWorkshopMapBySlug.get(replacement.slug.replace(/-satellite$/, ''))
+  assert.equal(prior.isCurrent, false)
+  assert.notEqual(prior.id, replacement.id)
+  assert.notEqual(prior.layoutKey, replacement.layoutKey)
+  assert.equal(resolveLoboWorkshopMapLabel(prior.workshopBagName).id, prior.id)
+  const separate = buildMapRatings([
+    { id: 1, mapSlug: prior.slug, mapRating: 5 },
+    { id: 2, mapSlug: replacement.slug, mapRating: 1 },
+  ])
+  assert.equal(separate.get(prior.layoutKey).average, 5)
+  assert.equal(separate.get(replacement.layoutKey).average, 1)
+}
 console.log('Current Workshop catalogue, downloads, mission coverage, archived links and shared ratings passed.')
+
