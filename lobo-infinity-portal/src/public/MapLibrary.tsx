@@ -78,7 +78,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
-        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. Terrain is reused across missions: 40 setups use 16 layouts. Screenshots were captured on October 15, 2026.</p>
+        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Nine Satellite replacements include mission setup diagrams; fresh TTS screenshots and live playtesting are pending for those tables.</p>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Setups using the same terrain share one rating.</p>
       </div>
       <nav aria-label="Missions" className="lobo-map-section-nav">
@@ -99,7 +99,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         })}</div>
       </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
     </section>
-    <p className="lobo-maps-source-note">Browse 20 missions alphabetically, with two setups per mission. These are fresh Tabletop Simulator screenshots of the revised Workshop collection. Historical map pages remain available through existing game links.</p>
+    <p className="lobo-maps-source-note">Browse {missionCount} missions alphabetically, with two setups per mission. Previews are labeled as TTS screenshots or mission setup diagrams. Historical map pages remain available through existing game links.</p>
   </main>
 }
 
@@ -123,7 +123,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
     </header>
     {map.isCurrent === false ? null : <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
     <a aria-label={`Open full-size ${map.previewKind === 'diagram' ? 'setup diagram' : 'angled preview'} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
-    {map.previewKind === 'diagram' ? <p className="lobo-maps-source-note">This is a footprint diagram of the revised setup. Fresh overhead and angled TTS screenshots are pending.</p> : <section aria-labelledby="map-views-title" className="lobo-map-detail-views">
+    {map.previewKind === 'diagram' ? <p className="lobo-maps-source-note">This is a footprint diagram of the revised setup. Fresh overhead and angled TTS screenshots, live physics checks, and playtesting are pending.</p> : <section aria-labelledby="map-views-title" className="lobo-map-detail-views">
       <div className="lobo-maps-section-heading"><div><p className="eyebrow">Two ways to read the table</p><h2 id="map-views-title">Terrain previews</h2></div></div>
       <div className="lobo-map-detail-view-grid">
         <a href={map.overhead} rel="noopener noreferrer" target="_blank"><img alt={`Overhead Tabletop Simulator view of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" /><span><strong>Overhead</strong><small>Read the full layout and approach lanes</small></span></a>
@@ -148,3 +148,4 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
     {map.isCurrent === false ? null : <nav aria-label="Adjacent maps" className="lobo-map-detail-adjacent"><Link to={`/maps/${previous.slug}`}><small>← Previous table</small><strong>{previous.name}</strong></Link><Link to={`/maps/${next.slug}`}><small>Next table →</small><strong>{next.name}</strong></Link></nav>}
   </main>
 }
+

@@ -163,6 +163,17 @@ def main():
             assert "\n" not in bag["LuaScript"].replace("\r\n", "")
             assert all(line.startswith("--") for line in bag["LuaScript"].splitlines())
             assert "createButton" not in bag["LuaScript"]
+            # Satellite maps have new terrain identities. Their geometry and
+            # mission parity are checked by satellite-map-variety-check.py.
+            # Still enforce the common Stage placement contract here.
+            if entry.get('slug', '').endswith('-satellite'):
+                actual = positions(bag)
+                assert set(actual) == {o['GUID'] for o in bag['ContainedObjects']}
+                for values in actual.values():
+                    records += 1
+                    assert abs(values[0]) < 44 and abs(values[1]) < 26 and abs(values[2]) < 26
+                    assert all(0 <= value < 360 and abs(value - f32(value)) < .0005 for value in values[3:])
+                continue
             original_bag = source_bags[bag["GUID"]]
             old = positions(original_bag)
             expected = repair["canonical_records"](original_bag)
@@ -218,3 +229,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

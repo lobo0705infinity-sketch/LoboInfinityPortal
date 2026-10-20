@@ -12,13 +12,16 @@ for entry in catalog['maps']:
                 if 'LOBO_MISSION_LINES' in obj.get('LuaScript', '')]
     assert len(surfaces) == 1
     obj = surfaces[0]
-    assert obj['Transform']['scaleX'] == obj['Transform']['scaleZ'] == 24
+    scale = obj['Transform']['scaleX']
+    assert obj['Transform']['scaleZ'] == scale
+    assert scale == 24 or (obj['Name'] == 'BlockSquare' and abs(scale - 48.03) < .001)
     lua = LuaRuntime(unpack_returned_tuples=True)
     lua.globals().decode = lambda text: lua.table_from(json.loads(text), recursive=True)
+    lua.globals().matScale = scale
     lua.execute('''
 JSON={decode=decode};queue={};drawn={};self={setLock=function()end,
- getScale=function()return {x=24,y=1,z=24}end,
- positionToLocal=function(p)return {x=p[1]/24,y=p[2],z=p[3]/24}end,
+ getScale=function()return {x=matScale,y=1,z=matScale}end,
+ positionToLocal=function(p)return {x=p[1]/matScale,y=p[2],z=p[3]/matScale}end,
  setVectorLines=function(lines)drawn=lines end}
 Wait={frames=function(fn,n)table.insert(queue,fn)end}
 ''')
@@ -26,8 +29,9 @@ Wait={frames=function(fn,n)table.insert(queue,fn)end}
     lua.execute("onLoad('');while #queue>0 do table.remove(queue,1)() end")
     for index in range(1, len(lua.globals().drawn)+1):
         line = lua.globals().drawn[index]
-        assert abs(line['thickness'] * 24 - .045) < 1e-9
+        assert abs(line['thickness'] * scale - .045) < 1e-9
         assert not all(abs(line['color'][i] - .6) < 1e-9 for i in (1, 2, 3))
         strokes += 1
 assert strokes == 70
-print('40 complete mat Lua scripts passed: no gray perimeter; 70 thin mission strokes; original mat scale.')
+print('40 complete mat Lua scripts passed: no gray perimeter; 70 thin mission strokes; original mat or street-foundation scale.')
+

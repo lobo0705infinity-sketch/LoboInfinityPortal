@@ -1,4 +1,5 @@
 import current from './lobo-workshop-current.json' with { type: 'json' }
+import retired from './lobo-workshop-archive-20261020.json' with { type: 'json' }
 import {
   loboWorkshopMaps as legacyMaps,
   resolveLoboWorkshopMapLabel as resolveLegacyLabel,
@@ -10,10 +11,13 @@ export const LOBO_WORKSHOP_DOWNLOAD_URL = current.download
 export const loboWorkshopMaps = current.maps
 
 // Preserve old report links and terrain ratings outside the current browser.
-export const archivedLoboWorkshopMaps = legacyMaps.map(map => ({ ...map, isCurrent: false, previewKind: 'source' }))
+export const archivedLoboWorkshopMaps = [
+  ...legacyMaps.map(map => ({ ...map, isCurrent: false, previewKind: 'source' })),
+  ...retired,
+]
 export const loboWorkshopMapBySlug = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].map(map => [map.slug, map]))
 const normalize = value => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
-const currentByLabel = new Map(loboWorkshopMaps.flatMap(map =>
+const currentByLabel = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].flatMap(map =>
   [map.slug, map.workshopBagName, map.workshopName].map(label => [normalize(label), map])))
 export const resolveLoboWorkshopMapLabel = label => currentByLabel.get(normalize(label)) || resolveLegacyLabel(label)
 
@@ -27,3 +31,4 @@ export const loboWorkshopMapSections = missionNames.map(title => ({
   layouts: loboWorkshopMaps.filter(map => map.missionSetups.includes(title))
     .map(map => ({ layoutKey: map.layoutKey, name: map.name, saves: [map] })),
 }))
+

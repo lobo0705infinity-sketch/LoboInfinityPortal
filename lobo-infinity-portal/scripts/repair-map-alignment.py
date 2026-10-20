@@ -121,9 +121,15 @@ def write_json(path, value):
 def build_portal(root, destination):
     catalog_path = root / "shared/lobo-workshop-current.json"
     catalog = json.loads(catalog_path.read_text())
-    source_zip = root / "public/assets/maps/its18-20261015T064536Z/Lobo-ITS18-Revised-Maps.zip"
+    # Rebuild the active collection, including newer Satellite replacements.
+    # Falling back to the original 2026-10-15 export would restore old terrain.
+    source_zip = root / ("public" + catalog["download"])
+    if not source_zip.is_file():
+        source_zip = root / "public/assets/maps/its18-20261015T064536Z/Lobo-ITS18-Revised-Maps.zip"
     with zipfile.ZipFile(source_zip) as source:
-        table = json.loads(source.read("Lobo-ITS18-Revised-Library.json"))
+        library_name = ("Lobo-ITS18-Drop-Zone-Library.json" if "Lobo-ITS18-Drop-Zone-Library.json" in source.namelist()
+                        else "Lobo-ITS18-Revised-Library.json")
+        table = json.loads(source.read(library_name))
     bags = {o["GUID"]: o for o in table["ObjectStates"] if o.get("Name") == "Bag"}
     output = root / "public/assets/maps" / destination
     output.mkdir(parents=True, exist_ok=True)
@@ -190,3 +196,4 @@ if __name__ == "__main__":
         count = repair_table(table)
         write_json(args.output, table)
         print(f"Repaired {count} bags: {args.output}")
+
