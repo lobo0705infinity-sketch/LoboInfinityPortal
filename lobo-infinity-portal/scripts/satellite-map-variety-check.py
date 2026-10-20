@@ -46,7 +46,8 @@ with zipfile.ZipFile(ROOT / ('public' + catalog['download'])) as archive:
         assert old['name'] in ['Azure Circuit', 'Tidal Turbines'] and old['layoutKey'] != entry['layoutKey']
         assert mission_signature(before) == mission_signature(bag)
         mission_count += len(mission_objects(bag))
-        assert entry['previewKind'] == 'diagram'
+        assert entry['previewKind'] in ['diagram', 'tts']
+        if entry['previewKind'] == 'tts': assert entry['overhead'] != entry['angled']
         assert entry['overhead'] != old['overhead']
         assert (ROOT / ('public' + entry['overhead'])).is_file()
         assert len(bag['ContainedObjects']) == entry['objectCount']

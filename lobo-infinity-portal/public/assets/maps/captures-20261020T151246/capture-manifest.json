@@ -1,0 +1,416 @@
+{
+  "sourceArchives": [
+    "Lobo Map Captures 20261020-151246 - overhead.zip",
+    "Lobo Map Captures 20261020-151246 - angled.zip"
+  ],
+  "images": [
+    {
+      "slug": "b-pong-2-satellite",
+      "view": "overhead",
+      "source": "b-pong-2-satellite-overhead.jpg",
+      "sha256": "35ac10bb38c721ed35b5fd55ec905fcd0c3b34f49b16ec34b33189d368ad2e87",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "b-pong-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "b-pong-2-satellite",
+      "view": "angled",
+      "source": "b-pong-2-satellite-angled.jpg",
+      "sha256": "d2c20934428ee3ba821c87b3c2f40f928bfc27c7283d4256a3c4eddb45ca4cff",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "b-pong-2-satellite-angled.webp"
+    },
+    {
+      "slug": "corporate-appropriation-1-satellite",
+      "view": "overhead",
+      "source": "corporate-appropriation-1-satellite-overhead.jpg",
+      "sha256": "5d7885a3173b5be2b288070b9858c073073622be6a3bc7a889403bdff0536a59",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "corporate-appropriation-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "corporate-appropriation-1-satellite",
+      "view": "angled",
+      "source": "corporate-appropriation-1-satellite-angled.jpg",
+      "sha256": "9735c602d96902082f29e35101297dd25c17267f8b900cfb1019c38fef6e1967",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "corporate-appropriation-1-satellite-angled.webp"
+    },
+    {
+      "slug": "crossing-lines-1-satellite",
+      "view": "overhead",
+      "source": "crossing-lines-1-satellite-overhead.jpg",
+      "sha256": "2eeeeb9ada1c13e2271444aa466b32fc03acebe5fd5a9ffebe3af9c30a901739",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "crossing-lines-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "crossing-lines-1-satellite",
+      "view": "angled",
+      "source": "crossing-lines-1-satellite-angled.jpg",
+      "sha256": "543cc910bf7e015d0b22a9684bccfba82487ff5686c3889396602873f1848a0e",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "crossing-lines-1-satellite-angled.webp"
+    },
+    {
+      "slug": "data-harvest-2-satellite",
+      "view": "overhead",
+      "source": "data-harvest-2-satellite-overhead.jpg",
+      "sha256": "5a1b4676f139646b0e647869def082634067d216cf220e1fab939411aa596637",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "data-harvest-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "data-harvest-2-satellite",
+      "view": "angled",
+      "source": "data-harvest-2-satellite-angled.jpg",
+      "sha256": "2d794aa25c2dbe4645c7d3663a418ba0678bef810550a077aa4319feac69b087",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "data-harvest-2-satellite-angled.webp"
+    },
+    {
+      "slug": "double-bind-2-satellite",
+      "view": "overhead",
+      "source": "double-bind-2-satellite-overhead.jpg",
+      "sha256": "7e95bd34ba301be86b255df3633e20f0bce00e1c830d04be211b0ba6a7d988cd",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "double-bind-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "double-bind-2-satellite",
+      "view": "angled",
+      "source": "double-bind-2-satellite-angled.jpg",
+      "sha256": "3cf6d153c9c159339d367152c57f26f47133f9ffd6ba3405af5fb8f9ef5d010d",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "double-bind-2-satellite-angled.webp"
+    },
+    {
+      "slug": "evacuation-1-satellite",
+      "view": "overhead",
+      "source": "evacuation-1-satellite-overhead.jpg",
+      "sha256": "2e0b7154a1d9e9511502dd766ce1473e2ad32d9f85b4bc41dcdb3706563f2559",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "evacuation-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "evacuation-1-satellite",
+      "view": "angled",
+      "source": "evacuation-1-satellite-angled.jpg",
+      "sha256": "146a6eebde8a6e9796e52ce2d38aea5358c312a93b0e2c55d2898582ffcf065e",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "evacuation-1-satellite-angled.webp"
+    },
+    {
+      "slug": "hardlock-1-satellite",
+      "view": "overhead",
+      "source": "hardlock-1-satellite-overhead.jpg",
+      "sha256": "011f4236afe3520f70303a27cbe9ab56d1c640950e036f36c411c65ac35a4ea5",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "hardlock-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "hardlock-1-satellite",
+      "view": "angled",
+      "source": "hardlock-1-satellite-angled.jpg",
+      "sha256": "3a702b5ba77d204f1beadf6cd8e3004c160a27115adada9be3d1f958d95066c8",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "hardlock-1-satellite-angled.webp"
+    },
+    {
+      "slug": "neutralization-1-satellite",
+      "view": "overhead",
+      "source": "neutralization-1-satellite-overhead.jpg",
+      "sha256": "b83a4e96b39355d4887b0f8a3497fcc74be75432a33feab855b55a195296e7b5",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "neutralization-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "neutralization-1-satellite",
+      "view": "angled",
+      "source": "neutralization-1-satellite-angled.jpg",
+      "sha256": "83c5489f6a932f1bdc9671f3edb21aeb9a9df0a4ef6a5b201a80ade3b84ca673",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "neutralization-1-satellite-angled.webp"
+    },
+    {
+      "slug": "neutralization-2-satellite",
+      "view": "overhead",
+      "source": "neutralization-2-satellite-overhead.jpg",
+      "sha256": "3abfddd7131a16795c08f53de27f5c14228a279cee75288f548ddc526cb28c0b",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "neutralization-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "neutralization-2-satellite",
+      "view": "angled",
+      "source": "neutralization-2-satellite-angled.jpg",
+      "sha256": "5a9de5bd9ab44929abd81420ae53b39223c0dabe22f612204fd3ee1bc347e5c7",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "neutralization-2-satellite-angled.webp"
+    },
+    {
+      "slug": "provisioning-2-satellite",
+      "view": "overhead",
+      "source": "provisioning-2-satellite-overhead.jpg",
+      "sha256": "f25d5604a9b00549526755a44c386726c369bef08883327adbd8c8cfe8684a75",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "provisioning-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "provisioning-2-satellite",
+      "view": "angled",
+      "source": "provisioning-2-satellite-angled.jpg",
+      "sha256": "4dd3aa3e171402933f62ccf0c8352b607bed1c2d26be282b6d4b988ecad09b9e",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "provisioning-2-satellite-angled.webp"
+    },
+    {
+      "slug": "the-dig-2-satellite",
+      "view": "overhead",
+      "source": "the-dig-2-satellite-overhead.jpg",
+      "sha256": "06fa543698422395addd8fe6d98eef21b78d50dd6de729c0878aaf94d4f6190a",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "the-dig-2-satellite-overhead.webp"
+    },
+    {
+      "slug": "the-dig-2-satellite",
+      "view": "angled",
+      "source": "the-dig-2-satellite-angled.jpg",
+      "sha256": "e9aa4387350a6c914d6e3af8d84a3519d2565245fca6f54b42f4e715e49329f8",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "the-dig-2-satellite-angled.webp"
+    },
+    {
+      "slug": "uplink-center-1-satellite",
+      "view": "overhead",
+      "source": "uplink-center-1-satellite-overhead.jpg",
+      "sha256": "fa40abb1cc046c97d43efd5bf4dca0ac417a49dbf1771582def7cde553242776",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        142,
+        80,
+        2418,
+        1360
+      ],
+      "output": "uplink-center-1-satellite-overhead.webp"
+    },
+    {
+      "slug": "uplink-center-1-satellite",
+      "view": "angled",
+      "source": "uplink-center-1-satellite-angled.jpg",
+      "sha256": "6bdd4ccb3081e3024bbd2313b6d60dbfebbf8161a2cf9d70f96772ccbb2e610f",
+      "sourceSize": [
+        2560,
+        1440
+      ],
+      "crop": [
+        0,
+        202,
+        2200,
+        1440
+      ],
+      "output": "uplink-center-1-satellite-angled.webp"
+    }
+  ]
+}

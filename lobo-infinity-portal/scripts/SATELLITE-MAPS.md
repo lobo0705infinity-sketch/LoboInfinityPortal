@@ -42,9 +42,9 @@ the corresponding front image.
 - ZIP bags match the individual downloads and collection save.
 - Previous Azure and Tidal mission pages and rating identities are archived separately.
 
-The new previews are explicitly labeled footprint diagrams. Fresh TTS captures,
-live physics, full-army deployment, elevated firing lanes, and playtesting are
-pending. The downloadable collection is updated; publishing the collection to
-Steam Workshop is a separate pending step.
+Fresh overhead and angled TTS photos for all twelve imported layouts were supplied
+on 2026-10-20 and replace the footprint previews. Original diagrams remain available.
+The commissioner reported the Steam Workshop upload complete. Live physics,
+full-army deployment, elevated firing lanes and gameplay balance checks remain pending.
 
 Twelve imported layouts have distinct portal names; source event and table names remain in credits. Existing Satellite slugs and terrain rating identities are preserved when renamed.

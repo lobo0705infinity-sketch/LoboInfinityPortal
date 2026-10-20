@@ -66,16 +66,15 @@ for (const section of loboWorkshopMapSections) {
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
+  assert.equal(map.previewKind, 'tts')
+  assert.notEqual(map.overhead, map.angled)
   if (map.slug.endsWith('-satellite')) {
-    assert.equal(map.previewKind, 'diagram')
-    assert.equal(map.overhead, map.diagram)
-    assert.equal(map.angled, map.diagram)
-  } else {
-    assert.equal(map.previewKind, 'tts')
-    assert.notEqual(map.overhead, map.angled)
+    assert.equal(map.captureDate, '2026-10-20')
+    assert.notEqual(map.overhead, map.diagram)
+    assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 12)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 40)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')

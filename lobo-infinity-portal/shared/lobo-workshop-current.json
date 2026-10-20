@@ -262,20 +262,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 73,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Romobrole - Table 8 - 2025 - France - V1.0. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Romobrole - Table 8 - 2025 - France - V1.0. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/b-pong-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/b-pong-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/6ddda242-17c9-41ad-b432-5ef1c665fd7e",
       "labelAliases": [
         "SET_ITS18 B-Pong — Romobrole 2025 — Table 8 — SATELLITE EDITION",
         "ITS18 B-Pong — Romobrole 2025 — Table 8 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 11,
@@ -293,20 +294,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 98,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Habsburg Havoc - 2025 - Austria - V1.3. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Habsburg Havoc - 2025 - Austria - V1.3. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/corporate-appropriation-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/corporate-appropriation-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/3af94308-817e-457c-85fc-9734f800d252",
       "labelAliases": [
         "SET_ITS18 Corporate Appropriation — Habsburg Havoc 2025 — SATELLITE EDITION",
         "ITS18 Corporate Appropriation — Habsburg Havoc 2025 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 12,
@@ -405,20 +407,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 59,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Hopes End - 2026 - Table 14 - Netherlands - V1.2. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Hopes End - 2026 - Table 14 - Netherlands - V1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/crossing-lines-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/crossing-lines-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/cb03446d-da08-4367-8eb9-9ddf87c8612f",
       "labelAliases": [
         "SET_ITS18 Crossing Lines — Hopes End 2026 — Table 14 — SATELLITE EDITION",
         "ITS18 Crossing Lines — Hopes End 2026 — Table 14 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 16,
@@ -544,16 +547,17 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 98,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2025 - Pulpi Prodigies - Table 5 - Spain - V1.1. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2025 - Pulpi Prodigies - Table 5 - Spain - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/data-harvest-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/data-harvest-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955",
+      "captureDate": "2026-10-20"
     },
     {
       "index": 21,
@@ -598,20 +602,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 48,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Pulpi Prodiges - Table 38 - Spain - V1.1. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Pulpi Prodiges - Table 38 - Spain - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/double-bind-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/double-bind-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0",
       "labelAliases": [
         "SET_ITS18 Double Bind — Interplanetario 2023 — Pulpi Prodigies Table 38 — SATELLITE EDITION",
         "ITS18 Double Bind — Interplanetario 2023 — Pulpi Prodigies Table 38 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 23,
@@ -629,16 +634,17 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 65,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Borderbash - 2025 - Table 21 - Australia - V1.1. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Borderbash - 2025 - Table 21 - Australia - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/evacuation-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/evacuation-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb",
+      "captureDate": "2026-10-20"
     },
     {
       "index": 24,
@@ -683,20 +689,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 63,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Adepticon - 2026 - Table 11 - USA - V1.1. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Adepticon - 2026 - Table 11 - USA - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/4fdeacaa-ad46-4d37-aa5b-d5284f452653",
       "labelAliases": [
         "SET_ITS18 Hardlock — Adepticon 2026 — Table 11 — SATELLITE EDITION",
         "ITS18 Hardlock — Adepticon 2026 — Table 11 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 26,
@@ -795,20 +802,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 86,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Epic! GT Satellite - 2023 - Portugal - V.1.2. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Epic! GT Satellite - 2023 - Portugal - V.1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558",
       "labelAliases": [
         "SET_ITS18 Neutralization — Epic! GT Satellite 2023 — SATELLITE EDITION",
         "ITS18 Neutralization — Epic! GT Satellite 2023 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 30,
@@ -826,16 +834,17 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 66,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Colder Than Carbonite - 2026 - Table 06 - Canada - V1.5. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Colder Than Carbonite - 2026 - Table 06 - Canada - V1.5. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/neutralization-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/neutralization-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558",
+      "captureDate": "2026-10-20"
     },
     {
       "index": 31,
@@ -934,20 +943,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 84,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: SET_Salt Lake Showdown - 2026 - Table 17 - USA - V1.1. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: SET_Salt Lake Showdown - 2026 - Table 17 - USA - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/provisioning-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/provisioning-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/d9ac4976-d410-411f-95b9-0262b108c6a1",
       "labelAliases": [
         "SET_ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION",
         "ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 35,
@@ -1046,20 +1056,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 112,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Satellite Merovingien - 2023 - Table 17 - France - V1.2. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Satellite Merovingien - 2023 - Table 17 - France - V1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855",
       "labelAliases": [
         "SET_ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION",
         "ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 39,
@@ -1077,20 +1088,21 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 74,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Kraken Masters - Table 31 - Spain - V1.3. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",
-      "overhead": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.webp",
-      "angled": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.webp",
+      "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Kraken Masters - Table 31 - Spain - V1.3. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
+      "overhead": "/assets/maps/captures-20261020T151246/uplink-center-1-satellite-overhead.webp",
+      "angled": "/assets/maps/captures-20261020T151246/uplink-center-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.webp",
       "download": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85",
       "labelAliases": [
         "SET_ITS18 Uplink Center — Interplanetario 2023 — Kraken Masters Table 31 — SATELLITE EDITION",
         "ITS18 Uplink Center — Interplanetario 2023 — Kraken Masters Table 31 — SATELLITE EDITION"
-      ]
+      ],
+      "captureDate": "2026-10-20"
     },
     {
       "index": 40,
@@ -1120,6 +1132,6 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85"
     }
   ],
-  "captureDate": "2026-10-15",
+  "captureDate": "2026-10-20",
   "downloadRevision": "satellites-20261020-r2"
 }
