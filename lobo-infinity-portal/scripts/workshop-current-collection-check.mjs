@@ -9,6 +9,7 @@ assert.equal(new Set(loboWorkshopMaps.map(map => map.id)).size, 40)
 assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 25)
 const missions = new Map()
 for (const map of loboWorkshopMaps) {
+  assert.equal(map.isCurrent, true, `${map.slug} is a current setup`)
   assert.equal(map.missionSetups.length, 1)
   const mission = map.missionSetups[0]
   missions.set(mission, [...(missions.get(mission) || []), map.layoutKey])
