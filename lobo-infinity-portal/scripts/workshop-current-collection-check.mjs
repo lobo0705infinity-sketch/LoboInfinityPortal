@@ -6,7 +6,7 @@ import { buildMapRatings } from '../src/public/mapRatings.ts'
 
 assert.equal(loboWorkshopMaps.length, 40)
 assert.equal(new Set(loboWorkshopMaps.map(map => map.id)).size, 40)
-assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 25)
+assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 28)
 const missions = new Map()
 for (const map of loboWorkshopMaps) {
   assert.equal(map.isCurrent, true, `${map.slug} is a current setup`)
@@ -75,7 +75,7 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.overhead, map.angled)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 9)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 12)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')

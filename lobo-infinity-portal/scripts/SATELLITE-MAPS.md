@@ -1,9 +1,9 @@
 # Satellite map replacements — 2026-10-20
 
-Nine Azure Circuit variants are replaced by the mission-specific Satellite
-tables recorded in `public/assets/maps/satellites-20261020-r1/validation.json`.
+Nine Azure Circuit and three Tidal Turbines variants are replaced by the mission-specific Satellite
+tables recorded in `public/assets/maps/satellites-20261020-r2/validation.json`.
 Akial Interference and Area of Interest retain Azure Circuit. The catalogue
-contains 40 setups across 25 terrain identities.
+contains 40 setups across 28 terrain identities.
 
 Source: tau24, **Infinity Maps — Return to the Satellites**, Steam Workshop
 3486064611, source save dated 2026-07-06. Source artwork and creator credits in
@@ -34,15 +34,17 @@ the corresponding front image.
 
 ## Validation
 
-- All 178 URLs used by the final exports downloaded successfully.
-- All 48 mission pieces retain their previous placement records.
+- All 219 final export asset URLs downloaded successfully.
+- All 65 imported mission pieces retain their previous placement records.
 - Forty bags pass the original Stage Lua deploy-and-clear simulation with
   zero alignment failures. Unity rotation readback is modeled, not executed.
 - All 70 mission strokes retain their intended world-space width.
 - ZIP bags match the individual downloads and collection save.
-- Previous Azure mission pages and rating identities are archived separately.
+- Previous Azure and Tidal mission pages and rating identities are archived separately.
 
 The new previews are explicitly labeled footprint diagrams. Fresh TTS captures,
 live physics, full-army deployment, elevated firing lanes, and playtesting are
 pending. The downloadable collection is updated; publishing the collection to
 Steam Workshop is a separate pending step.
+
+Twelve imported layouts have distinct portal names; source event and table names remain in credits. Existing Satellite slugs and terrain rating identities are preserved when renamed.

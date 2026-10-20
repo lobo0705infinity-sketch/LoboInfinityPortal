@@ -18,7 +18,7 @@ export const archivedLoboWorkshopMaps = [
 export const loboWorkshopMapBySlug = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].map(map => [map.slug, map]))
 const normalize = value => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
 const currentByLabel = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].flatMap(map =>
-  [map.slug, map.workshopBagName, map.workshopName].map(label => [normalize(label), map])))
+  [map.slug, map.workshopBagName, map.workshopName, ...(map.labelAliases || [])].map(label => [normalize(label), map])))
 export const resolveLoboWorkshopMapLabel = label => currentByLabel.get(normalize(label)) || resolveLegacyLabel(label)
 
 const missionNames = [...new Set(loboWorkshopMaps.flatMap(map => map.missionSetups))]

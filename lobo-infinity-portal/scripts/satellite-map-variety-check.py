@@ -11,11 +11,12 @@ catalog = json.loads((ROOT / 'shared/lobo-workshop-current.json').read_text())
 retired = json.loads((ROOT / 'shared/lobo-workshop-archive-20261020.json').read_text())
 replacements = [entry for entry in catalog['maps'] if entry['slug'].endswith('-satellite')]
 assert len(catalog['maps']) == 40
-assert len({entry['layoutKey'] for entry in catalog['maps']}) == 25
+assert len({entry['layoutKey'] for entry in catalog['maps']}) == 28
 assert Counter(entry['name'] for entry in catalog['maps'])['Azure Circuit'] == 2
-assert len(retired) == len(replacements) == 9
-assert len({entry['slug'] for entry in catalog['maps'] + retired}) == 49
-assert len({entry['id'] for entry in catalog['maps'] + retired}) == 49
+assert Counter(entry['name'] for entry in catalog['maps'])['Tidal Turbines'] == 3
+assert len(retired) == len(replacements) == 12
+assert len({entry['slug'] for entry in catalog['maps'] + retired}) == 52
+assert len({entry['id'] for entry in catalog['maps'] + retired}) == 52
 assert all(count == 2 for count in Counter(m for e in catalog['maps'] for m in e['missionSetups']).values())
 
 def load(entry):
@@ -39,10 +40,10 @@ with zipfile.ZipFile(ROOT / ('public' + catalog['download'])) as archive:
         assert data == archive.read(entry['slug'] + '.json')
         assert collection_bags[entry['guid']] == json.loads(data)['ObjectStates'][0]
     for entry in replacements:
-        old = next(e for e in retired if e['missionSetups'] == entry['missionSetups'])
+        old = next(e for e in retired if e['index'] == entry['index'])
         before, bag = load(old), load(entry)
         assert old['isCurrent'] is False
-        assert old['layoutKey'] == 7 and old['layoutKey'] != entry['layoutKey']
+        assert old['name'] in ['Azure Circuit', 'Tidal Turbines'] and old['layoutKey'] != entry['layoutKey']
         assert mission_signature(before) == mission_signature(bag)
         mission_count += len(mission_objects(bag))
         assert entry['previewKind'] == 'diagram'
@@ -64,6 +65,6 @@ with zipfile.ZipFile(ROOT / ('public' + catalog['download'])) as archive:
                           '1763691960017049066/36D6D884FB499477D0B075EF8D6FD47B195CA5CE']:
             assert forbidden not in raw
 
-print(f'9 replacements passed: {mission_count} mission objects retain exact placement; '
+print(f'12 replacements passed: {mission_count} mission objects retain exact placement; '
       '40 archive bags match downloads; historical identities remain separate; '
-      '25 layouts / two Azure Circuit variants; no known broken source references.')
+      '28 layouts / two Azure Circuit variants / three Tidal Turbines variants; no known broken source references.')

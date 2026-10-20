@@ -2,7 +2,7 @@ import json, re, hashlib, urllib.request, concurrent.futures, pathlib, time, os
 PYROOT=pathlib.Path(__file__).resolve().parents[1]
 ROOT=pathlib.Path(os.environ.get('LOBO_SATELLITE_WORK', str(PYROOT / '.satellite-work')))
 ROOT.mkdir(parents=True, exist_ok=True)
-JOBS=[('b-pong-2','Romobrole','Romobrole 2025 — Table 8'),('corporate-appropriation-1','Habsburg Havoc','Habsburg Havoc 2025'),('crossing-lines-1','Hopes End','Hopes End 2026 — Table 14'),('double-bind-2','Pulpi Prodiges - Table 38','Interplanetario 2023 — Pulpi Prodigies Table 38'),('hardlock-1','Adepticon','Adepticon 2026 — Table 11'),('neutralization-1','Epic!','Epic! GT Satellite 2023'),('provisioning-2','Table 17 - USA','Salt Lake Showdown 2026 — Table 17'),('the-dig-2','Satellite Merovingien','Satellite Merovingien 2023 — Table 17'),('uplink-center-1','Kraken Masters - Table 31','Interplanetario 2023 — Kraken Masters Table 31')]
+JOBS=[('b-pong-2', 'Romobrole', 'Cobalt Junction'), ('corporate-appropriation-1', 'Habsburg Havoc', 'Crownspire District'), ('crossing-lines-1', 'Hopes End', 'Lastlight Crossing'), ('double-bind-2', 'Pulpi Prodiges - Table 38', 'Copperline Exchange'), ('hardlock-1', 'Adepticon', 'Ironveil Complex'), ('neutralization-1', 'Epic!', 'Emberfall Station'), ('provisioning-2', 'Table 17 - USA', 'Palisade Depot'), ('the-dig-2', 'Satellite Merovingien', 'Old Quarter Excavation'), ('uplink-center-1', 'Kraken Masters - Table 31', 'Blackwater Relay'), ('data-harvest-2', '2025 - Pulpi Prodigies - Table 5', 'Signalworks'), ('evacuation-1', 'Borderbash', 'Wayfarer Landing'), ('neutralization-2', 'Colder Than Carbonite', 'Frostline Sector')]
 def objects(v):
  if isinstance(v,dict):
   if 'Name' in v:yield v

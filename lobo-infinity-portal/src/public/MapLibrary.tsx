@@ -78,7 +78,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
-        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Nine Satellite replacements include mission setup diagrams; fresh TTS screenshots and live playtesting are pending for those tables.</p>
+        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Twelve Satellite replacements include mission setup diagrams; fresh TTS screenshots and live playtesting are pending for those tables.</p>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Setups using the same terrain share one rating.</p>
       </div>
       <nav aria-label="Missions" className="lobo-map-section-nav">

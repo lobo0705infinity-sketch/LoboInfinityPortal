@@ -6,7 +6,7 @@ from shapely.ops import unary_union
 from shapely.affinity import translate
 from PIL import Image,ImageDraw,ImageFont
 import argparse, os, concurrent.futures
-parser=argparse.ArgumentParser(description='Build the nine approved mission-specific Satellite replacements.')
+parser=argparse.ArgumentParser(description='Build the twelve approved mission-specific Satellite replacements.')
 parser.add_argument('--source', type=Path, required=True, help='Original tau24 Workshop 3486064611 JSON')
 parser.add_argument('--work', type=Path, required=True, help='Local cache and audit directory')
 args=parser.parse_args()
@@ -22,10 +22,11 @@ sys.path.insert(0,str(PYROOT/'scripts'))
 from map_markings import PATTERN
 import runpy
 repair=runpy.run_path(str(PYROOT/'scripts/repair-map-alignment.py'))
-VERSION='satellites-20261020-r1'
+VERSION='satellites-20261020-r2'
 OUT=PYROOT/'public/assets/maps'/VERSION
 OUT.mkdir(parents=True,exist_ok=True)
 catalog=json.loads((PYROOT/'shared/lobo-workshop-current.json').read_text())
+previous_labels={e['slug']:list(dict.fromkeys([e['workshopBagName'],e['workshopName'],*e.get('labelAliases',[])])) for e in catalog['maps']}
 retired_path=PYROOT/'shared/lobo-workshop-archive-20261020.json'
 if retired_path.exists():
  for old in json.loads(retired_path.read_text()):catalog['maps'][old['index']-1]=old
@@ -177,6 +178,7 @@ for jobindex,(slug,_,name) in enumerate(JOBS,1):
  oldentry=copy.deepcopy(entry);oldentry['isCurrent']=False;archive.append(oldentry)
  newslug=slug+'-satellite'
  entry.update(isCurrent=True,id='3719263238:'+source['GUID'],guid=source['GUID'],slug=newslug,name=name,workshopBagName=source['Nickname'],workshopName=source['Nickname'][4:],layoutKey=2000+jobindex,objectCount=len(terrain),sourceNote=f"Adapted from tau24’s Return to the Satellites: {sourcebagname[4:]}. Mission setup diagram shown; fresh TTS screenshots and live playtesting pending. Use this page’s Download map bag for the new setup; Steam Workshop publication is pending.",sourceOverhead=None,sourceAngled=None,previewKind='diagram',overhead=f'/assets/maps/{VERSION}/{newslug}.webp',angled=f'/assets/maps/{VERSION}/{newslug}.webp',diagram=f'/assets/maps/{VERSION}/{newslug}.webp',download=f'/assets/maps/{VERSION}/{newslug}.json')
+ entry['labelAliases']=previous_labels.get(newslug,[])
  write(OUT/(newslug+'.json'),{'ObjectStates':[source]})
  table['ObjectStates']=[source if o.get('GUID')==previous['GUID'] else o for o in table['ObjectStates']]
  # An accurate, explicitly labeled footprint view replaces stale Azure images.
@@ -224,11 +226,11 @@ with zipfile.ZipFile(archive_temp,'w',zipfile.ZIP_DEFLATED,compresslevel=9)as z:
   p=OUT/(entry['slug']+'.json')if entry['slug'].endswith('-satellite')else (BASE/(entry['slug']+'.json'))
   z.writestr(entry['slug']+'.json',p.read_bytes())
  z.writestr('Lobo-ITS18-Drop-Zone-Library.json',json.dumps(table,ensure_ascii=False,separators=(',',':'))+'\n')
- z.writestr('README.txt','LOBO ITS18 — SATELLITE VARIETY EDITION\n40 mission setups / 25 terrain layouts.\nIndividual JSONs are Saved Objects bags for the normal Infinity map deployment spot.\nThe collection JSON is a game save.\nNine Satellite tables replace Azure Circuit variants; Akial Interference and Area of Interest retain Azure Circuit.\nSource credit: tau24 — Infinity Maps: Return to the Satellites (3486064611).\nSource assets downloaded and checked; objective coordinates retained.\nNew previews are footprint diagrams. Live TTS screenshots, physics, line-of-fire and full-army playtesting remain pending.\n')
+ z.writestr('README.txt','LOBO ITS18 — SATELLITE VARIETY EDITION\n40 mission setups / 28 terrain layouts.\nIndividual JSONs are Saved Objects bags for the normal Infinity map deployment spot.\nThe collection JSON is a game save.\nTwelve named Satellite layouts replace nine Azure Circuit and three Tidal Turbines variants. Original event and table credits are retained.\nSource credit: tau24 — Infinity Maps: Return to the Satellites (3486064611).\nSource assets downloaded and checked; objective coordinates retained.\nNew previews are footprint diagrams. Live TTS screenshots, physics, line-of-fire and full-army playtesting remain pending.\n')
 with zipfile.ZipFile(archive_temp) as check:
  assert len(check.namelist())==42 and check.testzip() is None
 archive_temp.replace(archive_path)
 catalog['download']=f'/assets/maps/{VERSION}/Lobo-ITS18-Drop-Zone-Maps.zip';catalog['downloadRevision']=VERSION;catalog['updatedAt']=__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()
 (PYROOT/'shared/lobo-workshop-current.json').write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n')
 (PYROOT/'shared/lobo-workshop-archive-20261020.json').write_text(json.dumps(archive,ensure_ascii=False,indent=2)+'\n')
-write(OUT/'validation.json',{'maps':report,'uniqueLayouts':len(set(e['layoutKey']for e in catalog['maps'])),'azureCircuitSetups':sum(e['name']=='Azure Circuit'for e in catalog['maps']),'sourceAssetUrlsChecked':172,'sourceBrokenUrlsRepaired':3})
+write(OUT/'validation.json',{'maps':report,'uniqueLayouts':len(set(e['layoutKey']for e in catalog['maps'])),'azureCircuitSetups':sum(e['name']=='Azure Circuit'for e in catalog['maps']),'sourceAssetUrlsChecked':len(allurls),'sourceBrokenUrlsRepaired':3})
