@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { Link, NavLink, useParams } from 'react-router-dom'
 import { AURORA_TERRITORIES, AURORA_TURNS, AURORA_DOCTRINES } from '../../shared/aurora-public.mjs'
 import { AURORA_LOCATION_DESCRIPTIONS } from '../../shared/aurora-locations.mjs'
+import { AURORA_TERRAIN_GUIDE_URL, AURORA_TERRAIN_REFERENCES } from '../config/auroraTerrainReferences'
 import { AURORA_HISTORY, AURORA_MOTIVATIONS } from '../../shared/aurora-story.mjs'
 import { emptyAuroraState } from '../../shared/aurora-public-state.mjs'
 import { useAuroraPublication } from './useAuroraPublication'
@@ -103,9 +104,33 @@ function CampaignMap({ state, initialTerritory }: { state: AuroraPublicState; in
 }
 
 function TerritoryGuide({ territory }: { territory: Territory }) {
-  return <>
-    <div id="aurora-terrain-references"><Panel title={`${territory.name} terrain references`}><p><Link to={`${AURORA_PATH}/rules#campaign-location-selection`}>Choose the campaign location by agreement or blind Command Token bidding →</Link></p><p>These are construction guides, not mandatory terrain placements. Build a balanced 48″ × 48″ Infinity N5 battlefield and preserve this territory’s character.</p><p><a href="/guides/aurora-vii-territory-terrain-guide-20261021.pdf" target="_blank" rel="noopener noreferrer">Download the Territory &amp; Terrain Guide (PDF) ↗</a></p><div className="aurora-reference-grid">{territory.layouts.map((label: string, index: number) => { const src = territory.id === 'crystal-frontier' ? `/assets/aurora-vii/crystal-frontier-v2/${index === 0 ? 'faultline-works' : 'rift-research-station'}.webp` : `/assets/aurora-vii/v1/territory-${String(territory.number).padStart(2, '0')}-${index === 0 ? 'a' : 'b'}.svg`; return <figure key={label}><a href={src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size reference: ${label}`}><img src={src} width="900" height="900" loading="lazy" alt={`${territory.name} reference ${index === 0 ? 'A' : 'B'}: ${label}`}/></a><figcaption>{territory.number}{index === 0 ? 'A' : 'B'} · {label}<span>Open the image for the full reference.</span></figcaption></figure> })}</div><ul>{territory.notes.map((note: string) => <li key={note}>{note}</li>)}</ul><details><summary>Shared table-building principles</summary><ul><li>Provide substantial total-cover positions and several protected exits from each Deployment Zone.</li><li>Keep important routes broad enough for TAGs and other large Silhouettes.</li><li>Use real Line of Fire blockers; scatter supplements them.</li><li>Protect usable midfield objectives and avoid uninterrupted Deployment Zone fire corridors.</li><li>Preserve the different densities, elevations, and water or wilderness character of each territory.</li></ul></details></Panel></div>
-  </>
+  return <div id="aurora-terrain-references">
+    <Panel title={`${territory.name} terrain references`}>
+      <p><Link to={`${AURORA_PATH}/rules#campaign-location-selection`}>Choose the campaign location by agreement or blind Command Token bidding →</Link></p>
+      <p>These are construction guides, not mandatory terrain placements. Build a balanced 48″ × 48″ Infinity N5 battlefield and preserve this territory’s character.</p>
+      <p><a href={AURORA_TERRAIN_GUIDE_URL} target="_blank" rel="noopener noreferrer">Download the Territory &amp; Terrain Guide (PDF) ↗</a></p>
+      <div className="aurora-reference-grid">
+        {territory.layouts.map((label: string, index: number) => {
+          const reference = AURORA_TERRAIN_REFERENCES[territory.number][index]
+          return <figure key={label}>
+            <a href={reference.src} target="_blank" rel="noopener noreferrer" aria-label={`Open full-size reference: ${label}`}>
+              <img src={reference.src} width={reference.width} height={reference.height} loading="lazy" alt={`${territory.name} reference ${index === 0 ? 'A' : 'B'}: ${label}`}/>
+            </a>
+            <figcaption>{territory.number}{index === 0 ? 'A' : 'B'} · {label}<span>Open the image for the full reference.</span></figcaption>
+          </figure>
+        })}
+      </div>
+      <ul>{territory.notes.map((note: string) => <li key={note}>{note}</li>)}</ul>
+      <details><summary>Shared table-building principles</summary><ul>
+        <li>Provide substantial total-cover positions and several protected exits from each Deployment Zone.</li>
+        <li>Keep important routes broad enough for TAGs and other large Silhouettes.</li>
+        <li>Use real Line of Fire blockers; scatter supplements them.</li>
+        <li>Protect usable midfield objectives and avoid uninterrupted Deployment Zone fire corridors.</li>
+        <li>Preserve the different densities, elevations, and water or wilderness character of each territory.</li>
+        <li>For current Aurora VII TTS exports, use player edges X = ±24 and Supremacy console centres X = ±6, Z = ±12. Keep grid projection enabled.</li>
+      </ul></details>
+    </Panel>
+  </div>
 }
 
 function CampaignMissions({ state }: { state: AuroraPublicState }) {

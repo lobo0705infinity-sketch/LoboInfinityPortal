@@ -38,6 +38,11 @@
   ],
   "redirects": [
     {
+      "source": "/guides/aurora-vii-territory-terrain-guide-20261021.pdf",
+      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
+      "permanent": true
+    },
+    {
       "source": "/event/event-lobo-s-american-top-40",
       "destination": "/event/lobos-top-40",
       "permanent": true
