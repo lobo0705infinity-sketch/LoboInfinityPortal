@@ -29,7 +29,7 @@ const sectionIds = [
 assert.equal(createHash('sha256').update(artwork).digest('hex'), expectedHash)
 assert.match(eventHome, /isTop40 && selectedSection === 'rules'/)
 assert.match(eventHome, /return <Top40RulesPage \/>/)
-assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/rules" element=\{<Top40RulesPage \/>\}/)
+assert.match(publicApp, /path="\/event\/lobos-top-40\/rules" element=\{<Top40RulesPage \/>\}/)
 assert.match(source, /src="\/assets\/events\/top-40-rules\.png"/)
 assert.match(source, /<h2>On This Page<\/h2>/)
 assert.match(source, /href=\{`#\$\{section\.id\}`\}/)
@@ -39,7 +39,7 @@ assert.doesNotMatch(styles, /object-fit:\s*cover|filter:|\.top40-rules-hero::(?:
 assert.match(source, /current-league-rules-page top40-rules-page/)
 assert.match(source, /<CompactArtwork title="Rules"/)
 assert.match(publicApp, /import PublicTabs from '..\/components\/EventSectionTabs'/)
-assert.match(eventTabs, /item === 'rules' && eventId === 'event-lobo-s-american-top-40'\s*\? `\/event\/\$\{eventId\}\/rules`/)
+assert.match(eventTabs, /item === 'rules' && eventId === 'event-lobo-s-american-top-40'\s*\? `\/event\/\$\{slug\}\/rules`/)
 
 for (const id of sectionIds) assert.ok(rulebook.includes(`id: '${id}'`), `missing section: ${id}`)
 for (const text of [

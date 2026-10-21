@@ -19,7 +19,7 @@ assert.match(page, /<CompactArtwork title="Tournament Bracket"/)
 assert.match(styles, /\.top40-bracket-hero img[\s\S]*width: 100%;[\s\S]*height: auto;[\s\S]*object-fit: contain;/)
 assert.match(styles, /\.top40-bracket-scroll[\s\S]*overflow-x: auto;/)
 assert.match(eventHome, /isTop40 && selectedSection === 'bracket'[\s\S]*return <Top40BracketPage \/>/)
-assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/bracket" element=\{<Top40BracketPage \/>\}/)
+assert.match(publicApp, /path="\/event\/lobos-top-40\/bracket" element=\{<Top40BracketPage \/>\}/)
 assert.doesNotMatch(page, /No Data Yet|Bracket has not been generated|score|winner:/i)
 
 const matches = TOP_40_PLACEHOLDER_BRACKET.flatMap((section) =>

@@ -39,7 +39,7 @@ if (browserBaseUrl) {
     assert.doesNotMatch(playersMain, /Main Man|Proving Grounds/)
     assert.equal(await page.locator('main .division-tabs').count(), 0)
 
-    await page.goto(`${browserBaseUrl}/event/event-lobo-s-american-top-40/registration`, {
+    await page.goto(`${browserBaseUrl}/event/lobos-top-40/registration`, {
       waitUntil: 'domcontentloaded',
     })
     await page.locator('#event-registration-title').waitFor({ timeout: 120000 })

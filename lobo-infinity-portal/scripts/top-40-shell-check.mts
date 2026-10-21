@@ -16,7 +16,7 @@ function loadTypeScriptModule(path: string) {
   const context = {
     exports: module.exports,
     module,
-    require: () => ({}),
+    require: (name: string) => name === './eventBranding' ? loadTypeScriptModule('../src/config/eventBranding.ts') : {},
   }
   vm.runInNewContext(compiled, context)
   return module.exports
@@ -101,11 +101,11 @@ assert.deepEqual(
 assert.deepEqual(
   Array.from(navigation, (item) => item.to),
   [
-    '/event/event-lobo-s-american-top-40',
-    '/event/event-lobo-s-american-top-40/registration',
-    '/event/event-lobo-s-american-top-40/bracket',
-    '/event/event-lobo-s-american-top-40/results',
-    '/event/event-lobo-s-american-top-40/rules',
+    '/event/lobos-top-40',
+    '/event/lobos-top-40/registration',
+    '/event/lobos-top-40/bracket',
+    '/event/lobos-top-40/results',
+    '/event/lobos-top-40/rules',
   ],
 )
 for (const excluded of ['teams', 'standings', 'schedule', 'submitResult', 'pairings']) {
@@ -161,7 +161,7 @@ assert.match(
 )
 assert.match(
   readFileSync(new URL('../src/components/EventSectionTabs.tsx', import.meta.url), 'utf8').replace(/\s+/g, ''),
-  /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{eventId\}\/rules`/,
+  /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{slug\}\/rules`/,
   'The public Top 40 Rules tab must use the event-specific route.',
 )
 

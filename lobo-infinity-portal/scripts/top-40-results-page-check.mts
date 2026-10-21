@@ -12,7 +12,7 @@ const [page, styles, publicApp, artwork] = await Promise.all([
 ])
 
 assert.equal(createHash('sha256').update(artwork).digest('hex').toUpperCase(), 'F62F693983A9B57C7B0D309D04775FE87D0157D77AA1B64602E4B186DD35085C')
-assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/results" element=\{<Top40ResultsPage \/>\}/)
+assert.match(publicApp, /path="\/event\/lobos-top-40\/results" element=\{<Top40ResultsPage \/>\}/)
 assert.match(page, /useSnapshotData<PublicEvent\[]>\('events'\)/)
 assert.match(page, /useSnapshotData<PublicGame\[]>\('games'\)/)
 assert.match(page, /src="\/assets\/events\/top-40-results\.png"/)

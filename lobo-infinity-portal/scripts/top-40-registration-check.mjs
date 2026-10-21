@@ -29,7 +29,7 @@ const registrationArtwork = readFileSync(new URL('../public/assets/events/top-40
 
 const registrationFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfCyQ-oaLlZf8-utdWm0Y2iWrU8QZiHLVBhWzmxaCUZj2cMqg/viewform'
 assert.equal(createHash('sha256').update(registrationArtwork).digest('hex'), '00ba8ad5b90e3d8e826f2e4eedaac5d0cf2e410ea2acbc9f2a46d3dd75500ea6')
-assert.match(publicAppSource, /path="\/event\/event-lobo-s-american-top-40\/registration" element=\{<Top40RegistrationPage \/>\}/)
+assert.match(publicAppSource, /path="\/event\/lobos-top-40\/registration" element=\{<Top40RegistrationPage \/>\}/)
 assert.match(dedicatedPageSource, /src="\/assets\/events\/top-40-registration\.png"/)
 assert.ok(dedicatedPageSource.includes(registrationFormUrl))
 assert.ok(eventNavigationSource.includes(`registrationUrl: '${registrationFormUrl}'`))
@@ -444,7 +444,7 @@ if (browserBaseUrl) {
         contentType: 'application/json',
         status: 200,
       }))
-      await page.goto(`${browserBaseUrl}/event/event-lobo-s-american-top-40/registration`, { waitUntil: 'domcontentloaded' })
+      await page.goto(`${browserBaseUrl}/event/lobos-top-40/registration`, { waitUntil: 'domcontentloaded' })
       await page.locator('#top40-registration-title').waitFor()
       await page.getByText(`${scenario.count} PLAYERS REGISTERED`).waitFor()
       await page.getByText(scenario.status, { exact: true }).waitFor()
