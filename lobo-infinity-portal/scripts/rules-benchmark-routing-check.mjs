@@ -8,7 +8,7 @@ import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1412)
+assert.equal(index.canonicalCases, 1414)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
 // These are deliberately absent from the benchmark's exact variants. They

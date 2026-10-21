@@ -8,6 +8,7 @@ RUN npx playwright install --with-deps chromium
 
 COPY lobo-infinity-portal/ .
 RUN node scripts/rules-reported-interactions-check.mjs
+RUN node scripts/rules-friendly-fire-predator-check.mjs
 RUN node scripts/rules-deepseek-check.mjs
 RUN npm run test:build-list
 RUN node scripts/team-ops-ratings-check.mjs

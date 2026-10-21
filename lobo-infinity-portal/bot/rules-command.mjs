@@ -328,7 +328,7 @@ export function formatRulesDiscordResponse(result) {
 function benchmarkResult(question, benchmark, corpus) {
   const sources = benchmark.citations.map((citation, index) => {
     const source = corpus.manifest.sources.find((item) => item.id === citation.sourceId)
-    return { id: `B${String(index + 1).padStart(4, '0')}`, title: source?.title || citation.sourceId, version: source?.version, page: `p. ${citation.page}`, section: citation.section, url: source?.officialUrl }
+    return { id: `B${String(index + 1).padStart(4, '0')}`, title: source?.title || citation.sourceId, version: source?.version, page: citation.page == null ? undefined : `p. ${citation.page}`, section: citation.section, url: citation.url || source?.officialUrl }
   })
   return {
     question: String(question || '').trim(),

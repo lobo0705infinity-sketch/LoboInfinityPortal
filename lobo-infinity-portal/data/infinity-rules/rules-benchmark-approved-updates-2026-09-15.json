@@ -3119,6 +3119,127 @@
           "style": "TABLE_SCENARIO"
         }
       ]
+    },
+    {
+      "id": "new-topic-2-533",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "When hits are allocated to an allied model as consequence of failed attacks while declaring BS attack at an enemy in the engaged state will the allied model be able to benefit from cover when making saving rolls (assuming they would be in partial cover from the ally declaring BS attack)",
+      "approvedAnswer": "No is the recommended reading: the enemy remains the declared target of the BS Attack. Failed shots into close combat instead force the ally to make Saving Rolls; that rule does not explicitly make the ally a new target. Partial Cover grants +3 to the Saving Rolls of the target of the BS Attack, so this reading gives the ally no +3 Cover bonus. This is an evidence-bounded interpretation, not an explicit official FAQ ruling on friendly-fire Cover. Agree this interpretation with your opponent or tournament organizer.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "BS Attack Into a Close Combat",
+          "url": "https://infinitythewiki.com/Ballistic_Skills#BS_Attack_Into_a_Close_Combat"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Cover — target of the BS Attack",
+          "url": "https://infinitythewiki.com/Ballistic_Skills#Cover"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-533-q1",
+          "question": "Does an ally hit by a missed BS Attack into close combat get cover on its saving roll?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q2",
+          "question": "Can my friendly model claim partial cover when I miss a shot into an engaged enemy?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q3",
+          "question": "If I shoot into CC and hit my own trooper, does it get +3 to save for cover?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q4",
+          "question": "Does friendly fire into close combat benefit from Partial Cover?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q5",
+          "question": "When I miss shooting into melee does my ally get the cover bonus?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q6",
+          "question": "Do cover mods apply to the allied model hit by failed shots into Engaged?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-533-q7",
+          "question": "Does the friendly trooper become the target for cover when I miss shooting into CC?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "cover"
+      ],
+      "fuzzyExcludedTerms": [
+        "template",
+        "immunity",
+        "nanoscreen"
+      ]
+    },
+    {
+      "id": "new-topic-2-534",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "if predator shows up round 2 in akial interference and I have already killed 1 or 2 in cc round 1, do those kills count towards predator?",
+      "approvedAnswer": "No. In Akial Interference, kills made before Predator was drawn do not count towards accomplishing it. If Predator is drawn in Round 2, your Round 1 CC kills do not count; only qualifying kills made after it was drawn count. This is explicitly answered by the official ITS FAQ, rather than inferred from the objective card.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-faq-n5-v0.1",
+          "section": "ITS FAQ — Akial Interference — Predator timing",
+          "url": "https://infinitythewiki.com/ITS_FAQ#Akial_Interference"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-534-q1",
+          "question": "In Akial Interference, do kills before drawing Predator count?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-534-q2",
+          "question": "Does Predator count earlier close combat kills in Akial Interference?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-534-q3",
+          "question": "I killed two enemies in round one and drew Predator in round two in Akial Interference. Do they count?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-534-q4",
+          "question": "Can I score Predator retroactively in Akial Interference?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-534-q5",
+          "question": "In Akial, does Predator include CC kills from before the card was drawn?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-534-q6",
+          "question": "If Predator is drawn in round 3 of Akial Interference, do round 1 and 2 kills count?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "predator",
+        "akial"
+      ],
+      "fuzzyExcludedTerms": [
+        "countermeasures"
+      ]
     }
   ]
 }
