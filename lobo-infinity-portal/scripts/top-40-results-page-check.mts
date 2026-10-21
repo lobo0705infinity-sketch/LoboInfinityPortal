@@ -11,11 +11,11 @@ const [page, styles, publicApp, artwork] = await Promise.all([
   readFile(new URL('../public/assets/events/top-40-results.png', import.meta.url)),
 ])
 
-assert.equal(createHash('sha256').update(artwork).digest('hex').toUpperCase(), '6A3945574D6502268A4FAE443D77428F38078900661DBE4188537E333EDC7E0A')
+assert.equal(createHash('sha256').update(artwork).digest('hex').toUpperCase(), 'F62F693983A9B57C7B0D309D04775FE87D0157D77AA1B64602E4B186DD35085C')
 assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/results" element=\{<Top40ResultsPage \/>\}/)
 assert.match(page, /useSnapshotData<PublicEvent\[]>\('events'\)/)
 assert.match(page, /useSnapshotData<PublicGame\[]>\('games'\)/)
-assert.match(page, /src="\/assets\/events\/top-40-results\.png\?v=6a394557"/)
+assert.match(page, /src="\/assets\/events\/top-40-results\.png"/)
 assert.match(styles, /\.top40-results-hero img[\s\S]*width: 100%;[\s\S]*height: auto;[\s\S]*object-fit: contain;/)
 assert.match(styles, /overflow-x: clip;/)
 assert.doesNotMatch(page, /fetch\(|axios|Apps Script|Google Sheets|poll|retry/i)

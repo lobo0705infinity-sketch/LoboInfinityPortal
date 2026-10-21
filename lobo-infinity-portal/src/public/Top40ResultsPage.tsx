@@ -31,7 +31,7 @@ export default function Top40ResultsPage() {
 
   return (
     <main className="portal-shell snapshot-public-page top40-results-page" data-event-section="results">
-      <CompactArtwork title="Results" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-results.png?v=6a394557"/>
+      <CompactArtwork title="Results" eyebrow="Lobo’s Top 40" src="/assets/events/top-40-results.png"/>
 
       <nav className="snapshot-tabs" aria-label="Event sections">
         {navigation.map((item) => (

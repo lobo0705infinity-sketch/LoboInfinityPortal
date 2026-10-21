@@ -34,7 +34,7 @@ global.fetch = async (_url, options) => {
   return { ok: true, status: 200, text: async () => JSON.stringify(payload) }
 }
 const created = await invoke({ operation: 'create', definition: {
-  name: "Lobo's American Top 40", type: 'Individual Double Elimination',
+  name: "Lobo's Top 40", type: 'Individual Double Elimination',
   maximumPlayers: 40, registration: 'Registration Closed',
   lifecycleStage: 'Planning', status: 'Planning',
 } }, 'dedicated-test-token')

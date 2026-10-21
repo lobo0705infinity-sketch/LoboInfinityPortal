@@ -12,7 +12,7 @@ const [page, styles, data, eventHome, publicApp, artwork] = await Promise.all([
   readFile(new URL('../public/assets/events/top-40-bracket.png', import.meta.url)),
 ])
 
-assert.equal(createHash('sha256').update(artwork).digest('hex').toUpperCase(), '8F1FEA99EC6AED275B634571E64AB5A1159C0316F7217EEC6FF36C8E34921F5D')
+assert.equal(createHash('sha256').update(artwork).digest('hex').toUpperCase(), '49E9BC7D4C7FC9CF21462F052430C5DF31B32203645C7C58D93ACB89839D5552')
 assert.match(page, /src="\/assets\/events\/top-40-bracket\.png"/)
 assert.match(page, /<CompactArtwork title="Tournament Bracket"/)
 

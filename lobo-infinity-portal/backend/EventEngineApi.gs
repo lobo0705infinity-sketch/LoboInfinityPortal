@@ -1184,7 +1184,7 @@ function mapEventEngineEventRow(row) {
     communityId: row["Community ID"],
     seriesId: row["Series ID"],
     templateId: row["Template ID"],
-    name: row["Name"],
+    name: row["ID"] === "event-lobo-s-american-top-40" ? "Lobo's Top 40" : row["Name"],
     description: row["Description"],
     type: row["Type"],
     lifecycleStage: row["Lifecycle Stage"],

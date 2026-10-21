@@ -39,7 +39,7 @@ export default function Top40PreparationPage() {
   }
 
   return <main className="portal-shell snapshot-public-page top40-preparation-page" data-event="top40-preparation">
-    <CompactArtwork title="Lobo’s American Top 40" eyebrow="Event preparation" src="/assets/events/top-40-overview-v2.png"/>
+    <CompactArtwork title="Lobo’s Top 40" eyebrow="Event preparation" src="/assets/events/top-40-overview-v2.png"/>
     <EventSectionTabs eventId={TOP40_EVENT_ID} items={['overview', 'registration', 'bracket', 'results', 'rules']}/>
     <header className="top40-preparation-heading"><div><p className="eyebrow">300 points · Double elimination</p><h1>Get ready for the tournament</h1><p>Registration, deadlines, missions, maps, and public army lists in one place.</p></div><span>Starts {preparationDate(event?.startDate || TOP40_ANNOUNCED_START_DATE)}</span></header>
     {events.error ? <DataNotice message="Event details are temporarily unavailable." retry={events.retry}/> : null}

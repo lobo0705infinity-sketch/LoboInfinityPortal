@@ -1,3 +1,4 @@
+import { eventDisplayName } from '../config/eventBranding'
 import type {
   DashboardData,
   DashboardSummary,
@@ -4968,7 +4969,7 @@ function normalizeLeagueEvent(record: Record<string, unknown>): LeagueEvent {
     history: getString(record, 'history'),
     id: getRequiredString(record, 'id'),
     lifecycleStage: getString(record, 'lifecycleStage'),
-    name: getRequiredString(record, 'name'),
+    name: eventDisplayName(getRequiredString(record, 'id'), getRequiredString(record, 'name')),
     owner: getString(record, 'owner'),
     participants: getString(record, 'participants'),
     registration: getString(record, 'registration'),
@@ -6360,7 +6361,7 @@ function normalizeCommunityCommandEvent(
     eventId: getRequiredString(record, 'eventId'),
     gamesRemaining: getRequiredNumber(record, 'gamesRemaining'),
     link: getRequiredString(record, 'link'),
-    name: getRequiredString(record, 'name'),
+    name: eventDisplayName(getRequiredString(record, 'eventId'), getRequiredString(record, 'name')),
     primaryAction: getRequiredString(record, 'primaryAction'),
     status: getRequiredString(record, 'status'),
     statusDetail: getString(record, 'statusDetail'),
@@ -7904,7 +7905,7 @@ function normalizeEventLifecycleEvent(
     history: getString(record, 'history'),
     id: getRequiredString(record, 'id'),
     lifecycleStage: getRequiredString(record, 'lifecycleStage'),
-    name: getRequiredString(record, 'name'),
+    name: eventDisplayName(getRequiredString(record, 'id'), getRequiredString(record, 'name')),
     owner: getString(record, 'owner'),
     participants: getString(record, 'participants'),
     registration: getString(record, 'registration'),

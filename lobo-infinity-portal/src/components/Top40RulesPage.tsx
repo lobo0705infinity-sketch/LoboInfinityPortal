@@ -21,7 +21,7 @@ export default function Top40RulesPage() {
       className="portal-shell event-overview-shell current-league-rules-page top40-rules-page"
       data-event-section="rules"
     >
-      <CompactArtwork title="Rules" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-rules.png?v=e49f616a"/>
+      <CompactArtwork title="Rules" eyebrow="Lobo’s Top 40" src="/assets/events/top-40-rules.png"/>
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (
           <Link key={`${item.label}-${item.href}`} to={item.href}>{item.label}</Link>
@@ -32,7 +32,7 @@ export default function Top40RulesPage() {
         <h2 id="event-rules-page-title">{top40Rulebook.title}</h2>
         <p>{top40Rulebook.description}</p>
       </section>
-      <section className="rules-layout" aria-label="American Top 40 rules reference">
+      <section className="rules-layout" aria-label="Top 40 rules reference">
         <nav className="panel rules-toc" aria-label="On This Page">
           <p className="eyebrow">Rules</p>
           <h2>On This Page</h2>

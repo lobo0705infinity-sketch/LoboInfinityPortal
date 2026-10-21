@@ -14,7 +14,7 @@ const navigation = await readFile(new URL('../src/config/eventNavigation.ts', im
 const artwork = await readFile(new URL('../public/assets/events/top-40-rules.png', import.meta.url))
 
 const eventId = 'event-lobo-s-american-top-40'
-const expectedHash = 'e49f616a495ebc69c578af8846510c72d0e0ddcec971513d48c144599d209dee'
+const expectedHash = '733438c9e953db445965b8c9b2f19f732497f61f6bee373385feb84655b06d4a'
 const sectionIds = [
   'eligibility-and-field',
   'tournament-format-and-seeding',
@@ -30,7 +30,7 @@ assert.equal(createHash('sha256').update(artwork).digest('hex'), expectedHash)
 assert.match(eventHome, /isTop40 && selectedSection === 'rules'/)
 assert.match(eventHome, /return <Top40RulesPage \/>/)
 assert.match(publicApp, /path="\/event\/event-lobo-s-american-top-40\/rules" element=\{<Top40RulesPage \/>\}/)
-assert.match(source, /src="\/assets\/events\/top-40-rules\.png\?v=e49f616a"/)
+assert.match(source, /src="\/assets\/events\/top-40-rules\.png"/)
 assert.match(source, /<h2>On This Page<\/h2>/)
 assert.match(source, /href=\{`#\$\{section\.id\}`\}/)
 assert.doesNotMatch(eventHome, /function Top40Rules\(|No Automatic Forfeits|There is no bracket reset/)
@@ -43,8 +43,8 @@ assert.match(eventTabs, /item === 'rules' && eventId === 'event-lobo-s-american-
 
 for (const id of sectionIds) assert.ok(rulebook.includes(`id: '${id}'`), `missing section: ${id}`)
 for (const text of [
-  'Lobo’s American Top 40 Rules',
-  'Lobo’s American Top 40 is an individual, 300-point, double-elimination Infinity tournament open to players throughout the Americas. Players are eliminated after their second match loss.',
+  'Lobo’s Top 40 Rules',
+  'Lobo’s Top 40 is an individual, 300-point, double-elimination Infinity tournament open to players throughout the Americas. Players are eliminated after their second match loss.',
   'The field is limited to a maximum of 40 players.',
   'Players are manually seeded using Corvus Belli rankings.',
   'Every match is played at 300 points.',
@@ -75,7 +75,7 @@ if (browserBaseUrl) {
       const rulesUrl = `${browserBaseUrl}/event/${eventId}/rules`
       await page.goto(rulesUrl, { waitUntil: 'domcontentloaded' })
       await page.locator('#event-rules-page-title').waitFor({ timeout: 120000 })
-      assert.equal(await page.locator('#event-rules-page-title').innerText(), 'Lobo’s American Top 40 Rules')
+      assert.equal(await page.locator('#event-rules-page-title').innerText(), 'Lobo’s Top 40 Rules')
       assert.equal(await page.locator('.rules-card').count(), 8)
       assert.equal(await page.locator('.rules-toc a').count(), 8)
       assert.equal(await page.locator('.snapshot-event-overview').count(), 0)

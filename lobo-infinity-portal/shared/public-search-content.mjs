@@ -3,6 +3,8 @@ import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from './lo
 
 export const SITE_ORIGIN = 'https://lobo-infinity-portal.vercel.app'
 
+const eventName = event => event.id === 'event-lobo-s-american-top-40' ? "Lobo's Top 40" : text(event.name)
+
 const starterLinks = [
   { label: 'Explore Army Intelligence', href: '/army-intelligence' },
   { label: 'Read battle reports', href: '/games' },
@@ -188,7 +190,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       }
     }
     if (pathname === '/events' && datasets.events) {
-      for (const event of datasets.events) links.push({ label: `${text(event.name)} · ${text(event.status || event.lifecycleStage)}`, href: `/event/${encodeURIComponent(event.id)}` })
+      for (const event of datasets.events) links.push({ label: `${eventName(event)} · ${text(event.status || event.lifecycleStage)}`, href: `/event/${encodeURIComponent(event.id)}` })
     }
     if (pathname === '/factions' && datasets.factions) {
       for (const faction of datasets.factions) links.push({ label: `${text(faction.name)} · ${Number(faction.games) || 0} recorded games`, href: `/factions/${encodeURIComponent(faction.name)}` })
@@ -294,7 +296,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     const event = datasets.events?.find(item => item.id === eventId)
     if (datasets.events && !event) return null
     if (!event) return genericDetail(pathname, 'Infinity N5 event', 'See event details, standings, and games.', '/events')
-    const name = text(event.name)
+    const name = eventName(event)
     const status = text(event.status || event.lifecycleStage)
     return {
       pathname,

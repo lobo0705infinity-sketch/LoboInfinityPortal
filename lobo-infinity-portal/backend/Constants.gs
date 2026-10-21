@@ -18,7 +18,7 @@ const LIF_FORMS = Object.freeze({
     LEAGUE: "Lobo Infinity League Game Submission",
     TEAM: "Lobo Infinity Team Tournament Game Submission",
     CASUAL: "Lobo Infinity Casual Game Submission",
-    TOP40: "Lobo's American Top 40 — Game Submission",
+    TOP40: "Lobo's Top 40 — Game Submission",
     JOIN: "Join the Lobo Infinity Community"
   }),
   FIELDS: Object.freeze({

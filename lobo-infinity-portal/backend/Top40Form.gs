@@ -1,5 +1,40 @@
 const TOP40_FORM_EVENT_ID = "event-lobo-s-american-top-40";
 
+// Run once after deployment (safe to repeat). Preserve all permanent IDs,
+// response destinations, questions, triggers, registrations and bracket data.
+function updateTop40Branding() {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const sheet = getEventEngineRuntimeSheet(CONFIG.SHEETS.EVENTS);
+    if (!sheet) throw new Error("Events sheet not found.");
+    const rows = sheet.getDataRange().getValues();
+    const idColumn = rows[0].indexOf("ID"), nameColumn = rows[0].indexOf("Name");
+    if (idColumn < 0 || nameColumn < 0) throw new Error("Events sheet is missing ID or Name.");
+    const matchingRows = [];
+    rows.slice(1).forEach(function(row, index) {
+      if (row[idColumn] === TOP40_FORM_EVENT_ID) matchingRows.push(index + 2);
+    });
+    if (matchingRows.length !== 1) throw new Error("Expected exactly one existing Top 40 event.");
+    const registrationSheet = lifGetTargetSpreadsheet_().getSheetByName(PUBLIC_SNAPSHOT_TOP40_REGISTRATION_SHEET);
+    if (!registrationSheet || !registrationSheet.getFormUrl()) throw new Error("Top 40 registration form is not linked.");
+    const registrationForm = FormApp.openByUrl(registrationSheet.getFormUrl());
+    if (registrationForm.getPublishedUrl().split("?")[0] !== TOP40_PORTAL_REGISTRATION_FORM_URL ||
+        registrationForm.getDestinationId() !== lifGetTargetSpreadsheet_().getId())
+      throw new Error("Registration form identity or destination does not match Top 40.");
+    const submissionForm = FormApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TOP40_FORM_ID));
+    sheet.getRange(matchingRows[0], nameColumn + 1).setValue("Lobo's Top 40");
+    registrationForm.setTitle("Lobo's Top 40 — Registration");
+    submissionForm.setTitle(LIF_FORMS.FORM_TITLES.TOP40).setDescription("Submit a completed Lobo's Top 40 bracket game.");
+    invalidateEventManagerCaches(TOP40_FORM_EVENT_ID);
+    const result = { eventId: TOP40_FORM_EVENT_ID, name: "Lobo's Top 40", registrationTitle: registrationForm.getTitle(), submissionTitle: submissionForm.getTitle() };
+    Logger.log(JSON.stringify(result));
+    return result;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function createOrUpdateTop40GameSubmissionForm() {
   const props = lifGetProperties_();
   const existingId = String(props.getProperty(LIF_FORMS.PROPERTIES.TOP40_FORM_ID) || "").trim();
@@ -16,7 +51,7 @@ function createOrUpdateTop40GameSubmissionForm() {
 }
 
 function configureTop40Form_(form) {
-  form.setTitle(LIF_FORMS.FORM_TITLES.TOP40).setDescription("Submit a completed Lobo's American Top 40 bracket game.")
+  form.setTitle(LIF_FORMS.FORM_TITLES.TOP40).setDescription("Submit a completed Lobo's Top 40 bracket game.")
     .setCollectEmail(false).setConfirmationMessage("Your result was received and will be imported after validation.")
     .setShowLinkToRespondAgain(false).setProgressBar(false);
 }
@@ -47,6 +82,8 @@ function addTop40FormFields_(form, players, missions, factions) {
 
 function refreshTop40GameSubmissionForm() {
   const form=FormApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TOP40_FORM_ID));
+  // Refresh branding on the existing form without changing fields, responses or destination.
+  form.setTitle(LIF_FORMS.FORM_TITLES.TOP40).setDescription("Submit a completed Lobo's Top 40 bracket game.");
   const players=getTop40RegisteredPlayerChoices_();
   const values=players.length ? players : ["Registration currently has no registered players"];
   [LIF_FORMS.FIELDS.PLAYER,LIF_FORMS.FIELDS.OPPONENT].forEach(function(title){

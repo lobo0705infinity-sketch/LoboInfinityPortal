@@ -28,7 +28,7 @@ const eventNavigationSource = readFileSync(new URL('../src/config/eventNavigatio
 const registrationArtwork = readFileSync(new URL('../public/assets/events/top-40-registration.png', import.meta.url))
 
 const registrationFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfCyQ-oaLlZf8-utdWm0Y2iWrU8QZiHLVBhWzmxaCUZj2cMqg/viewform'
-assert.equal(createHash('sha256').update(registrationArtwork).digest('hex'), '1e58a945b0318d361d33bffcfa1f795285c0e9a94fae4acfa8cfe37d60e896bd')
+assert.equal(createHash('sha256').update(registrationArtwork).digest('hex'), '00ba8ad5b90e3d8e826f2e4eedaac5d0cf2e410ea2acbc9f2a46d3dd75500ea6')
 assert.match(publicAppSource, /path="\/event\/event-lobo-s-american-top-40\/registration" element=\{<Top40RegistrationPage \/>\}/)
 assert.match(dedicatedPageSource, /src="\/assets\/events\/top-40-registration\.png"/)
 assert.ok(dedicatedPageSource.includes(registrationFormUrl))

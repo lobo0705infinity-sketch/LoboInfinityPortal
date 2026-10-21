@@ -40,7 +40,7 @@ export default function Top40RegistrationPage() {
 
   return (
     <main className="portal-shell event-overview-shell top40-registration-page" data-event="top40-registration">
-      <CompactArtwork title="Registration" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-registration.png"/>
+      <CompactArtwork title="Registration" eyebrow="Lobo’s Top 40" src="/assets/events/top-40-registration.png"/>
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {navigation.map((item) => (
@@ -57,7 +57,7 @@ export default function Top40RegistrationPage() {
 
       <section className="panel top40-registration-summary" aria-labelledby="top40-registration-title">
         <div>
-          <p className="eyebrow">Lobo&apos;s American Top 40</p>
+          <p className="eyebrow">Lobo&apos;s Top 40</p>
           <h2 id="top40-registration-title">Tournament Registration</h2>
           <p>Register for the individual 300-point, double-elimination tournament open to players throughout the Americas.</p>
         </div>

@@ -24,7 +24,7 @@ export default function Top40BracketPage({
 
   return (
     <main className="portal-shell event-overview-shell top40-bracket-page" data-event-section="bracket">
-      <CompactArtwork title="Tournament Bracket" eyebrow="Lobo’s American Top 40" src="/assets/events/top-40-bracket.png"/>
+      <CompactArtwork title="Tournament Bracket" eyebrow="Lobo’s Top 40" src="/assets/events/top-40-bracket.png"/>
 
       <nav className="event-home-nav" aria-label="Event navigation">
         {eventNavigationItems.map((item) => (
@@ -33,7 +33,7 @@ export default function Top40BracketPage({
       </nav>
 
       <section className="panel top40-bracket-intro" aria-labelledby="top40-bracket-title">
-        <p className="eyebrow">Lobo&apos;s American Top 40</p>
+        <p className="eyebrow">Lobo&apos;s Top 40</p>
         <h2 id="top40-bracket-title">Tournament Bracket</h2>
         <p>Forty players enter a complete double-elimination bracket. A player is eliminated after their second loss.</p>
       </section>

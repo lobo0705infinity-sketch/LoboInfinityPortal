@@ -1,3 +1,4 @@
+import { eventDisplayName } from '../config/eventBranding'
 const PUBLIC_BLOB_ORIGIN = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/'
 export const PUBLIC_SNAPSHOT_POINTER_URL = `${PUBLIC_BLOB_ORIGIN}public-snapshots/current.json`
 
@@ -78,7 +79,7 @@ export function getPublicSnapshotDataset<T>(
     if (envelope.snapshotId !== pointer.snapshotId) {
       throw new Error(`Public snapshot generation mismatch: ${dataset}.json`)
     }
-    return envelope.data
+    return dataset === 'events' ? normalizeEventNames(envelope.data) : envelope.data
   })
   cache.set(dataset, pending)
   pending.catch(() => cache.delete(dataset))
@@ -100,7 +101,7 @@ export async function getNewerPublicSnapshotDataset<T>(
   if (latest.snapshotId === pinned.snapshotId || latest.snapshotId === sinceSnapshotId) return null
   const envelope = await readPublicSnapshotFile<SnapshotEnvelope<T>>(dataset, signal, latest)
   if (envelope.snapshotId !== latest.snapshotId) return null
-  return { snapshotId: latest.snapshotId, data: envelope.data }
+  return { snapshotId: latest.snapshotId, data: dataset === 'events' ? normalizeEventNames(envelope.data) : envelope.data }
 }
 
 export function getPublicMissionGeistCatalog(signal?: AbortSignal) {
@@ -133,4 +134,11 @@ function validatePointer(pointer: PublicSnapshotPointer) {
     throw new Error('Current public snapshot pointer is invalid.')
   }
   return Object.freeze({ ...pointer })
+}
+
+function normalizeEventNames<T>(data: T): T {
+  if (!Array.isArray(data)) return data
+  return data.map((event: { id: string; name: string }) => ({
+    ...event, name: eventDisplayName(event.id, event.name),
+  })) as T
 }

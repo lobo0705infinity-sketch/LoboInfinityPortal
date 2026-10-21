@@ -10,7 +10,7 @@ for (const expected of [
   ['League Game', 'GOOGLE_FORM_URLS.league'],
   ['Team Tournament', 'GOOGLE_FORM_URLS.teamTournament'],
   ['Casual Game', 'GOOGLE_FORM_URLS.casual'],
-  ["Lobo's American Top 40", 'GOOGLE_FORM_URLS.top40'],
+  ["Lobo's Top 40", 'GOOGLE_FORM_URLS.top40'],
 ]) {
   assert.ok(submit.includes(expected[0]), `${expected[0]} card must remain rendered`)
   assert.ok(submit.includes(expected[1]), `${expected[0]} must retain its configured Form URL`)

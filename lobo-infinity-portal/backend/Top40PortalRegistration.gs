@@ -117,6 +117,7 @@ function installTop40PortalRegistration() {
   const form = FormApp.openByUrl(sheet.getFormUrl());
   if (form.getPublishedUrl().split("?")[0] !== TOP40_PORTAL_REGISTRATION_FORM_URL || form.getDestinationId() !== target.getId())
     throw new Error("The linked form is not the existing Top 40 registration form.");
+  form.setTitle("Lobo's Top 40 — Registration");
   const aliases = PUBLIC_SNAPSHOT_TOP40_PORTAL_NAME_HEADERS.map(normalizePublicSnapshotTop40Header_);
   const fields = form.getItems().filter(function(item) { return aliases.indexOf(normalizePublicSnapshotTop40Header_(item.getTitle())) >= 0; });
   if (fields.length !== 1 || fields[0].getType() !== FormApp.ItemType.TEXT)

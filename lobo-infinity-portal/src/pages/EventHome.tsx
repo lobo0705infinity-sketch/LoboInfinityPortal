@@ -515,7 +515,7 @@ function DoubleEliminationBracketPage({
         <p>Bracket generation is pending completion of registration and seeding.</p>
       </section> : null}
       {bracket?.generated ? <>
-        {bracket.tournamentComplete && bracket.champion ? <section className="panel event-home-panel"><h2>Lobo's American Top 40 Champion</h2><p>{bracket.champion}</p></section> : null}
+        {bracket.tournamentComplete && bracket.champion ? <section className="panel event-home-panel"><h2>Lobo's Top 40 Champion</h2><p>{bracket.champion}</p></section> : null}
         <BracketStructure matches={bracket.matches} />
       </> : null}
     </main>
@@ -911,7 +911,7 @@ function IndividualDoubleEliminationRegistrationForm({
   return (
     <section className="panel event-home-panel">
       <div className="panel-heading">
-        <p className="eyebrow">American Top 40</p>
+        <p className="eyebrow">Top 40</p>
         <h2>Register</h2>
       </div>
       <form className="event-manager-form compact" onSubmit={submitRegistration}>

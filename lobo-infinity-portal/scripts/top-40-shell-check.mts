@@ -68,7 +68,7 @@ const top40 = eventNavigation.find(
 )
 assert.ok(top40, 'Top 40 navigation configuration must exist.')
 assert.equal(top40.id, 'event-lobo-s-american-top-40')
-assert.equal(top40.label, "Lobo's American Top 40")
+assert.equal(top40.label, "Lobo's Top 40")
 
 const event = {
   capabilities: [],
@@ -155,12 +155,12 @@ assert.deepEqual(Array.from(teamTournament?.capabilities ?? []), [
   'rules',
 ])
 assert.match(
-  snapshotPublicAppSource,
+  readFileSync(new URL('../src/components/EventSectionTabs.tsx', import.meta.url), 'utf8').replace(/\s+/g, ''),
   /items\.filter\(item=>!\(teamTournament&&\(item==='teams'\|\|item==='registration'\)\)\)/,
   'Public Team Tournament navigation must continue hiding Teams and Registration.',
 )
 assert.match(
-  snapshotPublicAppSource,
+  readFileSync(new URL('../src/components/EventSectionTabs.tsx', import.meta.url), 'utf8').replace(/\s+/g, ''),
   /item==='rules'&&eventId==='event-lobo-s-american-top-40'\?`\/event\/\$\{eventId\}\/rules`/,
   'The public Top 40 Rules tab must use the event-specific route.',
 )

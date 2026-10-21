@@ -98,7 +98,7 @@ function SubmitResult() {
         <GoogleFormLauncher
           buttonLabel="Submit Top 40 Game"
           description="Submit a Top 40 tournament game."
-          label="Lobo's American Top 40"
+          label="Lobo's Top 40"
           url={GOOGLE_FORM_URLS.top40}
         />
       </section>
@@ -545,7 +545,7 @@ export function LegacySubmitResult() {
             to="/submit-game?eventId=event-august-2026-team-tournament&gameType=event"
           />
           <SubmissionChoice
-            description="Submit an Active Lobo's American Top 40 bracket match."
+            description="Submit an Active Lobo's Top 40 bracket match."
             label="Top 40"
             to="/submit-game?eventId=event-lobo-s-american-top-40&gameType=event"
           />

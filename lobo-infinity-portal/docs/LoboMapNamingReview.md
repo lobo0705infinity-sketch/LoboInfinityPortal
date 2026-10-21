@@ -12,7 +12,7 @@ The map index now groups saves by how they would be used. One terrain layout has
 | July 2026 League | 29–36, 38–41, 43–44, 46–47 | 13 |
 | August 2026 Team Tournament | 37, 42, 45 | 3 |
 
-The Workshop bag names `Lobo League` / `LL` and `TT` are the evidence for these event assignments; **confirm the event association before publishing**. The first 28 saves are offered for casual use, even when their original names mention earlier tournaments or leagues. Lobo's American Top 40 has no identified Workshop save, so an empty section is not shown. This structure can add an event section when its maps are identified.
+The Workshop bag names `Lobo League` / `LL` and `TT` are the evidence for these event assignments; **confirm the event association before publishing**. The first 28 saves are offered for casual use, even when their original names mention earlier tournaments or leagues. Lobo's Top 40 has no identified Workshop save, so an empty section is not shown. This structure can add an event section when its maps are identified.
 
 Within Casual, **03/04**, **09/25**, **12/17**, and **15/16** share four layout cards while keeping their separate mission saves. Within the League, **29/46**, **30/39**, and **36/40** likewise share three layout cards. The four exactly matching object sets (**04/33**, **18/34**, **25/31**, **27/32**) belong to different sections, so both bags can stay without repeated cards within a section.
 
