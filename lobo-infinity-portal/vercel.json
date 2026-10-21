@@ -38,8 +38,13 @@
   ],
   "redirects": [
     {
+      "source": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
+      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
+      "permanent": true
+    },
+    {
       "source": "/guides/aurora-vii-territory-terrain-guide-20261021.pdf",
-      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
+      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
       "permanent": true
     },
     {

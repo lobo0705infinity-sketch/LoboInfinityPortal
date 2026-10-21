@@ -1,5 +1,5 @@
 // Current approved concept images. Versioned paths prevent stale artwork caches.
-export const AURORA_TERRAIN_GUIDE_URL = '/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf'
+export const AURORA_TERRAIN_GUIDE_URL = '/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf'
 
 type TerrainImage = { src: string; width: number; height: number }
 export const AURORA_TERRAIN_REFERENCES: Record<number, TerrainImage[]> = {
@@ -89,14 +89,14 @@ export const AURORA_TERRAIN_REFERENCES: Record<number, TerrainImage[]> = {
   ],
   "8": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-08-a.webp",
-      "width": 1066,
-      "height": 1066
+      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-08-a.webp",
+      "width": 1536,
+      "height": 1024
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-08-b.webp",
-      "width": 1066,
-      "height": 1066
+      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-08-b.webp",
+      "width": 1536,
+      "height": 1024
     }
   ],
   "9": [
@@ -113,14 +113,14 @@ export const AURORA_TERRAIN_REFERENCES: Record<number, TerrainImage[]> = {
   ],
   "10": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-10-a.webp",
-      "width": 1066,
-      "height": 1066
+      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-10-a.webp",
+      "width": 1536,
+      "height": 1024
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-10-b.webp",
-      "width": 1066,
-      "height": 1066
+      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-10-b.webp",
+      "width": 1536,
+      "height": 1024
     }
   ],
   "11": [
