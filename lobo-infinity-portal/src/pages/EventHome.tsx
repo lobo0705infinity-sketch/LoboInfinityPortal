@@ -1,3 +1,4 @@
+import { resolveEventId } from '../config/eventBranding'
 import { lazy, Suspense, useEffect, useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -39,7 +40,8 @@ const CommissionerEventWorkflow = lazy(
 function EventHome() {
   const auth = useAuth()
   const { settings } = useSettings()
-  const { eventId, section } = useParams<{ eventId: string; section?: string }>()
+  const { eventId: routeEventId, section } = useParams<{ eventId: string; section?: string }>()
+  const eventId = resolveEventId(routeEventId)
   const selectedEventId = eventId ? decodeURIComponent(eventId) : defaultEventId
   const selectedSection = normalizeEventHomeSection(section)
   const isTop40 = selectedEventId === 'event-lobo-s-american-top-40'

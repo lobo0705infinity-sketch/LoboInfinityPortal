@@ -38,6 +38,16 @@
   ],
   "redirects": [
     {
+      "source": "/event/event-lobo-s-american-top-40",
+      "destination": "/event/lobos-top-40",
+      "permanent": true
+    },
+    {
+      "source": "/event/event-lobo-s-american-top-40/:path*",
+      "destination": "/event/lobos-top-40/:path*",
+      "permanent": true
+    },
+    {
       "source": "/maps/43-ll-map-13-data-heist-double-bind",
       "destination": "/maps/43-ll-map-13-data-harvest-double-bind",
       "permanent": true

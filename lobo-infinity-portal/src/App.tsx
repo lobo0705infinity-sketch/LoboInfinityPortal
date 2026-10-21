@@ -73,11 +73,18 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <ApplicationErrorBoundary componentName="ApplicationShell">
-          <AuthShell />
+          <CanonicalEventRoute />
         </ApplicationErrorBoundary>
       </BrowserRouter>
     </AuthProvider>
   )
+}
+
+function CanonicalEventRoute() {
+  const location = useLocation()
+  const pathname = location.pathname.replace(/^\/event\/event-lobo-s-american-top-40(?=\/|$)/, '/event/lobos-top-40')
+  if (pathname !== location.pathname) return <Navigate replace to={`${pathname}${location.search}${location.hash}`} state={location.state} />
+  return <AuthShell />
 }
 
 function AuthShell() {

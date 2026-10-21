@@ -1,3 +1,4 @@
+import { eventUrlSlug } from './eventBranding'
 import type { PortalIconName } from '../components/PortalIcon'
 
 export type EventCapability =
@@ -173,7 +174,7 @@ export function buildCapabilityNavigationItem(
 ): EventCapabilityNavigationItem {
   const routeTemplate =
     event.routeOverrides?.[capability] ?? defaultCapabilityRoutes[capability]
-  const to = routeTemplate.replaceAll(':eventId', encodeURIComponent(event.id))
+  const to = routeTemplate.replaceAll(':eventId', encodeURIComponent(routeTemplate.startsWith('/event/') ? eventUrlSlug(event.id) : event.id))
 
   return {
     capability,

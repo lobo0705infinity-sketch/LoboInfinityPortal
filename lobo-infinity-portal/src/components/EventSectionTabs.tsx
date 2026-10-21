@@ -1,3 +1,4 @@
+import { eventUrlSlug } from '../config/eventBranding'
 import { useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate, useNavigationType } from 'react-router-dom'
 
@@ -7,6 +8,7 @@ export default function EventSectionTabs({ eventId, items, teamTournament = fals
   teamTournament?: boolean
   className?: string
 }) {
+  const slug = eventUrlSlug(eventId)
   const location = useLocation()
   const navigate = useNavigate()
   const navigationType = useNavigationType()
@@ -22,14 +24,14 @@ export default function EventSectionTabs({ eventId, items, teamTournament = fals
   return <nav ref={navRef} aria-label="Event sections" className={className}>
     {items.filter(item => !(teamTournament && (item === 'teams' || item === 'registration'))).map(item => {
       const to = teamTournament && (item === 'standings' || item === 'results')
-        ? `/event/${eventId}/tournament/${item}`
+        ? `/event/${slug}/tournament/${item}`
         : item === 'rules' && eventId === 'event-lobo-s-american-top-40'
-          ? `/event/${eventId}/rules`
+          ? `/event/${slug}/rules`
           : item === 'rules' ? `/rules?eventId=${encodeURIComponent(eventId)}`
-            : `/event/${eventId}${item === 'overview' ? '' : `/${item}`}`
+            : `/event/${slug}${item === 'overview' ? '' : `/${item}`}`
       const active = `${pathname}${search}` === to || pathname === to
         || (item === 'standings' && pathname === '/standings' && search.includes(eventId))
-        || (item === 'overview' && pathname === `/event/${eventId}/overview`)
+        || (item === 'overview' && pathname === `/event/${slug}/overview`)
       return <Link key={item} to={to} aria-current={active ? 'page' : undefined} className={active ? 'active' : undefined}
         onClick={event => {
           if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return

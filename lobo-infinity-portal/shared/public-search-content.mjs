@@ -3,6 +3,7 @@ import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from './lo
 
 export const SITE_ORIGIN = 'https://lobo-infinity-portal.vercel.app'
 
+const eventSlug = id => id === 'event-lobo-s-american-top-40' ? 'lobos-top-40' : id
 const eventName = event => event.id === 'event-lobo-s-american-top-40' ? "Lobo's Top 40" : text(event.name)
 
 const starterLinks = [
@@ -190,7 +191,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       }
     }
     if (pathname === '/events' && datasets.events) {
-      for (const event of datasets.events) links.push({ label: `${eventName(event)} · ${text(event.status || event.lifecycleStage)}`, href: `/event/${encodeURIComponent(event.id)}` })
+      for (const event of datasets.events) links.push({ label: `${eventName(event)} · ${text(event.status || event.lifecycleStage)}`, href: `/event/${encodeURIComponent(eventSlug(event.id))}` })
     }
     if (pathname === '/factions' && datasets.factions) {
       for (const faction of datasets.factions) links.push({ label: `${text(faction.name)} · ${Number(faction.games) || 0} recorded games`, href: `/factions/${encodeURIComponent(faction.name)}` })
@@ -291,7 +292,8 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     }
   }
 
-  const eventId = /^\/event\/([a-zA-Z0-9_-]+)$/.exec(pathname)?.[1]
+  const routeEventId = /^\/event\/([a-zA-Z0-9_-]+)$/.exec(pathname)?.[1]
+  const eventId = routeEventId === 'lobos-top-40' ? 'event-lobo-s-american-top-40' : routeEventId
   if (eventId) {
     const event = datasets.events?.find(item => item.id === eventId)
     if (datasets.events && !event) return null
@@ -300,7 +302,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     const status = text(event.status || event.lifecycleStage)
     return {
       pathname,
-      canonicalPath: `/event/${encodeURIComponent(eventId)}`,
+      canonicalPath: `/event/${encodeURIComponent(eventSlug(eventId))}`,
       title: `${name} | Infinity N5 Events at Lobo Infinity Portal`,
       description: shorten(`Explore ${name}${status ? ` (${status})` : ''}: event details, schedule, standings, and ${Number(event.completedGames) || 0} recorded games.`, 170),
       heading: name,

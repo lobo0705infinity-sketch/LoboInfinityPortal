@@ -1,3 +1,4 @@
+import { eventUrlSlug } from '../config/eventBranding'
 import { Link } from 'react-router-dom'
 import { eventNavigationOptions } from '../config/eventNavigation'
 
@@ -43,7 +44,7 @@ function EventArchiveCard({
         <span>Pages</span>
         <strong>{event.capabilities.length}</strong>
       </div>
-      <Link className="event-home-primary-action" to={`/event/${encodeURIComponent(event.id)}`}>
+      <Link className="event-home-primary-action" to={`/event/${encodeURIComponent(eventUrlSlug(event.id))}`}>
         Open Event
       </Link>
     </article>

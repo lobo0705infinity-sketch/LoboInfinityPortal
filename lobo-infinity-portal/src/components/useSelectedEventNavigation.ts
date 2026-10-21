@@ -1,3 +1,4 @@
+import { resolveEventId } from '../config/eventBranding'
 import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -62,7 +63,7 @@ function getRouteEventId(pathname: string, search: string) {
 
   const eventMatch = pathname.match(/^\/event\/([^/?#]+)/)
 
-  return eventMatch ? decodeURIComponent(eventMatch[1]) : ''
+  return eventMatch ? resolveEventId(decodeURIComponent(eventMatch[1])) || '' : ''
 }
 
 function resolveKnownEventId(eventId: string) {

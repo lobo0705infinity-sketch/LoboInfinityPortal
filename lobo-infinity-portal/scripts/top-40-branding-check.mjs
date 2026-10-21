@@ -79,3 +79,19 @@ assert.equal(searchPage.heading, newName)
 assert.ok(!searchPage.title.includes(oldName))
 assert.ok(describePublicSearchPage('/events', { events: eventData }).links.some(link => link.label.startsWith(newName)))
 console.log('PASS Top 40 rename preserves event IDs, form questions, responses and destinations; retries safely; rejects duplicate event IDs; normalizes old public snapshots.')
+
+assert.equal(branding.resolveEventId('lobos-top-40'), eventId)
+assert.equal(branding.resolveEventId(eventId), eventId)
+assert.equal(branding.eventUrlSlug(eventId), 'lobos-top-40')
+assert.equal(branding.eventUrlSlug('another-event'), 'another-event')
+const newPath = '/event/lobos-top-40'
+const aliasPage = describePublicSearchPage(newPath, { events: eventData })
+assert.equal(aliasPage.heading, newName)
+assert.equal(aliasPage.canonicalPath, newPath)
+assert.equal(searchPage.canonicalPath, newPath)
+assert.ok(describePublicSearchPage('/events', { events: eventData }).links.some(link => link.href === newPath))
+const redirects = JSON.parse(read('vercel.json')).redirects
+for (const suffix of ['', '/:path*']) {
+  assert.ok(redirects.some(rule => rule.source === `/event/${eventId}${suffix}` && rule.destination === `${newPath}${suffix}` && rule.permanent))
+}
+console.log('PASS Top 40 public URL alias resolves existing data and canonical links; legacy overview and section URLs redirect permanently.')

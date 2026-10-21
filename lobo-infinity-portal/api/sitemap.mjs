@@ -73,7 +73,7 @@ export async function buildSitemap({ fetchObject = fetch } = {}) {
     }
     for (const event of datasets[1]) {
       const id = String(event?.id ?? '').trim()
-      if (/^[a-zA-Z0-9_-]{1,100}$/.test(id)) paths.add(`/event/${id}`)
+      if (/^[a-zA-Z0-9_-]{1,100}$/.test(id)) paths.add(`/event/${id === 'event-lobo-s-american-top-40' ? 'lobos-top-40' : id}`)
     }
     for (const faction of datasets[2]) {
       const name = String(faction?.name ?? '').trim()
