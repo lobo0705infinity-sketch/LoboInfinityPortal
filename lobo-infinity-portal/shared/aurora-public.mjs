@@ -43,15 +43,15 @@ export const AURORA_TERRITORIES = Object.freeze([
     "name": "Crystal Frontier",
     "settlement": "Crystal Reach",
     "vp": 3,
-    "description": "An alien mineral frontier of immense crystals, fractured ground, ruins, and sparse extraction infrastructure.",
+    "description": "A mineral frontier of fractured quarry terraces, blue-grey crystal ravines, extraction works, and scattered research facilities.",
     "layouts": [
-      "Shattered Plains",
-      "Fracture Fields"
+      "Faultline Works",
+      "Rift Research Station"
     ],
     "notes": [
-      "Large crystals must genuinely block Line of Fire.",
-      "Use broken excavation ground and scattered ruins between crystal masses.",
-      "Preserve cross-routes and objective space around the largest formations."
+      "Use substantial quarry faces, workshops, laboratories, and crystal-bearing rock as Line of Fire blockers.",
+      "Keep the diagonal ravine ends inside the board, with several clear bridge crossings and routes around its ends.",
+      "Preserve protected approaches, broad access cuts, and usable midfield objective space."
     ],
     "x": 0.69,
     "y": 0.19,
