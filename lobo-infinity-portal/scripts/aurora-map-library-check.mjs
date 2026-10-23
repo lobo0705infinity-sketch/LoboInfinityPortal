@@ -28,6 +28,18 @@ try {
   const page = await context.newPage(), errors = []
   page.on('pageerror', error => errors.push(error.message))
   await page.route('https://**/*', route => route.fulfill({ status: 503, body: '{}' }))
+  const snapshotId = '20261023T040302Z'
+  const catalog = {missions: ['Frontline', 'Supremacy'].flatMap(name => [6,7,8,9,10,11,12,13,14,15,16].map(season => ({
+    id: `s${season}_${name.toLowerCase()}`, name, current: false, rights: {official: true},
+    sourceCollectionId: `s${season}`, sourceCollectionName: `ITS Season ${season}`,
+    canonicalUrl: `https://infinitygeist.com/mission/s${season}_${name.toLowerCase()}`,
+  })))}
+  await page.route('https://ecwefvuvauaqpary.public.blob.vercel-storage.com/**', route => {
+    const current = route.request().url().endsWith('/current.json')
+    return route.fulfill({contentType:'application/json',body:JSON.stringify(current
+      ? {schemaVersion:1,snapshotId,sourceCutoff:'2026-10-23',basePath:`public-snapshots/${snapshotId}/`}
+      : {schemaVersion:1,snapshotId,data:route.request().url().endsWith('/mission-catalog.json')?catalog:[]})})
+  })
   const origin = `http://127.0.0.1:${server.address().port}`
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto(`${origin}/maps`)
@@ -42,6 +54,8 @@ try {
     await page.locator('#aurora-bag-name').waitFor()
     const frontline = await page.locator('#aurora-bag-name').inputValue()
     assert(bags.some(bag => bag.bagName === frontline))
+    await page.getByRole('link', {name: 'Open Frontline reference · ITS Season 16 ↗', exact:true}).waitFor()
+    assert.equal(await page.locator('a[href*="infinitygeist.com/mission/"]').count(), 1)
     const image = page.locator('.aurora-location-reference img')
     const source = await image.getAttribute('src')
     await access('public' + source)
@@ -53,6 +67,8 @@ try {
     await page.reload()
     assert.equal(await page.getByRole('button', { name: 'Supremacy', exact: true }).getAttribute('aria-pressed'), 'true')
     await page.getByRole('heading', { name: 'Territory owner advantage' }).waitFor()
+    await page.getByRole('link', {name:'Open Supremacy reference · ITS Season 16 ↗',exact:true}).waitFor()
+    assert.equal(await page.locator('a[href*="infinitygeist.com/mission/"]').count(), 1)
   }
   assert.equal(images.size, 24)
   await page.getByRole('button', { name: 'Copy bag name', exact: true }).click()

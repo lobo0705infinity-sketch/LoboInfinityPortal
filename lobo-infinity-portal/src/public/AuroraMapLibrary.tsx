@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { auroraMapRegions, auroraMapLocationBySlug, AURORA_MISSIONS, type AuroraMission } from '../config/auroraMapCatalog'
 import { LOBO_WORKSHOP_URL } from '../../shared/lobo-workshop-maps.mjs'
 import { AURORA_TERRAIN_GUIDE_URL } from '../config/auroraTerrainReferences'
-import { resolveMissionGeistNavigation } from '../config/missionGeistNavigation'
+import { resolveAuroraMissionReference } from '../config/missionGeistNavigation'
 import type { MissionGeistCatalog } from '../services/publicSnapshot'
 import { useSnapshotData } from './useSnapshotData'
 import MapCollectionNav from './MapCollectionNav'
@@ -48,9 +48,7 @@ function LocationDetail({ slug }: { slug: string }) {
   const mission: AuroraMission = params.get('mission') === 'Supremacy' ? 'Supremacy' : 'Frontline'
   const setup = location.setups.find(item => item.mission === mission)!
   const { region, image } = location
-  const references = catalog.data ? resolveMissionGeistNavigation({ mission }, catalog.data.missions).records.filter(record => {
-    try { const url = new URL(record.canonicalUrl); return url.protocol === 'https:' && url.hostname === 'infinitygeist.com' } catch { return false }
-  }) : []
+  const reference = catalog.data ? resolveAuroraMissionReference(mission, catalog.data.missions) : undefined
   async function copyBag() {
     try { await navigator.clipboard.writeText(setup.bagName); setCopyStatus('Bag name copied.') }
     catch { setCopyStatus('Select the bag name below and copy it manually.') }
@@ -62,8 +60,9 @@ function LocationDetail({ slug }: { slug: string }) {
     <section className="lobo-maps-controls" aria-labelledby="aurora-mission-title"><h2 id="aurora-mission-title">Choose the mission</h2><div className="lobo-maps-filters" role="group" aria-label="Mission">{AURORA_MISSIONS.map(option => <button key={option} type="button" aria-pressed={mission === option} onClick={() => { setParams({ mission: option }); setCopyStatus('') }}>{option}</button>)}</div>
       <h3>{mission === 'Frontline' ? 'Claim the Frontier' : 'Colonial Supremacy'} · {mission}</h3>
       <p>{mission === 'Frontline' ? 'Fight for control of the three scoring bands across the battlefield.' : 'Fight for control of the battlefield quadrants and their consoles.'} Use the mission’s current deployment, objectives, and scoring rules.</p>
-      {references.map(record => <a key={record.id} href={record.canonicalUrl} target="_blank" rel="noopener noreferrer">Open {record.name} mission rules &amp; deployment diagram ↗</a>)}
-      {!references.length ? <p className="lobo-maps-source-note">{catalog.error ? 'Mission references are currently unavailable.' : catalog.data ? 'Mission reference is not yet available in the public catalogue.' : 'Loading mission references…'} Check the mission sheet before deployment.</p> : null}
+      {reference ? <a href={reference.canonicalUrl} target="_blank" rel="noopener noreferrer">Open {reference.name} reference · {reference.sourceCollectionName} ↗</a> : null}
+      {reference && !reference.current ? <p className="lobo-maps-source-note">Archived mission reference. Use the campaign briefing for current campaign rules.</p> : null}
+      {!reference ? <p className="lobo-maps-source-note">{catalog.error ? 'Mission references are currently unavailable.' : catalog.data ? 'Mission reference is not yet available in the public catalogue.' : 'Loading mission references…'} Check the mission sheet before deployment.</p> : null}
       <label htmlFor="aurora-bag-name">Exact Workshop bag name</label><input id="aurora-bag-name" readOnly value={setup.bagName} onFocus={event => event.target.select()} />
       <div className="lobo-maps-hero-actions"><button type="button" onClick={copyBag}>Copy bag name</button><a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open Steam Workshop ↗</a></div><p role="status">{copyStatus}</p>
       <p className="lobo-maps-source-note">Find this bag in the Lobo Workshop and drop it onto “Place bags here” to deploy. Use “Clear table” to remove the deployed map.</p>

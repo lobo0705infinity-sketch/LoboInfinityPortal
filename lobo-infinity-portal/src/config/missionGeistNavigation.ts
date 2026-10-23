@@ -32,3 +32,17 @@ export function resolveMissionGeistNavigation(
   }
   return { kind: records.length === 0 ? 'unmatched' : records.length === 1 ? 'unique' : 'ambiguous', records }
 }
+
+// Campaign mission names also exist in older ITS seasons. Show one official
+// reference, prefer current records, and retain the edition for an honest label.
+export function resolveAuroraMissionReference(mission: string, catalog: MissionGeistCatalogMission[]) {
+  const candidates = resolveMissionGeistNavigation({ mission }, catalog).records.filter(record => {
+    try {
+      const url = new URL(record.canonicalUrl)
+      return record.rights.official === true && url.protocol === 'https:' && url.hostname === 'infinitygeist.com'
+    } catch { return false }
+  })
+  const season = (record: MissionGeistCatalogMission) => Number(/^s(\d+)$/.exec(record.sourceCollectionId)?.[1] ?? -1)
+  return candidates.sort((left, right) => Number(right.current) - Number(left.current)
+    || season(right) - season(left) || left.id.localeCompare(right.id))[0]
+}
