@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
+import { auroraMapLocations } from '../shared/aurora-map-catalog.mjs'
 import { buildSitemap } from '../api/sitemap.mjs'
 
 const { redirects, rewrites } = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
@@ -21,12 +23,15 @@ const { xml, snapshotAvailable } = await buildSitemap({ fetchObject })
 
 assert.equal(snapshotAvailable, true)
 assert.match(xml, /^<\?xml version="1.0" encoding="UTF-8"\?>/)
-for (const path of ['/', '/little-helper', '/army-intelligence', '/games/117', '/maps', '/maps/critical-intervention-2', '/maps/the-dig-2', '/event/event-current-league', '/factions/Yu%20Jing', '/missions/The%20Dig']) {
+for (const path of ['/', '/little-helper', '/army-intelligence', '/games/117', '/maps', '/maps/critical-intervention-2', '/maps/the-dig-2-satellite', '/event/event-current-league', '/factions/Yu%20Jing', '/missions/The%20Dig']) {
   assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app${path}</loc>`), path)
 }
 assert.doesNotMatch(xml, /commissioner/)
 assert.doesNotMatch(xml, /\/hall-of-fame|\/rivalries/)
-assert.equal((xml.match(/<loc>https:\/\/lobo-infinity-portal.vercel.app\//g) ?? []).length, 64)
+for (const map of loboWorkshopMaps) assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app/maps/${map.slug}</loc>`), map.slug)
+for (const location of auroraMapLocations) assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app/maps/${location.slug}</loc>`), location.slug)
+const locations = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1])
+assert.equal(locations.length, new Set(locations).size, 'Sitemap must not duplicate canonical URLs')
 
 const fallback = await buildSitemap({ fetchObject: async () => ({ ok: false, status: 503 }) })
 assert.equal(fallback.snapshotAvailable, false)

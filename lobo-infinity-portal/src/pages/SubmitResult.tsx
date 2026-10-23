@@ -1,4 +1,7 @@
 import CompactArtwork from '../components/CompactArtwork'
+import { useSnapshotData } from '../public/useSnapshotData'
+import type { PublicEvent } from '../public/snapshotTypes'
+import { top40ReportingAvailability } from '../config/top40Reporting'
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -72,6 +75,8 @@ type PickerOption = {
 }
 
 function SubmitResult() {
+  const events = useSnapshotData<PublicEvent[]>('events')
+  const top40Availability = top40ReportingAvailability(events.data?.find(event => event.id === 'event-lobo-s-american-top-40'))
   return (
     <main className="portal-shell submit-game-page">
       <CompactArtwork title="Submit Game" eyebrow="Log your battles. Fuel the league." src="/src/assets/game-submission-hero.png"/>
@@ -100,6 +105,7 @@ function SubmitResult() {
           description="Submit a Top 40 tournament game."
           label="Lobo's Top 40"
           url={GOOGLE_FORM_URLS.top40}
+          unavailableMessage={top40Availability.open ? undefined : top40Availability.message}
         />
       </section>
     </main>
@@ -111,25 +117,27 @@ function GoogleFormLauncher({
   description,
   label,
   url,
+  unavailableMessage,
 }: {
   buttonLabel: string
   description: string
   label: string
   url: string
+  unavailableMessage?: string
 }) {
   return (
     <article className="panel operations-panel submit-game-form-card">
       <p className="eyebrow">Google Form</p>
       <h2>{label}</h2>
       <p>{description}</p>
-      <a
+      {unavailableMessage ? <><p role="status">{unavailableMessage}</p><button className="submit-match-button" type="button" disabled>Reporting not open</button></> : <a
         className="submit-match-button"
         href={url}
         rel="noopener noreferrer"
         target="_blank"
       >
         {buttonLabel}
-      </a>
+      </a>}
     </article>
   )
 }

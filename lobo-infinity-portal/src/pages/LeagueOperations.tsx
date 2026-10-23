@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import Skeleton from '../components/Skeleton'
 import type { LeagueOperationsData } from '../services/api'
 import { publicLeagueWorkspace } from '../services/publicLeagueWorkspaceProjection'
-import { resolveLoboWorkshopMapLabel } from '../../shared/lobo-workshop-maps.mjs'
+import { resolveLoboWorkshopMissionMap } from '../../shared/lobo-workshop-maps.mjs'
 
-function AssignedMap({ label }: { label: string }) {
-  const map = resolveLoboWorkshopMapLabel(label)
+function AssignedMap({ label, mission }: { label: string; mission: string }) {
+  const map = resolveLoboWorkshopMissionMap(label, mission)
   return map ? <a href={`/maps/${map.slug}`}>{map.workshopBagName}</a> : <>{label || 'Map not configured'}</>
 }
 
@@ -88,11 +88,11 @@ function LeagueOperations() {
               <div className="operations-stack">
                 <div className="operations-record">
                   <span>Map A</span>
-                  <strong><AssignedMap label={mission.maps[0]} /></strong>
+                  <strong><AssignedMap label={mission.maps[0]} mission={mission.mission} /></strong>
                 </div>
                 <div className="operations-record">
                   <span>Map B</span>
-                  <strong><AssignedMap label={mission.maps[1]} /></strong>
+                  <strong><AssignedMap label={mission.maps[1]} mission={mission.mission} /></strong>
                 </div>
               </div>
             </article>

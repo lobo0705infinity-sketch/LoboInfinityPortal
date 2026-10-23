@@ -1,5 +1,7 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { useSnapshotData } from '../public/useSnapshotData'
+import type { PublicPlayer } from '../public/snapshotTypes'
 import { useAuth } from '../auth/AuthContext'
 import {
   getArmiesForParent,
@@ -44,7 +46,10 @@ const initialSubmission: ArmyListSubmission = {
 
 function SubmitArmyList() {
   const auth = useAuth()
-  const [players, setPlayers] = useState<string[]>([])
+  const playerState = useSnapshotData<PublicPlayer[]>('players')
+  const players = [...new Map((playerState.data ?? []).filter(player => player.player?.trim()).map(player => [player.player, player])).values()]
+    .sort((a, b) => (a.displayName || a.player).localeCompare(b.displayName || b.player))
+  const playerLabels = Object.fromEntries(players.map(player => [player.player, player.displayName || player.player]))
   const [submission, setSubmission] =
     useState<ArmyListSubmission>(initialSubmission)
   const [state, setState] = useState<SubmissionState>({
@@ -55,16 +60,6 @@ function SubmitArmyList() {
   const canOverrideValidation =
     auth.hasPermission('viewOperations') ||
     auth.isAtLeastRole('Assistant Commissioner')
-
-  useEffect(() => {
-    const controller = new AbortController()
-    apiClient.getPlayers({ signal: controller.signal }).then((divisions) => {
-      setPlayers(Array.from(new Set(divisions.flatMap((division) =>
-        division.standings.map((standing) => standing.player).filter(Boolean),
-      ))).sort((left, right) => left.localeCompare(right)))
-    }).catch(() => undefined)
-    return () => controller.abort()
-  }, [])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -144,11 +139,16 @@ function SubmitArmyList() {
         </Link>
       </section>
 
+      {!playerState.data ? <section className="panel" role={playerState.error ? 'alert' : 'status'}>
+        <p>{playerState.error ? 'The player directory could not be loaded. Please retry before submitting.' : 'Loading the player directory…'}</p>
+        {playerState.error ? <button type="button" onClick={playerState.retry}>Retry player directory</button> : null}
+      </section> : null}
       <form className="army-list-form panel" onSubmit={(event) => void handleSubmit(event)}>
         <SelectField
           label="Your Player"
           onChange={(value) => updateField('player', value)}
-          options={players}
+          options={players.map(player => player.player)}
+          labels={playerLabels}
           placeholder="Select player"
           required
           value={submission.player}
@@ -241,7 +241,7 @@ function SubmitArmyList() {
 
         <div className="army-list-form-actions">
           <button
-            disabled={state.status === 'submitting'}
+            disabled={state.status === 'submitting' || !playerState.data}
             type="submit"
           >
             {state.status === 'submitting'
@@ -336,6 +336,7 @@ function SelectField({
   label,
   onChange,
   options,
+  labels = {},
   placeholder = 'Select mission',
   required = false,
   value,
@@ -343,6 +344,7 @@ function SelectField({
   label: string
   onChange: (value: string) => void
   options: readonly string[]
+  labels?: Record<string, string>
   placeholder?: string
   required?: boolean
   value: string
@@ -358,7 +360,7 @@ function SelectField({
         <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option} value={option}>
-            {option}
+            {labels[option] || option}
           </option>
         ))}
       </select>
