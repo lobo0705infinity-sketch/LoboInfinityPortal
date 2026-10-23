@@ -8,7 +8,7 @@ import { emptyAuroraState } from '../../shared/aurora-public-state.mjs'
 import { useAuroraPublication } from './useAuroraPublication'
 import type { AuroraPublicState } from './auroraTypes'
 import { useSnapshotData } from '../public/useSnapshotData'
-import { resolveMissionGeistNavigation } from '../config/missionGeistNavigation'
+import { resolveAuroraMissionReference } from '../config/missionGeistNavigation'
 import type { MissionGeistCatalog } from '../services/publicSnapshot'
 import AuroraRegistration from './AuroraRegistration'
 import AuroraGames from './AuroraGames'
@@ -211,6 +211,6 @@ function CampaignRules() {
 
 
 function MissionReference({ mission, catalog }: { mission: string; catalog?: MissionGeistCatalog }) {
-  const records = catalog ? resolveMissionGeistNavigation({ mission }, catalog.missions).records.filter(record => { try { const url = new URL(record.canonicalUrl); return url.protocol === "https:" && url.hostname === "infinitygeist.com" } catch { return false } }) : []
-  return records.length ? <div>{records.map(record => <p key={record.id}><a href={record.canonicalUrl} target="_blank" rel="noopener noreferrer">View {record.name} on Mission Geist ↗</a></p>)}</div> : <p className="aurora-muted">{catalog ? "Mission reference not yet available in the public catalog." : "Loading mission references…"}</p>
+  const reference = catalog ? resolveAuroraMissionReference(mission, catalog.missions) : undefined
+  return reference ? <div><p><a href={reference.canonicalUrl} target="_blank" rel="noopener noreferrer">View {reference.name} · {reference.sourceCollectionName} on Mission Geist ↗</a></p>{!reference.current ? <p className="aurora-muted">Archived mission reference. Use the campaign briefing for current campaign rules.</p> : null}</div> : <p className="aurora-muted">{catalog ? "Mission reference not yet available in the public catalog." : "Loading mission references…"}</p>
 }
