@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
+import { topLevelItems, authenticatedTopLevelItems } from '../src/components/sidebarNavigation.ts'
 
 const read = (path) => fs.readFileSync(path, 'utf8')
 const navigation = read('src/components/sidebarNavigation.ts')
-const sidebar = read('src/components/Sidebar.tsx')
 const mobileMenu = read('src/pages/MobileMenu.tsx')
 const app = read('src/App.tsx')
 const leagueOperations = read('src/pages/LeagueOperations.tsx')
@@ -19,7 +19,8 @@ const authenticatedItems = navigation.slice(authenticatedStart, communityStart)
 assert.match(publicItems, /label: 'Mission & Map'[\s\S]*?to: '\/league-operations'/)
 assert.doesNotMatch(authenticatedItems, /Mission & Map|league-operations/)
 assert.equal((navigation.match(/label: 'Mission & Map'/g) ?? []).length, 1)
-assert.match(sidebar, /topLevelItems\.map/)
+assert.equal(topLevelItems.filter(item => item.to === '/league-operations' && item.label === 'Mission & Map').length, 1)
+assert.equal(authenticatedTopLevelItems.some(item => item.to === '/league-operations'), false)
 assert.match(mobileMenu, /\.\.\.topLevelItems/)
 assert.match(app, /<Route path="\/league-operations"[\s\S]*?<LeagueOperations/)
 assert.doesNotMatch(leagueOperations, /useAuth|requireApiPermission|saveLeagueOperations|updateLeagueOperations/)

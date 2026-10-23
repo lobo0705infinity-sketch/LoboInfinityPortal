@@ -39,3 +39,5 @@ export type LoboWorkshopMapSection = {
   layouts: { layoutKey: number; name: string; saves: LoboWorkshopMap[] }[]
 }
 export const loboWorkshopMapSections: LoboWorkshopMapSection[]
+
+export const resolveLoboWorkshopMissionMap: (label: string, mission: string) => LoboWorkshopMap | undefined

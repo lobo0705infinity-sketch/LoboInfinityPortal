@@ -1,6 +1,7 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises'
 import {createHash} from 'node:crypto'
 import sharp from 'sharp'
+import {cachedBytes} from './build-artifact-cache.mjs'
 const dimensions=await readFile('src/config/artworkDimensions.ts','utf8')
 const imported=[...dimensions.matchAll(/import (artwork\d+) from '([^']+)'/g)].map(m=>({key:`[${m[1]}]`,source:`src/${m[2].replace('../','')}`}))
 const publicFiles=[...dimensions.matchAll(/'(\/assets\/[^']+)':/g)].map(m=>({key:JSON.stringify(m[1]),source:`public${m[1]}`}))
@@ -8,13 +9,16 @@ const extra=['current-league-overview-hero.png','team-tournament-overview-hero.p
 const extraImports=extra.map((item,index)=>`import extraArtwork${index} from '../assets/${item.source.split("/").at(-1)}'`).join("\n")
 const imports=[...dimensions.matchAll(/import artwork\d+ from '[^']+'/g)].map(m=>m[0]).join('\n')+'\n'+extraImports
 await mkdir('public/assets/responsive-artwork',{recursive:true})
-let original=0,optimized=0;const entries=[];const cssMap={}
+let original=0,optimized=0,cacheHits=0,generated=0;const entries=[];const cssMap={}
 for(const item of [...imported,...publicFiles,...extra]){
  const bytes=await readFile(item.source),hash=createHash('sha256').update(bytes).digest('hex').slice(0,10)
  const variants=[];original+=bytes.length
  for(const width of [640,1024,1600]){
   const path=`/assets/responsive-artwork/${hash}-${width}.webp`
-  const output=await sharp(bytes).resize({width,withoutEnlargement:true}).webp({quality:82,effort:5}).toBuffer()
+  const cacheKey=createHash('sha256').update(bytes).update(JSON.stringify({width,quality:82,effort:5,withoutEnlargement:true,sharp:sharp.versions.sharp,vips:sharp.versions.vips})).digest('hex')
+  const cached=await cachedBytes('responsive-artwork',cacheKey,()=>sharp(bytes).resize({width,withoutEnlargement:true}).webp({quality:82,effort:5}).toBuffer())
+  const output=cached.bytes
+  if(cached.cached)cacheHits++;else generated++
   await writeFile(`public${path}`,output);variants.push(path);if(width===1024)optimized+=output.length
  }
  if(extra.includes(item))entries.push(`[extraArtwork${extra.indexOf(item)}]: {src:${JSON.stringify(variants[2])},compact:${JSON.stringify(variants[0])},srcSet:${JSON.stringify(variants.map((p,i)=>`${p} ${[640,1024,1600][i]}w`).join(', '))}}`)
@@ -25,4 +29,4 @@ await writeFile('src/config/responsiveArtwork.ts',`${imports}\nconst artwork:Rec
 for(const file of ['src/public/SnapshotPublicApp.css','src/pages/SubmitResult.css']){
  let css=await readFile(file,'utf8');for(const [old,path] of Object.entries(cssMap))css=css.replaceAll(old,path);await writeFile(file,css)
 }
-console.log(`Responsive artwork: ${entries.length} sources, 1024px bytes ${optimized} versus ${original} original`)
+console.log(`Responsive artwork: ${cacheHits} cached / ${generated} generated; ${entries.length} sources, 1024px bytes ${optimized} versus ${original} original`)
