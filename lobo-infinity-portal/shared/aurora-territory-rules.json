@@ -1,0 +1,74 @@
+{
+  "Nova Prospect": {
+    "title": "Colonial Communications Grid",
+    "effect": "Each player begins the game with one additional Command Token.",
+    "details": "Use normal Command Token rules and restrictions.",
+    "owner": "Once per game, perform one otherwise legal Command Token use without spending the token."
+  },
+  "Korin Range": {
+    "title": "Mountain Country",
+    "effect": "All battlefield terrain is Mountain Difficult Terrain except trails, clearings and buildings. Apply the normal N5 Difficult Terrain rules in affected areas.",
+    "details": "Identify existing trails, clearings and building boundaries together before deployment. These areas use their normal movement rules. Terrain (Mountain) and Terrain (Total) function normally. No zone templates are placed.",
+    "owner": "Before deployment, choose three friendly models. They gain Terrain (Mountain) for the game."
+  },
+  "Crystal Frontier": {
+    "title": "Electromagnetic Interference",
+    "effect": "All Hacking attempts suffer -3 WIP for the entire game, in both Active and Reactive Turns. Apply to every WIP Roll made to perform a Hacking Program, whether used directly or through a Repeater.",
+    "details": "The penalty applies across the whole table and combines with other applicable modifiers. It does not reduce Hacking Area or disable Repeaters. Reset is not a Hacking attempt and is unaffected. No zone templates are placed.",
+    "owner": "Once per game, ignore this territory's -3 Hacking penalty for one Order."
+  },
+  "Echo Shores": {
+    "title": "Smuggler Supply Caches",
+    "effect": "Place four Supply Caches, two per player, before trooper deployment. Alternate placing one cache at a time, starting with the player who chose Deployment. All caches must be outside both Deployment Zones; no other placement restrictions apply.",
+    "details": "Each cache functions as a Panoply. A non-Null trooper in contact with a cache may spend a Short Skill to make a WIP Roll. Success allows a roll on the Booty Table. Apply normal Panoply rules. Either player may use any cache.",
+    "owner": "Once per game, reroll one failed WIP Roll to use a cache. Accept the new result."
+  },
+  "Harmony Province": {
+    "title": "Security Surveillance",
+    "effect": "All Discover Rolls receive +3 WIP, combined with other applicable modifiers. Normal Discover requirements still apply.",
+    "details": "This does not automatically reveal Markers or Hidden Deployment. It changes neither Sensor nor attacks and does not grant additional Discover attempts.",
+    "owner": "Once per game, reroll one failed Discover Roll. Accept the new result."
+  },
+  "Verde Wilds": {
+    "title": "Closed Canopy",
+    "effect": "No Flyers: profiles with the Aerial Special Skill cannot be included in an army used here. Prepare a legal replacement list before play. No visibility over 24 inches: no Line of Fire exists between points more than 24 inches apart. At exactly 24 inches, normal Line of Fire rules apply.",
+    "details": "The cap applies to all elevations, in both turns, for the entire game. No skill or equipment bypasses it, except the owner advantage below. Skills that do not require Line of Fire remain usable normally. This does not itself ban Combat Jump, Parachutist or Super-Jump on non-Aerial profiles.",
+    "owner": "Once per game, one friendly trooper may draw LoF up to 32 inches instead of 24 inches for one Order. An enemy targeted through this exception may draw reciprocal LoF to that trooper for that Order."
+  },
+  "Azure Coast": {
+    "title": "Port Maintenance Network",
+    "effect": "Before deployment, each player places one Maintenance Access marker on their own half of the table, at least 4 inches from their own Deployment Zone. The player who chose Deployment places first.",
+    "details": "A non-Null trooper touching either marker may spend a Short Skill to repair itself. Either make a WIP Roll using its own WIP, or spend one Command Token for automatic success, choosing before rolling. Engineer is not required. On success, remove one Wound from a trooper with STR, or cancel its states that can normally be cancelled by Engineer. Normal Engineer failure consequences and declaration restrictions apply; no VITA healing. There is no limit on uses and markers remain. Markers have no movement footprint, Silhouette or Cover; use the marked point for contact. They score no OP and cannot be attacked.",
+    "owner": "Once per game, automatically succeed at one maintenance use without spending a Command Token. The Short Skill and normal eligibility requirements still apply."
+  },
+  "Ember Highlands": {
+    "title": "Heat Shimmer",
+    "effect": "All models at ground level have Albedo (-3). This applies throughout the game in both Active and Reactive Turns.",
+    "details": "Apply normal Albedo (-3) rules. The benefit applies while the model is touching table ground level; it does not apply on raised platforms, bridges, rooftops or natural ledges. Agree which surfaces are elevated before deployment.",
+    "owner": "Once per game, one friendly trooper retains this territory's Albedo (-3) benefit while elevated for one Order."
+  },
+  "Sulfur Basin": {
+    "title": "Caustic Fallout",
+    "effect": "Attacks using an Impact Template gain Continuous Damage. All other weapon properties remain unchanged.",
+    "details": "Apply the normal Continuous Damage rules. No pools, additional environmental rolls or zone templates are required.",
+    "owner": "Once per game, one friendly trooper ignores all Continuous Damage for one Order, including Continuous Damage native to a weapon."
+  },
+  "Frostreach Wastes": {
+    "title": "Drifting Snowstorms",
+    "effect": "Before deployment, place three circular templates with their centers on the table's centerline: one at its midpoint and the others 12 inches to either side. At the beginning of each Player Turn, roll a d20 separately for each template. Move it 6 inches in the direction indicated by its numbered edge, keeping its orientation fixed. Remove a template when its center crosses the battlefield edge.",
+    "details": "Each template defines a Difficult Terrain Zone. BS Attacks whose Line of Fire passes through any part of a storm suffer -3, including attacks originating or ending inside it. Overlapping storms do not multiply this penalty.",
+    "owner": "Once per game, reroll or negate one storm's direction roll before moving it. If rerolling, accept the new result. If negating, that storm remains stationary for that movement."
+  },
+  "Northward Expanse": {
+    "title": "Expedition Medical and Repair Support",
+    "effect": "All WIP Rolls made to use Doctor or Engineer receive +3 WIP throughout the game. Combine this bonus with other applicable modifiers.",
+    "details": "Normal requirements, eligible targets and failure consequences still apply. This grants neither skill to a trooper that lacks it. It does not modify MediKit or GizmoKit rolls, Regeneration, Reset or mission-objective tests. No markers or zones are required.",
+    "owner": "Once per game, reroll one failed Doctor or Engineer Roll before applying its failure consequences. Accept the new result."
+  },
+  "Iron Corridor": {
+    "title": "Heavy Industrial Cover",
+    "effect": "When a trooper receives the ARM bonus from Partial Cover against an attack, increase that ARM bonus by 1. This applies throughout the game to both players.",
+    "details": "This grants no extra BS penalty and no BTS bonus. If an attack ignores the ARM benefit of Cover, or the trooper cannot benefit from it, this rule grants nothing. It does not create Cover where none exists.",
+    "owner": "Once per game, one friendly model receiving Partial Cover gains another +3 ARM, in addition to the territory bonus, for one Order. Declare this advantage before the model rolls its ARM Saving Roll."
+  }
+}

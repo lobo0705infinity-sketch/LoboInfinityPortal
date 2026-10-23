@@ -75,6 +75,7 @@
     "test:public-search-pages": "node scripts/public-search-page-check.mjs",
     "test:featured-report": "node scripts/featured-report-control-check.mjs",
     "test:sponsor-backlink": "node scripts/sponsor-backlink-check.mjs",
+    "test:aurora-map-library": "node scripts/aurora-map-library-check.mjs",
     "test:mission-map-navigation": "node scripts/mission-map-navigation-check.mjs",
     "test:page-analytics": "node --experimental-strip-types scripts/page-analytics-check.mts",
     "api:init-order": "node scripts/api-init-order-check.mjs",

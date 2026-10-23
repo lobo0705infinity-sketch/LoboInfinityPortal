@@ -5,6 +5,8 @@ import { buildMapRatings, mapRatingLabel, type MapRating } from './mapRatings'
 import type { PublicGame } from './snapshotTypes'
 import { useSnapshotData } from './useSnapshotData'
 import './MapLibrary.css'
+import AuroraMapLibrary from './AuroraMapLibrary'
+import MapCollectionNav from './MapCollectionNav'
 
 type WorkshopMap = (typeof loboWorkshopMaps)[number]
 
@@ -17,6 +19,11 @@ const sectionForSave = (map: WorkshopMap) => loboWorkshopMapSections.find((secti
 
 export default function MapLibrary() {
   const { slug } = useParams()
+  if (slug === 'aurora-vii' || slug?.startsWith('aurora-vii-')) return <AuroraMapLibrary slug={slug} />
+  return <ITSMapLibrary slug={slug} />
+}
+
+function ITSMapLibrary({ slug }: { slug?: string }) {
   const gameState = useSnapshotData<PublicGame[]>('games')
   const games = gameState.data ?? []
   const ratings = buildMapRatings(games)
@@ -47,6 +54,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
   const featured = loboWorkshopMaps.find((map) => map.slug === 'critical-intervention-2') ?? loboWorkshopMaps[0]
 
   return <main className="portal-shell lobo-maps-page" data-page="map-library">
+    <MapCollectionNav />
     <header className="lobo-maps-hero">
       <div className="lobo-maps-hero-copy">
         <p className="eyebrow">Tabletop Simulator · Lobo Workshop</p>

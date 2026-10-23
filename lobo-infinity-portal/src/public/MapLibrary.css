@@ -98,3 +98,25 @@
 
 /* Square previews keep the full board visible while trimming peripheral grass. */
 .lobo-map-card[data-preview="tts"] img { height: auto; aspect-ratio: 1; object-fit: cover; }
+
+.lobo-map-section-nav a[aria-current="page"] { border-color: #8fe3f6; background: #214455; }
+.aurora-region-card h2 { margin: .2rem 0; font-size: 1.4rem; }
+.aurora-region-card p { margin: .2rem 0 .6rem; line-height: 1.5; color: #c1cad5; }
+.aurora-location-links { display: grid; gap: .5rem; margin-block: .6rem; }
+.aurora-location-links a { display: grid; gap: .3rem; padding: .8rem; background: #142b39; border: 1px solid #375363; border-radius: 8px; text-decoration: none; min-height: 44px; }
+.aurora-location-links span { font-size: .8rem; color: #8fe3f6; }
+.aurora-location-reference { margin: 0; padding: .8rem; border: 1px solid #29434e; border-radius: 12px; background: #0c1720; }
+.aurora-location-reference img { display: block; width: 100%; max-height: 320px; object-fit: contain; }
+.aurora-location-reference figcaption { margin-top: .6rem; font-size: .8rem; color: #a8c0cc; text-align: center; }
+.aurora-map-library .lobo-maps-controls p { line-height: 1.6; margin: .3rem 0; }
+.aurora-map-library .lobo-maps-controls h2, .aurora-map-library .lobo-maps-controls h3 { margin: .5rem 0; }
+.aurora-map-library #aurora-bag-name { max-width: none; min-width: 0; font-size: .9rem; }
+.aurora-map-library .lobo-maps-hero-actions { margin-top: .5rem; }
+.aurora-map-library .lobo-maps-hero-actions button { min-height: 44px; padding: .65rem .9rem; border-radius: 9px; border: 1px solid #8fe3f6; background: #8fe3f6; color: #06131d; font: inherit; font-weight: 800; cursor: pointer; }
+.aurora-map-library a:focus-visible, .aurora-map-library button:focus-visible { outline: 2px solid #f2c35a; outline-offset: 3px; }
+@media(max-width:600px) { .aurora-location-reference img { max-height: 240px; } .aurora-map-library .lobo-map-detail-nav { flex-wrap: wrap; } }
+.aurora-map-library > .lobo-maps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.aurora-region-card > a { display: block; }
+.aurora-region-card img { height: 160px; object-fit: cover; }
+@media(max-width:1200px) { .aurora-map-library > .lobo-maps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(max-width:650px) { .aurora-map-library > .lobo-maps-grid { grid-template-columns: minmax(0, 1fr); } }
