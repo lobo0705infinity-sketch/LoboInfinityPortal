@@ -1,0 +1,338 @@
+[
+  {
+    "region": "Azure Coast",
+    "location": "Coastal Access",
+    "mission": "Frontline",
+    "bagName": "SET_Azure Coast · Coastal Access · Frontline",
+    "guid": "acc001"
+  },
+  {
+    "region": "Azure Coast",
+    "location": "Coastal Access",
+    "mission": "Supremacy",
+    "bagName": "SET_Azure Coast · Coastal Access · Supremacy",
+    "guid": "acc002"
+  },
+  {
+    "region": "Azure Coast",
+    "location": "Tidal Infrastructure",
+    "mission": "Frontline",
+    "bagName": "SET_Azure Coast · Tidal Infrastructure · Frontline",
+    "guid": "ad7001"
+  },
+  {
+    "region": "Azure Coast",
+    "location": "Tidal Infrastructure",
+    "mission": "Supremacy",
+    "bagName": "SET_Azure Coast · Tidal Infrastructure · Supremacy",
+    "guid": "ad7002"
+  },
+  {
+    "region": "Crystal Frontier",
+    "location": "Faultline Works",
+    "mission": "Frontline",
+    "bagName": "SET_Crystal Frontier · Faultline Works · Frontline",
+    "guid": "b821cb"
+  },
+  {
+    "region": "Crystal Frontier",
+    "location": "Faultline Works",
+    "mission": "Supremacy",
+    "bagName": "SET_Crystal Frontier · Faultline Works · Supremacy",
+    "guid": "688a5f"
+  },
+  {
+    "region": "Crystal Frontier",
+    "location": "Rift Research Station",
+    "mission": "Frontline",
+    "bagName": "SET_Crystal Frontier · Rift Research Station · Frontline",
+    "guid": "84d955"
+  },
+  {
+    "region": "Crystal Frontier",
+    "location": "Rift Research Station",
+    "mission": "Supremacy",
+    "bagName": "SET_Crystal Frontier · Rift Research Station · Supremacy",
+    "guid": "90a405"
+  },
+  {
+    "region": "Echo Shores",
+    "location": "Dockside Operations",
+    "mission": "Frontline",
+    "bagName": "SET_Echo Shores · Dockside Operations · Frontline",
+    "guid": "87c15b"
+  },
+  {
+    "region": "Echo Shores",
+    "location": "Dockside Operations",
+    "mission": "Supremacy",
+    "bagName": "SET_Echo Shores · Dockside Operations · Supremacy",
+    "guid": "07a508"
+  },
+  {
+    "region": "Echo Shores",
+    "location": "Freeport Echo Market District",
+    "mission": "Frontline",
+    "bagName": "SET_Echo Shores · Freeport Echo Market District · Frontline",
+    "guid": "d5bae0"
+  },
+  {
+    "region": "Echo Shores",
+    "location": "Freeport Echo Market District",
+    "mission": "Supremacy",
+    "bagName": "SET_Echo Shores · Freeport Echo Market District · Supremacy",
+    "guid": "487169"
+  },
+  {
+    "region": "Ember Highlands",
+    "location": "Geothermal Badlands",
+    "mission": "Frontline",
+    "bagName": "SET_Ember Highlands · Geothermal Badlands · Frontline",
+    "guid": "fa7d83"
+  },
+  {
+    "region": "Ember Highlands",
+    "location": "Geothermal Badlands",
+    "mission": "Supremacy",
+    "bagName": "SET_Ember Highlands · Geothermal Badlands · Supremacy",
+    "guid": "2baa68"
+  },
+  {
+    "region": "Ember Highlands",
+    "location": "Red Mesa Settlement",
+    "mission": "Frontline",
+    "bagName": "SET_Ember Highlands · Red Mesa Settlement · Frontline",
+    "guid": "d8e059"
+  },
+  {
+    "region": "Ember Highlands",
+    "location": "Red Mesa Settlement",
+    "mission": "Supremacy",
+    "bagName": "SET_Ember Highlands · Red Mesa Settlement · Supremacy",
+    "guid": "818ba8"
+  },
+  {
+    "region": "Frostreach Wastes",
+    "location": "Frosthold Wastes",
+    "mission": "Frontline",
+    "bagName": "SET_Frostreach Wastes · Frosthold Wastes · Frontline",
+    "guid": "da38f7"
+  },
+  {
+    "region": "Frostreach Wastes",
+    "location": "Frosthold Wastes",
+    "mission": "Supremacy",
+    "bagName": "SET_Frostreach Wastes · Frosthold Wastes · Supremacy",
+    "guid": "efb12f"
+  },
+  {
+    "region": "Frostreach Wastes",
+    "location": "Polar Expedition Zone",
+    "mission": "Frontline",
+    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone · Frontline",
+    "guid": "740fb4"
+  },
+  {
+    "region": "Frostreach Wastes",
+    "location": "Polar Expedition Zone",
+    "mission": "Supremacy",
+    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone · Supremacy",
+    "guid": "f65507"
+  },
+  {
+    "region": "Harmony Province",
+    "location": "Government Plaza",
+    "mission": "Frontline",
+    "bagName": "SET_Harmony Province · Government Plaza · Frontline",
+    "guid": "6c6fea"
+  },
+  {
+    "region": "Harmony Province",
+    "location": "Government Plaza",
+    "mission": "Supremacy",
+    "bagName": "SET_Harmony Province · Government Plaza · Supremacy",
+    "guid": "401e32"
+  },
+  {
+    "region": "Harmony Province",
+    "location": "O-12 Security District",
+    "mission": "Frontline",
+    "bagName": "SET_Harmony Province · O-12 Security District · Frontline",
+    "guid": "41f84f"
+  },
+  {
+    "region": "Harmony Province",
+    "location": "O-12 Security District",
+    "mission": "Supremacy",
+    "bagName": "SET_Harmony Province · O-12 Security District · Supremacy",
+    "guid": "d1d70c"
+  },
+  {
+    "region": "Iron Corridor",
+    "location": "Iron Junction Freight Yard",
+    "mission": "Frontline",
+    "bagName": "SET_Iron Corridor · Iron Junction Freight Yard · Frontline",
+    "guid": "a1004e"
+  },
+  {
+    "region": "Iron Corridor",
+    "location": "Iron Junction Freight Yard",
+    "mission": "Supremacy",
+    "bagName": "SET_Iron Corridor · Iron Junction Freight Yard · Supremacy",
+    "guid": "a10145"
+  },
+  {
+    "region": "Iron Corridor",
+    "location": "Transit & Maintenance Hub",
+    "mission": "Frontline",
+    "bagName": "SET_Iron Corridor · Transit & Maintenance Hub · Frontline",
+    "guid": "a10268"
+  },
+  {
+    "region": "Iron Corridor",
+    "location": "Transit & Maintenance Hub",
+    "mission": "Supremacy",
+    "bagName": "SET_Iron Corridor · Transit & Maintenance Hub · Supremacy",
+    "guid": "a102d6"
+  },
+  {
+    "region": "Korin Range",
+    "location": "High Pass",
+    "mission": "Frontline",
+    "bagName": "SET_Korin Range · High Pass · Frontline",
+    "guid": "aaadfb"
+  },
+  {
+    "region": "Korin Range",
+    "location": "High Pass",
+    "mission": "Supremacy",
+    "bagName": "SET_Korin Range · High Pass · Supremacy",
+    "guid": "6201ec"
+  },
+  {
+    "region": "Korin Range",
+    "location": "Research Valley",
+    "mission": "Frontline",
+    "bagName": "SET_Korin Range · Research Valley · Frontline",
+    "guid": "88ba6c"
+  },
+  {
+    "region": "Korin Range",
+    "location": "Research Valley",
+    "mission": "Supremacy",
+    "bagName": "SET_Korin Range · Research Valley · Supremacy",
+    "guid": "9604da"
+  },
+  {
+    "region": "Northward Expanse",
+    "location": "New Al-Medina Research Network",
+    "mission": "Frontline",
+    "bagName": "SET_Northward Expanse · New Al-Medina Research Network · Frontline",
+    "guid": "f5f01b"
+  },
+  {
+    "region": "Northward Expanse",
+    "location": "New Al-Medina Research Network",
+    "mission": "Supremacy",
+    "bagName": "SET_Northward Expanse · New Al-Medina Research Network · Supremacy",
+    "guid": "875542"
+  },
+  {
+    "region": "Northward Expanse",
+    "location": "Northern Survey Frontier",
+    "mission": "Frontline",
+    "bagName": "SET_Northward Expanse · Northern Survey Frontier · Frontline",
+    "guid": "fbe4d5"
+  },
+  {
+    "region": "Northward Expanse",
+    "location": "Northern Survey Frontier",
+    "mission": "Supremacy",
+    "bagName": "SET_Northward Expanse · Northern Survey Frontier · Supremacy",
+    "guid": "c671f2"
+  },
+  {
+    "region": "Nova Prospect",
+    "location": "Administrative District",
+    "mission": "Frontline",
+    "bagName": "SET_Nova Prospect · Administrative District · Frontline",
+    "guid": "fc7f35"
+  },
+  {
+    "region": "Nova Prospect",
+    "location": "Administrative District",
+    "mission": "Supremacy",
+    "bagName": "SET_Nova Prospect · Administrative District · Supremacy",
+    "guid": "52658f"
+  },
+  {
+    "region": "Nova Prospect",
+    "location": "Orbital Logistics District",
+    "mission": "Frontline",
+    "bagName": "SET_Nova Prospect · Orbital Logistics District · Frontline",
+    "guid": "a4e0f0"
+  },
+  {
+    "region": "Nova Prospect",
+    "location": "Orbital Logistics District",
+    "mission": "Supremacy",
+    "bagName": "SET_Nova Prospect · Orbital Logistics District · Supremacy",
+    "guid": "df167e"
+  },
+  {
+    "region": "Sulfur Basin",
+    "location": "Helios Extraction Fields",
+    "mission": "Frontline",
+    "bagName": "SET_Sulfur Basin · Helios Extraction Fields · Frontline",
+    "guid": "e8137b"
+  },
+  {
+    "region": "Sulfur Basin",
+    "location": "Helios Extraction Fields",
+    "mission": "Supremacy",
+    "bagName": "SET_Sulfur Basin · Helios Extraction Fields · Supremacy",
+    "guid": "482c74"
+  },
+  {
+    "region": "Sulfur Basin",
+    "location": "Helios Refinery",
+    "mission": "Frontline",
+    "bagName": "SET_Sulfur Basin · Helios Refinery · Frontline",
+    "guid": "60da7b"
+  },
+  {
+    "region": "Sulfur Basin",
+    "location": "Helios Refinery",
+    "mission": "Supremacy",
+    "bagName": "SET_Sulfur Basin · Helios Refinery · Supremacy",
+    "guid": "e52cec"
+  },
+  {
+    "region": "Verde Wilds",
+    "location": "Greenwood River Crossing",
+    "mission": "Frontline",
+    "bagName": "SET_Verde Wilds · Greenwood River Crossing · Frontline",
+    "guid": "d18e74"
+  },
+  {
+    "region": "Verde Wilds",
+    "location": "Greenwood River Crossing",
+    "mission": "Supremacy",
+    "bagName": "SET_Verde Wilds · Greenwood River Crossing · Supremacy",
+    "guid": "9cddc2"
+  },
+  {
+    "region": "Verde Wilds",
+    "location": "Greenwood Station Jungle Outpost",
+    "mission": "Frontline",
+    "bagName": "SET_Verde Wilds · Greenwood Station Jungle Outpost · Frontline",
+    "guid": "a4b621"
+  },
+  {
+    "region": "Verde Wilds",
+    "location": "Greenwood Station Jungle Outpost",
+    "mission": "Supremacy",
+    "bagName": "SET_Verde Wilds · Greenwood Station Jungle Outpost · Supremacy",
+    "guid": "236caf"
+  }
+]

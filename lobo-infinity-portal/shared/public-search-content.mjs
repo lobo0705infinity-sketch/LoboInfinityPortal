@@ -1,3 +1,4 @@
+import { auroraMapLocations, auroraMapLocationBySlug } from './aurora-map-catalog.mjs'
 import { selectFeaturedReport } from './featured-report.mjs'
 import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from './lobo-workshop-maps.mjs'
 
@@ -61,8 +62,8 @@ const publicPages = {
     links: [{ label: 'Explore Army Intelligence', href: '/army-intelligence' }],
   },
   '/maps': {
-    title: 'ITS18 TTS Map Library: 40 Setups, 20 Missions | Lobo Portal',
-    description: 'Browse 40 revised ITS18 setups across 16 Infinity terrain layouts, with two setups per mission and matching Workshop bag names.',
+    title: 'TTS Map Library: ITS18 & Aurora VII | Lobo Portal',
+    description: 'Browse 40 ITS18 setups and 24 Aurora VII locations, with Frontline and Supremacy selectors, territory rules, terrain references and matching Workshop bag names.',
     heading: 'Lobo Workshop TTS map library',
     intro: 'Browse 40 setups for all 20 ITS Season 18 missions across 16 terrain layouts. Inspect deployment types, setup diagrams, and matching Workshop bags.',
     image: loboWorkshopMaps[13].angled,
@@ -186,6 +187,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       }
     }
     if (pathname === '/maps') {
+      links.push({ label: 'Aurora VII · 24 locations · Frontline and Supremacy', href: '/maps/aurora-vii' })
       for (const map of loboWorkshopMaps) {
         links.push({ label: `${map.name} · save ${map.index}${map.missionSetups.length ? ` · ${map.missionSetups.join(' / ')}` : ''}`, href: `/maps/${map.slug}` })
       }
@@ -200,6 +202,26 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       for (const mission of datasets.missions) links.push({ label: `${text(mission.mission)} · ${Number(mission.games) || 0} recorded games`, href: `/missions/${encodeURIComponent(mission.mission)}` })
     }
     return { ...staticPage, pathname, canonicalPath: pathname, links }
+  }
+
+  if (pathname === '/maps/aurora-vii') return {
+    pathname, canonicalPath: pathname,
+    title: 'Aurora VII Maps: 24 Locations, 48 Setups | Lobo Portal',
+    heading: 'Aurora VII Workshop maps',
+    description: 'Explore 12 Aurora VII regions and 24 locations. Choose Frontline or Supremacy, with shared terrain references, territory rules and exact Workshop bag names.',
+    intro: 'Each location shares one concept reference between Frontline and Supremacy. Choose your region and location, read the territory rule and owner advantage, then find the matching Workshop bag.',
+    links: [{ label: 'ITS18 maps', href: '/maps' }, ...auroraMapLocations.map(location => ({ label: `${location.region.name} · ${location.name}`, href: `/maps/${location.slug}` }))],
+  }
+  const auroraLocation = auroraMapLocationBySlug.get(pathname.split('/maps/')[1])
+  if (auroraLocation) return {
+    pathname, canonicalPath: pathname,
+    title: `${auroraLocation.name} · ${auroraLocation.region.name} | Lobo Portal`,
+    heading: auroraLocation.name,
+    description: shorten(`${auroraLocation.region.name}: ${auroraLocation.name}. Frontline and Supremacy Workshop bags, shared concept reference and ${auroraLocation.region.rule.title} territory rules.`, 170),
+    intro: `${auroraLocation.region.description} Concept reference shared by Frontline and Supremacy. ${auroraLocation.setups.map(setup => setup.bagName).join('; ')}. Territory rule: ${auroraLocation.region.rule.effect} ${auroraLocation.region.rule.details} Owner advantage: ${auroraLocation.region.rule.owner}`,
+    image: auroraLocation.image.src, imageAlt: `${auroraLocation.name} concept reference`,
+    imageWidth: auroraLocation.image.width, imageHeight: auroraLocation.image.height,
+    links: [{ label: 'Aurora VII maps', href: '/maps/aurora-vii' }, { label: 'Campaign territory', href: `/campaign/aurora-vii/territories/${auroraLocation.region.id}` }, { label: 'Open Steam Workshop', href: LOBO_WORKSHOP_URL }],
   }
 
   const mapSlug = /^\/maps\/([a-z0-9-]+)$/.exec(pathname)?.[1]

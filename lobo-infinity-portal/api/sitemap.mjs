@@ -1,3 +1,4 @@
+import { auroraMapLocations } from '../shared/aurora-map-catalog.mjs'
 import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
 
 const siteOrigin = 'https://lobo-infinity-portal.vercel.app'
@@ -13,6 +14,7 @@ const publicPaths = [
   '/army-intelligence',
   '/games',
   '/maps',
+  '/maps/aurora-vii',
   '/events',
   '/players',
   '/factions',
@@ -49,6 +51,7 @@ export default async function handler(request, response) {
 export async function buildSitemap({ fetchObject = fetch } = {}) {
   const paths = new Set(publicPaths)
   for (const map of loboWorkshopMaps) paths.add(`/maps/${map.slug}`)
+  for (const location of auroraMapLocations) paths.add(`/maps/${location.slug}`)
   let snapshotAvailable = false
 
   try {

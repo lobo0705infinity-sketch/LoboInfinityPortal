@@ -121,8 +121,8 @@ export const AURORA_TERRITORIES = Object.freeze([
     "vp": 2,
     "description": "Modern maritime logistics: clean port infrastructure, customs, maintenance, and intermodal transport.",
     "layouts": [
-      "Port Meridian Harbor Approach",
-      "Port Meridian Intermodal Terminal"
+      "Coastal Access",
+      "Tidal Infrastructure"
     ],
     "notes": [
       "Retain the harbor edge while leaving ample playable land.",
