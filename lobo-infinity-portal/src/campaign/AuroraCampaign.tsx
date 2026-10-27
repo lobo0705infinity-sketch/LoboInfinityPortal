@@ -1,3 +1,5 @@
+import { auroraMapRegions } from '../../shared/aurora-map-catalog.mjs'
+import TerritoryBattlefieldRules from './TerritoryBattlefieldRules'
 import { useState, type ReactNode } from 'react'
 import { Link, NavLink, useParams } from 'react-router-dom'
 import { AURORA_TERRITORIES, AURORA_TURNS, AURORA_DOCTRINES } from '../../shared/aurora-public.mjs'
@@ -36,7 +38,7 @@ export default function AuroraCampaign() {
     <Link className="aurora-back-portal" to="/">← Lobo Infinity Portal</Link>
     <header className="aurora-focused-header"><div><h1>AURORA <span>VII</span></h1><p>Race for the Gate</p></div><div className="aurora-header-actions"><Link aria-current={section === 'games' ? 'page' : undefined} to={`${AURORA_PATH}/games`}>My games</Link>{section !== 'register' && section !== 'submit' ? <Link className="aurora-primary" aria-label={state.turn ? 'Submit Campaign Game' : 'Register'} to={`${AURORA_PATH}/${state.turn ? 'submit' : 'register'}`}><span className="aurora-full-action">{state.turn ? 'Submit Campaign Game' : 'Register'}</span><span className="aurora-short-action">{state.turn ? 'Submit game' : 'Register'}</span></Link> : null}</div></header>
     {publication ? <p className="aurora-campaign-status">{state.turn ? `Turn ${state.turn} of 6 · ${AURORA_TURNS[state.turn - 1].title}${state.deadline ? ` · Ends ${formatDate(state.deadline)}` : ''}` : 'Registration open · Turn 1 awaiting announcement'}</p> : null}
-    <nav className="aurora-focused-nav" aria-label="Aurora VII navigation"><div><NavLink end to={AURORA_PATH}>Campaign</NavLink><NavLink to={`${AURORA_PATH}/map`} className={section === 'territories' ? 'active' : undefined}>Map</NavLink><NavLink to={`${AURORA_PATH}/standings`}>Results</NavLink></div><details key={section} className="aurora-information-menu"><summary className={['rules','story','missions','register'].includes(section) ? 'is-current' : undefined}>Information</summary><div><Link to={`${AURORA_PATH}/missions`}>Mission briefing</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><Link to={`${AURORA_PATH}/story`}>Campaign Story</Link><Link to={`${AURORA_PATH}/register`}>Registration</Link><Link to="/commissioner/aurora-vii">Commissioner tools</Link></div></details></nav>
+    <nav className="aurora-focused-nav" aria-label="Aurora VII navigation"><div><NavLink end to={AURORA_PATH}>Campaign</NavLink><NavLink to={`${AURORA_PATH}/map`} className={section === 'territories' ? 'active' : undefined}>Map</NavLink><NavLink to={`${AURORA_PATH}/standings`}>Results</NavLink></div><details key={section} className="aurora-information-menu"><summary className={['rules','story','missions','register'].includes(section) ? 'is-current' : undefined}>Information</summary><div><Link to={`${AURORA_PATH}/missions`}>Mission briefing</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><Link to={`${AURORA_PATH}/rules#battlefield-rules`}>Battlefield rules</Link><Link to={`${AURORA_PATH}/story`}>Campaign Story</Link><Link to={`${AURORA_PATH}/register`}>Registration</Link><Link to="/commissioner/aurora-vii">Commissioner tools</Link></div></details></nav>
     {error ? <div className="aurora-notice" role="status"><p>{error} Public reference material remains available; campaign status below is not confirmed.</p><button onClick={reload} type="button">Try again</button></div> : !publication ? <p role="status">Loading the latest public campaign briefing…</p> : null}
     {!known ? <Panel title="Campaign page not found"><Link to={AURORA_PATH}>Return to Aurora VII →</Link></Panel> : section === 'map' || section === 'territories' ? <CampaignMap key={territoryId || "map"} state={state} initialTerritory={territoryId}/> : section === 'register' ? <AuroraRegistration/> : section === 'submit' ? <>{!state.turn ? <Panel title="Game reporting opens with Turn 1"><p>Register now. Lobo will announce the active Turn, its deadline, four Vulnerable Territories and mission briefing before game submissions open.</p><Link to={`${AURORA_PATH}/register`}>Open campaign registration →</Link></Panel> : null}<AuroraGames submit/></> : section === 'games' ? <AuroraGames/> : section === 'missions' ? <CampaignMissions state={state}/> : section === 'standings' ? <CampaignStandings state={state}/> : section === 'story' ? <CampaignStory state={state}/> : section === 'rules' ? <CampaignRules/> : <><CampaignOverview state={state}/><CampaignPromos/></>}
     <footer className="aurora-focused-footer"><Link to="/">Lobo Infinity Portal</Link><Link to={`${AURORA_PATH}/rules`}>Player Rules</Link><a href={LOBO_DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">Discord ↗</a><a href={LOBO_YOUTUBE_CHANNEL_URL} target="_blank" rel="noopener noreferrer">YouTube ↗</a></footer>
@@ -104,7 +106,9 @@ function CampaignMap({ state, initialTerritory }: { state: AuroraPublicState; in
 }
 
 function TerritoryGuide({ territory }: { territory: Territory }) {
+  const region = auroraMapRegions.find(item => item.id === territory.id)!
   return <div id="aurora-terrain-references">
+    <div className="panel aurora-panel"><TerritoryBattlefieldRules region={region}/></div>
     <Panel title={`${territory.name} terrain references`}>
       <p><Link to={`${AURORA_PATH}/rules#campaign-location-selection`}>Choose the campaign location by agreement or blind Command Token bidding →</Link></p>
       <p><Link to={`/maps/aurora-vii?region=${territory.id}`}>Choose a Workshop location · Frontline / Supremacy →</Link></p>
@@ -139,6 +143,17 @@ function CampaignMissions({ state }: { state: AuroraPublicState }) {
   const turn = AURORA_TURNS.find(item => item.turn === state.turn)
   return <>
     <CampaignLocationRules/>
+    <section id="battlefield-rules" className="panel aurora-panel">
+      <p className="eyebrow">12 territories · Rules updated 26 October 2026</p>
+      <h2>Battlefield rules &amp; owner advantages</h2>
+      <p>Each territory changes how its battles are fought. Both players use its battlefield rules; only the controlling faction receives its owner advantage. Check the territory before choosing army lists. Normal points, SWC and availability apply.</p>
+      <p>These rules apply to both Frontline and Supremacy at every Workshop location in that territory.</p>
+      {auroraMapRegions.map(region => <details className="aurora-battlefield-entry" key={region.id}>
+        <summary>{region.name} · {region.rule.title}</summary>
+        <TerritoryBattlefieldRules region={region}/>
+        <p><Link to={`${AURORA_PATH}/territories/${region.id}`}>Explore {region.name} and its terrain →</Link></p>
+      </details>)}
+    </section>
     {!turn ? <Panel title="Mission briefing"><p>Lobo will release the Turn 1 missions and battlefield rules when the campaign begins.</p><Link to={`${AURORA_PATH}/rules`}>Read the Player Rules →</Link></Panel> : <>
       <Panel title="This Turn’s ordinary missions"><div className="aurora-mission-grid">{turn.missions.map((mission: { name: string; reference: string }) => <article key={mission.name}><h3>{mission.name}</h3>{mission.reference !== mission.name ? <p className="aurora-muted">{mission.reference}</p> : null}<MissionReference mission={mission.reference} catalog={catalog.data}/></article>)}</div><p>After choosing the campaign location by agreement or blind Command Token bidding, make a separate Face-to-Face die roll for a territory game. The winner chooses one of these two missions.</p></Panel>
       {state.narrativeMission ? <Panel title="Current Narrative Mission"><h3>{state.narrativeMission.title}</h3><Paragraphs text={state.narrativeMission.briefing}/>{state.narrativeMission.reward ? <p><strong>Announced reward:</strong> {state.narrativeMission.reward}</p> : null}{state.narrativeMission.sheetUrl ? <a href={state.narrativeMission.sheetUrl} target="_blank" rel="noopener noreferrer">Open the current mission sheet ↗</a> : <p>The mission sheet has not been published.</p>}</Panel> : null}
@@ -168,6 +183,17 @@ function CampaignRules() {
   const example = campaignScore(8, 6)
   return <>
     <CampaignLocationRules/>
+    <section id="battlefield-rules" className="panel aurora-panel">
+      <p className="eyebrow">12 territories · Rules updated 26 October 2026</p>
+      <h2>Battlefield rules &amp; owner advantages</h2>
+      <p>Each territory changes how its battles are fought. Both players use its battlefield rules; only the controlling faction receives its owner advantage. Check the territory before choosing army lists. Normal points, SWC and availability apply.</p>
+      <p>These rules apply to both Frontline and Supremacy at every Workshop location in that territory.</p>
+      {auroraMapRegions.map(region => <details className="aurora-battlefield-entry" key={region.id}>
+        <summary>{region.name} · {region.rule.title}</summary>
+        <TerritoryBattlefieldRules region={region}/>
+        <p><Link to={`${AURORA_PATH}/territories/${region.id}`}>Explore {region.name} and its terrain →</Link></p>
+      </details>)}
+    </section>
     <Panel title="Game scores & Tournament Points">
       <p>Enter each player’s Objective Points (OP), from 0 to 10. The form determines the result and calculates Tournament Points (TP) automatically.</p>
       <div className="table-wrapper"><table><thead><tr><th scope="col">Condition</th><th scope="col">TP earned</th></tr></thead><tbody>

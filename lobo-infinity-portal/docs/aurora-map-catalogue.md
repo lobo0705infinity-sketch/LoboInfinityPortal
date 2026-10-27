@@ -7,7 +7,7 @@ The map library offers ITS18 and Aurora VII collections. Aurora VII contains 12 
 ## Source data
 
 - `aurora-workshop-bags.json`: the 48 exact labels and GUIDs from the approved `Lobo88-Map-Rules-Fix.zip` v7 save, exported October 22, 2026. No TTS objects or cloud asset URLs are changed by this portal update.
-- `aurora-territory-rules.json`: the complete `Territory-Rules.json` in that same archive, including owner advantages.
+- `aurora-territory-rules.json`: the 26 October 2026 battlefield rules and owner advantages from `Lobo88-Map-Rules-Fix.zip` v8, matching the current rules PDF. Includes terrain-based descriptive context for all twelve territories. Azure Coast owns the aquatic rules; Echo Shores uses Black-Market Arsenal. The shared rules component appears on the Player Rules page, territory detail pages and all 24 map location pages. Server-generated map text uses the same descriptions and rules.
 - `aurora-terrain-references.json`: the portal's existing approved October 21 concept references, including the Ember Highlands and Frostreach revisions. Both campaign guides and map pages read this single mapping.
 - Existing campaign region IDs remain unchanged. Azure Coast location labels match Coastal Access and Tidal Infrastructure.
 

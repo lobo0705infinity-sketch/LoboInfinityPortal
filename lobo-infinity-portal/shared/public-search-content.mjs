@@ -218,7 +218,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     title: `${auroraLocation.name} · ${auroraLocation.region.name} | Lobo Portal`,
     heading: auroraLocation.name,
     description: shorten(`${auroraLocation.region.name}: ${auroraLocation.name}. Frontline and Supremacy Workshop bags, shared concept reference and ${auroraLocation.region.rule.title} territory rules.`, 170),
-    intro: `${auroraLocation.region.description} Concept reference shared by Frontline and Supremacy. ${auroraLocation.setups.map(setup => setup.bagName).join('; ')}. Territory rule: ${auroraLocation.region.rule.effect} ${auroraLocation.region.rule.details} Owner advantage: ${auroraLocation.region.rule.owner}`,
+    intro: `${auroraLocation.region.description} ${auroraLocation.region.rule.description} Concept reference shared by Frontline and Supremacy. ${auroraLocation.setups.map(setup => setup.bagName).join('; ')}. Territory rule: ${auroraLocation.region.rule.effect} ${auroraLocation.region.rule.details} Owner advantage: ${auroraLocation.region.rule.owner}`,
     image: auroraLocation.image.src, imageAlt: `${auroraLocation.name} concept reference`,
     imageWidth: auroraLocation.image.width, imageHeight: auroraLocation.image.height,
     links: [{ label: 'Aurora VII maps', href: '/maps/aurora-vii' }, { label: 'Campaign territory', href: `/campaign/aurora-vii/territories/${auroraLocation.region.id}` }, { label: 'Open Steam Workshop', href: LOBO_WORKSHOP_URL }],

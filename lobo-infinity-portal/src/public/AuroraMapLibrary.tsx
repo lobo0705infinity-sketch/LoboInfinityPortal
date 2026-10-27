@@ -1,3 +1,4 @@
+import TerritoryBattlefieldRules from '../campaign/TerritoryBattlefieldRules'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { auroraMapRegions, auroraMapLocationBySlug, AURORA_MISSIONS, type AuroraMission } from '../config/auroraMapCatalog'
@@ -67,7 +68,7 @@ function LocationDetail({ slug }: { slug: string }) {
       <div className="lobo-maps-hero-actions"><button type="button" onClick={copyBag}>Copy bag name</button><a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open Steam Workshop ↗</a></div><p role="status">{copyStatus}</p>
       <p className="lobo-maps-source-note">Find this bag in the Lobo Workshop and drop it onto “Place bags here” to deploy. Use “Clear table” to remove the deployed map.</p>
     </section>
-    <section className="lobo-maps-controls" aria-labelledby="aurora-territory-rule"><p className="eyebrow">Applies to both missions in {region.name}</p><h2 id="aurora-territory-rule">{region.rule.title}</h2><p>{region.rule.effect}</p><p>{region.rule.details}</p><h3>Territory owner advantage</h3><p>{region.rule.owner}</p></section>
+    <div className="lobo-maps-controls"><TerritoryBattlefieldRules region={region}/></div>
     <section><h2>Also in {region.name}</h2><div className="aurora-location-links">{region.locations.filter(item => item.slug !== slug).map(item => <Link key={item.slug} to={`/maps/${item.slug}?mission=${mission}`}>{item.name} →</Link>)}</div></section>
     <p className="lobo-maps-source-note">Terrain references guide construction; they are not mandatory placements or screenshots of the loaded TTS table. <Link to="/campaign/aurora-vii/games">Browse campaign battle reports →</Link></p>
   </>

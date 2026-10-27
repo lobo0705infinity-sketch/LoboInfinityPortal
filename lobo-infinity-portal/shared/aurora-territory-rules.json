@@ -1,74 +1,98 @@
 {
-  "Nova Prospect": {
-    "title": "Colonial Communications Grid",
-    "effect": "Each player begins the game with one additional Command Token.",
-    "details": "Use normal Command Token rules and restrictions.",
-    "owner": "Once per game, perform one otherwise legal Command Token use without spending the token."
+  "Verde Wilds": {
+    "title": "Closed Canopy",
+    "description": "Dense equatorial vegetation surrounds Greenwood's isolated scientific outposts and river crossings. The closed canopy excludes Aerial profiles and limits visibility at every elevation, favouring fighting within 24 inches. Local knowledge briefly opens a longer sightline for the controlling force.",
+    "effect": "Profiles with Aerial cannot be included.\n\nLine of Sight is limited to 24 inches, regardless of elevation. Skills and attacks that do not require Line of Sight work normally.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Canopy Sightlines",
+    "owner": "Once per game, one friendly trooper may draw Line of Sight up to 32 inches for one Order. An enemy targeted this way receives reciprocal Line of Sight to that trooper for the Order. Terrain still blocks Line of Sight normally."
   },
   "Korin Range": {
     "title": "Mountain Country",
-    "effect": "All battlefield terrain is Mountain Difficult Terrain except trails, clearings and buildings. Apply the normal N5 Difficult Terrain rules in affected areas.",
-    "details": "Identify existing trails, clearings and building boundaries together before deployment. These areas use their normal movement rules. Terrain (Mountain) and Terrain (Total) function normally. No zone templates are placed.",
-    "owner": "Before deployment, choose three friendly models. They gain Terrain (Mountain) for the game."
+    "description": "Pale fractured mountains, steep research valleys and exposed high passes define Korin Range. Trails and buildings offer reliable routes through otherwise difficult ground. Mountain-trained troops retain their mobility, while the territory's restrictions keep TAGs out of these battles.",
+    "effect": "All terrain is Mountain Difficult Terrain, except agreed trails, clearings and buildings.\n\nTAGs cannot be included.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Mountain Guides",
+    "owner": "Before deployment, choose three friendly troopers. They gain Terrain (Mountain) for the game."
   },
   "Crystal Frontier": {
     "title": "Electromagnetic Interference",
-    "effect": "All Hacking attempts suffer -3 WIP for the entire game, in both Active and Reactive Turns. Apply to every WIP Roll made to perform a Hacking Program, whether used directly or through a Repeater.",
-    "details": "The penalty applies across the whole table and combines with other applicable modifiers. It does not reduce Hacking Area or disable Repeaters. Reset is not a Hacking attempt and is unaffected. No zone templates are placed.",
-    "owner": "Once per game, ignore this territory's -3 Hacking penalty for one Order."
+    "description": "Quarry terraces, quartz ravines and mineral research stations sit amid fractured crystal deposits. Electromagnetic interference disrupts remote hacking relays, forcing Hackers to operate within their own Hacking Areas. Local shielding offers the controlling faction one chance to resist an electronic attack.",
+    "effect": "Repeaters do not extend a Hacker's Hacking Area. Hackers can still use their own Hacking Area normally.\n\nRepeaters remain on the table and may still be targeted or affected by rules that interact with them.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Shielded Systems",
+    "owner": "Once per game, reroll one failed Saving Roll caused by a Hacking Attack or an E/M weapon. Accept the second result."
+  },
+  "Azure Coast": {
+    "title": "Tidal Channels",
+    "description": "Port Meridian combines modern waterfront structures, customs facilities and maritime logistics infrastructure. Water channels create sheltered approaches for troops adapted to aquatic terrain, while supply caches offer equipment to either side. The owner's corrosion protection provides one opportunity to preserve a trooper with STR.",
+    "effect": "All water features are Aquatic Difficult Terrain.\n\nA trooper with Terrain (Aquatic) or Terrain (Total) whose base is entirely inside a water feature gains Total Cover while in that area.\n\nAn observer with Terrain (Aquatic) or Terrain (Total) ignores this water-based Total Cover when drawing Line of Sight to the protected trooper.\n\nIf the protected trooper declares a Skill that would normally break Stealth, it loses this Total Cover for the rest of that Order. After the Order, protection returns if it still qualifies.\n\nPlace four Supply Caches outside the Deployment Zones. They function as Panoplies.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Corrosion Protection",
+    "owner": "Once per game, reroll one failed Saving Roll made by a friendly trooper with STR. Accept the second result."
   },
   "Echo Shores": {
-    "title": "Smuggler Supply Caches",
-    "effect": "Place four Supply Caches, two per player, before trooper deployment. Alternate placing one cache at a time, starting with the player who chose Deployment. All caches must be outside both Deployment Zones; no other placement restrictions apply.",
-    "details": "Each cache functions as a Panoply. A non-Null trooper in contact with a cache may spend a Short Skill to make a WIP Roll. Success allows a roll on the Booty Table. Apply normal Panoply rules. Either player may use any cache.",
-    "owner": "Once per game, reroll one failed WIP Roll to use a cache. Accept the new result."
+    "title": "Black-Market Arsenal",
+    "description": "Freeport Echo is a rough coastal trading zone of working docks, cargo warehouses and improvised market streets. Smugglers and unofficial suppliers keep equipment moving through both the waterfront and the crowded bazaar. Irregular troops can draw on those stocks, and established scavengers have a better chance of finding useful gear.",
+    "effect": "All troopers with the Irregular characteristic gain Booty.\n\nTroopers that already have Booty may reroll their Booty result once, accepting the second result.\n\nNormal army-building restrictions remain unchanged.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "First Pick",
+    "owner": "Once per game, the owner may reroll one friendly trooper's Booty result. This may be used after the battlefield-rule reroll. The new result stands."
   },
   "Harmony Province": {
     "title": "Security Surveillance",
-    "effect": "All Discover Rolls receive +3 WIP, combined with other applicable modifiers. Normal Discover requirements still apply.",
-    "details": "This does not automatically reveal Markers or Hidden Deployment. It changes neither Sensor nor attacks and does not grant additional Discover attempts.",
-    "owner": "Once per game, reroll one failed Discover Roll. Accept the new result."
-  },
-  "Verde Wilds": {
-    "title": "Closed Canopy",
-    "effect": "No Flyers: profiles with the Aerial Special Skill cannot be included in an army used here. Prepare a legal replacement list before play. No visibility over 24 inches: no Line of Fire exists between points more than 24 inches apart. At exactly 24 inches, normal Line of Fire rules apply.",
-    "details": "The cap applies to all elevations, in both turns, for the entire game. No skill or equipment bypasses it, except the owner advantage below. Skills that do not require Line of Fire remain usable normally. This does not itself ban Combat Jump, Parachutist or Super-Jump on non-Aerial profiles.",
-    "owner": "Once per game, one friendly trooper may draw LoF up to 32 inches instead of 24 inches for one Order. An enemy targeted through this exception may draw reciprocal LoF to that trooper for that Order."
-  },
-  "Azure Coast": {
-    "title": "Port Maintenance Network",
-    "effect": "Before deployment, each player places one Maintenance Access marker on their own half of the table, at least 4 inches from their own Deployment Zone. The player who chose Deployment places first.",
-    "details": "A non-Null trooper touching either marker may spend a Short Skill to repair itself. Either make a WIP Roll using its own WIP, or spend one Command Token for automatic success, choosing before rolling. Engineer is not required. On success, remove one Wound from a trooper with STR, or cancel its states that can normally be cancelled by Engineer. Normal Engineer failure consequences and declaration restrictions apply; no VITA healing. There is no limit on uses and markers remain. Markers have no movement footprint, Silhouette or Cover; use the marked point for contact. They score no OP and cannot be attacked.",
-    "owner": "Once per game, automatically succeed at one maintenance use without spending a Command Token. The Short Skill and normal eligibility requirements still apply."
+    "description": "Planned civic plazas, government buildings and O-12 security facilities make Harmony Province a closely watched battlefield. Surveillance prevents troops from using Camouflaged State and assists Discover attempts. Control of the local intelligence network gives the owner a second chance at a mission objective.",
+    "effect": "All Discover Rolls receive +3 WIP.\n\nTroopers cannot deploy in or enter Camouflaged State. Profiles with Camouflage may be included and deploy as models.\n\nImpersonation and Hidden Deployment work normally.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Surveillance Intelligence",
+    "owner": "Once per game, reroll one failed WIP Roll to accomplish a mission objective. Accept the second result."
   },
   "Ember Highlands": {
-    "title": "Heat Shimmer",
-    "effect": "All models at ground level have Albedo (-3). This applies throughout the game in both Active and Reactive Turns.",
-    "details": "Apply normal Albedo (-3) rules. The benefit applies while the model is touching table ground level; it does not apply on raised platforms, bridges, rooftops or natural ledges. Agree which surfaces are elevated before deployment.",
-    "owner": "Once per game, one friendly trooper retains this territory's Albedo (-3) benefit while elevated for one Order."
+    "title": "Volcanic Updrafts",
+    "description": "Dark red mesas, narrow canyon routes and geothermal installations mark this volcanic frontier. Unstable updrafts prevent the use of Super-Jump, including Jet Propulsion variants, while ordinary Jump remains available. The controlling force can exploit one carefully chosen jump to cross the broken landscape more efficiently.",
+    "effect": "Troopers cannot use Super-Jump, including Super-Jump (Jet Propulsion).\n\nOrdinary Jump works normally.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Stable Footing",
+    "owner": "Once per game, one friendly trooper may declare ordinary Jump as a Short Movement Skill instead of an Entire Order. Declare this before its first Skill. All other ordinary Jump restrictions apply."
   },
   "Sulfur Basin": {
-    "title": "Caustic Fallout",
-    "effect": "Attacks using an Impact Template gain Continuous Damage. All other weapon properties remain unchanged.",
-    "details": "Apply the normal Continuous Damage rules. No pools, additional environmental rolls or zone templates are required.",
-    "owner": "Once per game, one friendly trooper ignores all Continuous Damage for one Order, including Continuous Damage native to a weapon."
+    "title": "Toxic Fumes",
+    "description": "Refineries, tanks and extraction machinery stand across chemically scarred ground. Toxic exposure makes movement outside buildings hazardous, so sheltered routes and resistant troops matter. Local protective supplies let the owner avoid the territory's exposure roll for one trooper during one Order.",
+    "effect": "All areas outside buildings are Toxic Zones. Agree which areas count as building interiors before deployment.\n\nOnce per Order, a trooper whose base enters or moves within a Toxic Zone makes one ARM Saving Roll against PS 10 at the end of that Order. This applies in both Active and Reactive turns.\n\nA failed Saving Roll causes 1 Wound or STR damage, as appropriate. Remaining stationary does not trigger a roll.\n\nTroopers with Terrain (Total), Immunity (Continuous Damage) or Immunity (ARM) ignore this territory rule.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Protected Crossing",
+    "owner": "Once per game, one friendly trooper may ignore the Toxic Fumes Saving Roll for one Order. Declare before making that roll."
   },
   "Frostreach Wastes": {
     "title": "Drifting Snowstorms",
-    "effect": "Before deployment, place three circular templates with their centers on the table's centerline: one at its midpoint and the others 12 inches to either side. At the beginning of each Player Turn, roll a d20 separately for each template. Move it 6 inches in the direction indicated by its numbered edge, keeping its orientation fixed. Remove a template when its center crosses the battlefield edge.",
-    "details": "Each template defines a Difficult Terrain Zone. BS Attacks whose Line of Fire passes through any part of a storm suffer -3, including attacks originating or ending inside it. Overlapping storms do not multiply this penalty.",
-    "owner": "Once per game, reroll or negate one storm's direction roll before moving it. If rerolling, accept the new result. If negating, that storm remains stationary for that movement."
+    "description": "Ice formations shelter a small polar settlement and scattered expedition sites. Drifting snowstorms shift the battlefield's difficult ground and shooting penalties as the game progresses. Local weather readings let the owner influence one storm's movement at a critical moment.",
+    "effect": "Before deployment, place three circular templates on the table's centerline: one at the midpoint and the others 12 inches to either side.\n\nAt the start of each Player Turn, roll a d20 separately for each storm. Move it 6 inches toward its numbered edge, keeping its orientation fixed. Remove it when its center crosses the table edge.\n\nStorms are Difficult Terrain Zones. BS Attacks whose Line of Sight passes through a storm suffer -3, including attacks starting or ending inside one. Overlapping storms do not stack this penalty.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Weather Reading",
+    "owner": "Once per game, after a storm's direction roll but before moving it, reroll or negate that roll. Accept a reroll; negating leaves the storm stationary for that movement."
   },
   "Northward Expanse": {
-    "title": "Expedition Medical and Repair Support",
-    "effect": "All WIP Rolls made to use Doctor or Engineer receive +3 WIP throughout the game. Combine this bonus with other applicable modifiers.",
-    "details": "Normal requirements, eligible targets and failure consequences still apply. This grants neither skill to a trooper that lacks it. It does not modify MediKit or GizmoKit rolls, Regeneration, Reset or mission-objective tests. No markers or zones are required.",
-    "owner": "Once per game, reroll one failed Doctor or Engineer Roll before applying its failure consequences. Accept the new result."
+    "title": "Frontier Reconnaissance",
+    "description": "A dry scientific frontier stretches from New Al-Medina's permanent research stations into isolated survey country. Wind-eroded ridges, rocky outcrops and shallow gullies provide approaches across the broad landscape. Light Infantry can establish forward positions, with a surveyed route giving the owner one deeper deployment.",
+    "effect": "All Light Infantry (LI) gain Forward Deployment (+4 inches). This does not stack with existing Forward Deployment; use the better value.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Surveyed Approaches",
+    "owner": "Before deployment, choose one friendly Light Infantry trooper. It gains Forward Deployment (+8 inches) instead. Use the better value if it already has Forward Deployment; do not add the distances."
   },
   "Iron Corridor": {
-    "title": "Heavy Industrial Cover",
-    "effect": "When a trooper receives the ARM bonus from Partial Cover against an attack, increase that ARM bonus by 1. This applies throughout the game to both players.",
-    "details": "This grants no extra BS penalty and no BTS bonus. If an attack ignores the ARM benefit of Cover, or the trooper cannot benefit from it, this rule grants nothing. It does not create Cover where none exists.",
-    "owner": "Once per game, one friendly model receiving Partial Cover gains another +3 ARM, in addition to the territory bonus, for one Order. Declare this advantage before the model rolls its ARM Saving Roll."
+    "title": "Reinforced Industrial Zone",
+    "description": "Advanced freight yards, cargo trains and robotic maintenance facilities create a landscape of industrial cover. Reinforced positions provide greater protection, including against Template Weapons when the cover requirements are met. The controlling force can make one position especially resilient for a single Order.",
+    "effect": "Increase the ARM bonus granted by Partial Cover by 1.\n\nTemplate Weapons do not ignore the ARM bonus granted by Partial Cover, including the territory's extra +1 ARM. The trooper must meet normal Partial Cover requirements against the attacker.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Prepared Position",
+    "owner": "Once per game, before any rolls during an Order, choose one friendly trooper. Increase the ARM bonus it receives from Partial Cover by an additional +3 for the rest of that Order. It must qualify for Partial Cover against each attack."
+  },
+  "Nova Prospect": {
+    "title": "Rapid Transit Network",
+    "description": "Aurora VII's colonial capital connects administrative districts, communications hubs and orbital supply facilities. Its rapid transit network lets existing Parachutist units reach the fighting efficiently, while local control gives a chosen reinforcement additional operational flexibility.",
+    "effect": "Troopers that already have Parachutist may arrive without spending their own Order. They retain that Order for use after arrival; Regular and Irregular Orders retain their normal restrictions.\n\nArrival generates AROs and follows normal Parachutist placement restrictions, including no Partial Cover during the arrival Order. This rule does not grant Parachutist.",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "ownerTitle": "Transit Priority",
+    "owner": "Before deployment, choose one friendly trooper that already has Parachutist. It gains Tactical Awareness in addition to the rapid transit benefit. A trooper that already has Tactical Awareness receives no second Tactical Order."
   }
 }
