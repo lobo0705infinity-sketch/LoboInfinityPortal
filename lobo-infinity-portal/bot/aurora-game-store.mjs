@@ -2,12 +2,13 @@ import { mkdir,readFile,open,rename } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { campaignTotals,validateCampaignGame,campaignText } from '../shared/aurora-games.mjs'
+import { operationsView, mutateOperations, guardCampaignGame, validOperations } from './aurora-operations.mjs'
 const fail=message=>{throw Error(message)}
 export function createCampaignGameStore(path,{now=()=>new Date()}={}) {
   let queue=Promise.resolve()
   const run=action=>{const result=queue.then(action);queue=result.catch(()=>{});return result}
   async function read() {
-    try{const s=JSON.parse(await readFile(path,'utf8'));if(s.version!==1||!Array.isArray(s.games)||!Array.isArray(s.claims)||!s.turns) fail('Campaign ledger needs commissioner attention.');return s}
+    try{const s=JSON.parse(await readFile(path,'utf8'));if(s.version!==1||!Array.isArray(s.games)||!Array.isArray(s.claims)||!s.turns||s.operations!==undefined&&!validOperations(s.operations)) fail('Campaign ledger needs commissioner attention.');return s}
     catch(e){if(e.code==='ENOENT')return {version:1,games:[],claims:[],turns:{}};throw e}
   }
   async function write(s) {
@@ -23,11 +24,14 @@ export function createCampaignGameStore(path,{now=()=>new Date()}={}) {
   function setDuplicate(s,g){const d=duplicate(s,g);if(d){g.duplicateOf=d.id;g.duplicateApproved=false}else{delete g.duplicateOf;delete g.duplicateApproved}}
   const confirmedStatus=g=>g.late&&!g.lateApproved?'awaiting_late_approval':g.duplicateOf&&!g.duplicateApproved?'awaiting_duplicate_review':'confirmed'
   return {
-    view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn)}}),
+    operations:()=>run(async()=>operationsView(await read())),
+    operate:(input,players,publication)=>run(async()=>{const s=await read();const result=mutateOperations(s,input,players,publication,now());await write(s);return result}),
+    view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn),reporting:s.operations?{turn:publication.turn,phase:s.operations.turns[publication.turn]?.phase||'unprepared'}:null}}),
     totals:turn=>run(async()=>campaignTotals((await read()).games,turn)),
     activity:turn=>run(async()=>{const s=await read(),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved));return {turn,totals:campaignTotals(games,turn),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB}))}}),
     submit:(input,player,opponent,publication)=>run(async()=>{
       const s=await read();if(!player||!opponent||player.userId===opponent.userId)fail('Choose another registered campaign player.')
+      guardCampaignGame(s,input.turn,'submit')
       if(player.faction===opponent.faction)fail('Choose an opponent from a different campaign faction. Same-faction games are prohibited.')
       if(publication.turn)s.turns[publication.turn]=publication
       const state=input.turn===publication.turn?publication:s.turns[input.turn];if(!state)fail('This Turn has not been announced.')
@@ -37,6 +41,7 @@ export function createCampaignGameStore(path,{now=()=>new Date()}={}) {
     }),
     act:(input,userId,admin)=>run(async()=>{
       const s=await read(),g=s.games.find(g=>g.id===input.id);if(!g)fail('Game not found.')
+      guardCampaignGame(s,g.turn,'act')
       if(input.revision!==g.revision)fail('This game changed. Reload it before reviewing the result.')
       if(!admin&&![g.playerA.id,g.playerB.id].includes(userId))fail('Only the two registered players can review this game.')
       if(!admin&&g.status==='rejected')fail('This game was rejected. Contact Lobo.')

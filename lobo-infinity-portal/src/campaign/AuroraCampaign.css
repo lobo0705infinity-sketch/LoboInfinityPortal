@@ -273,3 +273,22 @@
 .aurora-promo-card > span > span { font-size: .9rem; color: #a8d9ec; }
 .aurora-promo-card:hover { border-color: #a8d9ec; }
 .aurora-promo-card:focus-visible { outline: 3px solid #a8d9ec; outline-offset: 4px; }
+
+/* Commissioner operations: private forms share the campaign's accessible controls. */
+.aurora-operations > details, .aurora-operations > div > details,
+.aurora-resolution-review > details { margin-block: 1rem; }
+.aurora-operation-form { margin-block: 1.25rem; }
+.aurora-operation-form fieldset { min-width: 0; margin: 0; padding: 1rem; border: 1px solid var(--line, #30424e); border-radius: .65rem; display: grid; gap: .85rem; }
+.aurora-operation-form legend { padding-inline: .4rem; font-weight: 700; }
+.aurora-operation-form label, .aurora-operations > label { display: grid; gap: .35rem; }
+.aurora-operation-form input:not([type=checkbox]), .aurora-operation-form textarea,
+.aurora-operation-form select, .aurora-operations > label select { box-sizing: border-box; width: 100%; min-height: 44px; padding: .65rem; border: 1px solid #40505b; border-radius: .35rem; background: #0b1820; color: #f5f2ea; font: inherit; }
+.aurora-operation-form textarea { min-height: 5rem; resize: vertical; }
+.aurora-operation-form .aurora-doctrine-choice { display: flex; align-items: flex-start; gap: .7rem; }
+.aurora-doctrine-choice input { margin-top: .3rem; }
+.aurora-operation-form fieldset:disabled { opacity: .6; }
+.aurora-operations .table-wrapper { overflow-x: auto; }
+.aurora-operations th, .aurora-operations td { text-align: left; padding: .6rem; vertical-align: top; }
+.aurora-operations summary { cursor: pointer; font-weight: 650; padding-block: .6rem; }
+.aurora-operations button { min-height: 44px; }
+.aurora-operations a, .aurora-operations p { overflow-wrap: anywhere; }

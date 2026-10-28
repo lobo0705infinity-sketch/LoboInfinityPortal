@@ -234,7 +234,7 @@ function CampaignRules() {
         <li>Players remain free to arrange games. Opponents choose the campaign location by agreement or blind Command Token bidding. Recommended targets guide coordination.</li>
         <li>The GM interprets rules and confirms scoring. If both Commander and deputy are unavailable, contact the GM before the decision deadline.</li>
       </ul>
-      <p>Keep contract terms, spending, objectives and specialist selections in the private faction channel and submit them privately to the GM.</p>
+      <p>Discuss plans in your private faction channel. The Commander or deputy sends the official decision directly to Lobo by Discord DM, including the Turn, faction, decision and any target, beneficiary or Credit amount. Send anything secret this way: contract offers and acceptance, spending, Hidden Hand choices, Infiltration targets and Secret Objective claims. Lobo records and reviews these privately; only approved public outcomes appear here.</p>
     </section>
     <details className="aurora-info-section"><summary>Campaign structure</summary><ul>
       <li>12 weeks, divided into six Campaign Turns of two weeks each.</li>
