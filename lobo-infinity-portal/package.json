@@ -223,6 +223,7 @@
     "benchmarks:rebuild": "node scripts/rebuild-combat-benchmarks.mjs",
     "artwork:build": "node scripts/build-responsive-artwork.mjs",
     "test:desktop-experience": "node --experimental-strip-types scripts/desktop-experience-check.mjs",
+    "test:aurora-territory-videos": "node scripts/aurora-territory-videos-check.mjs",
     "test:aurora-games": "node scripts/aurora-games-check.mjs",
     "test:aurora-campaign": "node tests/aurora-publication-check.mjs",
     "test:top-40-portal-registration": "node scripts/top-40-portal-registration-check.mjs",
