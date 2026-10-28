@@ -1,4 +1,5 @@
 import TerritoryVideo from './TerritoryVideo'
+import TerritoryVideoThumbnail from './TerritoryVideoThumbnail'
 import { AURORA_TERRITORY_VIDEOS, AURORA_RULES_REVISION, AURORA_SPECIAL_RULES_PDF_URL } from '../config/auroraTerritoryVideos'
 import { auroraMapRegions } from '../../shared/aurora-map-catalog.mjs'
 import TerritoryBattlefieldRules from './TerritoryBattlefieldRules'
@@ -94,7 +95,7 @@ function TerritoryVideoGallery() {
     <div className="aurora-territory-video-grid">{published.map(territory => {
       const video = AURORA_TERRITORY_VIDEOS[territory.id]
       return <Link className="aurora-territory-video-card" key={territory.id} to={`${AURORA_PATH}/territories/${territory.id}`}>
-        <img src={`/assets/aurora-vii/videos-20261028/${video.videoId}.webp`} width="480" height="360" loading="lazy" alt=""/>
+        <TerritoryVideoThumbnail videoId={video.videoId} />
         <span><strong>{territory.name}</strong><small>Watch guide &amp; read current rules →</small></span>
       </Link>
     })}</div>

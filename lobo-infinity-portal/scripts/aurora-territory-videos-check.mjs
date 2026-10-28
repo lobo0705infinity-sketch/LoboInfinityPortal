@@ -35,6 +35,13 @@ try {
   page.on('pageerror', error => errors.push(error.message))
   page.on('request', request => { if (request.url().includes('youtube-nocookie.com/embed/')) embeds.push(request.url()) })
   await page.route('https://**/*', route => route.fulfill({ status: 503, body: '{}' }))
+  // Keep this browser check offline while exercising the current YouTube image URLs.
+  await page.route('https://i.ytimg.com/vi/**', async route => {
+    const url = new URL(route.request().url())
+    const videoId = url.pathname.split('/')[2]
+    if (!Object.values(expected).includes(videoId)) return route.fulfill({ status: 503, body: '{}' })
+    await route.fulfill({ contentType: 'image/webp', body: await readFile(`public/assets/aurora-vii/videos-20261028/${videoId}.webp`) })
+  })
   const origin = `http://127.0.0.1:${server.address().port}`
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
@@ -58,7 +65,14 @@ try {
     }
   }
   assert.equal(embeds.length, 0, 'No player requests before a visitor chooses playback')
+  await page.route('https://i.ytimg.com/vi/1bz2C1y7ce0/maxresdefault.jpg*', route => route.fulfill({ status: 404, body: '' }))
   await page.goto(origin + '/campaign/aurora-vii/territories/iron-corridor')
+  const poster = page.locator('.aurora-video-poster img')
+  await poster.evaluate(node => { node.loading = 'eager' })
+  await page.waitForFunction(() => {
+    const image = document.querySelector('.aurora-video-poster img')
+    return image?.src.includes('/hqdefault.jpg') && image.complete && image.naturalWidth > 0
+  })
   await page.getByRole('button', { name: 'Play Iron Corridor video guide' }).click()
   assert.match(await page.locator('iframe').getAttribute('src'), /1bz2C1y7ce0\?autoplay=1/)
   assert.equal(await page.locator('iframe').getAttribute('title'), 'Reinforced Cover: Iron Corridor')

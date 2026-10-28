@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import TerritoryVideoThumbnail from './TerritoryVideoThumbnail'
 import { AURORA_TERRITORY_VIDEOS } from '../config/auroraTerritoryVideos'
 import { youtubeWatchUrl } from '../config/promoVideos'
 import './TerritoryVideo.css'
@@ -19,7 +20,7 @@ export default function TerritoryVideo({ territoryId, territoryName }: { territo
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
       /> : <button className="aurora-video-poster" type="button" aria-label={`Play ${territoryName} video guide`} onClick={() => setPlaying(true)}>
-        <img src={`/assets/aurora-vii/videos-20261028/${video.videoId}.webp`} width="480" height="360" loading="lazy" alt="" />
+        <TerritoryVideoThumbnail videoId={video.videoId} />
         <span><span aria-hidden="true">▶</span> Play territory guide</span>
       </button>}
     </div>
