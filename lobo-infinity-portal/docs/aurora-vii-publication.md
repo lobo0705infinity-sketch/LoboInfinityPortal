@@ -26,3 +26,12 @@ Players may agree to play in one of the current Turn’s Vulnerable Territories 
 - Equal bids: both players lose the number of Command Tokens they bid, then roll off. The die-roll winner chooses the location.
 
 For a territory battle, then make a separate Face-to-Face roll; the winner chooses one of the Turn’s two ordinary missions. A Narrative game uses the active Narrative Mission sheet. Campaign location selection does not assign a particular tabletop terrain layout.
+
+
+## Territory video guides and rules revisions
+
+Published territory guides are mapped by territory ID in `src/config/auroraTerritoryVideos.ts`. The campaign overview lists only published guides; each matching territory and Workshop location page offers a click-to-load YouTube privacy-enhanced player and an external YouTube link. Preview artwork is served locally from `public/assets/aurora-vii/videos-20261028/`, so no player is loaded until the visitor chooses playback. Add a guide only after verifying its published channel title and video ID.
+
+Written rules remain authoritative and are shared by territory, location, mission, and Player Rules pages through `shared/aurora-territory-rules.json`. The rules PDF and revision date are linked alongside them. The 28 October 2026 Sulfur Basin correction adds Immunity (Enhanced), Immunity (BTS), and Fireteam protection; Protected Crossing now grants one friendly trooper Terrain (Total) at scenario start for the scenario. The PDF reflects the same text.
+
+After building, run `npm run test:aurora-territory-videos` with Playwright Chromium installed (or `CAMPAIGN_TEST_CHROMIUM` pointing to a compatible executable). It checks all twelve territory pages, the eight published links, player activation/closure, mobile layout, corrected Sulfur rules across the territory and both Workshop locations, Player Rules, and the PDF download.
