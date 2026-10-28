@@ -12,7 +12,10 @@ const expected = {
   'crystal-frontier': 'hLn39ozOR28', 'harmony-province': 'abxV520l70E',
   'verde-wilds': 'CW79NFD_sPM', 'ember-highlands': 'ARvOGEtQhrk',
   'frostreach-wastes': 'gczfSFmLDjg', 'iron-corridor': '1bz2C1y7ce0',
+  'echo-shores': 'xU0885BtA84', 'azure-coast': '3Ak0xjiwGlA',
+  'sulfur-basin': 'R2N7ToHK3To', 'northward-expanse': 'JNXe2sOd-I0',
 }
+assert.deepEqual(Object.keys(expected).sort(), AURORA_TERRITORIES.map(territory => territory.id).sort(), 'Every province has a published guide')
 const pdfPath = '/guides/aurora-vii-territory-special-rules-20261028.pdf'
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.png': 'image/png', '.pdf': 'application/pdf' }
 const server = createServer(async (req, res) => {
@@ -40,14 +43,16 @@ try {
     const url = new URL(route.request().url())
     const videoId = url.pathname.split('/')[2]
     if (!Object.values(expected).includes(videoId)) return route.fulfill({ status: 503, body: '{}' })
-    await route.fulfill({ contentType: 'image/webp', body: await readFile(`public/assets/aurora-vii/videos-20261028/${videoId}.webp`) })
+    const fixture = await readFile(`public/assets/aurora-vii/videos-20261028/${videoId}.webp`)
+      .catch(() => readFile('public/assets/aurora-vii/videos-20261028/1bz2C1y7ce0.webp'))
+    await route.fulfill({ contentType: 'image/webp', body: fixture })
   })
   const origin = `http://127.0.0.1:${server.address().port}`
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 })
     await page.goto(origin + '/campaign/aurora-vii')
     await page.getByRole('heading', { name: 'Territory video guides', exact: true }).waitFor()
-    assert.equal(await page.locator('.aurora-territory-video-card').count(), 8)
+    assert.equal(await page.locator('.aurora-territory-video-card').count(), 12)
     await page.locator('.aurora-territory-video-card img').evaluateAll(nodes => Promise.all(nodes.map(node => { node.loading = 'eager'; return node.decode() })))
     assert.equal(await page.locator('iframe').count(), 0)
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Gallery fits ${width}px`)
@@ -62,6 +67,7 @@ try {
     if (expected[territory.id]) {
       const video = page.locator('.aurora-territory-video')
       assert.equal(await video.getByRole('link', { name: 'Watch on YouTube ↗' }).getAttribute('href'), `https://www.youtube.com/watch?v=${expected[territory.id]}`)
+      assert.match(await video.locator('img').getAttribute('src'), new RegExp(`/vi/${expected[territory.id]}/`))
     }
   }
   assert.equal(embeds.length, 0, 'No player requests before a visitor chooses playback')
@@ -108,5 +114,5 @@ try {
   await page.locator('.aurora-territory-video-card img').evaluateAll(nodes => Promise.all(nodes.map(node => { node.loading = 'eager'; return node.decode() })))
   await page.screenshot({ path: '/tmp/aurora-video-gallery.png' })
   assert.deepEqual(errors, [])
-  console.log('PASS: eight published guides, all twelve territories, click-to-load/close player, no preloaded embeds, mobile gallery, Sulfur rules across territory/two locations/Player Rules, downloadable PDF, no page errors.')
+  console.log('PASS: all twelve published guides and territories, correct video and thumbnail mappings, click-to-load/close player, no preloaded embeds, mobile gallery, Sulfur rules across territory/two locations/Player Rules, downloadable PDF, no page errors.')
 } finally { await browser.close(); await new Promise(done => server.close(done)) }
