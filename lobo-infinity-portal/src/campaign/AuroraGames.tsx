@@ -18,40 +18,44 @@ type Draft={turn:number;opponent:string;date:string;kind:string;location:string;
 const labels:Record<string,string>={awaiting_confirmation:'Awaiting opponent confirmation',awaiting_late_approval:'Awaiting Lobo’s late approval',awaiting_duplicate_review:'Awaiting Lobo’s duplicate review',correction_requested:'Correction requested',confirmed:'Confirmed',rejected:'Rejected'}
 const locationName=(id:string)=>id==='narrative'?'Narrative Mission':AURORA_TERRITORIES.find(t=>t.id===id)?.name||id
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())
-async function api(action:string,body?:unknown,admin=false){
-  const token=admin?getActiveNativeSessionToken():null
-  const response=await fetch(`/api/aurora-games?action=${action}`,{method:body?'POST':'GET',credentials:'same-origin',headers:{...(body?{'content-type':'application/json'}:{}),...(token?{authorization:`Bearer ${token}`}:{})},...(body?{body:JSON.stringify(body)}:{})})
+async function api(action:string,body?:unknown,admin=false,practiceRole?:string){
+  const token=admin||practiceRole?getActiveNativeSessionToken():null
+  const route=practiceRole?`practice-${['mine','admin'].includes(action)?'mine':action}`:action
+  const response=await fetch(`/api/aurora-games?action=${route}${practiceRole?`&as=${practiceRole}`:''}`,{method:body?'POST':'GET',credentials:'same-origin',headers:{...(body?{'content-type':'application/json'}:{}),...(token?{authorization:`Bearer ${token}`}:{})},...(body?{body:JSON.stringify(body)}:{})})
   const value=await response.json()
   if(!response.ok)throw Object.assign(Error(value.error||'Could not load campaign games.'),{status:response.status,signedIn:value.signedIn})
   return value
 }
-export default function AuroraGames({submit=false,admin=false}:{submit?:boolean;admin?:boolean}){
-  const [data,setData]=useState<Data|null>(null),[error,setError]=useState(''),[loginNeeded,setLoginNeeded]=useState(false),[signedIn,setSignedIn]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[refresh,setRefresh]=useState(0)
-  const [params]=useSearchParams(),gameId=params.get('game')
-  useEffect(()=>{let alive=true;api(admin?'admin':'mine',undefined,admin).then(value=>{if(alive){setData(value);setError('');setLoginNeeded(false)}},(e:Error&{status?:number;signedIn?:boolean})=>{if(alive){setError(e.message);setLoginNeeded(e.status===401);setSignedIn(Boolean(e.signedIn))}});return()=>{alive=false}},[admin,refresh])
+export default function AuroraGames({submit=false,admin=false,practice=false}:{submit?:boolean;admin?:boolean;practice?:boolean}){
+  const [data,setData]=useState<Data|null>(null),[error,setError]=useState(''),[loginNeeded,setLoginNeeded]=useState(false),[signedIn,setSignedIn]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[refresh,setRefresh]=useState(0),[resetNonce,setResetNonce]=useState(0)
+  const [params,setParams]=useSearchParams(),gameId=params.get('game')
+  const practiceRole=practice?(['a','b','commissioner'].includes(params.get('as')||'')?params.get('as')!:'a'):undefined
+  const reviewAdmin=admin||practiceRole==='commissioner'
+  useEffect(()=>{let alive=true;api(reviewAdmin?'admin':'mine',undefined,reviewAdmin,practiceRole).then(value=>{if(alive){setData(value);setError('');setLoginNeeded(false)}},(e:Error&{status?:number;signedIn?:boolean})=>{if(alive){setError(e.message);setLoginNeeded(!practice&&e.status===401);setSignedIn(Boolean(e.signedIn))}});return()=>{alive=false}},[reviewAdmin,practice,practiceRole,refresh])
   async function login(){setBusy(true);setError('');try{const r=await fetch('/api/aurora-signup?action=login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({returnPath:`${ROOT}/${submit?'submit':'games'}${gameId?`?game=${gameId}`:''}`})});const v=await r.json();if(!r.ok)throw Error(v.error);window.location.assign(v.authorizeUrl)}catch(e){setError((e as Error).message);setBusy(false)}}
-  async function mutate(action:string,body:unknown){setBusy(true);setError('');setMessage('');try{await api(action,body,admin);setRefresh(n=>n+1);setMessage('Saved.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+  async function mutate(action:string,body:unknown){setBusy(true);setError('');setMessage('');try{await api(action,body,reviewAdmin,practiceRole);setRefresh(n=>n+1);setMessage('Saved.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
   const games=data?.games.slice().reverse().sort((a,b)=>Number(b.id===gameId)-Number(a.id===gameId)||Number(b.status==='awaiting_confirmation'&&b.playerB.id===data.player?.id)-Number(a.status==='awaiting_confirmation'&&a.playerB.id===data.player?.id))||[]
   return <section className="panel aurora-panel aurora-games">
-    <h2>{admin?'Commissioner · Campaign games & private claims':submit?'Submit Campaign Game':'My Campaign Games'}</h2>
+    <h2>{practice?'Practice game reporting':admin?'Commissioner · Campaign games & private claims':submit?'Submit Campaign Game':'My Campaign Games'}</h2>
+    {practice?<div className="aurora-notice aurora-admin-form aurora-practice-controls"><p><strong>Practice only.</strong> Use sample players to test submission, generated verification links, confirmation and corrections. Practice records do not count in campaign results or map activity. No Discord messages are sent.</p><label>Test as<select aria-label="Test as" value={practiceRole} disabled={busy} onChange={e=>{setData(null);setParams(previous=>{previous.set('as',e.target.value);return previous})}}><option value="a">Practice submitter</option><option value="b">Practice opponent</option><option value="commissioner">Practice commissioner · corrections</option></select></label><button type="button" disabled={busy||!data} onClick={async()=>{setBusy(true);setError('');try{await api('reset',{},true,practiceRole);setData(null);setResetNonce(n=>n+1);setRefresh(n=>n+1);setMessage('Practice records cleared.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}}>Clear practice records</button></div>:null}
     <button type="button" disabled={busy} onClick={()=>setRefresh(n=>n+1)}>Refresh games</button>
     {error?<p role="alert">{error}</p>:null}{message?<p role="status">{message}</p>:null}
     {loginNeeded?<><button className="aurora-primary" type="button" disabled={busy} onClick={()=>void login()}>{busy?'Opening Discord…':'Verify my Discord account'}</button><p>Use the Discord account registered for Aurora VII.{signedIn?<> This account is not registered. <Link to={`${ROOT}/register`}>Register</Link> or verify your other account.</>:null}</p></>:!data?<p>Loading campaign games…</p>:<>
-      {submit&&data.player?<Submission data={data} onSaved={()=>setRefresh(n=>n+1)}/>:null}
-      {!submit||admin?<>
-        {admin?<CampaignTotalsTable totals={data.totals}/>:null}
-        <h3>{admin?'Recorded games':'Your recorded games & confirmations'}</h3>
+      {submit&&data.player?<Submission key={`${practiceRole||'live'}:${resetNonce}`} data={data} practiceRole={practiceRole} onSaved={()=>setRefresh(n=>n+1)}/>:null}
+      {!submit||admin||practice?<>
+        {reviewAdmin?<CampaignTotalsTable totals={data.totals}/>:null}
+        <h3>{reviewAdmin?'Recorded games':'Your recorded games & confirmations'}</h3>
         {gameId&&!games.some(g=>g.id===gameId)?<p role="alert">This game is unavailable to this account. Only its players and Lobo can review it.</p>:null}
-        {!admin&&!games.some(g=>g.playerB.id===data.player?.id&&g.status==='awaiting_confirmation')?<p>No games awaiting your confirmation.</p>:null}
-        {games.map(g=><GameReview key={`${g.id}:${g.revision}`} game={g} me={data.player?.id} admin={admin} busy={busy} mutate={mutate}/>)}
+        {!reviewAdmin&&!games.some(g=>g.playerB.id===data.player?.id&&g.status==='awaiting_confirmation')?<p>No games awaiting your confirmation.</p>:null}
+        {games.map(g=><GameReview key={`${g.id}:${g.revision}`} game={g} me={data.player?.id} admin={reviewAdmin} practice={practice} busy={busy} mutate={mutate}/>)}
         {!games.length?<p>No campaign games recorded yet.</p>:null}
-        <h3>{admin?'Private secret-objective claims':'Your private claims'}</h3><p>Visible only to the claimant and Lobo. Approval does not automatically award Campaign VP.</p>
-        {data.claims.map(c=><ClaimReview key={`${c.id}:${c.revision}`} claim={c} admin={admin} busy={busy} mutate={mutate}/>)}{!data.claims.length?<p>No private claims.</p>:null}
+        <h3>{reviewAdmin?'Private secret-objective claims':'Your private claims'}</h3><p>Visible only to the claimant and Lobo. Approval does not automatically award Campaign VP.</p>
+        {data.claims.map(c=><ClaimReview key={`${c.id}:${c.revision}`} claim={c} admin={reviewAdmin} busy={busy} mutate={mutate}/>)}{!data.claims.length?<p>No private claims.</p>:null}
       </>:null}
     </>}
   </section>
 }
-function Submission({data,onSaved}:{data:Data;onSaved:()=>void}){
+function Submission({data,onSaved,practiceRole}:{data:Data;onSaved:()=>void;practiceRole?:string}){
   const [defaultDate]=useState(today),[openedAt]=useState(()=>Date.now()),[turn,setTurn]=useState(data.state.turn),[kind,setKind]=useState('territory'),[mission,setMission]=useState(''),[opA,setOpA]=useState(''),[opB,setOpB]=useState(''),[formValues,setFormValues]=useState<Partial<Draft>>({}),[draft,setDraft]=useState<Draft|null>(null),[saved,setSaved]=useState<CampaignGame|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
   const state=data.turns.find(t=>t.turn===turn)||data.state,missions=AURORA_TURNS.find(t=>t.turn===turn)?.missions||[],catalog=useSnapshotData<MissionGeistCatalog>('mission-catalog')
   const selectedMission=kind==='narrative'?state.narrativeMission?.title||'':mission
@@ -59,8 +63,8 @@ function Submission({data,onSaved}:{data:Data;onSaved:()=>void}){
   const reference=kind==='narrative'?state.narrativeMission?.sheetUrl:refs.find(r=>{try{const u=new URL(r.canonicalUrl);return u.protocol==='https:'&&u.hostname==='infinitygeist.com'}catch{return false}})?.canonicalUrl
   let score:ReturnType<typeof campaignScore>|null=null
   try{if(opA!==''&&opB!=='')score=campaignScore(Number(opA),Number(opB))}catch{/* Native and server validation cover invalid scores. */}
-  async function save(){if(!draft)return;setBusy(true);setError('');try{const v=await api('submit',draft);setSaved(v.game);onSaved()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
-  if(saved)return <div className="aurora-notice"><h3>Game submitted</h3><p>{labels[saved.status]}. {saved.late?'Lobo must authorize this late result before it counts.':'It will count after confirmation.'}</p>{saved.duplicateOf?<p>Possible duplicate: Lobo must verify this is a separate battle before it counts.</p>:null}<p>If the Discord notification cannot reach your opponent, send this link directly.</p><VerificationLink id={saved.id}/><Link to={`${ROOT}/games?game=${saved.id}`}>Open your game →</Link></div>
+  async function save(){if(!draft)return;setBusy(true);setError('');try{const v=await api('submit',draft,false,practiceRole);setSaved(v.game);onSaved()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
+  if(saved)return <div className="aurora-notice"><h3>Game submitted</h3><p>{labels[saved.status]}. {practiceRole?'This practice result can now be confirmed or corrected.':saved.late?'Lobo must authorize this late result before it counts.':'It will count after confirmation.'}</p>{saved.duplicateOf?<p>Possible duplicate: Lobo must verify this is a separate battle before it counts.</p>:null}<p>{practiceRole?'Open the practice verification link to review as the opponent. No Discord message was sent.':'If the Discord notification cannot reach your opponent, send this link directly.'}</p><VerificationLink id={saved.id} practice={Boolean(practiceRole)} opponentId={saved.playerB.id}/><Link to={practiceRole?`/commissioner/aurora-vii/reporting-test?as=${saved.playerB.id==='practice-player-a'?'a':'b'}&game=${saved.id}`:`${ROOT}/games?game=${saved.id}`}>{practiceRole?'Open as practice opponent →':'Open your game →'}</Link></div>
   if(!state.turn)return <p>Submissions open when Lobo announces the active Campaign Turn and its four Vulnerable Territories.</p>
   if(data.reporting&&data.reporting.phase!=='open')return <p role="status">{['closed','resolved'].includes(data.reporting.phase)?'Campaign reporting is closed for this Turn. Contact Lobo about any outstanding result.':'Lobo is recording and locking faction decisions. Campaign reporting will open when that step is complete.'}</p>
   if(draft){const opponent=data.players.find(p=>p.id===draft.opponent)!;const scored=campaignScore(draft.opA,draft.opB);return <div className="aurora-game-review"><h3>Review both players’ scores</h3><p>Turn {draft.turn} · {draft.date} · {locationName(draft.kind==='narrative'?'narrative':draft.location)} · {draft.mission}</p><ScoreReview a={data.player!} b={opponent} opA={draft.opA} opB={draft.opB} tpA={scored.tpA} tpB={scored.tpB}/><p>{scored.result}. TP: victory 4, draw 2, defeat 0; +1 for scoring at least 5 OP; +1 for a defeat by no more than 2 OP.</p><p>Map: {draft.map||'Not provided'}</p>{draft.notes?<p>{draft.notes}</p>:null}<p>One submission covers both players. Your opponent confirms or requests a correction. Private objectives are claimed separately.</p>{error?<p role="alert">{error}</p>:null}<button type="button" disabled={busy} onClick={()=>setDraft(null)}>Back to form</button><button type="button" className="aurora-primary" disabled={busy} onClick={()=>void save()}>{busy?'Saving…':'Submit for opponent confirmation'}</button></div>}
@@ -68,7 +72,7 @@ function Submission({data,onSaved}:{data:Data;onSaved:()=>void}){
     <CampaignLocationRules/>
     <div className="aurora-admin-columns">
       <label>Campaign Turn<select aria-label="Campaign Turn" value={turn} onChange={e=>{setTurn(Number(e.target.value));setMission('')}}>{data.turns.map(t=><option key={t.turn} value={t.turn}>Turn {t.turn}{t.turn===data.state.turn?' · Active':' · Late approval required'}</option>)}</select></label>
-      <label>Your registered player<input readOnly value={`${data.player!.name} · ${factionName(data.player!.faction)}`}/></label>
+      <label>{practiceRole?'Your practice player':'Your registered player'}<input readOnly value={`${data.player!.name} · ${factionName(data.player!.faction)}`}/></label>
       <label>Opponent<select aria-label="Opponent" name="opponent" required defaultValue={formValues.opponent||''}><option value="">Choose a player from another faction</option>{data.players.filter(p=>p.id!==data.player!.id&&p.faction!==data.player!.faction).map(p=><option value={p.id} key={p.id}>{p.name} · {factionName(p.faction)}</option>)}</select></label>
       <p className="aurora-muted">Your opponent must belong to a different campaign faction. Same-faction games are prohibited for both Territory Battles and Narrative Missions.</p>
       <label>Date played<input name="date" type="date" required defaultValue={formValues.date||defaultDate} max={defaultDate}/></label>
@@ -87,8 +91,8 @@ function Submission({data,onSaved}:{data:Data;onSaved:()=>void}){
   </form>
 }
 function ScoreReview({a,b,opA,opB,tpA,tpB}:{a:Player;b:Player;opA:number;opB:number;tpA:number;tpB:number}){return <div className="aurora-score-grid">{[{p:a,op:opA,tp:tpA},{p:b,op:opB,tp:tpB}].map(v=><div key={v.p.id}><strong>{v.p.name}</strong><span>{factionName(v.p.faction)}</span><b>{v.op} OP · {v.tp} TP</b></div>)}</div>}
-function VerificationLink({id}:{id:string}){const [message,setMessage]=useState(''),url=`https://lobo-infinity-portal.vercel.app${ROOT}/games?game=${id}`;return <div className="aurora-verification"><label>Opponent verification link<input readOnly value={url} onFocus={e=>e.target.select()}/></label><button type="button" onClick={async()=>{try{await navigator.clipboard.writeText(url);setMessage('Link copied. Send it to your opponent.')}catch{setMessage('Select the link above to copy it.')}}}>Copy verification link</button><p role="status">{message}</p></div>}
-function GameReview({game:g,me,admin,busy,mutate}:{game:CampaignGame;me?:string;admin:boolean;busy:boolean;mutate:(action:string,body:unknown)=>Promise<void>}){
+function VerificationLink({id,practice=false,opponentId}:{id:string;practice?:boolean;opponentId?:string}){const [message,setMessage]=useState(''),url=practice?`https://lobo-infinity-portal.vercel.app/commissioner/aurora-vii/reporting-test?as=${opponentId==='practice-player-a'?'a':'b'}&game=${id}`:`https://lobo-infinity-portal.vercel.app${ROOT}/games?game=${id}`;return <div className="aurora-verification"><label>{practice?'Practice verification link':'Opponent verification link'}<input readOnly value={url} onFocus={e=>e.target.select()}/></label><button type="button" onClick={async()=>{try{await navigator.clipboard.writeText(url);setMessage(practice?'Practice link copied.':'Link copied. Send it to your opponent.')}catch{setMessage('Select the link above to copy it.')}}}>Copy verification link</button><p role="status">{message}</p></div>}
+function GameReview({game:g,me,admin,practice=false,busy,mutate}:{game:CampaignGame;me?:string;admin:boolean;practice?:boolean;busy:boolean;mutate:(action:string,body:unknown)=>Promise<void>}){
   const [reason,setReason]=useState(''),[objective,setObjective]=useState(''),[explanation,setExplanation]=useState('')
   const act=(action:string,values?:unknown)=>void mutate(admin?'admin-action':'act',{id:g.id,revision:g.revision,action,reason,values})
   return <article className="aurora-game-review" id={`game-${g.id}`}>
@@ -98,7 +102,7 @@ function GameReview({game:g,me,admin,busy,mutate}:{game:CampaignGame;me?:string;
     {g.map?<p>Map: {g.map}</p>:null}{g.notes?<p>{g.notes}</p>:null}
     {g.armyA||g.armyB||g.photos?<details><summary>Army codes & photos</summary>{g.armyA?<p>Submitter army code: <code>{g.armyA}</code></p>:null}{g.armyB?<p>Opponent army code: <code>{g.armyB}</code></p>:null}{g.photos.split(/\s+/).filter(Boolean).map((url,i)=><p key={url}><a href={url} target="_blank" rel="noopener noreferrer">Photo {i+1} ↗</a></p>)}</details>:null}
     {g.correction?<p className="aurora-important">Correction requested: {g.correction.reason}</p>:null}
-    {['awaiting_confirmation','awaiting_late_approval'].includes(g.status)?<VerificationLink id={g.id}/>:null}
+    {['awaiting_confirmation','awaiting_late_approval'].includes(g.status)?<VerificationLink id={g.id} practice={practice} opponentId={g.playerB.id}/>:null}
     {g.status==='awaiting_confirmation'&&(admin||g.playerB.id===me)?<button type="button" className="aurora-primary" disabled={busy} onClick={()=>act('confirm')}>Confirm result</button>:null}
     {g.status!=='rejected'||admin?<><label>{admin?'Commissioner explanation':'Correction requested · Explain what needs changing'}<textarea maxLength={2000} value={reason} onChange={e=>setReason(e.target.value)}/></label>{g.status!=='rejected'?<button type="button" disabled={busy||!reason.trim()} onClick={()=>act('correction')}>Request correction</button>:null}</>:null}
     {admin?<details><summary>Commissioner actions & correction</summary>

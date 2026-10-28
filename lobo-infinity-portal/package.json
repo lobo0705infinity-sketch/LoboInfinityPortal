@@ -224,7 +224,7 @@
     "artwork:build": "node scripts/build-responsive-artwork.mjs",
     "test:desktop-experience": "node --experimental-strip-types scripts/desktop-experience-check.mjs",
     "test:aurora-territory-videos": "node scripts/aurora-territory-videos-check.mjs",
-    "test:aurora-games": "node scripts/aurora-games-check.mjs",
+    "test:aurora-games": "node scripts/aurora-games-check.mjs && node scripts/aurora-reporting-practice-check.mjs",
     "test:aurora-campaign": "node tests/aurora-publication-check.mjs",
     "test:top-40-portal-registration": "node scripts/top-40-portal-registration-check.mjs",
     "test:aurora-registration": "node scripts/aurora-registration-check.mjs && node scripts/aurora-portal-registration-check.mjs",
@@ -232,7 +232,8 @@
     "test:workshop-current-collection": "node --experimental-strip-types scripts/workshop-current-collection-check.mjs",
     "test:top-40-branding": "node scripts/top-40-branding-check.mjs",
     "test:aurora-operations": "node scripts/aurora-operations-check.mjs",
-    "test:aurora-operations:browser": "node scripts/aurora-operations-browser-check.mjs"
+    "test:aurora-operations:browser": "node scripts/aurora-operations-browser-check.mjs",
+    "test:aurora-reporting-practice:browser": "node scripts/aurora-reporting-practice-browser-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
