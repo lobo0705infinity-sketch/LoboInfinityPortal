@@ -33,7 +33,7 @@ try{
  await expect(page.getByRole('heading',{name:'Test campaign reporting',exact:true})).toBeVisible()
  await page.getByRole('combobox',{name:'Opponent',exact:true}).selectOption('practice-player-b')
  await page.getByRole('combobox',{name:'Campaign Location',exact:true}).selectOption('nova-prospect')
- await page.getByRole('combobox',{name:'Mission played',exact:true}).selectOption('Claim the Frontier')
+ await page.getByRole('combobox',{name:'Mission played',exact:true}).selectOption({label:'Frontline'})
  await page.getByLabel('Your Objective Points',{exact:true}).fill('8');await page.getByLabel('Opponent Objective Points',{exact:true}).fill('6')
  await page.getByLabel('Battle notes (optional)').fill('Practice notes preserved during score review')
  await page.getByRole('button',{name:'Review scores before submission',exact:true}).click()
