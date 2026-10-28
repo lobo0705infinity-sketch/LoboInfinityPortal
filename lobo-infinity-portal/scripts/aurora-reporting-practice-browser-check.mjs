@@ -66,7 +66,7 @@ try{
  await page.setViewportSize({width:390,height:844});assert((await page.getByRole('combobox',{name:'Test as',exact:true}).boundingBox()).height>=44,'Practice role selector has a touch target');assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile practice form fits')
  await page.getByRole('heading',{name:'Test campaign reporting',exact:true}).scrollIntoViewIfNeeded();await page.screenshot({path:join(directory,'practice-mobile.png')})
  await page.getByRole('button',{name:'Clear practice records',exact:true}).click()
- await expect(page.getByText('No campaign games recorded yet.',{exact:true})).toBeVisible()
+ await expect(page.getByText('No campaign games recorded yet.',{exact:true})).toBeVisible();await expect(page.getByRole('alert')).toHaveCount(0)
  assert.equal((await live.activity(1)).games.length,0);assert.deepEqual(errors,[])
  console.log('PASS: prelaunch commissioner form, real score review/submission, generated opponent verification link, opponent-only confirmation, correction/reconfirmation, mobile layout and disposable reset; no publication, live games or Discord messages. Screenshot:',join(directory,'practice-mobile.png'))
 }finally{await browser.close();await new Promise(r=>server.close(r));await rm(join(directory,'practice.json'),{force:true})}
