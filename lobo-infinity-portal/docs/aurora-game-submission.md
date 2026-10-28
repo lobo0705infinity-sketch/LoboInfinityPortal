@@ -71,3 +71,12 @@ Players may agree to play in one of the current Turn’s Vulnerable Territories 
 - Equal bids: both players lose the number of Command Tokens they bid, then roll off. The die-roll winner chooses the location.
 
 For a territory battle, then make a separate Face-to-Face roll; the winner chooses one of the Turn’s two ordinary missions. A Narrative game uses the active Narrative Mission sheet. Campaign location selection does not assign a particular tabletop terrain layout.
+
+
+## Test reporting before Turn 1
+
+Commissioner administration links to `/commissioner/aurora-vii/reporting-test`. It requires the normal commissioner session and works even when the live campaign is at Turn 0. The sample Turn and two sample players do not change the public campaign or real registration. Submit a practice result, review the computed TP, and use the generated verification link to open it as the practice opponent. The opponent can confirm or request a correction; **Test as → Practice commissioner** exposes the existing correction/review controls. Switch back to the opponent to confirm the corrected revision. The role switch is a commissioner-only simulation; it does not replace a real Discord authentication test.
+
+Practice uses the same game store, validation, scoring, participant authorization, revisions and review components with a distinct storage instance at `<AURORA_GAMES_PATH>.practice.json` (default `/data/aurora-vii-games.json.practice.json`). No live publication or registration data is passed into practice actions, and no Discord delivery call is made. Public activity and operations read only the original live ledger. Practice writes retain commissioner authentication, same-origin checks, JSON size limits and no-store responses. Reset is enabled only on the practice store; the live store rejects reset.
+
+Run `npm run test:aurora-games` for practice isolation and real-game regressions. Run `npm run test:aurora-reporting-practice:browser` after a fixture build using the same `CAMPAIGN_TEST_DIST` / `CAMPAIGN_TEST_CHROMIUM` options as the commissioner browser checks.
