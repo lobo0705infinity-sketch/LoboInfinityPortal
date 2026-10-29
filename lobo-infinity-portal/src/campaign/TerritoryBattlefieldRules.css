@@ -11,3 +11,7 @@
 .aurora-battlefield-entry > summary { cursor: pointer; padding: .9rem 0; font-weight: 650; }
 .aurora-battlefield-entry + .aurora-battlefield-entry { border-top: 1px solid #879bab40; }
 .aurora-battlefield-entry .aurora-battlefield-rules { padding: .3rem 0 1.25rem; }
+
+.aurora-blizzard-template { margin: 1.25rem 0; max-width: 38rem; }
+.aurora-blizzard-template img { display: block; width: min(100%, 22rem); height: auto; margin: 0 auto 1rem; }
+.aurora-blizzard-template figcaption { line-height: 1.65; }
