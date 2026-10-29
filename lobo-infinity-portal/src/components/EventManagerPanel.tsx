@@ -29,6 +29,7 @@ const lifecycleOptions = [
   'Round 2',
   'Final Round',
   'Awards',
+  'Completed',
   'Archived',
 ]
 

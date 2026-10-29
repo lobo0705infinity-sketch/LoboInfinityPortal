@@ -1,3 +1,4 @@
+import { eventReportingClosure } from '../config/eventLifecycle'
 import AuroraPortalCard from '../campaign/AuroraPortalCard'
 import CompactArtwork from '../components/CompactArtwork'
 import { useSnapshotData } from '../public/useSnapshotData'
@@ -89,12 +90,14 @@ function SubmitResult() {
           description="Submit an official League game."
           label="League Game"
           url={GOOGLE_FORM_URLS.league}
+          unavailableMessage={eventReportingClosure(events.data?.find(event => event.id === 'event-current-league'))}
         />
         <GoogleFormLauncher
           buttonLabel="Submit Team Tournament Game"
           description="Submit an official Team Tournament game."
           label="Team Tournament"
           url={GOOGLE_FORM_URLS.teamTournament}
+          unavailableMessage={eventReportingClosure({ id: 'event-august-2026-team-tournament' })}
         />
         <GoogleFormLauncher
           buttonLabel="Submit Casual Game"
@@ -132,7 +135,7 @@ function GoogleFormLauncher({
       <p className="eyebrow">Google Form</p>
       <h2>{label}</h2>
       <p>{description}</p>
-      {unavailableMessage ? <><p role="status">{unavailableMessage}</p><button className="submit-match-button" type="button" disabled>Reporting not open</button></> : <a
+      {unavailableMessage ? <><p role="status">{unavailableMessage}</p><button className="submit-match-button" type="button" disabled>Reporting closed</button></> : <a
         className="submit-match-button"
         href={url}
         rel="noopener noreferrer"

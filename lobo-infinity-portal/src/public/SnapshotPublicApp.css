@@ -3459,3 +3459,10 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-program--au
   grid-column: 1 / -1;
   border-top: 2px solid #d5b875;
 }
+
+.snapshot-event-history-callout { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: clamp(1rem,3vw,2rem); }
+.snapshot-event-history-callout h2, .snapshot-event-archive-summary h2 { margin: .25rem 0 .65rem; }
+.snapshot-event-archive-summary { padding: clamp(1rem,3vw,2rem); margin-block: 1.25rem; border-top: 3px solid #d2ab62; }
+.snapshot-event-champion { margin: 1.25rem 0; padding: 1rem 1.25rem; background: rgba(210,171,98,.1); border: 1px solid rgba(210,171,98,.4); border-radius: 12px; }
+.snapshot-event-champion > span { display:block; text-transform:uppercase; font-size:.75rem; letter-spacing:.14em; color:#d2ab62; }
+.snapshot-event-champion > strong { display:block; font-size:clamp(1.3rem,3vw,2rem); margin-top:.35rem; }

@@ -1,3 +1,4 @@
+import { archivedEventEditions } from '../config/eventLifecycle'
 import { eventDisplayName } from '../config/eventBranding'
 const PUBLIC_BLOB_ORIGIN = 'https://ecwefvuvauaqpary.public.blob.vercel-storage.com/'
 export const PUBLIC_SNAPSHOT_POINTER_URL = `${PUBLIC_BLOB_ORIGIN}public-snapshots/current.json`
@@ -139,6 +140,7 @@ function validatePointer(pointer: PublicSnapshotPointer) {
 function normalizeEventNames<T>(data: T): T {
   if (!Array.isArray(data)) return data
   return data.map((event: { id: string; name: string }) => ({
-    ...event, name: eventDisplayName(event.id, event.name),
+    ...event, name: archivedEventEditions[event.id]?.name || eventDisplayName(event.id, event.name),
+    ...(archivedEventEditions[event.id] ? { status: 'Archived', lifecycleStage: 'Archived' } : {}),
   })) as T
 }

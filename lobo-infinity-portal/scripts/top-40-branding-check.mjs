@@ -63,7 +63,7 @@ const branding = load('src/config/eventBranding.ts')
 const snapshotId = '20261021T120000Z'
 const eventData = [{ id: eventId, name: oldName, registeredCount: 18 }, { id: 'another-event', name: 'Other Event' }]
 const snapshots = load('src/services/publicSnapshot.ts', {
-  require: () => branding, URL,
+  require: path => path.includes('eventLifecycle') ? load('src/config/eventLifecycle.ts') : branding, URL,
   fetch: async url => ({ ok: true, json: async () => String(url).endsWith('current.json')
     ? { schemaVersion: 1, snapshotId, basePath: `public-snapshots/${snapshotId}/`, sourceCutoff: '2026-10-21T12:00:00Z' }
     : { snapshotId, data: eventData } }),
