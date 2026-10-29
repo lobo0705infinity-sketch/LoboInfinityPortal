@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import TerritoryVideo from './TerritoryVideo'
 import AuroraPlayerGuide, { AuroraGuideLink } from './AuroraPlayerGuide'
 import CampaignStatus from './CampaignStatus'
@@ -194,6 +195,7 @@ function CampaignStandings({ state }: { state: AuroraPublicState }) {
 function CampaignStory({ state }: { state: AuroraPublicState }) {
   const latest = state.story.at(-1)
   return <>
+    <CompactArtwork title="Campaign Story" headingLevel="h2" eyebrow="Aurora VII · Race for the Gate" src="/assets/portal-artwork/aurora-story-unknown-ranger-v1.webp" alt="The Unknown Ranger scans Aurora VII’s luminous gate above a frontier settlement"/>
     <section className="aurora-story-intro"><p className="eyebrow">The public campaign chronicle</p><h2>A world everyone wants. A mystery no one understands.</h2><p>Aurora VII was supposed to be a shared frontier. Now its settlements, resources, and independence are becoming the stakes of a war. This is the world your force is stepping into.</p></section>
     {latest ? <Panel title={latest.title}><p className="eyebrow">Latest published dispatch · {latest.turn ? `Turn ${latest.turn}` : 'Campaign opening'}</p><Paragraphs text={latest.body}/></Panel> : null}
     <details className="aurora-info-section"><summary>The colony’s history</summary><section id="aurora-history" className="panel aurora-panel aurora-story-history"><p className="eyebrow">Before the first battle</p><h2>A Brief History of Aurora VII</h2>{AURORA_HISTORY.map((chapter, index) => <article key={chapter.title}><span className="aurora-story-number" aria-hidden="true">0{index + 1}</span><div><h3>{chapter.title}</h3><Paragraphs text={chapter.body}/></div></article>)}</section></details>

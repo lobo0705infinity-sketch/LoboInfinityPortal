@@ -24,8 +24,8 @@
 .helper-kicker, .helper-section-label, .helper-number { margin: 0; color: var(--helper-cyan); font-size: .78rem; font-weight: 900; letter-spacing: .17em; text-transform: uppercase; }
 .helper-kicker { display: flex; align-items: center; gap: 9px; }
 .helper-signal { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #58e091; box-shadow: 0 0 15px #58e091; }
-.helper-hero h1 { margin: 24px 0 20px; font-size: clamp(3.5rem, 6.5vw, 7.8rem); line-height: .84; letter-spacing: -.025em; text-wrap: balance; }
-.helper-hero h1 em { color: var(--helper-red); font-style: normal; }
+.helper-hero-copy h2 { margin: 24px 0 20px; font-size: clamp(3.5rem, 6.5vw, 7.8rem); line-height: .84; letter-spacing: -.025em; text-wrap: balance; }
+.helper-hero-copy h2 em { color: var(--helper-red); font-style: normal; }
 .helper-hero-lede { max-width: 57ch; margin: 0; color: #d7e1ea; font-size: clamp(1.06rem, 1.5vw, 1.3rem); line-height: 1.58; }
 .helper-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .helper-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 51px; border-radius: 4px; padding: 12px 18px; font-weight: 900; letter-spacing: .02em; transition: transform .15s ease, border-color .15s ease, background .15s ease; }
@@ -118,7 +118,7 @@
 .helper-final-actions > a:last-child { color: #9fe6fa; font-size: .8rem; font-weight: 800; }
 @media (max-width: 1100px) {
   .helper-hero { grid-template-columns: 1fr; }
-  .helper-hero h1 { max-width: 12ch; }
+  .helper-hero-copy h2 { max-width: 12ch; }
   .helper-hero-display { width: min(100%, 650px); transform: none; }
   .helper-final { grid-template-columns: auto 1fr; }
   .helper-final-actions { grid-column: 2; }
@@ -132,7 +132,7 @@
 @media (max-width: 520px) {
   .helper-page { padding-inline: 12px; gap: 42px; }
   .helper-hero { padding: 23px 17px; min-height: 0; }
-  .helper-hero h1 { font-size: clamp(3rem, 13vw, 4.4rem); }
+  .helper-hero-copy h2 { font-size: clamp(3rem, 13vw, 4.4rem); }
   .helper-actions { display: grid; }
   .helper-button { width: 100%; }
   .helper-display-content { padding-inline: 12px; }

@@ -1,3 +1,4 @@
+import CompactArtwork from '../components/CompactArtwork'
 import { Link } from 'react-router-dom'
 import DiscordCommunityLink from '../components/DiscordCommunityLink'
 import PortalIcon from '../components/PortalIcon'
@@ -23,10 +24,11 @@ const playCommands = [
 function LittleHelper() {
   return (
     <main className="portal-shell helper-page">
+      <CompactArtwork title="Lobo’s Little Helper" eyebrow="Infinity tools on Discord" src="/assets/portal-artwork/little-helper-lobo-robot-v1.webp" alt="Little Lobo robot helping Lobo review a holographic army roster at the tactical desk"/>
       <section className="helper-hero" aria-labelledby="helper-title">
         <div className="helper-hero-copy">
           <p className="helper-kicker"><span className="helper-signal" /> Lobo Infinity Portal / Discord tools</p>
-          <h1 id="helper-title">Meet Lobo&apos;s<br /><em>Little Helper.</em></h1>
+          <h2 id="helper-title">Meet Lobo&apos;s<br /><em>Little Helper.</em></h2>
           <p className="helper-hero-lede">
             Your Infinity Army code, a tricky face-to-face matchup, or an ARO problem:
             bring it to the bot and get a readable answer you can use at the table.

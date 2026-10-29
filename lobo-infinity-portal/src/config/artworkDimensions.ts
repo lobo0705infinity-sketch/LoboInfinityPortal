@@ -13,6 +13,10 @@ import artwork9 from '../assets/team-tournament-rules-hero.png'
 
 // Intrinsic dimensions reserve the full artwork space before images load.
 const dimensions: Record<string, readonly [number, number]> = {
+  '/assets/portal-artwork/events-joan-v2.webp': [1942, 809],
+  '/assets/portal-artwork/past-events-sun-tze-v1.webp': [1942, 809],
+  '/assets/portal-artwork/little-helper-lobo-robot-v1.webp': [1942, 809],
+  '/assets/portal-artwork/aurora-story-unknown-ranger-v1.webp': [1942, 809],
   [leagueOverviewArtwork]: [1672, 940],
   [teamOverviewArtwork]: [1597, 985],
   '/src/assets/game-submission-hero.png': [1536, 1024],
