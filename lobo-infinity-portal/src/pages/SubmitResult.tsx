@@ -1,3 +1,4 @@
+import AuroraPortalCard from '../campaign/AuroraPortalCard'
 import CompactArtwork from '../components/CompactArtwork'
 import { useSnapshotData } from '../public/useSnapshotData'
 import type { PublicEvent } from '../public/snapshotTypes'
@@ -81,7 +82,8 @@ function SubmitResult() {
     <main className="portal-shell submit-game-page">
       <CompactArtwork title="Submit Game" eyebrow="Log your battles. Fuel the league." src="/src/assets/game-submission-hero.png"/>
 
-      <section className="submit-game-form-grid" aria-label="Google Forms game submissions">
+      <section className="submit-game-form-grid" aria-label="Game submissions">
+        <AuroraPortalCard reporting/>
         <GoogleFormLauncher
           buttonLabel="Submit League Game"
           description="Submit an official League game."

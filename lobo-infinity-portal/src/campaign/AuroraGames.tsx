@@ -1,3 +1,4 @@
+import { AuroraGuideLink } from './AuroraPlayerGuide'
 import CampaignLocationRules from './CampaignLocationRules'
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -39,6 +40,7 @@ export default function AuroraGames({submit=false,admin=false,practice=false}:{s
   const games=data?.games.slice().reverse().sort((a,b)=>Number(b.id===gameId)-Number(a.id===gameId)||Number(b.status==='awaiting_confirmation'&&b.playerB.id===data.player?.id)-Number(a.status==='awaiting_confirmation'&&a.playerB.id===data.player?.id))||[]
   return <section className="panel aurora-panel aurora-games">
     <h2>{practice?'Practice game reporting':admin?'Commissioner · Campaign games & private claims':submit?'Submit Campaign Game':'My Campaign Games'}</h2>
+    {submit && !practice ? <p><AuroraGuideLink>Need help? Watch the player guide</AuroraGuideLink> · One submission covers both players; only confirmed or commissioner-approved results count.</p> : null}
     {practice?<div className="aurora-notice aurora-admin-form aurora-practice-controls"><p><strong>Practice only.</strong> Use sample players to test submission, generated verification links, confirmation and corrections. Practice records do not count in campaign results or map activity. No Discord messages are sent.</p><label>Test as<select aria-label="Test as" value={practiceRole} disabled={busy} onChange={e=>{setData(null);setParams(previous=>{previous.set('as',e.target.value);return previous})}}><option value="a">Practice submitter</option><option value="b">Practice opponent</option><option value="commissioner">Practice commissioner · corrections</option></select></label><button type="button" disabled={busy||!data} onClick={async()=>{setBusy(true);setError('');try{await api('reset',{},true,practiceRole);setData(null);setResetNonce(n=>n+1);setParams(previous=>{previous.delete('game');return previous});setRefresh(n=>n+1);setMessage('Practice records cleared.')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}}>Clear practice records</button></div>:null}
     <button type="button" disabled={busy} onClick={()=>setRefresh(n=>n+1)}>Refresh games</button>
     {error?<p role="alert">{error}</p>:null}{message?<p role="status">{message}</p>:null}

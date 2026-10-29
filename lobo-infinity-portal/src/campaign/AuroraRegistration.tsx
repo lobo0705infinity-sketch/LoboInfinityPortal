@@ -1,3 +1,4 @@
+import { AuroraGuideLink } from './AuroraPlayerGuide'
 import { useCallback, useEffect, useState } from 'react'
 import { AURORA_REGISTRATION_FACTIONS, type RegistrationSummary } from '../../shared/aurora-registration.mjs'
 import { LOBO_DISCORD_INVITE_URL } from '../config/communityLinks'
@@ -65,6 +66,7 @@ export default function AuroraRegistration() {
     <section className="panel aurora-panel aurora-registration">
       <p className="eyebrow">Join the Aurora VII league</p><h2>Choose your faction</h2>
       <p>Choose your faction, enter your player name, and click Register. Lobo’s Little Helper records your signup and automatically assigns your <strong>Aurora VII — Faction</strong> role and private faction channel access.</p>
+      <p><AuroraGuideLink>Before your first game, watch the player guide</AuroraGuideLink></p>
       <p>Each faction starts with five places. When every campaign faction reaches five players, every faction opens to ten. The same pattern continues at fifteen, twenty, and beyond.</p>
       <div className="aurora-registration-status" aria-live="polite">
         {error ? <p role="alert">{error}</p> : summary ? <p><strong>{summary.total} players registered · Current limit: {summary.cap} per faction</strong><br/>The next batch opens at {summary.cap + 5} when every faction reaches {summary.cap} players.{!summary.available ? <><br/>{summary.issue}</> : null}</p> : <p>Checking available faction places…</p>}
@@ -80,7 +82,7 @@ export default function AuroraRegistration() {
       })}</fieldset>
       <label className="aurora-registration-name">Lobo Portal player name<input value={name} disabled={busy || Boolean(registration)} maxLength={80} autoComplete="nickname" onChange={event => { setName(event.target.value); setNotice('') }} placeholder="Your player name"/></label>
       <div className="aurora-registration-next">
-        {registration ? <div role="status"><h3>You are registered for {AURORA_REGISTRATION_FACTIONS.find(value => value.id === registration.faction)?.name}</h3><p><strong>{registration.name}</strong> · {registration.roleStatus === 'assigned' ? 'Your faction role is assigned and your private faction channel is available in Discord.' : 'Your place is reserved. The bot will retry your faction role assignment automatically.'}</p></div> : <>
+        {registration ? <div role="status"><h3>You are registered for {AURORA_REGISTRATION_FACTIONS.find(value => value.id === registration.faction)?.name}</h3><p><strong>{registration.name}</strong> · {registration.roleStatus === 'assigned' ? 'Your faction role is assigned and your private faction channel is available in Discord.' : 'Your place is reserved. The bot will retry your faction role assignment automatically.'}</p><p><AuroraGuideLink>Next: watch the player guide</AuroraGuideLink>, then read your private faction briefing in Discord.</p></div> : <>
           <div className="aurora-registration-actions"><button className="aurora-primary" type="button" disabled={!canContinue} onClick={() => void register()}>{busy ? 'Registering…' : 'Register'}</button></div>
           <p>{account ? `Registering with Discord account: ${account.displayName}.` : 'Discord will ask you to confirm your account and approve joining Lobo’s server. The bot joins you if needed, completes your registration, and returns you here.'}</p>
           <p>The bot checks the latest faction limit when completing your signup.</p>

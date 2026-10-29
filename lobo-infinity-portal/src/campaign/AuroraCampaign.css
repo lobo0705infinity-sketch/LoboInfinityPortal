@@ -293,3 +293,5 @@
 .aurora-operations button { min-height: 44px; }
 .aurora-operations a, .aurora-operations p { overflow-wrap: anywhere; }
 .aurora-practice-controls select { box-sizing: border-box; width: 100%; min-height: 44px; padding: .75rem; border: 1px solid #52677a; border-radius: 8px; color: #edf4fa; background: #132231; font: inherit; }
+.aurora-focused-nav { flex-wrap: wrap; gap: .5rem 1rem; }
+.aurora-focused-nav > div { flex-wrap: wrap; column-gap: clamp(12px, 2vw, 24px); }

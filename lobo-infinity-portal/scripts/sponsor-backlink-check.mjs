@@ -7,7 +7,7 @@ const mobileMenu = readFileSync('src/pages/MobileMenu.tsx', 'utf8')
 const css = readFileSync('src/App.css', 'utf8')
 
 assert.match(sponsor, /const BIG_CHECK_STORE_URL = 'https:\/\/www\.bigcheckstore\.com\/'/)
-assert.match(sponsor, />Summer 2026 Lobo League</)
+assert.match(sponsor, />Summer 2026 season sponsor</)
 assert.match(sponsor, />Sponsored by</)
 assert.match(sponsor, /Big Check Store/)
 assert.match(sponsor, /href=\{BIG_CHECK_STORE_URL\}/)

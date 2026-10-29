@@ -15,3 +15,8 @@
 .aurora-territory-video-card strong { color: #e1ebf2; }
 .aurora-territory-video-card small { color: #efbe73; }
 .aurora-territory-video-card:focus-visible { outline: 3px solid #efbe73; outline-offset: 3px; }
+.aurora-guide-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.aurora-player-checklist { padding-left: 1.3rem; line-height: 1.65; }
+.aurora-player-checklist li { margin: .7rem 0; }
+.aurora-player-guide { scroll-margin-top: 2rem; }
+@media (max-width: 800px) { .aurora-guide-layout { grid-template-columns: 1fr; gap: .5rem; } }

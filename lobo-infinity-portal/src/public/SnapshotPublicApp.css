@@ -3454,3 +3454,8 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-featured-re
   font-size: 0.85rem;
   line-height: 1.4;
 }
+
+main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-program--aurora {
+  grid-column: 1 / -1;
+  border-top: 2px solid #d5b875;
+}

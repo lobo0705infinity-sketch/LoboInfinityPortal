@@ -3,10 +3,10 @@ const BIG_CHECK_STORE_URL = 'https://www.bigcheckstore.com/'
 function SponsorCredit({ placement }: { placement: 'sidebar' | 'mobile-menu' }) {
   return (
     <aside
-      aria-label="Summer 2026 Lobo League sponsor"
+      aria-label="Summer 2026 season sponsor"
       className={`sponsor-credit sponsor-credit--${placement}`}
     >
-      <span>Summer 2026 Lobo League</span>
+      <span>Summer 2026 season sponsor</span>
       <span>Sponsored by</span>
       <a
         href={BIG_CHECK_STORE_URL}
