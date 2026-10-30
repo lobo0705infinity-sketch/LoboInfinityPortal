@@ -16,7 +16,7 @@ const expected = {
   'sulfur-basin': 'R2N7ToHK3To', 'northward-expanse': 'JNXe2sOd-I0',
 }
 assert.deepEqual(Object.keys(expected).sort(), AURORA_TERRITORIES.map(territory => territory.id).sort(), 'Every province has a published guide')
-const pdfPath = '/guides/aurora-vii-territory-special-rules-20261029-blizzard.pdf'
+const pdfPath = '/guides/aurora-vii-territory-special-rules-20261030-aerial.pdf'
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.png': 'image/png', '.pdf': 'application/pdf' }
 const server = createServer(async (req, res) => {
   if (req.url.startsWith('/api/aurora-campaign')) return res.end(JSON.stringify({ revision: 'test', publishedAt: '2026-10-28T00:00:00Z', state: emptyAuroraState() }))

@@ -14,5 +14,5 @@ export const AURORA_TERRITORY_VIDEOS: Record<string, { videoId: string; title: s
   'iron-corridor': { videoId: '1bz2C1y7ce0', title: 'Reinforced Cover: Iron Corridor' },
 }
 
-export const AURORA_RULES_REVISION = '29 October 2026'
-export const AURORA_SPECIAL_RULES_PDF_URL = '/guides/aurora-vii-territory-special-rules-20261029-blizzard.pdf'
+export const AURORA_RULES_REVISION = '30 October 2026'
+export const AURORA_SPECIAL_RULES_PDF_URL = '/guides/aurora-vii-territory-special-rules-20261030-aerial.pdf'

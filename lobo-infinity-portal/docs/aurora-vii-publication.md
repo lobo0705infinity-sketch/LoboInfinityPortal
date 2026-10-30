@@ -35,3 +35,9 @@ Published territory guides are mapped by territory ID in `src/config/auroraTerri
 Written rules remain authoritative and are shared by territory, location, mission, and Player Rules pages through `shared/aurora-territory-rules.json`. The rules PDF and revision date are linked alongside them. The 28 October 2026 Sulfur Basin correction adds Immunity (Enhanced), Immunity (BTS), and Fireteam protection; Protected Crossing now grants one friendly trooper Terrain (Total) at scenario start for the scenario. The PDF reflects the same text.
 
 After building, run `npm run test:aurora-territory-videos` with Playwright Chromium installed (or `CAMPAIGN_TEST_CHROMIUM` pointing to a compatible executable). It checks all twelve territory pages, the eight published links, player activation/closure, mobile layout, corrected Sulfur rules across the territory and both Workshop locations, Player Rules, and the PDF download.
+
+## Aerial territory exceptions - 30 October 2026
+
+Azure Coast excludes Aerial troopers from gaining or ignoring water-based Total Cover, including through Terrain (Aquatic) or Terrain (Total). Sulfur Basin excludes personal and provided Fireteam protection through an Aerial trooper's Terrain (Total); another listed Immunity or another qualifying Fireteam member still protects it. Protected Crossing grants the skill normally but does not override this exception. The shared rules feed territory, location and Player Rules pages and server-generated map text. The linked PDF uses the same revision. Published territory videos are unchanged.
+
+The Player/GM guides and bot faction-briefing source do not restate these benefits. The separate current Ariadna briefing PDF repeats Azure Coast's water rule and is updated privately alongside the rules PDF. The bot's official N5/FAQ/ITS rules corpus contains no Aurora territory rules; campaign exceptions remain in the shared campaign reference, not the official rules corpus.
