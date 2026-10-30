@@ -6,9 +6,9 @@ The map library offers ITS18 and Aurora VII collections. Aurora VII contains 12 
 
 ## Source data
 
-- `aurora-workshop-bags.json`: the 48 exact labels and GUIDs from the approved `Lobo88-Map-Rules-Fix.zip` v7 save, exported October 22, 2026. No TTS objects or cloud asset URLs are changed by this portal update.
+- `aurora-workshop-bags.json`: the 48 exact labels and GUIDs from the current 30 October 2026 map-and-rules installer. No TTS objects or cloud asset URLs are changed by this portal update.
 - `aurora-territory-rules.json`: the 26 October 2026 battlefield rules and owner advantages from `Lobo88-Map-Rules-Fix.zip` v8, matching the current rules PDF. Includes terrain-based descriptive context for all twelve territories. Azure Coast owns the aquatic rules; Echo Shores uses Black-Market Arsenal. The shared rules component appears on the Player Rules page, territory detail pages and all 24 map location pages. Server-generated map text uses the same descriptions and rules.
-- `aurora-terrain-references.json`: the portal's existing approved October 21 concept references, including the Ember Highlands and Frostreach revisions. Both campaign guides and map pages read this single mapping.
+- `aurora-terrain-references.json`: 24 replacement artworks generated from the current map geometry and placements on 30 October 2026. Both campaign guides and map pages read this single mapping.
 - Existing campaign region IDs remain unchanged. Azure Coast location labels match Coastal Access and Tidal Infrastructure.
 
 The catalogue does not assign campaign reports or ratings to individual locations: existing campaign data identifies the territory, not the exact location. It links to campaign battle reports instead. ITS18 IDs, ratings and historical detail links retain their existing behavior.
@@ -16,3 +16,5 @@ The catalogue does not assign campaign reports or ratings to individual location
 ## Verification
 
 Run the normal build, then `npm run test:aurora-map-library` with Playwright Chromium installed. `CAMPAIGN_TEST_CHROMIUM` can point to an existing Chromium executable. The browser check visits every location and verifies both missions, shared images, reloads, copied bag labels, filters, unavailable mission references and mobile width. `node scripts/public-search-page-check.mjs` validates the catalogue and all 24 direct public detail pages.
+
+See `aurora-artwork-20261030.md` for artwork provenance, current location renames and preserved historical links.

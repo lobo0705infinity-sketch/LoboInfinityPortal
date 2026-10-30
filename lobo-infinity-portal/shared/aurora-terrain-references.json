@@ -1,146 +1,146 @@
 {
   "1": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-01-a.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/nova-prospect-administrative-district.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-01-b.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/nova-prospect-orbital-logistics-district.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "2": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-02-a.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/korin-range-research-valley.webp",
+      "width": 1440,
+      "height": 937
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-02-b.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/korin-range-high-pass.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "3": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-03-a.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/crystal-frontier-faultline-works.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-03-b.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/crystal-frontier-rift-research-station.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "4": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-04-a.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/echo-shores-dockside-operations.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-04-b.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/echo-shores-freeport-echo.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "5": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-05-a.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/harmony-province-civic-gardens.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-05-b.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/harmony-province-courtyard-district.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "6": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-06-a.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/verde-wilds-greenwood-station-jungle-outpost.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-06-b.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/verde-wilds-greenwood-river-crossing.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "7": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-07-a.webp",
-      "width": 991,
-      "height": 738
+      "src": "/assets/aurora-vii/current-maps-20261030/azure-coast-coastal-access.webp",
+      "width": 1440,
+      "height": 937
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-07-b.webp",
-      "width": 992,
-      "height": 738
+      "src": "/assets/aurora-vii/current-maps-20261030/azure-coast-tidal-infrastructure.webp",
+      "width": 1440,
+      "height": 937
     }
   ],
   "8": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-08-a.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/ember-highlands-red-mesa-settlement.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-08-b.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/ember-highlands-geothermal-works.webp",
+      "width": 1440,
+      "height": 937
     }
   ],
   "9": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-09-a.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/sulfur-basin-helios-refinery.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-09-b.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/sulfur-basin-helios-extraction-fields.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "10": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-10-a.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/frostreach-wastes-frosthold-wastes.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021-r2/territory-10-b.webp",
-      "width": 1536,
-      "height": 1024
+      "src": "/assets/aurora-vii/current-maps-20261030/frostreach-wastes-polar-expedition-zone.webp",
+      "width": 1440,
+      "height": 936
     }
   ],
   "11": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-11-a.webp",
-      "width": 1672,
-      "height": 941
+      "src": "/assets/aurora-vii/current-maps-20261030/northward-expanse-new-al-medina-research-network.webp",
+      "width": 1440,
+      "height": 937
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-11-b.webp",
-      "width": 1672,
-      "height": 941
+      "src": "/assets/aurora-vii/current-maps-20261030/northward-expanse-northern-survey-frontier.webp",
+      "width": 1440,
+      "height": 937
     }
   ],
   "12": [
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-12-a.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/iron-corridor-iron-junction-freight-yard.webp",
+      "width": 1440,
+      "height": 936
     },
     {
-      "src": "/assets/aurora-vii/concepts-20261021/territory-12-b.webp",
-      "width": 1254,
-      "height": 1254
+      "src": "/assets/aurora-vii/current-maps-20261030/iron-corridor-transit-maintenance-hub.webp",
+      "width": 1440,
+      "height": 936
     }
   ]
 }

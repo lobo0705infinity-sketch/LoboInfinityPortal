@@ -214,7 +214,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
   }
   const auroraLocation = auroraMapLocationBySlug.get(pathname.split('/maps/')[1])
   if (auroraLocation) return {
-    pathname, canonicalPath: pathname,
+    pathname, canonicalPath: `/maps/${auroraLocation.slug}`,
     title: `${auroraLocation.name} · ${auroraLocation.region.name} | Lobo Portal`,
     heading: auroraLocation.name,
     description: shorten(`${auroraLocation.region.name}: ${auroraLocation.name}. Frontline and Supremacy Workshop bags, shared concept reference and ${auroraLocation.region.rule.title} territory rules.`, 170),

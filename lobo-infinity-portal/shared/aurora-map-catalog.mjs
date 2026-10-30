@@ -21,3 +21,13 @@ export const auroraMapRegions = AURORA_TERRITORIES.map(region => ({
 }))
 export const auroraMapLocations = auroraMapRegions.flatMap(region => region.locations.map(location => ({ ...location, region })))
 export const auroraMapLocationBySlug = new Map(auroraMapLocations.map(location => [location.slug, location]))
+// Keep existing shared links usable after Workshop location renames.
+const previousLocationSlugs = {
+  'aurora-vii-echo-shores-freeport-echo-market-district': 'aurora-vii-echo-shores-freeport-echo',
+  'aurora-vii-harmony-province-government-plaza': 'aurora-vii-harmony-province-civic-gardens',
+  'aurora-vii-harmony-province-o-12-security-district': 'aurora-vii-harmony-province-courtyard-district',
+  'aurora-vii-ember-highlands-geothermal-badlands': 'aurora-vii-ember-highlands-geothermal-works',
+}
+for (const [previous, current] of Object.entries(previousLocationSlugs)) {
+  auroraMapLocationBySlug.set(previous, auroraMapLocationBySlug.get(current))
+}

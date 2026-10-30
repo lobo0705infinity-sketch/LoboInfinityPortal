@@ -65,11 +65,11 @@ export const AURORA_TERRITORIES = Object.freeze([
     "description": "An improvised coastal trade zone of docks, cranes, warehouses, markets, and independent commerce.",
     "layouts": [
       "Dockside Operations",
-      "Freeport Echo Market District"
+      "Freeport Echo"
     ],
     "notes": [
-      "Water shapes the table without consuming most playable ground.",
-      "Provide multiple dock crossings and interconnected market passages.",
+      "Dockside Operations retains its working harbor; Freeport Echo is entirely dry land on four continuous terraces.",
+      "Provide protected dock crossings and interconnected streets across Freeport Echo’s west-to-east terraces.",
       "Stalls, awnings, and cargo provide texture; major structures control sightlines."
     ],
     "x": 0.765,
@@ -83,8 +83,8 @@ export const AURORA_TERRITORIES = Object.freeze([
     "vp": 2,
     "description": "An ordered civic center with planned public spaces, government architecture, and O-12 security infrastructure.",
     "layouts": [
-      "Government Plaza",
-      "O-12 Security District"
+      "Civic Gardens",
+      "Courtyard District"
     ],
     "notes": [
       "Preserve meaningful open civic space.",
@@ -141,7 +141,7 @@ export const AURORA_TERRITORIES = Object.freeze([
     "description": "A volcanic highland frontier of dark red rock, monumental mesas, remote habitation, and geothermal activity.",
     "layouts": [
       "Red Mesa Settlement",
-      "Geothermal Badlands"
+      "Geothermal Works"
     ],
     "notes": [
       "Geology dominates small settlement and utility buildings.",

@@ -71,30 +71,30 @@
   },
   {
     "region": "Echo Shores",
-    "location": "Freeport Echo Market District",
+    "location": "Freeport Echo",
     "mission": "Frontline",
-    "bagName": "SET_Echo Shores · Freeport Echo Market District · Frontline",
+    "bagName": "SET_Echo Shores · Freeport Echo · Frontline",
     "guid": "d5bae0"
   },
   {
     "region": "Echo Shores",
-    "location": "Freeport Echo Market District",
+    "location": "Freeport Echo",
     "mission": "Supremacy",
-    "bagName": "SET_Echo Shores · Freeport Echo Market District · Supremacy",
+    "bagName": "SET_Echo Shores · Freeport Echo · Supremacy",
     "guid": "487169"
   },
   {
     "region": "Ember Highlands",
-    "location": "Geothermal Badlands",
+    "location": "Geothermal Works",
     "mission": "Frontline",
-    "bagName": "SET_Ember Highlands · Geothermal Badlands · Frontline",
+    "bagName": "SET_Ember Highlands · Geothermal Works · Frontline",
     "guid": "fa7d83"
   },
   {
     "region": "Ember Highlands",
-    "location": "Geothermal Badlands",
+    "location": "Geothermal Works",
     "mission": "Supremacy",
-    "bagName": "SET_Ember Highlands · Geothermal Badlands · Supremacy",
+    "bagName": "SET_Ember Highlands · Geothermal Works · Supremacy",
     "guid": "2baa68"
   },
   {
@@ -115,56 +115,56 @@
     "region": "Frostreach Wastes",
     "location": "Frosthold Wastes",
     "mission": "Frontline",
-    "bagName": "SET_Frostreach Wastes · Frosthold Wastes · Frontline",
+    "bagName": "SET_Frostreach Wastes · Frosthold Wastes R25 · Frontline",
     "guid": "da38f7"
   },
   {
     "region": "Frostreach Wastes",
     "location": "Frosthold Wastes",
     "mission": "Supremacy",
-    "bagName": "SET_Frostreach Wastes · Frosthold Wastes · Supremacy",
+    "bagName": "SET_Frostreach Wastes · Frosthold Wastes R25 · Supremacy",
     "guid": "efb12f"
   },
   {
     "region": "Frostreach Wastes",
     "location": "Polar Expedition Zone",
     "mission": "Frontline",
-    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone · Frontline",
+    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone R25 · Frontline",
     "guid": "740fb4"
   },
   {
     "region": "Frostreach Wastes",
     "location": "Polar Expedition Zone",
     "mission": "Supremacy",
-    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone · Supremacy",
+    "bagName": "SET_Frostreach Wastes · Polar Expedition Zone R25 · Supremacy",
     "guid": "f65507"
   },
   {
     "region": "Harmony Province",
-    "location": "Government Plaza",
+    "location": "Civic Gardens",
     "mission": "Frontline",
-    "bagName": "SET_Harmony Province · Government Plaza · Frontline",
+    "bagName": "SET_Harmony Province · Civic Gardens · Frontline",
     "guid": "6c6fea"
   },
   {
     "region": "Harmony Province",
-    "location": "Government Plaza",
+    "location": "Civic Gardens",
     "mission": "Supremacy",
-    "bagName": "SET_Harmony Province · Government Plaza · Supremacy",
+    "bagName": "SET_Harmony Province · Civic Gardens · Supremacy",
     "guid": "401e32"
   },
   {
     "region": "Harmony Province",
-    "location": "O-12 Security District",
+    "location": "Courtyard District",
     "mission": "Frontline",
-    "bagName": "SET_Harmony Province · O-12 Security District · Frontline",
+    "bagName": "SET_Harmony Province · Courtyard District · Frontline",
     "guid": "41f84f"
   },
   {
     "region": "Harmony Province",
-    "location": "O-12 Security District",
+    "location": "Courtyard District",
     "mission": "Supremacy",
-    "bagName": "SET_Harmony Province · O-12 Security District · Supremacy",
+    "bagName": "SET_Harmony Province · Courtyard District · Supremacy",
     "guid": "d1d70c"
   },
   {
