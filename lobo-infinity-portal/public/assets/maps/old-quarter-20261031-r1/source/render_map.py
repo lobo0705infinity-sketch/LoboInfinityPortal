@@ -58,6 +58,8 @@ render(scene(placements+mission),P/'actual-mesh-angled.png',[59,72,66],[0,STREET
 render(scene(placements+mission),P/'actual-mesh-overhead.png',[0,100,0.001],[0,STREET_Y,0],25,(1600,1600),[0,0,-1])
 # A close view exposes real door and window openings and the excavated technology.
 render(scene(placements+mission),P/'actual-mesh-detail.png',[31,31,30],[7,STREET_Y+1,1],17,(1600,1200))
+render(scene(placements+mission),P/'excavation-ramp-detail.png',[28,23,19],[14,STREET_Y-1,3],7.7,(1400,1200))
+render(scene([dict(mesh='ruin-state-1',x=0,y=0,z=0,angle=0)]),P/'rooftop-repair.png',[10,15,12],[0,4,0],6.5,(1300,1100))
 for state in [1,2,3]:
  items=[dict(mesh='annex-state-'+str(state),x=0,y=0,z=0,angle=0),dict(mesh='civic-state-'+str(state),x=10,y=0,z=0,angle=0),dict(mesh='ruin-state-'+str(state),x=-10,y=0,z=0,angle=0)]
  render(scene(items),P/f'building-states-{state}.png',[23,25,35],[0,2,0],20,(1800,850))
@@ -77,10 +79,7 @@ for cx,cz,color in [(24,-24,(64,169,236,45)),(-24,24,(238,151,62,45))]:
  for t in np.linspace(0,math.pi/2,120):pts.append(px(cx-math.copysign(24*math.cos(t),cx),cz-math.copysign(24*math.sin(t),cz)))
  d.polygon(pts,fill=color);d.line(pts[1:],fill=(*color[:3],255),width=5)
 font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',22)
-examples=[(-20,-20),(-20,-10),(-6,-6),(6,6),(20,10),(20,20)]
-for i,(x,z) in enumerate(examples):
- x1,y1=px(x,z);d.ellipse((x1-16,y1-16,x1+16,y1+16),outline=(90,255,154,255),width=3);d.text((x1+20,y1-14),str(i+1),fill=(90,255,154,255),font=font)
 d.rectangle((0,0,1600,78),fill=(12,18,23,235));d.text((25,14),'OLD QUARTER EXCAVATION | 48 x 48 in | THE DIG',fill='white',font=font)
-d.text((25,43),'Coloured arcs: 24 in corner DZs. Green rings: one legal example of six Tech placements.',fill=(200,220,220,255),font=font)
+d.text((25,43),'Blue: Side A. Orange: Side B. 24-inch mission zones; both sides can be switched separately.',fill=(200,220,220,255),font=font)
 buffer=io.BytesIO();im.save(buffer,format='PNG');(P/'deployment-and-placement-check.png').write_bytes(buffer.getvalue())
 print('Rendered exported geometry: angled, overhead, detail, floor states and deployment check.')

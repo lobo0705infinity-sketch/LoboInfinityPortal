@@ -3,7 +3,7 @@ from pathlib import Path
 import json,copy,math,sys,re
 from map_config import STREET_Y,MAT_GUID
 ROOT=Path(__file__).resolve().parents[1]
-COMMIT=sys.argv[1] if len(sys.argv)>1 else '7567bb72d9729523b618877d09a0b9b72ed40be4'
+COMMIT=sys.argv[1] if len(sys.argv)>1 else 'e98f103df0bf5a3fe55a26ba1e90de774090307d'
 URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'+COMMIT+'/lobo-infinity-portal/public/assets/maps/old-quarter-20261031-r1/'
 WORK=ROOT.parents[1]
 SOURCE=WORK/'source/current'

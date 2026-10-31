@@ -4,13 +4,14 @@ import json,numpy as np
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 from tts_geometry import load_tts_mesh
-from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP
+from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP,PIT_WIDTH,PIT_LENGTH
 R=Path(__file__).resolve().parents[1];A=R/'Assets'
+assert PIT_WIDTH==8 and PIT_LENGTH==7,'Requested pit footprint changed'
 assert PIT_DEPTH==2.5,'Requested excavation depth changed'
 mat=load_tts_mesh(A/'urban-street-mat-collider.obj');mat.merge_vertices()
 assert mat.is_watertight and mat.is_winding_consistent,'Base must be closed and consistently wound'
 assert mat.volume>0,'Base exterior faces point inward'
-assert abs(mat.volume-(48*48*(-BASE_BOTTOM)-3*8*6*PIT_DEPTH))<.001
+assert abs(mat.volume-(48*48*(-BASE_BOTTOM)-3*PIT_WIDTH*PIT_LENGTH*PIT_DEPTH))<.001
 assert abs(STREET_Y+mat.bounds[0,1]-.85)<1e-5
 assert STREET_Y-PIT_DEPTH>=.95
 records=[]

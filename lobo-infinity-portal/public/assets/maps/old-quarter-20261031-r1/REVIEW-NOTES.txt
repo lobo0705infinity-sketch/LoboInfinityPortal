@@ -2,19 +2,15 @@ OLD QUARTER EXCAVATION R1 - THE DIG
 31 October 2026 - revised board, floors, controls and rubble
 
 THIS UPDATE
-- All three excavation pockets are now 2.5 inches deep, with two longer
-  diagonal access ramps each. A thicker, fully closed foundation supports the
-  cuts and rests on the table; there is no open void underneath.
-- The Mission brief's reported "pattern too complex" failure is fixed by
-  replacing pattern-based text measurement with literal string searches.
-  Requests made while UI is loading are queued and retried.
-- Deployment has explicit text labels beside every checkbox, independent
-  Side A (blue) and Side B (orange) switches, and 24/28/32-inch distances.
-  A persistent colour legend identifies each side and its selected distances.
-- Yellow mat dashes are removed. The mat now uses a unique photographic
-  street finish with worn asphalt, coherent repairs, cracks and exposed cobbles.
-- Custom Tech models remain removed. Ground floors remain separated from the
-  mat; fourteen buildings and sixteen rubble clusters in three sizes remain.
+- All three pits are 8 x 7 inches and remain 2.5 inches deep.
+- Ramp entrances are staggered into different lanes. Each ramp is 1.4 inches
+  wide with a 5.4-inch run; a 1.9-inch clear strip remains between them.
+- Building parapets and upper frame caps are continuous joined geometry,
+  replacing intersecting pieces that caused visible overlap at corners.
+- Tech Guide and its guide rings are removed. The top controls are Mission
+  and Deployment; labelled side switches and 24/28/32-inch distances remain.
+- One utility building moved half an inch to retain the street route beside
+  the enlarged excavation; the nearest pit remains clear of the adjacent ruin.
 
 THE MAP
 48 x 48 inches, 300-point The Dig, diagonal corner deployment. Fourteen
@@ -43,8 +39,8 @@ Specialist Troops, Operational Learning, end conditions and point variants.
 Deployment opens side switches and independent 24-, 28- and 32-inch arcs.
 Show either side, both, or neither. Only
 24 inches defines the mission Deployment Zones; 28/32 are +4/+8 measuring aids.
-Tech Guide optionally shows one legal arrangement of six markers; it creates
-no models and does not fix where players must place their Tech markers.
+Use your normal mission markers for player placement; no custom Tech models
+are supplied.
 
 Reference: https://infinitygeist.com/mission/s18_the_dig
 Official: https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855
@@ -56,13 +52,14 @@ separation: 9.016 inches. These exceed the required 8 inches.
 
 VERIFICATION
 - 56 hosted model, collider and texture files match the local bytes.
-- Visual meshes remain under 25,000 expanded vertices; largest is 13,226.
+- Visual meshes remain under 25,000 expanded vertices; largest is 13,738.
 - Collider components remain under 256 triangles.
+- Roof/frame cap overlap checks pass on 27 visible horizontal cap planes.
 - The closed base is watertight and outward-facing. Floor surfaces are above
   the asphalt and have no overlapping ground-floor triangles across 15 mesh states.
 - Pit/pavement alignment, legal marker ground, Console clearances and S2 street
   routes from both corner Deployment Zones pass the offline checks.
-- 69 sampled roof positions; none sees all three Consoles in point-ray sampling.
+- 73 sampled roof positions; none sees all three Consoles in point-ray sampling.
 - Controls pass the reported TTS pattern restriction, loading-delay, global UI
   reset, overlay failure, all 32 side/distance
   checkbox combinations, radius, persistence and cleanup checks.
@@ -76,9 +73,11 @@ check. The Windows installer cannot be executed in this Linux environment.
 PREVIEWS
 Preview/actual-mesh-angled.png and actual-mesh-overhead.png: revised layout.
 Preview/rubble-size-variants.png: actual small / medium / large rubble models.
+Preview/excavation-ramp-detail.png: staggered ramp lanes.
+Preview/rooftop-repair.png: joined roof/frame caps.
 Preview/building-states-1/2/3.png: taller-building states.
 Preview/small-building-states-1/2.png: compact building roof states.
-Preview/deployment-and-placement-check.png: corner arcs / legal marker example.
+Preview/deployment-and-placement-check.png: 24-inch corner-zone overview.
 Source/: authoring, geometry, Lua, configuration and validation files.
 
 CREDITS

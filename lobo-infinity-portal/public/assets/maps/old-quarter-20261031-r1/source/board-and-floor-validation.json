@@ -3,7 +3,7 @@
   "baseBottomWorldY": 0.8500000000000001,
   "pitDepth": 2.5,
   "baseClosedAndOutwardFacing": true,
-  "baseVolumeCubicInches": 5745.599999999999,
+  "baseVolumeCubicInches": 5685.599999999999,
   "groundFloorClearanceAboveAsphalt": 0.035,
   "buildingStateGroundFloors": [
     {

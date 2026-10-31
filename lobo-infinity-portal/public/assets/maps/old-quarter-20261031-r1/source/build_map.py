@@ -6,11 +6,11 @@ from pathlib import Path
 import json, math, random, copy, hashlib
 import numpy as np
 from PIL import Image
-from shapely.geometry import Polygon, box, Point
+from shapely.geometry import Polygon, box, Point, LineString
 from shapely.ops import unary_union
 from shapely import constrained_delaunay_triangles,orient_polygons
 from shapely.geometry.polygon import orient
-from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP
+from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP,PIT_WIDTH,PIT_LENGTH,RAMP_OFFSETS
 def triangulate(poly):return [orient(t,sign=1.0) for t in constrained_delaunay_triangles(poly).geoms]
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -205,13 +205,12 @@ def building(kind,state):
   coords=list(poly.exterior.coords)
   for k,(a,b) in enumerate(zip(coords,coords[1:])):
    if kind=='ruin' and k in [1,2]:continue
-   wall(m,a,b,yy,H,mat,door=((k==1) if kind=='annex' else (k==0 or (floor==0 and k==2))),windows=True)
-  # Exposed concrete frame, cornice and narrow structural piers.
-  for x,z in list(poly.exterior.coords)[:-1]:solid(m,(x,yy+H/2,z),(.28,H,.28),'concrete')
-  for a,b in zip(coords,coords[1:]):
-   u=np.array(b)-np.array(a);L=np.linalg.norm(u);p=(np.array(a)+np.array(b))/2
-   if kind=='ruin' and tuple(a)==tuple(coords[1]):continue
-   m[0].box((p[0],yy+H-.08,p[1]),(L+.12,.16,.31),'concrete',-math.degrees(math.atan2(u[1],u[0])))
+   wall(m,a,b,yy,H-.16,mat,door=((k==1) if kind=='annex' else (k==0 or (floor==0 and k==2))),windows=True)
+  # A unioned cap avoids coplanar box intersections at frame/roof corners.
+  for x,z in list(poly.exterior.coords)[:-1]:solid(m,(x,yy+(H-.16)/2,z),(.28,H-.16,.28),'concrete')
+  path=LineString(coords if kind!='ruin' else [coords[2],coords[3],coords[4],coords[0],coords[1]])
+  frame=unary_union([path.buffer(.155,cap_style=2,join_style=2),*[box(x-.14,z-.14,x+.14,z+.14) for x,z in coords[:-1]]])
+  slab(m,frame,yy+H-.16,.16,'concrete')
   if floor==0 and nf>1:stairs(m,sx,sz,1.46,2.75,H+.15)
   # Sparse solid interior cover away from the stair well and entrances.
   crate(m,w/2-.75,-d/2+.8,yy,.85)
@@ -231,9 +230,8 @@ def building(kind,state):
   roofpoly=poly.difference(well)
   if kind=='ruin':roofpoly=roofpoly.intersection(box(-w/2,-d/2,.2,0))
   slab(m,roofpoly,ry-.15,.15,'roof')
-  for a,b in zip(list(roofpoly.exterior.coords),list(roofpoly.exterior.coords)[1:]):
-   mid=(np.array(a)+np.array(b))/2;u=np.array(b)-np.array(a);L=np.linalg.norm(u)
-   solid(m,(mid[0],ry+.28,mid[1]),(L,.56,.19),'concrete',-math.degrees(math.atan2(u[1],u[0])))
+  parapet=roofpoly.buffer(.095,join_style=2).difference(roofpoly.buffer(-.095,join_style=2))
+  slab(m,parapet,ry,.56,'concrete')
   if kind!='ruin':hvac(m,w/2-1.1,-d/2+1.1,ry);hvac(m,.3,-d/2+1.1,ry)
   else:
    # Roof-mounted exhaust with a weather cap screens the surviving roof corner.
@@ -262,13 +260,14 @@ def small_building(kind,state=1):
  m=pair();w,d=(3.4,3.0) if kind=='utility-kiosk' else (4.2,3.0);H=2.55
  poly=box(-w/2,-d/2,w/2,d/2);slab(m,poly,GROUND_FLOOR_TOP-.12,.12,'tile')
  coords=[(-w/2,-d/2),(w/2,-d/2),(w/2,d/2),(-w/2,d/2),(-w/2,-d/2)]
- for k,(a,b) in enumerate(zip(coords,coords[1:])):wall(m,a,b,0,H,'brick' if kind=='utility-kiosk' else 'plaster',door=k==0,windows=k in [0,1,2])
- for x,z in coords[:-1]:solid(m,(x,H/2,z),(.18,H,.18),'concrete')
+ for k,(a,b) in enumerate(zip(coords,coords[1:])):wall(m,a,b,0,H-.12,'brick' if kind=='utility-kiosk' else 'plaster',door=k==0,windows=k in [0,1,2])
+ for x,z in coords[:-1]:solid(m,(x,(H-.12)/2,z),(.18,H-.12,.18),'concrete')
+ cap=poly.buffer(.13,join_style=2).difference(poly.buffer(-.13,join_style=2))
+ slab(m,cap,H-.12,.12,'concrete')
  if state==1:
   slab(m,poly,H,.13,'roof')
-  for k,(a,b) in enumerate(zip(coords,coords[1:])):
-   u=np.array(b)-np.array(a);L=np.linalg.norm(u);p=(np.array(a)+np.array(b))/2
-   solid(m,(p[0],H+.32,p[1]),(L,.4,.16),'concrete',-math.degrees(math.atan2(u[1],u[0])))
+  parapet=poly.buffer(.08,join_style=2).difference(poly.buffer(-.08,join_style=2))
+  slab(m,parapet,H+.13,.4,'concrete')
   hvac(m,-w/2+.8,-.65,H+.13)
  ladder(m,w/2-.12,d/2+.22,H+.13)
  # A shallow metal service canopy and its brackets give each small facade a role.
@@ -315,23 +314,25 @@ def stores():
 stores()
 
 def excavation():
- m=pair();W,D=8,6;dep=PIT_DEPTH
+ m=pair();W,D=PIT_WIDTH,PIT_LENGTH;dep=PIT_DEPTH
  # Continuous weathered steel shoring replaces isolated concrete cubes. Timber
  # wales and regularly seated soldier piles make the walls read as a real dig.
- for x in [-4,4]:
-  solid(m,(x,-dep/2,0),(.28,dep,6),'soil')
-  solid(m,(x,.48,0),(.2,.96,5.95),'rust')
-  for z in np.arange(-2.85,2.9,.38):m[0].box((x+math.copysign(.11,x),(.96-dep)/2,z),(.10,dep+.96,.12),'metal')
-  for yy in [-dep*.6,.16,.83]:m[0].box((x+math.copysign(.18,x),yy,0),(.15,.14,5.95),'wood')
-  for z in [-2.7,-1.35,0,1.35,2.7]:
+ for x in [-W/2,W/2]:
+  solid(m,(x,-dep/2,0),(.28,dep,D),'soil')
+  solid(m,(x,.48,0),(.2,.96,D-.05),'rust')
+  for z in np.arange(-D/2+.15,D/2-.1,.38):m[0].box((x+math.copysign(.11,x),(.96-dep)/2,z),(.10,dep+.96,.12),'metal')
+  for yy in [-dep*.6,.16,.83]:m[0].box((x+math.copysign(.18,x),yy,0),(.15,.14,D-.05),'wood')
+  for z in np.linspace(-D/2+.3,D/2-.3,5):
    m[0].box((x,(.96-dep)/2,z),(.3,dep+.96,.19),'rust')
    m[0].cylinder((x-math.copysign(.18,x),.62,z),(x-math.copysign(.22,x),.62,z),.065,'silver',8)
  for sign in [-1,1]:
-  z=sign*3
-  for x in [-2.75,2.75]:solid(m,(x,-dep/2,z),(2.5,dep,.24),'soil')
-  solid(m,(0,-.075,sign*2.55),(2.2,.15,.9),'concrete')
-  # Longer diagonal ramps fit the original pit footprint at a usable incline.
-  start=np.array([0,0,sign*2.2]);end=np.array([-sign*3.05,-dep,-sign*.1]);d=end-start
+  z=sign*D/2;entry=RAMP_OFFSETS[sign]
+  # Offset entrances are cut into the short retaining edges, with real landings.
+  for left,right in [(-W/2,entry-1.1),(entry+1.1,W/2)]:
+   solid(m,((left+right)/2,-dep/2,z),(right-left,dep,.24),'soil')
+  solid(m,(entry,-.075,sign*(D/2-.45)),(2.2,.15,.9),'concrete')
+  # Parallel ramps occupy different lanes, leaving a 1.9-inch central floor route.
+  start=np.array([entry,0,sign*(D/2-.9)]);end=np.array([entry,-dep,-sign*(D/2-.7)]);d=end-start
   u=np.array([-d[2],0,d[0]]);u=u/np.linalg.norm(u)*.7
   al,ar,bl,br=start-u,start+u,end-u,end+u
   lowl=al.copy();lowl[1]=-dep;lowr=ar.copy();lowr[1]=-dep
@@ -345,7 +346,7 @@ def excavation():
     pos=aa+(bb-aa)*f;m[0].cylinder(pos,pos+[0,.7,0],.028,'rust',6)
  # Open earth and rubble only; no custom Hyperthermal Tech scenery.
  for i in range(36):
-  x=random.choice([-1,1])*random.uniform(2.2,3.7);z=random.uniform(-2.7,2.7)
+  x=random.choice([-1,1])*random.uniform(2.2,3.7);z=random.uniform(-D/2+.3,D/2-.3)
   m[0].box((x,-dep+.1,z),(random.uniform(.2,.6),.2,random.uniform(.15,.45)),random.choice(['brick','concrete','rubble']),random.uniform(0,180))
  return register('excavation-cut',m,True)
 excavation()
@@ -411,9 +412,9 @@ for kind,title,x,z,angle in BUILDINGS:
  p=dict(mesh=kind+'-state-1',title=title,x=x,z=z,y=STREET_Y,angle=angle,kind='building',states=True)
  if kind=='depot':p.update(stateVariants={'2':'depot-state-2'},stateLabels={'1':'Roof on','2':'Ground floor exposed'})
  placements.append(p)
-for kind,title,x,z,angle in [('utility-kiosk','Midfield Utilities South',-2.5,-4,0),('utility-kiosk','Midfield Utilities North',2.5,4,180),('site-office','Western Excavation Site Office',-18,-14,0),('site-office','Eastern Excavation Site Office',18,14,180)]:
+for kind,title,x,z,angle in [('utility-kiosk','Midfield Utilities South',-2.5,-3.5,0),('utility-kiosk','Midfield Utilities North',2.5,4,180),('site-office','Western Excavation Site Office',-18,-14,0),('site-office','Eastern Excavation Site Office',18,14,180)]:
  placements.append(dict(mesh=kind,title=title,x=x,z=z,y=STREET_Y,angle=angle,kind='building',states=True,stateVariants={'2':kind+'-open'},stateLabels={'1':'Roof on','2':'Ground floor exposed'}))
-DIGS=[(-14,-3),(14,3),(-4,-11)]
+DIGS=[(-14,-3),(14,3),(-4,-10.5)]
 for i,(x,z) in enumerate(DIGS):placements.append(dict(mesh='excavation-cut',title=f'Excavation Pocket {i+1}',x=x,z=z,y=STREET_Y,angle=0,kind='dig'))
 SCATTER=[
  ('wall-rubble',-13.5,-17,20),('wall-rubble',13.5,17,200),
@@ -433,7 +434,7 @@ for i,(mesh,x,z,angle) in enumerate(SCATTER):placements.append(dict(mesh=mesh,ti
 
 # Continuous mat with physical cutouts. No invisible collider covers the pits.
 ground=box(-24,-24,24,24)
-for x,z in DIGS:ground=ground.difference(box(x-4,z-3,x+4,z+3))
+for x,z in DIGS:ground=ground.difference(box(x-PIT_WIDTH/2,z-PIT_LENGTH/2,x+PIT_WIDTH/2,z+PIT_LENGTH/2))
 mat=pair();street_vertices=set()
 for t in triangulate(ground):
  if not ground.covers(t):continue
@@ -452,12 +453,12 @@ for t in triangulate(ground):
  mat[1].face([(x,0,z) for x,z in pts][::-1])
 # Pit floors are part of the mat, with matching earthen bottom surfaces.
 for x,z in DIGS:
- mat[0].quad((x-4,-PIT_DEPTH,z-3),(x-4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z-3),'soil')
- mat[1].quad((x-4,-PIT_DEPTH,z-3),(x-4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z-3),tile=10000)
+ mat[0].quad((x-PIT_WIDTH/2,-PIT_DEPTH,z-PIT_LENGTH/2),(x-PIT_WIDTH/2,-PIT_DEPTH,z+PIT_LENGTH/2),(x+PIT_WIDTH/2,-PIT_DEPTH,z+PIT_LENGTH/2),(x+PIT_WIDTH/2,-PIT_DEPTH,z-PIT_LENGTH/2),'soil')
+ mat[1].quad((x-PIT_WIDTH/2,-PIT_DEPTH,z-PIT_LENGTH/2),(x-PIT_WIDTH/2,-PIT_DEPTH,z+PIT_LENGTH/2),(x+PIT_WIDTH/2,-PIT_DEPTH,z+PIT_LENGTH/2),(x+PIT_WIDTH/2,-PIT_DEPTH,z-PIT_LENGTH/2),tile=10000)
 # Close the entire base, including pit walls and underside. The bottom rests
 # at world 0.85 instead of hanging several inches above the standard table.
 for x,z in DIGS:
- for a,b in [((x-4,z-3),(x+4,z-3)),((x+4,z-3),(x+4,z+3)),((x+4,z+3),(x-4,z+3)),((x-4,z+3),(x-4,z-3))]:
+ for a,b in [((x-PIT_WIDTH/2,z-PIT_LENGTH/2),(x+PIT_WIDTH/2,z-PIT_LENGTH/2)),((x+PIT_WIDTH/2,z-PIT_LENGTH/2),(x+PIT_WIDTH/2,z+PIT_LENGTH/2)),((x+PIT_WIDTH/2,z+PIT_LENGTH/2),(x-PIT_WIDTH/2,z+PIT_LENGTH/2)),((x-PIT_WIDTH/2,z+PIT_LENGTH/2),(x-PIT_WIDTH/2,z-PIT_LENGTH/2))]:
   for part in mat:part.quad((a[0],-PIT_DEPTH,a[1]),(b[0],-PIT_DEPTH,b[1]),(b[0],0,b[1]),(a[0],0,a[1]),'soil',tile=10000 if part is mat[1] else 2)
 for a,b in [((-24,-24),(24,-24)),((24,-24),(24,24)),((24,24),(-24,24)),((-24,24),(-24,-24))]:
  for part in mat:part.quad((a[0],BASE_BOTTOM,a[1]),(a[0],0,a[1]),(b[0],0,b[1]),(b[0],BASE_BOTTOM,b[1]),'soil',tile=10000 if part is mat[1] else 2)

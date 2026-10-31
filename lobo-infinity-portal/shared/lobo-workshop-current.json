@@ -1056,7 +1056,7 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 49,
-      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Three 2.5-inch excavation pits with diagonal ramps and a closed solid base. Weathered photographic asphalt replaces the plain mat and yellow dashes. Deployment has labelled distances and separate blue/orange side switches. Mission brief uses a TTS-compatible literal text calculation. Fourteen buildings, sixteen rubble clusters in three sizes and familiar Consoles; no custom Tech models. Previews render exported geometry. Offline checks pass; live TTS verification and Workshop publication remain pending.",
+      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Three 8 x 7 inch pits remain 2.5 inches deep, with staggered ramp lanes and a closed solid base. Joined building roof/frame caps remove intersecting corners. Mission and labelled Deployment controls remain; Tech Guide is removed. Fourteen buildings, sixteen rubble clusters and familiar Consoles. Previews render exported geometry. Offline checks pass; live TTS verification and Workshop publication remain pending.",
       "overhead": "/assets/maps/old-quarter-20261031-r1/overhead.webp",
       "angled": "/assets/maps/old-quarter-20261031-r1/angled.webp",
       "diagram": "/assets/maps/old-quarter-20261031-r1/deployment.webp",

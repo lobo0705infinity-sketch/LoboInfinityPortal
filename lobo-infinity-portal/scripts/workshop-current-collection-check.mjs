@@ -62,6 +62,8 @@ for (const map of loboWorkshopMaps) {
     assert.ok(mats[0].CustomMesh.DiffuseURL.endsWith('/old-quarter-street-materials.jpg'))
     assert.ok(controllers[0].LuaScript.includes('function setDeploymentSideA'))
     assert.ok(controllers[0].LuaScript.includes('function setDeploymentSideB'))
+    assert.ok(!controllers[0].LuaScript.includes('Tech Guide'))
+    assert.ok(!controllers[0].LuaScript.includes('toggleTechGuide'))
     assert.ok(!controllers[0].LuaScript.includes(':gmatch('), `${map.slug} avoids the reported TTS pattern failure`)
     assert.ok(!bag.ContainedObjects.some(object => object.CustomMesh?.MeshURL.includes('hyperthermal-tech')))
     const rubble = bag.ContainedObjects.filter(object => /wall-rubble(?:-medium|-large)?\.obj$/.test(object.CustomMesh?.MeshURL ?? ''))

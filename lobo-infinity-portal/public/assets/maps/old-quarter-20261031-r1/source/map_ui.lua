@@ -10,7 +10,6 @@ local attachUI
 local missionRequested,missionOpen,deploymentRequested,deploymentOpen={},{},{},{}
 local matGUID='e90001'
 local deploymentRadii={[24]=true,[28]=false,[32]=false}
-local showTech=false
 local function node(tag,attributes,children,value) return {tag=tag,attributes=attributes or {},children=children or {},value=value} end
 local function escape(s)
  s=tostring(s or ''):gsub('&','&amp;'):gsub('<','&lt;'):gsub('>','&gt;'):gsub('"','&quot;'):gsub("'",'&apos;'):gsub('\n','&#10;')
@@ -61,7 +60,7 @@ Each player places three Hyperthermal Tech tokens. The player who kept Deploymen
 
 Use 25 mm diameter Tech tokens or equivalent scenery. The WHOLE token must be more than 8 inches from BOTH players' Deployment Zones and from every other Tech token. It must be on accessible table ground, never on top of or inside scenery or a building. In a 150-point game these two spacing requirements are 4 inches instead.
 
-Use the normal Infinity mod Hyperthermal Tech markers for player placement; this map creates no Tech models. Tech Guide displays one verified legal arrangement for this map's 24-inch zones. The guide rings are examples, not compulsory objectives; hide them after choosing your own placements.
+Use the normal Infinity mod Hyperthermal Tech markers for player placement; this map creates no Tech models. Players choose positions that satisfy the restrictions above.
 
 ANALYZE HYPERTHERMAL TECH
 Short Skill. Labels: Attack, Scenario.
@@ -106,7 +105,7 @@ CURRENT WORDING
 The task previously called Activate Console is Analyze Hyperthermal Tech. Console ownership and neutralization use Player Tokens; neutralization requires a Tech analysed for your own player. The small-game spacing exception applies at 150 points.
 
 TERRAIN & ACCESS
-Use the modeled geometry for line of fire and cover. The three open excavation pockets are 2.5 inches below street level and have two ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
+Use the modeled geometry for line of fire and cover. The three open excavation pockets are 2.5 inches below street level and are 8 by 7 inches with two staggered ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
 
 SOURCE
 Mission Geist: https://infinitygeist.com/mission/s18_the_dig
@@ -147,13 +146,6 @@ function redrawOverlays()
    lines[#lines+1]={points=pts,color={c[1]+(1-c[1])*fade,c[2]+(1-c[2])*fade,c[3]+(1-c[3])*fade},thickness=radius==24 and .065 or .045}
   end end
  end end
- if showTech then
-  for _,p in ipairs({{-20,-20},{-20,-10},{-6,-6},{6,6},{20,10},{20,20}}) do
-   local pts={}
-   for i=0,48 do local a=i*math.pi/24;pts[#pts+1]={p[1]+25/25.4/2*math.cos(a),.03,p[2]+25/25.4/2*math.sin(a)} end
-   lines[#lines+1]={points=pts,color={.2,1,.5},thickness=.045}
-  end
- end
  local mat=getObjectFromGUID(matGUID)
  overlayReady=mat and pcall(function() mat.setVectorLines(lines) end) or false
 end
@@ -177,7 +169,6 @@ local function setSide(side,value)
 end
 function setDeploymentSideA(player,value) setSide('A',value) end
 function setDeploymentSideB(player,value) setSide('B',value) end
-function toggleTechGuide() showTech=not showTech;redrawOverlays() end
 function openRules(player) if player then missionRequested[player.color]=true;missionOpen[player.color]=true;uiDirty=true;attachUI() end end
 function closeRules(player) if player then missionOpen[player.color]=false;UI.setAttribute(root..'_'..player.color,'active','false') end end
 function sourceLink(player) if player then printToColor('Mission Geist — The Dig: https://infinitygeist.com/mission/s18_the_dig',player.color,{.6,.85,1}) end end
@@ -185,7 +176,7 @@ attachUI=function()
  if UI.loading then return end
  local callback=self.getGUID()..'/'
  local children={}
- for _,b in ipairs({{'Mission','openRules',0},{'Deployment','toggleDeployment',-185},{'Tech Guide','toggleTechGuide',185}}) do
+ for _,b in ipairs({{'Mission','openRules',92},{'Deployment','toggleDeployment',-92}}) do
   table.insert(children,node('Button',{id=root..'_button_'..b[2],text=b[1],onClick=callback..b[2],rectAlignment='UpperCenter',offsetXY=b[3]..' -70',width='170',height='40',fontSize='20',color='#263E4D',textColor='#FFFFFF'}))
  end
  for _,color in ipairs(colors) do
@@ -211,7 +202,7 @@ attachUI=function()
   for i,radius in ipairs({24,28,32}) do row(root..'_deploy_'..color..'_'..radius,labels[radius],-168-(i-1)*38,deploymentRadii[radius],'setDeployment'..radius) end
   toggles[#toggles+1]=node('Text',{text='Select either side, both, or neither. Only 24" defines the mission zones.',rectAlignment='UpperCenter',offsetXY='0 -288',width='350',height='45',fontSize='15',color='#BBD6E4'})
   toggles[#toggles+1]=node('Button',{text='Close',onClick=callback..'closeDeployment',rectAlignment='LowerCenter',offsetXY='0 12',width='120',height='32',fontSize='18',color='#365564',textColor='#FFFFFF'})
-  children[#children+1]=node('Panel',{id=root..'_deploy_'..color,visibility=color,active=tostring(deploymentOpen[color]==true),rectAlignment='UpperCenter',offsetXY='-185 -118',width='390',height='388',color='#152027FA'},toggles)
+  children[#children+1]=node('Panel',{id=root..'_deploy_'..color,visibility=color,active=tostring(deploymentOpen[color]==true),rectAlignment='UpperCenter',offsetXY='-92 -118',width='390',height='388',color='#152027FA'},toggles)
 
   end
  end
@@ -239,14 +230,13 @@ function checkDeployment()
  end
  if not overlayReady then redrawOverlays() end
 end
-function onSave() return JSON.encode({radii={["24"]=deploymentRadii[24],["28"]=deploymentRadii[28],["32"]=deploymentRadii[32]},sides={A=deploymentSides.A,B=deploymentSides.B},tech=showTech}) end
+function onSave() return JSON.encode({radii={["24"]=deploymentRadii[24],["28"]=deploymentRadii[28],["32"]=deploymentRadii[32]},sides={A=deploymentSides.A,B=deploymentSides.B}}) end
 function onLoad(saved)
  if saved and saved~='' then
   local ok,s=pcall(JSON.decode,saved)
   if ok and type(s)=='table' then
    for _,r in ipairs({24,28,32}) do if s.radii then local v=s.radii[tostring(r)];if v==nil then v=s.radii[r] end;if v~=nil then deploymentRadii[r]=v==true end end end
    if s.sides then for _,side in ipairs({'A','B'}) do if s.sides[side]~=nil then deploymentSides[side]=s.sides[side]==true end end end
-   showTech=s.tech==true
   end
  end
  overlayReady=false;uiDirty=true

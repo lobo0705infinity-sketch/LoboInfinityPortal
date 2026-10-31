@@ -6,6 +6,7 @@
   "missionQueuedWhileUILoading": "pass",
   "radiusGeometry": "pass",
   "saveRestore": "pass",
+  "onlyMissionAndDeploymentButtons": "pass",
   "delayedLoadAndGlobalUIResetRecovery": "pass",
   "overlayFailureDoesNotHideHUD": "pass",
   "controllerLifecycle": "pass",

@@ -99,7 +99,7 @@
     },
     {
       "building": "Research Annex East",
-      "sampledRoofPositions": 8,
+      "sampledRoofPositions": 10,
       "maxConsoleSightlines": 1,
       "samples": [
         {
@@ -111,6 +111,22 @@
           "visibleConsoles": [
             3
           ]
+        },
+        {
+          "eye": [
+            17.0,
+            11.549999999999999,
+            -6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            17.0,
+            11.549999999999999,
+            -5.0
+          ],
+          "visibleConsoles": []
         },
         {
           "eye": [
@@ -195,20 +211,9 @@
     },
     {
       "building": "Service Workshop South",
-      "sampledRoofPositions": 8,
+      "sampledRoofPositions": 7,
       "maxConsoleSightlines": 2,
       "samples": [
-        {
-          "eye": [
-            -1.5,
-            7.75,
-            -19.5
-          ],
-          "visibleConsoles": [
-            1,
-            2
-          ]
-        },
         {
           "eye": [
             0.0,
@@ -384,7 +389,7 @@
     },
     {
       "building": "Research Annex West",
-      "sampledRoofPositions": 8,
+      "sampledRoofPositions": 10,
       "maxConsoleSightlines": 1,
       "samples": [
         {
@@ -396,6 +401,22 @@
           "visibleConsoles": [
             1
           ]
+        },
+        {
+          "eye": [
+            -17.0,
+            11.549999999999999,
+            6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -17.0,
+            11.549999999999999,
+            5.0
+          ],
+          "visibleConsoles": []
         },
         {
           "eye": [
@@ -480,20 +501,9 @@
     },
     {
       "building": "Service Workshop North",
-      "sampledRoofPositions": 8,
+      "sampledRoofPositions": 7,
       "maxConsoleSightlines": 2,
       "samples": [
-        {
-          "eye": [
-            1.5,
-            7.75,
-            19.5
-          ],
-          "visibleConsoles": [
-            2,
-            3
-          ]
-        },
         {
           "eye": [
             2.220446049250313e-16,
@@ -591,7 +601,7 @@
     },
     {
       "building": "Central Survey Annex",
-      "sampledRoofPositions": 8,
+      "sampledRoofPositions": 10,
       "maxConsoleSightlines": 1,
       "samples": [
         {
@@ -603,6 +613,24 @@
           "visibleConsoles": [
             3
           ]
+        },
+        {
+          "eye": [
+            3.6322330470336315,
+            11.549999999999999,
+            -5.753553390593274
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            4.6928932188134524,
+            11.549999999999999,
+            -4.6928932188134524
+          ],
+          "visibleConsoles": []
         },
         {
           "eye": [
@@ -675,28 +703,26 @@
     {
       "building": "Midfield Utilities South",
       "sampledRoofPositions": 2,
-      "maxConsoleSightlines": 2,
+      "maxConsoleSightlines": 1,
       "samples": [
         {
           "eye": [
             -3.5,
             7.63,
-            -4.0
+            -3.5
           ],
           "visibleConsoles": [
-            1,
-            2
+            1
           ]
         },
         {
           "eye": [
             -2.0,
             7.63,
-            -4.0
+            -3.5
           ],
           "visibleConsoles": [
-            1,
-            2
+            1
           ]
         }
       ]
@@ -704,7 +730,7 @@
     {
       "building": "Midfield Utilities North",
       "sampledRoofPositions": 2,
-      "maxConsoleSightlines": 2,
+      "maxConsoleSightlines": 1,
       "samples": [
         {
           "eye": [
@@ -713,7 +739,6 @@
             4.0
           ],
           "visibleConsoles": [
-            2,
             3
           ]
         },
@@ -724,7 +749,6 @@
             4.0
           ],
           "visibleConsoles": [
-            2,
             3
           ]
         }

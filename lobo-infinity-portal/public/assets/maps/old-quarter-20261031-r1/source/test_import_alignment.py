@@ -8,7 +8,7 @@ from shapely.geometry import Polygon,box
 from shapely.affinity import rotate,translate
 from shapely.ops import unary_union
 from tts_geometry import load_tts_mesh
-from map_config import PIT_DEPTH
+from map_config import PIT_DEPTH,PIT_WIDTH,PIT_LENGTH
 R=Path(__file__).resolve().parents[1];A=R/'Assets'
 layout=json.loads((R/'Source/layout.json').read_text())
 def surface(mesh,y):
@@ -18,7 +18,7 @@ street=surface(mat,0);floor=surface(mat,-PIT_DEPTH)
 expected=box(-24,-24,24,24);pits=[]
 for p in layout:
  if p['kind']!='dig':continue
- hole=box(p['x']-4,p['z']-3,p['x']+4,p['z']+3);pits.append(hole);expected=expected.difference(hole)
+ hole=box(p['x']-PIT_WIDTH/2,p['z']-PIT_LENGTH/2,p['x']+PIT_WIDTH/2,p['z']+PIT_LENGTH/2);pits.append(hole);expected=expected.difference(hole)
  assert street.intersection(hole.buffer(-.001)).area<1e-6
  assert hole.symmetric_difference(floor.intersection(hole)).area<1e-6
 assert expected.symmetric_difference(street).area<1e-6

@@ -52,7 +52,7 @@
       ],
       "outsideDZInches": 9.742359552995412,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 1.8764351791311906,
+      "nearestSceneryEdgeGap": 1.853723711919789,
       "nearestScenery": "Western Excavation Site Office"
     },
     {
@@ -63,8 +63,8 @@
       ],
       "outsideDZInches": 10.493585384819832,
       "nearestTokenEdgeGap": 13.575967810057099,
-      "nearestSceneryEdgeGap": 0.8786102761482322,
-      "nearestScenery": "Tracked Excavator 11"
+      "nearestSceneryEdgeGap": 0.3878740157480314,
+      "nearestScenery": "Excavation Pocket 3"
     },
     {
       "token": 4,
@@ -85,7 +85,7 @@
       ],
       "outsideDZInches": 9.742359552995412,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 1.8764351791311906,
+      "nearestSceneryEdgeGap": 1.853723711919789,
       "nearestScenery": "Eastern Excavation Site Office"
     },
     {
@@ -114,8 +114,8 @@
         0,
         0
       ],
-      "nearestSceneryEdgeGap": 1.3609248086870314,
-      "nearestScenery": "Midfield Utilities North"
+      "nearestSceneryEdgeGap": 0.8815221052972918,
+      "nearestScenery": "Midfield Utilities South"
     },
     {
       "center": [
@@ -136,92 +136,92 @@
   "meshes": [
     {
       "mesh": "civic-state-1",
-      "expandedVertices": 13226,
-      "colliderComponents": 214,
+      "expandedVertices": 13738,
+      "colliderComponents": 252,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "civic-state-2",
-      "expandedVertices": 11752,
-      "colliderComponents": 196,
+      "expandedVertices": 11976,
+      "colliderComponents": 220,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "civic-state-3",
-      "expandedVertices": 6318,
-      "colliderComponents": 89,
+      "expandedVertices": 6430,
+      "colliderComponents": 101,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "annex-state-1",
-      "expandedVertices": 12664,
-      "colliderComponents": 193,
+      "expandedVertices": 12936,
+      "colliderComponents": 221,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "annex-state-2",
-      "expandedVertices": 11240,
-      "colliderComponents": 179,
+      "expandedVertices": 11288,
+      "colliderComponents": 195,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "annex-state-3",
-      "expandedVertices": 6160,
-      "colliderComponents": 80,
+      "expandedVertices": 6184,
+      "colliderComponents": 88,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "ruin-state-1",
-      "expandedVertices": 11580,
-      "colliderComponents": 168,
+      "expandedVertices": 11916,
+      "colliderComponents": 212,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "ruin-state-2",
-      "expandedVertices": 11112,
-      "colliderComponents": 153,
+      "expandedVertices": 11384,
+      "colliderComponents": 189,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "ruin-state-3",
-      "expandedVertices": 6886,
-      "colliderComponents": 72,
+      "expandedVertices": 7022,
+      "colliderComponents": 90,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "depot-state-1",
-      "expandedVertices": 5236,
-      "colliderComponents": 70,
+      "expandedVertices": 5516,
+      "colliderComponents": 90,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "depot-state-2",
-      "expandedVertices": 3864,
-      "colliderComponents": 56,
+      "expandedVertices": 3904,
+      "colliderComponents": 64,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "utility-kiosk",
-      "expandedVertices": 3128,
-      "colliderComponents": 38,
+      "expandedVertices": 3256,
+      "colliderComponents": 50,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "utility-kiosk-open",
-      "expandedVertices": 2464,
-      "colliderComponents": 31,
+      "expandedVertices": 2592,
+      "colliderComponents": 39,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "site-office",
-      "expandedVertices": 3344,
-      "colliderComponents": 43,
+      "expandedVertices": 3592,
+      "colliderComponents": 55,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "site-office-open",
-      "expandedVertices": 2592,
-      "colliderComponents": 36,
+      "expandedVertices": 2808,
+      "colliderComponents": 44,
       "maxColliderComponentTriangles": 12
     },
     {
@@ -256,7 +256,7 @@
     },
     {
       "mesh": "excavation-cut",
-      "expandedVertices": 5396,
+      "expandedVertices": 5732,
       "colliderComponents": 1,
       "maxColliderComponentTriangles": 136
     },
@@ -286,13 +286,13 @@
     },
     {
       "mesh": "urban-street-mat",
-      "expandedVertices": 5728,
+      "expandedVertices": 6034,
       "colliderComponents": 1,
       "maxColliderComponentTriangles": 60
     },
     {
       "mesh": "urban-pavements",
-      "expandedVertices": 4300,
+      "expandedVertices": 4312,
       "colliderComponents": 126,
       "maxColliderComponentTriangles": 8
     }
