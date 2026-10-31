@@ -1055,8 +1055,8 @@
         "The Dig"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 46,
-      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Four compact buildings supplement the redistributed main buildings; pits use continuous shoring and the familiar Micro Art Studio Consoles. Mission reference and independently selectable 24-/28-/32-inch overlays are included. These previews render the exported meshes. Geometry, import alignment and legal objective access checked offline; live TTS physics and gameplay testing and Workshop publication remain pending.",
+      "objectCount": 49,
+      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Lowered closed base and shallow excavations; fourteen buildings with repaired floor surfaces; sixteen rubble clusters in three sizes; familiar Micro Art Studio Consoles. No custom Hyperthermal Tech models. Mission reference and independently selectable 24-/28-/32-inch overlays use a separate controller with loading recovery. Previews render actual exported geometry. Offline geometry and script checks pass; live TTS verification and Workshop publication remain pending.",
       "overhead": "/assets/maps/old-quarter-20261031-r1/overhead.webp",
       "angled": "/assets/maps/old-quarter-20261031-r1/angled.webp",
       "diagram": "/assets/maps/old-quarter-20261031-r1/deployment.webp",

@@ -8,12 +8,13 @@ from shapely.geometry import Polygon,box
 from shapely.affinity import rotate,translate
 from shapely.ops import unary_union
 from tts_geometry import load_tts_mesh
+from map_config import PIT_DEPTH
 R=Path(__file__).resolve().parents[1];A=R/'Assets'
 layout=json.loads((R/'Source/layout.json').read_text())
 def surface(mesh,y):
  return unary_union([Polygon(t[:,[0,2]]) for t in mesh.triangles if np.max(abs(t[:,1]-y))<1e-5 and Polygon(t[:,[0,2]]).area>1e-6])
 mat=load_tts_mesh(A/'urban-street-mat-collider.obj')
-street=surface(mat,0);floor=surface(mat,-1.25)
+street=surface(mat,0);floor=surface(mat,-PIT_DEPTH)
 expected=box(-24,-24,24,24);pits=[]
 for p in layout:
  if p['kind']!='dig':continue

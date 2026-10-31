@@ -6,6 +6,7 @@ import json,math
 import numpy as np
 import trimesh
 from tts_geometry import load_tts_mesh
+from map_config import STREET_Y
 from shapely.geometry import Polygon,Point
 from shapely.ops import unary_union
 R=Path(__file__).resolve().parents[1];items=json.loads((R/'Source/layout.json').read_text());triangles=[];roofsets=[]
@@ -28,7 +29,7 @@ def visible(o,end):
  d=end-o;L=np.linalg.norm(d);d/=L;p=np.cross(np.broadcast_to(d,e2.shape),e2);det=np.einsum('ij,ij->i',e1,p)
  inv=np.divide(1,det,out=np.zeros_like(det),where=abs(det)>1e-9);s=o-v0;u=np.einsum('ij,ij->i',s,p)*inv;q=np.cross(s,e1);v=(q@d)*inv;t=np.einsum('ij,ij->i',e2,q)*inv
  return not np.any((abs(det)>1e-9)&(u>=-1e-8)&(v>=-1e-8)&(u+v<=1+1e-8)&(t>.025)&(t<L-.025))
-targets=[np.array([a,6.05,a]) for a in [-16/math.sqrt(2),0,16/math.sqrt(2)]]
+targets=[np.array([a,STREET_Y+1.45,a]) for a in [-16/math.sqrt(2),0,16/math.sqrt(2)]]
 result=[]
 for name,pts in roofsets:
  rows=[dict(eye=p.tolist(),visibleConsoles=[i+1 for i,t in enumerate(targets) if visible(p,t)]) for p in pts]

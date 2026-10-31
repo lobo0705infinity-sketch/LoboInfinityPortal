@@ -1,5 +1,5 @@
 """Old Quarter Excavation R1. Deterministic, textured TTS terrain authoring.
-Coordinates are inches, Y up; the street surface is at world Y=4.6.
+Coordinates are inches, Y up; the street surface is at world Y=1.3.
 Run from this directory's parent with Python 3 and numpy/scipy/shapely/Pillow.
 """
 from pathlib import Path
@@ -7,7 +7,11 @@ import json, math, random, copy, hashlib
 import numpy as np
 from PIL import Image
 from shapely.geometry import Polygon, box, Point
-from shapely.ops import triangulate, unary_union
+from shapely.ops import unary_union
+from shapely import constrained_delaunay_triangles,orient_polygons
+from shapely.geometry.polygon import orient
+from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP
+def triangulate(poly):return [orient(t,sign=1.0) for t in constrained_delaunay_triangles(poly).geoms]
 
 ROOT=Path(__file__).resolve().parents[1]
 ASSET=ROOT/'Assets'; ASSET.mkdir(exist_ok=True)
@@ -65,17 +69,26 @@ class Mesh:
   self.groups.append(len(self.f))
   for ids in [(0,3,2,1),(4,5,6,7),(0,4,7,3),(1,2,6,5),(3,7,6,2),(0,1,5,4)]:self.face([corners[i] for i in ids],mat)
  def slab(self,poly,y,h,mat='concrete',tile=2.):
-  # Triangulate only inside the polygon: staircase wells and concave cuts stay open.
-  for t in triangulate(poly):
-   if not poly.covers(t.representative_point()):continue
-   pts=list(t.exterior.coords)[:3]
-   a=[(x,y+h,z) for x,z in pts];self.face(a[::-1],mat)
-   self.face([(x,y,z) for x,z in pts],mat)
+  poly=orient_polygons(poly)
+  # Constrained triangles preserve concave outlines and stair openings. Project
+  # horizontal UVs from shared material cells so triangles cannot stretch/flicker.
+  x0,z0,x1,z1=poly.bounds
+  for gx in np.arange(math.floor(x0/tile)*tile,x1,tile):
+   for gz in np.arange(math.floor(z0/tile)*tile,z1,tile):
+    cell=poly.intersection(box(gx,gz,gx+tile,gz+tile))
+    if cell.is_empty or cell.area<1e-8:continue
+    for t in triangulate(cell):
+     pts=list(t.exterior.coords)[:3]
+     for yy,rev in [(y+h,True),(y,False)]:
+      points=[(x,yy,z) for x,z in pts]
+      if rev:points=points[::-1]
+      start=len(self.v);self.face(points,mat);mi=MATS.get(mat,mat);col=mi%4;row=mi//4
+      self.uv[start:]=[((col+.008+.984*(x-gx)/tile)/4,1-(row+.008+.984*(z-gz)/tile)/4) for x,_,z in points]
   polys=list(poly.geoms) if hasattr(poly,'geoms') else [poly]
   for p in polys:
    for ring in [p.exterior,*p.interiors]:
     pts=list(ring.coords)
-    for (x,z),(xx,zz) in zip(pts,pts[1:]):self.quad((x,y,z),(xx,y,zz),(xx,y+h,zz),(x,y+h,z),mat,tile)
+    for (x,z),(xx,zz) in zip(pts,pts[1:]):self.quad((x,y,z),(x,y+h,z),(xx,y+h,zz),(xx,y,zz),mat,tile)
  def merge(self,m):
   offset=len(self.v);fo=len(self.f);self.v+=m.v;self.uv+=m.uv;self.f +=[tuple(offset+i for i in f) for f in m.f];self.groups +=[fo+i for i in m.groups]
  def write(self,path,compound=False):
@@ -108,10 +121,10 @@ def slab(m,poly,y,h,mat='concrete'):
  m[0].slab(poly,y,h,mat)
  # Convex triangular prisms keep floor wells open without a high-poly collider.
  for t in triangulate(poly):
-  if not poly.covers(t.representative_point()):continue
+  if not poly.covers(t):continue
   pts=list(t.exterior.coords)[:3];c=Mesh();c.groups.append(0)
   c.face([(x,y,z) for x,z in pts]);c.face([(x,y+h,z) for x,z in pts][::-1])
-  for (x,z),(xx,zz) in zip(pts,pts[1:]+pts[:1]):c.quad((x,y,z),(xx,y,zz),(xx,y+h,zz),(x,y+h,z),tile=10000)
+  for (x,z),(xx,zz) in zip(pts,pts[1:]+pts[:1]):c.quad((x,y,z),(x,y+h,z),(xx,y+h,zz),(xx,y,zz),tile=10000)
   m[1].merge(c)
 def register(name,m,nonconvex=False):
  meshes[name]={'visual':m[0],'collider':m[1],'nonconvex':nonconvex}
@@ -188,7 +201,7 @@ def building(kind,state):
  sx=-w/2+1.05;sz=-d/2+.45;well=box(sx-.79,sz-.05,sx+.79,sz+2.85)
  for floor in range(nf):
   yy=floor*(H+.15);fp=poly if floor==0 else poly.difference(well)
-  slab(m,fp,yy-.14,.14,'tile')
+  slab(m,fp,yy-.14+(GROUND_FLOOR_TOP if floor==0 else 0),.14,'tile')
   coords=list(poly.exterior.coords)
   for k,(a,b) in enumerate(zip(coords,coords[1:])):
    if kind=='ruin' and k in [1,2]:continue
@@ -247,7 +260,7 @@ building('depot',2)
 
 def small_building(kind,state=1):
  m=pair();w,d=(3.4,3.0) if kind=='utility-kiosk' else (4.2,3.0);H=2.55
- poly=box(-w/2,-d/2,w/2,d/2);slab(m,poly,-.12,.12,'tile')
+ poly=box(-w/2,-d/2,w/2,d/2);slab(m,poly,GROUND_FLOOR_TOP-.12,.12,'tile')
  coords=[(-w/2,-d/2),(w/2,-d/2),(w/2,d/2),(-w/2,d/2),(-w/2,-d/2)]
  for k,(a,b) in enumerate(zip(coords,coords[1:])):wall(m,a,b,0,H,'brick' if kind=='utility-kiosk' else 'plaster',door=k==0,windows=k in [0,1,2])
  for x,z in coords[:-1]:solid(m,(x,H/2,z),(.18,H,.18),'concrete')
@@ -266,17 +279,19 @@ def small_building(kind,state=1):
 for k in ['utility-kiosk','site-office']:
  for s in [1,2]:small_building(k,s)
 
-def rubble():
+def rubble(variant='small'):
+ fx,fy,fz={'small':(1,1,1),'medium':(1.45,1.3,1.25),'large':(1.85,1.65,1.5)}[variant]
+ random.seed(10312026+sum(ord(c) for c in variant))
  m=pair()
  # Two large irregular wall remnants provide actual silhouette-blocking cover.
- solid(m,(-.8,.8,0),(1.8,1.6,.38),'brick',-12)
- solid(m,(.5,.5,.3),(1.9,1.0,.45),'concrete',28)
+ solid(m,(-.8*fx,.8*fy,0),(1.8*fx,1.6*fy,.38*fz),'brick',-12)
+ solid(m,(.5*fx,.5*fy,.3*fz),(1.9*fx,1.0*fy,.45*fz),'concrete',28)
  for i in range(45):
   x=random.uniform(-1.8,1.8);z=random.uniform(-.7,.7);h=random.uniform(.1,.35)
-  m[0].box((x,h/2,z),(random.uniform(.12,.55),h,random.uniform(.12,.38)),random.choice(['brick','concrete','rubble']),random.uniform(0,180))
- for i in range(5):m[0].beam((-1+i*.18,1.3,0),(-1.05+i*.18,1.9+random.random()*.2,.1),.025,mat='rust')
- return register('wall-rubble',m)
-rubble()
+  m[0].box((x*fx,h/2*fy,z*fz),(random.uniform(.12,.55)*fx,h*fy,random.uniform(.12,.38)*fz),random.choice(['brick','concrete','rubble']),random.uniform(0,180))
+ for i in range(5):m[0].beam(((-1+i*.18)*fx,1.3*fy,0),((-1.05+i*.18)*fx,(1.9+random.random()*.2)*fy,.1*fz),.025,mat='rust')
+ return register('wall-rubble'+('' if variant=='small' else '-'+variant),m)
+for variant in ['small','medium','large']:rubble(variant)
 
 def barriers():
  m=pair()
@@ -299,28 +314,17 @@ def stores():
  return register('site-stores',m)
 stores()
 
-def tech(m,x=0,z=0,y=0):
- solid(m,(x,y+.22,z),(2.5,.44,1.65),'metal')
- m[0].cylinder((x-1.4,y+.65,z),(x+1.4,y+.65,z),.48,'metal',20)
- for xx in [-1.1,-.7,.4,1.1]:
-  m[0].cylinder((x+xx-.07,y+.65,z),(x+xx+.07,y+.65,z),.54,'silver',20)
-  m[0].box((x+xx,y+1.02,z+.18),(.12,.12,.65),'tech')
- m[1].box((x,y+.73,z),(2.8,.9,1.2),'metal',tile=10000)
- for dz in [-.9,.9]:
-  m[0].cylinder((x-1.2,y+.4,z+dz),(x+1.25,y+.4,z+dz),.13,'rust',10)
-  m[0].box((x,y+.55,z+dz),(1.25,.18,.15),'tech')
-
 def excavation():
- m=pair();W,D=8,6;dep=1.25
+ m=pair();W,D=8,6;dep=PIT_DEPTH
  # Continuous weathered steel shoring replaces isolated concrete cubes. Timber
  # wales and regularly seated soldier piles make the walls read as a real dig.
  for x in [-4,4]:
   solid(m,(x,-dep/2,0),(.28,dep,6),'soil')
   solid(m,(x,.48,0),(.2,.96,5.95),'rust')
-  for z in np.arange(-2.85,2.9,.38):m[0].box((x+math.copysign(.11,x),-.07,z),(.10,2.15,.12),'metal')
-  for yy in [-.75,.16,.83]:m[0].box((x+math.copysign(.18,x),yy,0),(.15,.14,5.95),'wood')
+  for z in np.arange(-2.85,2.9,.38):m[0].box((x+math.copysign(.11,x),(.96-dep)/2,z),(.10,dep+.96,.12),'metal')
+  for yy in [-dep*.6,.16,.83]:m[0].box((x+math.copysign(.18,x),yy,0),(.15,.14,5.95),'wood')
   for z in [-2.7,-1.35,0,1.35,2.7]:
-   m[0].box((x,.05,z),(.3,2.55,.19),'rust')
+   m[0].box((x,(.96-dep)/2,z),(.3,dep+.96,.19),'rust')
    m[0].cylinder((x-math.copysign(.18,x),.62,z),(x-math.copysign(.22,x),.62,z),.065,'silver',8)
  for z in [-3,3]:
   for x in [-2.75,2.75]:solid(m,(x,-dep/2,z),(2.5,dep,.24),'soil')
@@ -333,7 +337,7 @@ def excavation():
    for f in [0,.5,1]:
     zz=inner+(z-inner)*f;yy=-dep*(1-f)
     m[0].cylinder((x,yy,zz),(x,yy+.7,zz),.028,'rust',6)
- tech(m,0,0,-dep)
+ # Open earth and rubble only; no custom Hyperthermal Tech scenery.
  for i in range(36):
   x=random.choice([-1,1])*random.uniform(2.2,3.7);z=random.uniform(-2.7,2.7)
   m[0].box((x,-dep+.1,z),(random.uniform(.2,.6),.2,random.uniform(.15,.45)),random.choice(['brick','concrete','rubble']),random.uniform(0,180))
@@ -390,19 +394,6 @@ def coverwall():
  return register('retained-foundation-wall',m)
 coverwall()
 
-def mission_assets():
- m=pair();m[0].cylinder((0,0,0),(0,.12,0),40/25.4/2,'metal',24)
- m[1].cylinder((0,0,0),(0,.12,0),40/25.4/2,'metal',12)
- solid(m,(0,.62,0),(.5,1,.45),'silver')
- solid(m,(0,1.17,0),(.88,.18,.65),'metal')
- m[0].box((0,1.275,0),(.68,.035,.46),'tech')
- register('mission-console-40mm',m,True)
- m=pair();m[0].cylinder((0,0,0),(0,.085,0),25/25.4/2,'metal',24)
- m[0].cylinder((0,.085,0),(0,.09,0),.37,'tech',24)
- m[1].cylinder((0,0,0),(0,.09,0),25/25.4/2,'metal',12)
- register('hyperthermal-tech-25mm',m,True)
-mission_assets()
-
 # Layout axis: consoles run SW--NE; deployment corners are SE and NW.
 BUILDINGS=[
  ('civic','Civic Corner East',14,-17,0),('annex','Research Annex East',18,-5,0),
@@ -411,13 +402,13 @@ BUILDINGS=[
  ('ruin','Tenement North',10,17.5,180),('depot','Service Workshop North',-1,21,180),
  ('ruin','Central Ruined Block',-5.4,5.4,45),('annex','Central Survey Annex',5.4,-5.4,45)]
 for kind,title,x,z,angle in BUILDINGS:
- p=dict(mesh=kind+'-state-1',title=title,x=x,z=z,y=4.6,angle=angle,kind='building',states=True)
+ p=dict(mesh=kind+'-state-1',title=title,x=x,z=z,y=STREET_Y,angle=angle,kind='building',states=True)
  if kind=='depot':p.update(stateVariants={'2':'depot-state-2'},stateLabels={'1':'Roof on','2':'Ground floor exposed'})
  placements.append(p)
 for kind,title,x,z,angle in [('utility-kiosk','Midfield Utilities South',-2.5,-4,0),('utility-kiosk','Midfield Utilities North',2.5,4,180),('site-office','Western Excavation Site Office',-18,-14,0),('site-office','Eastern Excavation Site Office',18,14,180)]:
- placements.append(dict(mesh=kind,title=title,x=x,z=z,y=4.6,angle=angle,kind='building',states=True,stateVariants={'2':kind+'-open'},stateLabels={'1':'Roof on','2':'Ground floor exposed'}))
+ placements.append(dict(mesh=kind,title=title,x=x,z=z,y=STREET_Y,angle=angle,kind='building',states=True,stateVariants={'2':kind+'-open'},stateLabels={'1':'Roof on','2':'Ground floor exposed'}))
 DIGS=[(-14,-3),(14,3),(-4,-11)]
-for i,(x,z) in enumerate(DIGS):placements.append(dict(mesh='excavation-cut',title=f'Excavation Pocket {i+1}',x=x,z=z,y=4.6,angle=0,kind='dig'))
+for i,(x,z) in enumerate(DIGS):placements.append(dict(mesh='excavation-cut',title=f'Excavation Pocket {i+1}',x=x,z=z,y=STREET_Y,angle=0,kind='dig'))
 SCATTER=[
  ('wall-rubble',-13.5,-17,20),('wall-rubble',13.5,17,200),
  ('wall-rubble',-5,-.8,100),('wall-rubble',5,.8,280),
@@ -427,15 +418,19 @@ SCATTER=[
  ('tracked-excavator',-8,-3,90),('tracked-excavator',8,3,270),
  ('utility-van',21,-21,10),('utility-van',-21,21,190),
  ('utility-and-planter',-20,-5,0),('utility-and-planter',20,5,180),
- ('utility-and-planter',-8,12,0),('utility-and-planter',8,-12,180)]
-for i,(mesh,x,z,angle) in enumerate(SCATTER):placements.append(dict(mesh=mesh,title=mesh.replace('-',' ').title()+f' {i+1}',x=x,z=z,y=4.6,angle=angle,kind='scatter'))
+ ('wall-rubble-large',-6.5,13,0),('wall-rubble-large',6.5,-13,180),
+ ('wall-rubble-medium',-17,11,45),('wall-rubble-medium',17,-11,225),
+ ('wall-rubble-medium',-10,-22,0),('wall-rubble-medium',10,22,180),
+ ('wall-rubble',-15,-10,45),('wall-rubble',15,10,225),
+ ('wall-rubble',-6,20.5,90),('wall-rubble',6,-20.5,270)]
+for i,(mesh,x,z,angle) in enumerate(SCATTER):placements.append(dict(mesh=mesh,title=mesh.replace('-',' ').title()+f' {i+1}',x=x,z=z,y=STREET_Y,angle=angle,kind='scatter'))
 
 # Continuous mat with physical cutouts. No invisible collider covers the pits.
 ground=box(-24,-24,24,24)
 for x,z in DIGS:ground=ground.difference(box(x-4,z-3,x+4,z+3))
 mat=pair()
 for t in triangulate(ground):
- if not ground.covers(t.representative_point()):continue
+ if not ground.covers(t):continue
  pts=list(t.exterior.coords)[:3]
  # Clip ground triangles into 2-inch material panels so asphalt grain stays scaled.
  for x in np.arange(-24,24,2):
@@ -443,20 +438,25 @@ for t in triangulate(ground):
    p=t.intersection(box(x,z,x+2,z+2))
    if p.is_empty or p.area<.00001:continue
    for tt in triangulate(p):
-    if p.covers(tt.representative_point()):
+    if p.covers(tt):
      points=[(xx,0,zz) for xx,zz in list(tt.exterior.coords)[:3]][::-1]
      start=len(mat[0].v);mat[0].face(points,'asphalt')
      mat[0].uv[start:]=[((.008+.984*(xx-x)/2)/4,1-(.008+.984*(zz-z)/2)/4) for xx,_,zz in points]
  mat[1].face([(x,0,z) for x,z in pts][::-1])
 # Pit floors are part of the mat, with matching earthen bottom surfaces.
 for x,z in DIGS:
- mat[0].quad((x-4,-1.25,z-3),(x-4,-1.25,z+3),(x+4,-1.25,z+3),(x+4,-1.25,z-3),'soil')
- mat[1].quad((x-4,-1.25,z-3),(x-4,-1.25,z+3),(x+4,-1.25,z+3),(x+4,-1.25,z-3),tile=10000)
-# Thin dark slab and sidewalks visually frame the district.
+ mat[0].quad((x-4,-PIT_DEPTH,z-3),(x-4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z-3),'soil')
+ mat[1].quad((x-4,-PIT_DEPTH,z-3),(x-4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z+3),(x+4,-PIT_DEPTH,z-3),tile=10000)
+# Close the entire base, including pit walls and underside. The bottom rests
+# at world 0.85 instead of hanging several inches above the standard table.
+for x,z in DIGS:
+ for a,b in [((x-4,z-3),(x+4,z-3)),((x+4,z-3),(x+4,z+3)),((x+4,z+3),(x-4,z+3)),((x-4,z+3),(x-4,z-3))]:
+  for part in mat:part.quad((a[0],-PIT_DEPTH,a[1]),(b[0],-PIT_DEPTH,b[1]),(b[0],0,b[1]),(a[0],0,a[1]),'soil',tile=10000 if part is mat[1] else 2)
 for a,b in [((-24,-24),(24,-24)),((24,-24),(24,24)),((24,24),(-24,24)),((-24,24),(-24,-24))]:
- mat[0].quad((a[0],-1.6,a[1]),(b[0],-1.6,b[1]),(b[0],0,b[1]),(a[0],0,a[1]),'soil')
+ for part in mat:part.quad((a[0],BASE_BOTTOM,a[1]),(a[0],0,a[1]),(b[0],0,b[1]),(b[0],BASE_BOTTOM,b[1]),'soil',tile=10000 if part is mat[1] else 2)
+for part in mat:part.face([(-24,BASE_BOTTOM,-24),(24,BASE_BOTTOM,-24),(24,BASE_BOTTOM,24),(-24,BASE_BOTTOM,24)],'soil')
 register('urban-street-mat',mat,True)
-placements.insert(0,dict(mesh='urban-street-mat',title='Old Quarter Excavation — Street Mat',x=0,z=0,y=4.6,angle=0,kind='mat'))
+placements.insert(0,dict(mesh='urban-street-mat',title='Old Quarter Excavation — Street Mat',x=0,z=0,y=STREET_Y,angle=0,kind='mat'))
 
 # Raised pavements ground the buildings in an urban street layout. Each is a
 # separate textured model, so the primary ground stays comfortably below 25k.
@@ -476,7 +476,7 @@ for p in placements:
  poly=box(-w/2,-1.5,w/2,1.5);ring=poly.buffer(.35,join_style=2).difference(poly)
  ring=translate(rotate(ring,-p['angle'],origin=(0,0)),xoff=p['x'],yoff=p['z']);slab(pavement,ring,.005,.11,'concrete')
 register('urban-pavements',pavement)
-placements.insert(1,dict(mesh='urban-pavements',title='Urban Pavements and Curbs',x=0,z=0,y=4.6,angle=0,kind='pavement'))
+placements.insert(1,dict(mesh='urban-pavements',title='Urban Pavements and Curbs',x=0,z=0,y=STREET_Y,angle=0,kind='pavement'))
 
 # Road paint appears only in short surviving street sections and parking bays.
 paint=pair()

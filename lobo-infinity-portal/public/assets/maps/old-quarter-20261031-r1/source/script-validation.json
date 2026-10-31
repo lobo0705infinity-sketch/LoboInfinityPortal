@@ -1,8 +1,12 @@
 {
-  "uniqueObjectScriptsCompiled": 4,
+  "uniqueObjectScriptsCompiled": 3,
   "deploymentCheckboxCombinations": 8,
   "radiusGeometry": "pass",
   "saveRestore": "pass",
+  "delayedLoadAndGlobalUIResetRecovery": "pass",
+  "overlayFailureDoesNotHideHUD": "pass",
+  "controllerLifecycle": "pass",
+  "lightweightButtonsBeforeLazyPanels": "pass",
   "missionContentAndPlayerPanels": "pass",
   "existingUIPreserved": "pass",
   "mapUICleanup": "pass",

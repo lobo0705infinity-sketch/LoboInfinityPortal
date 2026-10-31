@@ -2,9 +2,14 @@
 local root='oq810340_'..self.getGUID()
 local colors={'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Purple','Pink','Grey','Black'}
 local deployed=false
+local watcher=nil
+local overlayReady=false
+local attachUI
+local missionRequested,missionOpen,deploymentRequested,deploymentOpen={},{},{},{}
+local matGUID='e90001'
 local deploymentRadii={[24]=true,[28]=false,[32]=false}
 local showTech=false
-local function node(tag,attributes,children) return {tag=tag,attributes=attributes or {},children=children or {}} end
+local function node(tag,attributes,children,value) return {tag=tag,attributes=attributes or {},children=children or {},value=value} end
 local function escape(s)
  s=tostring(s or ''):gsub('&','&amp;'):gsub('<','&lt;'):gsub('>','&gt;'):gsub('"','&quot;'):gsub("'",'&apos;'):gsub('\n','&#10;')
  return s
@@ -54,7 +59,7 @@ Each player places three Hyperthermal Tech tokens. The player who kept Deploymen
 
 Use 25 mm diameter Tech tokens or equivalent scenery. The WHOLE token must be more than 8 inches from BOTH players' Deployment Zones and from every other Tech token. It must be on accessible table ground, never on top of or inside scenery or a building. In a 150-point game these two spacing requirements are 4 inches instead.
 
-The six Tech tokens begin beside the table for player placement. Tech Guide displays one verified legal arrangement for this map's 24-inch zones. The guide rings are examples, not compulsory objectives; hide them after choosing your own placements.
+Use the normal Infinity mod Hyperthermal Tech markers for player placement; this map creates no Tech models. Tech Guide displays one verified legal arrangement for this map's 24-inch zones. The guide rings are examples, not compulsory objectives; hide them after choosing your own placements.
 
 ANALYZE HYPERTHERMAL TECH
 Short Skill. Labels: Attack, Scenario.
@@ -99,7 +104,7 @@ CURRENT WORDING
 The task previously called Activate Console is Analyze Hyperthermal Tech. Console ownership and neutralization use Player Tokens; neutralization requires a Tech analysed for your own player. The small-game spacing exception applies at 150 points.
 
 TERRAIN & ACCESS
-Use the modeled geometry for line of fire and cover. The three open excavation pockets are about 1¼ inches below street level and have two ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
+Use the modeled geometry for line of fire and cover. The three open excavation pockets are shallow cuts about ⅜ inch below street level and have two ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
 
 SOURCE
 Mission Geist: https://infinitygeist.com/mission/s18_the_dig
@@ -130,51 +135,72 @@ function redrawOverlays()
    lines[#lines+1]={points=pts,color={.2,1,.5},thickness=.045}
   end
  end
- self.setVectorLines(lines)
+ local mat=getObjectFromGUID(matGUID)
+ overlayReady=mat and pcall(function() mat.setVectorLines(lines) end) or false
 end
-function toggleDeployment(player) if player then UI.setAttribute(root..'_deploy_'..player.color,'active','true') end end
-function closeDeployment(player) if player then UI.setAttribute(root..'_deploy_'..player.color,'active','false') end end
+function toggleDeployment(player) if player then deploymentRequested[player.color]=true;deploymentOpen[player.color]=true;attachUI() end end
+function closeDeployment(player) if player then deploymentOpen[player.color]=false;UI.setAttribute(root..'_deploy_'..player.color,'active','false') end end
 local function setRadius(radius,value)
  local on=value==true or tostring(value):lower()=='true'
  if deploymentRadii[radius]==on then return end
  deploymentRadii[radius]=on
- for _,color in ipairs(colors) do UI.setAttribute(root..'_deploy_'..color..'_'..radius,'isOn',tostring(on)) end
+ for _,color in ipairs(colors) do if deploymentRequested[color] then UI.setAttribute(root..'_deploy_'..color..'_'..radius,'isOn',tostring(on)) end end
  redrawOverlays()
 end
 function setDeployment24(player,value) setRadius(24,value) end
 function setDeployment28(player,value) setRadius(28,value) end
 function setDeployment32(player,value) setRadius(32,value) end
 function toggleTechGuide() showTech=not showTech;redrawOverlays() end
-function openRules(player) if player then UI.setAttribute(root..'_'..player.color,'active','true') end end
-function closeRules(player) if player then UI.setAttribute(root..'_'..player.color,'active','false') end end
+function openRules(player) if player then missionRequested[player.color]=true;missionOpen[player.color]=true;attachUI() end end
+function closeRules(player) if player then missionOpen[player.color]=false;UI.setAttribute(root..'_'..player.color,'active','false') end end
 function sourceLink(player) if player then printToColor('Mission Geist — The Dig: https://infinitygeist.com/mission/s18_the_dig',player.color,{.6,.85,1}) end end
-local function attachUI()
- if UI.loading then Wait.frames(attachUI,5);return end
+attachUI=function()
+ if UI.loading then return end
  local callback=self.getGUID()..'/'
  local children={}
  for _,b in ipairs({{'Mission','openRules',0},{'Deployment','toggleDeployment',-185},{'Tech Guide','toggleTechGuide',185}}) do
-  table.insert(children,node('Button',{text=b[1],onClick=callback..b[2],rectAlignment='UpperCenter',offsetXY=b[3]..' -70',width='170',height='40',fontSize='20',color='#263E4D',textColor='#FFFFFF'}))
+  table.insert(children,node('Button',{id=root..'_button_'..b[2],text=b[1],onClick=callback..b[2],rectAlignment='UpperCenter',offsetXY=b[3]..' -70',width='170',height='40',fontSize='20',color='#263E4D',textColor='#FFFFFF'}))
  end
  for _,color in ipairs(colors) do
-  table.insert(children,node('Panel',{id=root..'_'..color,visibility=color,active='false',rectAlignment='MiddleCenter',width='840',height='750',color='#152027FA',allowDragging='true'}, {
+  if missionRequested[color] then
+  table.insert(children,node('Panel',{id=root..'_'..color,visibility=color,active=tostring(missionOpen[color]==true),rectAlignment='MiddleCenter',width='840',height='750',color='#152027FA',allowDragging='true'}, {
    node('Text',{text='OLD QUARTER EXCAVATION | MISSION',fontSize='22',rectAlignment='UpperCenter',offsetXY='0 -14',width='790',height='42',color='#FFFFFF'}),
    node('VerticalScrollView',{rectAlignment='UpperCenter',offsetXY='0 -65',width='790',height='610',scrollSensitivity='25',color='#192831'}, {
     node('Text',{text=rules,width='750',height=tostring(textHeight(rules,750,19)),preferredHeight=tostring(textHeight(rules,750,19)),fontSize='19',alignment='UpperLeft',color='#EDF2F5'})}),
    node('Button',{text='Mission Geist link',onClick=callback..'sourceLink',rectAlignment='LowerLeft',offsetXY='25 16',width='220',height='42',fontSize='19',color='#365564',textColor='#FFFFFF'}),
    node('Button',{text='Close',onClick=callback..'closeRules',rectAlignment='LowerRight',offsetXY='-25 16',width='150',height='42',fontSize='20',color='#365564',textColor='#FFFFFF'})}))
+  end
+  if deploymentRequested[color] then
   local toggles={node('Text',{text='CORNER DISTANCE OVERLAYS',rectAlignment='UpperCenter',offsetXY='0 -12',width='310',height='30',fontSize='19',color='#FFFFFF'})}
   for i,radius in ipairs({24,28,32}) do
    local labels={[24]='24″ — Deployment',[28]='28″ — +4″ measuring aid',[32]='32″ — +8″ measuring aid'}
-   table.insert(toggles,node('Toggle',{id=root..'_deploy_'..color..'_'..radius,text=labels[radius],isOn=tostring(deploymentRadii[radius]),onValueChanged=callback..'setDeployment'..radius,rectAlignment='UpperCenter',offsetXY='0 '..(-45-(i-1)*38),width='300',height='34',toggleWidth='24',toggleHeight='24',fontSize='19',textColor='#FFFFFF',textAlignment='MiddleLeft'}))
+   table.insert(toggles,node('Toggle',{id=root..'_deploy_'..color..'_'..radius,isOn=tostring(deploymentRadii[radius]),onValueChanged=callback..'setDeployment'..radius,rectAlignment='UpperCenter',offsetXY='0 '..(-45-(i-1)*38),width='300',height='34',toggleWidth='24',toggleHeight='24',fontSize='19',textColor='#FFFFFF',alignment='MiddleLeft'},nil,labels[radius]))
   end
   table.insert(toggles,node('Text',{text='Tick any combination. Blue / orange mark the two corners.',rectAlignment='UpperCenter',offsetXY='0 -162',width='300',height='40',fontSize='15',color='#BBD6E4'}))
   table.insert(toggles,node('Button',{text='Close',onClick=callback..'closeDeployment',rectAlignment='LowerCenter',offsetXY='0 10',width='120',height='32',fontSize='18',color='#365564',textColor='#FFFFFF'}))
-  table.insert(children,node('Panel',{id=root..'_deploy_'..color,visibility=color,active='false',rectAlignment='UpperCenter',offsetXY='-185 -118',width='340',height='248',color='#152027FA'},toggles))
+  table.insert(children,node('Panel',{id=root..'_deploy_'..color,visibility=color,active=tostring(deploymentOpen[color]==true),rectAlignment='UpperCenter',offsetXY='-185 -118',width='340',height='248',color='#152027FA'},toggles))
+  end
  end
  local current={}
  for _,n in ipairs(UI.getXmlTable() or {}) do if not n.attributes or n.attributes.id~=root then table.insert(current,n) end end
- table.insert(current,node('Panel',{id=root,width='100%',height='100%',color='#00000000',raycastTarget='false'},children))
+ table.insert(current,node('Panel',{id=root,active='true',width='100%',height='100%',color='#00000000',raycastTarget='false'},children))
  setUI(current);deployed=true
+end
+-- Custom_Model download and the Infinity mod can both complete after onLoad.
+-- Keep the HUD attached after the map is placed; recover if another script
+-- rebuilds Global UI. Overlay failure must never prevent the controls mounting.
+function checkDeployment()
+ local p=self.getPosition();local mat=getObjectFromGUID(matGUID)
+ local placed=mat and math.abs(p.x)<=44 and math.abs(p.z)<=26 and math.abs(p.y)<=26
+ if not placed then if deployed then removeUI() end;return end
+ if UI.loading then return end
+ local found=false
+ for _,n in ipairs(UI.getXmlTable() or {}) do if n.attributes and n.attributes.id==root then found=true end end
+ if not found then
+  local ok,err=pcall(attachUI)
+  if not ok then print('Old Quarter controls are waiting to initialize: '..tostring(err));return end
+ end
+ if not overlayReady then redrawOverlays() end
 end
 function onSave() return JSON.encode({radii={["24"]=deploymentRadii[24],["28"]=deploymentRadii[28],["32"]=deploymentRadii[32]},tech=showTech}) end
 function onLoad(saved)
@@ -185,7 +211,13 @@ function onLoad(saved)
    showTech=s.tech==true
   end
  end
- self.setLock(true)
- Wait.frames(function() redrawOverlays();attachUI() end,5)
+ overlayReady=false
+ self.setLock(true);self.setInvisibleTo(colors)
+ if watcher then Wait.stop(watcher) end
+ watcher=Wait.time(checkDeployment,.5,-1)
+ Wait.frames(checkDeployment,5)
 end
-function onDestroy() if deployed then removeUI() end end
+function onDestroy()
+ if watcher then Wait.stop(watcher) end
+ if deployed then removeUI() end
+end

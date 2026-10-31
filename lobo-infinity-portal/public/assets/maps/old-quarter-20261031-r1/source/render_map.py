@@ -7,6 +7,7 @@ import numpy as np
 np.infty=np.inf
 import trimesh,pyrender
 from tts_geometry import load_tts_mesh
+from map_config import STREET_Y
 from PIL import Image,ImageDraw,ImageFont
 ROOT=Path(__file__).resolve().parents[1];A=ROOT/'Assets';P=ROOT/'Preview'
 atlas=Image.open(A/'old-quarter-material-atlas.jpg').convert('RGB')
@@ -34,7 +35,7 @@ def scene(items):
   base=trimesh.creation.cylinder(radius=40/25.4/2,height=.2,sections=48)
   base.apply_transform(pose(0,0,0,0));base.apply_transform(trimesh.transformations.rotation_matrix(math.pi/2,[1,0,0]))
   base.visual.vertex_colors=[55,57,58,255]
-  s.add(pyrender.Mesh.from_trimesh(base,smooth=False),pose=pose(v,4.7,v))
+  s.add(pyrender.Mesh.from_trimesh(base,smooth=False),pose=pose(v,STREET_Y+.1,v))
  for eye,intensity in [([25,50,20],2.8),([-30,30,-10],1.7)]:s.add(pyrender.DirectionalLight(color=[1,1,.97],intensity=intensity),pose=lookat(eye,[0,0,0]))
  return s
 def render(s,path,eye,target,mag=34,size=(1500,1500),up=[0,1,0]):
@@ -50,11 +51,11 @@ def render(s,path,eye,target,mag=34,size=(1500,1500),up=[0,1,0]):
  # GPU resources belong to the destroyed EGL context; rebuild them next render.
  cache.clear()
 
-mission=[dict(mesh='traditional-console',x=v+.001527,y=4.8030838966,z=v+.008767,angle=270) for v in [-16/math.sqrt(2),0,16/math.sqrt(2)]]
-render(scene(placements+mission),P/'actual-mesh-angled.png',[59,72,66],[0,4,0],34,(1700,1500))
-render(scene(placements+mission),P/'actual-mesh-overhead.png',[0,100,0.001],[0,4.6,0],25,(1600,1600),[0,0,-1])
+mission=[dict(mesh='traditional-console',x=v+.001527,y=STREET_Y+.2030838966,z=v+.008767,angle=270) for v in [-16/math.sqrt(2),0,16/math.sqrt(2)]]
+render(scene(placements+mission),P/'actual-mesh-angled.png',[59,72,66],[0,STREET_Y,0],34,(1700,1500))
+render(scene(placements+mission),P/'actual-mesh-overhead.png',[0,100,0.001],[0,STREET_Y,0],25,(1600,1600),[0,0,-1])
 # A close view exposes real door and window openings and the excavated technology.
-render(scene(placements+mission),P/'actual-mesh-detail.png',[31,31,30],[7,5,1],17,(1600,1200))
+render(scene(placements+mission),P/'actual-mesh-detail.png',[31,31,30],[7,STREET_Y+1,1],17,(1600,1200))
 for state in [1,2,3]:
  items=[dict(mesh='annex-state-'+str(state),x=0,y=0,z=0,angle=0),dict(mesh='civic-state-'+str(state),x=10,y=0,z=0,angle=0),dict(mesh='ruin-state-'+str(state),x=-10,y=0,z=0,angle=0)]
  render(scene(items),P/f'building-states-{state}.png',[23,25,35],[0,2,0],20,(1800,850))
@@ -62,6 +63,10 @@ for state in [1,2,3]:
 for state in [1,2]:
  items=[dict(mesh='utility-kiosk'+('' if state==1 else '-open'),x=-3,y=0,z=0,angle=0),dict(mesh='site-office'+('' if state==1 else '-open'),x=3,y=0,z=0,angle=0)]
  render(scene(items),P/f'small-building-states-{state}.png',[15,16,22],[0,1,0],9,(1400,900))
+
+# Actual small/medium/large rubble meshes for the requested size comparison.
+items=[dict(mesh='wall-rubble',x=-7,y=0,z=0,angle=0),dict(mesh='wall-rubble-medium',x=0,y=0,z=0,angle=0),dict(mesh='wall-rubble-large',x=8,y=0,z=0,angle=0)]
+render(scene(items),P/'rubble-size-variants.png',[15,17,28],[1,1,0],14,(1700,750))
 
 im=Image.open(P/'actual-mesh-overhead.png').convert('RGB');d=ImageDraw.Draw(im,'RGBA')
 def px(x,z):return (800+x*32,800+z*32)

@@ -6,7 +6,10 @@
   "collectionSave": "Only bag 810340 changed among 90 map bags; 252 total root objects retained",
   "fullApplicationBuild": "Not run; targeted map catalogue, Lua, geometry, assets and TSX checks completed.",
   "importAlignment": "pass (3 pit cuts/floors and 14 building pavements, simulated TTS OBJ import)",
-  "deploymentMenu": "pass (8 checkbox combinations; 24/28/32 radius points; synchronization and save/load)",
-  "roofSampling": "67 roof positions, maximum two Consoles visible in point-ray sampling",
-  "traditionalConsoles": "Original Micro Art Studio AssetBundle and attached 40 mm bases reused"
+  "deploymentMenu": "pass (8 checkbox combinations; lazy panels; late load/UI overwrite recovery; overlays cannot block controls)",
+  "roofSampling": "69 roof positions, maximum two Consoles visible in point-ray sampling",
+  "traditionalConsoles": "Original Micro Art Studio AssetBundle and attached 40 mm bases reused",
+  "boardAndFloors": "pass (closed watertight base; 3.3-inch lowering; separated floor surfaces; constrained triangulation)",
+  "terrainInventory": "14 buildings, 16 rubble clusters (10 small / 4 medium / 2 large), no custom Tech models",
+  "runtimeAssets": "55 immutable hosted assets; byte match checks"
 }

@@ -1,14 +1,14 @@
 [
   {
     "name": "civic-state-1",
-    "vertices": 12728,
-    "triangles": 6068,
+    "vertices": 13226,
+    "triangles": 6234,
     "colliderTriangles": 2472,
     "nonconvex": false,
     "bounds": [
       [
         -4.245,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -20,14 +20,14 @@
   },
   {
     "name": "civic-state-2",
-    "vertices": 11428,
-    "triangles": 5460,
+    "vertices": 11752,
+    "triangles": 5568,
     "colliderTriangles": 2296,
     "nonconvex": false,
     "bounds": [
       [
         -4.245,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -39,14 +39,14 @@
   },
   {
     "name": "civic-state-3",
-    "vertices": 6168,
-    "triangles": 2900,
+    "vertices": 6318,
+    "triangles": 2950,
     "colliderTriangles": 1052,
     "nonconvex": false,
     "bounds": [
       [
         -4.245,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -58,14 +58,14 @@
   },
   {
     "name": "annex-state-1",
-    "vertices": 12040,
-    "triangles": 5716,
+    "vertices": 12664,
+    "triangles": 5924,
     "colliderTriangles": 2236,
     "nonconvex": false,
     "bounds": [
       [
         -3.4450000000000003,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -77,14 +77,14 @@
   },
   {
     "name": "annex-state-2",
-    "vertices": 10808,
-    "triangles": 5140,
+    "vertices": 11240,
+    "triangles": 5284,
     "colliderTriangles": 2100,
     "nonconvex": false,
     "bounds": [
       [
         -3.4450000000000003,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -96,14 +96,14 @@
   },
   {
     "name": "annex-state-3",
-    "vertices": 5980,
-    "triangles": 2796,
+    "vertices": 6160,
+    "triangles": 2856,
     "colliderTriangles": 952,
     "nonconvex": false,
     "bounds": [
       [
         -3.4450000000000003,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -115,14 +115,14 @@
   },
   {
     "name": "ruin-state-1",
-    "vertices": 11148,
-    "triangles": 5262,
+    "vertices": 11580,
+    "triangles": 5406,
     "colliderTriangles": 1944,
     "nonconvex": false,
     "bounds": [
       [
         -3.745,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -134,14 +134,14 @@
   },
   {
     "name": "ruin-state-2",
-    "vertices": 10740,
-    "triangles": 5064,
+    "vertices": 11112,
+    "triangles": 5188,
     "colliderTriangles": 1788,
     "nonconvex": false,
     "bounds": [
       [
         -3.745,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -153,14 +153,14 @@
   },
   {
     "name": "ruin-state-3",
-    "vertices": 6706,
-    "triangles": 3116,
+    "vertices": 6886,
+    "triangles": 3176,
     "colliderTriangles": 852,
     "nonconvex": false,
     "bounds": [
       [
         -3.745,
-        -0.14,
+        -0.10500000000000001,
         -3.325
       ],
       [
@@ -172,14 +172,14 @@
   },
   {
     "name": "depot-state-1",
-    "vertices": 4876,
-    "triangles": 2300,
+    "vertices": 5236,
+    "triangles": 2420,
     "colliderTriangles": 800,
     "nonconvex": false,
     "bounds": [
       [
         -3.245,
-        -0.14,
+        -0.10500000000000001,
         -2.7249999999999996
       ],
       [
@@ -191,14 +191,14 @@
   },
   {
     "name": "depot-state-2",
-    "vertices": 3684,
-    "triangles": 1744,
+    "vertices": 3864,
+    "triangles": 1804,
     "colliderTriangles": 664,
     "nonconvex": false,
     "bounds": [
       [
         -3.245,
-        -0.14,
+        -0.10500000000000001,
         -2.7249999999999996
       ],
       [
@@ -210,14 +210,14 @@
   },
   {
     "name": "utility-kiosk",
-    "vertices": 3056,
-    "triangles": 1420,
+    "vertices": 3128,
+    "triangles": 1444,
     "colliderTriangles": 440,
     "nonconvex": false,
     "bounds": [
       [
         -1.8,
-        -0.12,
+        -0.08499999999999999,
         -2.2
       ],
       [
@@ -229,14 +229,14 @@
   },
   {
     "name": "utility-kiosk-open",
-    "vertices": 2428,
-    "triangles": 1124,
+    "vertices": 2464,
+    "triangles": 1136,
     "colliderTriangles": 364,
     "nonconvex": false,
     "bounds": [
       [
         -1.8,
-        -0.12,
+        -0.08499999999999999,
         -2.2
       ],
       [
@@ -248,14 +248,14 @@
   },
   {
     "name": "site-office",
-    "vertices": 3176,
-    "triangles": 1480,
+    "vertices": 3344,
+    "triangles": 1536,
     "colliderTriangles": 500,
     "nonconvex": false,
     "bounds": [
       [
         -2.2,
-        -0.12,
+        -0.08499999999999999,
         -2.2
       ],
       [
@@ -267,14 +267,14 @@
   },
   {
     "name": "site-office-open",
-    "vertices": 2508,
-    "triangles": 1164,
+    "vertices": 2592,
+    "triangles": 1192,
     "colliderTriangles": 424,
     "nonconvex": false,
     "bounds": [
       [
         -2.2,
-        -0.12,
+        -0.08499999999999999,
         -2.2
       ],
       [
@@ -292,14 +292,52 @@
     "nonconvex": false,
     "bounds": [
       [
-        -1.7198360619157995,
+        -1.95822043272526,
         0.0,
-        -0.9333401419815002
+        -0.9257230792034723
       ],
       [
-        1.9827833012912295,
-        2.055563551855238,
-        0.9446611930398547
+        1.9232729066888605,
+        2.0742497307182926,
+        1.0020363056625008
+      ]
+    ]
+  },
+  {
+    "name": "wall-rubble-medium",
+    "vertices": 1328,
+    "triangles": 664,
+    "colliderTriangles": 24,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -2.993047750120488,
+        0.0,
+        -1.097175075523543
+      ],
+      [
+        2.778861302921769,
+        2.6988317704171827,
+        1.2700260882291379
+      ]
+    ]
+  },
+  {
+    "name": "wall-rubble-large",
+    "vertices": 1360,
+    "triangles": 680,
+    "colliderTriangles": 24,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.167870587104848,
+        0.0,
+        -1.296107431049868
+      ],
+      [
+        3.8222549435635633,
+        3.416579282314581,
+        1.573091084186091
       ]
     ]
   },
@@ -343,19 +381,19 @@
   },
   {
     "name": "excavation-cut",
-    "vertices": 6272,
-    "triangles": 2864,
-    "colliderTriangles": 124,
+    "vertices": 4216,
+    "triangles": 1956,
+    "colliderTriangles": 100,
     "nonconvex": true,
     "bounds": [
       [
         -4.255,
-        -1.25,
+        -0.35000000000000003,
         -3.12
       ],
       [
         4.255,
-        1.325,
+        0.96,
         3.12
       ]
     ]
@@ -437,53 +475,15 @@
     ]
   },
   {
-    "name": "mission-console-40mm",
-    "vertices": 312,
-    "triangles": 132,
-    "colliderTriangles": 72,
-    "nonconvex": true,
-    "bounds": [
-      [
-        -0.7874015748031497,
-        0.0,
-        -0.7874015748031497
-      ],
-      [
-        0.7874015748031497,
-        1.2925,
-        0.7874015748031497
-      ]
-    ]
-  },
-  {
-    "name": "hyperthermal-tech-25mm",
-    "vertices": 480,
-    "triangles": 192,
-    "colliderTriangles": 48,
-    "nonconvex": true,
-    "bounds": [
-      [
-        -0.4921259842519685,
-        0.0,
-        -0.4921259842519685
-      ],
-      [
-        0.4921259842519685,
-        0.09,
-        0.4921259842519685
-      ]
-    ]
-  },
-  {
     "name": "urban-street-mat",
-    "vertices": 5772,
-    "triangles": 2140,
-    "colliderTriangles": 26,
+    "vertices": 5944,
+    "triangles": 2226,
+    "colliderTriangles": 60,
     "nonconvex": true,
     "bounds": [
       [
         -24.0,
-        -1.6,
+        -0.45,
         -24.0
       ],
       [
@@ -495,8 +495,8 @@
   },
   {
     "name": "urban-pavements",
-    "vertices": 2272,
-    "triangles": 1010,
+    "vertices": 4300,
+    "triangles": 1686,
     "colliderTriangles": 1008,
     "nonconvex": false,
     "bounds": [

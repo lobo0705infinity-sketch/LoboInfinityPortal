@@ -1,0 +1,101 @@
+{
+  "streetHeight": 1.3,
+  "baseBottomWorldY": 0.8500000000000001,
+  "pitDepth": 0.35,
+  "baseClosedAndOutwardFacing": true,
+  "baseVolumeCubicInches": 986.4,
+  "groundFloorClearanceAboveAsphalt": 0.035,
+  "buildingStateGroundFloors": [
+    {
+      "mesh": "annex-state-1",
+      "groundFloorTriangles": 32,
+      "floorAreaSquareInches": 38.400000000000006,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "annex-state-2",
+      "groundFloorTriangles": 32,
+      "floorAreaSquareInches": 38.400000000000006,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "annex-state-3",
+      "groundFloorTriangles": 32,
+      "floorAreaSquareInches": 38.400000000000006,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "civic-state-1",
+      "groundFloorTriangles": 29,
+      "floorAreaSquareInches": 39.0,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "civic-state-2",
+      "groundFloorTriangles": 29,
+      "floorAreaSquareInches": 39.0,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "civic-state-3",
+      "groundFloorTriangles": 29,
+      "floorAreaSquareInches": 39.0,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "depot-state-1",
+      "groundFloorTriangles": 32,
+      "floorAreaSquareInches": 28.799999999999997,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "depot-state-2",
+      "groundFloorTriangles": 32,
+      "floorAreaSquareInches": 28.799999999999997,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "ruin-state-1",
+      "groundFloorTriangles": 33,
+      "floorAreaSquareInches": 40.320001875,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "ruin-state-2",
+      "groundFloorTriangles": 33,
+      "floorAreaSquareInches": 40.320001875,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "ruin-state-3",
+      "groundFloorTriangles": 33,
+      "floorAreaSquareInches": 40.320001875,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "site-office-open",
+      "groundFloorTriangles": 16,
+      "floorAreaSquareInches": 12.600000000000001,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "site-office",
+      "groundFloorTriangles": 16,
+      "floorAreaSquareInches": 12.600000000000001,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "utility-kiosk-open",
+      "groundFloorTriangles": 8,
+      "floorAreaSquareInches": 10.2,
+      "overlapSquareInches": 0.0
+    },
+    {
+      "mesh": "utility-kiosk",
+      "groundFloorTriangles": 8,
+      "floorAreaSquareInches": 10.2,
+      "overlapSquareInches": 0.0
+    }
+  ],
+  "scope": "Offline mesh and deployment checks; live TTS verification pending."
+}

@@ -1,8 +1,9 @@
 """Write cloud-backed standalone save and normal Infinity mod deployment bag."""
 from pathlib import Path
 import json,copy,math,sys,re
+from map_config import STREET_Y,MAT_GUID
 ROOT=Path(__file__).resolve().parents[1]
-COMMIT=sys.argv[1] if len(sys.argv)>1 else '7aac8018ba93bd3468949f108bd64d2cb490a6d5'
+COMMIT=sys.argv[1] if len(sys.argv)>1 else 'ff2f64cb1a12f5b3a40308cd9f2207d41d4f98d0'
 URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'+COMMIT+'/lobo-infinity-portal/public/assets/maps/old-quarter-20261031-r1/'
 WORK=ROOT.parents[1]
 SOURCE=WORK/'source/current'
@@ -30,8 +31,7 @@ def obj(p,mesh=None,state=1):
  Tags=['LoboOldQuarterR1','LoboMap810340'],LuaScriptState='',XmlUI='',
  CustomMesh=dict(MeshURL=URL+name+'.obj',DiffuseURL=URL+'old-quarter-material-atlas.jpg',NormalURL='',ColliderURL=URL+name+'-collider.obj',Convex=not m['nonconvex'],MaterialIndex=3,TypeIndex=0,CastShadows=True,
  CustomShader=dict(SpecularColor=dict(r=.14,g=.14,b=.14),SpecularIntensity=.06,SpecularSharpness=3,FresnelStrength=.02)))
- if p['kind']=='mat':o['LuaScript']=ui
- elif movable:o['LuaScript']=''
+ if movable:o['LuaScript']=''
  else:o['LuaScript']='function onLoad() self.setLock(true) end\n'+height
  return o
 objects=[]
@@ -53,16 +53,20 @@ for i,v in enumerate([-16/math.sqrt(2),0,16/math.sqrt(2)]):
  # Compensate the original attached base's small local origin offset so that
  # its centre, rather than just the bundle pivot, is at the mission coordinate.
  t=o['Transform'];c=o['ChildObjects'][0]['Transform'];sx=t['scaleX'];sz=t['scaleZ']
- o['Transform'].update(posX=v+c['posZ']*sz,posY=4.803083896636963,posZ=v-c['posX']*sx,rotX=0,rotY=270,rotZ=0)
+ o['Transform'].update(posX=v+c['posZ']*sz,posY=STREET_Y+.203083896636963,posZ=v-c['posX']*sx,rotX=0,rotY=270,rotZ=0)
  o.update(Nickname=f'Console {i+1} — The Dig',Tags=['LoboOldQuarterR1','LoboMap810340'],Grid=False,Snap=False,GridProjection=False)
  objects.append(o)
-for i,z in enumerate([20,12,4,-4,-12,-20]):
- p=dict(mesh='hyperthermal-tech-25mm',title=f'Hyperthermal Tech {i+1} — player placed',x=30,z=z,y=4.6,angle=0,kind='tech')
- o=obj(p);o['Description']='25 mm Hyperthermal Tech token. Player placed BEFORE army deployment. Entire token must be beyond 8 inches from both corner DZs and every other Tech token. Accessible table ground only; never on or inside scenery.';objects.append(o)
+# UI controller follows the proven off-board campaign-map pattern. Its load
+# and retry lifecycle is independent of Custom_Model download/initialization.
+controller=dict(GUID=guid(),Name='BlockSquare',Nickname='Old Quarter | Mission and Deployment Controller',
+ Transform=dict(posX=32,posY=1.3,posZ=0,rotX=0,rotY=0,rotZ=0,scaleX=.1,scaleY=.1,scaleZ=.1),
+ ColorDiffuse=dict(r=0,g=0,b=0),Locked=True,Grid=False,Snap=False,Tooltip=False,Hands=False,
+ Tags=['LoboOldQuarterR1','LoboMap810340'],LuaScript=ui,LuaScriptState='',XmlUI='')
+objects.append(controller)
 
 base=json.loads((SOURCE/'Map-Bags/810340.json').read_text());bag=copy.deepcopy(base['ObjectStates'][0])
 bag['Nickname']='SET_ITS18 The Dig — Old Quarter Excavation — URBAN EXCAVATION R1'
-bag['Description']='The Dig / Old Quarter Excavation R1\n48 × 48 inches; 300 points.\nOriginal custom Lobo urban excavation terrain. Replaces the former Satellite Merovingien layout.\n24-inch-radius opposite corner DZs; centre and +/-16-inch diagonal Consoles; six reserve 25 mm Tech tokens for player placement.\nDrop this bag onto the normal Infinity mod map deployment spot.\nGeometry, legal Tech placement, collider components and script integration checked. Live TTS physics and gameplay testing pending.\nOfficial mission: https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855'
+bag['Description']='The Dig / Old Quarter Excavation R1\n48 × 48 inches; 300 points.\nOriginal custom Lobo urban excavation terrain. Replaces the former Satellite Merovingien layout.\n24-inch-radius opposite corner DZs; centre and +/-16-inch diagonal Consoles; use the normal mission Tech markers; no custom Tech models included.\nDrop this bag onto the normal Infinity mod map deployment spot.\nGeometry, legal Tech placement, collider components and script integration checked. Live TTS physics and gameplay testing pending.\nOfficial mission: https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855'
 bag['ContainedObjects']=objects
 # The stage loader reads root records; its Clear Table routine also reads the
 # alternate GUID aliases, so changing building states cannot strand terrain.
@@ -84,5 +88,5 @@ for i,o in enumerate(collection['ObjectStates']):
 else:raise ValueError('Old Quarter collection bag missing')
 collection['SaveName']='Lobo Workshop — Old Quarter Excavation R1'
 (ROOT/'Files/Lobo-Workshop-Old-Quarter-R1.json').write_text(json.dumps(collection,ensure_ascii=False,separators=(',',':')))
-(ROOT/'Source/hosted-assets.json').write_text(json.dumps({'commit':COMMIT,'baseURL':URL,'assetFiles':[p.name for p in (ROOT/'Assets').glob('*') if p.suffix in ['.obj','.jpg']]},indent=2))
+(ROOT/'Source/hosted-assets.json').write_text(json.dumps({'commit':COMMIT,'baseURL':URL,'assetFiles':sorted([name+suffix for name in manifest for suffix in ['.obj','-collider.obj']]+['old-quarter-material-atlas.jpg'])},indent=2))
 print(json.dumps({'root_components':len(objects),'building_state_variants':sum(len(o.get('States',{})) for o in objects),'map_bag_guid':bag['GUID'],'standalone_save':str(ROOT/'Files/Old-Quarter-Excavation-R1.json')}))
