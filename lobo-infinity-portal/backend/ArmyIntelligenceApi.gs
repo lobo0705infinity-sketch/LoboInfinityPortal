@@ -778,7 +778,7 @@ function buildArmyIntelligenceReadModelRowsFromPayload(payload) {
       ARMY_INTELLIGENCE_READ_MODEL_KEY,
       generatedAt,
       index,
-      json.slice(
+      "\u200B" + json.slice(
         offset,
         offset + ARMY_INTELLIGENCE_READ_MODEL_CHUNK_SIZE
       )
@@ -789,7 +789,7 @@ function buildArmyIntelligenceReadModelRowsFromPayload(payload) {
       ARMY_INTELLIGENCE_READ_MODEL_KEY,
       generatedAt,
       1,
-      json
+      "\u200B" + json
     ]);
 
   return rows;
@@ -876,7 +876,10 @@ function readArmyIntelligenceReadModelPayload() {
 
   const json =
     rows.map(function(row) {
-      return getArmyIntelligenceString(row[3]);
+      // Keep chunks literal in Sheets and preserve JSON string whitespace.
+      // Legacy chunks remain readable; new chunks carry a non-formula prefix.
+      const chunk = row[3] == null ? "" : String(row[3]);
+      return chunk.charAt(0) === "\u200B" ? chunk.slice(1) : chunk;
     }).join("");
 
   if (!json)

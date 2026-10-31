@@ -43,7 +43,12 @@ export async function getPublicEventProjection(eventId: string, options: { signa
     capabilities: Array.isArray(event.capabilities) ? event.capabilities : [],
   }
   const registrations = registrationFor(event)
-  const bracketMatches = Array.isArray(event.bracket) ? event.bracket : []
+  const missions = Array.isArray(event.bracketMissions) ? event.bracketMissions as EventBracketData['missions'] : []
+  const bracketMatches = (Array.isArray(event.bracket) ? event.bracket : []).map((match) => {
+    const assignment = missions.find((item) => item.bracket === match.bracket && Number(item.bracketRound) === Number(match.bracketRound))
+      ?? (match.matchId === 'GF-M2' ? missions.find((item) => item.bracket === 'Grand Final' && Number(item.bracketRound) === 1) : undefined)
+    return { ...match, eventId, mission: match.mission || assignment?.mission || '' }
+  })
   const registered = registrations.registrations.filter((item) => item.status === 'Registered')
   const seeded = registered.filter((item) => Number.isInteger(Number(item.seed)) && Number(item.seed) >= 1 && Number(item.seed) <= registered.length)
   const registrationClosed = /closed/i.test(registrations.status)
@@ -86,7 +91,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
       eventId,
       generated: bracketMatches.length > 0,
       matches: bracketMatches,
-      missions: Array.isArray(event.bracketMissions) ? event.bracketMissions : [],
+      missions,
       released: bracketMatches.some((match) => Boolean(match.activatedAt)),
       readiness: { capacity:Number(event.capacity || 0), ready:reasons.length === 0, reasons, registeredCount:registered.length, seededCount:seeded.length, registrationClosed },
       tournamentComplete: Boolean(champion),
