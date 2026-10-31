@@ -256,9 +256,9 @@
     },
     {
       "mesh": "excavation-cut",
-      "expandedVertices": 4216,
+      "expandedVertices": 5396,
       "colliderComponents": 1,
-      "maxColliderComponentTriangles": 100
+      "maxColliderComponentTriangles": 136
     },
     {
       "mesh": "tracked-excavator",
@@ -286,7 +286,7 @@
     },
     {
       "mesh": "urban-street-mat",
-      "expandedVertices": 5944,
+      "expandedVertices": 5728,
       "colliderComponents": 1,
       "maxColliderComponentTriangles": 60
     },

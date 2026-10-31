@@ -6,6 +6,7 @@ from shapely.ops import unary_union
 from tts_geometry import load_tts_mesh
 from map_config import STREET_Y,PIT_DEPTH,BASE_BOTTOM,GROUND_FLOOR_TOP
 R=Path(__file__).resolve().parents[1];A=R/'Assets'
+assert PIT_DEPTH==2.5,'Requested excavation depth changed'
 mat=load_tts_mesh(A/'urban-street-mat-collider.obj');mat.merge_vertices()
 assert mat.is_watertight and mat.is_winding_consistent,'Base must be closed and consistently wound'
 assert mat.volume>0,'Base exterior faces point inward'

@@ -3,7 +3,7 @@ from pathlib import Path
 import json,copy,math,sys,re
 from map_config import STREET_Y,MAT_GUID
 ROOT=Path(__file__).resolve().parents[1]
-COMMIT=sys.argv[1] if len(sys.argv)>1 else 'ff2f64cb1a12f5b3a40308cd9f2207d41d4f98d0'
+COMMIT=sys.argv[1] if len(sys.argv)>1 else '7567bb72d9729523b618877d09a0b9b72ed40be4'
 URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'+COMMIT+'/lobo-infinity-portal/public/assets/maps/old-quarter-20261031-r1/'
 WORK=ROOT.parents[1]
 SOURCE=WORK/'source/current'
@@ -29,7 +29,7 @@ def obj(p,mesh=None,state=1):
  ColorDiffuse=dict(r=1,g=1,b=1),Locked=not movable,Grid=False,Snap=False,IgnoreFoW=False,MeasureMovement=False,DragSelectable=True,
  Autoraise=True,Sticky=False,Tooltip=True,GridProjection=p['kind']=='mat',HideWhenFaceDown=False,Hands=False,
  Tags=['LoboOldQuarterR1','LoboMap810340'],LuaScriptState='',XmlUI='',
- CustomMesh=dict(MeshURL=URL+name+'.obj',DiffuseURL=URL+'old-quarter-material-atlas.jpg',NormalURL='',ColliderURL=URL+name+'-collider.obj',Convex=not m['nonconvex'],MaterialIndex=3,TypeIndex=0,CastShadows=True,
+ CustomMesh=dict(MeshURL=URL+name+'.obj',DiffuseURL=URL+('old-quarter-street-materials.jpg' if p['kind']=='mat' else 'old-quarter-material-atlas.jpg'),NormalURL='',ColliderURL=URL+name+'-collider.obj',Convex=not m['nonconvex'],MaterialIndex=3,TypeIndex=0,CastShadows=True,
  CustomShader=dict(SpecularColor=dict(r=.14,g=.14,b=.14),SpecularIntensity=.06,SpecularSharpness=3,FresnelStrength=.02)))
  if movable:o['LuaScript']=''
  else:o['LuaScript']='function onLoad() self.setLock(true) end\n'+height
@@ -88,5 +88,5 @@ for i,o in enumerate(collection['ObjectStates']):
 else:raise ValueError('Old Quarter collection bag missing')
 collection['SaveName']='Lobo Workshop — Old Quarter Excavation R1'
 (ROOT/'Files/Lobo-Workshop-Old-Quarter-R1.json').write_text(json.dumps(collection,ensure_ascii=False,separators=(',',':')))
-(ROOT/'Source/hosted-assets.json').write_text(json.dumps({'commit':COMMIT,'baseURL':URL,'assetFiles':sorted([name+suffix for name in manifest for suffix in ['.obj','-collider.obj']]+['old-quarter-material-atlas.jpg'])},indent=2))
+(ROOT/'Source/hosted-assets.json').write_text(json.dumps({'commit':COMMIT,'baseURL':URL,'assetFiles':sorted([name+suffix for name in manifest for suffix in ['.obj','-collider.obj']]+['old-quarter-material-atlas.jpg','old-quarter-street-materials.jpg'])},indent=2))
 print(json.dumps({'root_components':len(objects),'building_state_variants':sum(len(o.get('States',{})) for o in objects),'map_bag_guid':bag['GUID'],'standalone_save':str(ROOT/'Files/Old-Quarter-Excavation-R1.json')}))

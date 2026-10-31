@@ -24,7 +24,9 @@ def mesh(name):
  if name=='traditional-console':
   m=trimesh.load(ROOT/'Source/Console-Reference/console-preview.obj',force='mesh',process=False)
   image=Image.open(ROOT/'Source/Console-Reference/console-preview.jpg').convert('RGB')
- else:m=load_tts_mesh(A/(name+'.obj'))
+ else:
+  m=load_tts_mesh(A/(name+'.obj'))
+  if name=='urban-street-mat':image=Image.open(A/'old-quarter-street-materials.jpg').convert('RGB')
  m.visual=trimesh.visual.texture.TextureVisuals(uv=m.visual.uv,image=image)
  mat=pyrender.MetallicRoughnessMaterial(baseColorTexture=image,metallicFactor=.05,roughnessFactor=.9,doubleSided=False)
  cache[name]=pyrender.Mesh.from_trimesh(m,material=mat,smooth=False);return cache[name]

@@ -1,5 +1,5 @@
 """Old Quarter Excavation R1. Deterministic, textured TTS terrain authoring.
-Coordinates are inches, Y up; the street surface is at world Y=1.3.
+Coordinates are inches, Y up; the street surface is at world Y=3.5.
 Run from this directory's parent with Python 3 and numpy/scipy/shapely/Pillow.
 """
 from pathlib import Path
@@ -326,17 +326,23 @@ def excavation():
   for z in [-2.7,-1.35,0,1.35,2.7]:
    m[0].box((x,(.96-dep)/2,z),(.3,dep+.96,.19),'rust')
    m[0].cylinder((x-math.copysign(.18,x),.62,z),(x-math.copysign(.22,x),.62,z),.065,'silver',8)
- for z in [-3,3]:
+ for sign in [-1,1]:
+  z=sign*3
   for x in [-2.75,2.75]:solid(m,(x,-dep/2,z),(2.5,dep,.24),'soil')
-  # Slope rises from the dig floor to street level. Horizontal ends meet exactly.
-  inner=z-math.copysign(2.25,z)
-  pts=[(-1.1,-dep,inner),(1.1,-dep,inner),(1.1,0,z),(-1.1,0,z)]
-  m[0].face(pts if z<0 else pts[::-1],'concrete');m[1].face(pts if z<0 else pts[::-1])
-  for x in [-1.1,1.1]:
-   m[0].beam((x,-dep+.7,inner),(x,.7,z),.05,mat='yellow')
-   for f in [0,.5,1]:
-    zz=inner+(z-inner)*f;yy=-dep*(1-f)
-    m[0].cylinder((x,yy,zz),(x,yy+.7,zz),.028,'rust',6)
+  solid(m,(0,-.075,sign*2.55),(2.2,.15,.9),'concrete')
+  # Longer diagonal ramps fit the original pit footprint at a usable incline.
+  start=np.array([0,0,sign*2.2]);end=np.array([-sign*3.05,-dep,-sign*.1]);d=end-start
+  u=np.array([-d[2],0,d[0]]);u=u/np.linalg.norm(u)*.7
+  al,ar,bl,br=start-u,start+u,end-u,end+u
+  lowl=al.copy();lowl[1]=-dep;lowr=ar.copy();lowr[1]=-dep
+  for part in m:
+   part.face([al,ar,br,bl],'concrete');part.face([lowr,lowl,bl,br],'soil')
+   part.face([lowl,lowr,ar,al],'soil');part.face([al,bl,lowl],'soil');part.face([ar,lowr,br],'soil')
+  for side in [-1,1]:
+   aa=start+side*u;bb=end+side*u
+   m[0].beam(aa+[0,.7,0],bb+[0,.7,0],.05,mat='yellow')
+   for f in [0,.33,.67,1]:
+    pos=aa+(bb-aa)*f;m[0].cylinder(pos,pos+[0,.7,0],.028,'rust',6)
  # Open earth and rubble only; no custom Hyperthermal Tech scenery.
  for i in range(36):
   x=random.choice([-1,1])*random.uniform(2.2,3.7);z=random.uniform(-2.7,2.7)
@@ -428,7 +434,7 @@ for i,(mesh,x,z,angle) in enumerate(SCATTER):placements.append(dict(mesh=mesh,ti
 # Continuous mat with physical cutouts. No invisible collider covers the pits.
 ground=box(-24,-24,24,24)
 for x,z in DIGS:ground=ground.difference(box(x-4,z-3,x+4,z+3))
-mat=pair()
+mat=pair();street_vertices=set()
 for t in triangulate(ground):
  if not ground.covers(t):continue
  pts=list(t.exterior.coords)[:3]
@@ -441,7 +447,8 @@ for t in triangulate(ground):
     if p.covers(tt):
      points=[(xx,0,zz) for xx,zz in list(tt.exterior.coords)[:3]][::-1]
      start=len(mat[0].v);mat[0].face(points,'asphalt')
-     mat[0].uv[start:]=[((.008+.984*(xx-x)/2)/4,1-(.008+.984*(zz-z)/2)/4) for xx,_,zz in points]
+     mat[0].uv[start:]=[((xx+24)/48*.5,1-(zz+24)/48) for xx,_,zz in points]
+     street_vertices.update(range(start,len(mat[0].v)))
  mat[1].face([(x,0,z) for x,z in pts][::-1])
 # Pit floors are part of the mat, with matching earthen bottom surfaces.
 for x,z in DIGS:
@@ -455,6 +462,8 @@ for x,z in DIGS:
 for a,b in [((-24,-24),(24,-24)),((24,-24),(24,24)),((24,24),(-24,24)),((-24,24),(-24,-24))]:
  for part in mat:part.quad((a[0],BASE_BOTTOM,a[1]),(a[0],0,a[1]),(b[0],0,b[1]),(b[0],BASE_BOTTOM,b[1]),'soil',tile=10000 if part is mat[1] else 2)
 for part in mat:part.face([(-24,BASE_BOTTOM,-24),(24,BASE_BOTTOM,-24),(24,BASE_BOTTOM,24),(-24,BASE_BOTTOM,24)],'soil')
+for i,(u,v) in enumerate(mat[0].uv):
+ if i not in street_vertices:mat[0].uv[i]=(.5+.5*u,v)
 register('urban-street-mat',mat,True)
 placements.insert(0,dict(mesh='urban-street-mat',title='Old Quarter Excavation — Street Mat',x=0,z=0,y=STREET_Y,angle=0,kind='mat'))
 
@@ -478,14 +487,7 @@ for p in placements:
 register('urban-pavements',pavement)
 placements.insert(1,dict(mesh='urban-pavements',title='Urban Pavements and Curbs',x=0,z=0,y=STREET_Y,angle=0,kind='pavement'))
 
-# Road paint appears only in short surviving street sections and parking bays.
-paint=pair()
-for side in [-1,1]:
- for z in np.arange(-19,-7,1.7):
-  paint[0].box((side*22.6,.014,side*z),(.055,.012,.7),'yellow')
- for x in np.arange(7,20,1.8):
-  paint[0].box((side*x,.014,side*-22.6),(.7,.012,.055),'yellow')
-mat[0].merge(paint[0]);mat[0].write(ASSET/'urban-street-mat.obj')
+# No painted road dashes. The mat uses a unique full-board street photograph.
 
 manifest=[]
 for name,v in meshes.items():

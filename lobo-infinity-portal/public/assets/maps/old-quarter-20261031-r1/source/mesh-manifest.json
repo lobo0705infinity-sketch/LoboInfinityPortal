@@ -381,14 +381,14 @@
   },
   {
     "name": "excavation-cut",
-    "vertices": 4216,
-    "triangles": 1956,
-    "colliderTriangles": 100,
+    "vertices": 5396,
+    "triangles": 2520,
+    "colliderTriangles": 136,
     "nonconvex": true,
     "bounds": [
       [
         -4.255,
-        -0.35000000000000003,
+        -2.5,
         -3.12
       ],
       [
@@ -476,19 +476,19 @@
   },
   {
     "name": "urban-street-mat",
-    "vertices": 5944,
-    "triangles": 2226,
+    "vertices": 5728,
+    "triangles": 2118,
     "colliderTriangles": 60,
     "nonconvex": true,
     "bounds": [
       [
         -24.0,
-        -0.45,
+        -2.65,
         -24.0
       ],
       [
         24.0,
-        0.02,
+        0.0,
         24.0
       ]
     ]

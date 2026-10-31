@@ -1,6 +1,9 @@
 {
   "uniqueObjectScriptsCompiled": 3,
-  "deploymentCheckboxCombinations": 8,
+  "deploymentCheckboxCombinations": 32,
+  "explicitCheckboxLabels": "pass",
+  "TTSComplexPatternRestrictionEmulated": "pass",
+  "missionQueuedWhileUILoading": "pass",
   "radiusGeometry": "pass",
   "saveRestore": "pass",
   "delayedLoadAndGlobalUIResetRecovery": "pass",

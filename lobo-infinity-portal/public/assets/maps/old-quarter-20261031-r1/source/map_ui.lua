@@ -4,6 +4,8 @@ local colors={'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Pur
 local deployed=false
 local watcher=nil
 local overlayReady=false
+local uiDirty=true
+local deploymentSides={A=true,B=true}
 local attachUI
 local missionRequested,missionOpen,deploymentRequested,deploymentOpen={},{},{},{}
 local matGUID='e90001'
@@ -52,7 +54,7 @@ This is the 48 × 48 inch, 300-point setup. Players deploy in opposite corner zo
 
 There are three Consoles on the other diagonal: one at table centre, and one 16 inches in each direction from centre. Use Console A tokens or 40 mm diameter objective scenery. The familiar consoles supplied with this map have 40 mm mission footprints.
 
-The Deployment menu can show 24-, 28- and 32-inch corner arcs independently. The 24-inch arcs define the actual Deployment Zones. The 28-/32-inch arcs are +4-/+8-inch measuring aids; displaying them does not enlarge the mission's Deployment Zones or change Tech-placement restrictions. Apply the relevant troop's deployment rules normally.
+The Deployment menu can show 24-, 28- and 32-inch corner arcs independently. Side A (blue) and Side B (orange) can be selected separately, together, or hidden. The 24-inch arcs define the actual Deployment Zones. The 28-/32-inch arcs are +4-/+8-inch measuring aids; displaying them does not enlarge the mission's Deployment Zones or change Tech-placement restrictions. Apply the relevant troop's deployment rules normally.
 
 HYPERTHERMAL DIG — BEFORE ARMY DEPLOYMENT
 Each player places three Hyperthermal Tech tokens. The player who kept Deployment places their three first.
@@ -104,21 +106,38 @@ CURRENT WORDING
 The task previously called Activate Console is Analyze Hyperthermal Tech. Console ownership and neutralization use Player Tokens; neutralization requires a Tech analysed for your own player. The small-game spacing exception applies at 150 points.
 
 TERRAIN & ACCESS
-Use the modeled geometry for line of fire and cover. The three open excavation pockets are shallow cuts about ⅜ inch below street level and have two ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
+Use the modeled geometry for line of fire and cover. The three open excavation pockets are 2.5 inches below street level and have two ramps apiece; there is no tunnel network. Buildings have usable interiors and roofs. Taller buildings: state 1 roof on, state 2 upper floor exposed, state 3 ground floor exposed. Single-storey buildings: state 1 roof on, state 2 ground floor exposed. External roof ladders persist in all states. Rubble has no automatic special terrain effect.
 
 SOURCE
 Mission Geist: https://infinitygeist.com/mission/s18_the_dig
 Official ITS mission: https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855]]
 local function textHeight(text,width,size)
- local chars=math.floor(width/(size*.54))
- local lines=0
- for line in (text..'\n'):gmatch('(.-)\n') do lines=lines+math.max(1,math.ceil(#line/chars)) end
+ -- TTS rejects the former long-string gmatch pattern ("pattern too complex").
+ -- Only literal searches are used here, as in the working campaign controls.
+ local chars=math.floor(width/(size*.54));local lines=0;local first=1
+ while true do
+  local last=string.find(text,'\n',first,true)
+  local count=(last or (#text+1))-first
+  lines=lines+math.max(1,math.ceil(count/chars))
+  if not last then break end
+  first=last+1
+ end
  return math.max(590,lines*(size+7)+30)
+end
+local function sideLabel(side)
+ local label=side=='A' and 'SIDE A - BLUE' or 'SIDE B - ORANGE'
+ if not deploymentSides[side] then return label..': hidden' end
+ local distances={}
+ for _,r in ipairs({24,28,32}) do if deploymentRadii[r] then distances[#distances+1]=r..'"' end end
+ return label..': '..(#distances>0 and table.concat(distances,' / ') or 'none selected')
+end
+local function syncLegend()
+ UI.setAttribute(root..'_legendA','text',sideLabel('A'));UI.setAttribute(root..'_legendB','text',sideLabel('B'))
 end
 function redrawOverlays()
  local lines={}
  for _,radius in ipairs({24,28,32}) do if deploymentRadii[radius] then
-  for _,v in ipairs({{24,-24,{.2,.65,1}},{-24,24,{1,.4,.15}}}) do
+  for _,v in ipairs({{24,-24,{.2,.65,1},'A'},{-24,24,{1,.4,.15},'B'}}) do if deploymentSides[v[4]] then
    local pts={}
    for i=0,96 do
     local a=i*math.pi/192
@@ -126,7 +145,7 @@ function redrawOverlays()
    end
    local c=v[3];local fade=(radius-24)/20
    lines[#lines+1]={points=pts,color={c[1]+(1-c[1])*fade,c[2]+(1-c[2])*fade,c[3]+(1-c[3])*fade},thickness=radius==24 and .065 or .045}
-  end
+  end end
  end end
  if showTech then
   for _,p in ipairs({{-20,-20},{-20,-10},{-6,-6},{6,6},{20,10},{20,20}}) do
@@ -138,20 +157,28 @@ function redrawOverlays()
  local mat=getObjectFromGUID(matGUID)
  overlayReady=mat and pcall(function() mat.setVectorLines(lines) end) or false
 end
-function toggleDeployment(player) if player then deploymentRequested[player.color]=true;deploymentOpen[player.color]=true;attachUI() end end
+function toggleDeployment(player) if player then deploymentRequested[player.color]=true;deploymentOpen[player.color]=true;uiDirty=true;attachUI() end end
 function closeDeployment(player) if player then deploymentOpen[player.color]=false;UI.setAttribute(root..'_deploy_'..player.color,'active','false') end end
 local function setRadius(radius,value)
  local on=value==true or tostring(value):lower()=='true'
  if deploymentRadii[radius]==on then return end
  deploymentRadii[radius]=on
  for _,color in ipairs(colors) do if deploymentRequested[color] then UI.setAttribute(root..'_deploy_'..color..'_'..radius,'isOn',tostring(on)) end end
- redrawOverlays()
+ redrawOverlays();syncLegend()
 end
 function setDeployment24(player,value) setRadius(24,value) end
 function setDeployment28(player,value) setRadius(28,value) end
 function setDeployment32(player,value) setRadius(32,value) end
+local function setSide(side,value)
+ local on=value==true or tostring(value):lower()=='true'
+ deploymentSides[side]=on
+ for _,color in ipairs(colors) do if deploymentRequested[color] then UI.setAttribute(root..'_deploy_'..color..'_side'..side,'isOn',tostring(on)) end end
+ redrawOverlays();syncLegend()
+end
+function setDeploymentSideA(player,value) setSide('A',value) end
+function setDeploymentSideB(player,value) setSide('B',value) end
 function toggleTechGuide() showTech=not showTech;redrawOverlays() end
-function openRules(player) if player then missionRequested[player.color]=true;missionOpen[player.color]=true;attachUI() end end
+function openRules(player) if player then missionRequested[player.color]=true;missionOpen[player.color]=true;uiDirty=true;attachUI() end end
 function closeRules(player) if player then missionOpen[player.color]=false;UI.setAttribute(root..'_'..player.color,'active','false') end end
 function sourceLink(player) if player then printToColor('Mission Geist — The Dig: https://infinitygeist.com/mission/s18_the_dig',player.color,{.6,.85,1}) end end
 attachUI=function()
@@ -165,26 +192,36 @@ attachUI=function()
   if missionRequested[color] then
   table.insert(children,node('Panel',{id=root..'_'..color,visibility=color,active=tostring(missionOpen[color]==true),rectAlignment='MiddleCenter',width='840',height='750',color='#152027FA',allowDragging='true'}, {
    node('Text',{text='OLD QUARTER EXCAVATION | MISSION',fontSize='22',rectAlignment='UpperCenter',offsetXY='0 -14',width='790',height='42',color='#FFFFFF'}),
-   node('VerticalScrollView',{rectAlignment='UpperCenter',offsetXY='0 -65',width='790',height='610',scrollSensitivity='25',color='#192831'}, {
-    node('Text',{text=rules,width='750',height=tostring(textHeight(rules,750,19)),preferredHeight=tostring(textHeight(rules,750,19)),fontSize='19',alignment='UpperLeft',color='#EDF2F5'})}),
+   node('VerticalScrollView',{rectAlignment='UpperCenter',offsetXY='0 -65',width='790',height='610',scrollSensitivity='25',color='#192831',verticalScrollbarVisibility='AutoHide'}, {
+    node('VerticalLayout',{padding='8 12 8 8',childForceExpandHeight='false',childForceExpandWidth='true',height=tostring(textHeight(rules,750,19)+16),preferredHeight=tostring(textHeight(rules,750,19)+16)}, {node('Text',{id=root..'_'..color..'_missionText',text=rules,width='750',height=tostring(textHeight(rules,750,19)),preferredHeight=tostring(textHeight(rules,750,19)),flexibleHeight='0',fontSize='19',alignment='UpperLeft',color='#EDF2F5'})})}),
    node('Button',{text='Mission Geist link',onClick=callback..'sourceLink',rectAlignment='LowerLeft',offsetXY='25 16',width='220',height='42',fontSize='19',color='#365564',textColor='#FFFFFF'}),
    node('Button',{text='Close',onClick=callback..'closeRules',rectAlignment='LowerRight',offsetXY='-25 16',width='150',height='42',fontSize='20',color='#365564',textColor='#FFFFFF'})}))
   end
   if deploymentRequested[color] then
-  local toggles={node('Text',{text='CORNER DISTANCE OVERLAYS',rectAlignment='UpperCenter',offsetXY='0 -12',width='310',height='30',fontSize='19',color='#FFFFFF'})}
-  for i,radius in ipairs({24,28,32}) do
-   local labels={[24]='24″ — Deployment',[28]='28″ — +4″ measuring aid',[32]='32″ — +8″ measuring aid'}
-   table.insert(toggles,node('Toggle',{id=root..'_deploy_'..color..'_'..radius,isOn=tostring(deploymentRadii[radius]),onValueChanged=callback..'setDeployment'..radius,rectAlignment='UpperCenter',offsetXY='0 '..(-45-(i-1)*38),width='300',height='34',toggleWidth='24',toggleHeight='24',fontSize='19',textColor='#FFFFFF',alignment='MiddleLeft'},nil,labels[radius]))
+  local toggles={node('Text',{text='DEPLOYMENT OVERLAYS',rectAlignment='UpperCenter',offsetXY='0 -12',width='360',height='30',fontSize='20',color='#FFFFFF'})}
+  -- Separate Text elements keep labels visible on TTS versions that omit Toggle text.
+  local function row(id,label,y,isOn,callbackName,tint)
+   toggles[#toggles+1]=node('Toggle',{id=id,isOn=tostring(isOn),onValueChanged=callback..callbackName,rectAlignment='UpperLeft',offsetXY='18 '..y,width='32',height='30',toggleWidth='25',toggleHeight='25'})
+   toggles[#toggles+1]=node('Text',{id=id..'_label',text=label,rectAlignment='UpperLeft',offsetXY='58 '..y,width='305',height='30',fontSize='19',alignment='MiddleLeft',color=tint or '#FFFFFF',raycastTarget='false'})
   end
-  table.insert(toggles,node('Text',{text='Tick any combination. Blue / orange mark the two corners.',rectAlignment='UpperCenter',offsetXY='0 -162',width='300',height='40',fontSize='15',color='#BBD6E4'}))
-  table.insert(toggles,node('Button',{text='Close',onClick=callback..'closeDeployment',rectAlignment='LowerCenter',offsetXY='0 10',width='120',height='32',fontSize='18',color='#365564',textColor='#FFFFFF'}))
-  table.insert(children,node('Panel',{id=root..'_deploy_'..color,visibility=color,active=tostring(deploymentOpen[color]==true),rectAlignment='UpperCenter',offsetXY='-185 -118',width='340',height='248',color='#152027FA'},toggles))
+  row(root..'_deploy_'..color..'_sideA','Side A - blue corner',-50,deploymentSides.A,'setDeploymentSideA','#69B9FF')
+  row(root..'_deploy_'..color..'_sideB','Side B - orange corner',-88,deploymentSides.B,'setDeploymentSideB','#FFB076')
+  toggles[#toggles+1]=node('Text',{text='Distances for the selected side(s)',rectAlignment='UpperLeft',offsetXY='18 -134',width='350',height='27',fontSize='16',alignment='MiddleLeft',color='#BBD6E4'})
+  local labels={[24]='24" - mission Deployment Zone',[28]='28" - +4" measuring aid',[32]='32" - +8" measuring aid'}
+  for i,radius in ipairs({24,28,32}) do row(root..'_deploy_'..color..'_'..radius,labels[radius],-168-(i-1)*38,deploymentRadii[radius],'setDeployment'..radius) end
+  toggles[#toggles+1]=node('Text',{text='Select either side, both, or neither. Only 24" defines the mission zones.',rectAlignment='UpperCenter',offsetXY='0 -288',width='350',height='45',fontSize='15',color='#BBD6E4'})
+  toggles[#toggles+1]=node('Button',{text='Close',onClick=callback..'closeDeployment',rectAlignment='LowerCenter',offsetXY='0 12',width='120',height='32',fontSize='18',color='#365564',textColor='#FFFFFF'})
+  children[#children+1]=node('Panel',{id=root..'_deploy_'..color,visibility=color,active=tostring(deploymentOpen[color]==true),rectAlignment='UpperCenter',offsetXY='-185 -118',width='390',height='388',color='#152027FA'},toggles)
+
   end
  end
+ children[#children+1]=node('Panel',{rectAlignment='LowerLeft',offsetXY='18 18',width='350',height='72',color='#152027DF',raycastTarget='false'}, {
+  node('Text',{id=root..'_legendA',text=sideLabel('A'),rectAlignment='UpperLeft',offsetXY='10 -8',width='330',height='28',fontSize='16',alignment='MiddleLeft',color='#69B9FF',raycastTarget='false'}),
+  node('Text',{id=root..'_legendB',text=sideLabel('B'),rectAlignment='UpperLeft',offsetXY='10 -36',width='330',height='28',fontSize='16',alignment='MiddleLeft',color='#FFB076',raycastTarget='false'})})
  local current={}
  for _,n in ipairs(UI.getXmlTable() or {}) do if not n.attributes or n.attributes.id~=root then table.insert(current,n) end end
  table.insert(current,node('Panel',{id=root,active='true',width='100%',height='100%',color='#00000000',raycastTarget='false'},children))
- setUI(current);deployed=true
+ setUI(current);deployed=true;uiDirty=false
 end
 -- Custom_Model download and the Infinity mod can both complete after onLoad.
 -- Keep the HUD attached after the map is placed; recover if another script
@@ -196,22 +233,23 @@ function checkDeployment()
  if UI.loading then return end
  local found=false
  for _,n in ipairs(UI.getXmlTable() or {}) do if n.attributes and n.attributes.id==root then found=true end end
- if not found then
+ if not found or uiDirty then
   local ok,err=pcall(attachUI)
   if not ok then print('Old Quarter controls are waiting to initialize: '..tostring(err));return end
  end
  if not overlayReady then redrawOverlays() end
 end
-function onSave() return JSON.encode({radii={["24"]=deploymentRadii[24],["28"]=deploymentRadii[28],["32"]=deploymentRadii[32]},tech=showTech}) end
+function onSave() return JSON.encode({radii={["24"]=deploymentRadii[24],["28"]=deploymentRadii[28],["32"]=deploymentRadii[32]},sides={A=deploymentSides.A,B=deploymentSides.B},tech=showTech}) end
 function onLoad(saved)
  if saved and saved~='' then
   local ok,s=pcall(JSON.decode,saved)
   if ok and type(s)=='table' then
    for _,r in ipairs({24,28,32}) do if s.radii then local v=s.radii[tostring(r)];if v==nil then v=s.radii[r] end;if v~=nil then deploymentRadii[r]=v==true end end end
+   if s.sides then for _,side in ipairs({'A','B'}) do if s.sides[side]~=nil then deploymentSides[side]=s.sides[side]==true end end end
    showTech=s.tech==true
   end
  end
- overlayReady=false
+ overlayReady=false;uiDirty=true
  self.setLock(true);self.setInvisibleTo(colors)
  if watcher then Wait.stop(watcher) end
  watcher=Wait.time(checkDeployment,.5,-1)

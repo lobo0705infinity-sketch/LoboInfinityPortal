@@ -4,7 +4,7 @@
     "title": "Old Quarter Excavation \u2014 Street Mat",
     "x": 0,
     "z": 0,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "mat"
   },
@@ -13,7 +13,7 @@
     "title": "Urban Pavements and Curbs",
     "x": 0,
     "z": 0,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "pavement"
   },
@@ -22,7 +22,7 @@
     "title": "Civic Corner East",
     "x": 14,
     "z": -17,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true
@@ -32,7 +32,7 @@
     "title": "Research Annex East",
     "x": 18,
     "z": -5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true
@@ -42,7 +42,7 @@
     "title": "Tenement South",
     "x": -10,
     "z": -17.5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true
@@ -52,7 +52,7 @@
     "title": "Service Workshop South",
     "x": 1,
     "z": -21,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true,
@@ -69,7 +69,7 @@
     "title": "Civic Corner West",
     "x": -14,
     "z": 17,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true
@@ -79,7 +79,7 @@
     "title": "Research Annex West",
     "x": -18,
     "z": 5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true
@@ -89,7 +89,7 @@
     "title": "Tenement North",
     "x": 10,
     "z": 17.5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true
@@ -99,7 +99,7 @@
     "title": "Service Workshop North",
     "x": -1,
     "z": 21,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true,
@@ -116,7 +116,7 @@
     "title": "Central Ruined Block",
     "x": -5.4,
     "z": 5.4,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 45,
     "kind": "building",
     "states": true
@@ -126,7 +126,7 @@
     "title": "Central Survey Annex",
     "x": 5.4,
     "z": -5.4,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 45,
     "kind": "building",
     "states": true
@@ -136,7 +136,7 @@
     "title": "Midfield Utilities South",
     "x": -2.5,
     "z": -4,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true,
@@ -153,7 +153,7 @@
     "title": "Midfield Utilities North",
     "x": 2.5,
     "z": 4,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true,
@@ -170,7 +170,7 @@
     "title": "Western Excavation Site Office",
     "x": -18,
     "z": -14,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "building",
     "states": true,
@@ -187,7 +187,7 @@
     "title": "Eastern Excavation Site Office",
     "x": 18,
     "z": 14,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "building",
     "states": true,
@@ -204,7 +204,7 @@
     "title": "Excavation Pocket 1",
     "x": -14,
     "z": -3,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "dig"
   },
@@ -213,7 +213,7 @@
     "title": "Excavation Pocket 2",
     "x": 14,
     "z": 3,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "dig"
   },
@@ -222,7 +222,7 @@
     "title": "Excavation Pocket 3",
     "x": -4,
     "z": -11,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "dig"
   },
@@ -231,7 +231,7 @@
     "title": "Wall Rubble 1",
     "x": -13.5,
     "z": -17,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 20,
     "kind": "scatter"
   },
@@ -240,7 +240,7 @@
     "title": "Wall Rubble 2",
     "x": 13.5,
     "z": 17,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 200,
     "kind": "scatter"
   },
@@ -249,7 +249,7 @@
     "title": "Wall Rubble 3",
     "x": -5,
     "z": -0.8,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 100,
     "kind": "scatter"
   },
@@ -258,7 +258,7 @@
     "title": "Wall Rubble 4",
     "x": 5,
     "z": 0.8,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 280,
     "kind": "scatter"
   },
@@ -267,7 +267,7 @@
     "title": "Wall Rubble 5",
     "x": -21,
     "z": 14,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "scatter"
   },
@@ -276,7 +276,7 @@
     "title": "Wall Rubble 6",
     "x": 21,
     "z": -14,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "scatter"
   },
@@ -285,7 +285,7 @@
     "title": "Site Stores 7",
     "x": -20,
     "z": 0,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 90,
     "kind": "scatter"
   },
@@ -294,7 +294,7 @@
     "title": "Site Stores 8",
     "x": 20,
     "z": 0,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 270,
     "kind": "scatter"
   },
@@ -303,7 +303,7 @@
     "title": "Site Stores 9",
     "x": -5,
     "z": -22,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "scatter"
   },
@@ -312,7 +312,7 @@
     "title": "Site Stores 10",
     "x": 5,
     "z": 22,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "scatter"
   },
@@ -321,7 +321,7 @@
     "title": "Tracked Excavator 11",
     "x": -8,
     "z": -3,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 90,
     "kind": "scatter"
   },
@@ -330,7 +330,7 @@
     "title": "Tracked Excavator 12",
     "x": 8,
     "z": 3,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 270,
     "kind": "scatter"
   },
@@ -339,7 +339,7 @@
     "title": "Utility Van 13",
     "x": 21,
     "z": -21,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 10,
     "kind": "scatter"
   },
@@ -348,7 +348,7 @@
     "title": "Utility Van 14",
     "x": -21,
     "z": 21,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 190,
     "kind": "scatter"
   },
@@ -357,7 +357,7 @@
     "title": "Utility And Planter 15",
     "x": -20,
     "z": -5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "scatter"
   },
@@ -366,7 +366,7 @@
     "title": "Utility And Planter 16",
     "x": 20,
     "z": 5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "scatter"
   },
@@ -375,7 +375,7 @@
     "title": "Wall Rubble Large 17",
     "x": -6.5,
     "z": 13,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "scatter"
   },
@@ -384,7 +384,7 @@
     "title": "Wall Rubble Large 18",
     "x": 6.5,
     "z": -13,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "scatter"
   },
@@ -393,7 +393,7 @@
     "title": "Wall Rubble Medium 19",
     "x": -17,
     "z": 11,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 45,
     "kind": "scatter"
   },
@@ -402,7 +402,7 @@
     "title": "Wall Rubble Medium 20",
     "x": 17,
     "z": -11,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 225,
     "kind": "scatter"
   },
@@ -411,7 +411,7 @@
     "title": "Wall Rubble Medium 21",
     "x": -10,
     "z": -22,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 0,
     "kind": "scatter"
   },
@@ -420,7 +420,7 @@
     "title": "Wall Rubble Medium 22",
     "x": 10,
     "z": 22,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 180,
     "kind": "scatter"
   },
@@ -429,7 +429,7 @@
     "title": "Wall Rubble 23",
     "x": -15,
     "z": -10,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 45,
     "kind": "scatter"
   },
@@ -438,7 +438,7 @@
     "title": "Wall Rubble 24",
     "x": 15,
     "z": 10,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 225,
     "kind": "scatter"
   },
@@ -447,7 +447,7 @@
     "title": "Wall Rubble 25",
     "x": -6,
     "z": 20.5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 90,
     "kind": "scatter"
   },
@@ -456,7 +456,7 @@
     "title": "Wall Rubble 26",
     "x": 6,
     "z": -20.5,
-    "y": 1.3,
+    "y": 3.5,
     "angle": 270,
     "kind": "scatter"
   }
