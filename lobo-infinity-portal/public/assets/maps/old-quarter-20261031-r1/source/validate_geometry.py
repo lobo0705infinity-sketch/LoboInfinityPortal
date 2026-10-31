@@ -2,6 +2,7 @@ from pathlib import Path
 import json,math,collections
 import numpy as np
 import trimesh
+from tts_geometry import load_tts_mesh
 from shapely.geometry import Point,MultiPoint,box
 from shapely.ops import unary_union
 from scipy.ndimage import label
@@ -14,7 +15,7 @@ def world(p,v):
 footprints=[];ground_geometry=[]
 for p in items:
  if p['kind'] in ['mat','marking','pavement']:continue
- m=trimesh.load(A/(p['mesh']+'.obj'),force='mesh',process=False)
+ m=load_tts_mesh(A/(p['mesh']+'.obj'))
  v=world(p,m.vertices);poly=MultiPoint(v[:,[0,2]]).convex_hull
  footprints.append((p['title'],poly))
  ground_geometry.append((p,v,np.array(m.faces)))

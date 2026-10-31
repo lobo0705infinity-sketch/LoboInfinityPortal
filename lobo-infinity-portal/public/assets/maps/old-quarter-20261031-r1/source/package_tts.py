@@ -2,7 +2,7 @@
 from pathlib import Path
 import json,copy,math,sys,re
 ROOT=Path(__file__).resolve().parents[1]
-COMMIT=sys.argv[1] if len(sys.argv)>1 else 'accade5d104b3a7c2778223b21c23487f89bacdd'
+COMMIT=sys.argv[1] if len(sys.argv)>1 else '7aac8018ba93bd3468949f108bd64d2cb490a6d5'
 URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'+COMMIT+'/lobo-infinity-portal/public/assets/maps/old-quarter-20261031-r1/'
 WORK=ROOT.parents[1]
 SOURCE=WORK/'source/current'
@@ -16,11 +16,11 @@ def guid():
  counter+=1;return f'{counter:06x}'
 def obj(p,mesh=None,state=1):
  name=mesh or p['mesh'];g=guid();m=manifest[name]
- state_label={1:'Roof on',2:'Upper floor exposed',3:'Ground floor exposed'}[state]
+ state_label=p.get('stateLabels',{}).get(str(state),{1:'Roof on',2:'Upper floor exposed',3:'Ground floor exposed'}[state])
  title=p['title']+(' | '+state_label if p.get('states') else '')
  h=m['bounds'][1][1]-m['bounds'][0][1]
  description=f'Height (base to top): {h:.2f} in\nOld Quarter Excavation R1.\n'
- if p['kind']=='building':description+='Playable interiors and roofs. External ladders persist across states. States: 1 roof on, 2 upper floor exposed, 3 ground floor exposed.'
+ if p['kind']=='building':description+='Playable interiors and roofs. External ladders persist across states. '+('States: 1 roof on, 2 ground floor exposed.' if p.get('stateVariants') else 'States: 1 roof on, 2 upper floor exposed, 3 ground floor exposed.')
  else:description+='Use actual geometry for line of fire and cover.'
  movable=p['kind']=='tech'
  o=dict(GUID=g,Name='Custom_Model',Nickname=title,Description=description,GMNotes='Lobo old-quarter urban excavation R1',
@@ -39,11 +39,23 @@ for p in layout:
  o=obj(p)
  if p.get('states'):
   kind=p['mesh'].split('-state-')[0]
-  o['States']={str(s):obj(p,kind+f'-state-{s}',s) for s in [2,3]}
+  variants=p.get('stateVariants',{'2':kind+'-state-2','3':kind+'-state-3'})
+  o['States']={str(s):obj(p,name,int(s)) for s,name in variants.items()}
  objects.append(o)
+# Reuse the approved Micro Art Studio console and its 40 mm base exactly.
+console_source=json.loads((SOURCE/'Map-Bags/810340.json').read_text())['ObjectStates'][0]
+console_template=next(o for o in console_source['ContainedObjects'] if o.get('Nickname')=='Console')
+def refresh_children(o):
+ o['GUID']=guid()
+ for c in o.get('ChildObjects',[]):refresh_children(c)
 for i,v in enumerate([-16/math.sqrt(2),0,16/math.sqrt(2)]):
- p=dict(mesh='mission-console-40mm',title=f'Console {i+1} — The Dig',x=v,z=v,y=4.6,angle=45,kind='console')
- objects.append(obj(p))
+ o=copy.deepcopy(console_template);refresh_children(o)
+ # Compensate the original attached base's small local origin offset so that
+ # its centre, rather than just the bundle pivot, is at the mission coordinate.
+ t=o['Transform'];c=o['ChildObjects'][0]['Transform'];sx=t['scaleX'];sz=t['scaleZ']
+ o['Transform'].update(posX=v+c['posZ']*sz,posY=4.803083896636963,posZ=v-c['posX']*sx,rotX=0,rotY=270,rotZ=0)
+ o.update(Nickname=f'Console {i+1} — The Dig',Tags=['LoboOldQuarterR1','LoboMap810340'],Grid=False,Snap=False,GridProjection=False)
+ objects.append(o)
 for i,z in enumerate([20,12,4,-4,-12,-20]):
  p=dict(mesh='hyperthermal-tech-25mm',title=f'Hyperthermal Tech {i+1} — player placed',x=30,z=z,y=4.6,angle=0,kind='tech')
  o=obj(p);o['Description']='25 mm Hyperthermal Tech token. Player placed BEFORE army deployment. Entire token must be beyond 8 inches from both corner DZs and every other Tech token. Accessible table ground only; never on or inside scenery.';objects.append(o)

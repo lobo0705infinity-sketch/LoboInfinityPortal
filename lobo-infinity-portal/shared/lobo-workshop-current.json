@@ -1055,8 +1055,8 @@
         "The Dig"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 50,
-      "sourceNote": "Original Lobo urban excavation terrain, rebuilt 31 October 2026. These previews render the actual exported meshes. Opposite 24-inch corner deployment zones, diagonal Consoles and a legal six-Tech placement were checked. Live TTS physics and gameplay testing remain pending. Workshop publication is pending.",
+      "objectCount": 46,
+      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Four compact buildings supplement the redistributed main buildings; pits use continuous shoring and the familiar Micro Art Studio Consoles. Mission reference and independently selectable 24-/28-/32-inch overlays are included. These previews render the exported meshes. Geometry, import alignment and legal objective access checked offline; live TTS physics and gameplay testing and Workshop publication remain pending.",
       "overhead": "/assets/maps/old-quarter-20261031-r1/overhead.webp",
       "angled": "/assets/maps/old-quarter-20261031-r1/angled.webp",
       "diagram": "/assets/maps/old-quarter-20261031-r1/deployment.webp",

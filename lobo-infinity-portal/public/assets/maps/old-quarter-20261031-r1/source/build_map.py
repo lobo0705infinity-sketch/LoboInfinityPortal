@@ -13,7 +13,9 @@ ROOT=Path(__file__).resolve().parents[1]
 ASSET=ROOT/'Assets'; ASSET.mkdir(exist_ok=True)
 random.seed(10312026)
 ATLAS=Image.open(ASSET/'old-quarter-material-atlas.png').convert('RGB')
-ATLAS.resize((1024,1024),Image.Resampling.LANCZOS).save(ASSET/'old-quarter-material-atlas.jpg',quality=94,subsampling=0)
+import io
+_buffer=io.BytesIO();ATLAS.resize((1024,1024),Image.Resampling.LANCZOS).save(_buffer,format='JPEG',quality=94,subsampling=0)
+(ASSET/'old-quarter-material-atlas.jpg').write_bytes(_buffer.getvalue())
 MATS={'asphalt':0,'concrete':1,'brick':2,'blue':3,'tarp':4,'metal':5,'plaster':6,'rust':7,'rubble':8,'soil':9,'yellow':10,'silver':11,'tile':12,'roof':13,'tech':14,'wood':15}
 
 class Mesh:
@@ -26,11 +28,20 @@ class Mesh:
   self.f.extend([(i,i+k,i+k+1) for k in range(1,n-1)])
  def quad(self,a,b,c,d,mat='concrete',tile=2.):
   a,b,c,d=map(lambda p:np.array(p,float),(a,b,c,d))
+  if mat=='brick' and tile<100:tile=1.25
   nu=max(1,math.ceil(np.linalg.norm(b-a)/tile));nv=max(1,math.ceil(np.linalg.norm(d-a)/tile))
   for i in range(nu):
    for j in range(nv):
     def p(u,v):return (a+(b-a)*u+(d-a)*v).tolist()
+    start=len(self.v)
     self.face([p(i/nu,j/nv),p((i+1)/nu,j/nv),p((i+1)/nu,(j+1)/nv),p(i/nu,(j+1)/nv)],mat)
+    # Keep material proportions on narrow piers and lintels instead of squeezing
+    # a whole brick photograph into every small rectangular face.
+    t=MATS.get(mat,mat);col=t%4;row=t//4
+    su=min(.984,np.linalg.norm(b-a)/nu/tile*.984);sv=min(.984,np.linalg.norm(d-a)/nv/tile*.984)
+    coords=[(.008,.008),(.008+su,.008),(.008+su,.008+sv),(.008,.008+sv)]
+    if mat=='brick' and abs(b[1]-a[1])>.9*np.linalg.norm(b-a):coords=[(.008,.008),(.008,.008+su),(.008+sv,.008+su),(.008+sv,.008)]
+    self.uv[start:]=[((col+u)/4,1-(row+v)/4) for u,v in coords]
  def box(self,c,s,mat='concrete',angle=0,tile=2.):
   x,y,z=c;w,h,d=np.array(s)/2
   vs=np.array([[-w,-h,-d],[w,-h,-d],[w,h,-d],[-w,h,-d],[-w,-h,d],[w,-h,d],[w,h,d],[-w,h,d]])
@@ -71,7 +82,9 @@ class Mesh:
   collider=path.stem.endswith('-collider')
   unique_v={};unique_uv={};vm=[];um=[]
   for p,uv in zip(self.v,self.uv):
-   p=tuple(round(float(a),5) for a in p);uv=tuple(round(float(a),6) for a in uv)
+   # TTS's OBJ import reverses X. Convert the file and its winding together;
+   # imported global ground cutouts, pavements and local models then agree.
+   p=tuple(round(float(a)*(-1 if i==0 else 1),5) for i,a in enumerate(p));uv=tuple(round(float(a),6) for a in uv)
    if p not in unique_v:unique_v[p]=len(unique_v)+1
    if uv not in unique_uv:unique_uv[uv]=len(unique_uv)+1
    vm.append(unique_v[p]);um.append(unique_uv[uv])
@@ -83,7 +96,7 @@ class Mesh:
    groups=set(self.groups)
    for k,tri in enumerate(self.f):
     if compound and k in groups:f.write(f'o convex_{k}\n')
-    f.write('f '+' '.join(str(vm[i]) if collider else f'{vm[i]}/{um[i]}' for i in tri)+'\n')
+    f.write('f '+' '.join(str(vm[i]) if collider else f'{vm[i]}/{um[i]}' for i in reversed(tri))+'\n')
  def bounds(self):return np.array(self.v).min(0).tolist(),np.array(self.v).max(0).tolist()
 
 meshes={};placements=[]
@@ -200,7 +213,7 @@ def building(kind,state):
   for i in range(35):
    x=random.uniform(-3,3);z=random.choice([-2.7,2.6])+random.uniform(-.2,.2)
    m[0].box((x,.12,z),(random.uniform(.15,.45),.22,random.uniform(.12,.35)),random.choice(['brick','concrete']),random.uniform(-25,25))
- if full or kind=='depot':
+ if full:
   ry=nf*(H+.15)
   roofpoly=poly.difference(well)
   if kind=='ruin':roofpoly=roofpoly.intersection(box(-w/2,-d/2,.2,0))
@@ -209,6 +222,10 @@ def building(kind,state):
    mid=(np.array(a)+np.array(b))/2;u=np.array(b)-np.array(a);L=np.linalg.norm(u)
    solid(m,(mid[0],ry+.28,mid[1]),(L,.56,.19),'concrete',-math.degrees(math.atan2(u[1],u[0])))
   if kind!='ruin':hvac(m,w/2-1.1,-d/2+1.1,ry);hvac(m,.3,-d/2+1.1,ry)
+  else:
+   # Roof-mounted exhaust with a weather cap screens the surviving roof corner.
+   solid(m,(-.45,ry+.825,-2.4),(.65,1.65,.65),'rust')
+   m[0].box((-.45,ry+1.69,-2.4),(.85,.12,.85),'metal')
  # Roof access is on a solid corner pier; the same ladder survives all states.
  roofheight=(2 if kind!='depot' else 1)*(H+.15)
  ladder(m,w/2-.15,-d/2-.28,roofheight)
@@ -226,6 +243,28 @@ def building(kind,state):
 for kind in ['civic','annex','ruin']:
  for s in [1,2,3]:building(kind,s)
 building('depot',1)
+building('depot',2)
+
+def small_building(kind,state=1):
+ m=pair();w,d=(3.4,3.0) if kind=='utility-kiosk' else (4.2,3.0);H=2.55
+ poly=box(-w/2,-d/2,w/2,d/2);slab(m,poly,-.12,.12,'tile')
+ coords=[(-w/2,-d/2),(w/2,-d/2),(w/2,d/2),(-w/2,d/2),(-w/2,-d/2)]
+ for k,(a,b) in enumerate(zip(coords,coords[1:])):wall(m,a,b,0,H,'brick' if kind=='utility-kiosk' else 'plaster',door=k==0,windows=k in [0,1,2])
+ for x,z in coords[:-1]:solid(m,(x,H/2,z),(.18,H,.18),'concrete')
+ if state==1:
+  slab(m,poly,H,.13,'roof')
+  for k,(a,b) in enumerate(zip(coords,coords[1:])):
+   u=np.array(b)-np.array(a);L=np.linalg.norm(u);p=(np.array(a)+np.array(b))/2
+   solid(m,(p[0],H+.32,p[1]),(L,.4,.16),'concrete',-math.degrees(math.atan2(u[1],u[0])))
+  hvac(m,-w/2+.8,-.65,H+.13)
+ ladder(m,w/2-.12,d/2+.22,H+.13)
+ # A shallow metal service canopy and its brackets give each small facade a role.
+ m[0].box((0,2.28,-d/2-.35),(1.9,.1,.7),'blue')
+ for x in [-.8,.8]:m[0].beam((x,2.22,-d/2-.6),(x,1.92,-d/2),.04,mat='rust')
+ crate(m,w/2+.42,.6,w=.65)
+ return register(kind+('-open' if state==2 else ''),m)
+for k in ['utility-kiosk','site-office']:
+ for s in [1,2]:small_building(k,s)
 
 def rubble():
  m=pair()
@@ -273,10 +312,16 @@ def tech(m,x=0,z=0,y=0):
 
 def excavation():
  m=pair();W,D=8,6;dep=1.25
- # Rim walls along the long sides; ramps at BOTH short ends are 2.2 inches wide.
+ # Continuous weathered steel shoring replaces isolated concrete cubes. Timber
+ # wales and regularly seated soldier piles make the walls read as a real dig.
  for x in [-4,4]:
   solid(m,(x,-dep/2,0),(.28,dep,6),'soil')
-  for z in [-2.2,0,2.2]:solid(m,(x,.52,z),(.35,1.04,1.35),'concrete')
+  solid(m,(x,.48,0),(.2,.96,5.95),'rust')
+  for z in np.arange(-2.85,2.9,.38):m[0].box((x+math.copysign(.11,x),-.07,z),(.10,2.15,.12),'metal')
+  for yy in [-.75,.16,.83]:m[0].box((x+math.copysign(.18,x),yy,0),(.15,.14,5.95),'wood')
+  for z in [-2.7,-1.35,0,1.35,2.7]:
+   m[0].box((x,.05,z),(.3,2.55,.19),'rust')
+   m[0].cylinder((x-math.copysign(.18,x),.62,z),(x-math.copysign(.22,x),.62,z),.065,'silver',8)
  for z in [-3,3]:
   for x in [-2.75,2.75]:solid(m,(x,-dep/2,z),(2.5,dep,.24),'soil')
   # Slope rises from the dig floor to street level. Horizontal ends meet exactly.
@@ -361,24 +406,25 @@ mission_assets()
 # Layout axis: consoles run SW--NE; deployment corners are SE and NW.
 BUILDINGS=[
  ('civic','Civic Corner East',14,-17,0),('annex','Research Annex East',18,-5,0),
- ('ruin','Tenement South',2,-18,0),('depot','Service Workshop South',-10,-20,0),
+ ('ruin','Tenement South',-10,-17.5,0),('depot','Service Workshop South',1,-21,0),
  ('civic','Civic Corner West',-14,17,180),('annex','Research Annex West',-18,5,180),
- ('ruin','Tenement North',-2,18,180),('depot','Service Workshop North',10,20,180),
+ ('ruin','Tenement North',10,17.5,180),('depot','Service Workshop North',-1,21,180),
  ('ruin','Central Ruined Block',-5.4,5.4,45),('annex','Central Survey Annex',5.4,-5.4,45)]
-for kind,title,x,z,angle in BUILDINGS:placements.append(dict(mesh=kind+'-state-1',title=title,x=x,z=z,y=4.6,angle=angle,kind='building',states=kind!='depot'))
+for kind,title,x,z,angle in BUILDINGS:
+ p=dict(mesh=kind+'-state-1',title=title,x=x,z=z,y=4.6,angle=angle,kind='building',states=True)
+ if kind=='depot':p.update(stateVariants={'2':'depot-state-2'},stateLabels={'1':'Roof on','2':'Ground floor exposed'})
+ placements.append(p)
+for kind,title,x,z,angle in [('utility-kiosk','Midfield Utilities South',-2.5,-4,0),('utility-kiosk','Midfield Utilities North',2.5,4,180),('site-office','Western Excavation Site Office',-18,-14,0),('site-office','Eastern Excavation Site Office',18,14,180)]:
+ placements.append(dict(mesh=kind,title=title,x=x,z=z,y=4.6,angle=angle,kind='building',states=True,stateVariants={'2':kind+'-open'},stateLabels={'1':'Roof on','2':'Ground floor exposed'}))
 DIGS=[(-14,-3),(14,3),(-4,-11)]
 for i,(x,z) in enumerate(DIGS):placements.append(dict(mesh='excavation-cut',title=f'Excavation Pocket {i+1}',x=x,z=z,y=4.6,angle=0,kind='dig'))
 SCATTER=[
- ('construction-screen',-17,-15,90),('construction-screen',17,15,90),
- ('retained-foundation-wall',-3,-5,45),('retained-foundation-wall',3,5,45),
- ('retained-foundation-wall',-7,-14,90),('retained-foundation-wall',7,14,90),
- ('retained-foundation-wall',-8.5,-10.2,90),('retained-foundation-wall',8.5,10.2,90),
- ('wall-rubble',-14.5,-14,20),('wall-rubble',14.5,14,200),
+ ('wall-rubble',-13.5,-17,20),('wall-rubble',13.5,17,200),
  ('wall-rubble',-5,-.8,100),('wall-rubble',5,.8,280),
  ('wall-rubble',-21,14,0),('wall-rubble',21,-14,180),
  ('site-stores',-20,0,90),('site-stores',20,0,270),
  ('site-stores',-5,-22,0),('site-stores',5,22,180),
- ('tracked-excavator',-8,-4,90),('tracked-excavator',8,4,270),
+ ('tracked-excavator',-8,-3,90),('tracked-excavator',8,3,270),
  ('utility-van',21,-21,10),('utility-van',-21,21,190),
  ('utility-and-planter',-20,-5,0),('utility-and-planter',20,5,180),
  ('utility-and-planter',-8,12,0),('utility-and-planter',8,-12,180)]
@@ -424,6 +470,11 @@ for kind,title,x,z,angle in BUILDINGS:
  ring=poly.buffer(.48,join_style=2).difference(poly)
  ring=translate(rotate(ring,-angle,origin=(0,0)),xoff=x,yoff=z)
  slab(pavement,ring,.005,.11,'concrete')
+for p in placements:
+ if p['mesh'] not in ['utility-kiosk','site-office']:continue
+ w=3.4 if p['mesh']=='utility-kiosk' else 4.2
+ poly=box(-w/2,-1.5,w/2,1.5);ring=poly.buffer(.35,join_style=2).difference(poly)
+ ring=translate(rotate(ring,-p['angle'],origin=(0,0)),xoff=p['x'],yoff=p['z']);slab(pavement,ring,.005,.11,'concrete')
 register('urban-pavements',pavement)
 placements.insert(1,dict(mesh='urban-pavements',title='Urban Pavements and Curbs',x=0,z=0,y=4.6,angle=0,kind='pavement'))
 

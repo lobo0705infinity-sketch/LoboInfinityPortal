@@ -1,6 +1,9 @@
 {
-  "uniqueObjectScriptsCompiled": 3,
-  "mapUIOverlayAndPlayerPanels": "pass",
+  "uniqueObjectScriptsCompiled": 4,
+  "deploymentCheckboxCombinations": 8,
+  "radiusGeometry": "pass",
+  "saveRestore": "pass",
+  "missionContentAndPlayerPanels": "pass",
   "existingUIPreserved": "pass",
   "mapUICleanup": "pass",
   "stageClearStates": [

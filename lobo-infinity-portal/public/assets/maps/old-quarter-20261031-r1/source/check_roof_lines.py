@@ -5,6 +5,7 @@ from pathlib import Path
 import json,math
 import numpy as np
 import trimesh
+from tts_geometry import load_tts_mesh
 from shapely.geometry import Polygon,Point
 from shapely.ops import unary_union
 R=Path(__file__).resolve().parents[1];items=json.loads((R/'Source/layout.json').read_text());triangles=[];roofsets=[]
@@ -12,9 +13,9 @@ def transform(p,vs):
  t=math.radians(p['angle']);rot=np.array([[math.cos(t),0,math.sin(t)],[0,1,0],[-math.sin(t),0,math.cos(t)]])
  return vs@rot.T+[p['x'],p['y'],p['z']]
 for p in items:
- m=trimesh.load(R/'Assets'/(p['mesh']+'.obj'),force='mesh',process=False);local=m.triangles;v=transform(p,m.vertices);triangles.append(v[m.faces])
+ m=load_tts_mesh(R/'Assets'/(p['mesh']+'.obj'));local=m.triangles;v=transform(p,m.vertices);triangles.append(v[m.faces])
  if p['kind']=='building':
-  kind=p['mesh'].split('-state-')[0];ry={'civic':6,'annex':6.6,'ruin':5.8,'depot':2.8}[kind]
+  kind=p['mesh'].split('-state-')[0];ry={'civic':6,'annex':6.6,'ruin':5.8,'depot':2.8,'utility-kiosk':2.68,'site-office':2.68}[kind]
   ts=[Polygon(t[:,[0,2]]) for t in local if np.max(abs(t[:,1]-ry))<.001 and Polygon(t[:,[0,2]]).area>.001]
   if not ts:continue
   poly=unary_union(ts).buffer(-.4);pts=[]

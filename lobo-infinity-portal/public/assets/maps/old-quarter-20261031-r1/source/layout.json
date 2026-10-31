@@ -40,8 +40,8 @@
   {
     "mesh": "ruin-state-1",
     "title": "Tenement South",
-    "x": 2,
-    "z": -18,
+    "x": -10,
+    "z": -17.5,
     "y": 4.6,
     "angle": 0,
     "kind": "building",
@@ -50,12 +50,19 @@
   {
     "mesh": "depot-state-1",
     "title": "Service Workshop South",
-    "x": -10,
-    "z": -20,
+    "x": 1,
+    "z": -21,
     "y": 4.6,
     "angle": 0,
     "kind": "building",
-    "states": false
+    "states": true,
+    "stateVariants": {
+      "2": "depot-state-2"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
   },
   {
     "mesh": "civic-state-1",
@@ -80,8 +87,8 @@
   {
     "mesh": "ruin-state-1",
     "title": "Tenement North",
-    "x": -2,
-    "z": 18,
+    "x": 10,
+    "z": 17.5,
     "y": 4.6,
     "angle": 180,
     "kind": "building",
@@ -90,12 +97,19 @@
   {
     "mesh": "depot-state-1",
     "title": "Service Workshop North",
-    "x": 10,
-    "z": 20,
+    "x": -1,
+    "z": 21,
     "y": 4.6,
     "angle": 180,
     "kind": "building",
-    "states": false
+    "states": true,
+    "stateVariants": {
+      "2": "depot-state-2"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
   },
   {
     "mesh": "ruin-state-1",
@@ -116,6 +130,74 @@
     "angle": 45,
     "kind": "building",
     "states": true
+  },
+  {
+    "mesh": "utility-kiosk",
+    "title": "Midfield Utilities South",
+    "x": -2.5,
+    "z": -4,
+    "y": 4.6,
+    "angle": 0,
+    "kind": "building",
+    "states": true,
+    "stateVariants": {
+      "2": "utility-kiosk-open"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
+  },
+  {
+    "mesh": "utility-kiosk",
+    "title": "Midfield Utilities North",
+    "x": 2.5,
+    "z": 4,
+    "y": 4.6,
+    "angle": 180,
+    "kind": "building",
+    "states": true,
+    "stateVariants": {
+      "2": "utility-kiosk-open"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
+  },
+  {
+    "mesh": "site-office",
+    "title": "Western Excavation Site Office",
+    "x": -18,
+    "z": -14,
+    "y": 4.6,
+    "angle": 0,
+    "kind": "building",
+    "states": true,
+    "stateVariants": {
+      "2": "site-office-open"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
+  },
+  {
+    "mesh": "site-office",
+    "title": "Eastern Excavation Site Office",
+    "x": 18,
+    "z": 14,
+    "y": 4.6,
+    "angle": 180,
+    "kind": "building",
+    "states": true,
+    "stateVariants": {
+      "2": "site-office-open"
+    },
+    "stateLabels": {
+      "1": "Roof on",
+      "2": "Ground floor exposed"
+    }
   },
   {
     "mesh": "excavation-cut",
@@ -145,98 +227,26 @@
     "kind": "dig"
   },
   {
-    "mesh": "construction-screen",
-    "title": "Construction Screen 1",
-    "x": -17,
-    "z": -15,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "construction-screen",
-    "title": "Construction Screen 2",
-    "x": 17,
-    "z": 15,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 3",
-    "x": -3,
-    "z": -5,
-    "y": 4.6,
-    "angle": 45,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 4",
-    "x": 3,
-    "z": 5,
-    "y": 4.6,
-    "angle": 45,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 5",
-    "x": -7,
-    "z": -14,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 6",
-    "x": 7,
-    "z": 14,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 7",
-    "x": -8.5,
-    "z": -10.2,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
-    "mesh": "retained-foundation-wall",
-    "title": "Retained Foundation Wall 8",
-    "x": 8.5,
-    "z": 10.2,
-    "y": 4.6,
-    "angle": 90,
-    "kind": "scatter"
-  },
-  {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 9",
-    "x": -14.5,
-    "z": -14,
+    "title": "Wall Rubble 1",
+    "x": -13.5,
+    "z": -17,
     "y": 4.6,
     "angle": 20,
     "kind": "scatter"
   },
   {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 10",
-    "x": 14.5,
-    "z": 14,
+    "title": "Wall Rubble 2",
+    "x": 13.5,
+    "z": 17,
     "y": 4.6,
     "angle": 200,
     "kind": "scatter"
   },
   {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 11",
+    "title": "Wall Rubble 3",
     "x": -5,
     "z": -0.8,
     "y": 4.6,
@@ -245,7 +255,7 @@
   },
   {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 12",
+    "title": "Wall Rubble 4",
     "x": 5,
     "z": 0.8,
     "y": 4.6,
@@ -254,7 +264,7 @@
   },
   {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 13",
+    "title": "Wall Rubble 5",
     "x": -21,
     "z": 14,
     "y": 4.6,
@@ -263,7 +273,7 @@
   },
   {
     "mesh": "wall-rubble",
-    "title": "Wall Rubble 14",
+    "title": "Wall Rubble 6",
     "x": 21,
     "z": -14,
     "y": 4.6,
@@ -272,7 +282,7 @@
   },
   {
     "mesh": "site-stores",
-    "title": "Site Stores 15",
+    "title": "Site Stores 7",
     "x": -20,
     "z": 0,
     "y": 4.6,
@@ -281,7 +291,7 @@
   },
   {
     "mesh": "site-stores",
-    "title": "Site Stores 16",
+    "title": "Site Stores 8",
     "x": 20,
     "z": 0,
     "y": 4.6,
@@ -290,7 +300,7 @@
   },
   {
     "mesh": "site-stores",
-    "title": "Site Stores 17",
+    "title": "Site Stores 9",
     "x": -5,
     "z": -22,
     "y": 4.6,
@@ -299,7 +309,7 @@
   },
   {
     "mesh": "site-stores",
-    "title": "Site Stores 18",
+    "title": "Site Stores 10",
     "x": 5,
     "z": 22,
     "y": 4.6,
@@ -308,25 +318,25 @@
   },
   {
     "mesh": "tracked-excavator",
-    "title": "Tracked Excavator 19",
+    "title": "Tracked Excavator 11",
     "x": -8,
-    "z": -4,
+    "z": -3,
     "y": 4.6,
     "angle": 90,
     "kind": "scatter"
   },
   {
     "mesh": "tracked-excavator",
-    "title": "Tracked Excavator 20",
+    "title": "Tracked Excavator 12",
     "x": 8,
-    "z": 4,
+    "z": 3,
     "y": 4.6,
     "angle": 270,
     "kind": "scatter"
   },
   {
     "mesh": "utility-van",
-    "title": "Utility Van 21",
+    "title": "Utility Van 13",
     "x": 21,
     "z": -21,
     "y": 4.6,
@@ -335,7 +345,7 @@
   },
   {
     "mesh": "utility-van",
-    "title": "Utility Van 22",
+    "title": "Utility Van 14",
     "x": -21,
     "z": 21,
     "y": 4.6,
@@ -344,7 +354,7 @@
   },
   {
     "mesh": "utility-and-planter",
-    "title": "Utility And Planter 23",
+    "title": "Utility And Planter 15",
     "x": -20,
     "z": -5,
     "y": 4.6,
@@ -353,7 +363,7 @@
   },
   {
     "mesh": "utility-and-planter",
-    "title": "Utility And Planter 24",
+    "title": "Utility And Planter 16",
     "x": 20,
     "z": 5,
     "y": 4.6,
@@ -362,7 +372,7 @@
   },
   {
     "mesh": "utility-and-planter",
-    "title": "Utility And Planter 25",
+    "title": "Utility And Planter 17",
     "x": -8,
     "z": 12,
     "y": 4.6,
@@ -371,7 +381,7 @@
   },
   {
     "mesh": "utility-and-planter",
-    "title": "Utility And Planter 26",
+    "title": "Utility And Planter 18",
     "x": 8,
     "z": -12,
     "y": 4.6,

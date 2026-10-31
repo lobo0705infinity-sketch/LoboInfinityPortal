@@ -41,8 +41,8 @@
       ],
       "outsideDZInches": 19.689318084497074,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 3.3864336710840193,
-      "nearestScenery": "Construction Screen 1"
+      "nearestSceneryEdgeGap": 3.450271763312324,
+      "nearestScenery": "Western Excavation Site Office"
     },
     {
       "token": 2,
@@ -52,8 +52,8 @@
       ],
       "outsideDZInches": 9.742359552995412,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 3.386433671084018,
-      "nearestScenery": "Construction Screen 1"
+      "nearestSceneryEdgeGap": 1.8764351791311906,
+      "nearestScenery": "Western Excavation Site Office"
     },
     {
       "token": 3,
@@ -63,8 +63,8 @@
       ],
       "outsideDZInches": 10.493585384819832,
       "nearestTokenEdgeGap": 13.575967810057099,
-      "nearestSceneryEdgeGap": 0.5539250651368564,
-      "nearestScenery": "Tracked Excavator 19"
+      "nearestSceneryEdgeGap": 0.8786102761482322,
+      "nearestScenery": "Tracked Excavator 11"
     },
     {
       "token": 4,
@@ -74,8 +74,8 @@
       ],
       "outsideDZInches": 10.493585384819832,
       "nearestTokenEdgeGap": 13.575967810057099,
-      "nearestSceneryEdgeGap": 0.5539250651368557,
-      "nearestScenery": "Tracked Excavator 20"
+      "nearestSceneryEdgeGap": 0.8786102761482317,
+      "nearestScenery": "Tracked Excavator 12"
     },
     {
       "token": 5,
@@ -85,8 +85,8 @@
       ],
       "outsideDZInches": 9.742359552995412,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 3.2982038167020327,
-      "nearestScenery": "Construction Screen 2"
+      "nearestSceneryEdgeGap": 1.8764351791311906,
+      "nearestScenery": "Eastern Excavation Site Office"
     },
     {
       "token": 6,
@@ -96,8 +96,8 @@
       ],
       "outsideDZInches": 19.689318084497074,
       "nearestTokenEdgeGap": 9.015748031496063,
-      "nearestSceneryEdgeGap": 3.2982038167020327,
-      "nearestScenery": "Construction Screen 2"
+      "nearestSceneryEdgeGap": 3.450271763312324,
+      "nearestScenery": "Eastern Excavation Site Office"
     }
   ],
   "consoleClearance": [
@@ -106,24 +106,24 @@
         -11.31370849898476,
         -11.31370849898476
       ],
-      "nearestSceneryEdgeGap": 1.7513069241816095,
-      "nearestScenery": "Retained Foundation Wall 7"
+      "nearestSceneryEdgeGap": 2.2088899262120916,
+      "nearestScenery": "Tenement South"
     },
     {
       "center": [
         0,
         0
       ],
-      "nearestSceneryEdgeGap": 3.1342435374690347,
-      "nearestScenery": "Central Ruined Block"
+      "nearestSceneryEdgeGap": 1.3609248086870314,
+      "nearestScenery": "Midfield Utilities North"
     },
     {
       "center": [
         11.31370849898476,
         11.31370849898476
       ],
-      "nearestSceneryEdgeGap": 1.7513069241816095,
-      "nearestScenery": "Retained Foundation Wall 8"
+      "nearestSceneryEdgeGap": 2.2088899262120916,
+      "nearestScenery": "Tenement North"
     }
   ],
   "streetRoutes": {
@@ -136,19 +136,19 @@
   "meshes": [
     {
       "mesh": "civic-state-1",
-      "expandedVertices": 12216,
+      "expandedVertices": 12728,
       "colliderComponents": 214,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "civic-state-2",
-      "expandedVertices": 10916,
+      "expandedVertices": 11428,
       "colliderComponents": 196,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "civic-state-3",
-      "expandedVertices": 5928,
+      "expandedVertices": 6168,
       "colliderComponents": 89,
       "maxColliderComponentTriangles": 12
     },
@@ -172,19 +172,19 @@
     },
     {
       "mesh": "ruin-state-1",
-      "expandedVertices": 10812,
-      "colliderComponents": 167,
+      "expandedVertices": 11148,
+      "colliderComponents": 168,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "ruin-state-2",
-      "expandedVertices": 10452,
+      "expandedVertices": 10740,
       "colliderComponents": 153,
       "maxColliderComponentTriangles": 12
     },
     {
       "mesh": "ruin-state-3",
-      "expandedVertices": 6546,
+      "expandedVertices": 6706,
       "colliderComponents": 72,
       "maxColliderComponentTriangles": 12
     },
@@ -195,8 +195,38 @@
       "maxColliderComponentTriangles": 12
     },
     {
+      "mesh": "depot-state-2",
+      "expandedVertices": 3684,
+      "colliderComponents": 56,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-kiosk",
+      "expandedVertices": 3056,
+      "colliderComponents": 38,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-kiosk-open",
+      "expandedVertices": 2428,
+      "colliderComponents": 31,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "site-office",
+      "expandedVertices": 3176,
+      "colliderComponents": 43,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "site-office-open",
+      "expandedVertices": 2508,
+      "colliderComponents": 36,
+      "maxColliderComponentTriangles": 12
+    },
+    {
       "mesh": "wall-rubble",
-      "expandedVertices": 1248,
+      "expandedVertices": 1288,
       "colliderComponents": 2,
       "maxColliderComponentTriangles": 12
     },
@@ -214,9 +244,9 @@
     },
     {
       "mesh": "excavation-cut",
-      "expandedVertices": 3488,
+      "expandedVertices": 6272,
       "colliderComponents": 1,
-      "maxColliderComponentTriangles": 172
+      "maxColliderComponentTriangles": 124
     },
     {
       "mesh": "tracked-excavator",
@@ -238,7 +268,7 @@
     },
     {
       "mesh": "retained-foundation-wall",
-      "expandedVertices": 184,
+      "expandedVertices": 240,
       "colliderComponents": 4,
       "maxColliderComponentTriangles": 12
     },
@@ -262,8 +292,8 @@
     },
     {
       "mesh": "urban-pavements",
-      "expandedVertices": 1776,
-      "colliderComponents": 94,
+      "expandedVertices": 2272,
+      "colliderComponents": 126,
       "maxColliderComponentTriangles": 8
     }
   ],

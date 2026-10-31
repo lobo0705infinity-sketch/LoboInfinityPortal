@@ -1,0 +1,7 @@
+{
+  "importConvention": "X reflection with winding correction",
+  "pitCutsAndFloorsAligned": 3,
+  "buildingPavementsAligned": 14,
+  "pavementSymmetricDifferenceSquareInches": 0.0002570686032633003,
+  "scope": "Offline OBJ import simulation; live TTS check pending."
+}

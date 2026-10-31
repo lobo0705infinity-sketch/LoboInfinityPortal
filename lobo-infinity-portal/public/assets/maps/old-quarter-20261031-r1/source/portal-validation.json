@@ -1,0 +1,12 @@
+{
+  "catalogue": "pass (40 setups, 20 missions, 28 layouts, all bag inventories, historical links and shared ratings)",
+  "tsxCompilation": "pass",
+  "targetPublicSearchMetadata": "pass",
+  "allMapDownloadArchive": "Only Old Quarter JSON, its embedded library bag and README changed",
+  "collectionSave": "Only bag 810340 changed among 90 map bags; 252 total root objects retained",
+  "fullApplicationBuild": "Not run; targeted map catalogue, Lua, geometry, assets and TSX checks completed.",
+  "importAlignment": "pass (3 pit cuts/floors and 14 building pavements, simulated TTS OBJ import)",
+  "deploymentMenu": "pass (8 checkbox combinations; 24/28/32 radius points; synchronization and save/load)",
+  "roofSampling": "67 roof positions, maximum two Consoles visible in point-ray sampling",
+  "traditionalConsoles": "Original Micro Art Studio AssetBundle and attached 40 mm bases reused"
+}
