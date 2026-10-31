@@ -46,7 +46,7 @@ for (const text of [
   'Lobo’s Top 40 Rules',
   'Lobo’s Top 40 is an individual, 300-point, double-elimination Infinity tournament open to players throughout the Americas. Players are eliminated after their second match loss.',
   'The field is limited to a maximum of 40 players.',
-  'Players are manually seeded using Corvus Belli rankings.',
+  'Players are seeded using Infinity the Meta ratings, with Commissioner placements for unrated players.',
   'Every match is played at 300 points.',
   'Players choose the army list they will use at the time of each game.',
   'The complete mission pool will be published before the tournament begins.',
@@ -55,7 +55,7 @@ for (const text of [
   'The Tournament Organizer’s ruling on defaults and forfeits is final.',
 ]) assert.ok(rulebook.includes(text), `missing required content: ${text}`)
 
-for (const forbidden of ['entry fee', 'prize', 'sportsmanship score', 'bracket reset', 'classified objective', 'sectorial lock', 'faction lock']) {
+for (const forbidden of ['entry fee', 'prize', 'sportsmanship score', 'classified objective', 'sectorial lock', 'faction lock']) {
   assert.equal(rulebook.toLowerCase().includes(forbidden), false, `unexpected rule: ${forbidden}`)
 }
 

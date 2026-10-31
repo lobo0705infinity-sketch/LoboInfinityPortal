@@ -36,7 +36,7 @@ assert.ok(eventNavigationSource.includes(`registrationUrl: '${registrationFormUr
 assert.match(dedicatedPageSource, /target="_blank"/)
 assert.match(dedicatedPageSource, /rel="noopener noreferrer"/)
 assert.match(dedicatedPageSource, /REGISTER NOW/)
-assert.match(dedicatedPageSource, /<strong>OPEN<\/strong>/)
+assert.match(dedicatedPageSource, /state === 'closed' \? 'CLOSED'/)
 assert.match(dedicatedPageSource, /\{count\} PLAYERS REGISTERED/)
 assert.match(dedicatedPageSource, /No players registered yet\./)
 assert.match(dedicatedPageSource, /Registration is uncapped/)

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import {
   apiClient,
+  getEventBracket,
   type EventBracketData,
   type EventManagerData,
   type EventRegistrationEntry,
@@ -231,10 +232,10 @@ function EventManagerPanelInner({
     if (!needsLeagueMissionCatalog) return
 
     const controller = new AbortController()
-    setLeagueMissionCatalogError('')
     getPublicMissionGeistCatalog(controller.signal)
       .then((catalog) => {
         if (!controller.signal.aborted) {
+          setLeagueMissionCatalogError('')
           setLeagueMissionCatalog(
             catalog.missions.filter((mission) => isCanonicalMission(mission.name)).sort((left, right) =>
               left.sourceCollectionName.localeCompare(right.sourceCollectionName)
@@ -1012,6 +1013,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [generating, setGenerating] = useState(false)
+  const [releasing, setReleasing] = useState(false)
   const [bracket, setBracket] = useState<EventBracketData | null>(null)
   const [deadlineDrafts, setDeadlineDrafts] = useState<Record<string, string>>({})
   const [savingDeadline, setSavingDeadline] = useState('')
@@ -1021,7 +1023,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [missionCatalog, setMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
   const [savingMissions, setSavingMissions] = useState(false)
   const loadBracket = useCallback(() => {
-    apiClient.getEventBracket(eventId).then((nextBracket) => {
+    getEventBracket(eventId).then((nextBracket) => {
       setBracket(nextBracket)
       setMissionDrafts(Object.fromEntries(nextBracket.missions.map((assignment) => [
         `${assignment.bracket}:${assignment.bracketRound}`,
@@ -1040,13 +1042,25 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
     return () => controller.abort()
   }, [])
 
+  async function releaseBracket() {
+    if (!window.confirm('Release opening matches now? This starts each opening match’s seven-day deadline.')) return
+    setReleasing(true)
+    setError('')
+    try {
+      setBracket(await apiClient.releaseEventBracket(eventId))
+      setMessage('Opening matches released. Seven-day deadlines have started.')
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Matches could not be released.')
+    } finally { setReleasing(false) }
+  }
+
   async function generateBracket() {
     setGenerating(true)
     setMessage('Generating bracket...')
     setError('')
     try {
       setBracket(await apiClient.generateEventBracket(eventId))
-      setMessage('Bracket generated.')
+      setMessage('Bracket prepared. Deadlines remain paused until opening matches are released.')
     } catch (reason) {
       setMessage('')
       setError(reason instanceof Error ? reason.message : 'Bracket could not be generated.')
@@ -1119,6 +1133,8 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   }
 
   const readiness = bracket?.readiness
+  const released = Boolean(bracket?.released || bracket?.matches.some((match) => match.activatedAt))
+  const missionPoolReady = Boolean(bracket?.generated && discoverBracketRounds(bracket).every((round) => bracket.missions.some((item) => item.bracket === round.bracket && item.bracketRound === round.bracketRound && item.mission) || (round.bracket === 'Grand Final' && round.bracketRound === 2 && bracket.missions.some((item) => item.bracket === 'Grand Final' && item.bracketRound === 1 && item.mission))))
   const activeMatches = bracket?.matches.filter((match) => match.status === 'Active') ?? []
   return (
     <section className="event-manager-subpanel">
@@ -1130,14 +1146,18 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
         <Metric label="Bracket" value={bracket?.generated ? 'Generated' : 'Not Generated'} />
       </div>
       <div aria-live="polite">
-        {bracket?.generated ? <p>Bracket Generated</p> : readiness?.ready ? <p>Ready to generate bracket.</p> : readiness?.reasons.map((reason) => <p key={reason}>{reason}</p>)}
+        {bracket?.generated ? <p>{released ? 'Opening matches released' : 'Bracket prepared · deadlines paused'}</p> : readiness?.ready ? <p>Ready to generate bracket.</p> : readiness?.reasons?.map((reason) => <p key={reason}>{reason}</p>)}
         {message ? <p className="form-success" role="status">{message}</p> : null}
         {error ? <p className="form-error" role="alert">{error}</p> : null}
       </div>
       {!bracket?.generated ? <div className="event-manager-actions">
         <button disabled={!canManage || !readiness?.ready || generating} onClick={generateBracket} type="button">
-          {generating ? 'Generating bracket...' : 'Generate Bracket'}
+          {generating ? 'Preparing bracket...' : 'Prepare Bracket'}
         </button>
+      </div> : null}
+      {bracket?.generated && !released ? <div className="event-manager-actions">
+        <p>Assign the complete mission pool, then release opening matches to start seven-day deadlines.</p>
+        <button disabled={!canManage || !missionPoolReady || releasing} onClick={() => void releaseBracket()} type="button">{releasing ? 'Releasing…' : 'Release Opening Matches'}</button>
       </div> : null}
       <section aria-labelledby="bracket-missions-title">
         <h4 id="bracket-missions-title">Bracket Missions</h4>

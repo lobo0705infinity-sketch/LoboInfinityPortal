@@ -91,7 +91,7 @@
     "test:top-40-bracket-page": "node --experimental-strip-types scripts/top-40-bracket-page-check.mts",
     "test:top-40-results-page": "node --experimental-strip-types scripts/top-40-results-page-check.mts",
     "test:top-40-bracket-readiness": "node --experimental-strip-types scripts/top-40-bracket-readiness-check.mts",
-    "test:top-40-bracket-generator": "node scripts/double-elimination-bracket-check.mjs",
+    "test:top-40-bracket-generator": "node scripts/double-elimination-bracket-check.mjs && node scripts/top-40-launch-check.mjs",
     "test:top-40-bracket-lifecycle": "node scripts/bracket-match-lifecycle-check.mjs",
     "test:top-40-result-progression": "node scripts/top-40-result-progression-check.mjs",
     "test:top-40-bracket-missions": "node scripts/top-40-bracket-missions-check.mjs",

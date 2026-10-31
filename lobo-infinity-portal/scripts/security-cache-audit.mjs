@@ -37,6 +37,7 @@ const endpointPolicy = {
   diagnostics: { authRequired: true, userScoped: false },
   event: { authRequired: false, userScoped: false },
   eventBracket: { authRequired: false, userScoped: false },
+  eventBracketRelease: { authRequired: true, userScoped: false },
   eventBracketGenerate: { authRequired: true, userScoped: false },
   eventBracketDeadline: { authRequired: true, userScoped: false },
   eventBracketForfeit: { authRequired: true, userScoped: false },

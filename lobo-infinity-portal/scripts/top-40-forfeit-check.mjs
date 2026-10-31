@@ -17,6 +17,7 @@ const context = vm.createContext({
   Session: { getScriptTimeZone: () => 'UTC' },
 })
 vm.runInContext(bracketSource, context)
+context.getEventBracketMission_ = () => "Corporate Appropriation"
 
 function freshFourPlayerBracket() {
   const entrants = Array.from({ length: 4 }, (_, index) => ({ player: `P${index + 1}`, seed: index + 1 }))
@@ -64,7 +65,7 @@ assert.equal(grandFinal.status, 'Completed')
 assert.equal(grandFinal.nextWinnerMatch, 'CHAMPION')
 assert.equal(grandFinal.nextLoserMatch, 'RUNNER_UP')
 assert.equal(grandFinal.resolution, 'Forfeit')
-assert.equal(tournament.filter((match) => match.bracket === 'Grand Final').length, 1)
+assert.equal(tournament.filter((match) => match.bracket === 'Grand Final').length, 2)
 
 const beforeDeadlineBracket = freshFourPlayerBracket()
 const beforeDeadline = beforeDeadlineBracket.find((match) => match.status === 'Active')
@@ -95,7 +96,7 @@ assert.match(bracketSource, /"Game ID", "Resolution"/)
 
 console.log('PASS Winners forfeit: winner advances, loser drops, no canonical Game')
 console.log('PASS Losers forfeit: winner advances and loser is eliminated')
-console.log('PASS Grand Final forfeit: Champion and Runner-up destinations, no reset')
+console.log('PASS Grand Final forfeit: Champion and Runner-up destinations, conditional reset')
 console.log('PASS before/past deadline: explicit Commissioner action only')
 console.log('PASS duplicate, wrong-player, and authorization guards')
 console.log('PASS existing bracket store and shared progression/activation path')

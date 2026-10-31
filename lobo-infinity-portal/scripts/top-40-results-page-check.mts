@@ -27,7 +27,7 @@ const event = {
   registeredCount: 40,
   participants: [],
   bracket: [
-    { bracket: 'Winners', bracketRound: 2, gameId: 41, status: 'Completed', loser: 'Alpha' },
+    { bracket: 'Winners', bracketRound: 2, gameId: 41, status: 'Completed', loser: 'Bravo' },
     { bracket: 'Losers', bracketRound: 3, gameId: 42, status: 'Completed', loser: 'Bravo' },
     { bracket: 'Losers', bracketRound: 4, status: 'Active' },
   ],
@@ -47,3 +47,7 @@ assert.equal(buildTop40ResultRows({ ...event, bracket: [] }, []).length, 0)
 assert.match(page, /No results yet/)
 
 console.log('Top 40 Results page checks passed')
+
+const firstFinal = { ...event, bracket:[{ bracket:'Grand Final', status:'Completed', loser:'Finalist' }] }
+assert.equal(getTop40ResultsSummary(firstFinal,[]).eliminated,0,'first final loss does not eliminate undefeated finalist')
+assert.equal(getTop40ResultsSummary({...firstFinal,bracket:[...firstFinal.bracket,{bracket:'Grand Final',status:'Completed',loser:'Finalist',resolution:'Forfeit'}]},[]).eliminated,1)

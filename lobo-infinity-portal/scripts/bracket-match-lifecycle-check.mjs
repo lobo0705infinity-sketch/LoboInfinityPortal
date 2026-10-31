@@ -73,7 +73,7 @@ const changedDeadline = context.validateEventBracketDeadline_(activeFixture.acti
 assert.equal(changedDeadline, '2026-09-12 18:00:00')
 assert.equal(activeFixture.activatedAt, '2026-09-03 20:17:00')
 assert.notEqual(changedDeadline, automaticDeadline)
-assert.throws(() => context.validateEventBracketDeadline_(activeFixture.activatedAt, '2026-09-03 20:16:00'), /after Activated At/)
+assert.throws(() => context.validateEventBracketDeadline_(activeFixture.activatedAt, '2026-09-03 20:16:00'), /seven full days/)
 
 activeFixture.deadline = '2026-09-01 20:17:00'
 assert.equal(activeFixture.status, 'Active')
@@ -82,7 +82,7 @@ assert.equal(activeFixture.loser, '')
 
 assert.match(source, /function updateEventBracketDeadline\(e\)[\s\S]*requireApiPermission\(e, "runSeasonControl"/)
 assert.match(source, /LockService\.getScriptLock\(\)/)
-assert.match(source, /activatePlayableEventBracketMatches_\(matches, new Date\(\)\)/)
+assert.match(source, /activatePlayableEventBracketMatches_\(matches, new Date\(\), \{ requireAssignedMission:true \}\)/)
 assert.match(source, /"Activated At", "Deadline"/)
 assert.doesNotMatch(source, /EVENT_PROVISIONING_TOKEN|submitLeagueResult|createGame|assignMission/i)
 assert.match(routerSource, /case "eventBracketDeadline":\s*return updateEventBracketDeadline\(e\);/)

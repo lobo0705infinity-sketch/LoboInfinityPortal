@@ -1263,6 +1263,7 @@ function getMutationInvalidationGroups(action: string) {
     case 'eventManagerLifecycle':
     case 'eventManagerRegistration':
     case 'eventManagerParticipant':
+    case 'eventBracketRelease':
     case 'eventBracketGenerate':
     case 'eventBracketDeadline':
     case 'eventBracketForfeit':

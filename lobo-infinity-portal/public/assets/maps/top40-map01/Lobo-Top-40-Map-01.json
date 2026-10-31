@@ -1,0 +1,4579 @@
+{
+  "SaveName": "Lobo's Top 40 Map#1",
+  "VersionNumber": "",
+  "ObjectStates": [
+    {
+      "GUID": "ca7100",
+      "Name": "Bag",
+      "Transform": {
+        "posX": 0,
+        "posY": 2,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 1,
+        "scaleY": 1,
+        "scaleZ": 1
+      },
+      "Nickname": "SET_Lobo's Top 40 Map#1",
+      "Description": "Lobo's Top 40 Map#1\nCorporate Appropriation | Asterion Research Campus\nFinal user layout from TS_Save_6.json.\nClear Table, then drop this bag on Place bags here.",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.12,
+        "g": 0.62,
+        "b": 0.65
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "--ca7102,9.074369e-14,0.9600003,3.621302e-11,-4.915117e-09,3.07973872e-12,1.19184676e-10\r\n--ca7103,-19.0,1.1,-17.0,0.0,0.0,0.0\r\n--ca7105,18.9782944,1.1000005,16.3141041,-1.56313081e-06,225.015,-9.017115e-06\r\n--ca710b,-19.37361,1.10000014,8.372352,-1.952714e-07,135.011719,5.744847e-07\r\n--ca710d,19.0,1.1,-10.0,0.0,270.0,0.0\r\n--ca710f,-15.8,1.1,19.5,0.0,180.0,0.0\r\n--ca7111,15.8,1.1,-19.5,0.0,0.0,0.0\r\n--ca7113,-6.5,1.1,-5.5,0.0,135.0,0.0\r\n--ca7115,6.5,1.1,5.5,0.0,315.0,0.0\r\n--ca7117,-5.932155,1.10000014,14.169858,-4.21418e-07,45.09838,-1.02758669e-07\r\n--ca7119,4.95404148,1.09999967,-13.7904348,0.0,180.0,0.0\r\n--ca711b,-9.0,1.1,-15.5,0.0,135.0,0.0\r\n--ca711d,9.0,1.1,15.5,0.0,315.0,0.0\r\n--ca7121,21.1432819,1.06000018,9.398362,-2.067663e-05,270.007874,-5.887588e-06\r\n--ca7122,-4.32729959,1.10000014,21.5336132,8.15265651e-07,314.9663,5.86255737e-07\r\n--ca7125,6.119303,1.06000054,21.58839,1.20580535e-05,90.0022659,-5.81878055e-07\r\n--ca7126,3.52938962,1.10000074,-4.5239706,6.171021e-05,269.934082,-3.18487821e-07\r\n--ca7129,-12.5,1.1,7.5,0.0,0.0,0.0\r\n--ca712a,12.5,1.1,-7.5,0.0,180.0,0.0\r\n--ca712d,-11.1691771,1.06000054,3.504218,8.29005671e-07,270.008636,8.311942e-07\r\n--ca712e,13.5,1.1,-3.5,0.0,315.0,0.0\r\n--ca7131,-13.5,1.1,-10.5,0.0,0.0,0.0\r\n--ca7132,13.5,1.1,10.5,0.0,180.0,0.0\r\n--ca7135,-12.5,1.1,-21.5,0.0,0.0,0.0\r\n--ca7136,3.02731967,1.10000026,17.6877518,5.135516e-07,120.006012,8.89605e-07\r\n--ca7139,-13.3415384,1.06000054,11.6359158,2.535101e-06,270.0085,-4.21899671e-07\r\n--ca713a,10.5,1.1,-7.5,0.0,224.999985,0.0\r\n--ca713b,-6.5,1.1,-19.5,0.0,0.0,0.0\r\n--ca713c,6.5,1.1,19.5,0.0,180.0,0.0\r\n--ca713f,-21.5,1.1,-10.5,0.0,0.0,0.0\r\n--ca7140,16.4755516,1.10001016,21.7651348,0.000382555067,270.0092,-0.000120957709\r\n--ca7143,-1.25380707,1.0250001,-9.224078,1.15610937e-05,135.000031,-1.0922862e-06\r\n--ca7144,2.872906,1.02502275,10.2282724,0.0007615484,314.999969,-0.000406700448\r\n--ca7147,-21.5,1.1,2.5,0.0,0.0,0.0\r\n--ca7148,21.6587372,1.09999967,-3.10705543,1.22372885e-05,224.99585,1.51309928e-06\r\n--ca7149,-12.5,1.1,-4.5,0.0,90.0,0.0\r\n--ca714a,12.5,1.1,4.5,0.0,270.0,0.0\r\n--ca714d,-21.5,1.1,15.5,0.0,45.0000038,0.0\r\n--ca714e,21.5,1.1,-15.5,0.0,224.999985,0.0\r\n--ca714f,-21.5,1.1,21.5,0.0,90.0,0.0\r\n--ca7150,21.5,1.1,-21.5,0.0,270.0,0.0\r\n--ca7151,-17.5,1.1,-10.5,0.0,90.0,0.0\r\n--ca7152,17.4388142,1.102834,9.958075,0.00359412236,270.000061,-0.00350170047\r\n--ca7153,-1.5,1.06000042,-1.5,9.38167943e-07,89.96158,9.761827e-08\r\n--ca7154,1.19369125,1.06000054,1.97571778,3.65857268e-05,270.005157,1.58473335e-06\r\n--ca7155,-7.5,1.1,-20.5,0.0,0.0,0.0\r\n--ca7156,5.40106773,5.97736073,4.80337,1.24185517e-05,225.019943,-1.12773405e-05\r\n--ca7157,0.0,1.3,-12.0,0.0,270.0,0.0\r\n--ca7159,0.0,1.3,12.0,0.0,270.0,0.0\r\n--ca715b,-12.0,1.3,0.0,0.0,270.0,0.0\r\n--ca715d,12.0,1.3,0.0,0.0,270.0,0.0\r\n--e468bc,0.7562642,1.10000014,21.74781,1.7894663e-05,225.009171,1.30167882e-06\r\n--370191,-2.16241336,1.0999999,17.0046062,7.6035e-07,225.003311,-7.173839e-07\r\n--fc0372,18.4013023,1.10000038,3.187623,8.366154e-06,270.14502,6.991928e-07\r\n--9e9585,8.290175,1.1,-21.7538757,-4.716314e-06,90.0081558,-2.30197656e-06\r\n--a909ca,0.531393647,1.1000042,-19.1708336,0.000741125143,269.988556,0.0003092856\r\n--080f61,-19.6566925,1.10000014,-3.10934329,4.24485734e-07,270.0003,-1.028191e-06\r\n--7e8fa9,-4.0190897,1.06000066,4.36974573,-1.00701845e-06,89.96459,3.13809636e-07\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "ca7102",
+          "Name": "Custom_Tile",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -4.915117e-09,
+            "rotY": 3.07973872e-12,
+            "rotZ": 1.19184676e-10,
+            "scaleX": 24.0,
+            "scaleY": 1.0,
+            "scaleZ": 24.0
+          },
+          "Nickname": "Asterion Research Campus | 48 × 48 mat",
+          "Description": "48 × 48 inches. Deployment edges are X = -24 / +24. Remove this mat to clear every object belonging to this campus.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": false,
+          "Tooltip": false,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomImage": {
+            "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16858055870911211012/CF3213858F6045402EDA3BA18C7371B773BF9A7C/",
+            "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/16858055870911211012/CF3213858F6045402EDA3BA18C7371B773BF9A7C/",
+            "ImageScalar": 1.0,
+            "WidthScale": 0.0,
+            "CustomTile": {
+              "Type": 0,
+              "Thickness": 0.1,
+              "Stackable": false,
+              "Stretch": true
+            }
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end\nfunction onDestroy()\n local key=\"clearingAsterionCampus\"\n if Global.getVar(key) then return end\n Global.setVar(key,true)\n local doomed={}\n for _,o in ipairs(getAllObjects()) do\n  if o~=self and o.hasTag(\"LoboMap:ca7100\") then table.insert(doomed,o) end\n end\n for _,o in ipairs(doomed) do o.destruct() end\n Global.setVar(key,false)\nend",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7103",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Security / receiving",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/13653987689196399439/0819F7FDA22AB6E6A7F8D6B4C67D9C1A5B9FBDE7/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15563060670858452707/5F0AC2E1640A99790F094A900376133330838283/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7104",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -19.0,
+                "posY": 1.1,
+                "posZ": -17.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Security / receiving | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15630957340053150059/A18DC708785AB308E548A451D60C11A9E9BC610F/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12440998237719843212/2EB7C98EA361A61F5D10D38792354B454C04FB75/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7105",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -1.56313081e-06,
+            "rotY": 225.015,
+            "rotZ": -9.017115e-06,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Security / receiving",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/13653987689196399439/0819F7FDA22AB6E6A7F8D6B4C67D9C1A5B9FBDE7/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15563060670858452707/5F0AC2E1640A99790F094A900376133330838283/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7106",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 18.9782944,
+                "posY": 1.1000005,
+                "posZ": 16.3141041,
+                "rotX": -1.56313081e-06,
+                "rotY": 225.015,
+                "rotZ": -9.017115e-06,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Security / receiving | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/15630957340053150059/A18DC708785AB308E548A451D60C11A9E9BC610F/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12440998237719843212/2EB7C98EA361A61F5D10D38792354B454C04FB75/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca710b",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -1.952714e-07,
+            "rotY": 135.011719,
+            "rotZ": 5.744847e-07,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Medical / staff services",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12175168382922616838/E9F01D22EC35FE7AF9F7CC5C9DD1F61DFB6B9BAE/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12703563743778663662/0979516969B3C2FD6991A0BD3D8B80582731D9EA/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca710c",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -19.37361,
+                "posY": 1.10000014,
+                "posZ": 8.372352,
+                "rotX": -1.952714e-07,
+                "rotY": 135.011719,
+                "rotZ": 5.744847e-07,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Medical / staff services | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12715754961229049875/E92D5BE3AA0B371E3558F97A4C5ED5FA0885ED68/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17664254014318231364/2861C7F2A49A5A2C895EF92F63CD5BFF96661AAA/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca710d",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Medical / staff services",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12175168382922616838/E9F01D22EC35FE7AF9F7CC5C9DD1F61DFB6B9BAE/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12703563743778663662/0979516969B3C2FD6991A0BD3D8B80582731D9EA/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca710e",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 19.0,
+                "posY": 1.1,
+                "posZ": -10.0,
+                "rotX": 0.0,
+                "rotY": 270.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Medical / staff services | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12715754961229049875/E92D5BE3AA0B371E3558F97A4C5ED5FA0885ED68/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17664254014318231364/2861C7F2A49A5A2C895EF92F63CD5BFF96661AAA/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca710f",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Data archive",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/9924408981659206880/90751D053EA458252B0BAF449D11BC466F24F1CB/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/10254930941990820362/A133555D821D8F8B490E8258445FFC9D0C2661FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7110",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -15.8,
+                "posY": 1.1,
+                "posZ": 19.5,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Data archive | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16354822876391795396/F5F361630821FB6ACC9BDC715CEE6C9DAFE70D96/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/13772201056142743653/4C62B15D73DB5810F77DFADED975BE1EDDDD6A87/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7111",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.66,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Data archive",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/9924408981659206880/90751D053EA458252B0BAF449D11BC466F24F1CB/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/10254930941990820362/A133555D821D8F8B490E8258445FFC9D0C2661FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7112",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 15.8,
+                "posY": 1.1,
+                "posZ": -19.5,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.66,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Data archive | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16354822876391795396/F5F361630821FB6ACC9BDC715CEE6C9DAFE70D96/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/13772201056142743653/4C62B15D73DB5810F77DFADED975BE1EDDDD6A87/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7113",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 135.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Prototype testing laboratory",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14567523747376132093/7A4FCC750A68A3487F6C0ADDD32AE39D022D7B53/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17266477678448712535/A9CAD03445F6D1F9F7A27232B9726E2659C6E3DE/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7114",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -6.5,
+                "posY": 1.1,
+                "posZ": -5.5,
+                "rotX": 0.0,
+                "rotY": 135.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Prototype testing laboratory | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16634931546986327999/3C68A79F4D99AA156E41CD394AA2CC3CC2282C83/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/9886171339189912228/3A68B68F2D504CBB4027AD6E097AE5D9228CA2D9/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7115",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 315.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Prototype testing laboratory",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14567523747376132093/7A4FCC750A68A3487F6C0ADDD32AE39D022D7B53/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17266477678448712535/A9CAD03445F6D1F9F7A27232B9726E2659C6E3DE/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7116",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 6.5,
+                "posY": 1.1,
+                "posZ": 5.5,
+                "rotX": 0.0,
+                "rotY": 315.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Prototype testing laboratory | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16634931546986327999/3C68A79F4D99AA156E41CD394AA2CC3CC2282C83/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/9886171339189912228/3A68B68F2D504CBB4027AD6E097AE5D9228CA2D9/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7117",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -4.21418e-07,
+            "rotY": 45.09838,
+            "rotZ": -1.02758669e-07,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Materials research",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/13427770543965439384/81F3752FE3B8AAB243323B9C11F79CDDFD776DDB/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11215980489790688501/F8268609185B5EC23505189A0FFE3911310AFB5A/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca7118",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -5.932155,
+                "posY": 1.10000014,
+                "posZ": 14.169858,
+                "rotX": -4.21418e-07,
+                "rotY": 45.09838,
+                "rotZ": -1.02758669e-07,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Materials research | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10647443286634479840/E517FAD86AB5872B2D5FEC07213CA5C737D94C72/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12596478760490421125/97736FC28CFFBAA1AFBFB64BC405A2D929D9E5D3/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7119",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Materials research",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/13427770543965439384/81F3752FE3B8AAB243323B9C11F79CDDFD776DDB/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11215980489790688501/F8268609185B5EC23505189A0FFE3911310AFB5A/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca711a",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 4.95404148,
+                "posY": 1.09999967,
+                "posZ": -13.7904348,
+                "rotX": 0.0,
+                "rotY": 180.0,
+                "rotZ": 0.0,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Materials research | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10647443286634479840/E517FAD86AB5872B2D5FEC07213CA5C737D94C72/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12596478760490421125/97736FC28CFFBAA1AFBFB64BC405A2D929D9E5D3/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca711b",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 135.0,
+            "rotZ": 0.0,
+            "scaleX": 0.95,
+            "scaleY": 0.66,
+            "scaleZ": 0.65
+          },
+          "Nickname": "West wing | Reception / security building",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14366247103842014230/0FE62093F1933BD3EA5A486FD13609A3E7B19B3B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/10286584990941963660/5917DFE9FA79CE9A6DEA685378746387D071D6B3/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca711c",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -9.0,
+                "posY": 1.1,
+                "posZ": -15.5,
+                "rotX": 0.0,
+                "rotY": 135.0,
+                "rotZ": 0.0,
+                "scaleX": 0.95,
+                "scaleY": 0.66,
+                "scaleZ": 0.65
+              },
+              "Nickname": "West wing | Reception / security building | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11702740125133697481/8BDF80C2D5A092D1A4A54A3C65DCCBB15CF6D631/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/13132905195812876647/8241DE11B7972EABDA7315A67AE9C2354EFA24C7/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca711d",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 315.0,
+            "rotZ": 0.0,
+            "scaleX": 0.95,
+            "scaleY": 0.66,
+            "scaleZ": 0.65
+          },
+          "Nickname": "East wing | Reception / security building",
+          "Description": "Asterion Research Campus | level 1. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 2.416 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14366247103842014230/0FE62093F1933BD3EA5A486FD13609A3E7B19B3B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/10286584990941963660/5917DFE9FA79CE9A6DEA685378746387D071D6B3/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ca711e",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 9.0,
+                "posY": 1.1,
+                "posZ": 15.5,
+                "rotX": 0.0,
+                "rotY": 315.0,
+                "rotZ": 0.0,
+                "scaleX": 0.95,
+                "scaleY": 0.66,
+                "scaleZ": 0.65
+              },
+              "Nickname": "East wing | Reception / security building | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11702740125133697481/8BDF80C2D5A092D1A4A54A3C65DCCBB15CF6D631/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/11384951382021200088/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/13132905195812876647/8241DE11B7972EABDA7315A67AE9C2354EFA24C7/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "ca7121",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -2.067663e-05,
+            "rotY": 270.007874,
+            "rotZ": -5.887588e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 1W",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7122",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 8.15265651e-07,
+            "rotY": 314.9663,
+            "rotZ": 5.86255737e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 1E",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7125",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 1.20580535e-05,
+            "rotY": 90.0022659,
+            "rotZ": -5.81878055e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Transit shelter 2W",
+          "Description": "Approved campus civic scatter: Transit shelter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18187203759688613816/2586AA91BB6822D6B23A8273072C44EA38BC0594/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11767955503879304583/C6F59B8AA9A6CD5E01BF3AEF728560DCF0706873/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7126",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 6.171021e-05,
+            "rotY": 269.934082,
+            "rotZ": -3.18487821e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Transit shelter 2E",
+          "Description": "Approved campus civic scatter: Transit shelter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18187203759688613816/2586AA91BB6822D6B23A8273072C44EA38BC0594/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11767955503879304583/C6F59B8AA9A6CD5E01BF3AEF728560DCF0706873/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7129",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Courtyard screen 3W",
+          "Description": "Approved campus civic scatter: Courtyard screen. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": false,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11909700455199598852/C1D1B86A1F45B9CEDA2ED87C2B426467BC53E43B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/15991565716123632875/6AC0689C179FF453B6DDE1747CDC9056ED8CABBF/",
+            "NormalURL": "https://steamusercontent-a.akamaihd.net/ugc/17453076299416100783/A78D877B4DB0EEC974D00C9CD9A89D6C99287D2F/",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15041277569258333540/E156BD79CD95F4359205E08541521D677E70A4B5/",
+            "Convex": false,
+            "MaterialIndex": 0,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.2,
+                "g": 0.23,
+                "b": 0.26
+              },
+              "SpecularIntensity": 0.18,
+              "SpecularSharpness": 6.0,
+              "FresnelStrength": 0.0
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca712a",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Courtyard screen 3E",
+          "Description": "Approved campus civic scatter: Courtyard screen. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": false,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11909700455199598852/C1D1B86A1F45B9CEDA2ED87C2B426467BC53E43B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/15991565716123632875/6AC0689C179FF453B6DDE1747CDC9056ED8CABBF/",
+            "NormalURL": "https://steamusercontent-a.akamaihd.net/ugc/17453076299416100783/A78D877B4DB0EEC974D00C9CD9A89D6C99287D2F/",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15041277569258333540/E156BD79CD95F4359205E08541521D677E70A4B5/",
+            "Convex": false,
+            "MaterialIndex": 0,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.2,
+                "g": 0.23,
+                "b": 0.26
+              },
+              "SpecularIntensity": 0.18,
+              "SpecularSharpness": 6.0,
+              "FresnelStrength": 0.0
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca712d",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 8.29005671e-07,
+            "rotY": 270.008636,
+            "rotZ": 8.311942e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Parcel / vending station 4W",
+          "Description": "Approved campus civic scatter: Parcel / vending station. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/17353596691926938900/D17520AF83549FD3C59EEDBD23D8DFA3D34DAF16/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15876537324797121238/20F6C2AB1425D881E45C006004D0895C39A3D620/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca712e",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 315.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Parcel / vending station 4E",
+          "Description": "Approved campus civic scatter: Parcel / vending station. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/17353596691926938900/D17520AF83549FD3C59EEDBD23D8DFA3D34DAF16/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15876537324797121238/20F6C2AB1425D881E45C006004D0895C39A3D620/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7131",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Shuttle car 5W",
+          "Description": "Approved campus civic scatter: Shuttle car. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12465195374850980109/C6E6E4231195FFEE6220D83A40796AAC102BCB0C/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15435294865249030630/54CAD882F479FF2F6A02AA146E22241390AD387F/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7132",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Shuttle car 5E",
+          "Description": "Approved campus civic scatter: Shuttle car. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12465195374850980109/C6E6E4231195FFEE6220D83A40796AAC102BCB0C/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15435294865249030630/54CAD882F479FF2F6A02AA146E22241390AD387F/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7135",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 6W",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7136",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 5.135516e-07,
+            "rotY": 120.006012,
+            "rotZ": 8.89605e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 6E",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7139",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 2.535101e-06,
+            "rotY": 270.0085,
+            "rotZ": -4.21899671e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Transit shelter 7W",
+          "Description": "Approved campus civic scatter: Transit shelter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18187203759688613816/2586AA91BB6822D6B23A8273072C44EA38BC0594/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11767955503879304583/C6F59B8AA9A6CD5E01BF3AEF728560DCF0706873/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca713a",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 224.999985,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Transit shelter 7E",
+          "Description": "Approved campus civic scatter: Transit shelter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18187203759688613816/2586AA91BB6822D6B23A8273072C44EA38BC0594/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11767955503879304583/C6F59B8AA9A6CD5E01BF3AEF728560DCF0706873/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca713b",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Courtyard screen 8W",
+          "Description": "Approved campus civic scatter: Courtyard screen. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": false,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11909700455199598852/C1D1B86A1F45B9CEDA2ED87C2B426467BC53E43B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/15991565716123632875/6AC0689C179FF453B6DDE1747CDC9056ED8CABBF/",
+            "NormalURL": "https://steamusercontent-a.akamaihd.net/ugc/17453076299416100783/A78D877B4DB0EEC974D00C9CD9A89D6C99287D2F/",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15041277569258333540/E156BD79CD95F4359205E08541521D677E70A4B5/",
+            "Convex": false,
+            "MaterialIndex": 0,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.2,
+                "g": 0.23,
+                "b": 0.26
+              },
+              "SpecularIntensity": 0.18,
+              "SpecularSharpness": 6.0,
+              "FresnelStrength": 0.0
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca713c",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 180.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Courtyard screen 8E",
+          "Description": "Approved campus civic scatter: Courtyard screen. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": false,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/11909700455199598852/C1D1B86A1F45B9CEDA2ED87C2B426467BC53E43B/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/15991565716123632875/6AC0689C179FF453B6DDE1747CDC9056ED8CABBF/",
+            "NormalURL": "https://steamusercontent-a.akamaihd.net/ugc/17453076299416100783/A78D877B4DB0EEC974D00C9CD9A89D6C99287D2F/",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15041277569258333540/E156BD79CD95F4359205E08541521D677E70A4B5/",
+            "Convex": false,
+            "MaterialIndex": 0,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.2,
+                "g": 0.23,
+                "b": 0.26
+              },
+              "SpecularIntensity": 0.18,
+              "SpecularSharpness": 6.0,
+              "FresnelStrength": 0.0
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca713f",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Parcel / vending station 9W",
+          "Description": "Approved campus civic scatter: Parcel / vending station. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/17353596691926938900/D17520AF83549FD3C59EEDBD23D8DFA3D34DAF16/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15876537324797121238/20F6C2AB1425D881E45C006004D0895C39A3D620/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7140",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.000382555067,
+            "rotY": 270.0092,
+            "rotZ": -0.000120957709,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Parcel / vending station 9E",
+          "Description": "Approved campus civic scatter: Parcel / vending station. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/17353596691926938900/D17520AF83549FD3C59EEDBD23D8DFA3D34DAF16/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15876537324797121238/20F6C2AB1425D881E45C006004D0895C39A3D620/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7143",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 1.15610937e-05,
+            "rotY": 135.000031,
+            "rotZ": -1.0922862e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Shuttle car 10W",
+          "Description": "Approved campus civic scatter: Shuttle car. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12465195374850980109/C6E6E4231195FFEE6220D83A40796AAC102BCB0C/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15435294865249030630/54CAD882F479FF2F6A02AA146E22241390AD387F/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7144",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0007615484,
+            "rotY": 314.999969,
+            "rotZ": -0.000406700448,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Shuttle car 10E",
+          "Description": "Approved campus civic scatter: Shuttle car. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/12465195374850980109/C6E6E4231195FFEE6220D83A40796AAC102BCB0C/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15435294865249030630/54CAD882F479FF2F6A02AA146E22241390AD387F/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7147",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 11W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7148",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 1.22372885e-05,
+            "rotY": 224.99585,
+            "rotZ": 1.51309928e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 11E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7149",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 90.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 12W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca714a",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 12E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca714d",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 45.0000038,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 13W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca714e",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 224.999985,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 13E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca714f",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 90.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 14W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7150",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 14E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7151",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 90.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 15W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7152",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.00359412236,
+            "rotY": 270.000061,
+            "rotZ": -0.00350170047,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 15E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7153",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 9.38167943e-07,
+            "rotY": 89.96158,
+            "rotZ": 9.761827e-08,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 16W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7154",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 3.65857268e-05,
+            "rotY": 270.005157,
+            "rotZ": 1.58473335e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 16E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7155",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 0.0,
+            "rotZ": 0.0,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 17W",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7156",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 1.24185517e-05,
+            "rotY": 225.019943,
+            "rotZ": -1.12773405e-05,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 17E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca7157",
+          "Name": "Custom_Assetbundle",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 0.31566754,
+            "scaleY": 0.31566754,
+            "scaleZ": 0.31566754
+          },
+          "Nickname": "Prototype 1",
+          "Description": "Corporate Appropriation | 40 mm base. Choose prototype ownership following the mission. Movable when captured.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomAssetbundle": {
+            "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/1487830896372259331/09820DFD0A83535EE26886A2B101E5CB26DB79F5/",
+            "AssetbundleSecondaryURL": "",
+            "MaterialIndex": 2,
+            "TypeIndex": 1,
+            "LoopingEffectIndex": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "ca7158",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -0.0176517721,
+                "posY": -0.312094331,
+                "posZ": -0.0347505175,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 3.16788816,
+                "scaleY": 0.2534312,
+                "scaleZ": 3.16788816
+              },
+              "Nickname": "40 mm objective base",
+              "Description": "Attached mission footprint base.",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.12,
+                "g": 0.15,
+                "b": 0.18
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": false,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "Convex": true,
+                "MaterialIndex": 3,
+                "TypeIndex": 1,
+                "CastShadows": true
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "ca7159",
+          "Name": "Custom_Assetbundle",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 0.31566754,
+            "scaleY": 0.31566754,
+            "scaleZ": 0.31566754
+          },
+          "Nickname": "Prototype 2",
+          "Description": "Corporate Appropriation | 40 mm base. Choose prototype ownership following the mission. Movable when captured.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomAssetbundle": {
+            "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/1487830896372259331/09820DFD0A83535EE26886A2B101E5CB26DB79F5/",
+            "AssetbundleSecondaryURL": "",
+            "MaterialIndex": 2,
+            "TypeIndex": 1,
+            "LoopingEffectIndex": 0
+          },
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "ca715a",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -0.0176517721,
+                "posY": -0.312094331,
+                "posZ": -0.0347505175,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 3.16788816,
+                "scaleY": 0.2534312,
+                "scaleZ": 3.16788816
+              },
+              "Nickname": "40 mm objective base",
+              "Description": "Attached mission footprint base.",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.12,
+                "g": 0.15,
+                "b": 0.18
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": false,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "Convex": true,
+                "MaterialIndex": 3,
+                "TypeIndex": 1,
+                "CastShadows": true
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "ca715b",
+          "Name": "Custom_Assetbundle",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.02595532,
+            "scaleY": 1.02595532,
+            "scaleZ": 1.02595532
+          },
+          "Nickname": "Panoply A",
+          "Description": "Corporate Appropriation | 40 mm base. Fixed on the front edge of the deployment zone.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomAssetbundle": {
+            "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/1293046506767083511/457550E9C58C7ABE5A3B804EF2F0EDD8BCD6B21A/",
+            "AssetbundleSecondaryURL": "",
+            "MaterialIndex": 2,
+            "TypeIndex": 1,
+            "LoopingEffectIndex": 0
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "ca715c",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 0.03152981,
+                "posY": -0.09747021,
+                "posZ": 0.0246555079,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.974700749,
+                "scaleY": 0.0779761,
+                "scaleZ": 0.974700749
+              },
+              "Nickname": "40 mm objective base",
+              "Description": "Attached mission footprint base.",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.12,
+                "g": 0.15,
+                "b": 0.18
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": false,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "Convex": true,
+                "MaterialIndex": 3,
+                "TypeIndex": 1,
+                "CastShadows": true
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "ca715d",
+          "Name": "Custom_Assetbundle",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.0,
+            "rotY": 270.0,
+            "rotZ": 0.0,
+            "scaleX": 1.02595532,
+            "scaleY": 1.02595532,
+            "scaleZ": 1.02595532
+          },
+          "Nickname": "Panoply B",
+          "Description": "Corporate Appropriation | 40 mm base. Fixed on the front edge of the deployment zone.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 0.0,
+            "b": 0.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomAssetbundle": {
+            "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/1293046506767083511/457550E9C58C7ABE5A3B804EF2F0EDD8BCD6B21A/",
+            "AssetbundleSecondaryURL": "",
+            "MaterialIndex": 2,
+            "TypeIndex": 1,
+            "LoopingEffectIndex": 0
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "ChildObjects": [
+            {
+              "GUID": "ca715e",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 0.03152981,
+                "posY": -0.09747021,
+                "posZ": 0.0246555079,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "scaleX": 0.974700749,
+                "scaleY": 0.0779761,
+                "scaleZ": 0.974700749
+              },
+              "Nickname": "40 mm objective base",
+              "Description": "Attached mission footprint base.",
+              "GMNotes": "",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 0.12,
+                "g": 0.15,
+                "b": 0.18
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": true,
+              "Snap": true,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": false,
+              "HideWhenFaceDown": false,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "DiffuseURL": "",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+                "Convex": true,
+                "MaterialIndex": 3,
+                "TypeIndex": 1,
+                "CastShadows": true
+              },
+              "LuaScript": "",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          ]
+        },
+        {
+          "GUID": "e468bc",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 1.7894663e-05,
+            "rotY": 225.009171,
+            "rotZ": 1.30167882e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 17E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "370191",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 7.6035e-07,
+            "rotY": 225.003311,
+            "rotZ": -7.173839e-07,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Campus planter 17E",
+          "Description": "Approved campus civic scatter: Campus planter. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/18343327879223269139/A99EB79B6242D4FBA5CCCFED6E2C5E7EE0F7FC95/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/15232998452169014356/E5BD355EDCB4850F81BB3F8DE5BFA30FFB82A77E/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "fc0372",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 8.366154e-06,
+            "rotY": 270.14502,
+            "rotZ": 6.991928e-07,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Prototype testing laboratory",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14567523747376132093/7A4FCC750A68A3487F6C0ADDD32AE39D022D7B53/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17266477678448712535/A9CAD03445F6D1F9F7A27232B9726E2659C6E3DE/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "c45ce7",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": 18.4013023,
+                "posY": 1.10000038,
+                "posZ": 3.187623,
+                "rotX": 8.366154e-06,
+                "rotY": 270.14502,
+                "rotZ": 6.991928e-07,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Prototype testing laboratory | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16634931546986327999/3C68A79F4D99AA156E41CD394AA2CC3CC2282C83/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/9886171339189912228/3A68B68F2D504CBB4027AD6E097AE5D9228CA2D9/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "9e9585",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -4.716314e-06,
+            "rotY": 90.0081558,
+            "rotZ": -2.30197656e-06,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 6W",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "a909ca",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 0.000741125143,
+            "rotY": 269.988556,
+            "rotZ": 0.0003092856,
+            "scaleX": 1.0,
+            "scaleY": 1.0,
+            "scaleZ": 1.0
+          },
+          "Nickname": "Pocket garden 6W",
+          "Description": "Approved campus civic scatter: Pocket garden. Existing mesh and collider retained.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": false,
+          "GridProjection": false,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10471097648403207247/33B0EB51DBE87EA21E78E604B9E854BD57B97FC3/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/12896976397791702000/AF92E6B56519A39E2F15CF76F4D5E75B9DC17341/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/18331111497615137264/1FA421730BBA5B71C27CF0863CE87151D253F2FC/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "080f61",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": 4.24485734e-07,
+            "rotY": 270.0003,
+            "rotZ": -1.028191e-06,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "East wing | Prototype testing laboratory",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/14567523747376132093/7A4FCC750A68A3487F6C0ADDD32AE39D022D7B53/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/17266477678448712535/A9CAD03445F6D1F9F7A27232B9726E2659C6E3DE/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "ee2f5e",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -19.6566925,
+                "posY": 1.10000014,
+                "posZ": -3.10934329,
+                "rotX": 4.24485734e-07,
+                "rotY": 270.0003,
+                "rotZ": -1.028191e-06,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "East wing | Prototype testing laboratory | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "HideWhenFaceDown": false,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/16634931546986327999/3C68A79F4D99AA156E41CD394AA2CC3CC2282C83/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/9886171339189912228/3A68B68F2D504CBB4027AD6E097AE5D9228CA2D9/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        },
+        {
+          "GUID": "7e8fa9",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70,
+            "posY": 100,
+            "posZ": 70,
+            "rotX": -1.00701845e-06,
+            "rotY": 89.96459,
+            "rotZ": 3.13809636e-07,
+            "scaleX": 1.0,
+            "scaleY": 0.6,
+            "scaleZ": 1.0
+          },
+          "Nickname": "West wing | Materials research",
+          "Description": "Asterion Research Campus | level 2. Press 1 for exterior, 2 for interior. Integrated roof ladder. Roof at 4.176 inches above ground.",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:ca7100"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/13427770543965439384/81F3752FE3B8AAB243323B9C11F79CDDFD776DDB/",
+            "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+            "NormalURL": "",
+            "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/11215980489790688501/F8268609185B5EC23505189A0FFE3911310AFB5A/",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true) end",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "States": {
+            "2": {
+              "GUID": "91f7da",
+              "Name": "Custom_Model",
+              "Transform": {
+                "posX": -4.0190897,
+                "posY": 1.06000066,
+                "posZ": 4.36974573,
+                "rotX": -1.00701845e-06,
+                "rotY": 89.96459,
+                "rotZ": 3.13809636e-07,
+                "scaleX": 1.0,
+                "scaleY": 0.6,
+                "scaleZ": 1.0
+              },
+              "Nickname": "West wing | Materials research | interior",
+              "Description": "Roof removed. Floor, doors, furnishings and roof ladder remain. Press 1 to restore the roof.",
+              "GMNotes": "AzureCoast/Coastal-Access-R12",
+              "AltLookAngle": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+              },
+              "ColorDiffuse": {
+                "r": 1.0,
+                "g": 1.0,
+                "b": 1.0
+              },
+              "Tags": [
+                "LoboMap:ca7100"
+              ],
+              "LayoutGroupSortIndex": 0,
+              "Value": 0,
+              "Locked": true,
+              "Grid": false,
+              "Snap": false,
+              "IgnoreFoW": false,
+              "MeasureMovement": false,
+              "DragSelectable": true,
+              "Autoraise": true,
+              "Sticky": true,
+              "Tooltip": true,
+              "GridProjection": true,
+              "Hands": false,
+              "CustomMesh": {
+                "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/10647443286634479840/E517FAD86AB5872B2D5FEC07213CA5C737D94C72/",
+                "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/17278388511530912510/D39E49371D54048C4EB7850198D82984FE3C881E/",
+                "NormalURL": "",
+                "ColliderURL": "https://steamusercontent-a.akamaihd.net/ugc/12596478760490421125/97736FC28CFFBAA1AFBFB64BC405A2D929D9E5D3/",
+                "Convex": false,
+                "MaterialIndex": 3,
+                "TypeIndex": 0,
+                "CastShadows": true
+              },
+              "LuaScript": "function onLoad() self.setLock(true) end",
+              "LuaScriptState": "",
+              "XmlUI": ""
+            }
+          }
+        }
+      ],
+      "Tags": []
+    }
+  ]
+}

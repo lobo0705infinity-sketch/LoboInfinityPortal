@@ -1,19 +1,19 @@
 import type { EventBracketData, EventHomeData, EventRegistrationData } from './api'
 import { getPinnedPublicSnapshot, getPublicSnapshotDataset } from './publicSnapshot'
 
-type SnapshotEvent = Record<string, any> & { id: string; name: string; type: string }
+type SnapshotEvent = Record<string, unknown> & { id: string; name: string; type: string; participants?: EventRegistrationData['registrations']; teams?: EventRegistrationData['teams']; bracket?: EventBracketData['matches']; currentRound?: { name?: string } | string }
 
 function registrationFor(event: SnapshotEvent): EventRegistrationData {
   const registrations = Array.isArray(event.participants) ? event.participants : []
   const teams = Array.isArray(event.teams) ? event.teams : []
   return {
     capacity: { maximumPlayers: Number(event.capacity || 0), maximumTeams: 0, unlimited: !event.capacity, waitlistEnabled: false },
-    captains: registrations.filter((entry: any) => entry?.captain),
+    captains: registrations.filter((entry) => entry?.captain),
     currentPlayer: null,
     eventId: event.id,
     eventName: event.name,
     eventType: event.type,
-    freeAgents: registrations.filter((entry: any) => entry?.freeAgent),
+    freeAgents: registrations.filter((entry) => entry?.freeAgent),
     registeredCount: Number(event.registeredCount ?? registrations.length),
     registrationOpen: Boolean(event.registrationOpen),
     registrationWindow: event.registrationWindow ?? { startDate: '', endDate: '' },
@@ -44,6 +44,18 @@ export async function getPublicEventProjection(eventId: string, options: { signa
   }
   const registrations = registrationFor(event)
   const bracketMatches = Array.isArray(event.bracket) ? event.bracket : []
+  const registered = registrations.registrations.filter((item) => item.status === 'Registered')
+  const seeded = registered.filter((item) => Number.isInteger(Number(item.seed)) && Number(item.seed) >= 1 && Number(item.seed) <= registered.length)
+  const registrationClosed = /closed/i.test(registrations.status)
+  const reasons: string[] = []
+  if (!registrationClosed) reasons.push('Close registration before preparing the bracket.')
+  if (registered.length < 2) reasons.push('At least two registered players are required.')
+  if (seeded.length !== registered.length || new Set(seeded.map((item) => Number(item.seed))).size !== registered.length) reasons.push('Assign unique seeds from 1 through N.')
+  if (Number(event.capacity) > 0 && registered.length > Number(event.capacity)) reasons.push('Registered players exceed event capacity.')
+  const firstFinal = bracketMatches.find((match) => match.matchId === 'GF-M1')
+  const resetFinal = bracketMatches.find((match) => match.matchId === 'GF-M2')
+  const decidingFinal = resetFinal && resetFinal.status !== 'Not Required' ? resetFinal : firstFinal
+  const champion = decidingFinal?.status === 'Completed' ? String(decidingFinal.winner || '') : ''
   return {
     eventId,
     generatedAt: snapshot.snapshotId,
@@ -61,7 +73,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
       statistics: {
         completedGames: Number(event.completedGames || 0),
         completionPercentage: Number(event.completionPercentage || 0),
-        currentRound: String(event.currentRound?.name ?? event.currentRound ?? ''),
+        currentRound: String(typeof event.currentRound === 'object' ? event.currentRound.name ?? '' : event.currentRound ?? ''),
         gamesRemaining: Number(event.gamesRemaining || 0),
         lifecycleStage: String(event.lifecycleStage || ''),
         registeredPlayers: Number(event.registeredCount ?? registrations.registeredCount),
@@ -75,9 +87,10 @@ export async function getPublicEventProjection(eventId: string, options: { signa
       generated: bracketMatches.length > 0,
       matches: bracketMatches,
       missions: Array.isArray(event.bracketMissions) ? event.bracketMissions : [],
-      readiness: { ready: bracketMatches.length > 0, blockers: [], warnings: [] },
-      tournamentComplete: Boolean(event.champion),
-      champion: String(event.champion || ''),
+      released: bracketMatches.some((match) => Boolean(match.activatedAt)),
+      readiness: { capacity:Number(event.capacity || 0), ready:reasons.length === 0, reasons, registeredCount:registered.length, seededCount:seeded.length, registrationClosed },
+      tournamentComplete: Boolean(champion),
+      champion,
     } as unknown as EventBracketData,
   }
 }

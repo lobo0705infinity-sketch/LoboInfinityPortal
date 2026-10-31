@@ -4,6 +4,8 @@ import {
   buildCapabilityNavigation,
   getEventNavigationConfig,
 } from '../config/eventNavigation'
+import type { PublicEvent } from '../public/snapshotTypes'
+import { top40RegistrationState } from '../public/top40PreparationModel'
 import { useSnapshotData } from '../public/useSnapshotData'
 import './Top40RegistrationPage.css'
 
@@ -32,6 +34,8 @@ function isPublicTop40Registration(value: unknown): value is PublicTop40Registra
 }
 
 export default function Top40RegistrationPage() {
+  const events = useSnapshotData<PublicEvent[]>('events')
+  const state = top40RegistrationState(events.data?.find((event) => event.id === TOP_40_EVENT_ID))
   const snapshot = useSnapshotData<PublicTop40Registration>('top-40-registrations')
   const registration = isPublicTop40Registration(snapshot.data) ? snapshot.data : null
   const config = getEventNavigationConfig(TOP_40_EVENT_ID)
@@ -61,21 +65,21 @@ export default function Top40RegistrationPage() {
           <h2 id="top40-registration-title">Tournament Registration</h2>
           <p>Register for the individual 300-point, double-elimination tournament open to players throughout the Americas.</p>
         </div>
-        <a
+        {state === 'open' ? <a
           className="top40-registration-cta"
           href={TOP_40_REGISTRATION_URL}
           rel="noopener noreferrer"
           target="_blank"
         >
           REGISTER NOW
-        </a>
+        </a> : <strong>{state === 'closed' ? 'REGISTRATION CLOSED' : 'Checking registration status…'}</strong>}
       </section>
 
       <section className="top40-registration-grid">
-        <article className="panel top40-registration-status is-open">
+        <article className={`panel top40-registration-status ${state === 'open' ? 'is-open' : 'is-closed'}`}>
           <p className="eyebrow">Registration Status</p>
           {registration ? <>
-            <strong>OPEN</strong>
+            <strong>{state === 'closed' ? 'CLOSED' : state === 'open' ? 'OPEN' : 'STATUS PENDING'}</strong>
             <h2>{count} PLAYERS REGISTERED</h2>
             <p>Registration is uncapped. After registration closes, the Commissioner will select the final field of up to 40 players.</p>
             <p>Registration does not guarantee selection.</p>

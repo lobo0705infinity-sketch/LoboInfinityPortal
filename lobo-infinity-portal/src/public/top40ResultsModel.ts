@@ -52,23 +52,24 @@ export function buildTop40ResultRows(event: PublicEvent, games: PublicGame[]): T
 
 export function getTop40ResultsSummary(event: PublicEvent, rows: Top40ResultRow[]) {
   const bracket = event.bracket ?? []
-  const eliminated = new Set<string>()
+  const losses = new Map<string, number>()
+  let completedMatches = 0
   let activeMatches = 0
 
   for (const record of bracket) {
     const status = text(record, 'status').toLowerCase()
-    const bracketName = text(record, 'bracket')
     if (status === 'active') activeMatches += 1
-    if (status === 'completed' && (bracketName === 'Losers' || bracketName === 'Grand Final')) {
-      const loser = text(record, 'loser')
-      if (loser) eliminated.add(loser.toLocaleLowerCase())
+    if (status === 'completed') {
+      completedMatches += 1
+      const loser = text(record, 'loser').toLocaleLowerCase()
+      if (loser && loser !== 'bye') losses.set(loser, (losses.get(loser) || 0) + 1)
     }
   }
 
   return {
     activeMatches,
-    eliminated: eliminated.size,
-    matchesComplete: rows.length,
+    eliminated: [...losses.values()].filter((count) => count >= 2).length,
+    matchesComplete: Math.max(completedMatches, rows.length),
     players: event.registeredCount || event.participants?.length || 0,
   }
 }

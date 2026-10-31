@@ -60,12 +60,12 @@ const seedingSource = fs.readFileSync('backend/EventManagerApi.gs', 'utf8')
 assert.match(eventHomeSource, /Bracket has not been generated\./)
 assert.match(eventHomeSource, /Registered Players/)
 assert.match(eventHomeSource, /Seeded Players/)
-assert.doesNotMatch(eventHomeSource.slice(eventHomeSource.indexOf('function EventBracketPage'), eventHomeSource.indexOf('function EventRulesPage')), /Generate Bracket/)
+assert.doesNotMatch(eventHomeSource.slice(eventHomeSource.indexOf('function EventBracketPage'), eventHomeSource.indexOf('function EventRulesPage')), /Prepare Bracket/)
 assert.match(managerSource, /<h3>Bracket Generation<\/h3>/)
-assert.match(managerSource, /Generate Bracket/)
+assert.match(managerSource, /Prepare Bracket/)
 assert.match(managerSource, /!readiness\?\.ready/)
 assert.match(managerSource, /apiClient\.generateEventBracket\(eventId\)/)
-assert.match(managerSource, /Bracket generated\./)
+assert.match(managerSource, /Bracket prepared\./)
 
 const generationPanel = managerSource.slice(
   managerSource.indexOf('function BracketGenerationPanel'),

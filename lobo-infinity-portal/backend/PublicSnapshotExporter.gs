@@ -786,7 +786,10 @@ function buildPublicSnapshotEvents_(table, games, eventState, teamTournamentProj
       scoringModel: publicSnapshotCell_(row, columns, ["scoring model"]),
       standingsModel: publicSnapshotCell_(row, columns, ["standings model"]),
       completedGames: games.filter(function(game) { return game.eventId === id; }).length,
-      registeredCount: (state.participants || []).length,
+      registrationStatus: publicSnapshotCell_(row, columns, ["registration"]),
+      registrationOpen: /open/i.test(publicSnapshotCell_(row, columns, ["registration"])) && !/closed/i.test(publicSnapshotCell_(row, columns, ["registration"])),
+      capacity: Number(publicSnapshotCell_(row, columns, ["maximum players", "capacity"])) || 0,
+      registeredCount: (state.participants || []).filter(function(item){ return item.status === "Registered"; }).length,
       participants: state.participants || [], rounds: state.rounds || [],
       bracket: state.bracket || [], bracketMissions: state.bracketMissions || [],
       teams: state.teams || [], pairings: state.pairings || []
@@ -822,10 +825,12 @@ function buildPublicSnapshotEventState_(frozen) {
     eventId: ["event id"], matchId: ["match id"], bracket: ["bracket"], bracketRound: ["bracket round"],
     position: ["position"], playerA: ["player a"], seedA: ["seed a"], playerB: ["player b"],
     seedB: ["seed b"], status: ["status"], winner: ["winner"], loser: ["loser"],
+    activatedAt:["activated at"], playerASource:["player a source"], playerBSource:["player b source"],
+    nextWinnerMatch:["next winner match"], nextWinnerSlot:["next winner slot"], nextLoserMatch:["next loser match"], nextLoserSlot:["next loser slot"],
     deadline: ["deadline"], gameId: ["game id"], resolution: ["resolution"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracket", row); });
   buildPublicSnapshotRows_(frozen.bracketMissionsTable, {
-    eventId: ["event id"], bracket: ["bracket"], bracketRound: ["bracket round"], mission: ["mission"], missionGeistId: ["mission geist id"]
+    eventId: ["event id"], bracket: ["bracket"], bracketRound: ["bracket round"], mission: ["mission"], missionGeistId: ["mission geist id"], map:["map"]
   }).forEach(function(row) { const id = row.eventId; delete row.eventId; add(id, "bracketMissions", row); });
   buildPublicSnapshotRows_(frozen.teamsTable, {
     eventId: ["event id"], teamId: ["team id"], teamName: ["team name"], captain: ["captain"],

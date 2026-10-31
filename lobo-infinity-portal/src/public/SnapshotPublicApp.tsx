@@ -1,3 +1,4 @@
+import Top40MapPage from './Top40MapPage'
 import { eventEditionName, eventLifecycle, isPastEvent } from '../config/eventLifecycle'
 import AuroraPortalCard from '../campaign/AuroraPortalCard'
 import { getConfiguredEventDisplayName } from '../services/leagueEventDisplay'
@@ -105,6 +106,7 @@ export default function SnapshotPublicApp() {
     <Route path="/event/lobos-top-40/overview" element={<Top40PreparationPage />} />
     <Route path="/event/lobos-top-40/rules" element={<Top40RulesPage />} />
     <Route path="/event/lobos-top-40/registration" element={<Top40RegistrationPage />} />
+    <Route path="/event/lobos-top-40/map-1" element={<Top40MapPage />} />
     <Route path="/event/lobos-top-40/bracket" element={<Top40BracketPage />} />
     <Route path="/event/lobos-top-40/results" element={<Top40ResultsPage />} />
     <Route path="/event/event-august-2026-team-tournament/registration" element={<Navigate replace to="/event/event-august-2026-team-tournament" />} />

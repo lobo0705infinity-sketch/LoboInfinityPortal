@@ -75,7 +75,7 @@ assert.throws(
 
 context.activatePlayableEventBracketMatches_(four, new Date('2026-09-01T12:00:00Z'))
 const activeMatch = four.find((match) => match.status === 'Active')
-context.getEventByIdNoEnsure = () => ({ id: 'event-fixture', type: 'Individual Double Elimination' })
+context.getEventById = () => ({ id: 'event-fixture', type: 'Individual Double Elimination' })
 context.readEventBracketMatches_ = () => four
 context.isRealEventBracketPlayer_ = (value) => Boolean(value && value !== 'BYE' && value !== 'TBD')
 existing = []
@@ -102,14 +102,14 @@ for (const size of [2, 4, 17, 37, 40]) {
   const rounds = context.discoverEventBracketRounds_(bracketFor(size))
   assert.ok(rounds.length > 0)
   assert.equal(new Set(rounds.map((item) => `${item.bracket}:${item.bracketRound}`)).size, rounds.length)
-  assert.equal(rounds.filter((item) => item.bracket === 'Grand Final').length, 1)
+  assert.equal(rounds.filter((item) => item.bracket === 'Grand Final').length, 2)
 }
 
 assert.match(bracketSource, /requireApiPermission\(e, "runSeasonControl"/)
 assert.match(bracketSource, /setValues\(finalRows\)/)
 assert.match(bracketSource, /params\.mission = before\.mission;[\s\S]*submitCanonicalGame/)
 assert.match(bracketSource, /A mission has not been assigned to this bracket round\./)
-assert.match(bracketSource, /copy\.mission = missionByRound/)
+assert.match(bracketSource, /copy\.mission = assignment/)
 assert.match(validationSource, /if \(!bracket\.mission\)/)
 assert.match(routerSource, /case "eventBracketMissions":\s*return saveEventBracketMissions\(e\);/)
 assert.match(securitySource, /eventBracketMissions: \{ authRequired: true, userScoped: false \}/)

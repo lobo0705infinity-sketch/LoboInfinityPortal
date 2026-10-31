@@ -2760,6 +2760,7 @@ export type ApiClient = {
     options?: ApiOptions,
   ) => Promise<EventHomeData>
   getEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
+  releaseEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   generateEventBracket: (eventId: string, options?: ApiOptions) => Promise<EventBracketData>
   updateEventBracketDeadline: (eventId: string, matchId: string, deadline: string, options?: ApiOptions) => Promise<EventBracketData>
   awardEventBracketForfeit: (eventId: string, matchId: string, winner: string, options?: ApiOptions) => Promise<EventBracketData>
@@ -3582,6 +3583,7 @@ export type EventBracketMatch = {
 }
 
 export type EventBracketMission = {
+  map?: string
   bracket: EventBracketMatch['bracket']
   bracketRound: number
   mission: string
@@ -3589,6 +3591,7 @@ export type EventBracketMission = {
 }
 
 export type EventBracketData = {
+  released?: boolean
   champion?: string
   eventId: string
   generated: boolean
@@ -3789,6 +3792,10 @@ export async function getEventBracket(
   options: ApiOptions = {},
 ): Promise<EventBracketData> {
   return normalizeEventBracketPayload(await request('eventBracket', options, { eventId }))
+}
+
+export async function releaseEventBracket(eventId: string, options: ApiOptions = {}): Promise<EventBracketData> {
+  return normalizeEventBracketPayload(await postRequest('eventBracketRelease', options, { eventId }))
 }
 
 export async function generateEventBracket(
@@ -4471,6 +4478,7 @@ export const apiClient: ApiClient = {
   getEventHome,
   getEventBracket,
   generateEventBracket,
+  releaseEventBracket,
   updateEventBracketDeadline,
   awardEventBracketForfeit,
   saveEventBracketMissions,
@@ -8994,6 +9002,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
     eventId: getString(bracket, 'eventId'),
     champion: getString(bracket, 'champion'),
     generated: getOptionalBoolean(bracket, 'generated') ?? false,
+    released: getOptionalBoolean(bracket, 'released') ?? false,
     tournamentComplete: getOptionalBoolean(bracket, 'tournamentComplete') ?? false,
     readiness: {
       capacity: getNumber(readiness, 'capacity'),
@@ -9037,6 +9046,7 @@ function normalizeEventBracketPayload(payload: unknown): EventBracketData {
         bracket: getString(assignment, 'bracket') as EventBracketMatch['bracket'],
         bracketRound: getNumber(assignment, 'bracketRound'),
         missionGeistId: getString(assignment, 'missionGeistId') || undefined,
+        map: getString(assignment, 'map') || undefined,
         mission: getString(assignment, 'mission'),
       }
     }),
