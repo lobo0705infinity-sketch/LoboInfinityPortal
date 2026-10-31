@@ -1,0 +1,420 @@
+[
+  {
+    "name": "civic-state-1",
+    "vertices": 12216,
+    "triangles": 5812,
+    "colliderTriangles": 2472,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -4.245,
+        -0.14,
+        -3.325
+      ],
+      [
+        4.3100000000000005,
+        6.739999999999999,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "civic-state-2",
+    "vertices": 10916,
+    "triangles": 5204,
+    "colliderTriangles": 2296,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -4.245,
+        -0.14,
+        -3.325
+      ],
+      [
+        4.3100000000000005,
+        6.55,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "civic-state-3",
+    "vertices": 5928,
+    "triangles": 2780,
+    "colliderTriangles": 1052,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -4.245,
+        -0.14,
+        -3.325
+      ],
+      [
+        4.3100000000000005,
+        6.55,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "annex-state-1",
+    "vertices": 12040,
+    "triangles": 5716,
+    "colliderTriangles": 2236,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.4450000000000003,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.5100000000000002,
+        7.339999999999999,
+        4.38
+      ]
+    ]
+  },
+  {
+    "name": "annex-state-2",
+    "vertices": 10808,
+    "triangles": 5140,
+    "colliderTriangles": 2100,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.4450000000000003,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.5100000000000002,
+        7.1499999999999995,
+        4.38
+      ]
+    ]
+  },
+  {
+    "name": "annex-state-3",
+    "vertices": 5980,
+    "triangles": 2796,
+    "colliderTriangles": 952,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.4450000000000003,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.5100000000000002,
+        7.1499999999999995,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "ruin-state-1",
+    "vertices": 10812,
+    "triangles": 5094,
+    "colliderTriangles": 1932,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.745,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.81,
+        6.36,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "ruin-state-2",
+    "vertices": 10452,
+    "triangles": 4920,
+    "colliderTriangles": 1788,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.745,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.81,
+        6.35,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "ruin-state-3",
+    "vertices": 6546,
+    "triangles": 3036,
+    "colliderTriangles": 852,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.745,
+        -0.14,
+        -3.325
+      ],
+      [
+        3.81,
+        6.35,
+        3.19
+      ]
+    ]
+  },
+  {
+    "name": "depot-state-1",
+    "vertices": 4876,
+    "triangles": 2300,
+    "colliderTriangles": 800,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -3.245,
+        -0.14,
+        -2.7249999999999996
+      ],
+      [
+        3.31,
+        3.5399999999999996,
+        2.59
+      ]
+    ]
+  },
+  {
+    "name": "wall-rubble",
+    "vertices": 1248,
+    "triangles": 624,
+    "colliderTriangles": 24,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -1.7198360619157995,
+        0.0,
+        -0.9333401419815002
+      ],
+      [
+        1.9827833012912295,
+        2.055563551855238,
+        0.9446611930398547
+      ]
+    ]
+  },
+  {
+    "name": "construction-screen",
+    "vertices": 624,
+    "triangles": 276,
+    "colliderTriangles": 72,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -2.29,
+        0.0,
+        -0.24
+      ],
+      [
+        2.29,
+        2.8,
+        0.35
+      ]
+    ]
+  },
+  {
+    "name": "site-stores",
+    "vertices": 1104,
+    "triangles": 480,
+    "colliderTriangles": 48,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -1.425,
+        0.0,
+        -1.5
+      ],
+      [
+        1.15,
+        1.03,
+        1.1925
+      ]
+    ]
+  },
+  {
+    "name": "excavation-cut",
+    "vertices": 3488,
+    "triangles": 1552,
+    "colliderTriangles": 172,
+    "nonconvex": true,
+    "bounds": [
+      [
+        -4.175,
+        -1.25,
+        -3.12
+      ],
+      [
+        4.175,
+        1.04,
+        3.12
+      ]
+    ]
+  },
+  {
+    "name": "tracked-excavator",
+    "vertices": 2508,
+    "triangles": 1100,
+    "colliderTriangles": 84,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -1.4,
+        0.0,
+        -1.14
+      ],
+      [
+        3.186466859250049,
+        3.1514040253126785,
+        1.14
+      ]
+    ]
+  },
+  {
+    "name": "utility-van",
+    "vertices": 1328,
+    "triangles": 552,
+    "colliderTriangles": 24,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -0.83,
+        0.0,
+        -1.6724999999999999
+      ],
+      [
+        0.83,
+        1.85,
+        1.575
+      ]
+    ]
+  },
+  {
+    "name": "utility-and-planter",
+    "vertices": 716,
+    "triangles": 308,
+    "colliderTriangles": 24,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -0.425,
+        0.0,
+        -0.45000000000000007
+      ],
+      [
+        1.7,
+        1.7,
+        0.65
+      ]
+    ]
+  },
+  {
+    "name": "retained-foundation-wall",
+    "vertices": 184,
+    "triangles": 92,
+    "colliderTriangles": 48,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -1.8,
+        0.0,
+        -0.275
+      ],
+      [
+        1.8,
+        2.92,
+        0.275
+      ]
+    ]
+  },
+  {
+    "name": "mission-console-40mm",
+    "vertices": 312,
+    "triangles": 132,
+    "colliderTriangles": 72,
+    "nonconvex": true,
+    "bounds": [
+      [
+        -0.7874015748031497,
+        0.0,
+        -0.7874015748031497
+      ],
+      [
+        0.7874015748031497,
+        1.2925,
+        0.7874015748031497
+      ]
+    ]
+  },
+  {
+    "name": "hyperthermal-tech-25mm",
+    "vertices": 480,
+    "triangles": 192,
+    "colliderTriangles": 48,
+    "nonconvex": true,
+    "bounds": [
+      [
+        -0.4921259842519685,
+        0.0,
+        -0.4921259842519685
+      ],
+      [
+        0.4921259842519685,
+        0.09,
+        0.4921259842519685
+      ]
+    ]
+  },
+  {
+    "name": "urban-street-mat",
+    "vertices": 5772,
+    "triangles": 2140,
+    "colliderTriangles": 26,
+    "nonconvex": true,
+    "bounds": [
+      [
+        -24.0,
+        -1.6,
+        -24.0
+      ],
+      [
+        24.0,
+        0.02,
+        24.0
+      ]
+    ]
+  },
+  {
+    "name": "urban-pavements",
+    "vertices": 1776,
+    "triangles": 794,
+    "colliderTriangles": 752,
+    "nonconvex": false,
+    "bounds": [
+      [
+        -21.68,
+        0.005,
+        -22.88
+      ],
+      [
+        21.68,
+        0.115,
+        22.88
+      ]
+    ]
+  }
+]

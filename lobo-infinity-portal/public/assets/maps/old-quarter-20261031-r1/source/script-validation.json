@@ -1,0 +1,11 @@
+{
+  "uniqueObjectScriptsCompiled": 3,
+  "mapUIOverlayAndPlayerPanels": "pass",
+  "existingUIPreserved": "pass",
+  "mapUICleanup": "pass",
+  "stageClearStates": [
+    "roof",
+    "2",
+    "3"
+  ]
+}

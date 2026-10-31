@@ -236,7 +236,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       heading: map.name,
       intro: `${map.family} in Lobo’s Infinity Maps Workshop collection. Workshop bag: ${map.workshopBagName}.${map.isCurrent === false ? ` Historical name: ${map.workshopName}.` : ''}${map.missionSetups.length ? ` Named mission setup: ${map.missionSetups.join(', ')}.` : ' No named mission setup.'} Inspect the setup before deploying.${map.sourceNote ? ` Workshop note: ${map.sourceNote}` : ''}`,
       image: map.angled,
-      imageAlt: `${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator preview'} of ${map.name}`,
+      imageAlt: `${map.previewKind === 'diagram' ? 'Setup diagram' : map.previewKind === 'render' ? 'Angled terrain render' : 'Angled Tabletop Simulator preview'} of ${map.name}`,
       imageWidth: 1600,
       imageHeight: 900,
       links: [

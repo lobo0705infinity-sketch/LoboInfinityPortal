@@ -9,6 +9,11 @@ import AuroraMapLibrary from './AuroraMapLibrary'
 import MapCollectionNav from './MapCollectionNav'
 
 type WorkshopMap = (typeof loboWorkshopMaps)[number]
+const previewLabel = (map: WorkshopMap, angled = false) => map.previewKind === 'diagram'
+  ? 'Setup diagram'
+  : map.previewKind === 'render'
+    ? `${angled ? 'Angled' : 'Overhead'} terrain render`
+    : `${angled ? 'Angled' : 'Overhead'} Tabletop Simulator view`
 
 const missionOptions = [...new Set(loboWorkshopMaps.flatMap((map) => map.missionSetups))].sort((a, b) => a.localeCompare(b))
 const layoutCount = new Set(loboWorkshopMaps.map((map) => map.layoutKey)).size
@@ -69,7 +74,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <span className="lobo-maps-hero-count">{layoutCount} layouts <span aria-hidden="true">·</span> {loboWorkshopMaps.length} setups <span aria-hidden="true">·</span> {missionCount} missions</span>
       </div>
       <Link aria-label={`Explore ${featured.name}`} className="lobo-maps-hero-image" to={`/maps/${featured.slug}`}>
-        <img alt={`${featured.previewKind === 'diagram' ? 'Setup diagram' : 'Tabletop Simulator preview'} of ${featured.name}`} decoding="async" height="900" src={featured.angled} width="1600" />
+        <img alt={`${previewLabel(featured, true)} of ${featured.name}`} decoding="async" height="900" src={featured.angled} width="1600" />
         <span>Featured setup <strong>{featured.name}</strong></span>
       </Link>
     </header>
@@ -86,7 +91,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
-        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. All 40 setups include overhead and angled TTS photos. The twelve Satellite layouts were photographed on October 20; gameplay testing is still in progress.</p>
+        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Inspect the overhead and angled previews; each map's source note identifies terrain renders and TTS captures. Gameplay testing is still in progress.</p>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Setups using the same terrain share one rating.</p>
       </div>
       <nav aria-label="Missions" className="lobo-map-section-nav">
@@ -101,7 +106,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
           const map = layout.primary
           const namedMissions = [...new Set(layout.saves.flatMap((save) => save.missionSetups))]
           return <Link data-preview={map.previewKind} className="lobo-map-card" key={layout.layoutKey} to={`/maps/${map.slug}`}>
-            <img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Overhead preview'} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
+            <img alt={`${previewLabel(map)} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" />
             <span className="lobo-map-card-info"><small>{map.family}</small><strong>{layout.name}</strong><span className="lobo-map-card-rating">{ratingText(ratingsStatus, ratings.get(layout.layoutKey))}</span><small className="lobo-map-card-source">Workshop: {layout.saves.map((save) => save.workshopBagName).join(' · ')}</small><span className="lobo-map-mission-summary">{namedMissions.length ? namedMissions.join(' · ') : 'Open layout'}</span><span>Inspect save {String(map.index).padStart(2, '0')} <span aria-hidden="true">→</span></span></span>
           </Link>
         })}</div>
@@ -130,12 +135,13 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
       <div>{map.download ? <a download href={map.download}>Download map bag</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
     </header>
     {map.isCurrent === false ? null : <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
-    <a aria-label={`Open full-size ${map.previewKind === 'diagram' ? 'setup diagram' : 'angled preview'} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
+    <a aria-label={`Open full-size ${previewLabel(map, true)} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${previewLabel(map, true)} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : map.previewKind === 'render' ? 'Terrain render' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
+    {map.previewKind === 'render' ? <p className="lobo-maps-source-note">These previews render the exported terrain meshes. Live TTS physics checks and gameplay testing are pending.</p> : null}
     {map.previewKind === 'diagram' ? <p className="lobo-maps-source-note">This is a footprint diagram of the revised setup. Fresh overhead and angled TTS screenshots, live physics checks, and playtesting are pending.</p> : <section aria-labelledby="map-views-title" className="lobo-map-detail-views">
       <div className="lobo-maps-section-heading"><div><p className="eyebrow">Two ways to read the table</p><h2 id="map-views-title">Terrain previews</h2></div></div>
       <div className="lobo-map-detail-view-grid">
-        <a href={map.overhead} rel="noopener noreferrer" target="_blank"><img alt={`Overhead Tabletop Simulator view of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" /><span><strong>Overhead</strong><small>Read the full layout and approach lanes</small></span></a>
-        <a href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.angled} width="1600" /><span><strong>Angled</strong><small>Check height, rooflines, and cover</small></span></a>
+        <a href={map.overhead} rel="noopener noreferrer" target="_blank"><img alt={`${previewLabel(map)} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" /><span><strong>Overhead</strong><small>Read the full layout and approach lanes</small></span></a>
+        <a href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${previewLabel(map, true)} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.angled} width="1600" /><span><strong>Angled</strong><small>Check height, rooflines, and cover</small></span></a>
       </div>
     </section>
     }

@@ -98,6 +98,10 @@
 
 /* Square previews keep the full board visible while trimming peripheral grass. */
 .lobo-map-card[data-preview="tts"] img { height: auto; aspect-ratio: 1; object-fit: cover; }
+.lobo-map-card[data-preview="render"] img { height: auto; aspect-ratio: 1; object-fit: contain; background: #242a2e; }
+.lobo-map-detail[data-preview="render"] .lobo-map-detail-hero { aspect-ratio: 17 / 15; max-height: 850px; }
+.lobo-map-detail[data-preview="render"] .lobo-map-detail-hero img,
+.lobo-map-detail[data-preview="render"] .lobo-map-detail-view-grid img { object-fit: contain; background: #242a2e; }
 
 .lobo-map-section-nav a[aria-current="page"] { border-color: #8fe3f6; background: #214455; }
 .aurora-region-card h2 { margin: .2rem 0; font-size: 1.4rem; }
