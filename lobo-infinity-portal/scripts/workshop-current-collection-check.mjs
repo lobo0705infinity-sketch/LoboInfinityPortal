@@ -41,9 +41,37 @@ for (const map of loboWorkshopMaps) {
       assert.ok(Math.abs(angle - Math.fround(angle)) < 0.0005, `${map.slug}: ${id} meets the Stage alignment tolerance`)
     }
   }
-  assert.deepEqual(ids, new Set(bag.ContainedObjects.map(object => object.GUID)))
+  const stateGuids = object => [object.GUID, ...Object.values(object.States ?? {}).flatMap(stateGuids)]
+  const expectedIds = map.previewKind === 'render'
+    ? bag.ContainedObjects.flatMap(stateGuids)
+    : bag.ContainedObjects.map(object => object.GUID)
+  assert.deepEqual(ids, new Set(expectedIds))
+  if (map.previewKind === 'render') {
+    const mats = bag.ContainedObjects.filter(object => object.GridProjection)
+    assert.equal(mats.length, 1, `${map.slug} projects the grid only on its custom mat`)
+    assert.equal(mats[0].Name, 'Custom_Model')
+    assert.equal(mats[0].Transform.scaleX, 1)
+    assert.equal(mats[0].Transform.scaleZ, 1)
+    const controllers = bag.ContainedObjects.filter(object => object.LuaScript?.includes('function redrawOverlays'))
+    assert.equal(controllers.length, 1, `${map.slug} has one mission/deployment controller`)
+    assert.equal(controllers[0].Name, 'BlockSquare', `${map.slug} controls load independently of model assets`)
+    assert.notEqual(controllers[0].GUID, mats[0].GUID)
+    assert.ok(controllers[0].LuaScript.includes('function checkDeployment'))
+    assert.ok(controllers[0].LuaScript.includes('Wait.time(checkDeployment,.5,-1)'))
+    assert.equal(mats[0].Transform.posY, 3.5, `${map.slug} supports 2.5-inch pits above the table`)
+    assert.ok(mats[0].CustomMesh.DiffuseURL.endsWith('/old-quarter-street-materials.jpg'))
+    assert.ok(controllers[0].LuaScript.includes('function setDeploymentSideA'))
+    assert.ok(controllers[0].LuaScript.includes('function setDeploymentSideB'))
+    assert.ok(!controllers[0].LuaScript.includes('Tech Guide'))
+    assert.ok(!controllers[0].LuaScript.includes('toggleTechGuide'))
+    assert.ok(!controllers[0].LuaScript.includes(':gmatch('), `${map.slug} avoids the reported TTS pattern failure`)
+    assert.ok(!bag.ContainedObjects.some(object => object.CustomMesh?.MeshURL.includes('hyperthermal-tech')))
+    const rubble = bag.ContainedObjects.filter(object => /wall-rubble(?:-medium|-large)?\.obj$/.test(object.CustomMesh?.MeshURL ?? ''))
+    assert.equal(rubble.length, 16, `${map.slug} includes sixteen rubble clusters`)
+    assert.equal(new Set(rubble.map(object => object.CustomMesh.MeshURL)).size, 3)
+  }
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
-  assert.equal(surfaces.length, 1, `${map.slug} has one mission marking surface`)
+  assert.equal(surfaces.length, map.previewKind === 'render' ? 0 : 1, `${map.slug} has one applicable mission marking surface`)
   for (const surface of surfaces) {
     const expectedScale = map.slug === 'uplink-center-1-satellite' ? 48.03 : 24
     if (expectedScale === 48.03) assert.equal(surface.Name, 'BlockSquare')
@@ -66,15 +94,16 @@ for (const section of loboWorkshopMapSections) {
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
-  assert.equal(map.previewKind, 'tts')
+  assert.ok(['tts', 'render'].includes(map.previewKind))
   assert.notEqual(map.overhead, map.angled)
-  if (map.slug.endsWith('-satellite')) {
+  if (map.slug.endsWith('-satellite') && map.previewKind === 'tts') {
     assert.equal(map.captureDate, '2026-10-20')
     assert.notEqual(map.overhead, map.diagram)
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 40)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 39)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'render').length, 1)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')

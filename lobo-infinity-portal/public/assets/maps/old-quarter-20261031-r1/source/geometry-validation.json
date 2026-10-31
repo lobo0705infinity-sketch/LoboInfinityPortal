@@ -1,0 +1,301 @@
+{
+  "tableSize": [
+    48,
+    48
+  ],
+  "deployment": {
+    "corners": [
+      [
+        24,
+        -24
+      ],
+      [
+        -24,
+        24
+      ]
+    ],
+    "radius": 24
+  },
+  "consoleCenters": [
+    [
+      -11.31370849898476,
+      -11.31370849898476
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      11.31370849898476,
+      11.31370849898476
+    ]
+  ],
+  "techDiameterMm": 25,
+  "consoleDiameterMm": 40,
+  "legalSixTokenExample": [
+    {
+      "token": 1,
+      "center": [
+        -20,
+        -20
+      ],
+      "outsideDZInches": 19.689318084497074,
+      "nearestTokenEdgeGap": 9.015748031496063,
+      "nearestSceneryEdgeGap": 3.450271763312324,
+      "nearestScenery": "Western Excavation Site Office"
+    },
+    {
+      "token": 2,
+      "center": [
+        -20,
+        -10
+      ],
+      "outsideDZInches": 9.742359552995412,
+      "nearestTokenEdgeGap": 9.015748031496063,
+      "nearestSceneryEdgeGap": 1.853723711919789,
+      "nearestScenery": "Western Excavation Site Office"
+    },
+    {
+      "token": 3,
+      "center": [
+        -6,
+        -6
+      ],
+      "outsideDZInches": 10.493585384819832,
+      "nearestTokenEdgeGap": 13.575967810057099,
+      "nearestSceneryEdgeGap": 0.3878740157480314,
+      "nearestScenery": "Excavation Pocket 3"
+    },
+    {
+      "token": 4,
+      "center": [
+        6,
+        6
+      ],
+      "outsideDZInches": 10.493585384819832,
+      "nearestTokenEdgeGap": 13.575967810057099,
+      "nearestSceneryEdgeGap": 0.8786102761482317,
+      "nearestScenery": "Tracked Excavator 12"
+    },
+    {
+      "token": 5,
+      "center": [
+        20,
+        10
+      ],
+      "outsideDZInches": 9.742359552995412,
+      "nearestTokenEdgeGap": 9.015748031496063,
+      "nearestSceneryEdgeGap": 1.853723711919789,
+      "nearestScenery": "Eastern Excavation Site Office"
+    },
+    {
+      "token": 6,
+      "center": [
+        20,
+        20
+      ],
+      "outsideDZInches": 19.689318084497074,
+      "nearestTokenEdgeGap": 9.015748031496063,
+      "nearestSceneryEdgeGap": 3.450271763312324,
+      "nearestScenery": "Eastern Excavation Site Office"
+    }
+  ],
+  "consoleClearance": [
+    {
+      "center": [
+        -11.31370849898476,
+        -11.31370849898476
+      ],
+      "nearestSceneryEdgeGap": 1.2054617560649734,
+      "nearestScenery": "Wall Rubble 23"
+    },
+    {
+      "center": [
+        0,
+        0
+      ],
+      "nearestSceneryEdgeGap": 0.8815221052972918,
+      "nearestScenery": "Midfield Utilities South"
+    },
+    {
+      "center": [
+        11.31370849898476,
+        11.31370849898476
+      ],
+      "nearestSceneryEdgeGap": 1.2054617560649734,
+      "nearestScenery": "Wall Rubble 24"
+    }
+  ],
+  "streetRoutes": {
+    "modelBaseDiameterMm": 25,
+    "gridResolutionInches": 0.4,
+    "bothDZsConnected": true,
+    "allSixTechLocationsReachable": true,
+    "allConsolesMultipleApproaches": true
+  },
+  "meshes": [
+    {
+      "mesh": "civic-state-1",
+      "expandedVertices": 13738,
+      "colliderComponents": 252,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "civic-state-2",
+      "expandedVertices": 11976,
+      "colliderComponents": 220,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "civic-state-3",
+      "expandedVertices": 6430,
+      "colliderComponents": 101,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "annex-state-1",
+      "expandedVertices": 12936,
+      "colliderComponents": 221,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "annex-state-2",
+      "expandedVertices": 11288,
+      "colliderComponents": 195,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "annex-state-3",
+      "expandedVertices": 6184,
+      "colliderComponents": 88,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "ruin-state-1",
+      "expandedVertices": 11916,
+      "colliderComponents": 212,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "ruin-state-2",
+      "expandedVertices": 11384,
+      "colliderComponents": 189,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "ruin-state-3",
+      "expandedVertices": 7022,
+      "colliderComponents": 90,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "depot-state-1",
+      "expandedVertices": 5516,
+      "colliderComponents": 90,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "depot-state-2",
+      "expandedVertices": 3904,
+      "colliderComponents": 64,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-kiosk",
+      "expandedVertices": 3256,
+      "colliderComponents": 50,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-kiosk-open",
+      "expandedVertices": 2592,
+      "colliderComponents": 39,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "site-office",
+      "expandedVertices": 3592,
+      "colliderComponents": 55,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "site-office-open",
+      "expandedVertices": 2808,
+      "colliderComponents": 44,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "wall-rubble",
+      "expandedVertices": 1288,
+      "colliderComponents": 2,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "wall-rubble-medium",
+      "expandedVertices": 1328,
+      "colliderComponents": 2,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "wall-rubble-large",
+      "expandedVertices": 1360,
+      "colliderComponents": 2,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "construction-screen",
+      "expandedVertices": 624,
+      "colliderComponents": 6,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "site-stores",
+      "expandedVertices": 1104,
+      "colliderComponents": 4,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "excavation-cut",
+      "expandedVertices": 5732,
+      "colliderComponents": 1,
+      "maxColliderComponentTriangles": 136
+    },
+    {
+      "mesh": "tracked-excavator",
+      "expandedVertices": 2508,
+      "colliderComponents": 7,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-van",
+      "expandedVertices": 1328,
+      "colliderComponents": 2,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "utility-and-planter",
+      "expandedVertices": 716,
+      "colliderComponents": 2,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "retained-foundation-wall",
+      "expandedVertices": 240,
+      "colliderComponents": 4,
+      "maxColliderComponentTriangles": 12
+    },
+    {
+      "mesh": "urban-street-mat",
+      "expandedVertices": 6034,
+      "colliderComponents": 1,
+      "maxColliderComponentTriangles": 60
+    },
+    {
+      "mesh": "urban-pavements",
+      "expandedVertices": 4312,
+      "colliderComponents": 126,
+      "maxColliderComponentTriangles": 8
+    }
+  ],
+  "liveTTSPhysicsAndGameplay": "Not run in this environment; validate in TTS before tournament use."
+}

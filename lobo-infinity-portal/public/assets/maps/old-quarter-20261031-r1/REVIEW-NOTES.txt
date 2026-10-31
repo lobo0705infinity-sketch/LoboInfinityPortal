@@ -1,0 +1,92 @@
+OLD QUARTER EXCAVATION R1 - THE DIG
+31 October 2026 - revised board, floors, controls and rubble
+
+THIS UPDATE
+- All three pits are 8 x 7 inches and remain 2.5 inches deep.
+- Ramp entrances are staggered into different lanes. Each ramp is 1.4 inches
+  wide with a 5.4-inch run; a 1.9-inch clear strip remains between them.
+- Building parapets and upper frame caps are continuous joined geometry,
+  replacing intersecting pieces that caused visible overlap at corners.
+- Tech Guide and its guide rings are removed. The top controls are Mission
+  and Deployment; labelled side switches and 24/28/32-inch distances remain.
+- One utility building moved half an inch to retain the street route beside
+  the enlarged excavation; the nearest pit remains clear of the adjacent ruin.
+
+THE MAP
+48 x 48 inches, 300-point The Dig, diagonal corner deployment. Fourteen
+buildings include four compact utility buildings/site offices and redistributed
+main buildings. Eight taller buildings have roof / upper-floor / ground-floor
+states. Six single-storey buildings have roof-on / roof-off states. External
+ladders persist across states. Three familiar Micro Art Studio Consoles have
+40 mm mission footprints at centre and +/-16 inches along the other diagonal.
+
+INSTALL
+1. Close TTS and extract the entire ZIP to a new folder.
+2. Run Install.cmd. Existing copies of the Old Quarter bag and the two named
+   review saves are backed up before replacement.
+3. For a quick review: Games > Save and Load > Old Quarter Excavation R1 - The Dig.
+4. For a normal game: use the new bag under Saved Objects > Lobo Workshop -
+   Current Maps, then deploy it using the normal Infinity mod map spot.
+5. The separately named Lobo Workshop - Old Quarter Excavation R1 save contains
+   90 map bags with only Old Quarter replaced. Other map bags are unchanged.
+
+For a custom TTS location:
+  Install.cmd "D:\your custom\Tabletop Simulator"
+
+CONTROLS AND MISSION
+Mission opens the full mission reference: setup, scoring, objective actions,
+Specialist Troops, Operational Learning, end conditions and point variants.
+Deployment opens side switches and independent 24-, 28- and 32-inch arcs.
+Show either side, both, or neither. Only
+24 inches defines the mission Deployment Zones; 28/32 are +4/+8 measuring aids.
+Use your normal mission markers for player placement; no custom Tech models
+are supplied.
+
+Reference: https://infinitygeist.com/mission/s18_the_dig
+Official: https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855
+
+Checked six-marker example, table-centred (X,Z) inches:
+  (-20,-20), (-20,-10), (-6,-6), (6,6), (20,10), (20,20)
+Narrowest edge clearance from either DZ: 9.742 inches. Narrowest marker edge
+separation: 9.016 inches. These exceed the required 8 inches.
+
+VERIFICATION
+- 56 hosted model, collider and texture files match the local bytes.
+- Visual meshes remain under 25,000 expanded vertices; largest is 13,738.
+- Collider components remain under 256 triangles.
+- Roof/frame cap overlap checks pass on 27 visible horizontal cap planes.
+- The closed base is watertight and outward-facing. Floor surfaces are above
+  the asphalt and have no overlapping ground-floor triangles across 15 mesh states.
+- Pit/pavement alignment, legal marker ground, Console clearances and S2 street
+  routes from both corner Deployment Zones pass the offline checks.
+- 73 sampled roof positions; none sees all three Consoles in point-ray sampling.
+- Controls pass the reported TTS pattern restriction, loading-delay, global UI
+  reset, overlay failure, all 32 side/distance
+  checkbox combinations, radius, persistence and cleanup checks.
+- Native Infinity stage deployment and Clear Table pass after state changes.
+- The portal archive retains the other 39 individual maps unchanged.
+
+Previews render the actual exported geometry; they are not TTS screenshots.
+Live TTS import, screen controls, physics and gameplay still need an in-game
+check. The Windows installer cannot be executed in this Linux environment.
+
+PREVIEWS
+Preview/actual-mesh-angled.png and actual-mesh-overhead.png: revised layout.
+Preview/rubble-size-variants.png: actual small / medium / large rubble models.
+Preview/excavation-ramp-detail.png: staggered ramp lanes.
+Preview/rooftop-repair.png: joined roof/frame caps.
+Preview/building-states-1/2/3.png: taller-building states.
+Preview/small-building-states-1/2.png: compact building roof states.
+Preview/deployment-and-placement-check.png: 24-inch corner-zone overview.
+Source/: authoring, geometry, Lua, configuration and validation files.
+
+CREDITS
+Original Lobo terrain meshes and generated material atlas. The new street
+finish uses built-in image generation; the exact prompt and packing notes are
+in Source/street-texture-prompt.txt. Existing Micro Art
+Studio console AssetBundle and attached 40 mm bases are reused from the old
+map. Console-Reference contains an extracted mesh/texture only for offline
+preview rendering; runtime retains the original AssetBundle URL. Mission
+reference is paraphrased from Mission Geist. Infinity / ITS: Corvus Belli.
+The previous Satellite Merovingien layout was by tau24; the stable portal route
+and bag identity are retained.

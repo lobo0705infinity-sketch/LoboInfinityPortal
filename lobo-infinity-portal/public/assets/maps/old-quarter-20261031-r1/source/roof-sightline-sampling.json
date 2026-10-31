@@ -1,0 +1,809 @@
+{
+  "silhouetteEyeHeightInches": 1.45,
+  "results": [
+    {
+      "building": "Civic Corner East",
+      "sampledRoofPositions": 9,
+      "maxConsoleSightlines": 2,
+      "samples": [
+        {
+          "eye": [
+            11.5,
+            10.95,
+            -15.5
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            13.0,
+            10.95,
+            -18.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            13.0,
+            10.95,
+            -17.0
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            13.0,
+            10.95,
+            -15.5
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            14.5,
+            10.95,
+            -18.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            14.5,
+            10.95,
+            -17.0
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            14.5,
+            10.95,
+            -15.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            16.0,
+            10.95,
+            -18.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            17.5,
+            10.95,
+            -18.5
+          ],
+          "visibleConsoles": []
+        }
+      ]
+    },
+    {
+      "building": "Research Annex East",
+      "sampledRoofPositions": 10,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            15.5,
+            11.549999999999999,
+            -3.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            17.0,
+            11.549999999999999,
+            -6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            17.0,
+            11.549999999999999,
+            -5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            17.0,
+            11.549999999999999,
+            -3.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            18.5,
+            11.549999999999999,
+            -6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            18.5,
+            11.549999999999999,
+            -5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            18.5,
+            11.549999999999999,
+            -3.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            20.0,
+            11.549999999999999,
+            -6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            20.0,
+            11.549999999999999,
+            -5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            20.0,
+            11.549999999999999,
+            -3.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Tenement South",
+      "sampledRoofPositions": 1,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            -11.0,
+            10.75,
+            -19.0
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Service Workshop South",
+      "sampledRoofPositions": 7,
+      "maxConsoleSightlines": 2,
+      "samples": [
+        {
+          "eye": [
+            0.0,
+            7.75,
+            -19.5
+          ],
+          "visibleConsoles": [
+            1,
+            2
+          ]
+        },
+        {
+          "eye": [
+            1.5,
+            7.75,
+            -22.5
+          ],
+          "visibleConsoles": [
+            2
+          ]
+        },
+        {
+          "eye": [
+            1.5,
+            7.75,
+            -21.0
+          ],
+          "visibleConsoles": [
+            1,
+            2
+          ]
+        },
+        {
+          "eye": [
+            1.5,
+            7.75,
+            -19.5
+          ],
+          "visibleConsoles": [
+            1,
+            2
+          ]
+        },
+        {
+          "eye": [
+            3.0,
+            7.75,
+            -22.5
+          ],
+          "visibleConsoles": [
+            2
+          ]
+        },
+        {
+          "eye": [
+            3.0,
+            7.75,
+            -21.0
+          ],
+          "visibleConsoles": [
+            1,
+            2
+          ]
+        },
+        {
+          "eye": [
+            3.0,
+            7.75,
+            -19.5
+          ],
+          "visibleConsoles": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Civic Corner West",
+      "sampledRoofPositions": 9,
+      "maxConsoleSightlines": 2,
+      "samples": [
+        {
+          "eye": [
+            -11.5,
+            10.95,
+            15.5
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -13.0,
+            10.95,
+            18.5
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            -13.0,
+            10.95,
+            17.0
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -13.0,
+            10.95,
+            15.5
+          ],
+          "visibleConsoles": [
+            1,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -14.5,
+            10.95,
+            18.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -14.5,
+            10.95,
+            17.0
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -14.5,
+            10.95,
+            15.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -16.0,
+            10.95,
+            18.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -17.5,
+            10.95,
+            18.5
+          ],
+          "visibleConsoles": []
+        }
+      ]
+    },
+    {
+      "building": "Research Annex West",
+      "sampledRoofPositions": 10,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            -15.5,
+            11.549999999999999,
+            3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -17.0,
+            11.549999999999999,
+            6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -17.0,
+            11.549999999999999,
+            5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -17.0,
+            11.549999999999999,
+            3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -18.5,
+            11.549999999999999,
+            6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -18.5,
+            11.549999999999999,
+            5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -18.5,
+            11.549999999999999,
+            3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -20.0,
+            11.549999999999999,
+            6.5
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -20.0,
+            11.549999999999999,
+            5.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -20.0,
+            11.549999999999999,
+            3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Tenement North",
+      "sampledRoofPositions": 1,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            11.0,
+            10.75,
+            19.0
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Service Workshop North",
+      "sampledRoofPositions": 7,
+      "maxConsoleSightlines": 2,
+      "samples": [
+        {
+          "eye": [
+            2.220446049250313e-16,
+            7.75,
+            19.5
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -1.5000000000000002,
+            7.75,
+            22.5
+          ],
+          "visibleConsoles": [
+            2
+          ]
+        },
+        {
+          "eye": [
+            -1.5,
+            7.75,
+            21.0
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -1.4999999999999998,
+            7.75,
+            19.5
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -3.0,
+            7.75,
+            22.5
+          ],
+          "visibleConsoles": [
+            2
+          ]
+        },
+        {
+          "eye": [
+            -3.0,
+            7.75,
+            21.0
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        },
+        {
+          "eye": [
+            -3.0,
+            7.75,
+            19.5
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Central Ruined Block",
+      "sampledRoofPositions": 1,
+      "maxConsoleSightlines": 2,
+      "samples": [
+        {
+          "eye": [
+            -7.167766952966369,
+            10.75,
+            5.046446609406726
+          ],
+          "visibleConsoles": [
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Central Survey Annex",
+      "sampledRoofPositions": 10,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            4.6928932188134524,
+            11.549999999999999,
+            -2.5715728752538105
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            3.6322330470336315,
+            11.549999999999999,
+            -5.753553390593274
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            4.6928932188134524,
+            11.549999999999999,
+            -4.6928932188134524
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            5.753553390593274,
+            11.549999999999999,
+            -3.6322330470336315
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            4.6928932188134524,
+            11.549999999999999,
+            -6.814213562373095
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            5.753553390593274,
+            11.549999999999999,
+            -5.753553390593274
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            6.814213562373095,
+            11.549999999999999,
+            -4.6928932188134524
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            5.753553390593274,
+            11.549999999999999,
+            -7.874873734152917
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            6.814213562373095,
+            11.549999999999999,
+            -6.814213562373095
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            7.874873734152917,
+            11.549999999999999,
+            -5.753553390593274
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Midfield Utilities South",
+      "sampledRoofPositions": 2,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            -3.5,
+            7.63,
+            -3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        },
+        {
+          "eye": [
+            -2.0,
+            7.63,
+            -3.5
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Midfield Utilities North",
+      "sampledRoofPositions": 2,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            3.5,
+            7.63,
+            4.0
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        },
+        {
+          "eye": [
+            2.0,
+            7.63,
+            4.0
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Western Excavation Site Office",
+      "sampledRoofPositions": 2,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            -19.0,
+            7.63,
+            -14.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            -17.5,
+            7.63,
+            -14.0
+          ],
+          "visibleConsoles": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "building": "Eastern Excavation Site Office",
+      "sampledRoofPositions": 2,
+      "maxConsoleSightlines": 1,
+      "samples": [
+        {
+          "eye": [
+            19.0,
+            7.63,
+            14.0
+          ],
+          "visibleConsoles": []
+        },
+        {
+          "eye": [
+            17.5,
+            7.63,
+            14.0
+          ],
+          "visibleConsoles": [
+            3
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Point rays to three S2-height objective positions; actual windows and cover triangles included. Full silhouette, trooper facing and gameplay not simulated."
+}

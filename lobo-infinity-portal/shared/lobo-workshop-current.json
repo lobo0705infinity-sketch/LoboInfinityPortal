@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-10-20T18:36:25.644072+00:00",
-  "download": "/assets/maps/satellites-20261020-r2/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-10-31T16:20:34.749294+00:00",
+  "download": "/assets/maps/old-quarter-20261031-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -1046,8 +1046,8 @@
       "guid": "810340",
       "slug": "the-dig-2-satellite",
       "name": "Old Quarter Excavation",
-      "workshopName": "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
+      "workshopName": "ITS18 The Dig — Old Quarter Excavation — URBAN EXCAVATION R1",
+      "workshopBagName": "SET_ITS18 The Dig — Old Quarter Excavation — URBAN EXCAVATION R1",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2008,
@@ -1055,22 +1055,23 @@
         "The Dig"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 112,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Satellite Merovingien - 2023 - Table 17 - France - V1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.json",
+      "objectCount": 49,
+      "sourceNote": "Original Lobo urban excavation terrain, revised 31 October 2026. Three 8 x 7 inch pits remain 2.5 inches deep, with staggered ramp lanes and a closed solid base. Joined building roof/frame caps remove intersecting corners. Mission and labelled Deployment controls remain; Tech Guide is removed. Fourteen buildings, sixteen rubble clusters and familiar Consoles. Previews render exported geometry. Offline checks pass; live TTS verification and Workshop publication remain pending.",
+      "overhead": "/assets/maps/old-quarter-20261031-r1/overhead.webp",
+      "angled": "/assets/maps/old-quarter-20261031-r1/angled.webp",
+      "diagram": "/assets/maps/old-quarter-20261031-r1/deployment.webp",
+      "download": "/assets/maps/old-quarter-20261031-r1/the-dig-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "render",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855",
       "labelAliases": [
         "SET_ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION",
-        "ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION"
-      ],
-      "captureDate": "2026-10-20"
+        "ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION",
+        "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
+        "SET_ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION"
+      ]
     },
     {
       "index": 39,
@@ -1133,5 +1134,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "satellites-20261020-r2"
+  "downloadRevision": "2026-10-31-old-quarter-r1"
 }
