@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T18:53:40.897258+00:00",
-  "download": "/assets/maps/sirocco-wells-20261101-r2/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T19:52:12.880499+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r4/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -520,11 +520,11 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 60,
-      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Actual exported-geometry previews. Eleven structures with playable interiors, a grounded survey shuttle, recessed channels, ramps and bridges. Lunar R3: regolith ground, day/night Earth-view panoramas, textured pressure habitats, varied footprints, detailed utility equipment and corrected metal materials. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r3/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r3/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r3/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r3/kestrel-lunar-data-harvest.json",
+      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Actual exported-geometry previews. Eleven lunar facilities: three transparent research domes, inflatable capsules, solar-equipped habitats, a tripod lander module, radiator spindle, thermal sunshield and clamshell shuttle cradle. Two photovoltaic fields replace the old bridges; continuous regolith replaces the trenches. Board-owned controls include a visible recovery button. Lunar Day and Lunar Night Earth-view panoramas. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r4/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r4/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r4/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r4/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1142,6 +1142,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r3"
+  "downloadRevision": "kestrel-lunar-20261101-r4"
 }
-
