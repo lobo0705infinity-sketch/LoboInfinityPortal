@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-01T21:18:50.741650+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r7/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "download": "/assets/maps/sirocco-wells-20261101-r6/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -946,8 +946,8 @@
       "guid": "8102b2",
       "slug": "provisioning-2-satellite",
       "name": "Sirocco Wells",
-      "workshopName": "ITS18 Provisioning — Sirocco Wells R5",
-      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells R5",
+      "workshopName": "ITS18 Provisioning — Sirocco Wells R6",
+      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells R6",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2007,
@@ -955,12 +955,12 @@
         "Provisioning"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 65,
-      "sourceNote": "Sirocco Wells R5 fixes native TTS OBJ coordinates for all ridge and paving meshes. Four connected eroded sandstone ridges with 0.01-inch toes sit clear of all building states. Existing Middle Eastern architecture, furnished interiors, placement transforms, mission objects, map controls and matching day/night backgrounds are unchanged. The import-conversion regression reproduces the R4 failure and finds zero corrected intersections; route, controls and cleanup checks pass offline. Native TTS playtesting remains pending.",
-      "overhead": "/assets/maps/sirocco-wells-20261101-r5/overhead.webp",
-      "angled": "/assets/maps/sirocco-wells-20261101-r5/angled.webp",
-      "diagram": "/assets/maps/sirocco-wells-20261101-r5/overhead.webp",
-      "download": "/assets/maps/sirocco-wells-20261101-r5/Sirocco-Wells-Provisioning-R5.json",
+      "objectCount": 45,
+      "sourceNote": "Sirocco Wells R6 places all twelve Middle Eastern buildings inside the opposing 24-inch corner deployment zones. Supplied Supply Box tokens and freestanding cargo clutter removed. Ten lower, narrower sandstone ridges are individual movable objects with their own centre pivots and Unlock/Lock menus: 7–12 inches long, 2.2–2.6 wide and 1.25–1.75 high, with 0.01-inch terrain toes. Furnished interiors, exact three Tech-Coffins, controls and matching day/night backgrounds retained. Imported geometry, 40 mm approaches, sub-6-inch cover spacing and cleanup after manual ridge movement pass offline checks. Live TTS testing remains pending.",
+      "overhead": "/assets/maps/sirocco-wells-20261101-r6/overhead.webp",
+      "angled": "/assets/maps/sirocco-wells-20261101-r6/angled.webp",
+      "diagram": "/assets/maps/sirocco-wells-20261101-r6/overhead.webp",
+      "download": "/assets/maps/sirocco-wells-20261101-r6/Sirocco-Wells-Provisioning-R6.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
