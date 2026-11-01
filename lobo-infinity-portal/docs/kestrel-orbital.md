@@ -64,3 +64,7 @@ regolith texture, with buried render faces removed and flat collider cells
 merged. Facility pads, ladder feet, Tech-Coffins and optional template areas
 remain level. Three nearby scatter pieces move to maintain safe approaches.
 40 mm routes are checked conservatively around all six landforms.
+
+R7 encodes the world-space ground through the inverse native OBJ X reflection
+and reverses triangle winding. The renderer and collision checks decode that
+import transform, keeping craters and ridgelines aligned with the level pads.

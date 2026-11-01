@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T21:23:54.866096+00:00",
-  "download": "/assets/maps/nereid-deep-20261101-r2-final/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T21:18:50.741650+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r7/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -521,10 +521,10 @@
       "exactDuplicateOf": null,
       "objectCount": 59,
       "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Three modeled impact craters with recessed bowls, raised rims and low access saddles; three connected ridgelines with varied elevations. Level facility pads retain fourteen lunar buildings, five glass domes, a large four-room/four-entrance research biosphere and playable interiors. Actual exported-geometry previews. Booty/Metachemistry, independent DZ/+4/+8 guides, and individual Lunar Day/Night Earth-view panoramas. No supplied Data-Harvester tokens. Scripted geometry, routing, Stage lifecycle and installer checks passed; live TTS physics remains pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r6/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r6/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r6/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r6/kestrel-lunar-data-harvest.json",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r7/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r7/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r7/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r7/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "Nereid Deep R2 enclosed two-deck variant; only Outbreak save 32 replaced."
+  "downloadRevision": "kestrel-lunar-20261101-r7"
 }
