@@ -52,6 +52,10 @@ for (const map of loboWorkshopMaps) {
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 6)
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 11)
     assert.equal(map.previewKind, 'geometry')
+    for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
+      assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)
+      assert.ok(controls.LuaScript.includes(`loboDrawerHandlers.${callback}=${callback}`), `Kestrel routes ${callback} from the drawer`)
+    }
   } else if (map.previewKind === 'geometry') {
     const controls = bag.ContainedObjects.find(object => object.Nickname === 'Sirocco Wells | Map Controls')
     assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))

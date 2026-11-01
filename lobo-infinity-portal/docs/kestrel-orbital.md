@@ -5,6 +5,10 @@ slot (save 19, bag GUID `1008da`). The prior setup remains available through
 its historical portal URL; Kestrel has its own layout key so ratings remain
 separate. The other Concrete Labyrinth mission variants remain available.
 
+R2 replaces the original rectangular buildings with chamfered pressure hulls,
+octagonal towers, airlock portals, recessed ship viewports and curved laboratories.
+The shuttle hangar has segmented structural ribs and a roof service spine.
+
 The 48 × 48 inch orbital research station contains eleven structures with
 seventeen interior/floor states, a grounded shuttle and open service bay,
 two genuinely recessed maintenance channels, four ramps and two bridges.
@@ -21,7 +25,11 @@ Controls reuse the existing map UI/background lifecycle broker. The drawer
 starts open, grid/snapping start off, deployment boundaries are at `X=±12`,
 and 16/20-inch depth selections are optional measuring aids. Markings use
 0.025-inch outlines and 0.015-inch colored centers. Six reference tabs are
-selected separately by each player. Map-specific Sunlit Orbit and Planetary
+selected separately by each player. The right-hand drawer additionally provides
+Booty and Metachemistry reference tables with independent player visibility,
+and separate DZ / DZ +4 / DZ +8 toggles. All three guides start off; they
+correspond to X=±12, ±8 and ±4 for this mission.
+Map-specific Sunlit Orbit and Planetary
 Eclipse panoramas restore the original environment when the map is cleared.
 
 Validation covers native loader records, all Lua syntax, actual controller and
@@ -29,7 +37,7 @@ embedded broker execution with engine mocks, unique GUIDs across the current
 collection, terrain overlap/bounds, four circular-template locations, objective
 access and conservative 40 mm base routes. Minimum scenery clearance from
 Tech-Coffin centers is 2.74 inches. Maximum sampled distance to nearby cover
-is 5.501 inches. This proximity metric does not certify cover from every angle.
+is 5.952 inches. This proximity metric does not certify cover from every angle.
 Actual terrain geometry was rendered for overhead, angled and interior review.
 Live TTS physics and multiplayer playtesting remain pending.
 

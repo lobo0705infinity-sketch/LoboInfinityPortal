@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T15:24:34.182625+00:00",
-  "download": "/assets/maps/kestrel-orbital-20261101-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T17:18:36.645659+00:00",
+  "download": "/assets/maps/kestrel-orbital-20261101-r2/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -520,11 +520,11 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 60,
-      "sourceNote": "Original orbital research-station terrain by Lobo and ChatGPT. Actual exported-geometry previews. Eleven structures with playable interiors, a grounded survey shuttle, recessed channels, ramps and bridges. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
-      "overhead": "/assets/maps/kestrel-orbital-20261101-r1/overhead.webp",
-      "angled": "/assets/maps/kestrel-orbital-20261101-r1/angled.webp",
-      "diagram": "/assets/maps/kestrel-orbital-20261101-r1/overhead.webp",
-      "download": "/assets/maps/kestrel-orbital-20261101-r1/kestrel-orbital-data-harvest.json",
+      "sourceNote": "Original orbital research-station terrain by Lobo and ChatGPT. Actual exported-geometry previews. Eleven structures with playable interiors, a grounded survey shuttle, recessed channels, ramps and bridges. Pressure-hull R2 architecture with octagonal modules, airlocks, viewports and curved laboratories. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
+      "overhead": "/assets/maps/kestrel-orbital-20261101-r2/overhead.webp",
+      "angled": "/assets/maps/kestrel-orbital-20261101-r2/angled.webp",
+      "diagram": "/assets/maps/kestrel-orbital-20261101-r2/overhead.webp",
+      "download": "/assets/maps/kestrel-orbital-20261101-r2/kestrel-orbital-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1137,5 +1137,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-orbital-20261101-r1"
+  "downloadRevision": "kestrel-orbital-20261101-r2"
 }
