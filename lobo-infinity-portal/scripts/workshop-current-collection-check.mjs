@@ -58,8 +58,9 @@ for (const map of loboWorkshopMaps) {
     assert.ok(controls.LuaScript.includes('thickness=.015/scale.x'))
     assert.ok(controls.LuaScript.includes("local kestrelMat='c70000'"))
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 6)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 11)
+    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 0)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 14)
+    assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
     assert.equal(map.previewKind, 'geometry')
     for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
       assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)

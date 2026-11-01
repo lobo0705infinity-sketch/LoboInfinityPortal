@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T20:28:39.024754+00:00",
-  "download": "/assets/maps/nereid-deep-20261101-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T20:39:12.415539+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r5/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -519,12 +519,12 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 60,
-      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Actual exported-geometry previews. Eleven lunar facilities: three transparent research domes, inflatable capsules, solar-equipped habitats, a tripod lander module, radiator spindle, thermal sunshield and clamshell shuttle cradle. Two photovoltaic fields replace the old bridges; continuous regolith replaces the trenches. Board-owned controls include a visible recovery button. Lunar Day and Lunar Night Earth-view panoramas. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r4/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r4/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r4/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r4/kestrel-lunar-data-harvest.json",
+      "objectCount": 56,
+      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Actual exported-geometry previews. Fourteen lunar facilities: five transparent research domes, including a large four-room biosphere with four entrances, inflatable capsules, solar-equipped habitats, a tripod lander module, radiator spindle, thermal sunshield and clamshell shuttle cradle. Photovoltaic hardware replaces the old bridges; continuous regolith replaces the trenches. Board-owned controls include a visible recovery button. Lunar Day and Lunar Night Earth-view panoramas. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r5/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r5/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r5/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r5/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "Nereid Deep R1: replaces Outbreak Skyrail Exchange, retaining the other 39 map exports."
+  "downloadRevision": "kestrel-lunar-20261101-r5"
 }

@@ -1,14 +1,13 @@
 # Kestrel Lunar Base — Data Harvest
 
-R4 replaces the former pressure-block architecture with a purpose-built lunar
-base: three transparent domes, an inflatable crew habitat, a photovoltaic
+R5 revises the former pressure-block architecture with a purpose-built lunar
+base: five transparent domes, an inflatable crew habitat, a photovoltaic
 fabrication capsule, a tripod lander module, a radiator spindle, a thermal
-sunshield, a communications dish and a clamshell shuttle cradle. Two real
-solar collector fields replace the bridges. The ground is continuous regolith;
+sunshield, a communications dish and a clamshell shuttle cradle. Photovoltaic collector hardware replace the bridges. The ground is continuous regolith;
 all rectangular ditches, ramps and bridge objects have been removed.
 
 The 48 × 48 inch setup keeps bag GUID `1008da`, save 19, its stable portal URL
-and layout key. Eleven structures have seventeen exposed-interior/floor states.
+and layout key. Fourteen structures have twenty exposed-interior/floor states.
 Glass shells use the glass material and alpha tint. Their actual Lua scripts
 park them outside the playable area while their habitat is open, restoring
 them for roof-on states. This keeps invisible roof colliders away from
@@ -30,8 +29,10 @@ remain per player. Lunar Day shows Earth and Sun; Lunar Night shows Earth
 and stars with the Sun below the horizon. Clear Table restores the previous
 environment and removes changed states and parked glazing.
 
-Three 40 mm Tech-Coffins remain at (0,-20), (0,0), (0,20), with six 25 mm
-reserve tokens. Designated Zones are player-placed Circular Templates. No
+Three 40 mm Tech-Coffins remain at (0,-20), (0,0), (0,20), without supplied Data-Harvester tokens. The invalid `Chip` records are removed.
+A failed older deployment can leave the Stage busy; reload the table once
+before deploying the corrected bag. The actual Stage update loop is tested
+to release its busy flag without a forced reset, followed by normal Clear Table. Designated Zones are player-placed Circular Templates. No
 vacuum, gravity or other special gameplay rule is added.
 
 Checks cover all Lua scripts, actual controller and glazing script execution
@@ -48,3 +49,9 @@ collection package preserves every unrelated object. Public downloads use a
 new versioned path and preserve the latest unrelated bags from the current
 published forty-map bundle. Steam publication uses Update Workshop in TTS on
 existing item 3719263238.
+
+The large research biosphere has four furnished rooms and four entrances
+connected by a two-inch-wide cross hallway. An oxygen-reclamation dome and
+four-way transit node add two more buildings. Photovoltaic hub and lander
+floors use nonoverlapping floor/rim regions and consistent story heights
+across states. Their consoles and roof panels leave ladder landings clear.
