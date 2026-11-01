@@ -3466,3 +3466,7 @@ main.snapshot-public-page[data-page="dashboard"] .snapshot-dashboard-program--au
 .snapshot-event-champion { margin: 1.25rem 0; padding: 1rem 1.25rem; background: rgba(210,171,98,.1); border: 1px solid rgba(210,171,98,.4); border-radius: 12px; }
 .snapshot-event-champion > span { display:block; text-transform:uppercase; font-size:.75rem; letter-spacing:.14em; color:#d2ab62; }
 .snapshot-event-champion > strong { display:block; font-size:clamp(1.3rem,3vw,2rem); margin-top:.35rem; }
+
+.top40-publication-status { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; padding:12px 24px; border-bottom:1px solid var(--border-quiet); font-size:13px; line-height:1.5; }
+.top40-publication-status button { flex-shrink:0; padding:6px 12px; border:1px solid var(--border-quiet); border-radius:6px; color:var(--text); background:rgba(255,255,255,.06); cursor:pointer; }
+@media(max-width:760px) { .top40-publication-status { padding:10px 16px; font-size:12px; } }

@@ -14,5 +14,5 @@ export default function Top40PublicationStatus() {
   async function refresh() {
     try {const live=await getTop40LivePublicData(true);setUpdated(live.generatedAt);setUnavailable(false);window.dispatchEvent(new Event('lobo:refresh-event'))} catch {setUnavailable(true)}
   }
-  return <p className="portal-shell" role="status">{unavailable?'Event updates are temporarily unavailable; showing the last published data.':updated?`Event published ${preparationDate(updated)} · checks for changes every 30 seconds.`:'Checking event publication…'} <button type="button" onClick={()=>void refresh()}>Refresh event</button></p>
+  return <div className="top40-publication-status" role="status"><span>{unavailable?'Event updates are temporarily unavailable; showing the last published data.':updated?`Event published ${preparationDate(updated)} · checks for changes every 30 seconds.`:'Checking event publication…'}</span><button type="button" onClick={()=>void refresh()}>Refresh event</button></div>
 }
