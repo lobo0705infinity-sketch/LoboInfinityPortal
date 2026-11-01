@@ -67,7 +67,7 @@ const MapLibrary = lazy(() => import('./MapLibrary'))
 
 export default function SnapshotPublicApp() {
   const location = useLocation()
-  return <>{/\/event\/(?:lobos-top-40|event-lobo-s-american-top-40)(?:\/|$)/.test(location.pathname) ? <Top40PublicationStatus/> : null}<Routes>
+  return <>{/^\/event\/(?:lobos-top-40|event-lobo-s-american-top-40)(?:\/(?:overview|registration|bracket|results))?\/?$/.test(location.pathname) ? <Top40PublicationStatus/> : null}<Routes>
     <Route path="/" element={<Dashboard />} />
     <Route path="/dashboard" element={<Dashboard />} />
     <Route path="/players" element={<Players />} />
