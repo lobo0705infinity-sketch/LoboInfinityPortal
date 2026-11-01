@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T20:39:12.415539+00:00",
-  "download": "/assets/maps/sirocco-wells-20261101-r4/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T21:09:44.647534+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r6/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -519,12 +519,12 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 56,
-      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Actual exported-geometry previews. Fourteen lunar facilities: five transparent research domes, including a large four-room biosphere with four entrances, inflatable capsules, solar-equipped habitats, a tripod lander module, radiator spindle, thermal sunshield and clamshell shuttle cradle. Photovoltaic hardware replaces the old bridges; continuous regolith replaces the trenches. Board-owned controls include a visible recovery button. Lunar Day and Lunar Night Earth-view panoramas. Booty/Metachemistry tables and independent DZ/+4/+8 controls. Scripted geometry, clearance, routing, Lua and UI lifecycle checks passed; live TTS physics and playtesting remain pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r5/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r5/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r5/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r5/kestrel-lunar-data-harvest.json",
+      "objectCount": 59,
+      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Three modeled impact craters with recessed bowls, raised rims and low access saddles; three connected ridgelines with varied elevations. Level facility pads retain fourteen lunar buildings, five glass domes, a large four-room/four-entrance research biosphere and playable interiors. Actual exported-geometry previews. Booty/Metachemistry, independent DZ/+4/+8 guides, and individual Lunar Day/Night Earth-view panoramas. No supplied Data-Harvester tokens. Scripted geometry, routing, Stage lifecycle and installer checks passed; live TTS physics remains pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r6/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r6/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r6/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r6/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r5"
+  "downloadRevision": "kestrel-lunar-20261101-r6"
 }

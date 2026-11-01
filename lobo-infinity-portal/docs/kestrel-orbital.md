@@ -55,3 +55,12 @@ connected by a two-inch-wide cross hallway. An oxygen-reclamation dome and
 four-way transit node add two more buildings. Photovoltaic hub and lander
 floors use nonoverlapping floor/rim regions and consistent story heights
 across states. Their consoles and roof panels leave ladder landings clear.
+
+R6 adds three sculpted impact basins with recessed bowls, raised ejecta rims
+and low approach saddles. Three continuous, curved ridgelines vary up to
+2.5 inches above the original ground. The crater floor is actual depressed
+geometry. Four terrain sections share matching edges and the original
+regolith texture, with buried render faces removed and flat collider cells
+merged. Facility pads, ladder feet, Tech-Coffins and optional template areas
+remain level. Three nearby scatter pieces move to maintain safe approaches.
+40 mm routes are checked conservatively around all six landforms.
