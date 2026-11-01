@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T21:20:44.632193+00:00",
-  "download": "/assets/maps/nereid-deep-20261101-r2/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T21:23:54.866096+00:00",
+  "download": "/assets/maps/nereid-deep-20261101-r2-final/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -896,10 +896,10 @@
       "exactDuplicateOf": null,
       "objectCount": 19,
       "sourceNote": "Enclosed scenario variant: two complete pressure decks joined by two internal stair cores, 56 open pressure hatches and looping corridors. Furnished laboratories, docking, life support, command, crew quarters, medical and data rooms. Upper-deck lift/stack carries figures for lower-floor access. Official Outbreak prohibits player-placed Infected inside buildings: playing this enclosed table requires agreement to allow bare lower-deck corridor/concourse placement; this is not an official ITS amendment. Offline 25/55 mm routes, both stair approaches, stage cleanup after lifted roof states and control simulations pass. Previews render actual exported models; native TTS rendering/physics and a played match remain pending.",
-      "overhead": "/assets/maps/nereid-deep-20261101-r2/overhead.webp",
-      "angled": "/assets/maps/nereid-deep-20261101-r2/angled.webp",
-      "diagram": "/assets/maps/nereid-deep-20261101-r2/deployment.webp",
-      "download": "/assets/maps/nereid-deep-20261101-r2/Nereid-Deep-Outbreak-R2.json",
+      "overhead": "/assets/maps/nereid-deep-20261101-r2-final/overhead.webp",
+      "angled": "/assets/maps/nereid-deep-20261101-r2-final/angled.webp",
+      "diagram": "/assets/maps/nereid-deep-20261101-r2-final/deployment.webp",
+      "download": "/assets/maps/nereid-deep-20261101-r2-final/Nereid-Deep-Outbreak-R2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
