@@ -1031,7 +1031,7 @@ export function LegacySubmitResult() {
           <textarea
             name="bestMoment"
             onChange={(event) => updateField('bestMoment', event.target.value)}
-            required={eventHome.event.type !== 'Individual Double Elimination'}
+            required={eventHome?.event.type !== 'Individual Double Elimination'}
             rows={4}
             value={leagueResult.bestMoment}
           />

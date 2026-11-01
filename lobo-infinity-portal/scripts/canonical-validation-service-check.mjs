@@ -99,7 +99,7 @@ assert.equal(context.validateCanonicalGame({source:'portal', workflow:'top-40', 
 const submitResultSource = fs.readFileSync('src/pages/SubmitResult.tsx', 'utf8')
 const top40ClientValidation = submitResultSource.split('function validateTop40Result(')[1].split('function buildOpposingTeamRosterOptions')[0]
 assert.doesNotMatch(top40ClientValidation, /Best Moment is required/)
-assert.match(submitResultSource, /required=\{eventHome\.event\.type !== 'Individual Double Elimination'\}/)
+assert.match(submitResultSource, /required=\{eventHome\?\.event\.type !== 'Individual Double Elimination'\}/)
 
 const legacyGoogleValidation = (submission) => {
   const errors = []
