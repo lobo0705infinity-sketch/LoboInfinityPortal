@@ -41,7 +41,14 @@ for (const map of loboWorkshopMaps) {
       assert.ok(Math.abs(angle - Math.fround(angle)) < 0.0005, `${map.slug}: ${id} meets the Stage alignment tolerance`)
     }
   }
-  assert.deepEqual(ids, new Set(bag.ContainedObjects.map(object => object.GUID)))
+  const objectAndStateIds = new Set()
+  const collectObjectStates = object => {
+    objectAndStateIds.add(object.GUID)
+    for (const state of Object.values(object.States || {})) collectObjectStates(state)
+  }
+  bag.ContainedObjects.forEach(collectObjectStates)
+  for (const object of bag.ContainedObjects) assert.ok(ids.has(object.GUID), `${map.slug} places every base object`)
+  for (const id of ids) assert.ok(objectAndStateIds.has(id), `${map.slug} placement ${id} resolves to an object or alternate state`)
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
   if (map.name === 'Kestrel Orbital') {
     const controls = bag.ContainedObjects.find(object => object.Nickname === 'Kestrel Orbital | Map Controls')

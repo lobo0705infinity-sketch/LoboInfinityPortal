@@ -82,6 +82,25 @@ const context = vm.createContext({
 
 vm.runInContext(fs.readFileSync('backend/CanonicalValidationService.gs', 'utf8'), context)
 
+// The Top 40 Google Form makes Best Moment optional. Its importer delegates to
+// the portal validator, which must accept an otherwise valid response without it.
+context.validateTop40BracketSubmission_ = () => ({ valid:true, eventId:'top40', player:'Zhukov2', opponent:'Snakes / Lucas', mission:'Corporate Appropriation' })
+const top40Params = {
+  firstTurn:'Player', winner:'Opponent Victory', playerFaction:'Tohaa', opponentFaction:'Yu Jing',
+  player1ArmyCode:'player-code', player2ArmyCode:'opponent-code',
+  playerTournamentPoints:'1', opponentTournamentPoints:'5', playerObjectivePoints:'4',
+  opponentObjectivePoints:'5', playerVictoryPoints:'93', opponentVictoryPoints:'150',
+}
+for (const bestMoment of [undefined, '', '   ', 'A memorable game']) {
+  assert.equal(context.validateCanonicalGame({source:'portal', workflow:'top-40', params:{...top40Params, bestMoment}}).valid, true)
+}
+assert.equal(context.validateCanonicalGame({source:'portal', workflow:'top-40', params:{...top40Params, firstTurn:''}}).valid, false)
+assert.equal(context.validateCanonicalGame({source:'portal', workflow:'top-40', params:{...top40Params, playerTournamentPoints:''}}).valid, false)
+const submitResultSource = fs.readFileSync('src/pages/SubmitResult.tsx', 'utf8')
+const top40ClientValidation = submitResultSource.split('function validateTop40Result(')[1].split('function buildOpposingTeamRosterOptions')[0]
+assert.doesNotMatch(top40ClientValidation, /Best Moment is required/)
+assert.match(submitResultSource, /required=\{eventHome\.event\.type !== 'Individual Double Elimination'\}/)
+
 const legacyGoogleValidation = (submission) => {
   const errors = []
   const required = ['mission', 'player', 'opponent', 'playerFaction', 'opponentFaction',

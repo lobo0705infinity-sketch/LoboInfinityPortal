@@ -29,8 +29,6 @@ function canonicalValidatePortalTop40Game_(command) {
     return canonicalValidationFailure_("A mission has not been assigned to this bracket round.");
   if (getResultSubmissionString(params.firstTurn) === "")
     return canonicalValidationFailure_("First Turn is required.");
-  if (getResultSubmissionString(params.bestMoment) === "")
-    return canonicalValidationFailure_("Best Moment is required.");
   const scores = canonicalReadPortalScores_(params);
   if (!scores.valid) return canonicalValidationFailure_("Scores must be non-negative numbers.");
   if (scores.playerTp + scores.opponentTp > 10) return canonicalValidationFailure_("Tournament Points cannot total more than 10.");

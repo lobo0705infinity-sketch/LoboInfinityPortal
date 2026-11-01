@@ -1031,7 +1031,7 @@ export function LegacySubmitResult() {
           <textarea
             name="bestMoment"
             onChange={(event) => updateField('bestMoment', event.target.value)}
-            required
+            required={eventHome.event.type !== 'Individual Double Elimination'}
             rows={4}
             value={leagueResult.bestMoment}
           />
@@ -1663,7 +1663,6 @@ function validateTop40Result(
   if (!submission.mission.trim()) issues.push('A mission has not been assigned to this bracket round.')
   else if (!optionContains(options.missions, submission.mission)) issues.push('Mission must be selected from the mission database.')
   if (!submission.firstTurn.trim()) issues.push('First Turn is required.')
-  if (!submission.bestMoment.trim()) issues.push('Best Moment is required.')
   if (!submission.winner.trim()) issues.push('Game Result is required.')
   if (submission.winner === 'Draw') issues.push('Top 40 bracket matches require a winner.')
   const scores = [submission.playerTournamentPoints, submission.opponentTournamentPoints, submission.playerObjectivePoints, submission.opponentObjectivePoints, submission.playerVictoryPoints, submission.opponentVictoryPoints].map(parseScore)
