@@ -50,8 +50,8 @@ for (const map of loboWorkshopMaps) {
   for (const object of bag.ContainedObjects) assert.ok(ids.has(object.GUID), `${map.slug} places every base object`)
   for (const id of ids) assert.ok(objectAndStateIds.has(id), `${map.slug} placement ${id} resolves to an object or alternate state`)
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
-  if (map.name === 'Kestrel Orbital') {
-    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Kestrel Orbital | Map Controls')
+  if (map.guid === '1008da') {
+    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Kestrel Lunar Base | Map Controls')
     assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))
     assert.ok(controls.LuaScript.includes('thickness=.015/scale.x'))
     assert.ok(controls.LuaScript.includes("local kestrelMat='c70000'"))
