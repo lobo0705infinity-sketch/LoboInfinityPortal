@@ -45,8 +45,8 @@ for (const map of loboWorkshopMaps) {
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
   if (map.previewKind === 'geometry') {
     const controls = bag.ContainedObjects.find(object => object.Nickname === 'Sirocco Wells | Map Controls')
-    assert.ok(controls?.LuaScript.includes('thickness=.045/scale.x'))
-    assert.ok(controls.LuaScript.includes('thickness=.025/scale.x'))
+    assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))
+    assert.ok(controls.LuaScript.includes('thickness=.015/scale.x'))
     assert.ok(controls.LuaScript.includes("local siroccoMat='d60000'"))
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Supply Box')).length, 4)
