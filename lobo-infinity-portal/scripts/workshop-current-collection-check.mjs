@@ -74,7 +74,12 @@ for (const map of loboWorkshopMaps) {
     assert.ok(controls.LuaScript.includes('thickness=.015/width'))
     assert.ok(controls.LuaScript.includes('nereidMissionOpen'))
     assert.ok(controls.LuaScript.includes('nereidRoofsOn'))
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidRoom')).length, 9)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidRoom')).length, 4)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidLower')).length, 4)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidDeck2')).length, 4)
+    assert.ok(controls.LuaScript.includes('function nereidDeckLift()'))
+    assert.ok(controls.LuaScript.includes('function nereidDeckStack()'))
+    assert.ok(map.sourceNote.includes('not an official ITS amendment'))
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidMovableMission')).length, 7)
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Alpha Infected')).length, 1)
     assert.equal(map.previewKind, 'geometry')
@@ -143,4 +148,3 @@ for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-sat
   assert.equal(separate.get(replacement.layoutKey).average, 1)
 }
 console.log('Current Workshop catalogue, downloads, mission coverage, archived links and shared ratings passed.')
-
