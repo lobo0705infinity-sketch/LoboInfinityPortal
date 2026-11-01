@@ -175,6 +175,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
   }
   return {
     handler,
+    registeredPlayers: () => store.players(),
     summary: async () => ({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing: briefings.ariadna, briefings }),
     async start(client, { port = Number(process.env.PORT || 8080), serve = true } = {}) {
       guild = client.guilds.cache.get(AURORA_DISCORD_GUILD_ID)
@@ -197,6 +198,9 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
         server = createServer(async (request, response) => {
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
+          if (request.method === 'GET' && request.url === '/top40/notifications') {
+            response.end(JSON.stringify(client.top40Notifications?.summary() || { enabled:false, issue:'Top 40 monitoring is starting.' })); return
+          }
           if (request.url?.startsWith('/aurora-vii/games?')) {
             try { await games.handler(request, response) }
             catch { response.writeHead(503); response.end('{"error":"Campaign games are temporarily unavailable."}') }

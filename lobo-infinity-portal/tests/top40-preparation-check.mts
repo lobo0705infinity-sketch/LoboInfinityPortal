@@ -24,5 +24,5 @@ assert.deepEqual(activePreparationMatches({ ...event, bracket: [{ matchId: 'A', 
 assert.equal(preparationDate(''), 'To be announced')
 assert.equal(preparationDate('2026-02-30'), 'To be announced')
 assert.match(preparationDate('2026-11-01'), /November|Nov/)
-assert.equal(preparationDate('2026-11-08 23:00:00'), '2026-11-08 23:00:00 (published time)', 'Do not invent a timezone')
+assert.equal(preparationDate('2026-11-08 23:00:00'), '2026-11-08 23:00:00 Eastern (legacy timestamp)', 'Preserve the existing Eastern label for legacy bracket records')
 console.log('PASS: Top 40 event scoping, deadlines, public lists, registration state and date handling.')

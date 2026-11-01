@@ -42,6 +42,20 @@ export default function Top40PreparationPage() {
     <CompactArtwork title="Lobo’s Top 40" eyebrow="Event preparation" src="/assets/events/top-40-overview-v2.png"/>
     <EventSectionTabs eventId={TOP40_EVENT_ID} items={['overview', 'registration', 'bracket', 'results', 'rules']}/>
     <header className="top40-preparation-heading"><div><p className="eyebrow">300 points · Double elimination</p><h1>Get ready for the tournament</h1><p>Registration, deadlines, missions, maps, and public army lists in one place.</p></div><span>Planned opening: {TOP40_PLANNED_OPENING_LABEL}</span></header>
+    <section className="panel top40-preparation-panel top40-player-briefing" aria-labelledby="top40-briefing-title">
+      <div>
+        <p className="eyebrow">Player briefing</p>
+        <h2 id="top40-briefing-title">Watch the briefing and keep the handout</h2>
+        <p>How the bracket works, choosing armies and lists, scheduling your match, missions and maps, reporting results, and the Grand Final reset.</p>
+        <p>4 minutes 14 seconds · Captions included</p>
+        <div className="top40-preparation-actions"><a className="button top40-preparation-primary" href="/guides/Lobos-Top-40-Player-Handout-20261101.pdf" target="_blank" rel="noopener noreferrer">Open player handout (PDF) ↗</a><a href="/guides/Lobos-Top-40-Player-Briefing-20261101.mp4" download>Download video (MP4)</a></div>
+      </div>
+      <video controls playsInline preload="none" poster="/assets/events/top-40-bracket.png" aria-label="Lobo’s Top 40 player briefing">
+        <source src="/guides/Lobos-Top-40-Player-Briefing-20261101.mp4" type="video/mp4"/>
+        <track kind="captions" src="/guides/Lobos-Top-40-Player-Briefing-20261101.vtt" srcLang="en" label="English"/>
+        <p><a href="/guides/Lobos-Top-40-Player-Briefing-20261101.mp4">Download the player briefing video</a>.</p>
+      </video>
+    </section>
     {events.error ? <DataNotice message="Event details are temporarily unavailable." retry={events.retry}/> : null}
     <div className="top40-preparation-grid">
       <div className="top40-preparation-stack">
@@ -70,7 +84,7 @@ export default function Top40PreparationPage() {
           <div className="top40-preparation-actions"><Link to="/maps">Browse the map library →</Link><a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open TTS Workshop ↗</a></div>
         </PreparationPanel>
         <PreparationPanel title="Army lists">
-          <p>Choose your army list at the time of each game. A tournament-wide list lock is not required unless the Organizer announces an additional requirement before the event.</p>
+          <p>You can change your army and your army list between rounds. You are not required to use the same army or list throughout the tournament. Keep every list within the 300-point limit.</p>
           {armyLists.error ? <DataNotice message="Published event lists are temporarily unavailable." retry={armyLists.retry}/> : !armyLists.data ? <p>Loading published lists…</p> : listGroups.length ? <div className="top40-preparation-lists">{listGroups.map(group => <details key={group.player}><summary>{group.displayName} <span>{group.lists.length} {group.lists.length === 1 ? 'list' : 'lists'}</span></summary>{group.lists.map(list => <article key={list.id}><h3>{list.armyName || list.sectorial || list.faction || 'Army list'}</h3><p>{list.mission || 'Mission not specified'} · {preparationDate(list.date)}</p>{list.opponentDisplayName || list.opponent ? <p>vs {list.opponentDisplayName || list.opponent}</p> : null}<div className="top40-preparation-actions">{list.armyLink ? <InfinityArmyLink mobileCopyOnly href={list.armyLink}>View List</InfinityArmyLink> : <span>Army code unavailable</span>}{list.gameId ? <Link to={`/games/${list.gameId}`}>View game →</Link> : null}</div></article>)}</details>)}</div> : <div className="top40-preparation-empty"><h3>No public event lists yet</h3><p>Published Top 40 lists will appear here, grouped by player and game.</p></div>}
           <Link to="/army-lists">Browse community lists →</Link>
         </PreparationPanel>

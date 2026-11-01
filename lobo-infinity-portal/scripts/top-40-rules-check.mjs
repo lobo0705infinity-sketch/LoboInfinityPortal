@@ -48,7 +48,7 @@ for (const text of [
   'The field is limited to a maximum of 40 players.',
   'Players are seeded using Infinity the Meta ratings, with Commissioner placements for unrated players.',
   'Every match is played at 300 points.',
-  'Players choose the army list they will use at the time of each game.',
+  'Players may change their army and army list between rounds.',
   'The complete mission pool will be published before the tournament begins.',
   'both players receive at least seven full days',
   'If a match ends in a draw, the winner is determined by Victory Points.',

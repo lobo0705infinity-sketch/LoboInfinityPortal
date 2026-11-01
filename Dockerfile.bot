@@ -29,6 +29,7 @@ RUN node scripts/response-details-check.mjs
 RUN node scripts/bot-inventory-check.mjs
 RUN node scripts/rules-resource-watcher-check.mjs
 RUN node scripts/delivery-jobs-check.mjs
+RUN node scripts/top40-notifications-check.mjs
 RUN npm run test:random-list
 RUN npm run test:inf-list-classifieds
 
