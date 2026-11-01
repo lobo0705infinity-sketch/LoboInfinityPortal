@@ -8,98 +8,98 @@
       "bracketRound": 1,
       "mission": "Corporate Appropriation",
       "missionGeistId": "s18_corporate_appropriation",
-      "map": "Lobo Tourney Map 1 — Asterion Research Campus"
+      "map": "Lobo's Top 40 Winners Round 1 Map"
     },
     {
       "bracket": "Winners",
       "bracketRound": 2,
       "mission": "Superiority",
       "missionGeistId": "s18_superiority",
-      "map": "superiority-1"
+      "map": "Lobo's Top 40 Winners Round 2 Map"
     },
     {
       "bracket": "Winners",
       "bracketRound": 3,
       "mission": "Uplink Center",
       "missionGeistId": "s18_uplink_center",
-      "map": "uplink-center-1-satellite"
+      "map": "TBD"
     },
     {
       "bracket": "Winners",
       "bracketRound": 4,
       "mission": "The Dig",
       "missionGeistId": "s18_the_dig",
-      "map": "the-dig-1"
+      "map": "Lobo's Top 40 Winners Round 4 Map"
     },
     {
       "bracket": "Winners",
       "bracketRound": 5,
-      "mission": "Crossing Lines",
-      "missionGeistId": "s18_crossing_lines",
-      "map": "crossing-lines-1-satellite"
+      "mission": "Area of Interest",
+      "missionGeistId": "s18_area_of_interest",
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 1,
       "mission": "Annihilation",
       "missionGeistId": "s18_annihilation",
-      "map": "annihilation-1"
+      "map": "Lobo's Top 40 Losers Round 1 Map"
     },
     {
       "bracket": "Losers",
       "bracketRound": 2,
       "mission": "Provisioning",
       "missionGeistId": "s18_provisioning",
-      "map": "provisioning-1"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 3,
       "mission": "Cutthroat",
       "missionGeistId": "s18_cutthroat",
-      "map": "cutthroat-1"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 4,
       "mission": "Battleground",
       "missionGeistId": "s18_battleground",
-      "map": "battleground-1"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 5,
       "mission": "Neutralization",
       "missionGeistId": "s18_neutralization",
-      "map": "neutralization-1-satellite"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 6,
       "mission": "Outbreak",
       "missionGeistId": "s18_outbreak",
-      "map": "outbreak-1"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 7,
       "mission": "Hardlock",
       "missionGeistId": "s18_hard_lock",
-      "map": "hardlock-1-satellite"
+      "map": "TBD"
     },
     {
       "bracket": "Losers",
       "bracketRound": 8,
       "mission": "Critical Intervention",
       "missionGeistId": "s18_critical_intervention",
-      "map": "critical-intervention-1"
+      "map": "TBD"
     },
     {
       "bracket": "Grand Final",
       "bracketRound": 1,
       "mission": "Double Bind",
       "missionGeistId": "s18_double_bind",
-      "map": "double-bind-1"
+      "map": "TBD"
     }
   ]
 }
