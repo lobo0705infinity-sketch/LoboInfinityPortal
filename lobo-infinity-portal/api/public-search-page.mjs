@@ -13,7 +13,7 @@ export default async function handler(request, response) {
     return
   }
 
-  const pathname = String(request.url ? new URL(request.url, SITE_ORIGIN).searchParams.get('page') || '' : request.query?.page || '').split('?')[0]
+  const pathname = publicSearchRequestPath(request)
   if (!pathname.startsWith('/') || pathname.length > 300) {
     response.status(400).end('Invalid public page')
     return
@@ -141,4 +141,14 @@ async function readTemplate(request) {
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;').replaceAll("'", '&#39;')
+}
+
+// Rewrites can retain either the original public URL or the function URL.
+// Read both without invoking Vercel's deprecated lazy query parser.
+export function publicSearchRequestPath(request) {
+  if (request.url) {
+    const url = new URL(request.url, SITE_ORIGIN)
+    return String(url.searchParams.get('page') ?? (url.pathname.startsWith('/api/') ? '' : url.pathname)).split('?')[0]
+  }
+  return String(request.query?.page || '').split('?')[0]
 }

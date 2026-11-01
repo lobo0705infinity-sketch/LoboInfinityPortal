@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { describePublicSearchPage, publicDatasetForPath } from '../shared/public-search-content.mjs'
-import { renderPublicSearchHtml } from '../api/public-search-page.mjs'
+import { publicSearchRequestPath, renderPublicSearchHtml } from '../api/public-search-page.mjs'
 import { selectFeaturedReport } from '../shared/featured-report.mjs'
 
 const template = await readFile(new URL('../index.html', import.meta.url), 'utf8')
@@ -105,3 +105,8 @@ for (const link of aurora.links.filter(link => link.href.startsWith('/maps/auror
   assert.match(page.imageAlt, /concept reference/)
 }
 console.log('Aurora catalogue and all 24 direct location pages expose canonical metadata and matching rules.')
+
+const original = Object.defineProperty({url:'/event/lobos-top-40'},'query',{get(){throw new Error('Deprecated query getter was accessed')}})
+assert.equal(publicSearchRequestPath(original),'/event/lobos-top-40')
+assert.equal(publicSearchRequestPath({url:'/api/public-search-page?page=/event/lobos-top-40'}),'/event/lobos-top-40')
+assert.equal(publicSearchRequestPath({url:'/api/public-search-page'}),'')
