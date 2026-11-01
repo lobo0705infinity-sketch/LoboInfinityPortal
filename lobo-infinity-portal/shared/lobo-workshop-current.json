@@ -1,6 +1,6 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-10-20T18:36:25.644072+00:00",
+  "updatedAt": "2026-11-01T07:00:00Z",
   "download": "/assets/maps/satellites-20261020-r2/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
@@ -932,9 +932,9 @@
       "id": "3719263238:8102b2",
       "guid": "8102b2",
       "slug": "provisioning-2-satellite",
-      "name": "Palisade Depot",
-      "workshopName": "ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
+      "name": "Sirocco Wells",
+      "workshopName": "ITS18 Provisioning — Sirocco Wells",
+      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2007,
@@ -942,22 +942,25 @@
         "Provisioning"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 84,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: SET_Salt Lake Showdown - 2026 - Table 17 - USA - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/provisioning-2-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/provisioning-2-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/provisioning-2-satellite.json",
+      "objectCount": 65,
+      "sourceNote": "Original desert resupply-station terrain by Lobo and ChatGPT. Previews render the actual exported terrain geometry. Scripted clearance, routing, controls, and cleanup checks passed; live TTS physics and playtesting remain pending.",
+      "overhead": "/assets/maps/sirocco-wells-20261101-r1/overhead.webp",
+      "angled": "/assets/maps/sirocco-wells-20261101-r1/angled.webp",
+      "diagram": "/assets/maps/sirocco-wells-20261101-r1/overhead.webp",
+      "download": "/assets/maps/sirocco-wells-20261101-r1/sirocco-wells-provisioning.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/d9ac4976-d410-411f-95b9-0262b108c6a1",
       "labelAliases": [
         "SET_ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION",
-        "ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION"
+        "ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION",
+        "Palisade Depot",
+        "SET_ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
+        "ITS18 Provisioning — Palisade Depot — SATELLITE EDITION"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-01"
     },
     {
       "index": 35,

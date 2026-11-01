@@ -69,7 +69,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <span className="lobo-maps-hero-count">{layoutCount} layouts <span aria-hidden="true">·</span> {loboWorkshopMaps.length} setups <span aria-hidden="true">·</span> {missionCount} missions</span>
       </div>
       <Link aria-label={`Explore ${featured.name}`} className="lobo-maps-hero-image" to={`/maps/${featured.slug}`}>
-        <img alt={`${featured.previewKind === 'diagram' ? 'Setup diagram' : 'Tabletop Simulator preview'} of ${featured.name}`} decoding="async" height="900" src={featured.angled} width="1600" />
+        <img alt={`${featured.previewKind === 'diagram' ? 'Setup diagram' : featured.previewKind === 'geometry' ? 'Rendered terrain preview' : 'Tabletop Simulator preview'} of ${featured.name}`} decoding="async" height="900" src={featured.angled} width="1600" />
         <span>Featured setup <strong>{featured.name}</strong></span>
       </Link>
     </header>
@@ -130,12 +130,13 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
       <div>{map.download ? <a download href={map.download}>Download map bag</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
     </header>
     {map.isCurrent === false ? null : <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
-    <a aria-label={`Open full-size ${map.previewKind === 'diagram' ? 'setup diagram' : 'angled preview'} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
+    <a aria-label={`Open full-size ${map.previewKind === 'diagram' ? 'setup diagram' : 'angled preview'} of ${map.name}`} className="lobo-map-detail-hero" href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : map.previewKind === 'geometry' ? 'Rendered terrain geometry' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" src={map.angled} width="1600" /><span>{map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled view'} <span aria-hidden="true">↗</span></span></a>
+    {map.previewKind === 'geometry' ? <p className="lobo-maps-source-note">These previews render the map’s exported terrain geometry. Live Tabletop Simulator physics checks and playtesting are pending.</p> : null}
     {map.previewKind === 'diagram' ? <p className="lobo-maps-source-note">This is a footprint diagram of the revised setup. Fresh overhead and angled TTS screenshots, live physics checks, and playtesting are pending.</p> : <section aria-labelledby="map-views-title" className="lobo-map-detail-views">
       <div className="lobo-maps-section-heading"><div><p className="eyebrow">Two ways to read the table</p><h2 id="map-views-title">Terrain previews</h2></div></div>
       <div className="lobo-map-detail-view-grid">
-        <a href={map.overhead} rel="noopener noreferrer" target="_blank"><img alt={`Overhead Tabletop Simulator view of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" /><span><strong>Overhead</strong><small>Read the full layout and approach lanes</small></span></a>
-        <a href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.angled} width="1600" /><span><strong>Angled</strong><small>Check height, rooflines, and cover</small></span></a>
+        <a href={map.overhead} rel="noopener noreferrer" target="_blank"><img alt={`Overhead ${map.previewKind === 'geometry' ? 'terrain geometry' : 'Tabletop Simulator'} view of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.overhead} width="1600" /><span><strong>Overhead</strong><small>Read the full layout and approach lanes</small></span></a>
+        <a href={map.angled} rel="noopener noreferrer" target="_blank"><img alt={`${map.previewKind === 'diagram' ? 'Setup diagram' : map.previewKind === 'geometry' ? 'Rendered terrain geometry' : 'Angled Tabletop Simulator view'} of ${map.name}`} decoding="async" height="900" loading="lazy" src={map.angled} width="1600" /><span><strong>Angled</strong><small>Check height, rooflines, and cover</small></span></a>
       </div>
     </section>
     }

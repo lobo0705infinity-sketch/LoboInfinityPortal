@@ -43,6 +43,14 @@ for (const map of loboWorkshopMaps) {
   }
   assert.deepEqual(ids, new Set(bag.ContainedObjects.map(object => object.GUID)))
   const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
+  if (map.previewKind === 'geometry') {
+    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Sirocco Wells | Map Controls')
+    assert.ok(controls?.LuaScript.includes('thickness=.045/scale.x'))
+    assert.ok(controls.LuaScript.includes('thickness=.025/scale.x'))
+    assert.ok(controls.LuaScript.includes("local siroccoMat='d60000'"))
+    assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
+    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Supply Box')).length, 4)
+  } else {
   assert.equal(surfaces.length, 1, `${map.slug} has one mission marking surface`)
   for (const surface of surfaces) {
     const expectedScale = map.slug === 'uplink-center-1-satellite' ? 48.03 : 24
@@ -51,6 +59,7 @@ for (const map of loboWorkshopMaps) {
     assert.equal(surface.Transform.scaleZ, expectedScale)
     assert.ok(surface.LuaScript.includes('thickness=line.thickness/lineScale'), `${map.slug} converts stroke widths to local units`)
     assert.ok(!surface.LuaScript.includes('thickness=line.thickness}'), `${map.slug} avoids oversized strokes`)
+  }
   }
 
 }
@@ -66,15 +75,16 @@ for (const section of loboWorkshopMapSections) {
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
-  assert.equal(map.previewKind, 'tts')
+  assert.ok(['tts', 'geometry'].includes(map.previewKind))
   assert.notEqual(map.overhead, map.angled)
-  if (map.slug.endsWith('-satellite')) {
+  if (map.slug.endsWith('-satellite') && map.previewKind === 'tts') {
     assert.equal(map.captureDate, '2026-10-20')
     assert.notEqual(map.overhead, map.diagram)
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 40)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 39)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 1)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
