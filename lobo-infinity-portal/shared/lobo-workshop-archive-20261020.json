@@ -322,5 +322,32 @@
     "sourceOverhead": "/assets/maps/06-normal-2-irl-tourney-overhead.jpg",
     "sourceAngled": "/assets/maps/06-normal-2-irl-tourney-angled.jpg",
     "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558"
+  },
+  {
+    "index": 19,
+    "id": "3719263238:1008da",
+    "guid": "1008da",
+    "slug": "data-harvest-1",
+    "name": "Concrete Labyrinth",
+    "workshopName": "ITS18 Data-Harvest — Concrete Labyrinth — REVISED",
+    "workshopBagName": "SET_ITS18 Data-Harvest — Concrete Labyrinth — REVISED",
+    "collectionTitle": "ITS Season 18",
+    "family": "Standard deployment",
+    "layoutKey": 13,
+    "missionSetups": [
+      "Data Harvest"
+    ],
+    "exactDuplicateOf": null,
+    "objectCount": 58,
+    "sourceNote": "",
+    "overhead": "/assets/maps/captures-20261015T080142Z/data-harvest-1-overhead.webp",
+    "angled": "/assets/maps/captures-20261015T080142Z/data-harvest-1-angled.webp",
+    "diagram": "/assets/maps/its18-20261015T064536Z/data-harvest-1.png",
+    "download": "/assets/maps/its18-markings-20261018-r6/data-harvest-1.json",
+    "isCurrent": false,
+    "previewKind": "tts",
+    "sourceOverhead": "/assets/maps/13-normal-6-irl-tourney-overhead.jpg",
+    "sourceAngled": "/assets/maps/13-normal-6-irl-tourney-angled.jpg",
+    "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955"
   }
 ]
