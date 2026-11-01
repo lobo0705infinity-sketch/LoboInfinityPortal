@@ -6,7 +6,7 @@ import { buildMapRatings } from '../src/public/mapRatings.ts'
 
 assert.equal(loboWorkshopMaps.length, 40)
 assert.equal(new Set(loboWorkshopMaps.map(map => map.id)).size, 40)
-assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 29)
+assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 30)
 const missions = new Map()
 for (const map of loboWorkshopMaps) {
   assert.equal(map.isCurrent, true, `${map.slug} is a current setup`)
@@ -65,6 +65,20 @@ for (const map of loboWorkshopMaps) {
       assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)
       assert.ok(controls.LuaScript.includes(`loboDrawerHandlers.${callback}=${callback}`), `Kestrel routes ${callback} from the drawer`)
     }
+  } else if (map.guid === '100e3e') {
+    assert.equal(map.name, 'Nereid Deep')
+    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Lobo Map Controls | Nereid Deep')
+    assert.ok(controls?.LuaScript.includes('thickness=.025/width'))
+    assert.ok(controls.LuaScript.includes('thickness=.015/width'))
+    assert.ok(controls.LuaScript.includes('nereidMissionOpen'))
+    assert.ok(controls.LuaScript.includes('nereidRoofsOn'))
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidRoom')).length, 9)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidMovableMission')).length, 7)
+    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Alpha Infected')).length, 1)
+    assert.equal(map.previewKind, 'geometry')
+    for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
+      assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Nereid exports ${callback}`)
+    }
   } else if (map.previewKind === 'geometry') {
     const controls = bag.ContainedObjects.find(object => object.Nickname === 'Sirocco Wells | Map Controls')
     assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))
@@ -105,8 +119,8 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 38)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 2)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 37)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 3)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')

@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T20:12:29.922310+00:00",
-  "download": "/assets/maps/sirocco-wells-20261101-r3/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T20:28:39.024754+00:00",
+  "download": "/assets/maps/nereid-deep-20261101-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -907,7 +907,9 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/5f071262-e950-41d8-acef-09ee3536fcae",
       "labelAliases": [
         "ITS18 Outbreak — Skyrail Exchange — REVISED",
-        "SET_ITS18 Outbreak — Skyrail Exchange — REVISED"
+        "SET_ITS18 Outbreak — Skyrail Exchange — REVISED",
+        "ITS18 Outbreak - Nereid Deep R1",
+        "SET_ITS18 Outbreak - Nereid Deep R1"
       ],
       "captureDate": "2026-11-01"
     },
