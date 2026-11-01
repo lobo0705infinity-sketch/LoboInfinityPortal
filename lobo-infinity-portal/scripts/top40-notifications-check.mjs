@@ -3,7 +3,7 @@ import { mkdtemp,readFile,writeFile,rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { ChannelType } from 'discord.js'
-import { createTop40Store,createTop40Notifications,TOP40_EVENT_ID,TOP40_SCHEDULING_CHANNEL_ID,TOP40_REMINDER_DELAY_MS,top40ActiveMatches,formatTop40Notification,resolveTop40DiscordContacts } from '../bot/top40-notifications.mjs'
+import { createTop40Store,createTop40Notifications,TOP40_EVENT_ID,TOP40_SCHEDULING_CHANNEL_ID,TOP40_REMINDER_DELAY_MS,top40ActiveMatches,formatTop40Notification,resolveTop40DiscordContacts,assignTop40Role } from '../bot/top40-notifications.mjs'
 import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
 
 const dir=await mkdtemp(join(tmpdir(),'top40-notifications-'))
@@ -40,6 +40,18 @@ try {
   assert.throws(()=>formatTop40Notification(match,[ids[0],ids[0]],'live'),/verified/)
   const replies=[];await service.handler({isChatInputCommand:()=>true,commandName:'top40',guildId:AURORA_DISCORD_GUILD_ID,user:{id:ids[1]},deferReply:async()=>{},editReply:async p=>replies.push(p.content)})
   assert.match(replies[0],/Only Lobo/)
+  const roleMembers=new Map(ids.map(id=>[id,{user:{id,bot:false},roles:{cache:new Map(),async add(role){this.cache.set(role.id,role);return roleMembers.get(id)}}}]))
+  const roleCalls=[],role={id:'444444444444444444',name:'Lobo top 40',managed:false,editable:true,permissions:{bitfield:0n}}
+  let existingRole=false
+  const roleGuild={members:{fetch:async({user})=>roleMembers.get(user)},roles:{fetch:async()=>new Map(existingRole?[[role.id,role]]:[]),create:async data=>{roleCalls.push(data);existingRole=true;return role}}}
+  const confirmed=new Map([['Alpha',ids[0]],['Beta',ids[1]]])
+  await assert.rejects(assignTop40Role(roleGuild,confirmed,3),/count changed/);assert.equal(roleCalls.length,0)
+  assert.deepEqual(await assignTop40Role(roleGuild,confirmed,2),{assigned:2,already:0,failed:[]})
+  assert.deepEqual(roleCalls[0].permissions,[]);assert.equal(roleCalls[0].mentionable,false)
+  assert.deepEqual(await assignTop40Role(roleGuild,confirmed,2),{assigned:0,already:2,failed:[]});assert.equal(roleCalls.length,1)
+  role.permissions.bitfield=8n;await assert.rejects(assignTop40Role(roleGuild,confirmed,2),/additional permissions/);role.permissions.bitfield=0n
+  roleMembers.get(ids[1]).roles.cache.clear();roleMembers.get(ids[1]).roles.add=async()=>{throw Error('Missing permission')}
+  assert.deepEqual(await assignTop40Role(roleGuild,confirmed,2),{assigned:0,already:1,failed:['Beta']})
   const memberA={id:ids[0],displayName:'Player A',user:{username:'alpha_exact',bot:false}},memberB={id:ids[1],displayName:'Player B',user:{username:'beta_exact',bot:false}}
   const contactGuild={members:{list:async()=>new Map([[ids[0],memberA],[ids[1],memberB]])}}
   const resolved=await resolveTop40DiscordContacts(contactGuild,{Alpha:'@ALPHA_EXACT',Beta:'Player B',Unknown:'alpha'})

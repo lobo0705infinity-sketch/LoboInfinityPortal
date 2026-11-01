@@ -98,10 +98,37 @@ export async function findTop40Delivery(channel,marker,botId,since) {
   throw Error('Top 40 notification history coverage is incomplete.')
 }
 
+export async function assignTop40Role(guild, linked, expectedCount) {
+  const ids=[...linked.values()]
+  if(!Number.isInteger(expectedCount) || expectedCount<1 || linked.size!==expectedCount || ids.some(id=>!validId(id)) || new Set(ids).size!==ids.length)throw Error('The confirmed account count changed. Check /top40 status before assigning the role.')
+  const members=[]
+  for(const [name,id] of linked) {
+    const member=await guild.members.fetch({user:id,force:true})
+    if(member.user.bot)throw Error('Only confirmed human player accounts can receive this role.')
+    members.push({name,member})
+  }
+  const matches=[...(await guild.roles.fetch()).values()].filter(role=>role.name==='Lobo top 40')
+  if(matches.length>1)throw Error('More than one Lobo top 40 role exists. Resolve the duplicate roles first.')
+  let role=matches[0]
+  if(role && (role.managed || role.permissions.bitfield!==0n || !role.editable))throw Error('The existing role is managed, has additional permissions, or is above the helper. No assignments were changed.')
+  if(!role)role=await guild.roles.create({name:'Lobo top 40',permissions:[],hoist:false,mentionable:false,reason:'Lobo requested a role for the confirmed Top 40 player accounts.'})
+  let assigned=0,already=0;const failed=[]
+  for(const {name,member} of members) {
+    if(member.roles.cache.has(role.id)){already++;continue}
+    try {
+      const updated=await member.roles.add(role,'Lobo requested assignment to confirmed Top 40 players.')
+      if(!updated.roles.cache.has(role.id))throw Error('Role assignment could not be verified.')
+      assigned++
+    } catch {failed.push(name)}
+  }
+  return {assigned,already,failed}
+}
+
 export const TOP40_COMMAND = {
   name:'top40',description:'Manage Top 40 matchup pings and three-day scheduling checks',dmPermission:false,defaultMemberPermissions:PermissionFlagsBits.ManageGuild.toString(),
   options:[
     {name:'status',description:'Check bracket monitoring and player account links',type:Type.Subcommand},
+    {name:'role',description:'Lobo only: assign Lobo top 40 to the confirmed player accounts',type:Type.Subcommand,options:[{name:'expected_count',description:'Expected number of confirmed players; stops if the count changed',type:Type.Integer,required:true,minValue:1,maxValue:1000}]},
     {name:'link',description:'Lobo only: confirm a portal player’s Discord account',type:Type.Subcommand,options:[{name:'player',description:'Exact Top 40 portal player name',type:Type.String,required:true},{name:'account',description:'The verified Discord player',type:Type.User,required:true}]},
     {name:'channel',description:'Lobo only: choose the Top 40 scheduling channel',type:Type.Subcommand,options:[{name:'destination',description:'The event scheduling channel',type:Type.Channel,required:true,channelTypes:[ChannelType.GuildText]}]},
   ],
@@ -192,6 +219,12 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
           if(Object.entries(state.links).some(([key,value])=>key!==normalize(name)&&value.userId===user.id)){await reply('That account is already linked to another Top 40 player.');return}
           state.links[normalize(name)]={userId:user.id,confirmedBy:interaction.user.id,confirmedAt:new Date(now()).toISOString()};await store.write(state)
           await reply(`Confirmed the Discord account for ${text(name)}. Match notifications will use this account.`)
+        } else if(command==='role') {
+          const projection=await source(),linked=await accounts(projection,state)
+          try {
+            const result=await assignTop40Role(guild,linked,interaction.options.getInteger('expected_count',true))
+            await reply(`Lobo top 40: ${result.assigned+result.already}/${linked.size} confirmed players have the role (${result.assigned} assigned, ${result.already} already assigned).${result.failed.length?` Could not assign: ${result.failed.map(text).join(', ')}. You can retry the command.`:''}`)
+          } catch(error){await reply(text(error.message))}
         } else if(command==='channel') {
           const selected=interaction.options.getChannel('destination',true)
           if(selected.guildId!==AURORA_DISCORD_GUILD_ID || selected.type!==ChannelType.GuildText){await reply('Choose a text channel in this server.');return}

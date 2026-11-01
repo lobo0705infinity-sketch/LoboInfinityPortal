@@ -15,6 +15,7 @@ Existing Aurora VII registrations explicitly link a portal player name to a Disc
 Owner-only commands, with private replies:
 
 - `/top40 status` reports linked accounts, missing names and active-match monitoring.
+- `/top40 role expected_count:<count>` creates the permission-free **Lobo top 40** role and assigns it to the current confirmed human accounts. It stops if the count has changed, reuses only an editable permission-free role with the exact name, preserves existing roles, and reports any failed assignments. Repeating it is safe; it does not automatically assign future account links.
 - `/top40 link player:<exact portal name> account:<Discord user>` confirms an account on the persistent volume. Only registered Top 40 players and human guild members are accepted.
 - `/top40 channel destination:<text channel>` changes the event notification destination.
 
