@@ -57,6 +57,7 @@ function extractCommissionerItems(source) {
 
 function assertExactCommissionerNavigation(source, failures) {
   const expected = [
+    ['Aurora VII Publication', '/commissioner/aurora-vii'],
     ['Command Center', '/commissioner'],
     ['Events', '/commissioner/events'],
     ['Games & Army Lists', '/commissioner/game-center'],

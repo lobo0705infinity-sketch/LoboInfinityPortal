@@ -77,10 +77,10 @@ function addTop40FormFields_(form, players, missions, factions) {
     } else if (source === "paragraph") item=form.addParagraphTextItem().setTitle(spec[0]).setRequired(spec[2]);
     else item=form.addListItem().setTitle(spec[0]).setChoiceValues(source === "players" ? unavailable : source === "missions" ? missions : source === "factions" ? factions : source).setRequired(spec[2]);
   });
-  form.setAcceptingResponses(players.length > 0);
+  form.setAcceptingResponses(false);
 }
 
-function refreshTop40GameSubmissionForm() {
+function refreshTop40GameSubmissionForm(releasing) {
   const form=FormApp.openById(lifRequireProperty_(LIF_FORMS.PROPERTIES.TOP40_FORM_ID));
   // Refresh branding on the existing form without changing fields, responses or destination.
   form.setTitle(LIF_FORMS.FORM_TITLES.TOP40).setDescription("Submit a completed Lobo's Top 40 bracket game.");
@@ -91,7 +91,7 @@ function refreshTop40GameSubmissionForm() {
     if(items.length!==1) throw new Error("Top 40 Form requires exactly one " + title + " dropdown.");
     items[0].asListItem().setChoiceValues(values).setRequired(true);
   });
-  form.setAcceptingResponses(players.length > 0);
+  form.setAcceptingResponses(players.length > 0 && (releasing === true || readEventBracketMatches_(TOP40_FORM_EVENT_ID).some(function(match){return !!match.activatedAt;})));
   return inspectTop40GameSubmissionForm();
 }
 

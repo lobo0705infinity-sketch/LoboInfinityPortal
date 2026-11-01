@@ -1,3 +1,4 @@
+import Top40PublicationStatus from './Top40PublicationStatus'
 import Top40MapPage from './Top40MapPage'
 import { eventEditionName, eventLifecycle, isPastEvent } from '../config/eventLifecycle'
 import AuroraPortalCard from '../campaign/AuroraPortalCard'
@@ -65,7 +66,8 @@ const LittleHelper = lazy(() => import('../pages/LittleHelper'))
 const MapLibrary = lazy(() => import('./MapLibrary'))
 
 export default function SnapshotPublicApp() {
-  return <Routes>
+  const location = useLocation()
+  return <>{/\/event\/(?:lobos-top-40|event-lobo-s-american-top-40)(?:\/|$)/.test(location.pathname) ? <Top40PublicationStatus/> : null}<Routes>
     <Route path="/" element={<Dashboard />} />
     <Route path="/dashboard" element={<Dashboard />} />
     <Route path="/players" element={<Players />} />
@@ -127,7 +129,7 @@ export default function SnapshotPublicApp() {
     <Route path="/notifications" element={<Navigate replace to="/community" />} />
     <Route path="/timeline" element={<Navigate replace to="/community" />} />
     <Route path="*" element={<NotFound />} />
-  </Routes>
+  </Routes></>
 }
 
 function TeamTournamentTeamsRedirect(){const {eventId=''}=useParams();return <Navigate replace to={`/event/${eventId}`}/>}

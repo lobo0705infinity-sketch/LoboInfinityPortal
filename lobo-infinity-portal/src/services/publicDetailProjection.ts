@@ -1,5 +1,6 @@
+import { getTop40LivePublicData, mergeTop40LiveDataset } from './top40LivePublicData'
 import type { ArmyIntelligenceFactionData, ArmyIntelligenceList, CommissionerNewsItem, RecentGame, StreamedGame, SubmittedArmyListEntry } from './api'
-import { getPublicSnapshotDataset } from './publicSnapshot'
+import { getPinnedPublicSnapshot, getPublicSnapshotDataset } from './publicSnapshot'
 
 export type PublicSubmittedArmyList = SubmittedArmyListEntry & {
   sectorial?: string
@@ -34,12 +35,16 @@ function hydrateRecentGames(references: Array<{ id: number }> = [], games: Recen
 
 export const publicDetailProjection = {
   getGames: async (signal?: AbortSignal): Promise<PublicGameCommunityData> => {
-    const [games, community, armyLists, missions] = await Promise.all([
+    const [snapshotGames, community, snapshotArmyLists, missions] = await Promise.all([
       readGames(signal),
       getPublicSnapshotDataset<Community[]>('community', signal),
       getPublicSnapshotDataset<PublicSubmittedArmyList[]>('army-lists', signal),
       getPublicSnapshotDataset<SnapshotMission[]>('missions', signal),
     ])
+    const [candidate, current] = await Promise.all([getTop40LivePublicData().catch(() => null), getPinnedPublicSnapshot(signal)])
+    const live = candidate && Date.parse(candidate.generatedAt) >= Date.parse(current.sourceCutoff) ? candidate : null
+    const games = live ? mergeTop40LiveDataset('games', snapshotGames, live) : snapshotGames
+    const armyLists = live ? mergeTop40LiveDataset('army-lists', snapshotArmyLists, live) : snapshotArmyLists
     const narrativesByMission = new Map(missions.map((mission) => [mission.mission, mission.reviewNarratives ?? []]))
     const missionCounts = new Map<string, number>()
     const shapeIndices = new Map<number, number>()

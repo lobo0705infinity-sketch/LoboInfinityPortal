@@ -47,7 +47,7 @@ assert.match(gameDetails, /<GameReview armyLists=\{armyLists\} game=\{game\} int
 assert.match(gameDetails, /Reading the result/)
 assert.match(gameDetails, /What the lists brought/)
 assert.match(gameDetails, /Battle story/)
-assert.match(gameDetails, /review\.story/)
+assert.match(gameDetails, /loadBattleStory/)
 assert.match(gameDetails, /Coaching notes/)
 assert.match(gameDetails, /Submitted forces/)
 assert.match(gameDetails, /review\.evidenceNote/)

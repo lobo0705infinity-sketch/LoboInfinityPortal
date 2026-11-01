@@ -1,3 +1,4 @@
+import { getTop40LivePublicData } from './top40LivePublicData'
 import type { EventBracketData, EventHomeData, EventRegistrationData } from './api'
 import { getPinnedPublicSnapshot, getPublicSnapshotDataset } from './publicSnapshot'
 
@@ -34,6 +35,13 @@ export type PublicEventProjection = {
 }
 
 export async function getPublicEventProjection(eventId: string, options: { signal?: AbortSignal } = {}) {
+  if (eventId === 'event-lobo-s-american-top-40') {
+    try {
+      const live = (await getTop40LivePublicData()).projection
+      const current = await getPinnedPublicSnapshot(options.signal)
+      if (live?.home?.event?.id === eventId && live.bracket?.eventId === eventId && Date.parse(live.generatedAt) >= Date.parse(current.sourceCutoff)) return live
+    } catch { /* Keep the validated fixed snapshot available during publication outages. */ }
+  }
   const snapshot = await getPinnedPublicSnapshot(options.signal)
   const events = await getPublicSnapshotDataset<SnapshotEvent[]>('events', options.signal)
   const event = events.find((item) => item.id === eventId)

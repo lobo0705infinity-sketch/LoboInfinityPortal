@@ -1,3 +1,4 @@
+import { preparationDate } from '../public/top40PreparationModel'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import {
   apiClient,
@@ -579,7 +580,7 @@ function EventManagerPanelInner({
       <div className="event-manager">
         <div className="panel-heading"><p className="eyebrow">Tournament Operations</p><h2>Top 40 Operations</h2></div>
         <p>Registration accepts more than 40 players. After closing registration, keep selected players Registered and mark other applicants Waitlisted in Event Manager. Seed the final field of up to 40 players before generating the bracket.</p>
-        {isIndividualDoubleElimination ? <><TournamentSeedingPanel canManage={canManage} key={`${data.selectedEvent.id}-${data.generatedAt}`} onSave={saveSeeding} participants={data.participants} working={workingAction !== ''} /><BracketGenerationPanel canManage={canManage} eventId={data.selectedEvent.id} /></> : <p>This tool is available for the Top 40 event only.</p>}
+        {isIndividualDoubleElimination ? <><TournamentSeedingPanel eventId={data.selectedEvent.id} canManage={canManage} key={`${data.selectedEvent.id}-${data.generatedAt}`} onSave={saveSeeding} participants={data.participants} working={workingAction !== ''} /><BracketGenerationPanel canManage={canManage} eventId={data.selectedEvent.id} /></> : <p>This tool is available for the Top 40 event only.</p>}
       </div>
     )
   }
@@ -970,6 +971,7 @@ function EventManagerPanelInner({
           {isIndividualDoubleElimination ? (
             <>
               <TournamentSeedingPanel
+                eventId={data.selectedEvent.id}
                 canManage={canManage}
                 key={`${data.selectedEvent.id}-${data.generatedAt}`}
                 onSave={saveSeeding}
@@ -1019,7 +1021,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
   const [savingDeadline, setSavingDeadline] = useState('')
   const [forfeitWinners, setForfeitWinners] = useState<Record<string, string>>({})
   const [awardingForfeit, setAwardingForfeit] = useState('')
-  const [missionDrafts, setMissionDrafts] = useState<Record<string, { mission: string; missionGeistId: string }>>({})
+  const [missionDrafts, setMissionDrafts] = useState<Record<string, { mission: string; missionGeistId: string; map?: string }>>({})
   const [missionCatalog, setMissionCatalog] = useState<MissionGeistCatalogMission[]>([])
   const [savingMissions, setSavingMissions] = useState(false)
   const loadBracket = useCallback(() => {
@@ -1027,7 +1029,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
       setBracket(nextBracket)
       setMissionDrafts(Object.fromEntries(nextBracket.missions.map((assignment) => [
         `${assignment.bracket}:${assignment.bracketRound}`,
-        { mission: assignment.mission, missionGeistId: assignment.missionGeistId || '' },
+        { mission: assignment.mission, missionGeistId: assignment.missionGeistId || '', map: assignment.map || '' },
       ])))
     }).catch((reason: unknown) =>
       setError(reason instanceof Error ? reason.message : 'Bracket status could not be loaded.'),
@@ -1061,6 +1063,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
     try {
       setBracket(await apiClient.generateEventBracket(eventId))
       setMessage('Bracket prepared. Deadlines remain paused until opening matches are released.')
+      window.dispatchEvent(new Event('lobo:bracket-prepared'))
     } catch (reason) {
       setMessage('')
       setError(reason instanceof Error ? reason.message : 'Bracket could not be generated.')
@@ -1101,6 +1104,7 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
         bracketRound: round.bracketRound,
         mission: missionDrafts[round.key]?.mission || '',
         missionGeistId: missionDrafts[round.key]?.missionGeistId || '',
+        map: missionDrafts[round.key]?.map || '',
       }))))
       setMessage('Missions saved.')
     } catch (reason) {
@@ -1172,10 +1176,11 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
                     disabled={!canManage || savingMissions}
                     label={bracketName === 'Grand Final' ? 'Mission' : `Round ${round.bracketRound}`}
                     missionGeistId={missionDrafts[round.key]?.missionGeistId || ''}
-                    onChange={(selection) => setMissionDrafts((current) => ({ ...current, [round.key]: selection }))}
+                    onChange={(selection) => setMissionDrafts((current) => ({ ...current, [round.key]: { ...current[round.key], ...selection } }))}
                     options={missionCatalog}
                     value={missionDrafts[round.key]?.mission || ''}
                   />
+                  <label>Map<input aria-label={`${round.bracket} round ${round.bracketRound} map`} disabled={!canManage || savingMissions} value={missionDrafts[round.key]?.map || ''} onChange={(event)=>setMissionDrafts(current=>({...current,[round.key]:{...current[round.key],map:event.target.value}}))}/></label>
                 </div>)}
               </div> : null
             })}
@@ -1197,12 +1202,12 @@ function BracketGenerationPanel({ canManage, eventId }: { canManage: boolean; ev
               <small>Activated At: {formatBracketTimestamp(match.activatedAt)}</small>
             </div>
             <label>
-              Deadline
+              Deadline (Eastern time)
               <input
                 disabled={!canManage || savingDeadline !== ''}
                 onChange={(event) => setDeadlineDrafts((current) => ({ ...current, [match.matchId]: event.target.value }))}
                 type="datetime-local"
-                value={deadlineDrafts[match.matchId] ?? match.deadline.replace(' ', 'T').slice(0, 16)}
+                value={deadlineDrafts[match.matchId] ?? bracketDeadlineInput(match.deadline)}
               />
             </label>
             <button disabled={!canManage || savingDeadline !== ''} onClick={() => saveDeadline(match.matchId)} type="button">
@@ -1241,20 +1246,39 @@ function discoverBracketRounds(bracket: EventBracketData) {
 }
 
 function formatBracketTimestamp(value: string) {
-  return value ? value.replace('T', ' ') : 'Not set'
+  return value ? preparationDate(value) : 'Not set'
+}
+
+function bracketDeadlineInput(value: string) {
+  if (!/(?:Z|[+-]\d{2}:\d{2})$/.test(value)) return value.replace(' ', 'T').slice(0, 16)
+  const date = new Date(value)
+  if (!Number.isFinite(date.getTime())) return ''
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(date)
+  const part = (type: string) => parts.find(item => item.type === type)?.value || ''
+  return `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}`
 }
 
 function TournamentSeedingPanel({
+  eventId,
   canManage,
   onSave,
   participants,
   working,
 }: {
+  eventId: string
   canManage: boolean
   onSave: (assignments: Array<{ player: string; seed: number }>) => Promise<void>
   participants: EventRegistrationEntry[]
   working: boolean
 }) {
+  const [seedLock, setSeedLock] = useState(true)
+  useEffect(() => {
+    let active = true
+    const inspect = () => getEventBracket(eventId).then(value => { if (active) setSeedLock(value.generated) }).catch(() => { if (active) setSeedLock(true) })
+    void inspect()
+    window.addEventListener('lobo:bracket-prepared', inspect)
+    return () => { active = false; window.removeEventListener('lobo:bracket-prepared', inspect) }
+  }, [eventId])
   const registered = participants.filter((participant) => participant.status === 'Registered')
   const [seeds, setSeeds] = useState<Record<string, string>>(() =>
     Object.fromEntries(registered.map((participant) => [participant.player, participant.seed])),
@@ -1289,7 +1313,7 @@ function TournamentSeedingPanel({
 
   return (
     <section className="event-manager-subpanel">
-      <h3>Tournament Seeding</h3>
+      <h3>Tournament Seeding</h3>{seedLock ? <p>Seeding is locked once the bracket is prepared.</p> : null}
       {registered.length === 0 ? (
         <p>No registered players to seed.</p>
       ) : (
@@ -1305,7 +1329,7 @@ function TournamentSeedingPanel({
               <div className="event-manager-row event-manager-seeding-row" key={participant.player} role="row">
                 <input
                   aria-label={`Seed for ${participant.displayName || participant.player}`}
-                  disabled={!canManage || working}
+                  disabled={!canManage || working || seedLock}
                   max={registered.length}
                   min={1}
                   onChange={(event) =>
@@ -1326,7 +1350,7 @@ function TournamentSeedingPanel({
           </div>
           {validationError ? <p role="alert">{validationError}</p> : null}
           <div className="event-manager-actions">
-            <button disabled={!canManage || working} type="submit">
+            <button disabled={!canManage || working || seedLock} type="submit">
               Save Seeding
             </button>
           </div>

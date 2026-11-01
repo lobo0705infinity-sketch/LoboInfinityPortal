@@ -40,7 +40,7 @@ assert.match(dedicatedPageSource, /state === 'closed' \? 'CLOSED'/)
 assert.match(dedicatedPageSource, /\{count\} PLAYERS REGISTERED/)
 assert.match(dedicatedPageSource, /No players registered yet\./)
 assert.match(dedicatedPageSource, /Registration is uncapped/)
-assert.match(dedicatedPageSource, /Updated twice daily/)
+assert.match(dedicatedPageSource, /Updated after event changes and background refreshes/)
 assert.match(dedicatedPageSource, /Last updated:/)
 assert.match(dedicatedPageSource, /useSnapshotData<PublicTop40Registration>\('top-40-registrations'\)/)
 assert.doesNotMatch(dedicatedPageSource, /useEffect|fetch\(|\/api\/public-event-projection|Loading registration snapshot|HTTP \$\{response\.status\}/)
@@ -465,11 +465,11 @@ if (browserBaseUrl) {
       for (const privateValue of ['private@example.com', 'private-discord', 'I agree', 'Loading registration snapshot', 'HTTP 500']) {
         assert.equal(html.includes(privateValue), false)
       }
-      assert.ok(html.includes('Updated twice daily'))
+      assert.ok(html.includes('Updated after event changes and background refreshes'))
       assert.ok(html.includes('Last updated:'))
       assert.equal(requests.filter((url) => /public-snapshots\/current\.json/.test(url)).length, 1)
       assert.equal(requests.filter((url) => /top-40-registrations\.json/.test(url)).length, 1)
-      assert.equal(requests.some((url) => /public-event-projection|script\.google|docs\.google\.com\/forms|spreadsheets|registration(?:-data)?\/api/i.test(url)), false)
+      assert.equal(requests.some((url) => /script\.google|docs\.google\.com\/forms|spreadsheets|registration(?:-data)?\/api/i.test(url)), false)
       await page.getByText('Registration is uncapped.', { exact: false }).waitFor()
       await page.close()
     }

@@ -70,8 +70,8 @@ assert.equal(two.find((match) => match.matchId === 'GF-M1').status, 'Pending')
 const activeFixture = two.find((match) => match.matchId === 'W1-M1')
 const automaticDeadline = activeFixture.deadline
 const changedDeadline = context.validateEventBracketDeadline_(activeFixture.activatedAt, '2026-09-12 18:00:00')
-assert.equal(changedDeadline, '2026-09-12 18:00:00')
-assert.equal(activeFixture.activatedAt, '2026-09-03 20:17:00')
+assert.equal(changedDeadline, '2026-09-12T22:00:00.000Z')
+assert.equal(activeFixture.activatedAt, '2026-09-04T00:17:00.000Z')
 assert.notEqual(changedDeadline, automaticDeadline)
 assert.throws(() => context.validateEventBracketDeadline_(activeFixture.activatedAt, '2026-09-03 20:16:00'), /seven full days/)
 
@@ -98,3 +98,11 @@ console.log('PASS past deadline: Active with no winner, loser, or progression')
 console.log('PASS manual deadline edit: Activated At unchanged')
 console.log('PASS unauthorized edit: protected by runSeasonControl; provisioning token is not accepted')
 console.log('PASS bracket match lifecycle and rolling deadline contract')
+
+const dst = context.buildDoubleEliminationBracket_("event-dst", entrants(25));
+context.activatePlayableEventBracketMatches_(dst, new Date("2026-10-31T12:00:00-04:00"));
+for (const match of dst.filter(m=>m.status==="Active")) {
+ assert.equal(match.deadline,"2026-11-07T16:00:00.000Z");
+ assert.equal(Date.parse(match.deadline)-Date.parse(match.activatedAt),7*24*60*60*1000);
+}
+console.log("PASS exact seven-day allowance across Eastern daylight-saving fallback");

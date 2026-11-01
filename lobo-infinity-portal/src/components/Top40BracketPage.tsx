@@ -4,7 +4,7 @@ import { buildCapabilityNavigation, getEventNavigationConfig } from '../config/e
 import type { PublicEvent } from '../public/snapshotTypes'
 import { useSnapshotData } from '../public/useSnapshotData'
 import { buildTop40BracketSections, top40BracketSlot } from '../public/top40BracketModel'
-import { preparationDate, TOP40_EVENT_ID } from '../public/top40PreparationModel'
+import { preparationDate, TOP40_EVENT_ID, TOP40_PLANNED_OPENING_LABEL } from '../public/top40PreparationModel'
 import './Top40BracketPage.css'
 
 export default function Top40BracketPage() {
@@ -20,6 +20,8 @@ export default function Top40BracketPage() {
     <section className="panel top40-bracket-intro" aria-labelledby="top40-bracket-title">
       <p className="eyebrow">Lobo&apos;s Top 40</p><h2 id="top40-bracket-title">Tournament Bracket</h2>
       <p>{event?.registeredCount || event?.participants?.length || 'The registered'} players enter a double-elimination bracket. A player is eliminated after their second loss.</p>
+      <p>Planned opening: {TOP40_PLANNED_OPENING_LABEL}. The Organizer releases matches manually.</p>
+      <p><a href="/guides/Lobos-Top-40-25-Player-Bracket-20261101-0900-ET.pdf" download>Download the 25-player bracket and mission rotation (PDF)</a></p>
       <p>The Grand Final resets if the Losers Bracket finalist wins the first final.</p>
       {sections.length ? <p role="status">{released ? 'Matches released · see individual deadlines below.' : 'Bracket prepared · opening matches have not been released. Deadlines are paused.'}</p> : null}
       {events.error ? <div role="alert"><p>The bracket is temporarily unavailable.</p><button onClick={events.retry} type="button">Try again</button></div> : !events.data ? <p role="status">Loading bracket…</p> : !sections.length ? <p>The bracket has not been prepared yet.</p> : null}

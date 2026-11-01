@@ -37,7 +37,8 @@ function saveEventBracketMissions(e) {
       const validated = validateEventBracketMissionAssignments_(eventId, matches, assignments);
       persistEventBracketMissionAssignments_(eventId, validated);
       if (matches.some(function(match){ return !!match.activatedAt; })) {
-        activatePlayableEventBracketMatches_(matches, new Date(), { requireAssignedMission:true });
+        if (eventId === "event-lobo-s-american-top-40") refreshTop40GameSubmissionForm(true);
+      activatePlayableEventBracketMatches_(matches, new Date(), { requireAssignedMission:true });
         writeEventBracketMatches_(eventId, matches);
       }
       recordEventManagerAudit(auth, eventId, "Bracket missions saved", validated.filter(function(item){ return item.mission; }).length + " assigned rounds");
@@ -326,6 +327,7 @@ function releaseEventBracket(e) {
         return !getEventBracketMission_(eventId, round.bracket, round.bracketRound);
       });
       if (missing.length) throw new Error("Assign the complete mission pool before releasing opening matches.");
+      if (eventId === "event-lobo-s-american-top-40") refreshTop40GameSubmissionForm(true);
       activatePlayableEventBracketMatches_(matches, new Date(), { requireAssignedMission:true });
       validateEventBracketLifecycle_(matches);
       writeEventBracketMatches_(eventId, matches);
@@ -360,7 +362,7 @@ function isRealEventBracketPlayer_(player) {
 }
 
 function formatEventBracketTimestamp_(value) {
-  return Utilities.formatDate(value, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+  return value.toISOString();
 }
 
 function parseEventBracketTimestamp_(value) {

@@ -13,7 +13,7 @@ export default async function handler(request, response) {
     return
   }
 
-  const pathname = String(request.query?.page || '').split('?')[0]
+  const pathname = String(request.url ? new URL(request.url, SITE_ORIGIN).searchParams.get('page') || '' : request.query?.page || '').split('?')[0]
   if (!pathname.startsWith('/') || pathname.length > 300) {
     response.status(400).end('Invalid public page')
     return

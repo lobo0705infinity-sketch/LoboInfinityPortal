@@ -89,7 +89,7 @@ export default function Top40ResultsPage() {
         {!event || rows.length === 0 ? (
           <div className="top40-results-empty">
             <h2>No results yet</h2>
-            <p>Completed Top 40 matches will appear here in the next hourly public snapshot.</p>
+            <p>Completed Top 40 matches will appear here after event publication; background refreshes run throughout the day.</p>
           </div>
         ) : visibleRows.length === 0 ? (
           <div className="top40-results-empty">

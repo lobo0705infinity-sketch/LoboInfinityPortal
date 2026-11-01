@@ -121,6 +121,7 @@ function buildTop40PublicProjection_() {
     eventId: TOP40_PUBLIC_EVENT_ID,
     generatedAt: new Date().toISOString(),
     home: home,
+    publicData: buildTop40LivePublicData_(),
     bracket: bracketResponse.bracket
   };
 }
@@ -170,4 +171,30 @@ function getTop40PublicProjectionFileId_() {
   return PropertiesService.getScriptProperties().getProperty(
     TOP40_PUBLIC_PROJECTION_FILE_PROPERTY
   ) || "";
+}
+
+// Reuse the exporter's explicit public field projections. The event, games and
+// lists travel together so a freshly advanced bracket never loses its result.
+function buildTop40LivePublicData_() {
+  const spreadsheet = lifGetTargetSpreadsheet_();
+  const read = function(name) { return freezePublicSnapshotTable_(readPublicSnapshotSheet_(spreadsheet, name)); };
+  const frozen = {
+    participantsTable:read(CONFIG.SHEETS.EVENT_PARTICIPANTS),
+    roundsTable:read(CONFIG.SHEETS.EVENT_ROUNDS),
+    bracketTable:read(CONFIG.SHEETS.EVENT_BRACKET_MATCHES),
+    bracketMissionsTable:read(CONFIG.SHEETS.EVENT_BRACKET_MISSIONS),
+    teamsTable:{headers:[],rows:[]}, pairingsTable:{headers:[],rows:[]}
+  };
+  const games = buildPublicSnapshotGameContext_(read(CONFIG.SHEETS.FORM), buildPublicSnapshotPlayerIndex_(read(CONFIG.SHEETS.PLAYERS))).filter(function(game){return game.eventId === TOP40_PUBLIC_EVENT_ID;});
+  const state = buildPublicSnapshotEventState_(frozen);
+  enrichPublicSnapshotMissionGeistEventState_(state, getMissionGeistCatalogForPublicSnapshot_());
+  const event = buildPublicSnapshotEvents_(read(CONFIG.SHEETS.EVENTS), games, state, null).filter(function(item){return item.id === TOP40_PUBLIC_EVENT_ID;})[0];
+  if (!event) throw new Error("Top 40 public event is missing.");
+  const data = {
+    event:event,
+    games:buildPublicSnapshotGames_(games, [event]),
+    armyLists:buildPublicSnapshotArmyLists_(readPublicSnapshotPersistedArmyLists_()).filter(function(list){return list.eventId === TOP40_PUBLIC_EVENT_ID;})
+  };
+  assertPublicSnapshotSafe_(data, "top40", "events.json");
+  return data;
 }

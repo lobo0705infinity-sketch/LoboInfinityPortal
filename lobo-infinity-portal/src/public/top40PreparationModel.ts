@@ -2,7 +2,8 @@ import type { PublicArmyList, PublicEvent, PublicMissionAssignment, PublicSchedu
 
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
 // Start date announced by the Commissioner; the event snapshot takes precedence.
-export const TOP40_ANNOUNCED_START_DATE = '2026-11-01'
+export const TOP40_ANNOUNCED_START_DATE = '2026-11-01T09:00:00-05:00'
+export const TOP40_PLANNED_OPENING_LABEL = 'November 1, 2026 · 9:00 a.m. Eastern (EST)'
 export type Top40Registration = { generatedAt: string; players: Array<{ name: string; position: number }> }
 export type PreparationAssignment = { id: string; label: string; mission: string; missionGeistId?: string; missionGeistCanonicalUrl?: string; maps: string[] }
 
@@ -65,10 +66,10 @@ export function preparationDate(value: string): string {
     return date.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
   }
   // Preserve published wall times when no timezone was supplied.
-  if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2})?$/.test(value)) return `${value.replace('T', ' ')} (published time)`
+  if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2})?$/.test(value)) return `${value.replace('T', ' ')} Eastern (legacy timestamp)`
   if (!/(?:Z|[+-]\d{2}:\d{2})$/.test(value)) return 'To be announced'
   const date = new Date(value)
-  return Number.isFinite(date.getTime()) ? date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : 'To be announced'
+  return Number.isFinite(date.getTime()) ? date.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York', timeZoneName: 'short' }) : 'To be announced'
 }
 
 export function top40RegistrationState(event?: PublicEvent): 'open' | 'closed' | 'unknown' {

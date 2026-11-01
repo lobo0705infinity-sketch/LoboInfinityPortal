@@ -90,7 +90,7 @@ export default function Top40RegistrationPage() {
           <div className="top40-registration-roster-heading">
             <p className="eyebrow">Public Roster</p>
             <h2 id="top40-registration-roster-title">Registered Players</h2>
-            <p className="top40-registration-update-label">Updated twice daily</p>
+            <p className="top40-registration-update-label">Updated after event changes and background refreshes</p>
             {registration
               ? <p className="top40-registration-updated-at">Last updated: {formatSnapshotTimestamp(registration.generatedAt)}</p>
               : null}

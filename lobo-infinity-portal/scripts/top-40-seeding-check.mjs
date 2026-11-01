@@ -52,7 +52,8 @@ check(backendSource.includes('.setValues(seedValues)') && !backendSource.include
 check(!backendSource.includes('EVENT_PROVISIONING_TOKEN'), 'Event provisioning authorization cannot seed players.')
 
 const seedingBackend = backendSource.slice(backendSource.indexOf('function saveEventManagerSeeding_'), backendSource.indexOf('function saveEventManagerTeam'))
-check(!/bracket|match activation|deadline/i.test(seedingBackend), 'Saving seeds does not generate bracket, match, or deadline state.')
+check(!/persistEventBracketMatches_|writeEventBracketMatches_|activatePlayableEventBracketMatches_|setEventBracketDeadline/.test(seedingBackend), 'Saving seeds does not generate bracket, match, or deadline state.')
+check(/readEventBracketMatches_\(eventId\)\.length/.test(seedingBackend), 'Prepared brackets lock seed changes under the mutation lock.')
 check(!/updateEventManagerEventFields|setRegistration|lifecycleStage/.test(seedingBackend), 'Saving seeds does not change registration or lifecycle state.')
 
 check(playersSource.includes("participant.status === 'Registered'"), 'Public Players uses Registered event participants.')

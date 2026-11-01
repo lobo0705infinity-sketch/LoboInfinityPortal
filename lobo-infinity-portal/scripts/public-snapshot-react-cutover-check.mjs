@@ -15,7 +15,7 @@ const checks = [
   [!client.includes('API_URL') && !client.includes('/api/'), 'no Apps Script or endpoint fallback'],
   [api.includes('...publicSnapshotApi'), 'public API compatibility adapter'],
   [!eventProjection.includes('/api/public-event-projection'), 'event projection uses snapshot'],
-  [!teamProjection.includes('/api/public-team-tournament-projection'), 'Team Tournament uses snapshot'],
+  [teamProjection.includes('/api/public-team-tournament-projection') && teamProjection.includes('Team Tournament event isolation failed'), 'Team Tournament uses its validated prepared projection'],
   [eventProjection.includes('capabilities: Array.isArray(event.capabilities) ? event.capabilities : []'), 'EventHome capabilities compatibility'],
 ]
 

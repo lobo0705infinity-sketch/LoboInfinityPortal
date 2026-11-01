@@ -8,7 +8,7 @@ export default async function handler(request, response) {
   }
 
   const startedAt = performance.now()
-  const eventId = String(request.query?.eventId || '').trim()
+  const eventId = String(request.url ? new URL(request.url, 'https://lobo-infinity-portal.vercel.app').searchParams.get('eventId') || '' : request.query?.eventId || '').trim()
   if (eventId !== TOP40_EVENT_ID) {
     response.status(404).json({ error: 'Public event projection was not found.', success: false })
     return
@@ -41,7 +41,7 @@ export default async function handler(request, response) {
 
     const body = JSON.stringify({ projection, success: true })
     const totalMs = performance.now() - startedAt
-    response.setHeader('cache-control', 'public, s-maxage=30, stale-while-revalidate=86400')
+    response.setHeader('cache-control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=5')
     response.setHeader('content-type', 'application/json; charset=utf-8')
     response.setHeader('server-timing', `projection-source;dur=${sourceMs.toFixed(1)}, total;dur=${totalMs.toFixed(1)}`)
     response.setHeader('x-lobo-projection-generated-at', String(projection.generatedAt || ''))

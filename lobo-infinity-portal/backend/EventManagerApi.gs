@@ -445,6 +445,8 @@ function saveEventManagerSeeding_(eventId, serializedAssignments, auth) {
   lock.waitLock(10000);
 
   try {
+    if (readEventBracketMatches_(eventId).length)
+      throw new Error("Seeding is locked because the bracket has been prepared.");
     const sheet = ensureEventEngineSheet(
       CONFIG.SHEETS.EVENT_PARTICIPANTS,
       EVENT_ENGINE_PARTICIPANT_HEADERS

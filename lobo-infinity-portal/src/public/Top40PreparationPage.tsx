@@ -9,7 +9,7 @@ import { loboWorkshopMaps, LOBO_WORKSHOP_URL } from '../../shared/lobo-workshop-
 import type { MissionGeistCatalog } from '../services/publicSnapshot'
 import type { PublicArmyList, PublicEvent, PublicSchedule } from './snapshotTypes'
 import { useSnapshotData } from './useSnapshotData'
-import { activePreparationMatches, buildPreparationAssignments, groupPublicEventLists, isTop40Registration, preparationDate, top40RegistrationState, TOP40_ANNOUNCED_START_DATE, TOP40_EVENT_ID, type PreparationAssignment } from './top40PreparationModel'
+import { activePreparationMatches, buildPreparationAssignments, groupPublicEventLists, isTop40Registration, preparationDate, top40RegistrationState, TOP40_PLANNED_OPENING_LABEL, TOP40_EVENT_ID, type PreparationAssignment } from './top40PreparationModel'
 import './Top40PreparationPage.css'
 
 const checklistKey = 'lobo:event-preparation:v1:top40'
@@ -41,7 +41,7 @@ export default function Top40PreparationPage() {
   return <main className="portal-shell snapshot-public-page top40-preparation-page" data-event="top40-preparation">
     <CompactArtwork title="Lobo’s Top 40" eyebrow="Event preparation" src="/assets/events/top-40-overview-v2.png"/>
     <EventSectionTabs eventId={TOP40_EVENT_ID} items={['overview', 'registration', 'bracket', 'results', 'rules']}/>
-    <header className="top40-preparation-heading"><div><p className="eyebrow">300 points · Double elimination</p><h1>Get ready for the tournament</h1><p>Registration, deadlines, missions, maps, and public army lists in one place.</p></div><span>Starts {preparationDate(event?.startDate || TOP40_ANNOUNCED_START_DATE)}</span></header>
+    <header className="top40-preparation-heading"><div><p className="eyebrow">300 points · Double elimination</p><h1>Get ready for the tournament</h1><p>Registration, deadlines, missions, maps, and public army lists in one place.</p></div><span>Planned opening: {TOP40_PLANNED_OPENING_LABEL}</span></header>
     {events.error ? <DataNotice message="Event details are temporarily unavailable." retry={events.retry}/> : null}
     <div className="top40-preparation-grid">
       <div className="top40-preparation-stack">
@@ -53,7 +53,7 @@ export default function Top40PreparationPage() {
           {registration ? <small>Roster updated {preparationDate(registration.generatedAt)}</small> : null}
         </PreparationPanel>
         <PreparationPanel title="Dates & deadlines">
-          <dl className="top40-preparation-facts"><Fact label="Tournament begins" value={preparationDate(event?.startDate || TOP40_ANNOUNCED_START_DATE)}/><Fact label="Registration closes" value={state === 'closed' ? 'Closed' : 'To be announced'}/><Fact label="Complete your match" value="At least 7 full days once it becomes active"/></dl>
+          <dl className="top40-preparation-facts"><Fact label="Planned opening" value={TOP40_PLANNED_OPENING_LABEL}/><Fact label="Release" value="Manual release by the Organizer; clocks remain paused until release"/><Fact label="Registration closes" value={state === 'closed' ? 'Closed' : 'To be announced'}/><Fact label="Complete your match" value="At least 7 full days once it becomes active"/></dl>
           {matches.length ? <ul className="top40-preparation-matches">{matches.map((match, index) => <li key={match.id || index}><strong>{match.playerA || 'Player pending'} vs {match.playerB || 'Player pending'}</strong><span>{match.id} · Deadline: {match.deadline ? preparationDate(match.deadline) : 'Awaiting assignment'}</span></li>)}</ul> : <p className="top40-preparation-divider">Specific match deadlines will appear here when matches become active.</p>}
           <Link to={`/event/${TOP40_EVENT_ID}/bracket`}>View tournament bracket →</Link>
         </PreparationPanel>
