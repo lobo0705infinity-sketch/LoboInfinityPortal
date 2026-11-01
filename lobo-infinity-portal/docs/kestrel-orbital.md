@@ -68,3 +68,11 @@ remain level. Three nearby scatter pieces move to maintain safe approaches.
 R7 encodes the world-space ground through the inverse native OBJ X reflection
 and reverses triangle winding. The renderer and collision checks decode that
 import transform, keeping craters and ridgelines aligned with the level pads.
+
+R8 replaces the faint below-grade crater basins with three distinct models: a
+darker recessed bowl and raised ejecta rim for each impact site. All visible
+bowl surfaces remain above the base/table plane. Irregular rim crests stand
+roughly 1.2–1.4 inches above each bowl, with low access saddles. Three more
+ridgelines bring the total to six; a redundant barrier is replaced by geology.
+Forty-millimetre routes, flat facility pads, objective access and the original
+controls remain checked. A dedicated actual-geometry crater close-up is included.
