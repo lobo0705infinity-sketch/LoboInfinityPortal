@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-01T19:52:12.880499+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r4/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-01T20:12:29.922310+00:00",
+  "download": "/assets/maps/nereid-deep-20261101-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -884,27 +884,32 @@
       "id": "3719263238:100e3e",
       "guid": "100e3e",
       "slug": "outbreak-2",
-      "name": "Skyrail Exchange",
-      "workshopName": "ITS18 Outbreak — Skyrail Exchange — REVISED",
-      "workshopBagName": "SET_ITS18 Outbreak — Skyrail Exchange — REVISED",
+      "name": "Nereid Deep",
+      "workshopName": "ITS18 Outbreak - Nereid Deep R1",
+      "workshopBagName": "SET_ITS18 Outbreak - Nereid Deep R1",
       "collectionTitle": "ITS Season 18",
-      "family": "Diagonal deployment",
-      "layoutKey": 12,
+      "family": "Undersea research station / corner deployment",
+      "layoutKey": 2014,
       "missionSetups": [
         "Outbreak"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 91,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/outbreak-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/outbreak-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/outbreak-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/outbreak-2.json",
+      "objectCount": 37,
+      "sourceNote": "Original undersea station terrain by Lobo and ChatGPT. Nine furnished pressure modules, a two-storey command observatory, submarine bay, curved hulls, open doors/windows and photographic materials. Previews render the exported models. Infantry/55 mm routes, quarter-inch heights, state cleanup and current map controls pass offline checks; live TTS physics and playtesting remain pending.",
+      "overhead": "/assets/maps/nereid-deep-20261101-r1/overhead.webp",
+      "angled": "/assets/maps/nereid-deep-20261101-r1/angled.webp",
+      "diagram": "/assets/maps/nereid-deep-20261101-r1/deployment.webp",
+      "download": "/assets/maps/nereid-deep-20261101-r1/Nereid-Deep-Outbreak-R1.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/12-normal-7-irl-tourney-overhead.jpg",
-      "sourceAngled": "/assets/maps/12-normal-7-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5f071262-e950-41d8-acef-09ee3536fcae"
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5f071262-e950-41d8-acef-09ee3536fcae",
+      "labelAliases": [
+        "ITS18 Outbreak — Skyrail Exchange — REVISED",
+        "SET_ITS18 Outbreak — Skyrail Exchange — REVISED"
+      ],
+      "captureDate": "2026-11-01"
     },
     {
       "index": 33,
@@ -1142,5 +1147,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r4"
+  "downloadRevision": "Nereid Deep R1: replaces Outbreak Skyrail Exchange, retaining the other 39 map exports."
 }
