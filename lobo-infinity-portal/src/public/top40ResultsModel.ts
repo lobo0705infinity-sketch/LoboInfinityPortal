@@ -4,6 +4,7 @@ export type Top40ResultRow = {
   bracket: string
   game: PublicGame
   round: string
+  sides: [Top40ResultSide, Top40ResultSide]
 }
 
 type BracketRecord = Record<string, unknown>
@@ -42,6 +43,7 @@ export function buildTop40ResultRows(event: PublicEvent, games: PublicGame[]): T
     return {
       bracket: bracketLabel(bracketRecord),
       game,
+      sides: getTop40ResultSides(game),
       round: roundLabel(bracketRecord),
     }
   }).sort((left, right) => {
@@ -91,4 +93,38 @@ export function filterTop40ResultRows(
     ].join(' ').toLocaleLowerCase()
     return players.includes(normalizedQuery)
   })
+}
+
+export type Top40ResultSide = {
+  player: string
+  name: string
+  faction: string
+  result: 'Winner' | 'Defeated' | 'Draw' | 'Result unavailable'
+  tp: string
+  op: string
+  vp: string
+}
+
+// Public score pairs are winner–loser, independently of who submitted the game.
+// Draws retain player1–player2 order. Never infer a winner from a score magnitude.
+export function getTop40ResultSides(game: PublicGame): [Top40ResultSide, Top40ResultSide] {
+  const normalize = (value: string) => String(value || '').trim().toLocaleLowerCase()
+  const draw = normalize(game.winner) === 'draw'
+  const players = [
+    { player: game.player1, name: game.player1DisplayName || game.player1, faction: game.player1Faction },
+    { player: game.player2, name: game.player2DisplayName || game.player2, faction: game.player2Faction },
+  ]
+  const winnerIndex = players.findIndex(side => normalize(side.player) === normalize(game.winner) && Boolean(side.player))
+  const pair = (value: string) => {
+    const parts = String(value || '').trim().split(/\s*[–—-]\s*/)
+    return parts.length === 2 && parts.every(part => /^\d+$/.test(part)) ? parts : null
+  }
+  const tp = pair(game.tp), op = pair(game.op), vp = pair(game.vp)
+  const sides = players.map((side, index): Top40ResultSide => {
+    const winner = index === winnerIndex
+    const scoreIndex = draw ? index : winnerIndex < 0 ? -1 : winner ? 0 : 1
+    return { ...side, result: draw ? 'Draw' : winnerIndex < 0 ? 'Result unavailable' : winner ? 'Winner' : 'Defeated',
+      tp: tp?.[scoreIndex] ?? '—', op: op?.[scoreIndex] ?? '—', vp: vp?.[scoreIndex] ?? '—' }
+  })
+  return !draw && winnerIndex === 1 ? [sides[1], sides[0]] : [sides[0], sides[1]]
 }

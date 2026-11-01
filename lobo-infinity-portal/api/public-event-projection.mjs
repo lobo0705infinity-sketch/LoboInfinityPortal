@@ -1,3 +1,5 @@
+import { applyTop40MapAssignments } from '../shared/top40-round-maps.mjs'
+
 const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
 
 export default async function handler(request, response) {
@@ -39,7 +41,7 @@ export default async function handler(request, response) {
       throw new Error('Projection event isolation validation failed.')
     }
 
-    const body = JSON.stringify({ projection, success: true })
+    const body = JSON.stringify({ projection: applyTop40MapAssignments(projection), success: true })
     const totalMs = performance.now() - startedAt
     response.setHeader('cache-control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=5')
     response.setHeader('content-type', 'application/json; charset=utf-8')

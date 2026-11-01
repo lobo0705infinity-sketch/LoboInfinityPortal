@@ -8,6 +8,7 @@ import {
   buildTop40ResultRows,
   filterTop40ResultRows,
   getTop40ResultsSummary,
+  type Top40ResultSide,
 } from './top40ResultsModel'
 import './Top40ResultsPage.css'
 
@@ -98,23 +99,17 @@ export default function Top40ResultsPage() {
           </div>
         ) : (
           <div className="top40-results-list">
-            {visibleRows.map(({ bracket, game, round }) => (
+            {visibleRows.map(({ bracket, game, round, sides }) => (
               <article className="top40-result-card" key={game.id}>
                 <header>
                   <div><span>{bracket}</span><strong>{round}</strong></div>
                   <Link to={`/games/${game.id}`}>View Match</Link>
                 </header>
                 <div className="top40-result-matchup">
-                  <PlayerResult name={game.player1DisplayName || game.player1} faction={game.player1Faction} />
+                  <PlayerResult side={sides[0]} />
                   <span className="top40-result-versus">VS</span>
-                  <PlayerResult name={game.player2DisplayName || game.player2} faction={game.player2Faction} />
+                  <PlayerResult side={sides[1]} />
                 </div>
-                <dl className="top40-result-details">
-                  <div><dt>TP</dt><dd>{game.tp || '—'}</dd></div>
-                  <div><dt>OP</dt><dd>{game.op || '—'}</dd></div>
-                  <div><dt>VP</dt><dd>{game.vp || '—'}</dd></div>
-                  <div><dt>Winner</dt><dd>{game.winnerDisplayName || game.winner || '—'}</dd></div>
-                </dl>
               </article>
             ))}
           </div>
@@ -128,6 +123,15 @@ function SummaryMetric({ label, value }: { label: string; value: number }) {
   return <article className="panel"><span>{label}</span><strong>{value}</strong></article>
 }
 
-function PlayerResult({ faction, name }: { faction: string; name: string }) {
-  return <div><strong>{name || 'Player unavailable'}</strong><span>{faction || 'Faction unavailable'}</span></div>
+function PlayerResult({ side }: { side: Top40ResultSide }) {
+  return <div className={`top40-result-player${side.result === 'Winner' ? ' top40-result-player-winner' : ''}`}>
+    <span className="top40-result-outcome">{side.result}</span>
+    <strong>{side.name || 'Player unavailable'}</strong>
+    <span>{side.faction || 'Faction unavailable'}</span>
+    <dl className="top40-result-player-scores" aria-label={`${side.name} scores`}>
+      <div><dt>TP</dt><dd>{side.tp}</dd></div>
+      <div><dt>OP</dt><dd>{side.op}</dd></div>
+      <div><dt>VP</dt><dd>{side.vp}</dd></div>
+    </dl>
+  </div>
 }

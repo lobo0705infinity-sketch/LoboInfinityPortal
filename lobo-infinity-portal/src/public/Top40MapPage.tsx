@@ -1,17 +1,24 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import EventSectionTabs from '../components/EventSectionTabs'
 import { TOP40_EVENT_ID } from './top40PreparationModel'
+import { TOP40_ROUND_MAPS, TOP40_APPROVED_MAPS_INSTALLER } from '../../shared/top40-round-maps.mjs'
 
 export default function Top40MapPage() {
+  const { mapKey } = useParams()
+  const map = TOP40_ROUND_MAPS.find(item => item.key === (mapKey || 'winners-1'))
   return <main className="portal-shell snapshot-public-page">
     <EventSectionTabs eventId={TOP40_EVENT_ID} items={['overview', 'registration', 'bracket', 'results', 'rules']}/>
     <section className="panel">
-      <p className="eyebrow">Lobo’s Top 40 · Opening mission</p><h1>Lobo Tourney Map 1</h1>
-      <h2>Asterion Research Campus</h2><p>Mission: Corporate Appropriation</p>
-      <img src="/assets/maps/top40-map01/positions-be5440a2.png" alt="Diagram of saved terrain and objective positions for the current 76-object Map 1 bag" style={{width:'100%',maxWidth:1000,height:'auto'}}/>
-      <p><a href="/assets/maps/top40-map01/Lobo-Top-40-Map-1-be5440a2.json" download>Download TTS saved object (JSON)</a> · <a href="/assets/maps/top40-map01/Lobo-Top-40-Map-1-Installer-be5440a2.zip" download>Download Windows installer (ZIP)</a></p>
-      <p>Extract the installer ZIP and run INSTALL.cmd, or save the JSON in your Tabletop Simulator Saves/Saved Objects folder. In TTS, open Objects → Saved Objects and load “SET_Lobo’s Top 40 Map #1”. Use the SET table loader, then select Corporate Appropriation (ITS 18) with the mat’s Deployment and Mission controls.</p>
-      <p>The current bag contains 76 objects, deployment controls, six mission tabs, thin deployment lines, and dashed exclusion boundaries. Confirm terrain rules and objective placement with the Organizer before playing.</p>
+      <p className="eyebrow">Lobo’s Top 40 · Approved tournament map</p>
+      {map ? <>
+        <h1>{map.workshopLabel}</h1>
+        <h2>{map.name}</h2>
+        <p>Mission: {map.mission} · 300 points</p>
+        <p><a href={map.download} download>Download this round’s TTS map bag (JSON)</a> · <a href={TOP40_APPROVED_MAPS_INSTALLER} download>Download the four approved maps installer (ZIP)</a></p>
+        <p>Extract the installer ZIP and run Install.cmd. All four tournament bags and their four general mission copies install in the main Objects → Saved Objects folder.</p>
+        <p>In the normal Infinity mod, use Clear Table, load “{map.workshopLabel}”, and drop the bag on the map deployment spot.</p>
+        <p>The approved bag includes its mission reference, thin deployment guides, Booty and Metachemistry tables, DZ / DZ +4″ / DZ +8″ controls, and day/night backgrounds.</p>
+      </> : <><h1>Map TBD</h1><p>The map for this round has not been announced.</p></>}
       <Link to="/event/lobos-top-40">Back to event preparation →</Link>
     </section>
   </main>

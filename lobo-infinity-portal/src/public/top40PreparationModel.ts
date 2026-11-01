@@ -1,3 +1,4 @@
+import { withTop40RoundMaps } from '../../shared/top40-round-maps.mjs'
 import type { PublicArmyList, PublicEvent, PublicMissionAssignment, PublicSchedule } from './snapshotTypes'
 
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
@@ -25,7 +26,8 @@ export function buildPreparationAssignments(event: PublicEvent, schedules: Publi
   const schedule = schedules.find(item => item.eventId === event.id)
   const useSchedulePool = !sources.some(record => text(record.mission)) && Boolean(schedule?.missions.length)
   const records: PublicMissionAssignment[] = useSchedulePool ? schedule!.missions : sources
-  return records.map((record, index) => {
+  const assignments = event.id === TOP40_EVENT_ID ? withTop40RoundMaps(records) : records
+  return assignments.map((record, index) => {
     const mission = text(record.mission)
     const scheduled = schedule?.missions.find(item => mission && item.mission === mission)
     const maps = assignedMaps(record)

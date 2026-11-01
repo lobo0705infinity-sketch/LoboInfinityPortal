@@ -1,3 +1,4 @@
+import { applyTop40MapAssignments, withTop40RoundMaps } from '../../shared/top40-round-maps.mjs'
 import { getTop40LivePublicData } from './top40LivePublicData'
 import type { EventBracketData, EventHomeData, EventRegistrationData } from './api'
 import { getPinnedPublicSnapshot, getPublicSnapshotDataset } from './publicSnapshot'
@@ -39,7 +40,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
     try {
       const live = (await getTop40LivePublicData()).projection
       const current = await getPinnedPublicSnapshot(options.signal)
-      if (live?.home?.event?.id === eventId && live.bracket?.eventId === eventId && Date.parse(live.generatedAt) >= Date.parse(current.sourceCutoff)) return live
+      if (live?.home?.event?.id === eventId && live.bracket?.eventId === eventId && Date.parse(live.generatedAt) >= Date.parse(current.sourceCutoff)) return applyTop40MapAssignments(live)
     } catch { /* Keep the validated fixed snapshot available during publication outages. */ }
   }
   const snapshot = await getPinnedPublicSnapshot(options.signal)
@@ -51,7 +52,8 @@ export async function getPublicEventProjection(eventId: string, options: { signa
     capabilities: Array.isArray(event.capabilities) ? event.capabilities : [],
   }
   const registrations = registrationFor(event)
-  const missions = Array.isArray(event.bracketMissions) ? event.bracketMissions as EventBracketData['missions'] : []
+  const rawMissions = Array.isArray(event.bracketMissions) ? event.bracketMissions as EventBracketData['missions'] : []
+  const missions = eventId === 'event-lobo-s-american-top-40' ? withTop40RoundMaps(rawMissions) : rawMissions
   const bracketMatches = (Array.isArray(event.bracket) ? event.bracket : []).map((match) => {
     const assignment = missions.find((item) => item.bracket === match.bracket && Number(item.bracketRound) === Number(match.bracketRound))
       ?? (match.matchId === 'GF-M2' ? missions.find((item) => item.bracket === 'Grand Final' && Number(item.bracketRound) === 1) : undefined)
@@ -69,7 +71,7 @@ export async function getPublicEventProjection(eventId: string, options: { signa
   const resetFinal = bracketMatches.find((match) => match.matchId === 'GF-M2')
   const decidingFinal = resetFinal && resetFinal.status !== 'Not Required' ? resetFinal : firstFinal
   const champion = decidingFinal?.status === 'Completed' ? String(decidingFinal.winner || '') : ''
-  return {
+  return applyTop40MapAssignments({
     eventId,
     generatedAt: snapshot.snapshotId,
     schemaVersion: 1,
@@ -105,5 +107,5 @@ export async function getPublicEventProjection(eventId: string, options: { signa
       tournamentComplete: Boolean(champion),
       champion,
     } as unknown as EventBracketData,
-  }
+  })
 }

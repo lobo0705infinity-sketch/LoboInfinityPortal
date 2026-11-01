@@ -89,7 +89,7 @@
     "test:top-40-players": "node scripts/top-40-players-check.mjs",
     "test:top-40-seeding": "node scripts/top-40-seeding-check.mjs",
     "test:top-40-bracket-page": "node --experimental-strip-types scripts/top-40-bracket-page-check.mts",
-    "test:top-40-results-page": "node --experimental-strip-types scripts/top-40-results-page-check.mts",
+    "test:top-40-results-page": "node --experimental-strip-types scripts/top-40-results-page-check.mts && node --experimental-strip-types scripts/top40-maps-scores-check.mts",
     "test:top-40-bracket-readiness": "node --experimental-strip-types scripts/top-40-bracket-readiness-check.mts",
     "test:top-40-bracket-generator": "node scripts/double-elimination-bracket-check.mjs && node scripts/top-40-launch-check.mjs",
     "test:top-40-bracket-lifecycle": "node scripts/bracket-match-lifecycle-check.mjs",

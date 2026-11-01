@@ -229,3 +229,36 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.top40-result-matchup > .top40-result-player {
+  gap: 0.35rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.6rem;
+  align-self: stretch;
+  text-align: left;
+}
+.top40-result-matchup > .top40-result-player-winner {
+  border-color: rgba(104, 205, 160, 0.45);
+  background: rgba(54, 130, 92, 0.09);
+}
+.top40-result-player .top40-result-outcome {
+  color: #c5d1d8;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.top40-result-player-winner .top40-result-outcome { color: #8ce0b2; }
+.top40-result-player-scores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0.65rem 0 0;
+}
+.top40-result-player-scores dt { color: var(--text-muted, #9eabb3); font-size: 0.7rem; }
+.top40-result-player-scores dd { margin: 0.25rem 0 0; font-size: 1.1rem; font-weight: 700; }
+@media (max-width: 480px) {
+  .top40-result-matchup { grid-template-columns: minmax(0, 1fr); }
+  .top40-result-versus { text-align: center; }
+}
