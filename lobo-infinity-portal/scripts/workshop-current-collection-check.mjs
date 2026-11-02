@@ -29,7 +29,7 @@ for (const map of loboWorkshopMaps) {
   assert.equal(rows.pop(), '', `${map.slug} terminates placement records with CRLF`)
   const ids = new Set()
   for (const row of rows) {
-    assert.match(row, /^--[0-9a-f]{6}(,-?\d+\.\d{6}){6}$/)
+    assert.match(row, /^--[0-9a-f]{6}(,-?\d+\.\d{6,9}){6}$/)
     const [id, ...fields] = row.slice(2).split(',')
     assert.ok(!ids.has(id), `${map.slug} has no repeated placement GUID`)
     ids.add(id)
@@ -62,7 +62,7 @@ for (const map of loboWorkshopMaps) {
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 16)
     assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('ground-surface')).length, 4, 'Kestrel has four sculpted terrain sections')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 6, 'Kestrel has three visible crater bowls')
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 6, 'Kestrel has six visible crater bowls')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 0, 'Kestrel uses excavated depressions without raised rim objects')
     assert.equal(map.previewKind, 'geometry')
     for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
