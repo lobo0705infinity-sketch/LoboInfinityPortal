@@ -6,7 +6,7 @@ import trimesh
 from shapely.geometry import MultiPoint, box
 
 ROOT=Path(__file__).resolve().parents[1]
-bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
+bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R5.json').read_text())['ObjectStates'][0]
 objects=bag['ContainedObjects']
 specs=json.loads((ROOT/'Source/buildings.json').read_text())
 cache={}

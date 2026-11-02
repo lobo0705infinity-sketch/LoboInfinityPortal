@@ -19,45 +19,45 @@
     },
     {
       "name": "botanical-genetics-laboratory-state-2.obj",
-      "positions": 1452,
-      "uv_expanded_vertices": 4581,
-      "triangles": 2744,
-      "triangle_corners": 8232
+      "positions": 2112,
+      "uv_expanded_vertices": 6479,
+      "triangles": 3944,
+      "triangle_corners": 11832
     },
     {
       "name": "botanical-genetics-laboratory-roof.obj",
-      "positions": 2382,
-      "uv_expanded_vertices": 7059,
-      "triangles": 4188,
-      "triangle_corners": 12564
+      "positions": 3078,
+      "uv_expanded_vertices": 9051,
+      "triangles": 5440,
+      "triangle_corners": 16320
     },
     {
       "name": "research-administration-state-2.obj",
-      "positions": 1452,
-      "uv_expanded_vertices": 4581,
-      "triangles": 2744,
-      "triangle_corners": 8232
+      "positions": 2112,
+      "uv_expanded_vertices": 6479,
+      "triangles": 3944,
+      "triangle_corners": 11832
     },
     {
       "name": "research-administration-roof.obj",
-      "positions": 2382,
-      "uv_expanded_vertices": 7059,
-      "triangles": 4188,
-      "triangle_corners": 12564
+      "positions": 3078,
+      "uv_expanded_vertices": 9051,
+      "triangles": 5440,
+      "triangle_corners": 16320
     },
     {
       "name": "tropical-conservatory-state-2.obj",
-      "positions": 1062,
-      "uv_expanded_vertices": 3139,
-      "triangles": 1808,
-      "triangle_corners": 5424
+      "positions": 2016,
+      "uv_expanded_vertices": 5886,
+      "triangles": 3520,
+      "triangle_corners": 10560
     },
     {
       "name": "tropical-conservatory-roof.obj",
-      "positions": 1254,
-      "uv_expanded_vertices": 3645,
-      "triangles": 2104,
-      "triangle_corners": 6312
+      "positions": 2188,
+      "uv_expanded_vertices": 6333,
+      "triangles": 3784,
+      "triangle_corners": 11352
     },
     {
       "name": "tropical-conservatory-planting--1-0.obj",
@@ -96,17 +96,17 @@
     },
     {
       "name": "temperate-conservatory-state-2.obj",
-      "positions": 1062,
-      "uv_expanded_vertices": 3139,
-      "triangles": 1808,
-      "triangle_corners": 5424
+      "positions": 2016,
+      "uv_expanded_vertices": 5886,
+      "triangles": 3520,
+      "triangle_corners": 10560
     },
     {
       "name": "temperate-conservatory-roof.obj",
-      "positions": 1254,
-      "uv_expanded_vertices": 3645,
-      "triangles": 2104,
-      "triangle_corners": 6312
+      "positions": 2188,
+      "uv_expanded_vertices": 6333,
+      "triangles": 3784,
+      "triangle_corners": 11352
     },
     {
       "name": "temperate-conservatory-planting--1-0.obj",
@@ -145,17 +145,17 @@
     },
     {
       "name": "western-propagation-house-state-2.obj",
-      "positions": 1138,
-      "uv_expanded_vertices": 3345,
-      "triangles": 1908,
-      "triangle_corners": 5724
+      "positions": 2092,
+      "uv_expanded_vertices": 6092,
+      "triangles": 3620,
+      "triangle_corners": 10860
     },
     {
       "name": "western-propagation-house-roof.obj",
-      "positions": 1334,
-      "uv_expanded_vertices": 3866,
-      "triangles": 2212,
-      "triangle_corners": 6636
+      "positions": 2268,
+      "uv_expanded_vertices": 6554,
+      "triangles": 3892,
+      "triangle_corners": 11676
     },
     {
       "name": "western-propagation-house-planting--1-0.obj",
@@ -194,17 +194,17 @@
     },
     {
       "name": "eastern-propagation-house-state-2.obj",
-      "positions": 1138,
-      "uv_expanded_vertices": 3345,
-      "triangles": 1908,
-      "triangle_corners": 5724
+      "positions": 2092,
+      "uv_expanded_vertices": 6092,
+      "triangles": 3620,
+      "triangle_corners": 10860
     },
     {
       "name": "eastern-propagation-house-roof.obj",
-      "positions": 1334,
-      "uv_expanded_vertices": 3866,
-      "triangles": 2212,
-      "triangle_corners": 6636
+      "positions": 2268,
+      "uv_expanded_vertices": 6554,
+      "triangles": 3892,
+      "triangle_corners": 11676
     },
     {
       "name": "eastern-propagation-house-planting--1-0.obj",
@@ -243,129 +243,129 @@
     },
     {
       "name": "uplink-data-exchange-state-3.obj",
-      "positions": 1794,
-      "uv_expanded_vertices": 5179,
-      "triangles": 3088,
-      "triangle_corners": 9264
+      "positions": 3060,
+      "uv_expanded_vertices": 8873,
+      "triangles": 5416,
+      "triangle_corners": 16248
     },
     {
       "name": "uplink-data-exchange-state-2.obj",
-      "positions": 2822,
-      "uv_expanded_vertices": 8404,
-      "triangles": 4964,
-      "triangle_corners": 14892
+      "positions": 4400,
+      "uv_expanded_vertices": 12962,
+      "triangles": 7820,
+      "triangle_corners": 23460
     },
     {
       "name": "uplink-data-exchange-roof.obj",
-      "positions": 3793,
-      "uv_expanded_vertices": 10944,
-      "triangles": 6448,
-      "triangle_corners": 19344
+      "positions": 5412,
+      "uv_expanded_vertices": 15612,
+      "triangles": 9364,
+      "triangle_corners": 28092
     },
     {
       "name": "signal-analysis-laboratory-state-3.obj",
-      "positions": 1794,
-      "uv_expanded_vertices": 5179,
-      "triangles": 3088,
-      "triangle_corners": 9264
+      "positions": 3060,
+      "uv_expanded_vertices": 8873,
+      "triangles": 5416,
+      "triangle_corners": 16248
     },
     {
       "name": "signal-analysis-laboratory-state-2.obj",
-      "positions": 2822,
-      "uv_expanded_vertices": 8404,
-      "triangles": 4964,
-      "triangle_corners": 14892
+      "positions": 4400,
+      "uv_expanded_vertices": 12962,
+      "triangles": 7820,
+      "triangle_corners": 23460
     },
     {
       "name": "signal-analysis-laboratory-roof.obj",
-      "positions": 3793,
-      "uv_expanded_vertices": 10944,
-      "triangles": 6448,
-      "triangle_corners": 19344
+      "positions": 5412,
+      "uv_expanded_vertices": 15612,
+      "triangles": 9364,
+      "triangle_corners": 28092
     },
     {
       "name": "seed-vault-state-2.obj",
-      "positions": 1246,
-      "uv_expanded_vertices": 3728,
-      "triangles": 2212,
-      "triangle_corners": 6636
+      "positions": 1958,
+      "uv_expanded_vertices": 5780,
+      "triangles": 3508,
+      "triangle_corners": 10524
     },
     {
       "name": "seed-vault-roof.obj",
-      "positions": 1414,
-      "uv_expanded_vertices": 4256,
-      "triangles": 2552,
-      "triangle_corners": 7656
+      "positions": 2160,
+      "uv_expanded_vertices": 6396,
+      "triangles": 3896,
+      "triangle_corners": 11688
     },
     {
       "name": "specimen-archive-state-2.obj",
-      "positions": 1246,
-      "uv_expanded_vertices": 3728,
-      "triangles": 2212,
-      "triangle_corners": 6636
+      "positions": 1958,
+      "uv_expanded_vertices": 5780,
+      "triangles": 3508,
+      "triangle_corners": 10524
     },
     {
       "name": "specimen-archive-roof.obj",
-      "positions": 1414,
-      "uv_expanded_vertices": 4256,
-      "triangles": 2552,
-      "triangle_corners": 7656
+      "positions": 2160,
+      "uv_expanded_vertices": 6396,
+      "triangles": 3896,
+      "triangle_corners": 11688
     },
     {
       "name": "nutrient-control-state-2.obj",
-      "positions": 1198,
-      "uv_expanded_vertices": 3568,
-      "triangles": 2116,
-      "triangle_corners": 6348
+      "positions": 1858,
+      "uv_expanded_vertices": 5466,
+      "triangles": 3316,
+      "triangle_corners": 9948
     },
     {
       "name": "nutrient-control-roof.obj",
-      "positions": 2118,
-      "uv_expanded_vertices": 5985,
-      "triangles": 3528,
-      "triangle_corners": 10584
+      "positions": 2819,
+      "uv_expanded_vertices": 7993,
+      "triangles": 4788,
+      "triangle_corners": 14364
     },
     {
       "name": "irrigation-control-state-2.obj",
-      "positions": 1198,
-      "uv_expanded_vertices": 3568,
-      "triangles": 2116,
-      "triangle_corners": 6348
+      "positions": 1858,
+      "uv_expanded_vertices": 5466,
+      "triangles": 3316,
+      "triangle_corners": 9948
     },
     {
       "name": "irrigation-control-roof.obj",
-      "positions": 2118,
-      "uv_expanded_vertices": 5985,
-      "triangles": 3528,
-      "triangle_corners": 10584
+      "positions": 2819,
+      "uv_expanded_vertices": 7993,
+      "triangles": 4788,
+      "triangle_corners": 14364
     },
     {
       "name": "southern-service-annex-state-2.obj",
-      "positions": 744,
-      "uv_expanded_vertices": 2204,
-      "triangles": 1320,
-      "triangle_corners": 3960
+      "positions": 1404,
+      "uv_expanded_vertices": 4102,
+      "triangles": 2520,
+      "triangle_corners": 7560
     },
     {
       "name": "southern-service-annex-roof.obj",
-      "positions": 1627,
-      "uv_expanded_vertices": 4519,
-      "triangles": 2680,
-      "triangle_corners": 8040
+      "positions": 2328,
+      "uv_expanded_vertices": 6527,
+      "triangles": 3940,
+      "triangle_corners": 11820
     },
     {
       "name": "northern-service-annex-state-2.obj",
-      "positions": 744,
-      "uv_expanded_vertices": 2204,
-      "triangles": 1320,
-      "triangle_corners": 3960
+      "positions": 1404,
+      "uv_expanded_vertices": 4102,
+      "triangles": 2520,
+      "triangle_corners": 7560
     },
     {
       "name": "northern-service-annex-roof.obj",
-      "positions": 1627,
-      "uv_expanded_vertices": 4519,
-      "triangles": 2680,
-      "triangle_corners": 8040
+      "positions": 2328,
+      "uv_expanded_vertices": 6527,
+      "triangles": 3940,
+      "triangle_corners": 11820
     },
     {
       "name": "covered-walkway-1.obj",

@@ -1,0 +1,229 @@
+{
+  "status": "passed",
+  "physical_ladders": 16,
+  "ladder_instances_across_30_building_states": 36,
+  "actual_mount_points_checked": 344,
+  "supported_clear_25_mm_landings": 22,
+  "rungs_end_below_destination": true,
+  "wall_window_and_door_conflicts": 0,
+  "visual_and_collision_geometry_checked": true,
+  "live_TTS_tested": false,
+  "checks": [
+    {
+      "building": "Botanical Genetics Laboratory | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Botanical Genetics Laboratory | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Research Administration | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Research Administration | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Tropical Conservatory | Roof on",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Tropical Conservatory | Ground floor exposed",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Temperate Conservatory | Roof on",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Temperate Conservatory | Ground floor exposed",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Western Propagation House | Roof on",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Western Propagation House | Ground floor exposed",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Eastern Propagation House | Roof on",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Eastern Propagation House | Ground floor exposed",
+      "kind": "greenhouse",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Uplink Data Exchange | Roof on",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Uplink Data Exchange | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Uplink Data Exchange | Upper floor exposed",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Uplink Data Exchange | Upper floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Uplink Data Exchange | Ground floor exposed",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Uplink Data Exchange | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Signal Analysis Laboratory | Roof on",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Signal Analysis Laboratory | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Signal Analysis Laboratory | Upper floor exposed",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Signal Analysis Laboratory | Upper floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Signal Analysis Laboratory | Ground floor exposed",
+      "kind": "interior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Signal Analysis Laboratory | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Seed Vault | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Seed Vault | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Specimen Archive | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Specimen Archive | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Nutrient Control | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Nutrient Control | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Irrigation Control | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Irrigation Control | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Southern Service Annex | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Southern Service Annex | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    },
+    {
+      "building": "Northern Service Annex | Roof on",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": true
+    },
+    {
+      "building": "Northern Service Annex | Ground floor exposed",
+      "kind": "exterior",
+      "mounted": true,
+      "landing_visible": false
+    }
+  ]
+}

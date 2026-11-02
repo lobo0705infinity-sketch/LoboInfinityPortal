@@ -1,3 +1,27 @@
+VERDANT EXCHANGE R5 — COMPLETE LADDER REBUILD
+All 16 physical ladders are rebuilt: 14 exterior and two interior.
+Exterior lab ladders face the wall correctly. Their rungs run parallel to
+solid masonry piers, with real stand-off brackets, mounting plates and bolts.
+Rails have grounded foot plates and separate handholds above the arrival;
+the last rung stays below the destination floor rather than crossing the exit.
+Flat roofs have matching 1.4-inch parapet openings and supported landing tongues.
+The archives have supported service landings beside their curved roofs.
+Greenhouses use fixed braced access frames with matching front platforms
+connected to the central roof walkway. The frames persist in interior states.
+Interior ladders are mounted to the front solid corner, aligned through the
+upper-floor hatch, with space to step sideways onto the upper floor.
+Exterior ladders persist through every building state.
+Doorway repairs, sunken equipment bases, matte ground, preferred consoles,
+roof closure and lowered deployment-zone buildings from R4 are preserved.
+
+Extract into a fresh folder, run Install.cmd, and load the R5 Saved Object.
+Clear the old map before dropping R5 on the stage. Superseded R1-R4 Saved
+Objects are backed up and removed by the installer.
+Source/ladder-validation.json records tests against actual exported geometry:
+mount points, rail continuity, rung heights, window/door conflicts, landing
+support and clearance for a 25 mm base. Live TTS physics remain unverified.
+
+Previous repair details:
 VERDANT EXCHANGE R4 — CLEAR DOORWAYS AND GROUNDED SCATTER
 Interior partitions are moved outside the entrance jambs in all lab, comms
 and archive states. The cross passage also clears the existing stools.

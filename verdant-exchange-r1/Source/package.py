@@ -2,8 +2,8 @@
 from pathlib import Path
 import json,hashlib,zipfile,shutil,importlib.metadata
 ROOT=Path(__file__).resolve().parents[1]
-shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.png')
-payload_names={'Verdant-Exchange-Uplink-Center-R4.json','Verdant-Exchange-Uplink-Center-R4.png'}
+shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R5.png')
+payload_names={'Verdant-Exchange-Uplink-Center-R5.json','Verdant-Exchange-Uplink-Center-R5.png'}
 def include(p):
  rel=p.relative_to(ROOT)
  return '__pycache__'not in str(rel) and (rel.parts[0]!='Map-Bags' or p.name in payload_names)
@@ -12,16 +12,16 @@ for p in sorted((ROOT/'Map-Bags').iterdir()):
  if p.name not in payload_names:continue
  manifest.append({'path':str(p.relative_to(ROOT)).replace('/','\\'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()})
 (ROOT/'Install-Manifest.json').write_text(json.dumps(manifest,indent=2))
-(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R4 — UPLINK CENTER
+(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R5 — UPLINK CENTER
 Standalone map installer / review build
 
 1. Extract this ZIP into a fresh folder.
 2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
    Documents\\My Games\\Tabletop Simulator\\Saves\\Saved Objects
    Existing same-name files are backed up before replacement.
-   Superseded R1, R2 and R3 Saved Objects are backed up and removed after R4 installs.
+   Superseded R1 through R4 Saved Objects are backed up and removed after R5 installs.
 3. In TTS, open Objects > Saved Objects and select:
-   Verdant-Exchange-Uplink-Center-R4
+   Verdant-Exchange-Uplink-Center-R5
 4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
    First close any old import popup and use Clear Table to remove the previous map.
 
@@ -32,7 +32,7 @@ Install.cmd, or pass that folder as its first argument.
 conservatories; two covered service walkways; furnished labs; seed vaults;
 nutrient tanks; cabinets; irrigation equipment and planted beds.
 
-R4 clears the interior partitions from all doorway aisles and sinks the ten
+R5 rebuilds every ladder, wall mount, roof exit and landing. R4 clears the interior partitions from all doorway aisles and sinks the ten
 tank/cooler support plinths below the mat. Close-up previews are included.
 
 48 x 48 inches, 300 points. Uplink Center has 16-inch deployment zones from
@@ -72,6 +72,7 @@ From this extracted package:
   python Source/test_model_import.py
   python Source/test_roofs_height_and_materials.py
   python Source/test_doorway_clearance.py
+  python Source/test_ladders.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py

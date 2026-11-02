@@ -9,7 +9,7 @@ import trimesh,pyrender
 from PIL import Image,ImageDraw,ImageFont
 ROOT=Path(__file__).resolve().parents[1]
 (ROOT/'Previews').mkdir(exist_ok=True)
-BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
+BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R5.json').read_text())['ObjectStates'][0]
 cache={}
 def pose(eye,target,up=[0,1,0]):
  eye,target=np.array(eye,float),np.array(target,float);z=eye-target;z/=np.linalg.norm(z);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x)
@@ -26,9 +26,10 @@ def mesh(o):
  ground='ground'in o.get('Tags',[])
  mat=pyrender.MetallicRoughnessMaterial(baseColorTexture=tex,baseColorFactor=[.76,.9,.91,.26] if glass else [1.,1.,1.,1.],metallicFactor=0 if ground else .10 if glass else .04,roughnessFactor=1 if ground else .32 if glass else .90,doubleSided=glass,alphaMode='BLEND' if glass else 'OPAQUE')
  cache[name]=pyrender.Mesh.from_trimesh(m,material=mat,smooth=False);return cache[name]
-def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
+def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False,only=None):
  s=pyrender.Scene(bg_color=[.12,.15,.14,1],ambient_light=[.48,.48,.48])
  for o in BAG['ContainedObjects']:
+  if only and 'ground'not in o.get('Tags',[])and not any(o.get('Nickname','').startswith(prefix)for prefix in only):continue
   if o.get('CustomAssetbundle'):
    m=trimesh.load(ROOT/'Source/console-preview-grounded.obj',force='mesh',process=False)
    tex=Image.open(ROOT/'Source/console-preview.png').convert('RGB');m.visual=trimesh.visual.texture.TextureVisuals(uv=m.visual.uv,image=tex)
@@ -52,7 +53,7 @@ def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
  im=Image.fromarray(rgb);draw=ImageDraw.Draw(im);draw.rectangle((0,0,size[0],85),fill=(22,39,35))
  font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',28)
  small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',17)
- draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R4',font=font,fill=(239,237,213))
+ draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R5',font=font,fill=(239,237,213))
  draw.text((30,51),'Actual map geometry · 48 × 48 inches · '+('Roofs on' if state==1 else 'Interiors exposed')+' · 16-inch deployment zones',font=small,fill=(184,209,196))
  output=ROOT/'Previews'/name;temporary=output.with_suffix('.partial.png')
  im.save(temporary);temporary.replace(output);cache.clear();print(name,flush=True)
@@ -65,3 +66,6 @@ render('Verdant-Exchange-Roof-Repair.png',[10,7,-8],[17,3,-18],8,(1500,1100))
 render('Verdant-Exchange-Roof-Interior.png',[10,7,-8],[17,2,-18],8,(1500,1100),state=3)
 render('Verdant-Exchange-Doorway-Detail.png',[0,13,2],[-4.25,1,-4],5.8,(1400,1100),state=3,detail=True)
 render('Verdant-Exchange-Equipment-Detail.png',[19,12,-5],[10.75,1,-13],5.5,(1400,1100))
+render('Verdant-Exchange-Ladder-Exterior.png',[-27,10,-22],[-17.5,2.6,-16.5],5.4,(1500,1150),only=['Botanical Genetics Laboratory'])
+render('Verdant-Exchange-Ladder-Greenhouse.png',[-1,10,-28],[-4.8,3,-19.2],6.4,(1500,1150),only=['Tropical Conservatory'])
+render('Verdant-Exchange-Ladder-Interior.png',[2,25,1],[-4.6,4,-6],4.3,(1500,1150),state=2,only=['Uplink Data Exchange'])

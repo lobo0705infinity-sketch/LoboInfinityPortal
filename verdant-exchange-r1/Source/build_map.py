@@ -58,14 +58,14 @@ def lab(w,d,floors,state,role='Lab'):
  for k in range(levels):
   y=k*STEP
   p=box(-w/2,-d/2,w/2,d/2)
-  if k:p=p.difference(box(hx-.60,hz-.60,hx+.60,hz+.60))
+  if k:p=p.difference(box(hx-.66,-d/2+.16,hx+.66,-d/2+1.48))
   slab(m,p,y,.15,'tile')
   coords=list(p.exterior.coords)
   # Ground entrances on opposing faces, upper doors only where a terrace exists.
   wall(m,[-w/2,-d/2],[w/2,-d/2],y+.15,STEP-.15,door=k==0,mat='concrete',reserve_intervals=[(w-1.5,w)])
   wall(m,[w/2,-d/2],[w/2,d/2],y+.15,STEP-.15,door=False,mat='plaster')
   wall(m,[w/2,d/2],[-w/2,d/2],y+.15,STEP-.15,door=k==0,mat='concrete')
-  wall(m,[-w/2,d/2],[-w/2,-d/2],y+.15,STEP-.15,door=False,mat='plaster',reserve_intervals=[(d-1.4,d)])
+  wall(m,[-w/2,d/2],[-w/2,-d/2],y+.15,STEP-.15,door=False,mat='plaster',reserve_intervals=[(d-1.75,d)])
   # Keep the entire front-to-back doorway aisle clear. Partitions sit beyond
   # the left jamb; the wider cross passage also clears the existing lab stools.
   for za,zb in [(-d/2+.22,-.80),(1.50,d/2-.22)]:
@@ -90,12 +90,22 @@ def lab(w,d,floors,state,role='Lab'):
   for zz in [-d/2+.12,d/2-.12]:
    cyl(m,(-w/2+.3,y+.22,zz),(-w/2+.3,y+2.75,zz),.038,'rust',8,False)
   if role=='Comms':
-   for zz in [-1.2,0,1.2]:cabinet(m,w/2-.48,zz,y+.15,.65,2.45,.65,'grille')
+   # Keep the right-front ladder approach and upper hatch free on both floors.
+   cabinet(m,-w/2+.48,-d/2+.65,y+.15,.65,2.45,.65,'grille')
+   for zz in [0,1.2]:cabinet(m,w/2-.48,zz,y+.15,.65,2.45,.65,'grille')
  if floors>1:
-  ladder(m,hx,hz-.38,STEP,base_y=.15)
- # Permanent exterior ladder attaches to a solid corner, never a door or window.
- ladder(m,-w/2-.28,-d/2+.55,floors*STEP)
+  ladder(m,hx,-d/2+.35,STEP,180,base_y=.15,stand_off=.26,kind='interior',return_depth=0)
+ # Face the west wall, rather than pointing the rungs end-on into it. The
+ # reserved solid pier and the roof opening use this same ladder centre.
+ arrival=STEP+.65 if role=='Archive'else floors*STEP+.15
+ ladder_z=-d/2+1.0
+ ladder(m,-w/2-.35,ladder_z,arrival,90,mount_height=min(arrival-.35,levels*STEP-.25))
  if state==1:
+  # A supported landing tongue reaches the ladder. It is part of the removable
+  # roof, while the complete wall-mounted ladder remains in every state.
+  slab(m,box(-w/2-.48,ladder_z-.70,-w/2+(1.0 if role=='Archive'else .90),ladder_z+.70),arrival-.12,.12,'grating')
+  for zz in [ladder_z-.60,ladder_z+.60]:
+   for mm in m:mm.beam((-w/2-.04,arrival-.90,zz),(-w/2-.43,arrival-.12,zz),.07,mat='metal')
   if role=='Archive':
    # Hollow barrel-vault roof; its visible and physical shells both disappear
    # in the interior state. This creates a different architectural silhouette.
@@ -122,7 +132,8 @@ def lab(w,d,floors,state,role='Lab'):
   solid(m,(0,floors*STEP+.525,d/2),(w,.75,.16),'concrete')
   solid(m,(w/2,floors*STEP+.525,0),(.16,.75,d),'concrete')
   solid(m,(0,floors*STEP+.525,-d/2),(w,.75,.16),'concrete')
-  solid(m,(-w/2,floors*STEP+.525,.7),(.16,.75,d-1.4),'concrete')
+  for za,zb in [(-d/2,ladder_z-.70),(ladder_z+.70,d/2)]:
+   solid(m,(-w/2,floors*STEP+.525,(za+zb)/2),(.16,.75,zb-za),'concrete')
   hvac(m,w*.2,0,floors*STEP+.15,1.35,1.1,.7)
   if role=='Comms':
    cyl(m,(0,floors*STEP+.15,-d*.16),(0,floors*STEP+1.5,-d*.16),.045,'silver',10,False)
@@ -166,8 +177,6 @@ def greenhouse(w,d,state,seed=10):
    m[0].beam((xx,yy,-d/2),(xx,yy,d/2),.075,mat='metal')
   # Solid central maintenance catwalk is distinct from the glazed slopes.
   solid(m,(0,4.53,0),(1.75,.12,d),'grating')
-  solid(m,((w/2-.45)/2,4.53,-d/2-.32),(w/2-.45,.12,.75),'grating')
-  for xx in [w/2-.45]:solid(m,(xx,3.99,-d/2-.32),(.10,1.02,.10),'metal')
   for sign in [-1,1]:
    a=[sign*.89,4.39,-d/2];b=[sign*w/2,3.5,-d/2];c=[sign*w/2,3.5,d/2];e=[sign*.89,4.39,d/2]
    glass[0].face([a,b,c,e],'glass');glass[0].face([e,c,b,a],'glass')
@@ -175,7 +184,15 @@ def greenhouse(w,d,state,seed=10):
    for mm in [glass[1]]:
     mm.groups.append(len(mm.f));mm.face([a,b,c,e]);mm.face([[x,y-.035,z] for x,y,z in [e,c,b,a]])
     for p,q in [(a,b),(b,c),(c,e),(e,a)]:mm.face([p,q,[q[0],q[1]-.035,q[2]],[p[0],p[1]-.035,p[2]]])
- ladder(m,w/2-.45,-d/2-.85,4.5,180)
+ # The greenhouse ladder has its own fixed access frame. Brackets terminate
+ # on steel posts, and the landing connects to the central roof catwalk.
+ lx=w/2-1.15;lz=-d/2-.98
+ solid(m,((w/2-.45)/2,4.53,-d/2-.35),(w/2-.45,.12,1.05),'grating')
+ for xx in [lx-.55,lx+.55]:
+  solid(m,(xx,2.235,-d/2-.48),(.12,4.47,.12),'metal')
+ for low in [0,1.45,2.9]:
+  for mm in m:mm.beam((lx-.55,low+.10,-d/2-.48),(lx+.55,low+1.40,-d/2-.48),.055,mat='metal')
+ ladder(m,lx,lz,4.59,0,stand_off=.44,kind='greenhouse')
  return m,glass
 
 def padded(m):
@@ -193,7 +210,7 @@ def model(key,m,x,z,a=0,label=None,kind='scenery',y=BASE):
  o={'GUID':g,'Name':'Custom_Model','Nickname':label or key,'Description':f'Height (base to top): {h:.2f} in\nVerdant Exchange | Uplink Center | 48 × 48 inches.\nUse physical geometry for cover, movement and line of fire.','Transform':dict(posX=x,posY=y,posZ=z,rotX=0,rotY=a,rotZ=0,scaleX=1,scaleY=1,scaleZ=1),'ColorDiffuse':dict(r=1,g=1,b=1),'Locked':True,'Grid':False,'Snap':False,'Hands':False,'Tooltip':True,'DragSelectable':True,'Tags':[TAG,'VerdantExchange',kind],'CustomMesh':{'MeshURL':URL+key+'.obj','DiffuseURL':URL+'verdant-materials.jpg','ColliderURL':URL+key+'-collider.obj','Convex':True,'MaterialIndex':3,'TypeIndex':0,'CastShadows':True},'LuaScript':'function onLoad() self.setLock(true) end\n','LuaScriptState':'','XmlUI':''}
  poly=Polygon(np.array(m[1].v)[:,[0,2]]).convex_hull if m[1].v else Polygon()
  poly=affinity.rotate(poly,-a,origin=(0,0));poly=affinity.translate(poly,x,z)
- layouts.append(dict(guid=g,mesh=key,label=label or key,x=x,z=z,angle=a,y=y,kind=kind,footprint=list(poly.exterior.coords) if not poly.is_empty else [],bounds=[lo,hi]))
+ layouts.append(dict(guid=g,mesh=key,label=label or key,x=x,z=z,angle=a,y=y,kind=kind,footprint=list(poly.exterior.coords) if not poly.is_empty else [],bounds=[lo,hi],ladders=getattr(m[0],'ladders',[])))
  return o
 
 SPECS=[
@@ -388,7 +405,7 @@ controller['LuaScript']=script;controller['LuaScriptState']='';controller['XmlUI
 controller['Description']='Verdant Exchange: right-side mission, deployment, reference tables and environment controls.'
 objects.append(controller)
 
-bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R4'
+bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R5'
 bag['Description']='Drop on STAGE > DROP BAGS HERE.\nVerdant Exchange | Botanical research and communications campus.\n48 × 48 inches; 300-point Uplink Center.\n16-inch deployment zones from opposite X edges. Two 40 mm Antennas at (0,-12)/(0,+12), central 40 mm Tech-Coffin.\n14 varied buildings including four glazed conservatories, two midfield two-storey data centres and single-storey deployment labs, seed archives and utility houses. Furnished interiors, real openings, permanent ladders, crop beds, irrigation and service equipment.\nIndividual day/night backgrounds. Right-side controls, Booty, Metachemistry, independent DZ guides and per-player mission reference. Live TTS physics and playtesting remain unverified.'
 bag['Tags']=['VerdantExchangeR1'];bag['ContainedObjects']=objects
 records=[]
@@ -396,7 +413,7 @@ for o in objects:
  for q in [o]+list(o.get('States',{}).values()):
   records.append('--'+q['GUID']+','+','.join(f"{q['Transform'][k]:.6f}" for k in ['posX','posY','posZ','rotX','rotY','rotZ']))
 bag['LuaScript']='\r\n'.join(records)+'\r\n';bag['LuaScriptState']='';bag['ColorDiffuse']=dict(r=.28,g=.5,b=.37)
-path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json'
+path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R5.json'
 path.write_text(json.dumps({'ObjectStates':[bag]},ensure_ascii=False,separators=(',',':'))+'\n')
 (ROOT/'Source/layout.json').write_text(json.dumps(layouts,indent=2))
 (ROOT/'Source/buildings.json').write_text(json.dumps(building_checks,indent=2))

@@ -14,16 +14,31 @@ def cyl(m,a,b,r,mat='silver',n=12,collision=True,r2=None):
 def ring(m,poly,y,h,w=.12,mat='concrete'):
     slab(m,poly.buffer(w/2,join_style=2).difference(poly.buffer(-w/2,join_style=2)),y,h,mat)
 
-def ladder(m,x,z,h,angle=0,base_y=0):
-    # Local ladder face is on the rear solid corner pier; cap has an access gap.
-    t=pair()
-    for dx in [-.37,.37]:cyl(t,(dx,.04,0),(dx,h+.55,0),.035,'silver',8)
-    for y in np.arange(.22,h+.3,.24):cyl(t,(-.37,y,0),(.37,y,0),.026,'silver',6,False)
-    for y in np.arange(.3,h,.9):
-        for dx in [-.37,.37]:t[0].beam((dx,y,0),(dx,y,.24),.038,mat='metal')
+def ladder(m,x,z,h,angle=0,base_y=0,stand_off=.26,kind='exterior',return_depth=.35,mount_height=None):
+    # Local X spans the wall; +Z points toward the mounting surface. The last
+    # rung stays below the destination deck, with separate handholds above it.
+    t=pair();rungs=list(np.arange(.24,h-.16,.24))+[h-.16]
+    mount_top=h-.35 if mount_height is None else mount_height
+    anchors=sorted(set([.42,mount_top]+list(np.arange(.65,mount_top-.10,1.15))))
+    for dx in [-.55,.55]:
+        solid(t,(dx,(h+.58)/2,0),(.085,h+.58,.085),'silver')
+        solid(t,(dx,.025,0),(.18,.05,.22),'metal')
+        for dz in [-.065,.065]:cyl(t,(dx,.05,dz),(dx,.075,dz),.023,'silver',8,False)
+        if return_depth:
+            pts=[(dx,h+.58,0),(dx,h+.69,return_depth*.18),(dx,h+.76,return_depth*.55),(dx,h+.76,return_depth)]
+            for a,b in zip(pts,pts[1:]):cyl(t,a,b,.043,'silver',10)
+        else:solid(t,(dx,h+.665,0),(.085,.17,.085),'silver')
+        for y in anchors:
+            solid(t,(dx,y,stand_off/2),(.075,.075,stand_off),'metal')
+            solid(t,(dx,y,stand_off+.012),(.18,.22,.035),'metal')
+            for dy in [-.065,.065]:
+                cyl(t,(dx,y+dy,stand_off-.012),(dx,y+dy,stand_off-.035),.022,'silver',8,False)
+    for y in rungs:cyl(t,(-.55,y,0),(.55,y,0),.035,'silver',10)
     a=math.radians(angle);R=np.array([[math.cos(a),0,math.sin(a)],[0,1,0],[-math.sin(a),0,math.cos(a)]])
     for mesh in t:mesh.v=[tuple(np.array(v)@R.T+np.array([x,base_y,z])) for v in mesh.v]
     m[0].merge(t[0]);m[1].merge(t[1])
+    if not hasattr(m[0],'ladders'):m[0].ladders=[]
+    m[0].ladders.append(dict(kind=kind,x=x,z=z,angle=angle,base_y=base_y,landing_y=base_y+h,stand_off=stand_off,return_depth=return_depth,rungs=[base_y+y for y in rungs],anchors=[base_y+y for y in anchors],clear_width=1.015))
 
 def case(m,x,z,y=0,w=1.15,h=.72,d=.82,mat='blue'):
     solid(m,(x,y+h/2,z),(w,h,d),mat)
