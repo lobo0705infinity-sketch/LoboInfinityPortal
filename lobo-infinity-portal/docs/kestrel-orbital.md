@@ -1,21 +1,26 @@
 # Kestrel Lunar Base — Data Harvest
 
-R9 excavates three crater bowls 0.8–0.95 inches below a continuous lunar
-plateau. Low ejecta lips rise at most 0.18 inches above grade. The former
-raised crater objects are removed. Ground and crater-floor meshes partition
-the surface with no flat plane spanning the holes.
+R10 has sixteen facilities, nine glass domes and twenty-one furnished interior
+states. The radiator spindle is two stories; no facility exceeds two stories.
+Medical, materials analysis, sampling and crew commons domes expand the base.
+The large research biosphere retains four rooms and four entrances.
 
-The board datum and every facility, objective and permanent ladder rise
-together by 1.25 inches, preserving their relative heights and access while
-leaving physical clearance beneath the depressions. The recovery button and
-deployment-line fallback follow the new datum. Fourteen buildings, twenty
-interior states, five glass domes and six connected ridgelines are retained.
+Six photovoltaic tables form one aligned field of two rows and three columns.
+Exterior rooftop collectors are consolidated into the field. Twenty-three
+equipment pieces form eight service areas beside their facilities: solar power,
+data maintenance, life support, lander receiving, materials services, crew
+storage, medical resupply and observatory servicing. Trolleys park with their
+work groups.
 
-Booty/Metachemistry, independent DZ/+4/+8 guides, per-player mission tabs and
-the individual day/night Earth-view backgrounds are retained. The named
-installer pair still targets main Saved Objects with backups and hashes.
+Six craters sink below the plateau with low ejecta lips. Ten ridgelines add
+broken approaches and cover. Terrain and crater floors partition the surface
+with continuous UVs and no hidden flat planes across the bowls. Pads are level.
 
-Checks cover actual exported crater depths and low lips, render/collider
-agreement, absence of hidden flat terrain across the bowls, facility pads,
-40 mm routes, objectives, Lua controller lifecycle and original Stage loading
-and clearing. Native TTS rendering, physics and playtesting remain pending.
+Tech-Coffins, Booty/Metachemistry, independent DZ/+4/+8 guides, per-player
+mission tabs, individual day/night backgrounds and the recovery button remain.
+The installer targets main Saved Objects; the full collection preserves other
+maps and existing installation logic.
+
+Offline geometry, collision, route, objective, floor-access, Lua and original
+Stage deployment/clear tests passed. Native TTS rendering, physics and
+multiplayer playtesting remain pending.
