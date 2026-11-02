@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-02T03:40:32.089428+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r11/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-02T04:32:07.683686+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r12/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -520,11 +520,11 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 83,
-      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty facilities and thirteen glass domes; no building exceeds two stories. Eighteen higher ridge systems have exported crests about 1.9–3 inches above grade. Six craters sink 0.65–0.85 inches below the plateau, with narrow rocky lips about 0.3 inches high. Six solar arrays remain in two rows of three; equipment remains grouped in service areas. Furnished interiors, four-room/four-entrance biosphere, thin independent DZ/+4/+8, Booty/Metachemistry and individual day/night Earth-view backgrounds. Exported geometry, collision, access, controls and Stage tests pass; native TTS playtesting remains pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r11/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r11/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r11/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r11/kestrel-lunar-data-harvest.json",
+      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty facilities, thirteen glass domes, eighteen higher ridgelines and six weathered impact craters. Fine grey lunar dust keeps a consistent grain scale across ground and steep walls. Low, uneven crater lips and ejecta aprons blend into the surface. Furnished interiors, a four-room research biosphere, a two-by-three solar field and grouped service areas. Booty/Metachemistry, independent DZ/+4/+8 and individual day/night backgrounds retained. Geometry, materials, controls and loading checks passed; native TTS playtesting remains pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r12/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r12/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r12/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r12/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r11"
+  "downloadRevision": "kestrel-lunar-20261101-r12"
 }

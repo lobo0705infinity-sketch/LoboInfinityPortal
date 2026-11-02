@@ -1,29 +1,27 @@
 # Kestrel Lunar Base — Data Harvest
 
-R11 adds four facilities for twenty total, including thirteen glass domes.
-The sampling annex, solar operations dome, robotics lab and algae culture
-dome have furnished, removable interiors. No facility exceeds two stories.
-Six photovoltaic tables remain aligned in two rows of three, and equipment
-stays in organized service yards.
+R12 replaces the crater's dark outline and stretched terrain photograph with
+one fine lunar-dust material across the ground, bowls, lips and ridges.
+Dominant-plane projection keeps grain density consistent on steep faces;
+all UVs remain inside the texture atlas. Identical normals are deduplicated
+so every imported terrain mesh remains below 25,000 vertices.
 
-Eighteen ridge systems now have measured crests about 1.9–3 inches above
-the plateau. Six crater floors remain 0.65–0.85 inches below ground, with
-narrow rocky lips around 0.3 inches high. The lips are cut as continuous
-annuli into the terrain surface, with matching normals and UVs rather than
-overlaid meshes. Render and collision partitions cover the board exactly.
+Crater rims now have irregular radial profiles, varying crest heights,
+worn breaches and softly blended ejecta aprons. Their floors remain below
+grade. The sixteen terrain sections partition the surface without overlays;
+render and collision geometry agree.
 
-Level pads protect facilities, objectives and four circular-template locations.
-Geometry checks verify 40 mm access through continuous free space around
-the higher crests, separated deployment exits, objective clearance, quarter-
-inch building heights and no overlapping facilities. Actual Lua and original
-Stage tests cover controls, glazing, exposed states and Clear Table.
+All twenty buildings, thirteen glass domes, eighteen higher ridge systems,
+six-array solar field, grouped equipment, interiors, controls, objectives,
+deployment records and backgrounds are preserved. Full collection updates
+patch only terrain fields in Kestrel and retain all unrelated maps.
 
-Booty/Metachemistry, independent DZ/+4/+8, per-player mission tabs and
-individual Lunar Day/Night backgrounds remain. The installer places the
-named JSON/PNG pair directly in main Saved Objects. Full collection updates
-preserve every unrelated map. Native TTS playtesting remains pending.
+Checks cover surface area, crater depth, facility/template pads, collision,
+40 mm routes, controls, glazing, loading/clear lifecycle, UV stretch and
+imported vertex counts. Actual mesh previews show the supplied geometry and
+material. Native TTS playtesting remains pending.
 
-The collection validator also preserves the approved native Sirocco R7
-export: six-to-nine-decimal records, signed Unity-authored Euler components
-and trailing blank lines are accepted, with each orientation checked against
-its actual object/state transform. Generated maps retain canonical checks.
+Material provenance and the complete built-in image-generation prompt are
+included in `Source/MATERIAL-PROMPT.txt`; the generated source scan is also
+included. Mirrored tile packing produces a 4096-pixel diffuse atlas. The
+material contains fine dust and tiny mineral chips, without baked craters.
