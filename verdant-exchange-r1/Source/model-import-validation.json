@@ -341,31 +341,31 @@
     },
     {
       "name": "southern-service-annex-state-2.obj",
-      "positions": 756,
-      "uv_expanded_vertices": 2241,
-      "triangles": 1340,
-      "triangle_corners": 4020
+      "positions": 744,
+      "uv_expanded_vertices": 2204,
+      "triangles": 1320,
+      "triangle_corners": 3960
     },
     {
       "name": "southern-service-annex-roof.obj",
-      "positions": 1639,
-      "uv_expanded_vertices": 4556,
-      "triangles": 2700,
-      "triangle_corners": 8100
+      "positions": 1627,
+      "uv_expanded_vertices": 4519,
+      "triangles": 2680,
+      "triangle_corners": 8040
     },
     {
       "name": "northern-service-annex-state-2.obj",
-      "positions": 756,
-      "uv_expanded_vertices": 2241,
-      "triangles": 1340,
-      "triangle_corners": 4020
+      "positions": 744,
+      "uv_expanded_vertices": 2204,
+      "triangles": 1320,
+      "triangle_corners": 3960
     },
     {
       "name": "northern-service-annex-roof.obj",
-      "positions": 1639,
-      "uv_expanded_vertices": 4556,
-      "triangles": 2700,
-      "triangle_corners": 8100
+      "positions": 1627,
+      "uv_expanded_vertices": 4519,
+      "triangles": 2680,
+      "triangle_corners": 8040
     },
     {
       "name": "covered-walkway-1.obj",

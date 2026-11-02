@@ -8,7 +8,7 @@
   "routing": [
     {
       "base_diameter_inches": 1.0,
-      "connected_cells": 7419,
+      "connected_cells": 7809,
       "objectives": [
         {
           "centre": [

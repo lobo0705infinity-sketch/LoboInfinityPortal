@@ -3286,7 +3286,7 @@
     "x": -11,
     "z": -8,
     "angle": 0,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -3330,7 +3330,7 @@
     "x": 11,
     "z": 8,
     "angle": 180,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -3374,7 +3374,7 @@
     "x": -20,
     "z": -7,
     "angle": 0,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -3418,7 +3418,7 @@
     "x": 20,
     "z": 7,
     "angle": 180,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -3790,7 +3790,7 @@
     "x": -9,
     "z": 14,
     "angle": 0,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -3834,7 +3834,7 @@
     "x": 9,
     "z": -14,
     "angle": 180,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -4526,7 +4526,7 @@
     "x": -11.5,
     "z": -22,
     "angle": 0,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -4570,7 +4570,7 @@
     "x": 11.5,
     "z": 22,
     "angle": 180,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -4702,7 +4702,7 @@
     "x": -12.5,
     "z": 12,
     "angle": 0,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [
@@ -4746,7 +4746,7 @@
     "x": 12.5,
     "z": -12,
     "angle": 180,
-    "y": 1.0,
+    "y": 0.83,
     "kind": "scatter",
     "footprint": [
       [

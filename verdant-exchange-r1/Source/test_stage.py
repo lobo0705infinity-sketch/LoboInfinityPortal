@@ -5,7 +5,7 @@ lib=ctypes.CDLL('liblua5.4.so.0');lib.luaL_newstate.restype=ctypes.c_void_p;lib.
 dumps=lambda v,**kw:json.dumps(v,ensure_ascii=False,**kw)
 stage=(ROOT/'Source'/'original_stage.lua').read_text().replace('!=','~=')
 results=[]
-collection=json.load(open(ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json'))
+collection=json.load(open(ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json'))
 for bag in collection['ObjectStates']:
  if bag.get('Name')!='Bag' or not bag.get('Nickname','').startswith('SET_'):continue
  script=bag['LuaScript'];entries=[];states={};positions={}

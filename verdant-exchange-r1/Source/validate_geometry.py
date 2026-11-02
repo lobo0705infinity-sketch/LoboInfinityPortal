@@ -7,7 +7,7 @@ from shapely import affinity
 from shapely.ops import unary_union
 from lupa import LuaRuntime
 ROOT=Path(__file__).resolve().parents[1]
-b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
+b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
 layouts=json.loads((ROOT/'Source/layout.json').read_text())
 all_objects=[b]+[q for o in b['ContainedObjects'] for q in [o]+list(o.get('States',{}).values())]
 ids=[o['GUID']for o in all_objects];assert len(ids)==len(set(ids))

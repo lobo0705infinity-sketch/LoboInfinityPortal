@@ -9,7 +9,7 @@ import trimesh,pyrender
 from PIL import Image,ImageDraw,ImageFont
 ROOT=Path(__file__).resolve().parents[1]
 (ROOT/'Previews').mkdir(exist_ok=True)
-BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
+BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
 cache={}
 def pose(eye,target,up=[0,1,0]):
  eye,target=np.array(eye,float),np.array(target,float);z=eye-target;z/=np.linalg.norm(z);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x)
@@ -52,9 +52,10 @@ def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
  im=Image.fromarray(rgb);draw=ImageDraw.Draw(im);draw.rectangle((0,0,size[0],85),fill=(22,39,35))
  font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',28)
  small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',17)
- draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R3',font=font,fill=(239,237,213))
+ draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R4',font=font,fill=(239,237,213))
  draw.text((30,51),'Actual map geometry · 48 × 48 inches · '+('Roofs on' if state==1 else 'Interiors exposed')+' · 16-inch deployment zones',font=small,fill=(184,209,196))
- im.save(ROOT/'Previews'/name);cache.clear();print(name,flush=True)
+ output=ROOT/'Previews'/name;temporary=output.with_suffix('.partial.png')
+ im.save(temporary);temporary.replace(output);cache.clear();print(name,flush=True)
 render('Verdant-Exchange-Overview.png',[58,66,62],[0,2,0],35)
 render('Verdant-Exchange-Overhead.png',[0,95,.01],[0,1,0],25.5,(1700,1700))
 render('Verdant-Exchange-Interiors.png',[42,55,48],[0,1,0],32,state=3)
@@ -62,3 +63,5 @@ render('Verdant-Exchange-Laboratory-Detail.png',[-7,20,-1],[-16,2,-16],11,(1800,
 render('Verdant-Exchange-Conservatory-Detail.png',[-22,20,23],[-16,2,4],11,(1800,1350),state=2,detail=True)
 render('Verdant-Exchange-Roof-Repair.png',[10,7,-8],[17,3,-18],8,(1500,1100))
 render('Verdant-Exchange-Roof-Interior.png',[10,7,-8],[17,2,-18],8,(1500,1100),state=3)
+render('Verdant-Exchange-Doorway-Detail.png',[0,13,2],[-4.25,1,-4],5.8,(1400,1100),state=3,detail=True)
+render('Verdant-Exchange-Equipment-Detail.png',[19,12,-5],[10.75,1,-13],5.5,(1400,1100))

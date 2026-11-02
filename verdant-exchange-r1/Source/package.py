@@ -2,21 +2,26 @@
 from pathlib import Path
 import json,hashlib,zipfile,shutil,importlib.metadata
 ROOT=Path(__file__).resolve().parents[1]
-shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.png')
+shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.png')
+payload_names={'Verdant-Exchange-Uplink-Center-R4.json','Verdant-Exchange-Uplink-Center-R4.png'}
+def include(p):
+ rel=p.relative_to(ROOT)
+ return '__pycache__'not in str(rel) and (rel.parts[0]!='Map-Bags' or p.name in payload_names)
 manifest=[]
 for p in sorted((ROOT/'Map-Bags').iterdir()):
+ if p.name not in payload_names:continue
  manifest.append({'path':str(p.relative_to(ROOT)).replace('/','\\'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()})
 (ROOT/'Install-Manifest.json').write_text(json.dumps(manifest,indent=2))
-(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R3 — UPLINK CENTER
+(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R4 — UPLINK CENTER
 Standalone map installer / review build
 
 1. Extract this ZIP into a fresh folder.
 2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
    Documents\\My Games\\Tabletop Simulator\\Saves\\Saved Objects
    Existing same-name files are backed up before replacement.
-   Superseded R1 and R2 Saved Objects are backed up and removed after R3 installs.
+   Superseded R1, R2 and R3 Saved Objects are backed up and removed after R4 installs.
 3. In TTS, open Objects > Saved Objects and select:
-   Verdant-Exchange-Uplink-Center-R3
+   Verdant-Exchange-Uplink-Center-R4
 4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
    First close any old import popup and use Clear Table to remove the previous map.
 
@@ -26,6 +31,9 @@ Install.cmd, or pass that folder as its first argument.
 75 root components; 14 buildings; 16 alternate interior states; four glazed
 conservatories; two covered service walkways; furnished labs; seed vaults;
 nutrient tanks; cabinets; irrigation equipment and planted beds.
+
+R4 clears the interior partitions from all doorway aisles and sinks the ten
+tank/cooler support plinths below the mat. Close-up previews are included.
 
 48 x 48 inches, 300 points. Uplink Center has 16-inch deployment zones from
 opposite X edges. Antennas: (0,-12) and (0,+12). Tech-Coffin: (0,0).
@@ -63,6 +71,7 @@ From this extracted package:
   python Source/validate_geometry.py
   python Source/test_model_import.py
   python Source/test_roofs_height_and_materials.py
+  python Source/test_doorway_clearance.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py
@@ -93,13 +102,13 @@ with tempfile.TemporaryDirectory() as tmp:
 (ROOT/'Source/installer-validation.json').write_text(json.dumps({'status':'passed','main_saved_objects_destination':True,'manifest_and_payload_hashes':'passed','fresh_install_and_reinstall_dry_run':'passed','backup_dry_run':'passed','PowerShell_executed_on_Windows':False},indent=2))
 hashes=[]
 for p in sorted(ROOT.rglob('*')):
- if p.is_file() and '__pycache__'not in str(p) and p.name!='SHA256.txt':hashes.append(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(ROOT).as_posix())
+ if p.is_file() and include(p) and p.name!='SHA256.txt':hashes.append(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(ROOT).as_posix())
 (ROOT/'SHA256.txt').write_text('\n'.join(hashes)+'\n')
 out=ROOT.parent/'Verdant-Exchange-Uplink-Center-Installer.zip'
 temporary=out.with_suffix('.zip.partial')
 with zipfile.ZipFile(temporary,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
  for p in sorted(ROOT.rglob('*')):
-  if p.is_file() and '__pycache__'not in str(p):z.write(p,p.relative_to(ROOT))
+  if p.is_file() and include(p):z.write(p,p.relative_to(ROOT))
 with zipfile.ZipFile(temporary) as z:assert z.testzip()is None
 temporary.replace(out)
 print(json.dumps({'zip':str(out),'bytes':out.stat().st_size,'installed_payload_files':len(manifest)}))

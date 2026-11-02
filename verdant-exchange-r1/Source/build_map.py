@@ -66,9 +66,11 @@ def lab(w,d,floors,state,role='Lab'):
   wall(m,[w/2,-d/2],[w/2,d/2],y+.15,STEP-.15,door=False,mat='plaster')
   wall(m,[w/2,d/2],[-w/2,d/2],y+.15,STEP-.15,door=k==0,mat='concrete')
   wall(m,[-w/2,d/2],[-w/2,-d/2],y+.15,STEP-.15,door=False,mat='plaster',reserve_intervals=[(d-1.4,d)])
-  # Genuine room partitions: offset from the two entrance paths, with a 1.6-inch door.
-  for za,zb in [(-d/2+.22,-.80),(.80,d/2-.22)]:
-   solid(m,(-.45,y+1.38,(za+zb)/2),(.14,2.45,zb-za),'plaster')
+  # Keep the entire front-to-back doorway aisle clear. Partitions sit beyond
+  # the left jamb; the wider cross passage also clears the existing lab stools.
+  for za,zb in [(-d/2+.22,-.80),(1.50,d/2-.22)]:
+   if zb>za:
+    solid(m,(-1.10,y+1.38,(za+zb)/2),(.14,2.45,zb-za),'plaster')
   # Perimeter benches, cupboard, instruments and chairs leave a clear central aisle.
   for sign in [-1,1]:
    if role=='Comms' and sign==1:continue
@@ -315,7 +317,9 @@ SCATTER=[
  ('screen',-3.5,-10.75,0),('screen',3.5,10.75,180),
 ]
 for i,(kind,x,z,a) in enumerate(SCATTER):
- objects.append(model('equipment-'+str(i+1),equipment(kind,100+i),x,z,a,kind.title()+' cluster '+str(i+1),'scatter'))
+ # Hide the 0.16-inch equipment plinth below the mat, including a small
+ # separation to prevent coplanar flicker. The equipment remains grounded.
+ objects.append(model('equipment-'+str(i+1),equipment(kind,100+i),x,z,a,kind.title()+' cluster '+str(i+1),'scatter',y=BASE-.17 if kind in ['tanks','cooler']else BASE))
 
 # Reuse Lobo's approved native console bundle at the existing mission positions.
 # Names preserve the two Antenna roles and the central Tech-Coffin role.
@@ -384,7 +388,7 @@ controller['LuaScript']=script;controller['LuaScriptState']='';controller['XmlUI
 controller['Description']='Verdant Exchange: right-side mission, deployment, reference tables and environment controls.'
 objects.append(controller)
 
-bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R3'
+bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R4'
 bag['Description']='Drop on STAGE > DROP BAGS HERE.\nVerdant Exchange | Botanical research and communications campus.\n48 × 48 inches; 300-point Uplink Center.\n16-inch deployment zones from opposite X edges. Two 40 mm Antennas at (0,-12)/(0,+12), central 40 mm Tech-Coffin.\n14 varied buildings including four glazed conservatories, two midfield two-storey data centres and single-storey deployment labs, seed archives and utility houses. Furnished interiors, real openings, permanent ladders, crop beds, irrigation and service equipment.\nIndividual day/night backgrounds. Right-side controls, Booty, Metachemistry, independent DZ guides and per-player mission reference. Live TTS physics and playtesting remain unverified.'
 bag['Tags']=['VerdantExchangeR1'];bag['ContainedObjects']=objects
 records=[]
@@ -392,7 +396,7 @@ for o in objects:
  for q in [o]+list(o.get('States',{}).values()):
   records.append('--'+q['GUID']+','+','.join(f"{q['Transform'][k]:.6f}" for k in ['posX','posY','posZ','rotX','rotY','rotZ']))
 bag['LuaScript']='\r\n'.join(records)+'\r\n';bag['LuaScriptState']='';bag['ColorDiffuse']=dict(r=.28,g=.5,b=.37)
-path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json'
+path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json'
 path.write_text(json.dumps({'ObjectStates':[bag]},ensure_ascii=False,separators=(',',':'))+'\n')
 (ROOT/'Source/layout.json').write_text(json.dumps(layouts,indent=2))
 (ROOT/'Source/buildings.json').write_text(json.dumps(building_checks,indent=2))

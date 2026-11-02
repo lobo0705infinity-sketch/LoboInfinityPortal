@@ -5,6 +5,7 @@ From this extracted package:
   python Source/validate_geometry.py
   python Source/test_model_import.py
   python Source/test_roofs_height_and_materials.py
+  python Source/test_doorway_clearance.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py

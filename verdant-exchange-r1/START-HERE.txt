@@ -1,13 +1,13 @@
-VERDANT EXCHANGE R3 — UPLINK CENTER
+VERDANT EXCHANGE R4 — UPLINK CENTER
 Standalone map installer / review build
 
 1. Extract this ZIP into a fresh folder.
 2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
    Documents\My Games\Tabletop Simulator\Saves\Saved Objects
    Existing same-name files are backed up before replacement.
-   Superseded R1 and R2 Saved Objects are backed up and removed after R3 installs.
+   Superseded R1, R2 and R3 Saved Objects are backed up and removed after R4 installs.
 3. In TTS, open Objects > Saved Objects and select:
-   Verdant-Exchange-Uplink-Center-R3
+   Verdant-Exchange-Uplink-Center-R4
 4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
    First close any old import popup and use Clear Table to remove the previous map.
 
@@ -17,6 +17,9 @@ Install.cmd, or pass that folder as its first argument.
 75 root components; 14 buildings; 16 alternate interior states; four glazed
 conservatories; two covered service walkways; furnished labs; seed vaults;
 nutrient tanks; cabinets; irrigation equipment and planted beds.
+
+R4 clears the interior partitions from all doorway aisles and sinks the ten
+tank/cooler support plinths below the mat. Close-up previews are included.
 
 48 x 48 inches, 300 points. Uplink Center has 16-inch deployment zones from
 opposite X edges. Antennas: (0,-12) and (0,+12). Tech-Coffin: (0,0).

@@ -7,7 +7,7 @@ from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
 
 ROOT=Path(__file__).resolve().parents[1]
-bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
+bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
 objects=bag['ContainedObjects']
 def triangles(key):
     mesh=trimesh.load(ROOT/'Assets'/key,force='mesh',process=False)

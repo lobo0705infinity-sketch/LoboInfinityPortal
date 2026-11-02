@@ -2,7 +2,7 @@
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 source=(ROOT/'Source/test_controls.py').read_text();exec(source[:source.index('results=[]')])
-b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
+b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R4.json').read_text())['ObjectStates'][0]
 control=loadbag(b)
 anchor=next(d for d in b['ContainedObjects']if 'ground' in d['Tags'])
 mat=G.getObjectFromGUID(anchor['GUID']);G.runScript(mat,anchor['LuaScript']);mat.env.onLoad()

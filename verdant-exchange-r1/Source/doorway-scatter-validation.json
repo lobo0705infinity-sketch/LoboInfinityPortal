@@ -1,0 +1,217 @@
+{
+  "status": "passed",
+  "building_states": 30,
+  "floor_aisles_checked": 34,
+  "visual_and_collision_geometry": true,
+  "clear_aisle_width_inches": 1.4,
+  "25_mm_base_clearance": true,
+  "sunken_equipment_plinths": 10,
+  "plinth_top_below_mat_inches": 0.01,
+  "checks": [
+    {
+      "building": "Botanical Genetics Laboratory",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Botanical Genetics Laboratory",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Research Administration",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Research Administration",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Tropical Conservatory",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Tropical Conservatory",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Temperate Conservatory",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Temperate Conservatory",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Western Propagation House",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Western Propagation House",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Eastern Propagation House",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Eastern Propagation House",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Uplink Data Exchange",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Uplink Data Exchange",
+      "state": "Upper floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Uplink Data Exchange",
+      "state": "Upper floor exposed",
+      "floor": 2,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Uplink Data Exchange",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Uplink Data Exchange",
+      "state": "Roof on",
+      "floor": 2,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Signal Analysis Laboratory",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Signal Analysis Laboratory",
+      "state": "Upper floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Signal Analysis Laboratory",
+      "state": "Upper floor exposed",
+      "floor": 2,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Signal Analysis Laboratory",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Signal Analysis Laboratory",
+      "state": "Roof on",
+      "floor": 2,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Seed Vault",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Seed Vault",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Specimen Archive",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Specimen Archive",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Nutrient Control",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Nutrient Control",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Irrigation Control",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Irrigation Control",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Southern Service Annex",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Southern Service Annex",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Northern Service Annex",
+      "state": "Ground floor exposed",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    },
+    {
+      "building": "Northern Service Annex",
+      "state": "Roof on",
+      "floor": 1,
+      "clear_aisle_width_inches": 1.4
+    }
+  ],
+  "live_TTS_tested": false
+}

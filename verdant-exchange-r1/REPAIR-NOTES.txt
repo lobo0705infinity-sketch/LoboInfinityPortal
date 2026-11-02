@@ -1,3 +1,21 @@
+VERDANT EXCHANGE R4 — CLEAR DOORWAYS AND GROUNDED SCATTER
+Interior partitions are moved outside the entrance jambs in all lab, comms
+and archive states. The cross passage also clears the existing stools.
+A 1.40-inch uninterrupted entry aisle is checked against exported visual
+and collider triangles for every building state, including greenhouse beds.
+All ten tank and cooler clusters are lowered 0.17 inches. Their 0.16-inch
+support plinths now sit 0.01 inches below the mat, leaving the equipment
+seated in the ground without an exposed concrete platform or surface flicker.
+Roof closure, matte ground, lowered DZ buildings and preferred consoles from
+R3 are preserved. Interiors, textures, foliage and mission positions remain.
+
+Extract into a fresh folder, run Install.cmd, and load the R4 Saved Object.
+Clear the previous map before dropping R4 on the deployment stage.
+The installer backs up and removes superseded R1, R2 and R3 Saved Objects.
+Automated doorway, scatter placement, model import, geometry, route, roof,
+material, controls and lifecycle tests passed. Live TTS remains unverified.
+
+Previous repair details:
 VERDANT EXCHANGE R3 — ROOFS, MAT, HEIGHTS AND PREFERRED CONSOLES
 Both vaulted archives now have complete curved gable infill in the visible
 and collision models. The roof shells stay removable through building states.
