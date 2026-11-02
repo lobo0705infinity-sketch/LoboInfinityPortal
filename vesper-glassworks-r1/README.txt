@@ -1,0 +1,1 @@
+Vesper Glassworks R1 original terrain assets for Losers Round 5 Neutralization. Review build. Source and local tests are included in the separately delivered installer. Inspired by the Infinity Terrain Kit's construction and access; no kit meshes copied. Live TTS acceptance remains unverified.
