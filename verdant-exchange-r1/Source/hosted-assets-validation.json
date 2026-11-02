@@ -1,0 +1,944 @@
+{
+  "status": "passed",
+  "assets": 156,
+  "asset_revision": "e048f131ce472bb7e3faabdbb3a897b1a5a6b7cd",
+  "byte_identical_downloads": true,
+  "checks": [
+    {
+      "name": "equipment-18-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-6-collider.obj",
+      "bytes": 376,
+      "sha256": "b814c777a525076b8925bd75b7ae277a013cce93d20ffdb2bdb1826d78e9ae27",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-3-collider.obj",
+      "bytes": 25404,
+      "sha256": "5c86b5ac33bcc8da9e3eeaf4ee22198e4a494cfec46bb849ef9c6e4eb4ac5095",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-roof-collider.obj",
+      "bytes": 17425,
+      "sha256": "9f05067ea30b3337ddc151d73ff7945b9c522b9c5d0d494486ca50b3abbf9341",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-3-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "irrigation-control-state-2.obj",
+      "bytes": 90671,
+      "sha256": "712290620bc7f04f73039664089ae42bc0bd984bc2dead14c4caafb97eac84e3",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-29.obj",
+      "bytes": 5128,
+      "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-2-collider.obj",
+      "bytes": 46775,
+      "sha256": "ae1ac040d6e5c2cbb9aab7598b3c69420dcff2060dae958206a454835fd8e7da",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-3.obj",
+      "bytes": 156653,
+      "sha256": "50683e4ff39a551c4ab710943a383b40c3f02505b32ea480eb135759861210a3",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-state-2-collider.obj",
+      "bytes": 32967,
+      "sha256": "2ddb93d283b5aea01c099dad8325c13608a35fa095ff681c99fce4c5a1b45b69",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-29-collider.obj",
+      "bytes": 376,
+      "sha256": "b814c777a525076b8925bd75b7ae277a013cce93d20ffdb2bdb1826d78e9ae27",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-28-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-roof-collider.obj",
+      "bytes": 17425,
+      "sha256": "9f05067ea30b3337ddc151d73ff7945b9c522b9c5d0d494486ca50b3abbf9341",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-state-3-collider.obj",
+      "bytes": 25404,
+      "sha256": "5c86b5ac33bcc8da9e3eeaf4ee22198e4a494cfec46bb849ef9c6e4eb4ac5095",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-glazing.obj",
+      "bytes": 1057,
+      "sha256": "05438213a0589c65ea06e07797b790f2e472b6d8c3b206dd20f7cc49b0c19824",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-state-3.obj",
+      "bytes": 135750,
+      "sha256": "ab024e25ed50c8401b64d858b0de7472212092a6b35015f6b825addadc7866bf",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-state-3.obj",
+      "bytes": 135750,
+      "sha256": "ab024e25ed50c8401b64d858b0de7472212092a6b35015f6b825addadc7866bf",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-state-3.obj",
+      "bytes": 156653,
+      "sha256": "50683e4ff39a551c4ab710943a383b40c3f02505b32ea480eb135759861210a3",
+      "status": "passed"
+    },
+    {
+      "name": "antenna-1.obj",
+      "bytes": 10119,
+      "sha256": "3c1c4f1ff95c0ca2e14682b3b107d166fb364ed59e7fce569c7ac03a073e7dfa",
+      "status": "passed"
+    },
+    {
+      "name": "southern-service-annex-roof.obj",
+      "bytes": 121163,
+      "sha256": "c5420b6a19ba093f44c204d600d3b44b24f613850eec25436fb35bc8f5bcf31c",
+      "status": "passed"
+    },
+    {
+      "name": "irrigation-control-state-2-collider.obj",
+      "bytes": 14513,
+      "sha256": "0a46cf38454c16de63d948bbbb07aa87e8eaee5a4e2fffdad36820e640b0a4c9",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-glazing-collider.obj",
+      "bytes": 731,
+      "sha256": "d8e488fa967c92e40201c53fc02a4d07e3f4083053b048d309d383e4ae009490",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-31.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-materials.jpg",
+      "bytes": 1345261,
+      "sha256": "fdcf5c6391a36b3bd5d578d3aa8139eaa1d402e853c8388d8ad32fcf3bff13b3",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-30-collider.obj",
+      "bytes": 376,
+      "sha256": "b814c777a525076b8925bd75b7ae277a013cce93d20ffdb2bdb1826d78e9ae27",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-12-collider.obj",
+      "bytes": 4790,
+      "sha256": "9a45e0a45ad0c1fb8e0e52e39420cebc98c8d06414cbf9e9c5dbf98d36602770",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-19-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "tech-coffin.obj",
+      "bytes": 6058,
+      "sha256": "304d392e82a1d2795b6817336b41f5d1b1e3309fe7d9184563f1c22ea516b1cc",
+      "status": "passed"
+    },
+    {
+      "name": "covered-walkway-1.obj",
+      "bytes": 27988,
+      "sha256": "5f34737a41d3635ba73d159967a1d761db4cf0ff1ad6c702416709968bd1b874",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-state-2.obj",
+      "bytes": 2068798,
+      "sha256": "3b822a99398f1565a24f659acb08403ba956dddeb8f8deb449c3232ec2e78323",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-roof-collider.obj",
+      "bytes": 49237,
+      "sha256": "5559ec32679413c80f3c211ff37e781579d4c1db51bfbe64d2e53acbf0f811bd",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-glazing.obj",
+      "bytes": 1057,
+      "sha256": "4edbd889be11bdb1217a2c879cd08dd439436568d5b872b04e15001b78995c65",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-1-collider.obj",
+      "bytes": 4790,
+      "sha256": "9a45e0a45ad0c1fb8e0e52e39420cebc98c8d06414cbf9e9c5dbf98d36602770",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-26-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-state-2-collider.obj",
+      "bytes": 32967,
+      "sha256": "2ddb93d283b5aea01c099dad8325c13608a35fa095ff681c99fce4c5a1b45b69",
+      "status": "passed"
+    },
+    {
+      "name": "nutrient-control-state-2-collider.obj",
+      "bytes": 14513,
+      "sha256": "0a46cf38454c16de63d948bbbb07aa87e8eaee5a4e2fffdad36820e640b0a4c9",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-25-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-state-3-collider.obj",
+      "bytes": 16050,
+      "sha256": "6d75ae8e88c2391ddb4405f6305ba06fe8250fb464440d608c5fab402a2422a5",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-roof-collider.obj",
+      "bytes": 17425,
+      "sha256": "10ca913b34e75ebbfc104d36e506f958b8efc08faac4f9387ddb7a3abf4e5b77",
+      "status": "passed"
+    },
+    {
+      "name": "northern-service-annex-roof.obj",
+      "bytes": 121163,
+      "sha256": "c5420b6a19ba093f44c204d600d3b44b24f613850eec25436fb35bc8f5bcf31c",
+      "status": "passed"
+    },
+    {
+      "name": "antenna-2-collider.obj",
+      "bytes": 4764,
+      "sha256": "187485c35588c3fa078edf7cc5e93e58ea1bbf6bcd1e395a527af5fdf2a75a6f",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-state-3-collider.obj",
+      "bytes": 16050,
+      "sha256": "6d75ae8e88c2391ddb4405f6305ba06fe8250fb464440d608c5fab402a2422a5",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-21.obj",
+      "bytes": 21817,
+      "sha256": "276158e6aa6fa1f6c31dee8481613dd6014f685cb57292987f6c6a85cc0bf5ec",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-glazing.obj",
+      "bytes": 1057,
+      "sha256": "05438213a0589c65ea06e07797b790f2e472b6d8c3b206dd20f7cc49b0c19824",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-34.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-glazing.obj",
+      "bytes": 1057,
+      "sha256": "4edbd889be11bdb1217a2c879cd08dd439436568d5b872b04e15001b78995c65",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-state-2-collider.obj",
+      "bytes": 46775,
+      "sha256": "ae1ac040d6e5c2cbb9aab7598b3c69420dcff2060dae958206a454835fd8e7da",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-state-2.obj",
+      "bytes": 216856,
+      "sha256": "0ee29a1aabfbcac9b695bd00cf0f2cce6836af734d69533463fb1f67974e3cd4",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-state-2.obj",
+      "bytes": 1553322,
+      "sha256": "37f8d7e7cce5e0eb3cd09cb5f1ef60b3ba38bd870b80134d484a086f370c736f",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-17-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-4-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-24.obj",
+      "bytes": 21817,
+      "sha256": "276158e6aa6fa1f6c31dee8481613dd6014f685cb57292987f6c6a85cc0bf5ec",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-33.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "specimen-archive-roof-collider.obj",
+      "bytes": 20006,
+      "sha256": "49de27d635b99edc94d7c3aebc5f7aacfec294eb47d95a2039a4d0cefc1e5526",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-roof.obj",
+      "bytes": 287719,
+      "sha256": "cd2a201eda88b07a900fe0d367bb56351e3f10a9742cce84ed10f85ec7436371",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-5-collider.obj",
+      "bytes": 376,
+      "sha256": "b814c777a525076b8925bd75b7ae277a013cce93d20ffdb2bdb1826d78e9ae27",
+      "status": "passed"
+    },
+    {
+      "name": "seed-vault-roof-collider.obj",
+      "bytes": 20006,
+      "sha256": "49de27d635b99edc94d7c3aebc5f7aacfec294eb47d95a2039a4d0cefc1e5526",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-2-collider.obj",
+      "bytes": 4790,
+      "sha256": "9a45e0a45ad0c1fb8e0e52e39420cebc98c8d06414cbf9e9c5dbf98d36602770",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-16-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "specimen-archive-roof.obj",
+      "bytes": 100548,
+      "sha256": "ff4f04720023a78ef45987031b440fa82e776d730755cbf20479d11864bc8733",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-roof.obj",
+      "bytes": 2083925,
+      "sha256": "827a98ea92092c4aa449adabe1be6039d5f72b29a35b2871d348e3d817a9c528",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-27.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-3.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-roof-collider.obj",
+      "bytes": 49237,
+      "sha256": "5559ec32679413c80f3c211ff37e781579d4c1db51bfbe64d2e53acbf0f811bd",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-14.obj",
+      "bytes": 440036,
+      "sha256": "0c34f494c0b19c3df81ccc786bd0a27f94dcb1abc7f7cfd5ec4cd001f98c69dd",
+      "status": "passed"
+    },
+    {
+      "name": "seed-vault-roof.obj",
+      "bytes": 100548,
+      "sha256": "ff4f04720023a78ef45987031b440fa82e776d730755cbf20479d11864bc8733",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-roof.obj",
+      "bytes": 316439,
+      "sha256": "347c94113f5fbb31136e16509b9067ac34b37931a867e59956b9b81a12008185",
+      "status": "passed"
+    },
+    {
+      "name": "seed-vault-state-2-collider.obj",
+      "bytes": 15850,
+      "sha256": "a91e7b428368729d2193a0aafda52a97cfe6a5507d721ecf9efd70e46d170c3a",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-30.obj",
+      "bytes": 5128,
+      "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-24-collider.obj",
+      "bytes": 1094,
+      "sha256": "f4851ab6d6b7d17b3e0cb1e12241b82d41988e1c55437be23ad5d0b3aebaafce",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-roof.obj",
+      "bytes": 1568083,
+      "sha256": "86fbefe7cd2d67b32b64f0b97a26e53e045c00651201a0c32725f48436298c04",
+      "status": "passed"
+    },
+    {
+      "name": "covered-walkway-2-collider.obj",
+      "bytes": 12656,
+      "sha256": "10e59022d61fd8a16029ec6f73a6e85035e2a634d19d81a94314a1c4a096fe1b",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-23.obj",
+      "bytes": 21817,
+      "sha256": "276158e6aa6fa1f6c31dee8481613dd6014f685cb57292987f6c6a85cc0bf5ec",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-10.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-32.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-glazing-collider.obj",
+      "bytes": 731,
+      "sha256": "b43cafc1dc87ce956b8c92e55ca5221479d11ff7847da3eb6a79b74d19f8c8b9",
+      "status": "passed"
+    },
+    {
+      "name": "southern-service-annex-state-2-collider.obj",
+      "bytes": 9803,
+      "sha256": "a6523bfd2365447899925a3346e2b08fef65f9e7956959794a28ebc918adf7d4",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-20-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-17.obj",
+      "bytes": 440126,
+      "sha256": "6d4d5ed92dbc769047209f977c7305b2c150342a7da63af01e11c2a9edf1e0e2",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-14-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-23-collider.obj",
+      "bytes": 1094,
+      "sha256": "f4851ab6d6b7d17b3e0cb1e12241b82d41988e1c55437be23ad5d0b3aebaafce",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-32-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "antenna-2.obj",
+      "bytes": 10119,
+      "sha256": "3c1c4f1ff95c0ca2e14682b3b107d166fb364ed59e7fce569c7ac03a073e7dfa",
+      "status": "passed"
+    },
+    {
+      "name": "covered-walkway-1-collider.obj",
+      "bytes": 12656,
+      "sha256": "10e59022d61fd8a16029ec6f73a6e85035e2a634d19d81a94314a1c4a096fe1b",
+      "status": "passed"
+    },
+    {
+      "name": "antenna-1-collider.obj",
+      "bytes": 4764,
+      "sha256": "187485c35588c3fa078edf7cc5e93e58ea1bbf6bcd1e395a527af5fdf2a75a6f",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-roof-collider.obj",
+      "bytes": 17425,
+      "sha256": "10ca913b34e75ebbfc104d36e506f958b8efc08faac4f9387ddb7a3abf4e5b77",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-20.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-16.obj",
+      "bytes": 431620,
+      "sha256": "41286ec9c20ef5d94b63cf229a13468ec864a5dca2a41460976080c63f072e11",
+      "status": "passed"
+    },
+    {
+      "name": "northern-service-annex-roof-collider.obj",
+      "bytes": 12258,
+      "sha256": "8c2fcba1f7b25d0eb883d337c6ca4f5fc008427ce3e5a9bf7be014286c4b2caa",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-6.obj",
+      "bytes": 5128,
+      "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-13-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-day.jpg",
+      "bytes": 1122053,
+      "sha256": "12b398277c90064a90892f0917249c7f15fc358311a73fb900559fa8832d9dee",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-33-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "irrigation-control-roof-collider.obj",
+      "bytes": 16968,
+      "sha256": "59f20185229dcb40487134f40a2644f8b0ee4df157610ce31f64f9bb89ddcafb",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-state-2-collider.obj",
+      "bytes": 16218,
+      "sha256": "83edc23f8f9fd564df213f8bf556b27ccb5eea75f906cdb17c0d58489c8edec8",
+      "status": "passed"
+    },
+    {
+      "name": "specimen-archive-state-2-collider.obj",
+      "bytes": 15850,
+      "sha256": "a91e7b428368729d2193a0aafda52a97cfe6a5507d721ecf9efd70e46d170c3a",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-roof.obj",
+      "bytes": 1568157,
+      "sha256": "a30dbb63773637b0edc7a7b5685178d7d010064b58d7355e80ee85f5663179f5",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-27-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "northern-service-annex-state-2-collider.obj",
+      "bytes": 9803,
+      "sha256": "a6523bfd2365447899925a3346e2b08fef65f9e7956959794a28ebc918adf7d4",
+      "status": "passed"
+    },
+    {
+      "name": "nutrient-control-roof.obj",
+      "bytes": 158134,
+      "sha256": "3b15d2a5ea34c39537fb4db8c7ea87a3170b8553f6e0b80cf94e07813b5ffeec",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-34-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "northern-service-annex-state-2.obj",
+      "bytes": 57320,
+      "sha256": "b9c69d4783765d857ade13eea7c03ccae4f55eef1d1c4ed20594ef55c51ee2e5",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-1.obj",
+      "bytes": 36673,
+      "sha256": "7229fc5935500bbda062338008d92e30cccd31914032f397a19bd53f52ce0384",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-ground.obj",
+      "bytes": 113639,
+      "sha256": "c36f97277fe17ed92b8bfc917a9725fa023e87d0fcb420f54ae784ee5b3b9ebb",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-28.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-19.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-state-2.obj",
+      "bytes": 216856,
+      "sha256": "0ee29a1aabfbcac9b695bd00cf0f2cce6836af734d69533463fb1f67974e3cd4",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-ground-collider.obj",
+      "bytes": 396,
+      "sha256": "47521cac3118f2320c6ab5e59137e7c5b0e528e1be0e20558cea0b807a427398",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-13.obj",
+      "bytes": 431372,
+      "sha256": "93ba819e725f1dc3ec31622e5af19ebb43a0a23588bb7f9a477a1fedeb3f8f12",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-state-2-collider.obj",
+      "bytes": 16218,
+      "sha256": "16170174dbfaf316eeb178e4274bbcacbb3ebe6445e104b9fef239d23c6394d4",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-21-collider.obj",
+      "bytes": 1094,
+      "sha256": "f4851ab6d6b7d17b3e0cb1e12241b82d41988e1c55437be23ad5d0b3aebaafce",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-9-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-state-2-collider.obj",
+      "bytes": 16218,
+      "sha256": "83edc23f8f9fd564df213f8bf556b27ccb5eea75f906cdb17c0d58489c8edec8",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-9.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-7-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "nutrient-control-roof-collider.obj",
+      "bytes": 16968,
+      "sha256": "59f20185229dcb40487134f40a2644f8b0ee4df157610ce31f64f9bb89ddcafb",
+      "status": "passed"
+    },
+    {
+      "name": "seed-vault-state-2.obj",
+      "bytes": 94132,
+      "sha256": "157fb3e73dcfc089a4bb3f3b11565057dcc8a61d147e565b8f8726b790f44e93",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-night.jpg",
+      "bytes": 932523,
+      "sha256": "2994085642406530f4d82aa3972930f1a0cc8bfeb3464d552fc394c7dbc45d1b",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-state-2-collider.obj",
+      "bytes": 16218,
+      "sha256": "16170174dbfaf316eeb178e4274bbcacbb3ebe6445e104b9fef239d23c6394d4",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-2.obj",
+      "bytes": 36673,
+      "sha256": "7229fc5935500bbda062338008d92e30cccd31914032f397a19bd53f52ce0384",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-state-2.obj",
+      "bytes": 2068919,
+      "sha256": "4e3968b701d169e20c0246cef5180275fed1e58a6c112f72810817d306d49f9c",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-2.obj",
+      "bytes": 247673,
+      "sha256": "14be87496537fcd2853be90a0c85a87cab610e91bc673adb3bc2ba0126d36b81",
+      "status": "passed"
+    },
+    {
+      "name": "covered-walkway-2.obj",
+      "bytes": 27988,
+      "sha256": "5f34737a41d3635ba73d159967a1d761db4cf0ff1ad6c702416709968bd1b874",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-26.obj",
+      "bytes": 439839,
+      "sha256": "9cc3c9ccd553e895782b2e30439f6de1a5fa34d10ae84610f44a10ef9d6c87d0",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-glazing-collider.obj",
+      "bytes": 731,
+      "sha256": "b43cafc1dc87ce956b8c92e55ca5221479d11ff7847da3eb6a79b74d19f8c8b9",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-12.obj",
+      "bytes": 36673,
+      "sha256": "7229fc5935500bbda062338008d92e30cccd31914032f397a19bd53f52ce0384",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-18.obj",
+      "bytes": 441283,
+      "sha256": "e1f81397ab06ae5d4747588879c7c108a581bcee415a85751fcb5da77af09d30",
+      "status": "passed"
+    },
+    {
+      "name": "nutrient-control-state-2.obj",
+      "bytes": 90671,
+      "sha256": "712290620bc7f04f73039664089ae42bc0bd984bc2dead14c4caafb97eac84e3",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-roof.obj",
+      "bytes": 287719,
+      "sha256": "cd2a201eda88b07a900fe0d367bb56351e3f10a9742cce84ed10f85ec7436371",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-22.obj",
+      "bytes": 21817,
+      "sha256": "276158e6aa6fa1f6c31dee8481613dd6014f685cb57292987f6c6a85cc0bf5ec",
+      "status": "passed"
+    },
+    {
+      "name": "research-administration-state-2.obj",
+      "bytes": 247673,
+      "sha256": "14be87496537fcd2853be90a0c85a87cab610e91bc673adb3bc2ba0126d36b81",
+      "status": "passed"
+    },
+    {
+      "name": "verdant-ground.jpg",
+      "bytes": 1486997,
+      "sha256": "9ef29375056e10ae76effc00b29d6edc5b8741dda3fa9020f7c299017951b526",
+      "status": "passed"
+    },
+    {
+      "name": "tech-coffin-collider.obj",
+      "bytes": 3877,
+      "sha256": "dc7d133c2962d20bd308e2463180480fde9b36a394fc6a57b20249598c16068e",
+      "status": "passed"
+    },
+    {
+      "name": "southern-service-annex-state-2.obj",
+      "bytes": 57320,
+      "sha256": "b9c69d4783765d857ade13eea7c03ccae4f55eef1d1c4ed20594ef55c51ee2e5",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-10-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "specimen-archive-state-2.obj",
+      "bytes": 94132,
+      "sha256": "157fb3e73dcfc089a4bb3f3b11565057dcc8a61d147e565b8f8726b790f44e93",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-5.obj",
+      "bytes": 5128,
+      "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-11-collider.obj",
+      "bytes": 4790,
+      "sha256": "9a45e0a45ad0c1fb8e0e52e39420cebc98c8d06414cbf9e9c5dbf98d36602770",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-roof.obj",
+      "bytes": 2084046,
+      "sha256": "79361b87f60ce1dbebee019a1f33fc3561478a476dce1bda95a4bd1a6debfbfa",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-31-collider.obj",
+      "bytes": 1094,
+      "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-8-collider.obj",
+      "bytes": 1090,
+      "sha256": "7a0e4e7bb89a192bceba7707a826b4b858cf2bdb38cc555eaf53ca0c231c308d",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-11.obj",
+      "bytes": 36673,
+      "sha256": "7229fc5935500bbda062338008d92e30cccd31914032f397a19bd53f52ce0384",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-25.obj",
+      "bytes": 431460,
+      "sha256": "8c8cffff1bc7b17cdc02d79d42941c7ad8f69e7a27ec94c2efa285ad61553ef6",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-15.obj",
+      "bytes": 441239,
+      "sha256": "6c73870fe0fb26af04052c90b134c1d3389d9271d3656e854bad2585b2108df4",
+      "status": "passed"
+    },
+    {
+      "name": "southern-service-annex-roof-collider.obj",
+      "bytes": 12258,
+      "sha256": "8c2fcba1f7b25d0eb883d337c6ca4f5fc008427ce3e5a9bf7be014286c4b2caa",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-4.obj",
+      "bytes": 58503,
+      "sha256": "3e128f9a92cfa56e4dbe032d26fe1b6fd31ee9d09457b9886bdc3a454689a495",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-glazing-collider.obj",
+      "bytes": 731,
+      "sha256": "d8e488fa967c92e40201c53fc02a4d07e3f4083053b048d309d383e4ae009490",
+      "status": "passed"
+    },
+    {
+      "name": "uplink-data-exchange-roof-collider.obj",
+      "bytes": 35429,
+      "sha256": "90083fb92185e926029f441ecf246be2185fcccc1f305a7ed3bd4da177da5e5e",
+      "status": "passed"
+    },
+    {
+      "name": "signal-analysis-laboratory-roof-collider.obj",
+      "bytes": 35429,
+      "sha256": "90083fb92185e926029f441ecf246be2185fcccc1f305a7ed3bd4da177da5e5e",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-22-collider.obj",
+      "bytes": 1094,
+      "sha256": "f4851ab6d6b7d17b3e0cb1e12241b82d41988e1c55437be23ad5d0b3aebaafce",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-7.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-8.obj",
+      "bytes": 8003,
+      "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "botanical-genetics-laboratory-roof.obj",
+      "bytes": 316439,
+      "sha256": "347c94113f5fbb31136e16509b9067ac34b37931a867e59956b9b81a12008185",
+      "status": "passed"
+    },
+    {
+      "name": "irrigation-control-roof.obj",
+      "bytes": 158134,
+      "sha256": "3b15d2a5ea34c39537fb4db8c7ea87a3170b8553f6e0b80cf94e07813b5ffeec",
+      "status": "passed"
+    },
+    {
+      "name": "equipment-15-collider.obj",
+      "bytes": 376,
+      "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-state-2.obj",
+      "bytes": 1553396,
+      "sha256": "b89f6e4e9ef0c42c951c77ba8fbb4713dedc2764e279adf612cc52bb06967d8d",
+      "status": "passed"
+    }
+  ]
+}

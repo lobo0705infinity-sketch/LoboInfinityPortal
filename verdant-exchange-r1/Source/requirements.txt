@@ -1,0 +1,6 @@
+numpy==2.3.5
+trimesh==5.2.0
+pyrender==0.1.45
+Pillow==12.3.0
+shapely==2.2.0
+lupa==2.8

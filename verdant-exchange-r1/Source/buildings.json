@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Botanical Genetics Laboratory",
+    "x": -16,
+    "z": -16,
+    "w": 7,
+    "d": 6,
+    "floors": 2,
+    "role": "Lab",
+    "angle": 0,
+    "main": "2dd96d",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "Research Administration",
+    "x": 16,
+    "z": 16,
+    "w": 7,
+    "d": 6,
+    "floors": 2,
+    "role": "Lab",
+    "angle": 180,
+    "main": "e92519",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "Tropical Conservatory",
+    "x": -6,
+    "z": -17,
+    "w": 8,
+    "d": 8,
+    "floors": 1,
+    "role": "Greenhouse",
+    "angle": 0,
+    "main": "46ca9b",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Temperate Conservatory",
+    "x": 6,
+    "z": 17,
+    "w": 8,
+    "d": 8,
+    "floors": 1,
+    "role": "Greenhouse",
+    "angle": 180,
+    "main": "71e78e",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Western Propagation House",
+    "x": -16,
+    "z": 4,
+    "w": 7,
+    "d": 10,
+    "floors": 1,
+    "role": "Greenhouse",
+    "angle": 0,
+    "main": "b1ab0a",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Eastern Propagation House",
+    "x": 16,
+    "z": -4,
+    "w": 7,
+    "d": 10,
+    "floors": 1,
+    "role": "Greenhouse",
+    "angle": 180,
+    "main": "922f69",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Uplink Data Exchange",
+    "x": -5,
+    "z": -4,
+    "w": 5,
+    "d": 5,
+    "floors": 2,
+    "role": "Comms",
+    "angle": 45,
+    "main": "2117ed",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "Signal Analysis Laboratory",
+    "x": 5,
+    "z": 4,
+    "w": 5,
+    "d": 5,
+    "floors": 2,
+    "role": "Comms",
+    "angle": 225,
+    "main": "7c8335",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "Seed Vault",
+    "x": 17,
+    "z": -18,
+    "w": 5.5,
+    "d": 6,
+    "floors": 1,
+    "role": "Archive",
+    "angle": 0,
+    "main": "352947",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Specimen Archive",
+    "x": -17,
+    "z": 18,
+    "w": 5.5,
+    "d": 6,
+    "floors": 1,
+    "role": "Archive",
+    "angle": 180,
+    "main": "6c1594",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Nutrient Control",
+    "x": -6,
+    "z": 7.5,
+    "w": 5,
+    "d": 5,
+    "floors": 1,
+    "role": "Lab",
+    "angle": 0,
+    "main": "60d8de",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Irrigation Control",
+    "x": 6,
+    "z": -7.5,
+    "w": 5,
+    "d": 5,
+    "floors": 1,
+    "role": "Lab",
+    "angle": 180,
+    "main": "cceb23",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Southern Service Annex",
+    "x": 5,
+    "z": -22,
+    "w": 4.5,
+    "d": 3,
+    "floors": 1,
+    "role": "Lab",
+    "angle": 0,
+    "main": "2a0fdb",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Northern Service Annex",
+    "x": -5,
+    "z": 22,
+    "w": 4.5,
+    "d": 3,
+    "floors": 1,
+    "role": "Lab",
+    "angle": 180,
+    "main": "8d0d9d",
+    "states": [
+      "2"
+    ]
+  }
+]

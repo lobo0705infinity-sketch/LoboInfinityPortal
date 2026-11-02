@@ -1,0 +1,42 @@
+VERDANT EXCHANGE R1 — UPLINK CENTER
+Standalone map installer / review build
+
+1. Extract this ZIP into a fresh folder.
+2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
+   Documents\My Games\Tabletop Simulator\Saves\Saved Objects
+   Existing same-name files are backed up before replacement.
+3. In TTS, open Objects > Saved Objects and select:
+   Verdant-Exchange-Uplink-Center-R1
+4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
+
+For a custom installation location, drag the Tabletop Simulator folder onto
+Install.cmd, or pass that folder as its first argument.
+
+59 root components; 14 buildings; 18 alternate interior states; four glazed
+conservatories; two covered service walkways; furnished labs; seed vaults;
+nutrient tanks; cabinets; irrigation equipment and planted beds.
+
+48 x 48 inches, 300 points. Uplink Center has 16-inch deployment zones from
+opposite X edges. Antennas: (0,-12) and (0,+12). Tech-Coffin: (0,0).
+All three objectives have 40 mm bases. Coordinates are in inches.
+
+The right-side Map Controls drawer starts open. It provides independent
+DZ / DZ +4 / DZ +8 guides, Booty, Metachemistry, per-player mission tabs,
+Day / Night / Background Off. Grid and snapping start off.
+
+Building states: 1 roof on; 2 interior or upper floor exposed; 3 ground floor
+exposed on two-storey buildings. Glazing follows the greenhouse state.
+Exterior ladders remain attached. Hover tooltips show each state's height.
+Use normal Infinity terrain rules and the modeled geometry. Planting does
+not add a special Difficult Terrain rule. Clear Table removes alternate
+states and parked glazing and restores the previous background and lighting.
+
+This package installs one Saved Object. It does not publish or replace the
+complete Steam Workshop collection, or release an event round assignment.
+The previews were rendered from the exact exported geometry, not concept art.
+Models and textures are pinned to an immutable hosted asset revision.
+
+Automated geometry, route, controls, UI-lifecycle, deployment and cleanup
+checks passed. Live TTS physics and multiplayer playtesting remain unverified.
+
+Source and validation reports are in Source/. Rebuild instructions: REBUILD.txt.

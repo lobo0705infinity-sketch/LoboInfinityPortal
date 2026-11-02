@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "root_objects": 59,
+  "building_states": 18,
+  "unique_ids": 78,
+  "maximum_convex_component_vertices": 42,
+  "minimum_objective_clearance_inches": 2.099,
+  "routing": [
+    {
+      "base_diameter_inches": 1.0,
+      "connected_cells": 7375,
+      "objectives": [
+        {
+          "centre": [
+            0,
+            -12
+          ],
+          "reachable_contact_cells": 24
+        },
+        {
+          "centre": [
+            0,
+            0
+          ],
+          "reachable_contact_cells": 24
+        },
+        {
+          "centre": [
+            0,
+            12
+          ],
+          "reachable_contact_cells": 24
+        }
+      ]
+    },
+    {
+      "base_diameter_inches": 1.6,
+      "connected_cells": 5237,
+      "objectives": [
+        {
+          "centre": [
+            0,
+            -12
+          ],
+          "reachable_contact_cells": 24
+        },
+        {
+          "centre": [
+            0,
+            0
+          ],
+          "reachable_contact_cells": 24
+        },
+        {
+          "centre": [
+            0,
+            12
+          ],
+          "reachable_contact_cells": 24
+        }
+      ]
+    }
+  ],
+  "full_width_eye_height_lanes_z_inches": [],
+  "limitations": "No live Tabletop Simulator physics or multiplayer playtest performed."
+}

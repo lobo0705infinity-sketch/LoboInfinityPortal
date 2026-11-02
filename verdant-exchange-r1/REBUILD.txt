@@ -1,0 +1,15 @@
+REBUILD VERDANT EXCHANGE
+Use Python 3. Install packages in Source/requirements.txt.
+From this extracted package:
+  python Source/build_map.py ASSET_COMMIT
+  python Source/validate_geometry.py
+  python Source/test_controls.py
+  python Source/test_lifecycle.py
+  python Source/test_stage.py
+  python Source/render.py
+  python Source/package.py
+The immutable asset revision is in Source/asset-revision.txt.
+Models use inches, Y up. OBJ X handedness is converted on export for TTS.
+Pyrender previews use EGL; tests also need liblua5.4.so.0 for the stage harness.
+The source reference bag supplies only established controls and bag metadata;
+every active terrain model and objective in Verdant Exchange is newly exported.

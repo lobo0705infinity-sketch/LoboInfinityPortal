@@ -1,0 +1,21 @@
+{
+  "summary": {
+    "maps_tested": 1,
+    "modified_scripts_compiled": 1,
+    "all_passed": true,
+    "live_TTS_tested": false
+  },
+  "maps": [
+    {
+      "map": "SET_ITS18 Uplink Center \u2014 Verdant Exchange R1",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    }
+  ]
+}

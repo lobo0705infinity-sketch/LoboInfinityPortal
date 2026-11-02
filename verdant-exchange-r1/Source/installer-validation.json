@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "main_saved_objects_destination": true,
+  "manifest_and_payload_hashes": "passed",
+  "fresh_install_and_reinstall_dry_run": "passed",
+  "backup_dry_run": "passed",
+  "PowerShell_executed_on_Windows": false
+}

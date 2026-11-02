@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "glazing_shells_tested": 4,
+  "roof_removal_and_return": "passed",
+  "alternate_state_and_parked_glazing_cleanup": "passed",
+  "unrelated_miniature_preserved": "passed",
+  "background_and_ui_cleanup": "passed",
+  "live_TTS_tested": false
+}

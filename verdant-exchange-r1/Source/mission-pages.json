@@ -1,0 +1,32 @@
+[
+  [
+    "Mission",
+    "Uplink Center | Verdant Exchange",
+    "48 × 48 inches; 300 points. Two Communication Antennas are at (0,-12) and (0,+12). One Tech-Coffin is at (0,0). Positions are X,Z in inches from board centre.\n\nOfficial mission:\nhttps://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85"
+  ],
+  [
+    "Scoring",
+    "Score at game end",
+    "Each Antenna Activated by your side: 2 OP.\nEach Antenna you physically Control: 1 OP.\nControl the central Tech-Coffin: 3 OP.\nHave an Active Lieutenant: 1 OP.\n\nActivation and physical Control are separate. A Lieutenant must avoid Null, Isolated and Immobilized states to count as Active."
+  ],
+  [
+    "Deployment",
+    "16-inch deployment",
+    "Deploy on opposite X edges. Each zone is 16 inches deep, placing the front lines at X=-8 and X=+8.\n\nNo deployment in Silhouette contact with an Antenna or the Tech-Coffin.\n\nDZ +4 and DZ +8 are measuring aids. There is no added exclusion-zone overlay. No HVT Model, Secure HVT or Classified Deck is used."
+  ],
+  [
+    "Antennas",
+    "Activation and Control",
+    "A Specialist in Silhouette contact Activates with a Normal WIP Roll, spending a Short Skill. The enemy may Activate it later and take activation ownership.\n\nControl requires at least one non-Null troop Model in Silhouette contact and no enemy qualifying Model in contact. Markers cannot Control.\n\nOperational Learning: consecutive retries by the same troop, Skill and target receive +3 WIP on the second Order; +3 and +1SD from the third. Interruptions or success reset the sequence."
+  ],
+  [
+    "Terrain",
+    "Campus terrain and interiors",
+    "Use normal Infinity movement, cover and line-of-fire rules. Planting beds, water equipment and campus paving have no added Difficult Terrain rule. Use the solid geometry.\n\nStates: 1 roof on; 2 interior or upper floor exposed; 3 ground floor exposed on two-storey buildings. Exterior ladders remain in every state. Greenhouse roof glazing follows its parent state. The narrow metal roof spine is a maintenance walkway. Furnishings and partitions leave movement aisles."
+  ],
+  [
+    "Controls",
+    "Controls and game end",
+    "The right-side drawer starts open. DZ, DZ +4, DZ +8, Booty, Metachemistry, Mission, Day, Night and Background Off are available.\n\nEach player opens mission references independently. Grid and snapping start off.\n\nThree Game Rounds; a turn beginning in Retreat! ends the game at that turn end.\n\nClear Table removes the complete map, including changed building states and glazing, and restores the prior background and lighting."
+  ]
+]
