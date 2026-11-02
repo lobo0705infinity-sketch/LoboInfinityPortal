@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-02T00:06:49.769278+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r9/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-02T01:04:23.722356+00:00",
+  "download": "/assets/maps/sirocco-wells-approved-20261101-r7/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -946,8 +946,8 @@
       "guid": "8102b2",
       "slug": "provisioning-2-satellite",
       "name": "Sirocco Wells",
-      "workshopName": "ITS18 Provisioning — Sirocco Wells R6",
-      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells R6",
+      "workshopName": "ITS18 Provisioning — Sirocco Wells Approved R7",
+      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells Approved R7",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2007,
@@ -955,12 +955,12 @@
         "Provisioning"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 45,
-      "sourceNote": "Sirocco Wells R6 places all twelve Middle Eastern buildings inside the opposing 24-inch corner deployment zones. Supplied Supply Box tokens and freestanding cargo clutter removed. Ten lower, narrower sandstone ridges are individual movable objects with their own centre pivots and Unlock/Lock menus: 7–12 inches long, 2.2–2.6 wide and 1.25–1.75 high, with 0.01-inch terrain toes. Furnished interiors, exact three Tech-Coffins, controls and matching day/night backgrounds retained. Imported geometry, 40 mm approaches, sub-6-inch cover spacing and cleanup after manual ridge movement pass offline checks. Live TTS testing remains pending.",
-      "overhead": "/assets/maps/sirocco-wells-20261101-r6/overhead.webp",
-      "angled": "/assets/maps/sirocco-wells-20261101-r6/angled.webp",
-      "diagram": "/assets/maps/sirocco-wells-20261101-r6/overhead.webp",
-      "download": "/assets/maps/sirocco-wells-20261101-r6/Sirocco-Wells-Provisioning-R6.json",
+      "objectCount": 58,
+      "sourceNote": "Approved R7 adopts the user-approved TS_Save_31 layout exactly: 58 active map objects, 20 buildings and 9 individual ridges. Approved transforms, scales, copied buildings, rooftop equipment, models, furnished interiors, controls and matching backgrounds retained. Alternate-state IDs and loader/cleanup records normalized. Offline loading, floor-state, controls, reload and Clear Table checks pass.",
+      "overhead": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
+      "angled": "/assets/maps/sirocco-wells-approved-20261101-r7/angled.webp",
+      "diagram": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
+      "download": "/assets/maps/sirocco-wells-approved-20261101-r7/Sirocco-Wells-Provisioning-R7.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r9"
+  "downloadRevision": "sirocco-wells-approved-20261101-r7"
 }
