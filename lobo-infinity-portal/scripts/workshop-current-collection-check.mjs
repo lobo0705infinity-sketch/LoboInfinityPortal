@@ -63,7 +63,7 @@ for (const map of loboWorkshopMaps) {
     assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('ground-surface')).length, 4, 'Kestrel has four sculpted terrain sections')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 3, 'Kestrel has three visible crater bowls')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 3, 'Kestrel has three raised crater rims')
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 0, 'Kestrel uses excavated depressions without raised rim objects')
     assert.equal(map.previewKind, 'geometry')
     for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
       assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)
