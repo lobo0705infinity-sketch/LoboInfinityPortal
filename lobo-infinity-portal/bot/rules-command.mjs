@@ -22,19 +22,48 @@ export async function ensureRulesCommand(client) {
 
 export async function retrieveRulesReference({ question, deepSeek = createDeepSeekRulesAnswer() }) {
   const corpus = await loadProductionRulesCorpus()
+  const localRuling = loboBerserkFireteamRuling(question, corpus)
+  if (localRuling) return localRuling
   const verified = verifiedRulesInteraction(question, corpus)
   if (verified) return verified
   const modelResolution = await resolveRulesModelMentions(question)
   // Approved benchmark answers describe rules concepts, not the selected Army
   // profile. A named model must take the evidence-bounded path so its actual
   // profile facts participate in the answer.
-  const benchmark = modelResolution.models.length ? null : await findApprovedRulesAnswer(question)
+  // Unhandled Berserk/Fireteam exceptions must not fuzzy-match an older
+  // leader-only benchmark answer. They need the full evidence path.
+  const berserkFireteam = /\bberserk\b/i.test(question) && /\b(?:fireteams?|link(?:ed)? teams?)\b/i.test(question)
+  const benchmark = modelResolution.models.length || berserkFireteam ? null : await findApprovedRulesAnswer(question)
   if (benchmark) return benchmarkResult(question, benchmark, corpus)
   if (!modelResolution.models.length && asksIfElectromagneticDestroysDeployable(question))
     return electromagneticDeployableResult(question, corpus)
   if (!modelResolution.models.length && asksAboutPublicFireteamIdentity(question))
     return publicFireteamIdentityResult(question, corpus)
   return deepSeek({ question, corpus, modelResolution })
+}
+
+/** Lobo's approved TO ruling, deliberately separate from official answers. */
+export function loboBerserkFireteamRuling(question, corpus) {
+  const words = normalizeRuleText(String(question).replace(/[’']/g, ''))
+    .replace(/\blink(?:ed)? teams?\b/g, 'fireteam')
+    .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
+    .replace(/^(?:(?:if|when) )?(?:a|the) fireteam leader declares berserk /, '')
+  // Anchor the entire question. Named profiles, states, scenario exceptions,
+  // reactive-turn questions and compound interactions retain full retrieval.
+  const permission = /^(?:can|may|do) (?:(?:all |the |all the |other |the other )?fireteam members|(?:all |the |all the |other |the other )?members of (?:a |the |my )?fireteam|(?:a |the |my |our |your )?(?:whole |entire )?fireteam) (?:all )?(?:declare |use |perform )?berserk(?: (?:against |at )?(?:the same|different|separate|multiple)(?: enemy)? targets?)?$/.test(words)
+  const explanation = /^(?:(?:how does|how do) berserk(?: and fireteams)? work (?:in|with|for) (?:a |the )?fireteam|(?:how does|how do) (?:a |the )?fireteam berserk work|(?:what is|whats) (?:the )?(?:lobo )?(?:to )?ruling (?:on|for) berserk (?:in|with) (?:a |the )?fireteam|can fireteam members without berserk (?:join a berserk charge|declare berserk)|(?:must|do) fireteam members (?:using berserk |declaring berserk )?(?:all )?(?:berserk |charge |attack |target )(?:the )?same (?:enemy )?target|can fireteam members (?:all )?(?:make|perform|resolve) (?:their own |separate )?cc (?:attacks|rolls) (?:with|when using|after declaring) berserk)$/.test(words)
+  if (!permission && !explanation) return null
+  return {
+    question: String(question).trim(),
+    versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+    status: 'LOBO TO RULING', answerSource: 'LOBO_TO_RULING',
+    deepSeek: {
+      questionType: 'EXPLANATORY', conclusion: 'INTERPRETATION',
+      certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true,
+      answer: 'When the Fireteam Leader declares Berserk, members who also have Berserk may charge different targets and resolve their attacks in separate combats. Members without Berserk Idle. Each user needs LoF to their target when declaring and must reach Silhouette contact using their combined MOV values; otherwise that user Idles without moving or attacking. If several members join the same CC, only the Fireteam Leader makes the CC Roll, applying Close Combat with Multiple Troopers. Normal coherency rules still apply. The specific Sibylla clarification permits eligible members to declare and perform Berserk, which includes Move + CC Attack. The nearby reminder says “except Berserk,” creating conflicting wording. This is Lobo’s TO ruling pending official clarification, not an unambiguous official answer.',
+      sources: ['Berserk', 'Fireteams:_Basic_Rules', 'Fireteams_in_the_Active_Turn'].map((page, index) => ({ id: 'LB' + index, title: 'Official Infinity Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+    },
+  }
 }
 
 
@@ -313,7 +342,7 @@ export function formatRulesDiscordResponse(result) {
   if (modelContext) fields.push({ name: 'OFFICIAL ARMY PROFILE', value: truncate(modelContext, 1024), inline: false })
   if (result.deepSeek) {
     const conclusion = normalizeConclusion(result.deepSeek.conclusion)
-    const certainty = result.deepSeek.certainty === 'EVIDENCE-BOUNDED INTERPRETATION' ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULES ANSWER'
+    const certainty = result.answerSource === 'LOBO_TO_RULING' ? 'LOBO TO RULING — PENDING OFFICIAL CLARIFICATION' : result.deepSeek.certainty === 'EVIDENCE-BOUNDED INTERPRETATION' ? 'EVIDENCE-BOUNDED INTERPRETATION' : 'EXPLICIT RULES ANSWER'
     const answer = scrubInternalIds(result.deepSeek.answer) || 'The rules assistant did not return an answer.'
     const provenance = result.answerSource === 'APPROVED_BENCHMARK' ? '**APPROVED BENCHMARK ANSWER**\n' : ''
     const verdict = result.deepSeek.questionType === 'EXPLANATORY' ? '' : `**${conclusion}**\n`
@@ -321,7 +350,7 @@ export function formatRulesDiscordResponse(result) {
     const citations = formatCitations(result.deepSeek.sources || []); if (citations) fields.push({ name: 'OFFICIAL SOURCES', value: truncate(citations, 1024), inline: false })
   } else fields.push({ name: 'STATUS', value: `**${result.status || 'AI RULES ANSWER UNAVAILABLE'}**\n${result.limitation || 'No answer was returned.'}`, inline: false })
   const versions = (result.versions || []).map((item) => item.label).join(' • ')
-  const method = result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.answerSource === 'VERIFIED_RULES' ? 'Verified official rules answer; no provider call.' : result.answerSource === 'EVIDENCE_BOUNDED_RULES' ? 'Evidence-bounded interpretation of official rules; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
+  const method = result.answerSource === 'LOBO_TO_RULING' ? 'Lobo TO ruling pending official clarification; no provider call.' : result.answerSource === 'APPROVED_BENCHMARK' ? 'Approved answer matched before AI; no provider call.' : result.answerSource === 'VERIFIED_RULES' ? 'Verified official rules answer; no provider call.' : result.answerSource === 'EVIDENCE_BOUNDED_RULES' ? 'Evidence-bounded interpretation of official rules; no provider call.' : result.modelContext?.models?.length ? 'AI answer from official Army profile data and selected official rules evidence.' : 'AI answer from selected official evidence.'
   return scrubDiscordPayload({ embeds: [{ title: 'Infinity Rules Assistant', description: truncate(`**Question**\n${result.question}`, 1000), color: 0x8b1e2d, fields, footer: { text: truncate(`Activated corpus: ${versions} • ${method}`, 2048) } }], allowedMentions: { parse: [] } })
 }
 
@@ -371,6 +400,7 @@ function scrubDiscordPayload(value, key = '') { if (Array.isArray(value)) return
 function truncate(value, max) { const text = String(value ?? ''); return text.length <= max ? text : `${text.slice(0, Math.max(0, max - 1)).replace(/\s+\S*$/, '').trim()}…` }
 function normalizeConclusion(value) { const normalized = String(value || '').trim().toUpperCase(); if (normalized === 'RULE') return 'INTERPRETATION'; return ['YES', 'NO', 'DEPENDS', 'UNRESOLVED', 'INTERPRETATION'].includes(normalized) ? normalized : 'UNRESOLVED' }
 function matches(command) { const option = command.options?.[0]; return command.description === RULES_COMMAND_DEFINITION.description && command.options?.length === 1 && option?.name === RULES_OPTION && option?.required === true && option?.type === ApplicationCommandOptionType.String && option?.maxLength === 1000 }
+
 
 
 

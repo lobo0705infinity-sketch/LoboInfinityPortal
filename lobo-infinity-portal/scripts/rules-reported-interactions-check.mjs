@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import './rules-berserk-fireteam-check.mjs'
 import { readFile } from 'node:fs/promises'
 import vm from 'node:vm'
 const root = new URL('../', import.meta.url)
@@ -397,4 +398,5 @@ for (const question of [...t2Questions, 'T2 crit with Immunity: what happens?'])
   assert.match(evidence.text, /two saves, not three/)
 }
 console.log('T2 regressions passed: exact report and paraphrases, two saves/three Wounds, no misleading YES, exception routing and complete prioritized evidence.')
+
 
