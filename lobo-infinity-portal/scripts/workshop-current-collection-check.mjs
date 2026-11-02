@@ -28,16 +28,35 @@ for (const map of loboWorkshopMaps) {
   const rows = bag.LuaScript.split('\r\n')
   assert.equal(rows.pop(), '', `${map.slug} terminates placement records with CRLF`)
   const ids = new Set()
-  for (const row of rows) {
+  for (const row of rows.filter(row => row !== '' || map.guid !== '8102b2')) {
     assert.match(row, /^--[0-9a-f]{6}(,-?\d+\.\d{6,9}){6}$/)
     const [id, ...fields] = row.slice(2).split(',')
     assert.ok(!ids.has(id), `${map.slug} has no repeated placement GUID`)
     ids.add(id)
     const [x, y, z, ...rotation] = fields.map(Number)
     assert.ok(Math.abs(x) < 44 && Math.abs(y) < 26 && Math.abs(z) < 26, `${map.slug}: ${id} stays inside the Stage clear zone`)
-    for (const angle of rotation) {
-      assert.ok(angle >= 0 && angle < 360, `${map.slug}: ${id} uses canonical Euler angles`)
-      assert.ok(angle === 0 || (angle >= 0.01 && angle <= 359.99), `${map.slug}: ${id} avoids Unity's near-zero Euler wrap`)
+    const approvedNative = map.guid === '8102b2' && map.sourceNote?.startsWith('Approved R7 adopts')
+    const nativeObjects = [...bag.ContainedObjects]
+    let nativeObject
+    if (approvedNative) {
+      while (nativeObjects.length) {
+        const object = nativeObjects.pop()
+        if (object.GUID === id) { nativeObject = object; break }
+        nativeObjects.push(...Object.values(object.States || {}))
+      }
+      assert.ok(nativeObject, `${map.slug}: native placement resolves to its approved object`)
+    }
+    for (const [index, angle] of rotation.entries()) {
+      if (approvedNative) {
+        // Preserve signed, tiny Unity-authored components in the approved R7
+        // save. Require the record to match its actual object/state transform.
+        assert.ok(Number.isFinite(angle) && Math.abs(angle) <= 360)
+        assert.ok(Math.abs(angle - nativeObject.Transform[['rotX', 'rotY', 'rotZ'][index]]) < 1e-7,
+          `${map.slug}: ${id} preserves its approved native orientation`)
+      } else {
+        assert.ok(angle >= 0 && angle < 360, `${map.slug}: ${id} uses canonical Euler angles`)
+        assert.ok(angle === 0 || (angle >= 0.01 && angle <= 359.99), `${map.slug}: ${id} avoids Unity's near-zero Euler wrap`)
+      }
       assert.ok(Math.abs(angle - Math.fround(angle)) < 0.0005, `${map.slug}: ${id} meets the Stage alignment tolerance`)
     }
   }
@@ -59,12 +78,14 @@ for (const map of loboWorkshopMaps) {
     assert.ok(controls.LuaScript.includes("local kestrelMat='c70000'"))
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 0)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 16)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 20)
     assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('ground-surface')).length, 4, 'Kestrel has four sculpted terrain sections')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 6, 'Kestrel has six visible crater bowls')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 0, 'Kestrel uses excavated depressions without raised rim objects')
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 6, 'Kestrel retains recessed bowls with six narrow low rocky lips')
     assert.equal(map.previewKind, 'geometry')
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('glass')).length, 13)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('solar-array')).length, 6)
     for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
       assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)
       assert.ok(controls.LuaScript.includes(`loboDrawerHandlers.${callback}=${callback}`), `Kestrel routes ${callback} from the drawer`)

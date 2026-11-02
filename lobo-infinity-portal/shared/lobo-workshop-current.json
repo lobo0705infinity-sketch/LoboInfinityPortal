@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-02T01:04:23.722356+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r10/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-02T03:40:32.089428+00:00",
+  "download": "/assets/maps/kestrel-lunar-20261101-r11/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -519,12 +519,12 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 69,
-      "sourceNote": "Original lunar research-base terrain by Lobo and ChatGPT. Six impact craters excavated below the lunar plateau with low ejecta lips; ten ridgelines. Sixteen lunar facilities, nine glass domes, a maximum of two stories and playable furnished interiors. Six photovoltaic arrays form a two-row, three-column solar field. Equipment is grouped in eight named service yards beside its facilities. The large research biosphere retains four rooms and four entrances. Actual exported-geometry previews. Booty/Metachemistry, independent DZ/+4/+8 guides, and individual Lunar Day/Night Earth-view panoramas. No supplied Data-Harvester tokens. Scripted geometry, routing, Stage lifecycle and installer checks passed; live TTS physics remains pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r10/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r10/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r10/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r10/kestrel-lunar-data-harvest.json",
+      "objectCount": 83,
+      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty facilities and thirteen glass domes; no building exceeds two stories. Eighteen higher ridge systems have exported crests about 1.9–3 inches above grade. Six craters sink 0.65–0.85 inches below the plateau, with narrow rocky lips about 0.3 inches high. Six solar arrays remain in two rows of three; equipment remains grouped in service areas. Furnished interiors, four-room/four-entrance biosphere, thin independent DZ/+4/+8, Booty/Metachemistry and individual day/night Earth-view backgrounds. Exported geometry, collision, access, controls and Stage tests pass; native TTS playtesting remains pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261101-r11/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261101-r11/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261101-r11/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261101-r11/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r10"
+  "downloadRevision": "kestrel-lunar-20261101-r11"
 }

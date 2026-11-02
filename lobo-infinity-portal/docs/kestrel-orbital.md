@@ -1,26 +1,29 @@
 # Kestrel Lunar Base — Data Harvest
 
-R10 has sixteen facilities, nine glass domes and twenty-one furnished interior
-states. The radiator spindle is two stories; no facility exceeds two stories.
-Medical, materials analysis, sampling and crew commons domes expand the base.
-The large research biosphere retains four rooms and four entrances.
+R11 adds four facilities for twenty total, including thirteen glass domes.
+The sampling annex, solar operations dome, robotics lab and algae culture
+dome have furnished, removable interiors. No facility exceeds two stories.
+Six photovoltaic tables remain aligned in two rows of three, and equipment
+stays in organized service yards.
 
-Six photovoltaic tables form one aligned field of two rows and three columns.
-Exterior rooftop collectors are consolidated into the field. Twenty-three
-equipment pieces form eight service areas beside their facilities: solar power,
-data maintenance, life support, lander receiving, materials services, crew
-storage, medical resupply and observatory servicing. Trolleys park with their
-work groups.
+Eighteen ridge systems now have measured crests about 1.9–3 inches above
+the plateau. Six crater floors remain 0.65–0.85 inches below ground, with
+narrow rocky lips around 0.3 inches high. The lips are cut as continuous
+annuli into the terrain surface, with matching normals and UVs rather than
+overlaid meshes. Render and collision partitions cover the board exactly.
 
-Six craters sink below the plateau with low ejecta lips. Ten ridgelines add
-broken approaches and cover. Terrain and crater floors partition the surface
-with continuous UVs and no hidden flat planes across the bowls. Pads are level.
+Level pads protect facilities, objectives and four circular-template locations.
+Geometry checks verify 40 mm access through continuous free space around
+the higher crests, separated deployment exits, objective clearance, quarter-
+inch building heights and no overlapping facilities. Actual Lua and original
+Stage tests cover controls, glazing, exposed states and Clear Table.
 
-Tech-Coffins, Booty/Metachemistry, independent DZ/+4/+8 guides, per-player
-mission tabs, individual day/night backgrounds and the recovery button remain.
-The installer targets main Saved Objects; the full collection preserves other
-maps and existing installation logic.
+Booty/Metachemistry, independent DZ/+4/+8, per-player mission tabs and
+individual Lunar Day/Night backgrounds remain. The installer places the
+named JSON/PNG pair directly in main Saved Objects. Full collection updates
+preserve every unrelated map. Native TTS playtesting remains pending.
 
-Offline geometry, collision, route, objective, floor-access, Lua and original
-Stage deployment/clear tests passed. Native TTS rendering, physics and
-multiplayer playtesting remain pending.
+The collection validator also preserves the approved native Sirocco R7
+export: six-to-nine-decimal records, signed Unity-authored Euler components
+and trailing blank lines are accepted, with each orientation checked against
+its actual object/state transform. Generated maps retain canonical checks.
