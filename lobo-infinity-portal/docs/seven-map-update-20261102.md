@@ -34,3 +34,10 @@ Top 40 map/API/score checks, public metadata and sitemap checks, exact compariso
 of all 40 downloaded bags with the installer collection, and ZIP verification.
 The release inventory under public/assets/maps/seven-map-update-20261102-r1
 records each bag's SHA-256 and the installer SHA-256.
+
+## Kestrel tournament listing correction
+
+Kestrel Lunar Base belongs only in the general Data Harvest pool. It is removed
+from the Top 40 catalogue, preparation page, and search/sitemap entries; its old
+tournament URL redirects to the general map. The tournament has no Data Harvest
+mission. The original installer described above remains an archived release.

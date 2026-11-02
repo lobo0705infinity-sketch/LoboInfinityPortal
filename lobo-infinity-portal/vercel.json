@@ -38,6 +38,11 @@
   ],
   "redirects": [
     {
+      "source": "/event/lobos-top-40/maps/kestrel",
+      "destination": "/maps/data-harvest-1-kestrel-orbital",
+      "permanent": true
+    },
+    {
       "source": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
       "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
       "permanent": true

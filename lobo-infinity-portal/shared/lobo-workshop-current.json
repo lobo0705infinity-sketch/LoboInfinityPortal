@@ -605,7 +605,7 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 68,
-      "sourceNote": "Approved R14 adopts Jake/Lobo’s TS_Save_33 layout: exact placed objects, transforms, scales and active states retained. Lunar terrain, sunken craters, ridgelines, varied glass domes and grouped solar panels. The on-board Map Controls button is removed; right-side controls and context-menu recovery remain. Matching Top 40 Data Harvest collection entry; no tournament round reassigned. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "sourceNote": "Approved R14 adopts Jake/Lobo’s TS_Save_33 layout: exact placed objects, transforms, scales and active states retained. Lunar terrain, sunken craters, ridgelines, varied glass domes and grouped solar panels. The on-board Map Controls button is removed; right-side controls and context-menu recovery remain. General Data Harvest pool only; not part of the Top 40 tournament. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
       "angled": "/assets/maps/seven-map-update-20261102-r1/kestrel-angled.webp",
       "diagram": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",

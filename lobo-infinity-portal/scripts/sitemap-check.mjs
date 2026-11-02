@@ -27,6 +27,8 @@ for (const path of ['/', '/little-helper', '/army-intelligence', '/games/117', '
   assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app${path}</loc>`), path)
 }
 assert.doesNotMatch(xml, /commissioner/)
+assert.doesNotMatch(xml, /event\/lobos-top-40\/maps\/kestrel/)
+assert.ok(xml.includes('/maps/data-harvest-1-kestrel-orbital</loc>'))
 assert.doesNotMatch(xml, /\/hall-of-fame|\/rivalries/)
 for (const map of loboWorkshopMaps) assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app/maps/${map.slug}</loc>`), map.slug)
 for (const location of auroraMapLocations) assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app/maps/${location.slug}</loc>`), location.slug)

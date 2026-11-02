@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
-import { TOP40_ROUND_MAPS, TOP40_ADDITIONAL_MAPS, TOP40_MAPS, applyTop40MapAssignments, withTop40RoundMaps } from '../shared/top40-round-maps.mjs'
+import { TOP40_ROUND_MAPS, TOP40_MAPS, applyTop40MapAssignments, withTop40RoundMaps } from '../shared/top40-round-maps.mjs'
 import { getTop40ResultSides } from '../src/public/top40ResultsModel.ts'
 import { buildPreparationAssignments, TOP40_EVENT_ID } from '../src/public/top40PreparationModel.ts'
 import type { PublicEvent, PublicGame } from '../src/public/snapshotTypes.ts'
@@ -14,10 +14,8 @@ for(const map of TOP40_ROUND_MAPS) {
  assert.equal(save.ObjectStates[0].Nickname,'SET_'+map.workshopLabel)
  assert.equal(assignments.find(r=>r.bracket===map.bracket&&r.bracketRound===map.round)?.map,map.workshopLabel)
 }
-assert.equal(TOP40_ADDITIONAL_MAPS.length,1)
-assert.equal(TOP40_MAPS.length,6)
-assert.equal(TOP40_ADDITIONAL_MAPS[0].name,'Kestrel Lunar Base')
-assert.equal(TOP40_ADDITIONAL_MAPS[0].round,undefined,'Kestrel must not overwrite an unrelated mission round')
+assert.equal(TOP40_MAPS.length,5)
+assert.ok(TOP40_MAPS.every(map=>map.round && map.mission!=='Data Harvest' && map.key!=='kestrel'),'Top 40 contains only assigned tournament maps')
 assert.equal(assignments.find(r=>r.bracket==='Winners'&&r.bracketRound===3)?.map,"Lobo's Top 40 Winners Round 3 Map")
 const event={id:TOP40_EVENT_ID,bracketMissions:plan.rounds,bracket:[]} as unknown as PublicEvent
 const original=structuredClone(event)

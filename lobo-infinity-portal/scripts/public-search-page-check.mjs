@@ -115,8 +115,14 @@ const nereidPage=describePublicSearchPage('/maps/aurora-vii-azure-coast-nereid-d
 assert.match(nereidPage.title,/Nereid Deep R7/)
 assert.match(nereidPage.intro,/Choose the mission separately/)
 assert.doesNotMatch(nereidPage.intro,/Vault Below|Network Links|Owner advantage:/)
-for(const key of ['winners-1','winners-2','winners-3','winners-4','losers-1','kestrel']) {
+for(const key of ['winners-1','winners-2','winners-3','winners-4','losers-1']) {
  const page=describePublicSearchPage('/event/lobos-top-40/maps/'+key)
  assert.ok(page);assert.match(page.title,/Top 40/);assert.ok(page.links.some(link=>link.label==='Download seven-map installer'))
 }
-console.log('Nereid public terrain and all six Top 40 map pages have current metadata and downloads.')
+console.log('Nereid public terrain and all five Top 40 map pages have current metadata and downloads.')
+
+assert.equal(describePublicSearchPage('/event/lobos-top-40/maps/kestrel'),null)
+const kestrelGeneral=describePublicSearchPage('/maps/data-harvest-1-kestrel-orbital')
+assert.match(kestrelGeneral.title,/Kestrel Lunar Base/)
+assert.match(kestrelGeneral.intro,/Data Harvest/)
+assert.doesNotMatch(kestrelGeneral.intro,/Matching Top 40/)

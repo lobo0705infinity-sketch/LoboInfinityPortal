@@ -230,7 +230,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     title: `${tournamentMap.name} · Lobo’s Top 40 | Lobo Portal`,
     heading: tournamentMap.name,
     description: `${tournamentMap.workshopLabel}: ${tournamentMap.mission}. Approved terrain, previews and TTS downloads.`,
-    intro: `${tournamentMap.workshopLabel}. ${tournamentMap.mission}, 300 points. ${tournamentMap.round ? 'Assigned tournament round map.' : 'Additional collection map; no tournament round assigned.'}`,
+    intro: `${tournamentMap.workshopLabel}. ${tournamentMap.mission}, 300 points. Assigned tournament round map.`,
     image: tournamentMap.angled, imageAlt: `${tournamentMap.name} rendered terrain preview`, imageWidth: 1600, imageHeight: 1400,
     links: [{label: 'Top 40 preparation', href: '/event/lobos-top-40'}, {label: 'Matching general map', href: tournamentMap.generalHref}, {label: 'Download map bag', href: tournamentMap.download}, {label: 'Download seven-map installer', href: TOP40_APPROVED_MAPS_INSTALLER}],
   }

@@ -1,8 +1,7 @@
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
 export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/seven-map-update-20261102-r1/Lobo-Seven-Map-Workshop-Update-Installer.zip'
 
-// Only announced round assignments populate the event. Supplementary maps
-// remain browsable without changing a round's mission or replacing TBD.
+// Only announced round assignments belong in the tournament map collection.
 export const TOP40_ROUND_MAPS = [
   {
     "key": "winners-1",
@@ -71,20 +70,7 @@ export const TOP40_ROUND_MAPS = [
   }
 ]
 
-export const TOP40_ADDITIONAL_MAPS = [
-  {
-    "key": "kestrel",
-    "mission": "Data Harvest",
-    "name": "Kestrel Lunar Base",
-    "workshopLabel": "Lobo's Top 40 Kestrel Lunar Base — Data Harvest",
-    "href": "/event/lobos-top-40/maps/kestrel",
-    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Kestrel-Lunar-Base-Data-Harvest.json",
-    "angled": "/assets/maps/seven-map-update-20261102-r1/kestrel-angled.webp",
-    "overhead": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
-    "generalHref": "/maps/data-harvest-1-kestrel-orbital"
-  }
-]
-export const TOP40_MAPS = [...TOP40_ROUND_MAPS, ...TOP40_ADDITIONAL_MAPS]
+export const TOP40_MAPS = [...TOP40_ROUND_MAPS]
 
 export function getTop40RoundMap(bracket, round, mission = '') {
   return TOP40_ROUND_MAPS.find(map => map.bracket === bracket && map.round === Number(round)

@@ -15,9 +15,8 @@ export default function Top40MapPage() {
         <h1>{map.workshopLabel}</h1>
         <h2>{map.name}</h2>
         <p>Mission: {map.mission} · 300 points</p>
-        {!map.round ? <p>Additional Data Harvest map in the Top 40 collection. No tournament round is assigned; the current schedule has no Data Harvest round.</p> : null}
         <p><a href={map.download} download>Download this TTS map bag (JSON)</a> · <a href={TOP40_APPROVED_MAPS_INSTALLER} download>Download the seven-map installer (ZIP)</a></p>
-        <p>Extract the installer ZIP and run Install.cmd. Six Top 40 bags, their six general mission copies, and Nereid’s Aurora VII terrain bag install in the main Objects → Saved Objects folder.</p>
+        <p>Extract the installer ZIP and run Install.cmd. The Workshop update installs map bags in the main Objects → Saved Objects folder.</p>
         <p>To update the existing Workshop collection, load “Lobo’s Infinity Maps - Seven Map Update R1”, then choose Update Workshop for item 3719263238.</p>
         <a className="lobo-map-detail-hero" href={map.angled} target="_blank" rel="noopener noreferrer"><img src={map.angled} alt={`Rendered terrain preview of ${map.name}`} width="1600" height="1400"/><span>Approved terrain preview ↗</span></a>
         <p><a href={map.overhead} target="_blank" rel="noopener noreferrer">View overhead terrain preview ↗</a> · <Link to={map.generalHref}>Matching general-pool map →</Link></p>
