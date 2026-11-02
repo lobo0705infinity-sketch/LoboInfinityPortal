@@ -78,13 +78,28 @@ for (const map of loboWorkshopMaps) {
     assert.ok(controls.LuaScript.includes("local kestrelMat='c70000'"))
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
     assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 0)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 20)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 22)
     assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('ground-surface')).length, 4, 'Kestrel has four sculpted terrain sections')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 6, 'Kestrel has six visible crater bowls')
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 6, 'Kestrel retains recessed bowls with six narrow low rocky lips')
     assert.equal(map.previewKind, 'geometry')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('glass')).length, 13)
+    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('glass')).length, 0, 'Kestrel has no separate glass objects')
+    const domes = bag.ContainedObjects.filter(object => object.Tags?.includes('building') && object.ChildObjects?.some(child => child.Tags?.includes('integrated-glazing')))
+    assert.equal(domes.length, 15, 'Kestrel integrates glazing in fifteen dome buildings')
+    assert.ok(new Set(domes.map(object => object.Transform.rotY)).size >= 7, 'Kestrel varies dome orientation')
+    for (const dome of domes) {
+      const stateIds = Object.keys(dome.States).map(Number).sort((a, b) => a - b)
+      assert.deepEqual(stateIds, Array.from({ length: stateIds.length }, (_, index) => index + 1))
+      assert.ok(dome.Nickname.includes('Complete glazed dome'), 'Default dome state is the missing, highest state')
+      assert.ok(dome.States['1'].Nickname.includes('Ground floor'), 'State 1 exposes the ground floor')
+      assert.ok(Object.values(dome.States).every(state => !state.ChildObjects?.length), 'Lower states contain no glazing')
+      for (const child of dome.ChildObjects) {
+        assert.equal(child.CustomMesh.MaterialIndex, 4)
+        assert.equal(child.LuaScript, '')
+        for (const axis of ['X', 'Y', 'Z']) assert.equal(child.Transform[`pos${axis}`], 0)
+      }
+    }
     assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('solar-array')).length, 6)
     for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
       assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)

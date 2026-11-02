@@ -1,27 +1,39 @@
 # Kestrel Lunar Base — Data Harvest
 
-R12 replaces the crater's dark outline and stretched terrain photograph with
-one fine lunar-dust material across the ground, bowls, lips and ridges.
-Dominant-plane projection keeps grain density consistent on steep faces;
-all UVs remain inside the texture atlas. Identical normals are deduplicated
-so every imported terrain mesh remains below 25,000 vertices.
+R13 adds two 8-inch pressure-hull biospheres, bringing the layout to 22 lunar
+facilities and 15 glass domes. Each new biosphere has four furnished rooms,
+four entrances, a clear two-inch cross hall and opaque pressure shielding.
+Horizontal ray checks confirm the hull and bulkheads block low lines of fire;
+the transparent roof is not counted as opaque cover.
 
-Crater rims now have irregular radial profiles, varying crest heights,
-worn breaches and softly blended ejecta aprons. Their floors remain below
-grade. The sixteen terrain sections partition the surface without overlays;
-render and collision geometry agree.
+Dome orientations now vary across eight directions. A few smaller facilities
+and the lander receiving yard move to accommodate the new domes. The solar
+field remains two rows of three; equipment stays in organized service areas.
 
-All twenty buildings, thirteen glass domes, eighteen higher ridge systems,
-six-array solar field, grouped equipment, interiors, controls, objectives,
-deployment records and backgrounds are preserved. Full collection updates
-patch only terrain fields in Kestrel and retain all unrelated maps.
+Glazing is a native local `ChildObjects` attachment of the building's highest
+state. It is no longer an independent payload or scripted parked object.
+The supplied/default state is the complete glazed building. State 1 exposes
+the ground floor, upper floors follow in ascending order, and the state just
+below the complete dome retains the structural roof frame with its glass off.
+The opaque building material remains separate from the transparent glazing.
 
-Checks cover surface area, crater depth, facility/template pads, collision,
-40 mm routes, controls, glazing, loading/clear lifecycle, UV stretch and
-imported vertex counts. Actual mesh previews show the supplied geometry and
-material. Native TTS playtesting remains pending.
+The approved fine lunar material, six recessed craters, eighteen higher
+ridgelines, clear objective/template areas and normal Infinity rules remain.
+Terrain pads are regraded around the revised layout. Booty/Metachemistry,
+independent DZ/+4/+8 and individual day/night Earth-and-Sun backgrounds remain.
 
-Material provenance and the complete built-in image-generation prompt are
-included in `Source/MATERIAL-PROMPT.txt`; the generated source scan is also
-included. Mirrored tile packing produces a 4096-pixel diffuse atlas. The
-material contains fine dust and tiny mineral chips, without baked craters.
+Checks cover native state structure, local attachment transforms, unique GUIDs,
+actual entrance and opaque-hull ray intersections, level pads, crater depths,
+UV stretch, collider limits, 40 mm routes, controls and original Stage deploy/
+Clear Table behavior in default and changed states. Previews render the actual
+exported meshes. Live TTS physics and multiplayer playtesting remain pending.
+
+Both installers put `Kestrel Lunar Base - Data Harvest.json` and its thumbnail
+directly into the main Saved Objects folder. The full installer also updates
+the local collection save, preserving unrelated maps. Steam Workshop upload
+remains a separate manual action.
+
+Reproducible source: `kestrel-r13-authoring-source.zip`, entry point
+`update_domes.py`, with the R12 native baseline and layout included. Material
+provenance remains in `MATERIAL-PROMPT.txt` and the original generated source
+scan. The diffuse atlas and unchanged model blobs are reused from R12.

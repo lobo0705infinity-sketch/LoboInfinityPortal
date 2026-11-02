@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-02T04:32:07.683686+00:00",
-  "download": "/assets/maps/kestrel-lunar-20261101-r12/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-02",
+  "download": "/assets/maps/kestrel-lunar-20261102-r13/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -519,18 +519,18 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 83,
-      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty facilities, thirteen glass domes, eighteen higher ridgelines and six weathered impact craters. Fine grey lunar dust keeps a consistent grain scale across ground and steep walls. Low, uneven crater lips and ejecta aprons blend into the surface. Furnished interiors, a four-room research biosphere, a two-by-three solar field and grouped service areas. Booty/Metachemistry, independent DZ/+4/+8 and individual day/night backgrounds retained. Geometry, materials, controls and loading checks passed; native TTS playtesting remains pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261101-r12/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261101-r12/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261101-r12/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261101-r12/kestrel-lunar-data-harvest.json",
+      "objectCount": 72,
+      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty-two facilities with fifteen integrated glass domes in varied orientations. Two additional 8-inch, four-room biospheres use opaque pressure shielding and bulkheads to block lines of fire. State 1 exposes the ground floor; upper floors follow; the complete glazed building is the highest state. Eighteen higher ridgelines, six weathered sunken craters, a two-by-three solar field and organized service yards. Booty/Metachemistry, independent DZ/+4/+8 and individual day/night backgrounds retained. Geometry, access, state, controls and loading checks passed; native TTS playtesting remains pending.",
+      "overhead": "/assets/maps/kestrel-lunar-20261102-r13/overhead.webp",
+      "angled": "/assets/maps/kestrel-lunar-20261102-r13/angled.webp",
+      "diagram": "/assets/maps/kestrel-lunar-20261102-r13/overhead.webp",
+      "download": "/assets/maps/kestrel-lunar-20261102-r13/kestrel-lunar-data-harvest.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955",
-      "captureDate": "2026-11-01",
+      "captureDate": "2026-11-02",
       "labelAliases": [
         "Kestrel Orbital",
         "ITS18 Data Harvest — Kestrel Orbital",
@@ -1149,5 +1149,5 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261101-r12"
+  "downloadRevision": "kestrel-lunar-20261102-r13"
 }
