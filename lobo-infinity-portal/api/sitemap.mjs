@@ -1,3 +1,5 @@
+import { auroraPublicTerrain } from '../shared/aurora-public-terrain.mjs'
+import { TOP40_MAPS } from '../shared/top40-round-maps.mjs'
 import { auroraMapLocations } from '../shared/aurora-map-catalog.mjs'
 import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
 
@@ -52,6 +54,8 @@ export async function buildSitemap({ fetchObject = fetch } = {}) {
   const paths = new Set(publicPaths)
   for (const map of loboWorkshopMaps) paths.add(`/maps/${map.slug}`)
   for (const location of auroraMapLocations) paths.add(`/maps/${location.slug}`)
+  for (const map of auroraPublicTerrain) paths.add(`/maps/${map.slug}`)
+  for (const map of TOP40_MAPS) paths.add(map.href)
   let snapshotAvailable = false
 
   try {

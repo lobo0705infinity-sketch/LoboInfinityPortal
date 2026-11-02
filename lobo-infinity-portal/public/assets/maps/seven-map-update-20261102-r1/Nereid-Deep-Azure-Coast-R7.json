@@ -1,0 +1,3335 @@
+{
+  "SaveName": "Nereid Deep - Azure Coast R7",
+  "VersionNumber": "v13.3.2",
+  "ObjectStates": [
+    {
+      "GUID": "f5452f",
+      "Name": "Bag",
+      "Transform": {
+        "posX": 0,
+        "posY": 2,
+        "posZ": 0,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "scaleZ": 1.0
+      },
+      "Nickname": "SET_Azure Coast · Nereid Deep R7 · Public Terrain",
+      "Description": "Aurora VII / Azure Coast | Nereid Deep R7 public terrain edition.\nTwo open decks, detailed rooms, four stairwells, two service ladders and shallow/deep water. Upper Deck LIFT/STACK controls retained.\nMAP RULES: No Aerial profiles. Tidal Channels enabled for this map; no territorial owner advantage. Read Map Rules before play.\nMission selected separately; no unreleased narrative scoring, brief or objective setup. Clear Table before deploying.",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.7058823108673096,
+        "g": 0.36652088165283203,
+        "b": 0.0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "MaterialIndex": -1,
+      "MeshIndex": -1,
+      "Bag": {
+        "Order": 0
+      },
+      "LuaScript": "--2a70cd,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--b25e63,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--f43b98,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--7cc443,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--50d14a,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--58f0ef,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--196053,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--15cfd9,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--36bafb,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--803d4e,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--c452c0,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--6d8ced,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--801621,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--0885dc,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--83568d,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--dfe8c6,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--2a9cb3,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--1f89e1,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--2f8e6b,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--f14b3c,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--ca98cb,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--73760f,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--689bd9,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--187ada,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--d17b44,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--df38d5,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--7e4344,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--9e21e4,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--a19b71,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--6edae8,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--4afe3b,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--ec9354,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--1cc548,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--688710,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--c836f6,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--0c4fd9,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--cb2cfa,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--f02e3c,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--b9829e,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--ae7094,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--b0f679,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--aa0d47,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--cc4adc,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--771933,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--b3e1a1,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--f30883,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--599788,0.000000,1.250000,0.000000,0.000000,0.000000,0.000000\r\n--c10339,0.000000,-20.000000,0.000000,0.000000,0.000000,0.000000\r\n",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "ContainedObjects": [
+        {
+          "GUID": "2a70cd",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Nereid Deep | station floor",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-deck.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-deck-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad() self.setLock(true);Grid.show_lines=false;Grid.snapping=1 end\nfunction onDestroy()\n local key='loboClearing:f5452f'\n if Global.getVar(key) then return end\n Global.setVar(key,true)\n local doomed={}\n for _,o in ipairs(getAllObjects()) do\n  if o~=self and o.hasTag('LoboMap:f5452f') then doomed[#doomed+1]=o end\n end\n for _,o in ipairs(doomed) do o.destruct() end\n Global.setVar(key,false)\nend\n",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b25e63",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 NW | lab",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "f43b98",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 NE | dock",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "7cc443",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 SW | hydro",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "50d14a",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 SE | reactor",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "58f0ef",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 NW | command",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "196053",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 NE | crew",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "15cfd9",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 SW | medical",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "36bafb",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 SE | server",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-interior.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-interior-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "803d4e",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Nw Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "c452c0",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Nw Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6d8ced",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Nw Furnishings 003",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-003.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-nw-furnishings-003-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "801621",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Ne Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "0885dc",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Ne Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-ne-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "83568d",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Sw Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "dfe8c6",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Sw Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-sw-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "2a9cb3",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Se Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "1f89e1",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 1 Se Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidLower"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-1-se-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "2f8e6b",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Nw Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "f14b3c",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Nw Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ca98cb",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Nw Furnishings 003",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-003.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-nw-furnishings-003-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "73760f",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Ne Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "689bd9",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Ne Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-ne-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "187ada",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Sw Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "d17b44",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Sw Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-sw-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "df38d5",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Se Furnishings 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "7e4344",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Se Furnishings 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "9e21e4",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Se Furnishings 003",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-003.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-003-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "a19b71",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Se Furnishings 004",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-004.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-004-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "6edae8",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deck 2 Se Furnishings 005",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f",
+            "NereidRoom",
+            "NereidDeck2"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-005.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deck-2-se-furnishings-005-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "4afe3b",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Four Stair Cores",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/four-stair-cores.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/four-stair-cores-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ec9354",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Central Concourse Marking",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/central-concourse-marking.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/central-concourse-marking-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "1cc548",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Left inter-deck ladder | 4-inch rise",
+          "Description": "Service ladder from lower floor (1.25 in) to upper floor (5.25 in). Open upper hatch with guarded sides and a supported exit. Stack the decks before using or measuring this vertical route.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/left-interdeck-ladder.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/left-interdeck-ladder-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "688710",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Right inter-deck ladder | 4-inch rise",
+          "Description": "Service ladder from lower floor (1.25 in) to upper floor (5.25 in). Open upper hatch with guarded sides and a supported exit. Stack the decks before using or measuring this vertical route.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/right-interdeck-ladder.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/right-interdeck-ladder-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "c836f6",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "0c4fd9",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "cb2cfa",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 003",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-003.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-003-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "f02e3c",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 004",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-004.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-004-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b9829e",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 005",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-005.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-005-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "ae7094",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 006",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-006.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-006-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b0f679",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 007",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-007.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-007-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "aa0d47",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 008",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-008.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flooded-lower-deck-008-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "cc4adc",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 009",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/flooded-lower-deck-009.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/flooded-lower-deck-009-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "771933",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flooded Lower Deck 010",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.72,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/flooded-lower-deck-010.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/flooded-lower-deck-010-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "b3e1a1",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deep Flooded Lower Deck 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.2,
+            "g": 0.4,
+            "b": 0.58
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deep-flooded-lower-deck-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deep-flooded-lower-deck-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "f30883",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Deep Flooded Lower Deck 002",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 0.2,
+            "g": 0.4,
+            "b": 0.58
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deep-flooded-lower-deck-002.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/deep-flooded-lower-deck-002-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.7,
+              "SpecularSharpness": 25.0,
+              "FresnelStrength": 0.3
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "GUID": "599788",
+          "Name": "Custom_Model",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "scaleZ": 1
+          },
+          "Nickname": "Flood Boundary 001",
+          "Description": "Nereid Deep R7 | enclosed underwater habitat.\nLower deck surface 1.25 in; upper deck surface 5.25 in.\nOpen pressure hatches are 3.20 inches wide. Solid outer observation glazing blocks LoF.\nUse Map Controls to lift the upper deck for lower-floor access.",
+          "GMNotes": "Nereid Deep R7",
+          "AltLookAngle": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "ColorDiffuse": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          },
+          "Tags": [
+            "LoboMap:f5452f"
+          ],
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": true,
+          "Grid": false,
+          "Snap": false,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": true,
+          "HideWhenFaceDown": false,
+          "Hands": false,
+          "CustomMesh": {
+            "MeshURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flood-boundary-001.obj",
+            "DiffuseURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/station-materials.jpg",
+            "NormalURL": "",
+            "ColliderURL": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/5de4845cb0d35de7fffdc483a692d6552ea7d177/assets/tts/nereid-deep-detailed-interiors-20261102/flood-boundary-001-collider.obj",
+            "Convex": false,
+            "MaterialIndex": 3,
+            "TypeIndex": 0,
+            "CustomShader": {
+              "SpecularColor": {
+                "r": 0.25,
+                "g": 0.29,
+                "b": 0.32
+              },
+              "SpecularIntensity": 0.06,
+              "SpecularSharpness": 4.0,
+              "FresnelStrength": 0.02
+            },
+            "CastShadows": true
+          },
+          "LuaScript": "function onLoad()self.setLock(true)end",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        },
+        {
+          "Name": "BlockSquare",
+          "GUID": "c10339",
+          "Nickname": "Lobo Map Controls | Nereid Deep",
+          "Description": "Nereid Deep R7 public terrain | map rules, deck lift, reference tables, optional DZ guides and backgrounds.",
+          "Transform": {
+            "posX": 70.0,
+            "posY": 100.0,
+            "posZ": 70.0,
+            "rotX": 0,
+            "rotY": 0,
+            "rotZ": 0,
+            "scaleX": 0.01,
+            "scaleY": 0.01,
+            "scaleZ": 0.01
+          },
+          "ColorDiffuse": {
+            "r": 0,
+            "g": 0,
+            "b": 0
+          },
+          "Locked": true,
+          "DragSelectable": false,
+          "Tooltip": false,
+          "Grid": false,
+          "Snap": false,
+          "Hands": false,
+          "Tags": [
+            "LoboMap:f5452f",
+            "controller",
+            "LoboBackgroundController"
+          ],
+          "LuaScript": "-- BEGIN LOBO MAP UI LIFECYCLE V2\nlocal loboNativeUI=UI\nlocal loboNativeWait=Wait\nlocal loboLifeDead=false\nlocal loboLifeAnchor=\"2a70cd\"\nlocal loboLifeWasPlaced=false\nlocal loboLifeToken=nil\nlocal loboLifeWaits={}\nlocal loboLifeBroker=nil\nlocal loboLifeOwner=self.getGUID()\nlocal loboLifeBrokerData=\"{\\\"Name\\\":\\\"BlockSquare\\\",\\\"Nickname\\\":\\\"Lobo map UI lifecycle and background service\\\",\\\"Description\\\":\\\"Shared map UI and background lifecycle service.\\\",\\\"Transform\\\":{\\\"posX\\\":90,\\\"posY\\\":-50,\\\"posZ\\\":90,\\\"rotX\\\":0,\\\"rotY\\\":0,\\\"rotZ\\\":0,\\\"scaleX\\\":0.1,\\\"scaleY\\\":0.1,\\\"scaleZ\\\":0.1},\\\"ColorDiffuse\\\":{\\\"r\\\":0,\\\"g\\\":0,\\\"b\\\":0},\\\"Locked\\\":true,\\\"DragSelectable\\\":false,\\\"Tooltip\\\":false,\\\"Grid\\\":false,\\\"Snap\\\":false,\\\"Hands\\\":false,\\\"Tags\\\":[\\\"NoSave\\\",\\\"LoboMapUIBrokerV4\\\"],\\\"LuaScript\\\":\\\"-- One persistent UI writer for map-owned screen controls. No Global script edits.\\\\nLOBO_UI_BROKER_VERSION=4\\\\nlocal owners={}\\\\nlocal nextToken=0\\\\nlocal dirty=true\\\\nlocal timer=nil\\\\nlocal releaseEnvironment=function() end\\\\nlocal hiddenColors={'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Purple','Pink','Grey','Black'}\\\\nlocal function copy(t)\\\\n if type(t)~='table' then return t end\\\\n local out={};for k,v in pairs(t) do out[k]=copy(v) end;return out\\\\nend\\\\nlocal function knownRoot(n)\\\\n local id=n.attributes and n.attributes.id or ''\\\\n return id=='loboMapDrawerV1' or id:match('^loboBackground_') or id:match('^loboSwitchback') or id:sub(1,12)=='loboMission_' or id:sub(1,13)=='loboMapRules_' or id:sub(1,9)=='oq810340_' or id:sub(1,20)=='loboTop40MapControls'\\\\nend\\\\nlocal function objectAlive(guid)\\\\n local o=getObjectFromGUID(guid)\\\\n return o and not o.isDestroyed() and o or nil\\\\nend\\\\nlocal function validOwner(state)\\\\n if state.retired then return false end\\\\n local o=objectAlive(state.owner)\\\\n if not o then return false end\\\\n local p=o.getPosition();local deployed=math.abs(p.x)<=44 and math.abs(p.z)<=26 and math.abs(p.y)<=26\\\\n local anchor=state.anchor and objectAlive(state.anchor) or nil\\\\n if deployed and (not state.anchor or anchor) then state.wasPlaced=true end\\\\n if state.wasPlaced and state.anchor and not anchor then state.retired=true;return false end\\\\n return deployed and (not state.anchor or anchor)\\\\nend\\\\nlocal function prune()\\\\n for guid,state in pairs(owners) do\\\\n  if not objectAlive(guid) or (state.wasPlaced and not validOwner(state)) then releaseEnvironment(guid);owners[guid]=nil;dirty=true end\\\\n end\\\\nend\\\\nlocal function view()\\\\n local roots={}\\\\n for _,n in ipairs(UI.getXmlTable() or {}) do if not knownRoot(n) then roots[#roots+1]=copy(n) end end\\\\n for _,state in pairs(owners) do\\\\n  if validOwner(state) then for _,n in ipairs(state.roots) do roots[#roots+1]=copy(n) end end\\\\n end\\\\n return roots\\\\nend\\\\n-- A small right-edge tab opens a per-player drawer. Outside the drawer there\\\\n-- is no transparent full-screen click blocker and no toolbar under TTS menus.\\\\nlocal drawerOpen={}\\\\nlocal drawerHadControls=false\\\\nlocal drawerActions={}\\\\nlocal drawerRoot='loboMapDrawerV1'\\\\nlocal function drawerColors()\\\\n local colors={}\\\\n for color,opened in pairs(drawerOpen) do if opened then colors[#colors+1]=color end end\\\\n table.sort(colors);return table.concat(colors,'|'),#colors\\\\nend\\\\nfunction loboDrawerToggle(player)\\\\n if not player or not player.color then return end\\\\n drawerOpen[player.color]=not drawerOpen[player.color];dirty=true\\\\nend\\\\nfunction loboDrawerClose(player)\\\\n if not player or not player.color then return end\\\\n drawerOpen[player.color]=nil;dirty=true\\\\nend\\\\nfunction loboDrawerResolve(p)\\\\n local route=drawerActions[p.id]\\\\n local state=route and owners[route.owner] or nil\\\\n if not route or route.owner~=p.owner or not state or not validOwner(state) then return nil end\\\\n local callback=route.callback\\\\n if callback:lower():find('mission') or callback=='openRules' or callback=='loboUniversalBooty' or callback=='loboUniversalMetaChemistry' then\\\\n  if p.color then drawerOpen[p.color]=nil;dirty=true end\\\\n end\\\\n return {callback=callback}\\\\nend\\\\nlocal function drawerRender(logical)\\\\n drawerActions={}\\\\n local buttons,slots={},{}\\\\n local slotCount=0\\\\n local function extract(n)\\\\n  n=copy(n);local a=n.attributes or {};local children={}\\\\n  -- Keep mission, rules and other modal interiors intact and at their normal\\\\n  -- screen position. Only extract their outside opener buttons.\\\\n  if n.tag=='Panel' and (a.allowDragging=='true' or (a.rectAlignment=='MiddleCenter' and (tonumber(a.width) or 0)>=500)) then return n end\\\\n  if n.tag=='Button' and a.onClick then\\\\n   local owner,callback=a.onClick:match('^([a-f0-9]+)/([%w_]+)$')\\\\n   if callback and callback:lower():find('deployment') and not callback:find('loboUniversalDeployment',1,true) then return nil end\\\\n   if owner and owners[owner] and validOwner(owners[owner]) then\\\\n    local id=a.id\\\\n    if id then\\\\n     drawerActions[id]={owner=owner,callback=callback}\\\\n     local key=owner..'/'..callback..'/'..tostring(a.text or n.value or '')\\\\n     -- Territory Map Rules has one opener per player visibility color. These\\\\n     -- share a slot while retaining the original IDs and visibility rules.\\\\n     if not slots[key] then slots[key]=slotCount;slotCount=slotCount+1 end\\\\n     a.onClick=owner..'/loboDrawerAction'\\\\n     a.rectAlignment='UpperLeft';a.offsetXY='12 '..(-48-36*slots[key])\\\\n     a.width='226';a.height='32';a.fontSize='16'\\\\n     a.preferredWidth=nil;a.preferredHeight=nil;a.flexibleWidth=nil;a.flexibleHeight=nil\\\\n     n.attributes=a;buttons[#buttons+1]=n\\\\n     return nil\\\\n    end\\\\n   end\\\\n  end\\\\n  for _,child in ipairs(n.children or {}) do local kept=extract(child);if kept then children[#children+1]=kept end end\\\\n  n.children=children\\\\n  return n\\\\n end\\\\n local rendered={}\\\\n for _,n in ipairs(logical) do\\\\n  if knownRoot(n) then\\\\n   local cleaned=extract(n)\\\\n   if cleaned then rendered[#rendered+1]=cleaned end\\\\n  else rendered[#rendered+1]=copy(n) end\\\\n end\\\\n if #buttons==0 then drawerOpen={};drawerHadControls=false;return rendered end\\\\n if not drawerHadControls then\\\\n  for _,color in ipairs(hiddenColors) do drawerOpen[color]=true end\\\\n  drawerHadControls=true\\\\n end\\\\n local function rank(button)\\\\n  local route=drawerActions[button.attributes.id] or {}\\\\n  local fn=(route.callback or ''):lower()\\\\n  if fn=='lobouniversaldeployment0' then return 1 end\\\\n  if fn=='lobouniversaldeployment4' then return 1.1 end\\\\n  if fn=='lobouniversaldeployment8' then return 1.2 end\\\\n  if fn=='lobouniversalbooty' then return 4.1 end\\\\n  if fn=='lobouniversalmetachemistry' then return 4.2 end\\\\n  if fn:find('deployment') then return 1 end\\\\n  if fn:find('quadrant') then return 2 end\\\\n  if fn=='openrules' then return 3 end\\\\n  if fn:find('mission') then return 4 end\\\\n  if button.attributes.id:match('_day$') then return 5 end\\\\n  if button.attributes.id:match('_night$') then return 6 end\\\\n  if button.attributes.id:match('_off$') then return 7 end\\\\n  return 8\\\\n end\\\\n table.sort(buttons,function(a,b)\\\\n  if rank(a)~=rank(b) then return rank(a)<rank(b) end\\\\n  return a.attributes.id<b.attributes.id\\\\n end)\\\\n slots={};slotCount=0\\\\n for _,button in ipairs(buttons) do\\\\n  local a=button.attributes;local route=drawerActions[a.id]\\\\n  local key=route.owner..'/'..route.callback..'/'..tostring(a.text or button.value or '')\\\\n  if not slots[key] then slots[key]=slotCount;slotCount=slotCount+1 end\\\\n  a.offsetXY='12 '..(-48-36*slots[key])\\\\n end\\\\n local visibility,count=drawerColors()\\\\n local height=60+36*slotCount\\\\n local children={\\\\n  {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='12 -8',width='184',height='30',fontSize='18',fontStyle='Bold',color='#FFFFFFFF',alignment='MiddleLeft'},value='Map Controls'},\\\\n  {tag='Button',attributes={id=drawerRoot..'_close',rectAlignment='UpperRight',offsetXY='-10 -8',width='30',height='28',text='X',onClick=self.getGUID()..'/loboDrawerClose',fontSize='16',color='#35566AFF',textColor='#FFFFFFFF'}}\\\\n }\\\\n for _,button in ipairs(buttons) do children[#children+1]=button end\\\\n rendered[#rendered+1]={tag='Panel',attributes={id=drawerRoot,width='100%',height='100%',color='#00000000',raycastTarget='false'},children={\\\\n  {tag='Button',attributes={id=drawerRoot..'_toggle',rectAlignment='MiddleRight',offsetXY='-16 '..(height/2+24),width='154',height='32',text='Map Controls',onClick=self.getGUID()..'/loboDrawerToggle',fontSize='17',color='#253A4AF2',textColor='#FFFFFFFF',tooltip='Open or hide map, mission and background controls.'}},\\\\n  {tag='Panel',attributes={id=drawerRoot..'_panel',rectAlignment='MiddleRight',offsetXY='-16 0',width='250',height=tostring(height),active=count>0 and 'true' or 'false',visibility=visibility,color='#10212AF5'},children=children}\\\\n }}\\\\n return rendered\\\\nend\\\\n\\\\nlocal function escape(value)\\\\n return tostring(value or ''):gsub('&','&amp;'):gsub('<','&lt;'):gsub('>','&gt;'):gsub('\\\\\\\"','&quot;'):gsub(\\\\\\\"'\\\\\\\",'&apos;'):gsub('\\\\\\\\r','&#13;'):gsub('\\\\\\\\n','&#10;'):gsub('\\\\\\\\t','&#9;')\\\\nend\\\\nlocal function xml(n)\\\\n local out={'<'..n.tag}\\\\n for k,v in pairs(n.attributes or {}) do out[#out+1]=' '..k..'=\\\\\\\"'..escape(v)..'\\\\\\\"' end\\\\n out[#out+1]='>'..escape(n.value)\\\\n for _,child in ipairs(n.children or {}) do out[#out+1]=xml(child) end\\\\n out[#out+1]='</'..n.tag..'>';return table.concat(out)\\\\nend\\\\nlocal function signature(nodes) return JSON.encode(nodes) end\\\\nlocal function owns(n,guid)\\\\n for k,v in pairs(n.attributes or {}) do\\\\n  if type(v)=='string' and k:sub(1,2)=='on' and v:sub(1,#guid+1)==guid..'/' then return true end\\\\n end\\\\n for _,child in ipairs(n.children or {}) do if owns(child,guid) then return true end end\\\\n return false\\\\nend\\\\nlocal function stateFor(p)\\\\n local s=owners[p.owner]\\\\n if s and s.token==p.token and not s.retired then return s end\\\\nend\\\\n-- Background state belongs to the shared UI service, so anchor-first cleanup\\\\n-- restores the environment even when the map's controller is destroyed later.\\\\nlocal backgroundOwner=nil\\\\nlocal backgroundOriginal=nil\\\\nlocal lightKeys={'ambient_intensity','ambient_type','light_intensity','reflection_intensity','lut_contribution','lut_index','lut_url'}\\\\nlocal function captureEnvironment()\\\\n local state={name=Backgrounds.getBackground(),url=Backgrounds.getCustomURL(),lighting={}}\\\\n for _,key in ipairs(lightKeys) do state.lighting[key]=Lighting[key] end\\\\n state.lighting.sky=copy(Lighting.getAmbientSkyColor())\\\\n state.lighting.equator=copy(Lighting.getAmbientEquatorColor())\\\\n state.lighting.ground=copy(Lighting.getAmbientGroundColor())\\\\n state.lighting.light=copy(Lighting.getLightColor())\\\\n return state\\\\nend\\\\nlocal function restoreEnvironment()\\\\n if not backgroundOriginal then backgroundOwner=nil;return end\\\\n local state=backgroundOriginal\\\\n if state.url and state.url~='' then Backgrounds.setCustomURL(state.url)\\\\n elseif state.name and state.name~='' then Backgrounds.setBackground(state.name) end\\\\n local light=state.lighting or {}\\\\n for _,key in ipairs(lightKeys) do if light[key]~=nil then Lighting[key]=light[key] end end\\\\n if light.sky then Lighting.setAmbientSkyColor(light.sky) end\\\\n if light.equator then Lighting.setAmbientEquatorColor(light.equator) end\\\\n if light.ground then Lighting.setAmbientGroundColor(light.ground) end\\\\n if light.light then Lighting.setLightColor(light.light) end\\\\n Lighting.apply()\\\\n backgroundOwner=nil;backgroundOriginal=nil\\\\nend\\\\nreleaseEnvironment=function(owner)\\\\n if backgroundOwner==owner then restoreEnvironment() end\\\\nend\\\\nfunction loboBackgroundActivate(p)\\\\n local state=stateFor(p)\\\\n if not state or not validOwner(state) then return nil end\\\\n if not backgroundOriginal then backgroundOriginal=copy(p.original or captureEnvironment()) end\\\\n local config=p.config or state.background\\\\n if not config then return nil end\\\\n local mode=p.mode or 'day'\\\\n if mode~='day' and mode~='night' and mode~='off' then return nil end\\\\n local url=config[mode]\\\\n if not url or url=='' then return nil end\\\\n state.background=copy(config);state.backgroundMode=mode;backgroundOwner=p.owner\\\\n Backgrounds.setCustomURL(url)\\\\n -- Keep the tabletop neutral and readable in all three panorama modes.\\\\n -- Using a gradient decouples miniature colors from the selected sky image.\\\\n local prior=backgroundOriginal.lighting or {}\\\\n Lighting.ambient_type=2\\\\n Lighting.light_intensity=math.max(tonumber(prior.light_intensity) or 1,.9)\\\\n Lighting.ambient_intensity=math.max(tonumber(prior.ambient_intensity) or 1,.9)\\\\n Lighting.reflection_intensity=math.min(tonumber(prior.reflection_intensity) or .2,.25)\\\\n Lighting.setLightColor({1,1,1})\\\\n Lighting.setAmbientSkyColor({.72,.75,.78})\\\\n Lighting.setAmbientEquatorColor({.58,.6,.62})\\\\n Lighting.setAmbientGroundColor({.42,.43,.44})\\\\n Lighting.apply()\\\\n return {mode=mode,original=copy(backgroundOriginal)}\\\\nend\\\\nfunction loboBackgroundState(p)\\\\n local state=stateFor(p)\\\\n if not state then return nil end\\\\n return {mode=state.backgroundMode,original=copy(backgroundOriginal)}\\\\nend\\\\n\\\\nlocal function hide(state)\\\\n local ids={};for _,n in ipairs(state.roots) do if n.attributes and n.attributes.id then ids[n.attributes.id]=true end end\\\\n for _,n in ipairs(UI.getXmlTable() or {}) do\\\\n  local id=n.attributes and n.attributes.id\\\\n  if id and ids[id] then UI.setAttribute(id,'active','false') end\\\\n end\\\\nend\\\\nfunction loboUIRegister(p)\\\\n local sameMap=false\\\\n for _,state in pairs(owners) do\\\\n  if not state.retired and state.anchor==p.anchor and objectAlive(state.owner) then sameMap=true;break end\\\\n end\\\\n if not sameMap then drawerOpen={};drawerHadControls=false end\\\\n nextToken=nextToken+1\\\\n owners[p.owner]={owner=p.owner,anchor=p.anchor,token=nextToken,roots={},wasPlaced=false,retired=false}\\\\n dirty=true;return nextToken\\\\nend\\\\nfunction loboUIRead(p)\\\\n prune();return view()\\\\nend\\\\nfunction loboUIWrite(p)\\\\n local state=stateFor(p);if not state then return end\\\\n local nodes={}\\\\n for _,n in ipairs(p.nodes or {}) do if knownRoot(n) and owns(n,p.owner) then nodes[#nodes+1]=copy(n) end end\\\\n if signature(nodes)~=signature(state.roots) then state.roots=nodes;dirty=true end\\\\nend\\\\nlocal function find(nodes,id)\\\\n for _,n in ipairs(nodes) do\\\\n  if n.attributes and n.attributes.id==id then return n end\\\\n  local result=find(n.children or {},id);if result then return result end\\\\n end\\\\nend\\\\nfunction loboUISetAttribute(p)\\\\n local state=stateFor(p);if not state then return end\\\\n local n=find(state.roots,p.id);if not n then return end\\\\n if n.attributes[p.attribute]~=p.value then n.attributes[p.attribute]=p.value;dirty=true end\\\\nend\\\\nfunction loboUIRelease(p)\\\\n local state=stateFor(p);if not state then return end\\\\n releaseEnvironment(p.owner);hide(state);owners[p.owner]=nil;dirty=true\\\\nend\\\\nfunction loboUIFlush()\\\\n prune()\\\\n if not dirty or UI.loading then return end\\\\n local nodes=drawerRender(view());local text={}\\\\n for _,n in ipairs(nodes) do text[#text+1]=xml(n) end\\\\n dirty=false;UI.setXml(table.concat(text),UI.getCustomAssets())\\\\nend\\\\nfunction onObjectDestroy(object)\\\\n local guid=object.getGUID()\\\\n for owner,state in pairs(owners) do\\\\n  if guid==owner or guid==state.anchor then releaseEnvironment(owner);hide(state);state.retired=true;state.roots={};owners[owner]=nil;dirty=true end\\\\n end\\\\n loboUIFlush()\\\\nend\\\\nfunction onLoad()\\\\n Global.setVar('LoboMapUIBrokerV4',self.getGUID())\\\\n self.setLock(true);self.interactable=false;self.setInvisibleTo(hiddenColors)\\\\n if timer then Wait.stop(timer) end\\\\n timer=Wait.time(loboUIFlush,.1,-1)\\\\nend\\\\nfunction onDestroy()\\\\n restoreEnvironment()\\\\n if timer then Wait.stop(timer) end\\\\n if Global.getVar('LoboMapUIBrokerV4')==self.getGUID() then Global.setVar('LoboMapUIBrokerV4',nil) end\\\\nend\\\\n\\\",\\\"LuaScriptState\\\":\\\"\\\",\\\"XmlUI\\\":\\\"\\\"}\"\nlocal function loboLifeAlive()\n if loboLifeDead or self.isDestroyed() then return false end\n if loboLifeAnchor then\n  local anchor=getObjectFromGUID(loboLifeAnchor)\n  if loboLifeWasPlaced and (not anchor or anchor.isDestroyed()) then return false end\n  local p=self.getPosition()\n  if anchor and math.abs(p.x)<=44 and math.abs(p.z)<=26 and math.abs(p.y)<=26 then loboLifeWasPlaced=true end\n end\n return true\nend\nlocal function loboLifeGetBroker()\n if loboLifeBroker and not loboLifeBroker.isDestroyed() then return loboLifeBroker end\n local guid=Global.getVar('LoboMapUIBrokerV4')\n local broker=guid and getObjectFromGUID(guid) or nil\n if not broker then\n  for _,candidate in ipairs(getObjectsWithTag('LoboMapUIBrokerV4') or {}) do broker=candidate;break end\n end\n if not broker then\n  broker=spawnObjectData({data=JSON.decode(loboLifeBrokerData)})\n  if broker then Global.setVar('LoboMapUIBrokerV4',broker.getGUID()) end\n end\n loboLifeBroker=broker;return broker\nend\nlocal function loboLifeCall(name,p)\n local broker=loboLifeBroker\n if not broker or broker.isDestroyed() or not loboLifeToken then return nil end\n p=p or {};p.owner=loboLifeOwner;p.token=loboLifeToken\n return broker.call(name,p)\nend\n-- Map writes update only this controller's contribution, never a stale full HUD.\nlocal UI=setmetatable({\n getXmlTable=function() return loboLifeCall('loboUIRead') or {} end,\n setXmlTable=function(nodes) if not loboLifeDead then loboLifeCall('loboUIWrite',{nodes=nodes}) end end,\n setAttribute=function(id,key,value) if loboLifeAlive() then loboLifeCall('loboUISetAttribute',{id=id,attribute=key,value=value}) end end,\n getCustomAssets=function() return loboNativeUI.getCustomAssets() end\n},{__index=function(_,key) return loboNativeUI[key] end})\nlocal function loboLifeStop(id)\n if id and loboLifeWaits[id] then loboNativeWait.stop(id);loboLifeWaits[id]=nil end\nend\nlocal function loboLifeGuard(fn)\n return function(...) if loboLifeAlive() then return fn(...) end end\nend\nlocal Wait={}\nfunction Wait.stop(id) loboLifeStop(id) end\nfunction Wait.time(fn,delay,repetitions)\n local id\n id=loboNativeWait.time(function()\n  if not loboLifeAlive() then loboLifeStop(id);return end\n  if not repetitions or repetitions==1 then loboLifeWaits[id]=nil end\n  return fn()\n end,delay,repetitions)\n loboLifeWaits[id]=true;return id\nend\nfunction Wait.frames(fn,frames)\n local id\n id=loboNativeWait.frames(function() loboLifeWaits[id]=nil;return loboLifeGuard(fn)() end,frames)\n loboLifeWaits[id]=true;return id\nend\nfunction Wait.condition(fn,condition,timeout,onTimeout)\n local id\n id=loboNativeWait.condition(function() loboLifeWaits[id]=nil;return loboLifeGuard(fn)() end,\n  function() return not loboLifeAlive() or condition() end,timeout,\n  function() loboLifeWaits[id]=nil;if onTimeout then return loboLifeGuard(onTimeout)() end end)\n loboLifeWaits[id]=true;return id\nend\n-- END LOBO MAP UI LIFECYCLE V2 ADAPTER\n\n-- BEGIN LOBO MAP BACKGROUND CONTROLS V1\nlocal backgroundConfig=JSON.decode(\"{\\\"day\\\": \\\"https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/nereid-day.jpg\\\", \\\"night\\\": \\\"https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/606d68b12d8535f585279265e5aac31c393d30ea/assets/tts/nereid-deep-r7-ladders-20261102/nereid-night.jpg\\\", \\\"off\\\": \\\"https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/d3884342bbd23536eb5f7a2a3c5b453c017b3d3b/assets/tts/day-night-backgrounds-20261031/background-off.jpg\\\", \\\"category\\\": \\\"nereid-deep-r2\\\"}\")\nlocal backgroundMode='day'\nlocal backgroundBaseline=nil\nlocal backgroundStarted=false\nlocal backgroundId='loboBackground_'..self.getGUID()\nlocal function backgroundTree()\n local children={}\n for _,mode in ipairs({'day','night','off'}) do\n  local label=mode=='off' and 'Background Off' or (mode=='day' and 'Day' or 'Night')\n  children[#children+1]={tag='Button',attributes={id=backgroundId..'_'..mode,text=label,onClick=self.getGUID()..'/loboChooseBackground',fontSize='17',height='34',color=backgroundMode==mode and '#477FA5FF' or '#253A4AFF',textColor='#FFFFFFFF',tooltip='Change the shared panorama; tabletop lighting stays readable.'}}\n end\n return {tag='HorizontalLayout',attributes={id=backgroundId,rectAlignment='UpperCenter',offsetXY='0 -110',width='450',height='34',spacing='7',childForceExpandWidth='true',childForceExpandHeight='true'},children=children}\nend\nlocal function backgroundMount()\n local nodes={}\n for _,node in ipairs(UI.getXmlTable() or {}) do\n  if not node.attributes or node.attributes.id~=backgroundId then nodes[#nodes+1]=node end\n end\n nodes[#nodes+1]=backgroundTree()\n UI.setXmlTable(nodes)\nend\nfunction loboChooseBackground(player,value,id)\n if not backgroundStarted or not loboLifeAlive() then return end\n local mode=string.match(id or '','_(day)$') or string.match(id or '','_(night)$') or string.match(id or '','_(off)$')\n if not mode then return end\n local result=loboLifeCall('loboBackgroundActivate',{config=backgroundConfig,mode=mode,original=backgroundBaseline})\n if result then backgroundMode=result.mode;backgroundBaseline=result.original;backgroundMount() end\nend\nlocal function backgroundTick()\n if backgroundStarted or not loboLifeAlive() then return end\n local anchor=getObjectFromGUID(loboLifeAnchor)\n if not anchor then return end\n local p=anchor.getPosition();local q=self.getPosition()\n if math.abs(p.x)>44 or math.abs(p.z)>26 or math.abs(p.y)>26 or math.abs(q.x)>44 or math.abs(q.z)>26 or math.abs(q.y)>26 then return end\n local result=loboLifeCall('loboBackgroundActivate',{config=backgroundConfig,mode=backgroundMode,original=backgroundBaseline})\n if result then if Grid then Grid.show_lines=false;Grid.snapping=1 end;backgroundStarted=true;backgroundMode=result.mode;backgroundBaseline=result.original;backgroundMount() end\nend\nfunction onLoad(saved)\n self.setLock(true);self.interactable=false\n self.setInvisibleTo({'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Purple','Pink','Grey','Black'})\n if saved and saved~='' then\n  local ok,state=pcall(function() return JSON.decode(saved) end)\n  if ok and type(state)=='table' then\n   if state.mode=='day' or state.mode=='night' or state.mode=='off' then backgroundMode=state.mode end\n   backgroundBaseline=state.original\n  end\n end\n Wait.time(backgroundTick,.25,-1)\n Wait.frames(backgroundTick,5)\nend\nfunction onSave()\n local state=loboLifeCall('loboBackgroundState')\n return JSON.encode({mode=backgroundMode,original=(state and state.original) or backgroundBaseline})\nend\n-- END LOBO MAP BACKGROUND CONTROLS V1\n\n-- BEGIN LOBO MAP UI LIFECYCLE V2 EVENTS\nlocal loboLifePreviousLoad=onLoad\nfunction onLoad(saved)\n loboLifeDead=false;loboLifeWasPlaced=false\n local broker=loboLifeGetBroker()\n local boot\n boot=loboNativeWait.condition(function()\n  loboLifeWaits[boot]=nil\n  if not loboLifeAlive() then return end\n  loboLifeToken=broker.call('loboUIRegister',{owner=loboLifeOwner,anchor=loboLifeAnchor})\n  if loboLifePreviousLoad then loboLifePreviousLoad(saved) end\n end,function() return loboLifeDead or (broker and not broker.isDestroyed() and broker.getVar('LOBO_UI_BROKER_VERSION')==4) end,30,function() loboLifeWaits[boot]=nil end)\n loboLifeWaits[boot]=true\nend\nlocal loboLifePreviousDestroy=onDestroy\nfunction onDestroy()\n -- Release both panels together before any older destruction handlers run.\n loboLifeDead=true\n for id in pairs(loboLifeWaits) do loboNativeWait.stop(id) end\n loboLifeWaits={}\n loboLifeCall('loboUIRelease')\n if loboLifePreviousDestroy then loboLifePreviousDestroy() end\nend\n-- END LOBO MAP UI LIFECYCLE V2 EVENTS\n\n-- BEGIN LOBO DRAWER ACTION ROUTING V1\nlocal loboDrawerHandlers={loboChooseBackground=loboChooseBackground}\n\nfunction loboDrawerAction(player,value,id)\n local guid=Global.getVar('LoboMapUIBrokerV4')\n local broker=guid and getObjectFromGUID(guid) or nil\n if not broker or broker.isDestroyed() then return end\n local route=broker.call('loboDrawerResolve',{owner=self.getGUID(),id=id,color=player and player.color})\n local callback=route and loboDrawerHandlers[route.callback] or nil\n if callback then callback(player,value,id) end\nend\n-- END LOBO DRAWER ACTION ROUTING V1\n\n-- BEGIN LOBO UNIVERSAL REFERENCES AND DEPLOYMENT V1\nlocal universalConfig=JSON.decode(\"{\\\"mat\\\": \\\"2a70cd\\\", \\\"shape\\\": \\\"opposite\\\", \\\"depth\\\": 12, \\\"surface\\\": 1.25, \\\"tag\\\": \\\"LoboMap:f5452f\\\", \\\"booty\\\": {\\\"title\\\": \\\"BOOTY\\\", \\\"rows\\\": [[\\\"1-2\\\", \\\"ARM +1\\\"], [\\\"3-4\\\", \\\"Light Flamethrower\\\"], [\\\"5-6\\\", \\\"Grenades\\\"], [\\\"7-8\\\", \\\"DA CC Weapon\\\"], [\\\"9\\\", \\\"Multispectral Visor L1\\\"], [\\\"10\\\", \\\"EXP CC Weapon\\\"], [\\\"11\\\", \\\"Adhesive Launcher Rifle\\\"], [\\\"12\\\", \\\"TAG: Immunity (AP) | Other: ARM +2\\\"], [\\\"13\\\", \\\"Panzerfaust\\\"], [\\\"14\\\", \\\"Monofilament CC Weapon\\\"], [\\\"15\\\", \\\"MOV 8-4\\\"], [\\\"16\\\", \\\"TAG: BS Attack (Shock) | Other: MULTI Rifle\\\"], [\\\"17\\\", \\\"MULTI Sniper Rifle\\\"], [\\\"18\\\", \\\"TAG: Immunity (ARM) | Other: ARM +4\\\"], [\\\"19\\\", \\\"Mimetism (-6)\\\"], [\\\"20\\\", \\\"TAG: BS Attack (+1 B) | Other: HMG\\\"]], \\\"source\\\": \\\"infinitythewiki.com/Booty\\\"}, \\\"meta\\\": {\\\"title\\\": \\\"METACHEMISTRY\\\", \\\"rows\\\": [[\\\"1-3\\\", \\\"PH +3\\\"], [\\\"4-5\\\", \\\"Super-Jump\\\"], [\\\"6-7\\\", \\\"Regeneration\\\"], [\\\"8-10\\\", \\\"Climbing Plus\\\"], [\\\"11-12\\\", \\\"MOV 8-4\\\"], [\\\"13-14\\\", \\\"BTS +6\\\"], [\\\"15\\\", \\\"No Wound Incapacitation\\\"], [\\\"16\\\", \\\"ARM +1 and Immunity (ARM)\\\"], [\\\"17\\\", \\\"Dogged and Immunity (Enhanced)\\\"], [\\\"18\\\", \\\"MOV 6-4 and Super-Jump\\\"], [\\\"19\\\", \\\"MOV 8-4 and Climbing Plus\\\"], [\\\"20\\\", \\\"PH +3 and Regeneration\\\"]], \\\"source\\\": \\\"infinitythewiki.com/MetaChemistry\\\"}}\")\nlocal universalRoot='loboMission_'..self.getGUID()..'_universal'\nlocal universalEnabled={[0]=false,[4]=false,[8]=false}\nlocal universalReaders={}\nlocal universalBase,universalGuides={},{}\nlocal universalGeneration=0\nlocal universalStarted=false\nlocal function un(tag,a,k,v)return{tag=tag,attributes=a or{},children=k or{},value=v}end\nlocal function universalButton(id,text,callback)\n return un('Button',{id=universalRoot..id,text=text,onClick=self.getGUID()..'/'..callback,width='226',height='34',fontSize='17',color='#294351FF',textColor='#FFFFFFFF'})\nend\nlocal function universalRefresh()\n local roots={}\n for _,n in ipairs(UI.getXmlTable() or {})do if not n.attributes or n.attributes.id~=universalRoot then roots[#roots+1]=n end end\n local children={}\n for _,offset in ipairs({0,4,8})do\n  children[#children+1]=universalButton('_dz'..offset,(offset==0 and 'DZ' or 'DZ +'..offset..'\"')..(universalEnabled[offset] and ': ON' or ': OFF'),'loboUniversalDeployment'..offset)\n end\n children[#children+1]=universalButton('_booty','Booty table','loboUniversalBooty')\n children[#children+1]=universalButton('_metachemistry','Metachemistry table','loboUniversalMetaChemistry')\n local charts={booty=universalConfig.booty,meta=universalConfig.meta}\n for key,chart in pairs(charts)do\n  local colors={};for color,selected in pairs(universalReaders)do if selected==key then colors[#colors+1]=color end end;table.sort(colors)\n  local body={un('Text',{rectAlignment='UpperLeft',offsetXY='24 -16',width='620',height='38',fontSize='25',fontStyle='Bold',alignment='MiddleLeft',color='#FFFFFFFF'},nil,chart.title),\n   un('Text',{rectAlignment='UpperLeft',offsetXY='24 -58',width='640',height='26',fontSize='15',alignment='MiddleLeft',color='#A8BAC8FF'},nil,'Infinity N5.3 | d20 reference | inches')}\n  for i,row in ipairs(chart.rows)do\n   local y=-96-(i-1)*31\n   body[#body+1]=un('Panel',{rectAlignment='UpperLeft',offsetXY='24 '..y,width='652',height='30',color=i%2==0 and '#203544FF' or '#162B39FF'},{\n    un('Text',{rectAlignment='UpperLeft',offsetXY='10 0',width='70',height='30',fontSize='17',fontStyle='Bold',alignment='MiddleLeft',color='#F4B06AFF'},nil,row[1]),\n    un('Text',{rectAlignment='UpperLeft',offsetXY='88 0',width='558',height='30',fontSize='16',alignment='MiddleLeft',color='#EDF3F8FF'},nil,row[2])})\n  end\n  body[#body+1]=un('Text',{rectAlignment='LowerLeft',offsetXY='24 49',width='652',height='38',fontSize='14',alignment='MiddleLeft',color='#D2DFE8FF'},nil,'Optional roll when placed in Model form. Result adds to the profile.\\nTAG / other troop results are listed separately where needed.')\n  body[#body+1]=un('Text',{rectAlignment='LowerLeft',offsetXY='24 13',width='490',height='32',fontSize='13',alignment='MiddleLeft',color='#A8BAC8FF'},nil,chart.source)\n  body[#body+1]=un('Button',{id=universalRoot..'_close_'..key,text='Close',onClick=self.getGUID()..'/loboUniversalReferenceClose',rectAlignment='LowerRight',offsetXY='-24 14',width='115',height='32',fontSize='17',color='#35566AFF',textColor='#FFFFFFFF'})\n  children[#children+1]=un('Panel',{id=universalRoot..'_chart_'..key,active=#colors>0 and 'true' or 'false',visibility=table.concat(colors,'|'),rectAlignment='MiddleCenter',width='700',height=tostring(96+#chart.rows*31+108),color='#10212AFB',allowDragging='true',returnToOriginalPositionWhenReleased='false'},body)\n end\n roots[#roots+1]=un('Panel',{id=universalRoot,width='100%',height='100%',color='#00000000',raycastTarget='false'},children)\n UI.setXmlTable(roots)\nend\nfunction loboUniversalBooty(player)if player and player.color then if universalReaders[player.color]=='booty'then universalReaders[player.color]=nil else universalReaders[player.color]='booty'end;universalRefresh()end end\nfunction loboUniversalMetaChemistry(player)if player and player.color then if universalReaders[player.color]=='meta'then universalReaders[player.color]=nil else universalReaders[player.color]='meta'end;universalRefresh()end end\nfunction loboUniversalReferenceClose(player)if player and player.color then universalReaders[player.color]=nil;universalRefresh()end end\nlocal function universalMat()return getObjectFromGUID(universalConfig.mat)end\nlocal function universalCommit()\n local mat=universalMat();if not mat or self.isDestroyed() then return end\n local lines={};for _,l in ipairs(universalBase)do lines[#lines+1]=l end\n for _,l in ipairs(universalGuides)do lines[#lines+1]=l end\n mat.setVectorLines(lines)\nend\nlocal function universalIsBoundary(mat,line)\n local points=line.points or{};if #points<2 then return false end\n -- Only replace the original DZ boundary; mission quadrants and exclusion lines survive.\n for side=1,2 do\n  local yes=true\n  for _,p in ipairs(points)do\n   local v=mat.positionToWorld(Vector(p.x or p[1],p.y or p[2],p.z or p[3]))\n   local distance\n   if universalConfig.shape=='corner' then\n    local sign=side==1 and 1 or -1\n    distance=math.sqrt((v.x-sign*24)^2+(v.z+sign*24)^2)-universalConfig.depth\n   else distance=v.x-(side==1 and -1 or 1)*(24-universalConfig.depth)end\n   if math.abs(distance)>.045 then yes=false;break end\n  end\n  if yes then return true end\n end\n return false\nend\nfunction loboUniversalSetBase(p)\n local mat=universalMat()\n if not mat or p.guid~=universalConfig.mat then return false end\n universalBase={}\n for _,line in ipairs(p.lines or{})do if not universalIsBoundary(mat,line)then universalBase[#universalBase+1]=line end end\n universalCommit();return true\nend\nlocal function universalBuild()\n universalGeneration=universalGeneration+1;local generation=universalGeneration\n local mat=universalMat();if not mat then return end\n universalGuides={};universalCommit()\n local jobs={}\n for _,offset in ipairs({0,4,8})do if universalEnabled[offset]then\n  for side=1,2 do jobs[#jobs+1]={offset=offset,side=side,points={},top={}}end\n end end\n if #jobs==0 then return end\n local jobIndex,sample=1,0;local scale=mat.getScale();local width=math.max(math.abs(scale.x),math.abs(scale.z),.000001)\n local strokes={}\n local function step()\n  if generation~=universalGeneration or self.isDestroyed() or not universalMat()then return end\n  for work=1,8 do\n   local job=jobs[jobIndex]\n   if not job then universalGuides=strokes;universalCommit();return end\n   local depth=universalConfig.depth+job.offset;local x,z\n   if universalConfig.shape=='corner' then\n    local sign=job.side==1 and 1 or -1;local angle=sample*math.pi/192\n    x=sign*(24-depth*math.cos(angle));z=-sign*(24-depth*math.sin(angle))\n   else x=(job.side==1 and -1 or 1)*(24-depth);z=-24+sample*.5 end\n   local surface=universalConfig.surface\n   if mat.getBounds then\n    local ok,bounds=pcall(function()return mat.getBounds()end)\n    if ok and bounds and bounds.center and bounds.size then surface=bounds.center.y+bounds.size.y/2 end\n   end\n   local y=surface+.028\n   if Physics and Physics.cast then\n    local ok,hits=pcall(function()return Physics.cast({origin={x,40,z},direction={0,-1,0},type=1,max_distance=65})end)\n    if ok then for _,hit in ipairs(hits or{})do\n     local o=hit.hit_object\n     if o and hit.point and o.hasTag(universalConfig.tag) and not o.hasTag('mission') and not o.hasTag('LoboBackgroundController') and not o.hasTag('controller') then y=math.max(y,hit.point.y+.028)end\n    end end\n   end\n   local p=mat.positionToLocal(Vector(x,y,z));job.points[#job.points+1]={p.x,p.y,p.z}\n   p=mat.positionToLocal(Vector(x,y+.003,z));job.top[#job.top+1]={p.x,p.y,p.z}\n   sample=sample+1\n   if sample>96 then\n    strokes[#strokes+1]={points=job.points,color={.01,.015,.02},thickness=.025/width}\n    local c=job.side==1 and {.15,.78,1} or {1,.58,.16}\n    if job.offset==4 then c=job.side==1 and {.3,1,.65} or {1,.84,.2}\n    elseif job.offset==8 then c=job.side==1 and {.75,.5,1} or {1,.35,.55}end\n    strokes[#strokes+1]={points=job.top,color=c,thickness=.015/width}\n    jobIndex=jobIndex+1;sample=0\n   end\n  end\n  Wait.frames(step,1)\n end\n step()\nend\nlocal function universalToggle(offset)\n universalEnabled[offset]=not universalEnabled[offset]\n if offset==0 and universalConfig.linked then\n  local linked=getObjectFromGUID(universalConfig.linked.guid)\n  if linked then pcall(function()linked.call(universalConfig.linked.callback,{color='White'})end)end\n end\n universalBuild();universalRefresh()\nend\nfunction loboUniversalDeployment0()universalToggle(0)end\nfunction loboUniversalDeployment4()universalToggle(4)end\nfunction loboUniversalDeployment8()universalToggle(8)end\nlocal function universalTick()\n if universalStarted or not loboLifeAlive() or not loboLifeToken or not universalMat()then return end\n universalStarted=true\n local mat=universalMat();loboUniversalSetBase({guid=universalConfig.mat,lines=mat.getVectorLines() or{}})\n universalRefresh();universalBuild()\nend\nlocal universalOldLoad=onLoad\nfunction onLoad(saved)\n if universalOldLoad then universalOldLoad(saved)end\n if saved and saved~=''then\n  local ok,state=pcall(function()return JSON.decode(saved)end)\n  if ok and type(state)=='table' and type(state.loboUniversal)=='table'then\n   for _,offset in ipairs({0,4,8})do universalEnabled[offset]=state.loboUniversal[tostring(offset)]==true end\n  end\n end\n Wait.time(universalTick,.5,-1);Wait.frames(universalTick,15)\nend\nlocal universalOldSave=onSave\nfunction onSave()\n local state={};if universalOldSave then local ok,data=pcall(function()return JSON.decode(universalOldSave())end);if ok and type(data)=='table'then state=data end end\n state.loboUniversal={};for _,offset in ipairs({0,4,8})do state.loboUniversal[tostring(offset)]=universalEnabled[offset]end\n return JSON.encode(state)\nend\nlocal universalOldDestroy=onDestroy\nfunction onDestroy()universalGeneration=universalGeneration+1;if universalOldDestroy then universalOldDestroy()end end\nloboDrawerHandlers.loboUniversalDeployment0=loboUniversalDeployment0\nloboDrawerHandlers.loboUniversalDeployment4=loboUniversalDeployment4\nloboDrawerHandlers.loboUniversalDeployment8=loboUniversalDeployment8\nloboDrawerHandlers.loboUniversalBooty=loboUniversalBooty\nloboDrawerHandlers.loboUniversalMetaChemistry=loboUniversalMetaChemistry\nloboDrawerHandlers.loboUniversalReferenceClose=loboUniversalReferenceClose\n-- END LOBO UNIVERSAL REFERENCES AND DEPLOYMENT V1\n\nlocal nereidPages=JSON.decode(\"[{\\\"tab\\\": \\\"Map Rules\\\", \\\"title\\\": \\\"MAP RULES | Azure Coast / Nereid Deep only\\\", \\\"body\\\": \\\"NO AERIAL: Army lists for THIS MAP cannot include profiles with the Aerial characteristic. This restriction applies only to Nereid Deep.\\\\n\\\\nSHALLOW WATER (light blue, pale edge): Aquatic Difficult Terrain. Terrain (Aquatic) or Terrain (Total) ignores its movement difficulty.\\\\n\\\\nDEEP WATER (dark blue, yellow edge): IMPASSABLE unless the Trooper has Terrain (Aquatic) or Terrain (Total). Those Troopers may traverse it normally.\\\\n\\\\nAzure Coast Tidal Channels applies to both water types. With Terrain (Aquatic/Total), a base wholly inside water gains water-based Total Cover. An observer with either skill ignores that protection; solid scenery still blocks LoF. This map also prohibits profiles with the Aerial characteristic.\\\\n\\\\nA Skill that normally breaks Stealth removes water-based protection for the rest of the Order; it returns afterwards if eligible.\\\"}, {\\\"tab\\\": \\\"Flooding\\\", \\\"title\\\": \\\"FLOODING | shallow and deep zones\\\", \\\"body\\\": \\\"Light blue water with pale edges is shallow: Aquatic Difficult Terrain. Dark blue water with yellow edges is deep: impassable without Terrain (Aquatic) or Terrain (Total). These skills ignore shallow-water difficulty and permit normal movement through deep water.\\\\n\\\\nThe lower NE docking wing, SW marine-culture wing and north/south passages contain shallow water. Deep water fills the two outboard equipment compartments AND the outboard halves of the NE and SW cross-halls. Terrain (Aquatic/Total) opens direct cross-hall shortcuts between the outer ring and inner spine; other Troopers use the stairs and dry upper deck to bypass these crossings. Deep shortcuts are optional; the dry upper-deck bypass remains open.\\\\n\\\\nThe upper deck and all four stairwells are dry. Sealed perimeter bulkheads redirect movement through rooms and airlocks; the upper deck offers a dry alternative. Being above water on a dry floor grants no water-based protection.\\\\n\\\\nNo Corrosion Protection or other territorial owner advantage. Water depth is a map rule; no drowning, oxygen, pressure or damage rule is added.\\\"}, {\\\"tab\\\": \\\"Controls\\\", \\\"title\\\": \\\"CONTROLS | decks and cleanup\\\", \\\"body\\\": \\\"Upper Deck: LIFT moves that deck 58 inches right for lower-floor access, carrying resting figures and mission markers. STACK returns them and preserves original lock states. Stack before LoF, cross-deck range or deployment checks. Four stairwells plus a left-side and right-side service ladder connect the decks. Each ladder passes through an open, guarded upper hatch. Stack the decks before using these vertical routes.\\\\n\\\\nDay/Night/Off, Booty, Metachemistry and independent DZ / DZ+4 / DZ+8 guides remain. Grid and snapping start off; drawer starts open. Clear Table removes water and lifted sectors and returns carried figures.\\\\n\\\\nThis is the public terrain edition. Choose the mission separately; future narrative scoring and objectives are not included. The optional DZ guides use a standard 12-inch depth; follow the selected mission.\\\"}]\")\nlocal nereidRoot='loboMission_'..self.getGUID()..'_nereid'\nlocal nereidOpen={}\nlocal nereidPage={}\nlocal nereidStarted=false\nlocal nereidMissionReleased=false\nlocal function nereidRefresh()\n if not loboLifeAlive() then return end\n local roots={}\n for _,n in ipairs(UI.getXmlTable() or{}) do if not n.attributes or n.attributes.id~=nereidRoot then roots[#roots+1]=n end end\n local children={{tag='Button',attributes={id=nereidRoot..'_map_rules',text='Map Rules',onClick=self.getGUID()..'/nereidMapRules'}},{tag='Button',attributes={id=nereidRoot..'_deck_lift',text='Upper Deck: LIFT',onClick=self.getGUID()..'/nereidDeckLift'}},{tag='Button',attributes={id=nereidRoot..'_deck_stack',text='Upper Deck: STACK',onClick=self.getGUID()..'/nereidDeckStack'}},{tag='Button',attributes={id=nereidRoot..'_open',text='Map Reference',onClick=self.getGUID()..'/nereidMissionOpen'}}}\n for _,color in ipairs({'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Purple','Pink','Grey','Black'}) do\n  local page=nereidPage[color] or 1;local data=nereidPages[page]\n  local buttons={}\n  for i,p in ipairs(nereidPages) do buttons[#buttons+1]={tag='Button',attributes={id=nereidRoot..'_'..color..'_tab_'..i,text=p.tab,onClick=self.getGUID()..'/nereidMissionTab',height='36',fontSize='16',color=page==i and '#397A8FFF' or '#243F4FFF'}}end\n  local content={\n   {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='24 -14',width='730',height='42',fontSize='25',fontStyle='Bold',color='#FFFFFFFF',alignment='MiddleLeft'},value=data.title},\n   {tag='Button',attributes={id=nereidRoot..'_'..color..'_close',rectAlignment='UpperRight',offsetXY='-12 -12',width='42',height='36',text='X',onClick=self.getGUID()..'/nereidMissionClose'}},\n   {tag='HorizontalLayout',attributes={rectAlignment='UpperCenter',offsetXY='0 -64',width='770',height='36',spacing='5'},children=buttons},\n   {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='28 -122',width='758',height='382',fontSize=tostring(#data.body>850 and 18 or 20),alignment='UpperLeft',color='#EAF4F7FF'},value=data.body},\n   {tag='Text',attributes={rectAlignment='LowerCenter',offsetXY='0 12',width='770',height='24',fontSize='14',color='#9DC5D3FF'},value='Nereid Deep R7 | Aurora VII / Azure Coast | Public terrain edition'}\n  }\n  children[#children+1]={tag='Panel',attributes={id=nereidRoot..'_'..color,rectAlignment='MiddleCenter',width='820',height='550',allowDragging='true',active=nereidOpen[color] and 'true' or 'false',visibility=color,color='#101F29FA'},children=content}\n end\n roots[#roots+1]={tag='Panel',attributes={id=nereidRoot,width='100%',height='100%',color='#00000000',raycastTarget='false'},children=children}\n UI.setXmlTable(roots)\nend\nfunction nereidMapRules(player)if not player or not player.color then return end;nereidOpen[player.color]=true;nereidPage[player.color]=1;nereidRefresh()end\nfunction nereidMissionOpen(player)if not player or not player.color then return end;nereidOpen[player.color]=true;nereidRefresh()end\nfunction nereidMissionClose(player)if not player or not player.color then return end;nereidOpen[player.color]=nil;nereidRefresh()end\nfunction nereidMissionTab(player,value,id)\n if not player or not player.color then return end\n local n=tonumber((id or ''):match('_tab_(%d+)$'))\n if n and nereidPages[n]then nereidPage[player.color]=n;nereidRefresh()end\nend\nfor name,fn in pairs({nereidMapRules=nereidMapRules,nereidMissionOpen=nereidMissionOpen,nereidMissionClose=nereidMissionClose,nereidMissionTab=nereidMissionTab})do loboDrawerHandlers[name]=fn end\nlocal nereidPreviousLoad=onLoad\nfunction onLoad(saved)\n if nereidPreviousLoad then nereidPreviousLoad(saved)end\n local function tick()\n  if nereidStarted or not loboLifeAlive() or not loboLifeToken then return end\n  nereidStarted=true;nereidRefresh()\n end\n Wait.time(tick,.5,-1);Wait.frames(tick,20)\n local function releaseMission()\n  if nereidMissionReleased or not loboLifeAlive() or not loboLifeToken or Global.getVar('hld')==1 then return end\n  nereidMissionReleased=true\n  for _,o in ipairs(getObjectsWithTag('NereidMovableMission')or{})do o.setLock(false);o.interactable=true end\n end\n Wait.time(releaseMission,.5,-1);Wait.frames(releaseMission,30)\nend\n\n-- The lift is a viewing aid. All geometry and figures retain local positions.\nlocal nereidDeckLifted=false\nlocal nereidDeckBusy=false\nlocal nereidPendingLocks={}\nlocal nereidLastAnchor=nil\nlocal nereidLiftDx=58\nlocal function nereidAnchor()\n local m=getObjectFromGUID('2a70cd')\n if m then\n  local p=m.getPosition();nereidLastAnchor={x=p.x,y=p.y,z=p.z}\n end\n return nereidLastAnchor\nend\nlocal function nereidUpperObjects()\n local out={}\n for _,o in ipairs(getObjectsWithTag('NereidDeck2')or{})do\n  if o.hasTag('LoboMap:f5452f')then out[#out+1]=o end\n end\n return out\nend\nlocal function nereidTransfer(lift,clearing)\n if nereidDeckBusy and not clearing then return end\n if not clearing and not loboLifeAlive()then return end\n if Global.getVar('hld')==1 and not clearing then\n  Wait.time(function()if loboLifeAlive()then nereidTransfer(lift,false)end end,.2);return\n end\n local a=nereidAnchor();if not a then return end\n local upper=nereidUpperObjects()\n if #upper>0 then nereidDeckLifted=upper[1].getPosition().x-a.x>29 end\n if lift==nereidDeckLifted then return end\n local origin=a.x+(nereidDeckLifted and nereidLiftDx or 0)\n local dx=lift and nereidLiftDx or -nereidLiftDx\n local carried={}\n -- Bounds bottoms identify resting miniatures despite different model pivots.\n for _,o in ipairs(getAllObjects())do\n  if o~=self and (not o.hasTag('LoboMap:f5452f')or o.hasTag('NereidMovableMission'))and o.getBounds then\n   local b=o.getBounds();local p=o.getPosition()\n   if b and b.center and b.size then\n    local bottom=b.center.y-b.size.y/2\n    if math.abs(b.center.x-origin)<23.8 and math.abs(b.center.z-a.z)<23.8 and bottom>=a.y+3.86 and bottom<a.y+8.6 then\n     local g=o.getGUID();local locked=o.getLock()\n     if nereidPendingLocks[g]~=nil then locked=nereidPendingLocks[g]end\n     carried[#carried+1]={object=o,guid=g,locked=locked,position={p.x+dx,p.y,p.z}}\n    end\n   end\n  end\n end\n nereidDeckBusy=true\n for _,r in ipairs(carried)do nereidPendingLocks[r.guid]=r.locked;r.object.setLock(true)end\n for _,o in ipairs(upper)do local p=o.getPosition();o.setPosition({p.x+dx,p.y,p.z});o.setLock(true)end\n for _,r in ipairs(carried)do\n  local o=r.object;o.setPosition(r.position)\n  if o.setVelocity then o.setVelocity({0,0,0})end\n  if o.setAngularVelocity then o.setAngularVelocity({0,0,0})end\n end\n nereidDeckLifted=lift\n -- Always restore the original locks, including when Clear Table intervenes.\n local function restoreLocks()\n  for _,r in ipairs(carried)do\n   local o=getObjectFromGUID(r.guid)\n   if o then o.setLock(r.locked)end\n   nereidPendingLocks[r.guid]=nil\n  end\n  nereidDeckBusy=false\n end\n if clearing then restoreLocks()else Wait.frames(restoreLocks,3)end\nend\nfunction nereidDeckLift()nereidTransfer(true,false)end\nfunction nereidDeckStack()nereidTransfer(false,false)end\nloboDrawerHandlers.nereidDeckLift=nereidDeckLift\nloboDrawerHandlers.nereidDeckStack=nereidDeckStack\nlocal nereidLiftSave=onSave\nfunction onSave()\n local data={}\n if nereidLiftSave then local s=nereidLiftSave();if s and s~=''then local ok,v=pcall(JSON.decode,s);if ok and type(v)=='table'then data=v end end end\n data.nereidDeckLifted=nereidDeckLifted\n return JSON.encode(data)\nend\nlocal nereidLiftLoad=onLoad\nfunction onLoad(saved)\n if saved and saved~=''then local ok,d=pcall(JSON.decode,saved);if ok and type(d)=='table'then nereidDeckLifted=d.nereidDeckLifted==true end end\n if nereidLiftLoad then nereidLiftLoad(saved)end\n local function infer()\n  if not loboLifeAlive()or Global.getVar('hld')==1 then return end\n  local a=nereidAnchor();local upper=nereidUpperObjects()\n  if a and #upper>0 then nereidDeckLifted=upper[1].getPosition().x-a.x>29 end\n end\n Wait.time(infer,.6,-1)\nend\nlocal nereidLiftDestroy=onDestroy\nfunction onDestroy()\n -- Return any lifted figures before the map geometry disappears.\n if nereidDeckLifted then nereidTransfer(false,true)end\n for guid,locked in pairs(nereidPendingLocks)do\n  local o=getObjectFromGUID(guid);if o then o.setLock(locked)end\n end\n nereidPendingLocks={}\n if nereidLiftDestroy then nereidLiftDestroy()end\nend\n",
+          "LuaScriptState": "",
+          "XmlUI": ""
+        }
+      ]
+    }
+  ]
+}

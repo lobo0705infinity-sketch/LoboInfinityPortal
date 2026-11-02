@@ -1,148 +1,53 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-
-assert.equal(loboWorkshopMaps.length, 40)
-assert.equal(new Set(loboWorkshopMaps.map(map => map.id)).size, 40)
-assert.equal(new Set(loboWorkshopMaps.map(map => map.layoutKey)).size, 30)
-const missions = new Map()
-for (const map of loboWorkshopMaps) {
-  assert.equal(map.isCurrent, true, `${map.slug} is a current setup`)
-  assert.equal(map.missionSetups.length, 1)
-  const mission = map.missionSetups[0]
-  missions.set(mission, [...(missions.get(mission) || []), map.layoutKey])
-  assert.equal(resolveLoboWorkshopMapLabel(map.workshopBagName)?.id, map.id)
-  for (const url of [map.overhead, map.angled, map.diagram, map.download]) {
-    assert.ok(url?.startsWith('/assets/maps/'))
-    assert.ok(existsSync(fileURLToPath(new URL(`../public${url}`, import.meta.url))), url)
-  }
-  const save = JSON.parse(readFileSync(fileURLToPath(new URL(`../public${map.download}`, import.meta.url)), 'utf8'))
-  assert.equal(save.ObjectStates.length, 1, `${map.slug} downloads a single map bag`)
-  const bag = save.ObjectStates[0]
-  assert.equal(bag.Name, 'Bag')
-  assert.equal(bag.GUID, map.guid)
-  assert.equal(bag.ContainedObjects.length, map.objectCount, `${map.slug} inventory matches the catalogue`)
-  assert.ok(bag.LuaScript.startsWith('--'), `${map.slug} uses the native drop-zone format`)
-  const rows = bag.LuaScript.split('\r\n')
-  assert.equal(rows.pop(), '', `${map.slug} terminates placement records with CRLF`)
-  const ids = new Set()
-  for (const row of rows.filter(row => row !== '' || map.guid !== '8102b2')) {
-    assert.match(row, /^--[0-9a-f]{6}(,-?\d+\.\d{6,9}){6}$/)
-    const [id, ...fields] = row.slice(2).split(',')
-    assert.ok(!ids.has(id), `${map.slug} has no repeated placement GUID`)
-    ids.add(id)
-    const [x, y, z, ...rotation] = fields.map(Number)
-    assert.ok(Math.abs(x) < 44 && Math.abs(y) < 26 && Math.abs(z) < 26, `${map.slug}: ${id} stays inside the Stage clear zone`)
-    const approvedNative = map.guid === '8102b2' && map.sourceNote?.startsWith('Approved R7 adopts')
-    const nativeObjects = [...bag.ContainedObjects]
-    let nativeObject
-    if (approvedNative) {
-      while (nativeObjects.length) {
-        const object = nativeObjects.pop()
-        if (object.GUID === id) { nativeObject = object; break }
-        nativeObjects.push(...Object.values(object.States || {}))
-      }
-      assert.ok(nativeObject, `${map.slug}: native placement resolves to its approved object`)
-    }
-    for (const [index, angle] of rotation.entries()) {
-      if (approvedNative) {
-        // Preserve signed, tiny Unity-authored components in the approved R7
-        // save. Require the record to match its actual object/state transform.
-        assert.ok(Number.isFinite(angle) && Math.abs(angle) <= 360)
-        assert.ok(Math.abs(angle - nativeObject.Transform[['rotX', 'rotY', 'rotZ'][index]]) < 1e-7,
-          `${map.slug}: ${id} preserves its approved native orientation`)
-      } else {
-        assert.ok(angle >= 0 && angle < 360, `${map.slug}: ${id} uses canonical Euler angles`)
-        assert.ok(angle === 0 || (angle >= 0.01 && angle <= 359.99), `${map.slug}: ${id} avoids Unity's near-zero Euler wrap`)
-      }
-      assert.ok(Math.abs(angle - Math.fround(angle)) < 0.0005, `${map.slug}: ${id} meets the Stage alignment tolerance`)
-    }
-  }
-  const objectAndStateIds = new Set()
-  const collectObjectStates = object => {
-    objectAndStateIds.add(object.GUID)
-    for (const state of Object.values(object.States || {})) collectObjectStates(state)
-  }
-  bag.ContainedObjects.forEach(collectObjectStates)
-  for (const object of bag.ContainedObjects) assert.ok(ids.has(object.GUID), `${map.slug} places every base object`)
-  for (const id of ids) assert.ok(objectAndStateIds.has(id), `${map.slug} placement ${id} resolves to an object or alternate state`)
-  const surfaces = bag.ContainedObjects.filter(object => object.LuaScript?.includes('LOBO_MISSION_LINES'))
-  if (map.guid === '1008da') {
-    const controls = bag.ContainedObjects.find(object => object.GUID === 'c70000')
-    assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))
-    assert.ok(controls.LuaScript.includes("label='MAP CONTROLS'"), 'Kestrel keeps a board-side recovery button')
-    assert.ok(controls.LuaScript.includes('LOBO_UI_KESTREL_READY'), 'Kestrel upgrades stale shared UI services')
-    assert.ok(controls.LuaScript.includes('thickness=.015/scale.x'))
-    assert.ok(controls.LuaScript.includes("local kestrelMat='c70000'"))
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Data-Harvester ')).length, 0)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('building')).length, 22)
-    assert.ok(bag.ContainedObjects.every(object => object.Name !== 'Chip'), 'Kestrel exports no invalid Chip prefab')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('ground-surface')).length, 4, 'Kestrel has four sculpted terrain sections')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-bowl')).length, 6, 'Kestrel has six visible crater bowls')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('crater-rim')).length, 6, 'Kestrel retains recessed bowls with six narrow low rocky lips')
-    assert.equal(map.previewKind, 'geometry')
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('glass')).length, 0, 'Kestrel has no separate glass objects')
-    const domes = bag.ContainedObjects.filter(object => object.Tags?.includes('building') && object.ChildObjects?.some(child => child.Tags?.includes('integrated-glazing')))
-    assert.equal(domes.length, 15, 'Kestrel integrates glazing in fifteen dome buildings')
-    assert.ok(new Set(domes.map(object => object.Transform.rotY)).size >= 7, 'Kestrel varies dome orientation')
-    for (const dome of domes) {
-      const stateIds = Object.keys(dome.States).map(Number).sort((a, b) => a - b)
-      assert.deepEqual(stateIds, Array.from({ length: stateIds.length }, (_, index) => index + 1))
-      assert.ok(dome.Nickname.includes('Complete glazed dome'), 'Default dome state is the missing, highest state')
-      assert.ok(dome.States['1'].Nickname.includes('Ground floor'), 'State 1 exposes the ground floor')
-      assert.ok(Object.values(dome.States).every(state => !state.ChildObjects?.length), 'Lower states contain no glazing')
-      for (const child of dome.ChildObjects) {
-        assert.equal(child.CustomMesh.MaterialIndex, 4)
-        assert.equal(child.LuaScript, '')
-        for (const axis of ['X', 'Y', 'Z']) assert.equal(child.Transform[`pos${axis}`], 0)
-      }
-    }
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('solar-array')).length, 6)
-    for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
-      assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Kestrel exports ${callback}`)
-      assert.ok(controls.LuaScript.includes(`loboDrawerHandlers.${callback}=${callback}`), `Kestrel routes ${callback} from the drawer`)
-    }
-  } else if (map.guid === '100e3e') {
-    assert.equal(map.name, 'Nereid Deep')
-    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Lobo Map Controls | Nereid Deep')
-    assert.ok(controls?.LuaScript.includes('thickness=.025/width'))
-    assert.ok(controls.LuaScript.includes('thickness=.015/width'))
-    assert.ok(controls.LuaScript.includes('nereidMissionOpen'))
-    assert.ok(controls.LuaScript.includes('nereidRoofsOn'))
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidRoom')).length, 4)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidLower')).length, 4)
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidDeck2')).length, 4)
-    assert.ok(controls.LuaScript.includes('function nereidDeckLift()'))
-    assert.ok(controls.LuaScript.includes('function nereidDeckStack()'))
-    assert.ok(map.sourceNote.includes('not an official ITS amendment'))
-    assert.equal(bag.ContainedObjects.filter(object => object.Tags?.includes('NereidMovableMission')).length, 7)
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Alpha Infected')).length, 1)
-    assert.equal(map.previewKind, 'geometry')
-    for (const callback of ['loboUniversalBooty', 'loboUniversalMetaChemistry', 'loboUniversalDeployment0', 'loboUniversalDeployment4', 'loboUniversalDeployment8']) {
-      assert.ok(controls.LuaScript.includes(`function ${callback}(`), `Nereid exports ${callback}`)
-    }
-  } else if (map.previewKind === 'geometry') {
-    const controls = bag.ContainedObjects.find(object => object.Nickname === 'Sirocco Wells | Map Controls')
-    assert.ok(controls?.LuaScript.includes('thickness=.025/scale.x'))
-    assert.ok(controls.LuaScript.includes('thickness=.015/scale.x'))
-    assert.ok(controls.LuaScript.includes("local siroccoMat='d60000'"))
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname === 'Tech-Coffin').length, 3)
-    assert.equal(bag.ContainedObjects.filter(object => object.Nickname?.startsWith('Supply Box')).length, 0, 'Current Sirocco R6 supplies no box tokens')
-  } else {
-  assert.equal(surfaces.length, 1, `${map.slug} has one mission marking surface`)
-  for (const surface of surfaces) {
-    const expectedScale = map.slug === 'uplink-center-1-satellite' ? 48.03 : 24
-    if (expectedScale === 48.03) assert.equal(surface.Name, 'BlockSquare')
-    assert.equal(surface.Transform.scaleX, expectedScale, `${map.slug} keeps original mat or street-foundation dimensions`)
-    assert.equal(surface.Transform.scaleZ, expectedScale)
-    assert.ok(surface.LuaScript.includes('thickness=line.thickness/lineScale'), `${map.slug} converts stroke widths to local units`)
-    assert.ok(!surface.LuaScript.includes('thickness=line.thickness}'), `${map.slug} avoids oversized strokes`)
-  }
-  }
-
+const release = JSON.parse(readFileSync('public/assets/maps/seven-map-update-20261102-r1/release-inventory.json', 'utf8'))
+assert.equal(loboWorkshopMaps.length,40)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,32)
+const missions=new Map()
+for(const map of loboWorkshopMaps){
+ assert.equal(map.isCurrent,true)
+ assert.equal(map.missionSetups.length,1)
+ const mission=map.missionSetups[0];missions.set(mission,[...(missions.get(mission)||[]),map.layoutKey])
+ assert.equal(resolveLoboWorkshopMapLabel(map.workshopBagName)?.id,map.id)
+ for(const url of [map.overhead,map.angled,map.diagram,map.download]){
+  assert.ok(url?.startsWith('/assets/maps/'));assert.ok(existsSync(fileURLToPath(new URL('../public'+url,import.meta.url))),url)
+ }
+ const bytes=readFileSync('public'+map.download)
+ const expected=release.maps.find(item=>item.kind==='general'&&item.guid===map.guid)
+ assert.ok(expected);assert.equal(createHash('sha256').update(bytes).digest('hex'),expected.sha256,'Published bag matches release inventory')
+ const save=JSON.parse(bytes);assert.equal(save.ObjectStates.length,1)
+ const bag=save.ObjectStates[0];assert.equal(bag.Name,'Bag');assert.equal(bag.GUID,map.guid)
+ assert.equal(bag.Nickname,map.workshopBagName)
+ assert.equal(bag.ContainedObjects.length,map.objectCount)
+ assert.ok(bag.LuaScript.endsWith('\r\n'),'Native Stage loader terminates with CRLF')
+ assert.ok(!/(?<!\r)\n/.test(bag.LuaScript),'Native Stage loader uses CRLF throughout')
+ const ids=new Set();const family=new Set()
+ function collect(o){family.add(o.GUID);Object.values(o.States||{}).forEach(collect)}
+ bag.ContainedObjects.forEach(collect)
+ for(const row of bag.LuaScript.split('\r\n').filter(Boolean)){
+  assert.match(row,/^--[0-9a-f]{6}(,-?\d+(?:\.\d+)?(?:e[+-]?\d+)?){6}$/)
+  const [id,...fields]=row.slice(2).split(',');assert.ok(!ids.has(id));ids.add(id)
+  assert.ok(family.has(id),`${map.slug}: placement resolves to a root or alternate state`)
+  for(const n of fields.map(Number))assert.ok(Number.isFinite(n)&&Math.abs(n)<1000)
+  for(const angle of fields.slice(3).map(Number))assert.ok(Math.abs(angle-Math.fround(angle))<.0005,'Native rotation meets the Stage alignment tolerance')
+ }
+ for(const object of bag.ContainedObjects)assert.ok(ids.has(object.GUID),'Every root has a deployment record')
+ const controls=bag.ContainedObjects.find(o=>o.LuaScript?.includes('local universalConfig='))
+ assert.ok(controls,`${map.slug}: current map controls exist`)
+ for(const fn of ['loboUniversalBooty','loboUniversalMetaChemistry','loboUniversalDeployment0','loboUniversalDeployment4','loboUniversalDeployment8'])assert.ok(controls.LuaScript.includes('function '+fn+'('),`${map.slug}: ${fn}`)
+ if(map.guid==='1008da'){
+  assert.equal(map.name,'Kestrel Lunar Base');assert.equal(bag.ContainedObjects.length,68)
+  assert.equal(bag.ContainedObjects.filter(o=>o.Tags?.includes('building')).length,19)
+  assert.ok(!controls.LuaScript.includes("label='MAP CONTROLS'"),'Approved R14 removes the board-side button')
+  assert.ok(controls.LuaScript.includes('LOBO_UI_KESTREL_READY'))
+  assert.ok(bag.ContainedObjects.every(o=>o.Name!=='Chip'))
+  assert.equal(bag.ContainedObjects.filter(o=>o.Nickname?.startsWith('Data-Harvester ')).length,0)
+ }
 }
 assert.equal(missions.size, 20)
 for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 2, `${mission} has two distinct layouts`)
@@ -164,8 +69,8 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 37)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 3)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 31)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 9)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')

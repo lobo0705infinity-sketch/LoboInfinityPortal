@@ -1,4 +1,4 @@
-import { TOP40_ROUND_MAPS } from '../../shared/top40-round-maps.mjs'
+import { TOP40_ROUND_MAPS, TOP40_ADDITIONAL_MAPS, TOP40_APPROVED_MAPS_INSTALLER } from '../../shared/top40-round-maps.mjs'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import CompactArtwork from '../components/CompactArtwork'
@@ -82,6 +82,8 @@ export default function Top40PreparationPage() {
           {events.error ? <p>Assignments are temporarily unavailable.</p> : !events.data ? <p>Loading mission assignments…</p> : assignments.length ? assignments.map(assignment => <MissionAssignment key={assignment.id} assignment={assignment} catalog={catalog.data}/>) : <div className="top40-preparation-empty"><h3>Mission pool pending</h3><p>The complete mission pool will be published before the tournament begins. Use the assigned mission for each match or bracket round.</p></div>}
           {assignments.length && assignments.every(item => !item.mission) ? <p>The complete mission pool will be published before the tournament begins.</p> : null}
           {schedules.error ? <DataNotice message="The mission and map schedule is temporarily unavailable." retry={schedules.retry}/> : null}
+          <p><a href={TOP40_APPROVED_MAPS_INSTALLER} download>Download the seven-map installer (ZIP)</a> · Includes all six Top 40 bags and their general copies, plus Nereid for Aurora VII.</p>
+          {TOP40_ADDITIONAL_MAPS.map(map => <article className="top40-preparation-assignment" key={map.key}><p className="eyebrow">Additional collection map</p><h3><Link to={map.href}>{map.name} — {map.mission}</Link></h3><p>Included in the Top 40 map collection. No round is assigned: the current tournament schedule has no Data Harvest round.</p></article>)}
           <div className="top40-preparation-actions"><Link to="/maps">Browse the map library →</Link><a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open TTS Workshop ↗</a></div>
         </PreparationPanel>
         <PreparationPanel title="Army lists">

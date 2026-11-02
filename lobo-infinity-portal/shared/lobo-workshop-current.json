@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-02",
-  "download": "/assets/maps/kestrel-lunar-20261102-r13/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "download": "/assets/maps/seven-map-update-20261102-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -18,17 +18,22 @@
         "Akial Interference"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 94,
+      "objectCount": 95,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/akial-interference-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/akial-interference-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/akial-interference-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/akial-interference-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/akial-interference-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/06-normal-2-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/06-normal-2-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/11a4927a-4056-4515-8dc6-d9500ba61be5"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/11a4927a-4056-4515-8dc6-d9500ba61be5",
+      "labelAliases": [
+        "SET_ITS18 Akial Interference — Tidal Turbines — REVISED",
+        "ITS18 Akial Interference — Tidal Turbines — REVISED",
+        "Tidal Turbines"
+      ]
     },
     {
       "index": 2,
@@ -45,17 +50,22 @@
         "Akial Interference"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 73,
+      "objectCount": 74,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/akial-interference-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/akial-interference-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/akial-interference-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/akial-interference-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/akial-interference-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/07-normal-3-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/07-normal-3-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/11a4927a-4056-4515-8dc6-d9500ba61be5"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/11a4927a-4056-4515-8dc6-d9500ba61be5",
+      "labelAliases": [
+        "SET_ITS18 Akial Interference — Azure Circuit — REVISED",
+        "ITS18 Akial Interference — Azure Circuit — REVISED",
+        "Azure Circuit"
+      ]
     },
     {
       "index": 3,
@@ -72,44 +82,55 @@
         "Annihilation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 87,
+      "objectCount": 88,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/annihilation-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/annihilation-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/annihilation-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/annihilation-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/annihilation-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/02-normal-1-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/02-normal-1-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9c6c05c2-420e-4264-8a3e-ce9704dd5c98"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9c6c05c2-420e-4264-8a3e-ce9704dd5c98",
+      "labelAliases": [
+        "SET_ITS18 Annihilation — Rustline Market — REVISED",
+        "ITS18 Annihilation — Rustline Market — REVISED",
+        "Rustline Market"
+      ]
     },
     {
       "index": 4,
       "id": "3719263238:100135",
       "guid": "100135",
       "slug": "annihilation-2",
-      "name": "The Iron Yard",
-      "workshopName": "ITS18 Annihilation — The Iron Yard — REVISED",
-      "workshopBagName": "SET_ITS18 Annihilation — The Iron Yard — REVISED",
+      "name": "Canopy Blacksite",
+      "workshopName": "ITS18 Annihilation — Canopy Blacksite",
+      "workshopBagName": "SET_ITS18 Annihilation — Canopy Blacksite",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 10,
+      "layoutKey": 2015,
       "missionSetups": [
         "Annihilation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 209,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/annihilation-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/annihilation-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/annihilation-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/annihilation-2.json",
+      "objectCount": 121,
+      "sourceNote": "Approved Canopy Blacksite R4: jungle research buildings with furnished interiors, large ancient trunks to interrupt cross-table fire and an additional central building. Tree controls, independent DZ guides, Booty/Metachemistry and backgrounds retained. Matching Top 40 Losers Round 1 map. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/canopy-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/canopy-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/canopy-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/annihilation-2.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/10-normal-11-igl-warehouse-district-overhead.jpg",
-      "sourceAngled": "/assets/maps/10-normal-11-igl-warehouse-district-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9c6c05c2-420e-4264-8a3e-ce9704dd5c98"
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9c6c05c2-420e-4264-8a3e-ce9704dd5c98",
+      "labelAliases": [
+        "SET_ITS18 Annihilation — The Iron Yard — REVISED",
+        "ITS18 Annihilation — The Iron Yard — REVISED",
+        "The Iron Yard"
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 5,
@@ -126,17 +147,22 @@
         "Area of Interest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 182,
+      "objectCount": 183,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/area-of-interest-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/area-of-interest-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/area-of-interest-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/area-of-interest-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/area-of-interest-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/03-normal-10-igl-overhead.jpg",
       "sourceAngled": "/assets/maps/03-normal-10-igl-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
+      "labelAliases": [
+        "SET_ITS18 Area Of Interest — Cargo Crossroads — REVISED",
+        "ITS18 Area Of Interest — Cargo Crossroads — REVISED",
+        "Cargo Crossroads"
+      ]
     },
     {
       "index": 6,
@@ -153,17 +179,22 @@
         "Area of Interest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 75,
+      "objectCount": 76,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/area-of-interest-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/area-of-interest-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/area-of-interest-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/07-normal-3-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/07-normal-3-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
+      "labelAliases": [
+        "SET_ITS18 Area Of Interest — Azure Circuit — REVISED",
+        "ITS18 Area Of Interest — Azure Circuit — REVISED",
+        "Azure Circuit"
+      ]
     },
     {
       "index": 7,
@@ -180,17 +211,22 @@
         "Battleground"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 127,
+      "objectCount": 128,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/battleground-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/battleground-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/battleground-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/battleground-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/battleground-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/19-normal-14-igl-overhead.jpg",
       "sourceAngled": "/assets/maps/19-normal-14-igl-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a",
+      "labelAliases": [
+        "SET_ITS18 Battleground — Foundry Blocks — REVISED",
+        "ITS18 Battleground — Foundry Blocks — REVISED",
+        "Foundry Blocks"
+      ]
     },
     {
       "index": 8,
@@ -207,17 +243,22 @@
         "Battleground"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 102,
+      "objectCount": 103,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/battleground-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/battleground-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/battleground-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/battleground-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/battleground-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/26-normal-18i-gl-new-warehouse-overhead.jpg",
       "sourceAngled": "/assets/maps/26-normal-18i-gl-new-warehouse-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a",
+      "labelAliases": [
+        "SET_ITS18 Battleground — Freight Terminal — REVISED",
+        "ITS18 Battleground — Freight Terminal — REVISED",
+        "Freight Terminal"
+      ]
     },
     {
       "index": 9,
@@ -234,17 +275,22 @@
         "B-Pong"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 58,
+      "objectCount": 59,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/b-pong-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/b-pong-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/b-pong-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/b-pong-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/b-pong-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/13-normal-6-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/13-normal-6-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/6ddda242-17c9-41ad-b432-5ef1c665fd7e"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/6ddda242-17c9-41ad-b432-5ef1c665fd7e",
+      "labelAliases": [
+        "SET_ITS18 B-Pong — Concrete Labyrinth — REVISED",
+        "ITS18 B-Pong — Concrete Labyrinth — REVISED",
+        "Concrete Labyrinth"
+      ]
     },
     {
       "index": 10,
@@ -261,12 +307,12 @@
         "B-Pong"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 73,
+      "objectCount": 74,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Romobrole - Table 8 - 2025 - France - V1.0. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/b-pong-2-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/b-pong-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/b-pong-2-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/b-pong-2-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -274,7 +320,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/6ddda242-17c9-41ad-b432-5ef1c665fd7e",
       "labelAliases": [
         "SET_ITS18 B-Pong — Romobrole 2025 — Table 8 — SATELLITE EDITION",
-        "ITS18 B-Pong — Romobrole 2025 — Table 8 — SATELLITE EDITION"
+        "ITS18 B-Pong — Romobrole 2025 — Table 8 — SATELLITE EDITION",
+        "SET_ITS18 B-Pong — Cobalt Junction — SATELLITE EDITION",
+        "ITS18 B-Pong — Cobalt Junction — SATELLITE EDITION",
+        "Cobalt Junction"
       ],
       "captureDate": "2026-10-20"
     },
@@ -283,9 +332,9 @@
       "id": "3719263238:8100c6",
       "guid": "8100c6",
       "slug": "corporate-appropriation-1-satellite",
-      "name": "Crownspire District",
-      "workshopName": "ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
+      "name": "Asterion Research Campus",
+      "workshopName": "ITS18 Corporate Appropriation — Asterion Research Campus",
+      "workshopBagName": "SET_ITS18 Corporate Appropriation — Asterion Research Campus",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
       "layoutKey": 2002,
@@ -293,22 +342,25 @@
         "Corporate Appropriation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 98,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Habsburg Havoc - 2025 - Austria - V1.3. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/corporate-appropriation-1-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/corporate-appropriation-1-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/corporate-appropriation-1-satellite.json",
+      "objectCount": 77,
+      "sourceNote": "Approved Asterion Research Campus: paired laboratory wings, gardens, playable interiors, exterior ladders and rooftop cover. Latest floor ordering, quarter-inch heights, collision and map-control repairs retained. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/asterion-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/asterion-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/asterion-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/corporate-appropriation-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/3af94308-817e-457c-85fc-9734f800d252",
       "labelAliases": [
         "SET_ITS18 Corporate Appropriation — Habsburg Havoc 2025 — SATELLITE EDITION",
-        "ITS18 Corporate Appropriation — Habsburg Havoc 2025 — SATELLITE EDITION"
+        "ITS18 Corporate Appropriation — Habsburg Havoc 2025 — SATELLITE EDITION",
+        "SET_ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
+        "ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
+        "Crownspire District"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-02"
     },
     {
       "index": 12,
@@ -325,17 +377,22 @@
         "Corporate Appropriation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 59,
+      "objectCount": 60,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/corporate-appropriation-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/corporate-appropriation-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/corporate-appropriation-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/corporate-appropriation-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/corporate-appropriation-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/13-normal-6-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/13-normal-6-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3af94308-817e-457c-85fc-9734f800d252"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3af94308-817e-457c-85fc-9734f800d252",
+      "labelAliases": [
+        "SET_ITS18 Corporate Appropriation — Concrete Labyrinth — REVISED",
+        "ITS18 Corporate Appropriation — Concrete Labyrinth — REVISED",
+        "Concrete Labyrinth"
+      ]
     },
     {
       "index": 13,
@@ -352,17 +409,22 @@
         "Critical Intervention"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 127,
+      "objectCount": 128,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/critical-intervention-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/critical-intervention-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/critical-intervention-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/critical-intervention-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/critical-intervention-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/28-objective-room-4-igl-neoterran-commandcherry-tree-overhead.jpg",
       "sourceAngled": "/assets/maps/28-objective-room-4-igl-neoterran-commandcherry-tree-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4",
+      "labelAliases": [
+        "SET_ITS18 Critical Intervention — NeoTerran Command — REVISED",
+        "ITS18 Critical Intervention — NeoTerran Command — REVISED",
+        "NeoTerran Command"
+      ]
     },
     {
       "index": 14,
@@ -379,17 +441,22 @@
         "Critical Intervention"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 81,
+      "objectCount": 82,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/critical-intervention-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/critical-intervention-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/critical-intervention-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/critical-intervention-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/critical-intervention-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4",
+      "labelAliases": [
+        "SET_ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+        "ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+        "Bastion Courtyard"
+      ]
     },
     {
       "index": 15,
@@ -406,12 +473,12 @@
         "Crossing Lines"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 59,
+      "objectCount": 60,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Hopes End - 2026 - Table 14 - Netherlands - V1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/crossing-lines-1-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/crossing-lines-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/crossing-lines-1-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/crossing-lines-1-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -419,7 +486,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/cb03446d-da08-4367-8eb9-9ddf87c8612f",
       "labelAliases": [
         "SET_ITS18 Crossing Lines — Hopes End 2026 — Table 14 — SATELLITE EDITION",
-        "ITS18 Crossing Lines — Hopes End 2026 — Table 14 — SATELLITE EDITION"
+        "ITS18 Crossing Lines — Hopes End 2026 — Table 14 — SATELLITE EDITION",
+        "SET_ITS18 Crossing Lines — Lastlight Crossing — SATELLITE EDITION",
+        "ITS18 Crossing Lines — Lastlight Crossing — SATELLITE EDITION",
+        "Lastlight Crossing"
       ],
       "captureDate": "2026-10-20"
     },
@@ -438,17 +508,22 @@
         "Crossing Lines"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 214,
+      "objectCount": 210,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/crossing-lines-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/crossing-lines-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/crossing-lines-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/crossing-lines-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/crossing-lines-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/11-normal-12-igl-canals-overhead.jpg",
       "sourceAngled": "/assets/maps/11-normal-12-igl-canals-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/cb03446d-da08-4367-8eb9-9ddf87c8612f"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/cb03446d-da08-4367-8eb9-9ddf87c8612f",
+      "labelAliases": [
+        "SET_ITS18 Crossing Lines — Canal Quarter — REVISED",
+        "ITS18 Crossing Lines — Canal Quarter — REVISED",
+        "Canal Quarter"
+      ]
     },
     {
       "index": 17,
@@ -465,17 +540,22 @@
         "Cutthroat"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 139,
+      "objectCount": 140,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/cutthroat-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/cutthroat-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/cutthroat-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/cutthroat-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/cutthroat-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/14-normal-9-igl-overhead.jpg",
       "sourceAngled": "/assets/maps/14-normal-9-igl-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9a481416-d698-42a7-a787-5ee2708e23c5"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9a481416-d698-42a7-a787-5ee2708e23c5",
+      "labelAliases": [
+        "SET_ITS18 Cutthroat — Dustline Outpost — REVISED",
+        "ITS18 Cutthroat — Dustline Outpost — REVISED",
+        "Dustline Outpost"
+      ]
     },
     {
       "index": 18,
@@ -492,17 +572,22 @@
         "Cutthroat"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 127,
+      "objectCount": 128,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/cutthroat-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/cutthroat-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/cutthroat-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/cutthroat-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/cutthroat-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/19-normal-14-igl-overhead.jpg",
       "sourceAngled": "/assets/maps/19-normal-14-igl-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9a481416-d698-42a7-a787-5ee2708e23c5"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/9a481416-d698-42a7-a787-5ee2708e23c5",
+      "labelAliases": [
+        "SET_ITS18 Cutthroat — Foundry Blocks — REVISED",
+        "ITS18 Cutthroat — Foundry Blocks — REVISED",
+        "Foundry Blocks"
+      ]
     },
     {
       "index": 19,
@@ -519,12 +604,12 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 72,
-      "sourceNote": "Original lunar research base by Lobo and ChatGPT. Twenty-two facilities with fifteen integrated glass domes in varied orientations. Two additional 8-inch, four-room biospheres use opaque pressure shielding and bulkheads to block lines of fire. State 1 exposes the ground floor; upper floors follow; the complete glazed building is the highest state. Eighteen higher ridgelines, six weathered sunken craters, a two-by-three solar field and organized service yards. Booty/Metachemistry, independent DZ/+4/+8 and individual day/night backgrounds retained. Geometry, access, state, controls and loading checks passed; native TTS playtesting remains pending.",
-      "overhead": "/assets/maps/kestrel-lunar-20261102-r13/overhead.webp",
-      "angled": "/assets/maps/kestrel-lunar-20261102-r13/angled.webp",
-      "diagram": "/assets/maps/kestrel-lunar-20261102-r13/overhead.webp",
-      "download": "/assets/maps/kestrel-lunar-20261102-r13/kestrel-lunar-data-harvest.json",
+      "objectCount": 68,
+      "sourceNote": "Approved R14 adopts Jake/Lobo’s TS_Save_33 layout: exact placed objects, transforms, scales and active states retained. Lunar terrain, sunken craters, ridgelines, varied glass domes and grouped solar panels. The on-board Map Controls button is removed; right-side controls and context-menu recovery remain. Matching Top 40 Data Harvest collection entry; no tournament round reassigned. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/kestrel-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/data-harvest-1-kestrel-orbital.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -534,7 +619,10 @@
       "labelAliases": [
         "Kestrel Orbital",
         "ITS18 Data Harvest — Kestrel Orbital",
-        "SET_ITS18 Data Harvest — Kestrel Orbital"
+        "SET_ITS18 Data Harvest — Kestrel Orbital",
+        "SET_ITS18 Data Harvest — Kestrel Lunar Base",
+        "ITS18 Data Harvest — Kestrel Lunar Base",
+        "Kestrel Lunar Base"
       ]
     },
     {
@@ -552,18 +640,23 @@
         "Data Harvest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 98,
+      "objectCount": 99,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2025 - Pulpi Prodigies - Table 5 - Spain - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/data-harvest-2-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/data-harvest-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/data-harvest-2-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/data-harvest-2-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955",
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-10-20",
+      "labelAliases": [
+        "SET_ITS18 Data Harvest — Signalworks — SATELLITE EDITION",
+        "ITS18 Data Harvest — Signalworks — SATELLITE EDITION",
+        "Signalworks"
+      ]
     },
     {
       "index": 21,
@@ -580,17 +673,22 @@
         "Double Bind"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 96,
+      "objectCount": 97,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/double-bind-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/double-bind-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/double-bind-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/double-bind-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/double-bind-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/06-normal-2-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/06-normal-2-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0",
+      "labelAliases": [
+        "SET_ITS18 Double Bind — Tidal Turbines — REVISED",
+        "ITS18 Double Bind — Tidal Turbines — REVISED",
+        "Tidal Turbines"
+      ]
     },
     {
       "index": 22,
@@ -607,12 +705,12 @@
         "Double Bind"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 48,
+      "objectCount": 49,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Pulpi Prodiges - Table 38 - Spain - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/double-bind-2-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/double-bind-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/double-bind-2-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/double-bind-2-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -620,7 +718,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0",
       "labelAliases": [
         "SET_ITS18 Double Bind — Interplanetario 2023 — Pulpi Prodigies Table 38 — SATELLITE EDITION",
-        "ITS18 Double Bind — Interplanetario 2023 — Pulpi Prodigies Table 38 — SATELLITE EDITION"
+        "ITS18 Double Bind — Interplanetario 2023 — Pulpi Prodigies Table 38 — SATELLITE EDITION",
+        "SET_ITS18 Double Bind — Copperline Exchange — SATELLITE EDITION",
+        "ITS18 Double Bind — Copperline Exchange — SATELLITE EDITION",
+        "Copperline Exchange"
       ],
       "captureDate": "2026-10-20"
     },
@@ -639,18 +740,23 @@
         "Evacuation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 65,
+      "objectCount": 66,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Borderbash - 2025 - Table 21 - Australia - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/evacuation-1-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/evacuation-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/evacuation-1-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/evacuation-1-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb",
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-10-20",
+      "labelAliases": [
+        "SET_ITS18 Evacuation — Wayfarer Landing — SATELLITE EDITION",
+        "ITS18 Evacuation — Wayfarer Landing — SATELLITE EDITION",
+        "Wayfarer Landing"
+      ]
     },
     {
       "index": 24,
@@ -667,17 +773,22 @@
         "Evacuation"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 108,
+      "objectCount": 109,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/evacuation-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/evacuation-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/evacuation-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/evacuation-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/evacuation-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/26-normal-18i-gl-new-warehouse-overhead.jpg",
       "sourceAngled": "/assets/maps/26-normal-18i-gl-new-warehouse-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb",
+      "labelAliases": [
+        "SET_ITS18 Evacuation — Freight Terminal — REVISED",
+        "ITS18 Evacuation — Freight Terminal — REVISED",
+        "Freight Terminal"
+      ]
     },
     {
       "index": 25,
@@ -694,12 +805,12 @@
         "Hardlock"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 63,
+      "objectCount": 64,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Adepticon - 2026 - Table 11 - USA - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/hardlock-1-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -707,7 +818,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/4fdeacaa-ad46-4d37-aa5b-d5284f452653",
       "labelAliases": [
         "SET_ITS18 Hardlock — Adepticon 2026 — Table 11 — SATELLITE EDITION",
-        "ITS18 Hardlock — Adepticon 2026 — Table 11 — SATELLITE EDITION"
+        "ITS18 Hardlock — Adepticon 2026 — Table 11 — SATELLITE EDITION",
+        "SET_ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
+        "ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
+        "Ironveil Complex"
       ],
       "captureDate": "2026-10-20"
     },
@@ -726,17 +840,22 @@
         "Hardlock"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 98,
+      "objectCount": 99,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/hardlock-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/hardlock-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/hardlock-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/hardlock-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/hardlock-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/06-normal-2-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/06-normal-2-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/4fdeacaa-ad46-4d37-aa5b-d5284f452653"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/4fdeacaa-ad46-4d37-aa5b-d5284f452653",
+      "labelAliases": [
+        "SET_ITS18 Hardlock — Tidal Turbines — REVISED",
+        "ITS18 Hardlock — Tidal Turbines — REVISED",
+        "Tidal Turbines"
+      ]
     },
     {
       "index": 27,
@@ -753,17 +872,22 @@
         "Last Launch"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 129,
+      "objectCount": 126,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/last-launch-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/last-launch-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/last-launch-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/last-launch-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/last-launch-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/28-objective-room-4-igl-neoterran-commandcherry-tree-overhead.jpg",
       "sourceAngled": "/assets/maps/28-objective-room-4-igl-neoterran-commandcherry-tree-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14",
+      "labelAliases": [
+        "SET_ITS18 Last Launch — NeoTerran Command — REVISED",
+        "ITS18 Last Launch — NeoTerran Command — REVISED",
+        "NeoTerran Command"
+      ]
     },
     {
       "index": 28,
@@ -780,17 +904,22 @@
         "Last Launch"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 65,
+      "objectCount": 62,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/last-launch-2-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/last-launch-2-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/last-launch-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/last-launch-2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/last-launch-2.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14",
+      "labelAliases": [
+        "SET_ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+        "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+        "Meridian Blocks"
+      ]
     },
     {
       "index": 29,
@@ -807,12 +936,12 @@
         "Neutralization"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 86,
+      "objectCount": 87,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Epic! GT Satellite - 2023 - Portugal - V.1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/neutralization-1-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -820,7 +949,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558",
       "labelAliases": [
         "SET_ITS18 Neutralization — Epic! GT Satellite 2023 — SATELLITE EDITION",
-        "ITS18 Neutralization — Epic! GT Satellite 2023 — SATELLITE EDITION"
+        "ITS18 Neutralization — Epic! GT Satellite 2023 — SATELLITE EDITION",
+        "SET_ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
+        "ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
+        "Emberfall Station"
       ],
       "captureDate": "2026-10-20"
     },
@@ -839,18 +971,23 @@
         "Neutralization"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 66,
+      "objectCount": 67,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Colder Than Carbonite - 2026 - Table 06 - Canada - V1.5. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/neutralization-2-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/neutralization-2-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/neutralization-2-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/neutralization-2-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558",
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-10-20",
+      "labelAliases": [
+        "SET_ITS18 Neutralization — Frostline Sector — SATELLITE EDITION",
+        "ITS18 Neutralization — Frostline Sector — SATELLITE EDITION",
+        "Frostline Sector"
+      ]
     },
     {
       "index": 31,
@@ -867,17 +1004,22 @@
         "Outbreak"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 112,
+      "objectCount": 113,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/outbreak-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/outbreak-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/outbreak-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/outbreak-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/outbreak-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/15-normal-8-igl-mindwipe-overhead.jpg",
       "sourceAngled": "/assets/maps/15-normal-8-igl-mindwipe-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5f071262-e950-41d8-acef-09ee3536fcae"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/5f071262-e950-41d8-acef-09ee3536fcae",
+      "labelAliases": [
+        "SET_ITS18 Outbreak — Neon Exchange — REVISED",
+        "ITS18 Outbreak — Neon Exchange — REVISED",
+        "Neon Exchange"
+      ]
     },
     {
       "index": 32,
@@ -885,8 +1027,8 @@
       "guid": "100e3e",
       "slug": "outbreak-2",
       "name": "Nereid Deep",
-      "workshopName": "ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
-      "workshopBagName": "SET_ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
+      "workshopName": "ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
+      "workshopBagName": "SET_ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
       "collectionTitle": "ITS Season 18",
       "family": "Enclosed two-deck underwater base / corner deployment",
       "layoutKey": 2014,
@@ -895,11 +1037,11 @@
       ],
       "exactDuplicateOf": null,
       "objectCount": 19,
-      "sourceNote": "Enclosed scenario variant: two complete pressure decks joined by two internal stair cores, 56 open pressure hatches and looping corridors. Furnished laboratories, docking, life support, command, crew quarters, medical and data rooms. Upper-deck lift/stack carries figures for lower-floor access. Official Outbreak prohibits player-placed Infected inside buildings: playing this enclosed table requires agreement to allow bare lower-deck corridor/concourse placement; this is not an official ITS amendment. Offline 25/55 mm routes, both stair approaches, stage cleanup after lifted roof states and control simulations pass. Previews render actual exported models; native TTS rendering/physics and a played match remain pending.",
+      "sourceNote": "General Outbreak Nereid Deep R3 enclosed-base setup. Two connected decks, furnished rooms and upper-deck lift/stack. Official Outbreak prohibits player-placed Infected inside buildings: this enclosed table requires agreement on legal lower-deck corridor/concourse placement; this is not an official ITS amendment. Separate from the newer Aurora VII Nereid Deep R7 public terrain. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/nereid-deep-20261101-r2-final/overhead.webp",
       "angled": "/assets/maps/nereid-deep-20261101-r2-final/angled.webp",
       "diagram": "/assets/maps/nereid-deep-20261101-r2-final/deployment.webp",
-      "download": "/assets/maps/nereid-deep-20261101-r2-final/Nereid-Deep-Outbreak-R2.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/outbreak-2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -909,7 +1051,10 @@
         "ITS18 Outbreak — Skyrail Exchange — REVISED",
         "SET_ITS18 Outbreak — Skyrail Exchange — REVISED",
         "ITS18 Outbreak - Nereid Deep R1",
-        "SET_ITS18 Outbreak - Nereid Deep R1"
+        "SET_ITS18 Outbreak - Nereid Deep R1",
+        "SET_ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
+        "ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
+        "Nereid Deep"
       ],
       "captureDate": "2026-11-01"
     },
@@ -928,17 +1073,22 @@
         "Provisioning"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 98,
+      "objectCount": 95,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/provisioning-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/provisioning-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/provisioning-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/provisioning-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/provisioning-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/12-normal-7-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/12-normal-7-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/d9ac4976-d410-411f-95b9-0262b108c6a1"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/d9ac4976-d410-411f-95b9-0262b108c6a1",
+      "labelAliases": [
+        "SET_ITS18 Provisioning — Skyrail Exchange — REVISED",
+        "ITS18 Provisioning — Skyrail Exchange — REVISED",
+        "Skyrail Exchange"
+      ]
     },
     {
       "index": 34,
@@ -960,7 +1110,7 @@
       "overhead": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
       "angled": "/assets/maps/sirocco-wells-approved-20261101-r7/angled.webp",
       "diagram": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
-      "download": "/assets/maps/sirocco-wells-approved-20261101-r7/Sirocco-Wells-Provisioning-R7.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/provisioning-2-satellite.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -971,7 +1121,10 @@
         "ITS18 Provisioning — Salt Lake Showdown 2026 — Table 17 — SATELLITE EDITION",
         "Palisade Depot",
         "SET_ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
-        "ITS18 Provisioning — Palisade Depot — SATELLITE EDITION"
+        "ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
+        "SET_ITS18 Provisioning — Sirocco Wells Approved R7",
+        "ITS18 Provisioning — Sirocco Wells Approved R7",
+        "Sirocco Wells"
       ],
       "captureDate": "2026-11-01"
     },
@@ -980,27 +1133,33 @@
       "id": "3719263238:100f50",
       "guid": "100f50",
       "slug": "superiority-1",
-      "name": "Meridian Blocks",
-      "workshopName": "ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
-      "workshopBagName": "SET_ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
+      "name": "Frostline Relay",
+      "workshopName": "ITS18 Superiority — Frostline Relay",
+      "workshopBagName": "SET_ITS18 Superiority — Frostline Relay",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 1002,
+      "layoutKey": 2016,
       "missionSetups": [
         "Superiority"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 50,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/superiority-1-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/superiority-1-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/superiority-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/superiority-1.json",
+      "objectCount": 63,
+      "sourceNote": "Approved Frostline Relay furnished R3 with the lettering fix: weathered alpine buildings, furnished interiors, snow and rock cover. Matching Top 40 Winners Round 2 terrain and controls. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/frostline-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/frostline-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/frostline-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/superiority-1.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3f901678-e8b9-4e4e-afa0-39555c3bdb2e"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3f901678-e8b9-4e4e-afa0-39555c3bdb2e",
+      "labelAliases": [
+        "SET_ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
+        "ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
+        "Meridian Blocks"
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 36,
@@ -1008,8 +1167,8 @@
       "guid": "100f89",
       "slug": "superiority-2",
       "name": "Switchback Quarter",
-      "workshopName": "ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
-      "workshopBagName": "SET_ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
+      "workshopName": "ITS18 Superiority - Switchback Quarter R3",
+      "workshopBagName": "SET_ITS18 Superiority - Switchback Quarter R3",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
       "layoutKey": 1003,
@@ -1017,17 +1176,23 @@
         "Superiority"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 38,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/superiority-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/superiority-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/superiority-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/superiority-2.json",
+      "objectCount": 43,
+      "sourceNote": "Approved Switchback Quarter R3 with furnished interiors, persistent ladders and current floor/control repairs. This is the second general Superiority map, alongside Frostline Relay. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/switchback-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/superiority-2.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3f901678-e8b9-4e4e-afa0-39555c3bdb2e"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3f901678-e8b9-4e4e-afa0-39555c3bdb2e",
+      "labelAliases": [
+        "SET_ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
+        "ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
+        "Switchback Quarter"
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 37,
@@ -1044,17 +1209,22 @@
         "The Dig"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 100,
+      "objectCount": 95,
       "sourceNote": "",
       "overhead": "/assets/maps/captures-20261015T080142Z/the-dig-1-overhead.webp",
       "angled": "/assets/maps/captures-20261015T080142Z/the-dig-1-angled.webp",
       "diagram": "/assets/maps/its18-20261015T064536Z/the-dig-1.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/the-dig-1.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/the-dig-1.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": "/assets/maps/12-normal-7-irl-tourney-overhead.jpg",
       "sourceAngled": "/assets/maps/12-normal-7-irl-tourney-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855"
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855",
+      "labelAliases": [
+        "SET_ITS18 The Dig — Skyrail Exchange — REVISED",
+        "ITS18 The Dig — Skyrail Exchange — REVISED",
+        "Skyrail Exchange"
+      ]
     },
     {
       "index": 38,
@@ -1062,8 +1232,8 @@
       "guid": "810340",
       "slug": "the-dig-2-satellite",
       "name": "Old Quarter Excavation",
-      "workshopName": "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
+      "workshopName": "ITS18 The Dig — Old Quarter Excavation",
+      "workshopBagName": "SET_ITS18 The Dig — Old Quarter Excavation",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2008,
@@ -1071,22 +1241,25 @@
         "The Dig"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 112,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Satellite Merovingien - 2023 - Table 17 - France - V1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/the-dig-2-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/the-dig-2-satellite.json",
+      "objectCount": 57,
+      "sourceNote": "Approved Old Quarter Excavation: the user-approved urban layout, furnished building interiors, open floor states and diagonal deployment. Latest floor order and collision repairs retained. Matching Top 40 Winners Round 4 map. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/old-quarter-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/old-quarter-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/old-quarter-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/the-dig-2-satellite.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/16de25e7-8317-4d7c-8438-bd4284164855",
       "labelAliases": [
         "SET_ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION",
-        "ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION"
+        "ITS18 The Dig — Satellite Merovingien 2023 — Table 17 — SATELLITE EDITION",
+        "SET_ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
+        "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
+        "Old Quarter Excavation"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-02"
     },
     {
       "index": 39,
@@ -1103,12 +1276,12 @@
         "Uplink Center"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 74,
+      "objectCount": 75,
       "sourceNote": "Adapted from tau24’s Return to the Satellites: Interplanetario - 2023 - Kraken Masters - Table 31 - Spain - V1.3. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
       "overhead": "/assets/maps/captures-20261020T151246/uplink-center-1-satellite-overhead.webp",
       "angled": "/assets/maps/captures-20261020T151246/uplink-center-1-satellite-angled.webp",
       "diagram": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.webp",
-      "download": "/assets/maps/satellites-20261020-r2/uplink-center-1-satellite.json",
+      "download": "/assets/maps/seven-map-update-20261102-r1/uplink-center-1-satellite.json",
       "isCurrent": true,
       "previewKind": "tts",
       "sourceOverhead": null,
@@ -1116,7 +1289,10 @@
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85",
       "labelAliases": [
         "SET_ITS18 Uplink Center — Interplanetario 2023 — Kraken Masters Table 31 — SATELLITE EDITION",
-        "ITS18 Uplink Center — Interplanetario 2023 — Kraken Masters Table 31 — SATELLITE EDITION"
+        "ITS18 Uplink Center — Interplanetario 2023 — Kraken Masters Table 31 — SATELLITE EDITION",
+        "SET_ITS18 Uplink Center — Blackwater Relay — SATELLITE EDITION",
+        "ITS18 Uplink Center — Blackwater Relay — SATELLITE EDITION",
+        "Blackwater Relay"
       ],
       "captureDate": "2026-10-20"
     },
@@ -1125,29 +1301,36 @@
       "id": "3719263238:1010b1",
       "guid": "1010b1",
       "slug": "uplink-center-2",
-      "name": "Dustline Outpost",
-      "workshopName": "ITS18 Uplink Center — Dustline Outpost — REVISED",
-      "workshopBagName": "SET_ITS18 Uplink Center — Dustline Outpost — REVISED",
+      "name": "Verdant Exchange",
+      "workshopName": "ITS18 Uplink Center — Verdant Exchange",
+      "workshopBagName": "SET_ITS18 Uplink Center — Verdant Exchange",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 14,
+      "layoutKey": 2017,
       "missionSetups": [
         "Uplink Center"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 142,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/uplink-center-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/uplink-center-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/uplink-center-2.png",
-      "download": "/assets/maps/its18-markings-20261018-r6/uplink-center-2.json",
+      "objectCount": 75,
+      "sourceNote": "Approved Verdant Exchange R5: four glass conservatories, laboratory buildings, covered walkways and organized equipment. Rebuilt ladders include wall mounts, handholds, clear landings and roof openings. Grounded scatter, playable interiors and integrated roof/glass states. Matching Top 40 Winners Round 3 map; replaces the Uplink Center Dustline Outpost slot. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/verdant-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
+      "download": "/assets/maps/seven-map-update-20261102-r1/uplink-center-2.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/14-normal-9-igl-overhead.jpg",
-      "sourceAngled": "/assets/maps/14-normal-9-igl-angled.jpg",
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85"
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/bf606d32-d933-4e1d-a6d9-5f92a9faef85",
+      "labelAliases": [
+        "SET_ITS18 Uplink Center — Dustline Outpost — REVISED",
+        "ITS18 Uplink Center — Dustline Outpost — REVISED",
+        "Dustline Outpost"
+      ],
+      "captureDate": "2026-11-02"
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "kestrel-lunar-20261102-r13"
+  "downloadRevision": "seven-map-update-20261102-r1",
+  "installer": "/assets/maps/seven-map-update-20261102-r1/Lobo-Seven-Map-Workshop-Update-Installer.zip"
 }

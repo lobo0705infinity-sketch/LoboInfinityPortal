@@ -27,6 +27,7 @@ export type LoboWorkshopMap = {
 export const LOBO_WORKSHOP_URL: string
 export const LOBO_WORKSHOP_UPDATED_AT: string
 export const LOBO_WORKSHOP_DOWNLOAD_URL: string
+export const LOBO_WORKSHOP_INSTALLER_URL: string
 export const archivedLoboWorkshopMaps: LoboWorkshopMap[]
 export const loboWorkshopMaps: LoboWorkshopMap[]
 export const loboWorkshopMapBySlug: Map<string, LoboWorkshopMap>

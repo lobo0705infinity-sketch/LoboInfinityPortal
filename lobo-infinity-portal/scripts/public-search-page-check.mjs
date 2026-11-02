@@ -95,8 +95,8 @@ assert.match(describePublicSearchPage('/events', { events: [{ id: 'event-current
 console.log('Public search pages expose distinct metadata, useful content, safe text, and canonical links.')
 
 const aurora = describePublicSearchPage('/maps/aurora-vii')
-assert.equal(aurora.links.filter(link => link.href.startsWith('/maps/aurora-vii-')).length, 24)
-for (const link of aurora.links.filter(link => link.href.startsWith('/maps/aurora-vii-'))) {
+assert.equal(aurora.links.filter(link => link.href.startsWith('/maps/aurora-vii-')).length, 25)
+for (const link of aurora.links.filter(link => link.href.startsWith('/maps/aurora-vii-') && !link.href.endsWith('-nereid-deep'))) {
   const page = describePublicSearchPage(link.href)
   assert.equal(page.canonicalPath, link.href)
   assert.match(page.intro, /Frontline/)
@@ -110,3 +110,13 @@ const original = Object.defineProperty({url:'/event/lobos-top-40'},'query',{get(
 assert.equal(publicSearchRequestPath(original),'/event/lobos-top-40')
 assert.equal(publicSearchRequestPath({url:'/api/public-search-page?page=/event/lobos-top-40'}),'/event/lobos-top-40')
 assert.equal(publicSearchRequestPath({url:'/api/public-search-page'}),'')
+
+const nereidPage=describePublicSearchPage('/maps/aurora-vii-azure-coast-nereid-deep')
+assert.match(nereidPage.title,/Nereid Deep R7/)
+assert.match(nereidPage.intro,/Choose the mission separately/)
+assert.doesNotMatch(nereidPage.intro,/Vault Below|Network Links|Owner advantage:/)
+for(const key of ['winners-1','winners-2','winners-3','winners-4','losers-1','kestrel']) {
+ const page=describePublicSearchPage('/event/lobos-top-40/maps/'+key)
+ assert.ok(page);assert.match(page.title,/Top 40/);assert.ok(page.links.some(link=>link.label==='Download seven-map installer'))
+}
+console.log('Nereid public terrain and all six Top 40 map pages have current metadata and downloads.')

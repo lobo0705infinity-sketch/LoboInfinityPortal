@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { LOBO_WORKSHOP_URL, LOBO_WORKSHOP_DOWNLOAD_URL, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMaps, loboWorkshopMapSections } from '../../shared/lobo-workshop-maps.mjs'
+import { LOBO_WORKSHOP_URL, LOBO_WORKSHOP_DOWNLOAD_URL, LOBO_WORKSHOP_INSTALLER_URL, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMaps, loboWorkshopMapSections } from '../../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings, mapRatingLabel, type MapRating } from './mapRatings'
 import type { PublicGame } from './snapshotTypes'
 import { useSnapshotData } from './useSnapshotData'
@@ -61,6 +61,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <h1>See the table before you deploy.</h1>
         <p>Explore {loboWorkshopMaps.length} setups for {missionCount} ITS Season 18 missions across {layoutCount} terrain layouts. Filter by mission, inspect the setup, and load its matching Workshop bag.</p>
         <div className="lobo-maps-hero-actions">
+          <a download href={LOBO_WORKSHOP_INSTALLER_URL}>Download updated installer</a>
           <a download href={LOBO_WORKSHOP_DOWNLOAD_URL}>Download all map bags</a>
           <a href="#browse-maps">Browse the maps <span aria-hidden="true">↓</span></a>
           <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Open Steam Workshop <span aria-hidden="true">↗</span></a>
@@ -86,7 +87,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
-        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. All 40 setups include overhead and angled TTS photos. The twelve Satellite layouts were photographed on October 20; gameplay testing is still in progress.</p>
+        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Previews show TTS screenshots or rendered terrain geometry. Inspect the loaded table before play; gameplay testing remains in progress.</p>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Setups using the same terrain share one rating.</p>
       </div>
       <nav aria-label="Missions" className="lobo-map-section-nav">
@@ -107,7 +108,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         })}</div>
       </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
     </section>
-    <p className="lobo-maps-source-note">Browse {missionCount} missions alphabetically, with two setups per mission. Previews are labeled as TTS screenshots or mission setup diagrams. Historical map pages remain available through existing game links.</p>
+    <p className="lobo-maps-source-note">Browse {missionCount} missions alphabetically, with two setups per mission. Previews are labeled as TTS screenshots, rendered terrain geometry or setup diagrams. Historical map pages remain available through existing game links.</p>
   </main>
 }
 

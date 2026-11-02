@@ -1,3 +1,5 @@
+import { auroraPublicTerrain } from './aurora-public-terrain.mjs'
+import { TOP40_MAPS, TOP40_APPROVED_MAPS_INSTALLER } from './top40-round-maps.mjs'
 import { auroraMapLocations, auroraMapLocationBySlug } from './aurora-map-catalog.mjs'
 import { selectFeaturedReport } from './featured-report.mjs'
 import { LOBO_WORKSHOP_URL, loboWorkshopMapBySlug, loboWorkshopMaps } from './lobo-workshop-maps.mjs'
@@ -206,11 +208,31 @@ export function describePublicSearchPage(pathname, datasets = {}) {
 
   if (pathname === '/maps/aurora-vii') return {
     pathname, canonicalPath: pathname,
-    title: 'Aurora VII Maps: 24 Locations, 48 Setups | Lobo Portal',
+    title: 'Aurora VII Maps: Regions & Public Terrain | Lobo Portal',
     heading: 'Aurora VII Workshop maps',
     description: 'Explore 12 Aurora VII regions and 24 locations. Choose Frontline or Supremacy, with shared terrain references, territory rules and exact Workshop bag names.',
     intro: 'Each location shares one concept reference between Frontline and Supremacy. Choose your region and location, read the territory rule and owner advantage, then find the matching Workshop bag.',
-    links: [{ label: 'ITS18 maps', href: '/maps' }, ...auroraMapLocations.map(location => ({ label: `${location.region.name} · ${location.name}`, href: `/maps/${location.slug}` }))],
+    links: [{ label: 'ITS18 maps', href: '/maps' }, ...auroraMapLocations.map(location => ({ label: `${location.region.name} · ${location.name}`, href: `/maps/${location.slug}` })), ...auroraPublicTerrain.map(map => ({label: `${map.region} · ${map.name} ${map.revision}`, href: `/maps/${map.slug}`}))],
+  }
+  const publicTerrain = auroraPublicTerrain.find(map => pathname === `/maps/${map.slug}`)
+  if (publicTerrain) return {
+    pathname, canonicalPath: pathname,
+    title: `${publicTerrain.name} ${publicTerrain.revision} · ${publicTerrain.region} | Lobo Portal`,
+    heading: publicTerrain.name,
+    description: shorten(publicTerrain.description, 170),
+    intro: `${publicTerrain.description} ${publicTerrain.scope} Workshop bag: ${publicTerrain.bagName}. ${publicTerrain.controls}`,
+    image: publicTerrain.overview, imageAlt: `${publicTerrain.name} rendered lower and upper decks`, imageWidth: 1800, imageHeight: 920,
+    links: [{label: 'Aurora VII maps', href: '/maps/aurora-vii'}, {label: 'Download public terrain bag', href: publicTerrain.download}, {label: 'Download seven-map installer', href: publicTerrain.installer}],
+  }
+  const tournamentMap = TOP40_MAPS.find(map => map.href === pathname || (pathname === '/event/lobos-top-40/map-1' && map.key === 'winners-1'))
+  if (tournamentMap) return {
+    pathname, canonicalPath: tournamentMap.href,
+    title: `${tournamentMap.name} · Lobo’s Top 40 | Lobo Portal`,
+    heading: tournamentMap.name,
+    description: `${tournamentMap.workshopLabel}: ${tournamentMap.mission}. Approved terrain, previews and TTS downloads.`,
+    intro: `${tournamentMap.workshopLabel}. ${tournamentMap.mission}, 300 points. ${tournamentMap.round ? 'Assigned tournament round map.' : 'Additional collection map; no tournament round assigned.'}`,
+    image: tournamentMap.angled, imageAlt: `${tournamentMap.name} rendered terrain preview`, imageWidth: 1600, imageHeight: 1400,
+    links: [{label: 'Top 40 preparation', href: '/event/lobos-top-40'}, {label: 'Matching general map', href: tournamentMap.generalHref}, {label: 'Download map bag', href: tournamentMap.download}, {label: 'Download seven-map installer', href: TOP40_APPROVED_MAPS_INSTALLER}],
   }
   const auroraLocation = auroraMapLocationBySlug.get(pathname.split('/maps/')[1])
   if (auroraLocation) return {
@@ -236,7 +258,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
       heading: map.name,
       intro: `${map.family} in Lobo’s Infinity Maps Workshop collection. Workshop bag: ${map.workshopBagName}.${map.isCurrent === false ? ` Historical name: ${map.workshopName}.` : ''}${map.missionSetups.length ? ` Named mission setup: ${map.missionSetups.join(', ')}.` : ' No named mission setup.'} Inspect the setup before deploying.${map.sourceNote ? ` Workshop note: ${map.sourceNote}` : ''}`,
       image: map.angled,
-      imageAlt: `${map.previewKind === 'diagram' ? 'Setup diagram' : 'Angled Tabletop Simulator preview'} of ${map.name}`,
+      imageAlt: `${map.previewKind === 'diagram' ? 'Setup diagram' : map.previewKind === 'geometry' ? 'Rendered terrain preview' : 'Angled Tabletop Simulator preview'} of ${map.name}`,
       imageWidth: 1600,
       imageHeight: 900,
       links: [

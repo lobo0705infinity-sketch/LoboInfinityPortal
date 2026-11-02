@@ -1,20 +1,90 @@
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
-const assetRoot = '/assets/maps/top40-approved-20261101-r1'
-export const TOP40_APPROVED_MAPS_INSTALLER = `${assetRoot}/Lobo-Top-40-Four-Approved-Maps-Workshop-Update.zip`
+export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/seven-map-update-20261102-r1/Lobo-Seven-Map-Workshop-Update-Installer.zip'
 
-// Only the four Commissioner-approved tournament assignments are released.
-// General mission maps and unapproved replacements must not fill a vacant round.
+// Only announced round assignments populate the event. Supplementary maps
+// remain browsable without changing a round's mission or replacing TBD.
 export const TOP40_ROUND_MAPS = [
-  { key: 'winners-1', bracket: 'Winners', round: 1, mission: 'Corporate Appropriation', name: 'Asterion Research Campus' },
-  { key: 'winners-2', bracket: 'Winners', round: 2, mission: 'Superiority', name: 'Frostline Relay' },
-  { key: 'winners-4', bracket: 'Winners', round: 4, mission: 'The Dig', name: 'Old Quarter Excavation' },
-  { key: 'losers-1', bracket: 'Losers', round: 1, mission: 'Annihilation', name: 'Canopy Blacksite' },
-].map(map => ({
-  ...map,
-  workshopLabel: `Lobo's Top 40 ${map.bracket} Round ${map.round} Map`,
-  href: `/event/lobos-top-40/maps/${map.key}`,
-  download: `${assetRoot}/Lobos-Top-40-${map.bracket}-Round-${map.round}-Map.json`,
-}))
+  {
+    "key": "winners-1",
+    "mission": "Corporate Appropriation",
+    "name": "Asterion Research Campus",
+    "workshopLabel": "Lobo's Top 40 Winners Round 1 Map",
+    "href": "/event/lobos-top-40/maps/winners-1",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Winners-Round-1-Map.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/asterion-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/asterion-overhead.webp",
+    "generalHref": "/maps/corporate-appropriation-1-satellite",
+    "bracket": "Winners",
+    "round": 1
+  },
+  {
+    "key": "winners-2",
+    "mission": "Superiority",
+    "name": "Frostline Relay",
+    "workshopLabel": "Lobo's Top 40 Winners Round 2 Map",
+    "href": "/event/lobos-top-40/maps/winners-2",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Winners-Round-2-Map.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/frostline-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/frostline-overhead.webp",
+    "generalHref": "/maps/superiority-1",
+    "bracket": "Winners",
+    "round": 2
+  },
+  {
+    "key": "winners-3",
+    "mission": "Uplink Center",
+    "name": "Verdant Exchange",
+    "workshopLabel": "Lobo's Top 40 Winners Round 3 Map",
+    "href": "/event/lobos-top-40/maps/winners-3",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Winners-Round-3-Map.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/verdant-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
+    "generalHref": "/maps/uplink-center-2",
+    "bracket": "Winners",
+    "round": 3
+  },
+  {
+    "key": "winners-4",
+    "mission": "The Dig",
+    "name": "Old Quarter Excavation",
+    "workshopLabel": "Lobo's Top 40 Winners Round 4 Map",
+    "href": "/event/lobos-top-40/maps/winners-4",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Winners-Round-4-Map.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/old-quarter-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/old-quarter-overhead.webp",
+    "generalHref": "/maps/the-dig-2-satellite",
+    "bracket": "Winners",
+    "round": 4
+  },
+  {
+    "key": "losers-1",
+    "mission": "Annihilation",
+    "name": "Canopy Blacksite",
+    "workshopLabel": "Lobo's Top 40 Losers Round 1 Map",
+    "href": "/event/lobos-top-40/maps/losers-1",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Losers-Round-1-Map.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/canopy-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/canopy-overhead.webp",
+    "generalHref": "/maps/annihilation-2",
+    "bracket": "Losers",
+    "round": 1
+  }
+]
+
+export const TOP40_ADDITIONAL_MAPS = [
+  {
+    "key": "kestrel",
+    "mission": "Data Harvest",
+    "name": "Kestrel Lunar Base",
+    "workshopLabel": "Lobo's Top 40 Kestrel Lunar Base — Data Harvest",
+    "href": "/event/lobos-top-40/maps/kestrel",
+    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Kestrel-Lunar-Base-Data-Harvest.json",
+    "angled": "/assets/maps/seven-map-update-20261102-r1/kestrel-angled.webp",
+    "overhead": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
+    "generalHref": "/maps/data-harvest-1-kestrel-orbital"
+  }
+]
+export const TOP40_MAPS = [...TOP40_ROUND_MAPS, ...TOP40_ADDITIONAL_MAPS]
 
 export function getTop40RoundMap(bracket, round, mission = '') {
   return TOP40_ROUND_MAPS.find(map => map.bracket === bracket && map.round === Number(round)

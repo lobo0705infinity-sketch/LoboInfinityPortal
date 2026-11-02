@@ -8,6 +8,7 @@ import {
 export const LOBO_WORKSHOP_URL = 'https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238'
 export const LOBO_WORKSHOP_UPDATED_AT = current.updatedAt
 export const LOBO_WORKSHOP_DOWNLOAD_URL = current.download
+export const LOBO_WORKSHOP_INSTALLER_URL = current.installer
 export const loboWorkshopMaps = current.maps
 
 // Preserve old report links and terrain ratings outside the current browser.
