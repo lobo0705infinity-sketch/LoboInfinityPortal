@@ -1,5 +1,5 @@
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
-export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/seven-map-update-20261102-r1/Lobo-Seven-Map-Workshop-Update-Installer.zip'
+export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/approved-five-map-update-20261102-r1/Lobo-Five-Map-Workshop-Update-Installer.zip'
 
 // Only announced round assignments belong in the tournament map collection.
 export const TOP40_ROUND_MAPS = [
@@ -67,6 +67,71 @@ export const TOP40_ROUND_MAPS = [
     "generalHref": "/maps/annihilation-2",
     "bracket": "Losers",
     "round": 1
+  },
+  {
+    "key": "losers-3",
+    "mission": "Cutthroat",
+    "name": "Redline Interchange",
+    "workshopLabel": "Lobo's Top 40 Losers Round 3 Map",
+    "href": "/event/lobos-top-40/maps/losers-3",
+    "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobos-Top-40-Losers-Round-3-Map.json",
+    "angled": "/assets/maps/approved-five-map-update-20261102-r1/redline-angled.webp",
+    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/redline-overhead.webp",
+    "generalHref": "/maps/cutthroat-1",
+    "bracket": "Losers",
+    "round": 3
+  },
+  {
+    "key": "losers-4",
+    "mission": "Battleground",
+    "name": "Cairnfall Sanctuary",
+    "workshopLabel": "Lobo's Top 40 Losers Round 4 Map",
+    "href": "/event/lobos-top-40/maps/losers-4",
+    "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobos-Top-40-Losers-Round-4-Map.json",
+    "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
+    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+    "generalHref": "/maps/battleground-1",
+    "bracket": "Losers",
+    "round": 4
+  },
+  {
+    "key": "losers-5",
+    "mission": "Neutralization",
+    "name": "Vesper Glassworks",
+    "workshopLabel": "Lobo's Top 40 Losers Round 5 Map",
+    "href": "/event/lobos-top-40/maps/losers-5",
+    "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobos-Top-40-Losers-Round-5-Map.json",
+    "angled": "/assets/maps/approved-five-map-update-20261102-r1/vesper-angled.webp",
+    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/vesper-overhead.webp",
+    "generalHref": "/maps/neutralization-1-satellite",
+    "bracket": "Losers",
+    "round": 5
+  },
+  {
+    "key": "losers-6",
+    "mission": "Outbreak",
+    "name": "Halcyon Thermal Baths",
+    "workshopLabel": "Lobo's Top 40 Losers Round 6 Map",
+    "href": "/event/lobos-top-40/maps/losers-6",
+    "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobos-Top-40-Losers-Round-6-Map.json",
+    "angled": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-angled.webp",
+    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-overhead.webp",
+    "generalHref": "/maps/outbreak-2",
+    "bracket": "Losers",
+    "round": 6
+  },
+  {
+    "key": "losers-7",
+    "mission": "Hardlock",
+    "name": "Ironveil Complex",
+    "workshopLabel": "Lobo's Top 40 Losers Round 7 Map",
+    "href": "/event/lobos-top-40/maps/losers-7",
+    "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobos-Top-40-Losers-Round-7-Map.json",
+    "angled": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-angled.webp",
+    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-overhead.webp",
+    "generalHref": "/maps/hardlock-1-satellite",
+    "bracket": "Losers",
+    "round": 7
   }
 ]
 
@@ -103,3 +168,4 @@ export function applyTop40MapAssignments(projection) {
     ...(projection.publicData ? { publicData: { ...projection.publicData, event: updateEvent(projection.publicData.event) } } : {}),
   }
 }
+

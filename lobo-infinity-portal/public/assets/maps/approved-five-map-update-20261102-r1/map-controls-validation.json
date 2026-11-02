@@ -1,0 +1,252 @@
+{
+  "summary": {
+    "maps_tested": 22,
+    "modified_scripts_compiled": 30,
+    "all_passed": true,
+    "live_TTS_tested": false
+  },
+  "maps": [
+    {
+      "map": "SET_ITS18 Corporate Appropriation \u2014 Asterion Research Campus",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Winners Round 1 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Superiority \u2014 Frostline Relay",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Winners Round 2 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Uplink Center \u2014 Verdant Exchange",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Winners Round 3 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 The Dig \u2014 Old Quarter Excavation",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Winners Round 4 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Annihilation \u2014 Canopy Blacksite",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 1 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Data Harvest \u2014 Kestrel Lunar Base",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Azure Coast \u00b7 Nereid Deep R7 \u00b7 Public Terrain",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Cutthroat \u2014 Redline Interchange",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 3 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Hardlock \u2014 Ironveil Complex",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 7 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Battleground \u2014 Cairnfall Sanctuary",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 4 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Neutralization \u2014 Vesper Glassworks",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 5 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_ITS18 Outbreak \u2014 Halcyon Thermal Baths",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    },
+    {
+      "map": "SET_Lobo's Top 40 Losers Round 6 Map",
+      "chart_routing": "pass",
+      "per_player_reference_visibility": "pass",
+      "offset_geometry": "pass",
+      "raycast_budget": "pass",
+      "independent_toggles": "pass",
+      "mission_lines_preserved": "pass",
+      "saved_state": "pass",
+      "pending_overlay_clear": "pass"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "approvedMaps": 4,
+  "rootObjectCounts": {
+    "Redline Interchange": 79,
+    "Ironveil Complex": 61,
+    "Cairnfall Sanctuary": 74,
+    "Vesper Glassworks": 62
+  },
+  "generalTop40Pairs": 4,
+  "allApprovedTerrainTransformsScalesMeshesAndActiveStatesPreserved": true,
+  "unrelatedCollectionObjectsUnchanged": true,
+  "nativeCRLFStageRecordsForRootsAndAlternateStates": true,
+  "scriptsCompiled": 716,
+  "uniqueUpdatedFamilyGUIDs": 2091,
+  "propagatingScriptRemovedFromVesperOnly": true,
+  "categoryCounts": {
+    "missions": 40,
+    "campaign": 50,
+    "top40": 10
+  },
+  "hostedURLsVerified": 585,
+  "nativeTTSTested": false
+}

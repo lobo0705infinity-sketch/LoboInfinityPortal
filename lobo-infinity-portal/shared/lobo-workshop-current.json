@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-02",
-  "download": "/assets/maps/seven-map-update-20261102-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -201,32 +201,33 @@
       "id": "3719263238:100326",
       "guid": "100326",
       "slug": "battleground-1",
-      "name": "Foundry Blocks",
-      "workshopName": "ITS18 Battleground — Foundry Blocks — REVISED",
-      "workshopBagName": "SET_ITS18 Battleground — Foundry Blocks — REVISED",
+      "name": "Cairnfall Sanctuary",
+      "workshopName": "ITS18 Battleground — Cairnfall Sanctuary",
+      "workshopBagName": "SET_ITS18 Battleground — Cairnfall Sanctuary",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 19,
+      "layoutKey": 2022,
       "missionSetups": [
         "Battleground"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 128,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/battleground-1-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/battleground-1-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/battleground-1.png",
-      "download": "/assets/maps/seven-map-update-20261102-r1/battleground-1.json",
+      "objectCount": 74,
+      "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+      "download": "/assets/maps/approved-five-map-update-20261102-r1/battleground-1.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/19-normal-14-igl-overhead.jpg",
-      "sourceAngled": "/assets/maps/19-normal-14-igl-angled.jpg",
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a",
       "labelAliases": [
         "SET_ITS18 Battleground — Foundry Blocks — REVISED",
         "ITS18 Battleground — Foundry Blocks — REVISED",
         "Foundry Blocks"
-      ]
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 8,
@@ -530,32 +531,33 @@
       "id": "3719263238:1007ad",
       "guid": "1007ad",
       "slug": "cutthroat-1",
-      "name": "Dustline Outpost",
-      "workshopName": "ITS18 Cutthroat — Dustline Outpost — REVISED",
-      "workshopBagName": "SET_ITS18 Cutthroat — Dustline Outpost — REVISED",
+      "name": "Redline Interchange",
+      "workshopName": "ITS18 Cutthroat — Redline Interchange",
+      "workshopBagName": "SET_ITS18 Cutthroat — Redline Interchange",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 14,
+      "layoutKey": 2020,
       "missionSetups": [
         "Cutthroat"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 140,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/cutthroat-1-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/cutthroat-1-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/cutthroat-1.png",
-      "download": "/assets/maps/seven-map-update-20261102-r1/cutthroat-1.json",
+      "objectCount": 79,
+      "sourceNote": "User-approved TS_Save_35. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 3. Offline loading checks passed; native TTS remains unverified.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/redline-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/redline-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/redline-overhead.webp",
+      "download": "/assets/maps/approved-five-map-update-20261102-r1/cutthroat-1.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/14-normal-9-igl-overhead.jpg",
-      "sourceAngled": "/assets/maps/14-normal-9-igl-angled.jpg",
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/9a481416-d698-42a7-a787-5ee2708e23c5",
       "labelAliases": [
         "SET_ITS18 Cutthroat — Dustline Outpost — REVISED",
         "ITS18 Cutthroat — Dustline Outpost — REVISED",
         "Dustline Outpost"
-      ]
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 18,
@@ -796,23 +798,23 @@
       "guid": "8101d2",
       "slug": "hardlock-1-satellite",
       "name": "Ironveil Complex",
-      "workshopName": "ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
+      "workshopName": "ITS18 Hardlock — Ironveil Complex",
+      "workshopBagName": "SET_ITS18 Hardlock — Ironveil Complex",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 2005,
+      "layoutKey": 2021,
       "missionSetups": [
         "Hardlock"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 64,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Adepticon - 2026 - Table 11 - USA - V1.1. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/hardlock-1-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/hardlock-1-satellite.webp",
-      "download": "/assets/maps/seven-map-update-20261102-r1/hardlock-1-satellite.json",
+      "objectCount": 61,
+      "sourceNote": "User-approved TS_Save_36, approved current controls. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 7. Offline loading checks passed; native TTS remains unverified.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-overhead.webp",
+      "download": "/assets/maps/approved-five-map-update-20261102-r1/hardlock-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/4fdeacaa-ad46-4d37-aa5b-d5284f452653",
@@ -823,7 +825,7 @@
         "ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
         "Ironveil Complex"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-02"
     },
     {
       "index": 26,
@@ -926,24 +928,24 @@
       "id": "3719263238:810241",
       "guid": "810241",
       "slug": "neutralization-1-satellite",
-      "name": "Emberfall Station",
-      "workshopName": "ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
-      "workshopBagName": "SET_ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
+      "name": "Vesper Glassworks",
+      "workshopName": "ITS18 Neutralization — Vesper Glassworks",
+      "workshopBagName": "SET_ITS18 Neutralization — Vesper Glassworks",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 2006,
+      "layoutKey": 2023,
       "missionSetups": [
         "Neutralization"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 87,
-      "sourceNote": "Adapted from tau24’s Return to the Satellites: Epic! GT Satellite - 2023 - Portugal - V.1.2. Overhead and angled Tabletop Simulator screenshots captured 2026-10-20. Live physics, full-army deployment and gameplay balance testing remain pending.",
-      "overhead": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-overhead.webp",
-      "angled": "/assets/maps/captures-20261020T151246/neutralization-1-satellite-angled.webp",
-      "diagram": "/assets/maps/satellites-20261020-r2/neutralization-1-satellite.webp",
-      "download": "/assets/maps/seven-map-update-20261102-r1/neutralization-1-satellite.json",
+      "objectCount": 62,
+      "sourceNote": "User-approved TS_Save_38. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 5. Offline loading checks passed; native TTS remains unverified. Unwanted self-propagating script suffix removed from release copy.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/vesper-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/vesper-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/vesper-overhead.webp",
+      "download": "/assets/maps/approved-five-map-update-20261102-r1/neutralization-1-satellite.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/27ef9160-bb5e-40b0-92e8-a7271ad38558",
@@ -954,7 +956,7 @@
         "ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
         "Emberfall Station"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-02"
     },
     {
       "index": 30,
@@ -1026,22 +1028,22 @@
       "id": "3719263238:100e3e",
       "guid": "100e3e",
       "slug": "outbreak-2",
-      "name": "Nereid Deep",
-      "workshopName": "ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
-      "workshopBagName": "SET_ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
+      "name": "Halcyon Thermal Baths",
+      "workshopName": "ITS18 Outbreak — Halcyon Thermal Baths",
+      "workshopBagName": "SET_ITS18 Outbreak — Halcyon Thermal Baths",
       "collectionTitle": "ITS Season 18",
       "family": "Enclosed two-deck underwater base / corner deployment",
-      "layoutKey": 2014,
+      "layoutKey": 2024,
       "missionSetups": [
         "Outbreak"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 19,
-      "sourceNote": "General Outbreak Nereid Deep R3 enclosed-base setup. Two connected decks, furnished rooms and upper-deck lift/stack. Official Outbreak prohibits player-placed Infected inside buildings: this enclosed table requires agreement on legal lower-deck corridor/concourse placement; this is not an official ITS amendment. Separate from the newer Aurora VII Nereid Deep R7 public terrain. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/nereid-deep-20261101-r2-final/overhead.webp",
-      "angled": "/assets/maps/nereid-deep-20261101-r2-final/angled.webp",
-      "diagram": "/assets/maps/nereid-deep-20261101-r2-final/deployment.webp",
-      "download": "/assets/maps/seven-map-update-20261102-r1/outbreak-2.json",
+      "objectCount": 45,
+      "sourceNote": "User-approved TS_Save_39. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 6. Offline loading checks passed; native TTS remains unverified.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-overhead.webp",
+      "download": "/assets/maps/approved-five-map-update-20261102-r1/outbreak-2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1054,9 +1056,11 @@
         "SET_ITS18 Outbreak - Nereid Deep R1",
         "SET_ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
         "ITS18 Outbreak - Nereid Deep R2 Enclosed Base",
-        "Nereid Deep"
+        "Nereid Deep",
+        "SET_ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
+        "ITS18 Outbreak - Nereid Deep R3 Enclosed Base"
       ],
-      "captureDate": "2026-11-01"
+      "captureDate": "2026-11-02"
     },
     {
       "index": 33,
@@ -1331,6 +1335,6 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "seven-map-update-20261102-r1",
-  "installer": "/assets/maps/seven-map-update-20261102-r1/Lobo-Seven-Map-Workshop-Update-Installer.zip"
+  "downloadRevision": "approved-five-map-update-20261102-r1",
+  "installer": "/assets/maps/approved-five-map-update-20261102-r1/Lobo-Five-Map-Workshop-Update-Installer.zip"
 }

@@ -1,0 +1,1022 @@
+{
+  "uniqueURLs": 145,
+  "passed": 145,
+  "failed": [],
+  "assets": [
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/813dc6cc703f1bc98fd4f910830575dab1bbd055694a40b6f4c9a37f6e23ba5e.obj",
+      "bytes": 74505,
+      "sha256": "161ec0ff5c85bc9fdab1e438961f324f9dce3850bd242b90d11d8ddfcb01a972",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e403feaaf92c0d1089a8617b73ecd845481579d558e33b264bb948dc8eae22d9.obj",
+      "bytes": 477,
+      "sha256": "db9cac9c7f5b6697781850ec72994cf4630d15673d40221984656896bba476a0",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/7a2fb5ddd25c1352644971e65f9618ac0fe4ca7f1b48f974a35d2c01d311315b.obj",
+      "bytes": 375637,
+      "sha256": "a980fa52a099a20dde90f11f2c188a92c3be4fe1f1abd4a12190a8bf776aaae2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/0653009f2ee4f0afe4ed3d5d7542ec107a69734cabee53bea94213dafd95aa8d.obj",
+      "bytes": 482842,
+      "sha256": "8272195437bc30be461e0ccc7ebc0f0f9f7b43fc43ce6173eed0ab72276253b8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3d6a1d30a8e21b0f5a8f23c338b12df4b5b0f3e0fa428d8c9ba37b49f647b3c1.obj",
+      "bytes": 77529,
+      "sha256": "2bb5b8122f8e3eec21a38565602f7dc5c02c59a2925ede81335190b59ef9b321",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/63b74fe9ab5d0e8cecd9e1d7c74fdc2374123a2d93c172ede5c95ab11b4d0a18.obj",
+      "bytes": 477,
+      "sha256": "db9cac9c7f5b6697781850ec72994cf4630d15673d40221984656896bba476a0",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ec2d665ae51b2080df67369ebecb78f1fefd27efcf8c3ec6ce6602858cac8692.obj",
+      "bytes": 425212,
+      "sha256": "4c5a5b6146693c5a10821f0db0ba4ef1602ee0659b7f10c2086ba3dae8dddd9d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/apothecary-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/eefca1a043255e8e58005e09b68f1ea397eab6a20c156ede1ddd2624122d7484.obj",
+      "bytes": 540501,
+      "sha256": "d56b967c92ff37359b0e32b46bf3930cd28476f76e2ecf7c2fd08bed175c7668",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/7cc668715aa0df3edb8c7225acfa73ac8d9199a64475511c3185887e3d06e510.obj",
+      "bytes": 65538,
+      "sha256": "e85526dff8dc35b05f48d4fe9004dd1c7ef7c2ab1278e5d44d852fd8d42ce887",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e701947e8b6c2aa758140a49c1a61ff6edc3d8a8e31b407cfe11c00acdb6977d.obj",
+      "bytes": 465,
+      "sha256": "c75b0e90e1a0946a32ea07bd94162883a6d0fc12ef4028a2348187c54c11bd83",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/a7320a05e822792596e345e8f269ea9922f512ad9b0fae841471d3dc25bc43e1.obj",
+      "bytes": 382338,
+      "sha256": "2f885751e422350ec2241e2d02426062f4330988a562edce6953af78ba4575ad",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/efaab6caeeb6491db069d3151b8b05397ea6de01b322bc88cd2b5e86f5b2f0a5.obj",
+      "bytes": 486959,
+      "sha256": "f12888fe5906b4b0199d5165b2b786725b58407f320f3379aef6affd32e5488b",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d603ddce818142027404fa57b7b79cd3032628ef6cc2a8aeb02782b14cd84643.obj",
+      "bytes": 69998,
+      "sha256": "78ccb70d6f5c3e6d710717980e08db7dfd17901fc386a83c1e6fa39a95800ce3",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d88a6a4e90996d849f0093f7e795335ab500d5fffa3adc758e9b395e41390275.obj",
+      "bytes": 465,
+      "sha256": "c75b0e90e1a0946a32ea07bd94162883a6d0fc12ef4028a2348187c54c11bd83",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c9c12b9b7c768cc8c9fcab088e502a8e6a0e0fd671d4bc60dd500b6d0da2cd7f.obj",
+      "bytes": 450069,
+      "sha256": "1c75822474fdde793c24ae5c41e2250bc04380aedfac7ace70cef2c64548d9a7",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/changing-courts-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/909090cd2e423c906cf07921ffd0559baf4508c651ce0dcf29a6895d85a7eafe.obj",
+      "bytes": 565594,
+      "sha256": "380d437de62119aa11424cdca7d580833a4ee72b2bb657d7fbc73212cb982a6e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/courtyard-bath-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/953feeb19a6c861a66a2f35e576f63c8bea73cc5db88ed467691b0e549e77acf.obj",
+      "bytes": 23004,
+      "sha256": "b6fde608db58f93a9159d8f8a04bd88255890ce1d7e318304b986a53331daa36",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/courtyard-bath-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/7ce0859b139c7d8c157899f9aa46e1940bf4c4befc698ba7fcda459ffdbfb34b.obj",
+      "bytes": 477,
+      "sha256": "16ecb9ece5c24f6a2deab5c31b7005d3cc8177912b733063057deda95b0e3984",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/courtyard-bath-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/b0576d53969396dec601e036bc4e09c9d05a9b52e9668679765c79118244635f.obj",
+      "bytes": 171556,
+      "sha256": "23da5678c90e56f6fdafdfc04e516f5d763905d6a615f612f7d9803f865c690b",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/courtyard-bath-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/bdac98d863ccd94278a825989632cfe21a54dfccfddf6e27ed7e65831197ec4e.obj",
+      "bytes": 210481,
+      "sha256": "0098dc782b3140443fc13d2cfce250579b49b6c0a47f5c5723ee678b097faf37",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/bef690e5a71bf082f9c5bde72359108d9b8c70ef77a7dfe888fed3cbd86e9dda.obj",
+      "bytes": 92238,
+      "sha256": "5d2d56e4a3d267dddf04aeaf581c8d800888894dc38eaa1505fe93ff9e098dc9",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/0c3e1db6e71c35f79e0b8d670c5f6cd3e93d292bf2d34718d70c51d95208e118.obj",
+      "bytes": 465,
+      "sha256": "cb6e4a5d4cf35614e992847cadecf2b7cecef169dbdae508b2f0385a3e7ac907",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/6c0ec3f4ab407b15c253840577971278f1c622b6b0a4d665a9d90f35ad2effee.obj",
+      "bytes": 914010,
+      "sha256": "19960b25eef27d152510955bdda2c422652b2690e5b93bb69b0875b30f962a7b",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/eb63f0cef03e4c4fd392066832a4f5ce1cd85ad1f758ee7febc7e28098108430.obj",
+      "bytes": 1146938,
+      "sha256": "6febd129f5cdbfa824d5280cc5c788131b582fac059933e04824f05649591221",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5794fe4569a8a1b7bedcbd446d9ec39bd3970ac90775629b09bb0e9e60c4eeed.obj",
+      "bytes": 110136,
+      "sha256": "c37828207af8f67fed9a26725283f5461a01734d12633f85dfe61082569874ee",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/633fbebb024d2ae0f837348043ca5cf324d8c1379420b52b4655d01b183fe2bc.obj",
+      "bytes": 465,
+      "sha256": "cb6e4a5d4cf35614e992847cadecf2b7cecef169dbdae508b2f0385a3e7ac907",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3895856e7dc649b7dfb012d31886c39d99c607c7b110d2a2a3467b88d6ff612f.obj",
+      "bytes": 1160134,
+      "sha256": "622dcd667c37cacd812794ade78fef118e8f61edf6688608e58bc5de62174a5c",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/crescent-hall-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/b811600be46d791842886ea3cb5159611332b7c70807efc9f3221294dfed7bf7.obj",
+      "bytes": 1444554,
+      "sha256": "7b459fa6e9f220a388d4ef2a670e06cff353ad279c54c0d4a6163db0fa72ce14",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/east-hot-spring-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5d4130523737453f5ef3166e3f6cb0b9af06d5d5662326e29b61ccc7546b3d60.obj",
+      "bytes": 33286,
+      "sha256": "17f5dc49aeb72da21bd80a9047dd175690e0914e3a0994fc18b1c1e4d2c34db2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/east-hot-spring-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/fa88ccf17d59de72e8edb94db06604df33fcb6c31cbadfec2c65c3c58215096e.obj",
+      "bytes": 465,
+      "sha256": "f6a8b3f7052ab34c112c22853bc1f095c7351803647fb2c8222116ba9be97b9e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/east-hot-spring-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/6ee473557dcfb1cecb486ad01b1d3c63202c03d2073c89ee2d875861dab5c323.obj",
+      "bytes": 171503,
+      "sha256": "ed84c68782fb83c7836fb7a10461726e895ec2f647ca24ebb38b9317cef8ecb0",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/east-hot-spring-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/f2af715adf547f3fb32f67ca67e2c8061c392373ef18a78a18581690e3adb0d5.obj",
+      "bytes": 210428,
+      "sha256": "e3c98d1999c29ec5d64348eeadd48cbd975529ef7c171e0124f3c128e57815b8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-background-off.jpg",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/fd2e1ae079985ee1f7a2fd60f02a9c61bdae4335247d516f3a72b42ddf7c7ffb.jpg",
+      "bytes": 33396,
+      "sha256": "74baeea431660f29c2949f77c9d301fe763a83b1b1b06fd13645281986272e7e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-day.jpg",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ad509a080c6ce868545e6d910f4a96564094d43d1858cafa272e189f82e33090.jpg",
+      "bytes": 1585104,
+      "sha256": "114916501c92b1e81fa84ea1f326f97f147e0758f6e2b8cf4607a2ff07cf758e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-ground-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/50ab7e9645b7ecd9f871e9e0859401fcabfd4310cba67e5f2a009b68e6eacece.obj",
+      "bytes": 78895,
+      "sha256": "c9985e63b733e2abe4377bd58f153862b66227f7b8816afcab48036af244a7ae",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-ground.jpg",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c493034306382705dccb096531cc5be485cf8385bb035d09ee8afe9c5402a37a.jpg",
+      "bytes": 9307640,
+      "sha256": "1e1821f601e4df97b9f6ed4d95c261d1223a82b8fdb9507d4b496acb1f76b0b8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-ground.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/21741d48e5b85b86afb0c5526ff67de2fe3c6c2af1ca3f9cd28c6cd96c106b25.obj",
+      "bytes": 55465,
+      "sha256": "4f73bfba86863dbe9815675dfb9adb4360af77f48b340214c10bbcdb166603d9",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-material-atlas.png",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1cde160fe4b4efd38280de24bdabed8a2f3512948090f52dbd56e4d522873473.png",
+      "bytes": 6216296,
+      "sha256": "fcb02d9ff2e6a14955344af56c73ff9732302e551a7a1bb99f17f2cce69e462a",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/halcyon-night.jpg",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/956845eafb2ae6ae2c72970074b84107623df5d52a99bf09d697b88b4c1f7b0d.jpg",
+      "bytes": 1421980,
+      "sha256": "353246d949d3a4006fe604742c8111958861892a11189e1f4150ac517888982b",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-10-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/13f87723309262c6b912089869ea2a31c9811787a936be6405a784f56e09cd22.obj",
+      "bytes": 5127,
+      "sha256": "39f055b3036f930528ca4733af39f51cc4174f2dc981b5176c79fd63234f0083",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-10-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/60fed32196f9a61bae24e8673efec2c313882b9ab0dc7ebfb954e2acccdb9f9d.obj",
+      "bytes": 24987,
+      "sha256": "c62c5011222c54714c986aa9bb8826ace8d0baed066f3e3cd04807cf21f6264e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-12-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/93b50f7f08369f7f55fe5d1307d83fe24c667853f42f4b5653f8ab574f02cece.obj",
+      "bytes": 5127,
+      "sha256": "5048abe42f852b4f2a11a4cb255dda8b7cebce4ccbfafd1a90ad6605225032ad",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-12-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/7ed55a79bd8f790d550a99570f96ebb0c790098bdc6c9f1a8f6af3f136931c12.obj",
+      "bytes": 24977,
+      "sha256": "e63aa5df4d01ec4bd0674124f40a1fd0c30206bf9c52ff6fb43af8837bcbb6e8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-4-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d57362ccc8ef5ee0626dfebb58f0fc56e433eaf6a687e5823d3f872eb88612a5.obj",
+      "bytes": 5126,
+      "sha256": "04868bb5a433c9267981039758aefed972649e7d2b8be8ee0333943136278cd2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-4-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/065072dd7a90f16ddfaac33bdf3ef3fe3bc83303715f503a2a67c379743eff6a.obj",
+      "bytes": 24973,
+      "sha256": "c8f6bef7bfb126646db35e4b8d82b5441a8b23951fca21849861f3d9d7cd6798",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-5-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/68e07c9494ba3249d960f06b1a16a60bb5aeb6a0f24b7a7866190f47eb324f57.obj",
+      "bytes": 5127,
+      "sha256": "fcadcfbabd668f2dc69cae127472f538136eba852fea4e1b2e8b704a4e098150",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-5-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/940aa96f87f3bbc90540cb68fc867d2bbab57a1b000d3fe213cd17e20e88815e.obj",
+      "bytes": 24987,
+      "sha256": "c62c5011222c54714c986aa9bb8826ace8d0baed066f3e3cd04807cf21f6264e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-6-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e6e15e7bb89659a6102e6c3958fc35e252a321b4476eea20715c8415df3eb478.obj",
+      "bytes": 5127,
+      "sha256": "df0e476b410e3c2b098cf8f71db1ea05b60ffb508140e9c2082e6e23362798d4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-6-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/be9e48291be1e9446cc6d72b30d496daa942305bc87a6756cb85e3042bfd9520.obj",
+      "bytes": 24985,
+      "sha256": "3484ba35b0c5d3a2bd9dd4dbdd208a8e3f2f36e590a5c460dcc81c91842129be",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-7-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/8c938cb2122e6b27114d632693c9f57d26cfa103fe04a47fd62f7837bd176771.obj",
+      "bytes": 5126,
+      "sha256": "3f4dd70ba6eec69e3304db1643abe1c2ddd50f420acb10888e43d52985941aec",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-7-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c0136f98381ef107349d61d2128b7853072cbd392f6397733f57c2aa71dc8732.obj",
+      "bytes": 24974,
+      "sha256": "fc185db7965265139d26044f1670a8b88dce495865fcd21f65f9eb72a06a84a2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-9-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d7b47c6b4addd8a6778857716a1d9391aa51bdbc9d4577da3600285fff4f8a66.obj",
+      "bytes": 5127,
+      "sha256": "63844d299a06df01e91a70ace63f41312f5961afee3aac5e13d626c648e5941e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/herb-trough-9-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/bda717956cf482132cb08a5f72fee280ed6398ce4be450c7f4f610e9c0c9c7fc.obj",
+      "bytes": 24984,
+      "sha256": "ff2321674f1554f1297afddec84bf18d9dd6392f69d3701abc04ef68c2015237",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5d7fd51ce56dbdf76f90d4f93b6c9c21d16b0b6869bd25ea4071258426bc95d5.obj",
+      "bytes": 98075,
+      "sha256": "32130b3467f12cee142fab6ff989b2279a2ce7b85d3f039156072c099dfcfd21",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3e6eecb7b3a4a5f18ce2cfd91a82e35d7b22c5ffbcc2abb85b4855353e74cff4.obj",
+      "bytes": 473,
+      "sha256": "b61dfc9025005671c7274264dc1305e3252ad5625f849c4a97ba7c50736339d4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/423fe0a4cf87f984f1c6226999ee757789832338aa5c6ca9acdfc222f336ec54.obj",
+      "bytes": 550628,
+      "sha256": "3dc5ca3a244a660e0e66d1f31965ab5ab14bd32de2d520b0874d180bcba2992d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/395aa8c25b70235c5ecb7c7c8860c61d4ae509cc74d2badab0dc685fd1f6fcf7.obj",
+      "bytes": 706177,
+      "sha256": "d34c40f3a43869f3230a3ccd2d08ba9706ecd3b1881b012e22a60fa12a473484",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/835fe5fe18527adff9b67618e72966fe68cd81eeab588b4faa4e0b1eb4e97000.obj",
+      "bytes": 168544,
+      "sha256": "f72bb116c44d6c13260654d79645eaf5f5e2ba292c57488b361adeb6f1298122",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/9d998f95fc0c3b8cf9063eff05435c5c79cfca33b40d3fce100a6b2407796b18.obj",
+      "bytes": 473,
+      "sha256": "b61dfc9025005671c7274264dc1305e3252ad5625f849c4a97ba7c50736339d4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/83edd551d2dbc119bcdd34eb1ad36cf2fd08dc6dda4088d52ba68271cd605b78.obj",
+      "bytes": 906479,
+      "sha256": "a7671c2a98a17bdf42c031d9358cacd571883f8a6dc77f0b7dfaee345943c3c2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/640021e3e93893412f3cafe7d5b05711ffe41aaa7f2fca6909fc9210a36af095.obj",
+      "bytes": 1174452,
+      "sha256": "7241e8f6b884fc9e96f945506cfba4dd3350fcfa7fd2a288b8653758dba8f6ec",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-3-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/753adf25048411b79da99b48bef3e700376c65fa1f2296f756876ef6edbb10f6.obj",
+      "bytes": 172144,
+      "sha256": "87eecca70553bf2af24b9e14bf976b79f21183edd58702bbf27291c7d4e8f754",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-3-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d8c173da489dce0cc76b0fc10fa9866f29b5a8869aded52cc8ca488f7b2f6e44.obj",
+      "bytes": 473,
+      "sha256": "b61dfc9025005671c7274264dc1305e3252ad5625f849c4a97ba7c50736339d4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-3-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/7f1fa0f4f97ad9899841a9e0fad687e8689b2f625eee6bd5687a7e87725064ba.obj",
+      "bytes": 964933,
+      "sha256": "f4915040c7e7ce0d49314d7fe88145ef451165619334bf3a3359ee3c59d65ac7",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/intake-clinic-3.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5977b6b8701841dd2c6a90559033917a38d6664cc58496aa49d5a1f9e76069b5.obj",
+      "bytes": 1245107,
+      "sha256": "ef2842cb87b7e963d560fe53549498d1c95a52d907507709f16428208283d213",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/a7ed982343731b117153d30af47409cd63613164d93f87a0b6f03748a2921873.obj",
+      "bytes": 62498,
+      "sha256": "0f972eab30958315bf938854f4a3f2bed543ca9fc3f3003b28e8ee48077f1475",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/21b94658c0677735439f2dfca2ec3cf4736b63f2b8fd40b2976eb5421590dda6.obj",
+      "bytes": 473,
+      "sha256": "930d3456bc031313d7f646cd9318de8b3dd031134cfb6aadf49d8164819dd062",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/07c7dee417e57a6706fdd320d60d845ef60b2ae9959bb687f8a7ad2ab13e45d0.obj",
+      "bytes": 342972,
+      "sha256": "8102b33915f29176fa8b041d74ba72041f31715f85d08a995a53827a90169917",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/581f3c27bc0e19f8f3ccf4e0b0fcdc34eb8ad9fd879f374608c1a3ae07584f8a.obj",
+      "bytes": 436322,
+      "sha256": "8b3ab1ed0e9dc3cc381c48da4b9eb987e1acde227189fac7e77ebaa53368b9d4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/efc377b4e509da121bf24187dbbb6efe53f62c8f2a9d3d3376417e32c336c693.obj",
+      "bytes": 72094,
+      "sha256": "74634121639420b0111684c71c3bad4add8b03b2780d13879d402d0cf8c9a312",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e41dfcb51694469a966ebbe5841ca62e832d7d124b8075517ae0f8e50742f5c3.obj",
+      "bytes": 473,
+      "sha256": "930d3456bc031313d7f646cd9318de8b3dd031134cfb6aadf49d8164819dd062",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/8da645fd1439db6a579edbc8e1107c989f6190f8e4dce4852dc02cb52f6805c4.obj",
+      "bytes": 379546,
+      "sha256": "5810e717d404e589f6fe6c71db88972ec6999bef1e961e281fb1f6f8d78f4b92",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/laundry-vault-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d0b4599abf838a331ec4b4259391fea9c0fd2644a5c96a8ca05e4a2f9cb524be.obj",
+      "bytes": 485116,
+      "sha256": "92083c01e16b6fd89175ba08de12f20022cc1bce5e4215a6d2dd6f6037ae74f3",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/a6ccad324779e6321ecee0630427c99d873414767f589e0879fd0ddb2a9251f5.obj",
+      "bytes": 59663,
+      "sha256": "38796ffec06f341b7861fb2c2fdd8d29ede0b9998f483f46e6c3c327aaa16c3a",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/16e792e8cd0cd3c30fc71e04668fc99ce81fd70e284a9848ed3db65ab2049081.obj",
+      "bytes": 473,
+      "sha256": "fe68c8e869e596660cdb1e5e4829b0ea604d4064ed88e14ccc52be2afbac53d8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/f7d427c6deff839b7e468c58b782546eb1b449f6780223a6254852bed1a1f884.obj",
+      "bytes": 654229,
+      "sha256": "9839cd869e4dae7338e2cf3d6fb48bd2ed3f1a0eb3a46f3897f7d4779839e87c",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/26152d9244611d8feb4e92d302e9adf0cd4132363469a937038a32fc95ccc80c.obj",
+      "bytes": 834977,
+      "sha256": "c2f44d15f9509e7b95e664ccd0ea816acd1a7cbd1cc1cd74b8de64629a99a79e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/24b6a31eac008094626e60bc49ca25bf9015d8cc8e0ef2b9d1b28ffb30913913.obj",
+      "bytes": 116986,
+      "sha256": "56a215f03b8c58098fff9da9f85cd73ca81e2d70256c07e3851413c4fecfa992",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/4c13cf2559b0f94fe734d6bc6dc3d28a44289fd09c4fe394e42da3dbfe6d5892.obj",
+      "bytes": 473,
+      "sha256": "fe68c8e869e596660cdb1e5e4829b0ea604d4064ed88e14ccc52be2afbac53d8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ac5ebba9b3928af215d174145c26e5850843534d67aad99a34c5cc514a6462aa.obj",
+      "bytes": 1137277,
+      "sha256": "1c2d355ecbc432dd60770cbc0354b5619f31d6c38d9efd3b7198cdfe9417fc94",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/octagonal-pavilion-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c4c6e5ac1db23ba138d19dbc3f9e72f4b26ab4133d91ab53f10440cbcbc59676.obj",
+      "bytes": 1495743,
+      "sha256": "49e2f58f9f4378b3994d3094dd2c4ee13304da87d895e469e28e2d3fccfd5779",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-10-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/f34af54c5e91012c68e3bd8788db65e9fcbf1a01f1aa3f37a361ad8102f11ffc.obj",
+      "bytes": 3556,
+      "sha256": "41cbc02992ac2e183352d235d98cc17f0450d2b0023006046a1a0a5f40a7a0fa",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-10-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c94515b4e8c23b40d2eddf437d4541c1d1f74079e45b674be057f1ca0144d5f2.obj",
+      "bytes": 457,
+      "sha256": "ed2266d149af9805553cdeab576b31fda87f2d380a6cacb251f063580e69c80d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-10-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/73b78ba120e41e9e3ade2aeb43c90be43726f78fe4e07c9d0ad2115c751fd8f1.obj",
+      "bytes": 22864,
+      "sha256": "32b337a5e5510279433cbfd541e5aa1ddcf7ca7a177b0f97ce53670f5ddd0854",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-10-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/09e8d21c6655f59157cd02b7f91957e50c5a68cff3f8c221a4e48c535c39b29e.obj",
+      "bytes": 28076,
+      "sha256": "828c15681a8f3a5a24c88357dd98b89b290568b313381b6ff8247f275f7b69b4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-2-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ca9509e0bb8f77740d8f67fe4806ebd7bb90a4a0005cd8916a0f55030517906d.obj",
+      "bytes": 3119,
+      "sha256": "44064c978709cd2cfe33fd15b7a859d3bc4a889de4f8e67a87573abc446d37ba",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-2-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/22be0f57f36fe6249bff8efc9292995fd7ae2fd4c642ea7a99108793522084df.obj",
+      "bytes": 473,
+      "sha256": "d04dd8415573552f983e5150eb4f29894cfe6f0800f1a591dd2234346c83d99c",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-2-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/05a945053e14e838abb07e62d54030ad172af138d6083e9ffe6e5a2309d41e52.obj",
+      "bytes": 22901,
+      "sha256": "c74eaf6ffd5d73cc78709cae812e2e51ca3839dc939658dccebc51b5a16d9d9c",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-2-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/922d365b0cc279027328042fbd3b62180debcdce04cd2851945099f95a694d5e.obj",
+      "bytes": 28075,
+      "sha256": "af5e19b2ecc4749a9def678c3c1d35743a4e7f4a1054b5f7dc0fae7ffd259c99",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-5-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/adeb5142f0aca820a8b3031677840aec5fb03c65359ab99af8760dff4744b220.obj",
+      "bytes": 3733,
+      "sha256": "2ffe4863111ef4c6868262a99d6095fc9f5488022e913215792d427c5204c565",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-5-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/8118a95db9b5dcef6eb85ad4eba5714bdd136114ebeb9b0403ebdc867a6c6062.obj",
+      "bytes": 473,
+      "sha256": "24d027ab207ca17761a4da97537ead8c65561ce4cec7a8bea6c40a97fbc33cae",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-5-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/94f6f27bd6f28e9ea88488db11de495c37d888bb120e9ca07dedcb6c1f5f0621.obj",
+      "bytes": 22906,
+      "sha256": "afdf438340afaaaccfe8349b1f9bc96fc79a3a4c50ebb85882aa46cf103c885d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-5-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5bce5032d8e4f7ed391fb437802ccb7f36c40f60faf4204f7c7f5a7a44514588.obj",
+      "bytes": 28080,
+      "sha256": "8859cdc6a4057e5ada24bb6eec5bf5dd85789a36f8ef5c08569d4ae3e4857ba5",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-6-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5b48d93388539b914bf3f79556aba2a090fc1ba524a2b3e7c217df47ca04a149.obj",
+      "bytes": 4006,
+      "sha256": "e7d81173821dcc9f5118caf60b38e00c953f5c3e201f65f37af93c4154b664bf",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-6-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/025a2062fc2d2ea885fdc1a05dd39f9ab5a5d6a5fde0d00eb8f5cbff5f376b0b.obj",
+      "bytes": 457,
+      "sha256": "4b8bbdd99d4d22eb1462c2f0052bdeabf8a1a15ba8e0c02fa135fb559aebb721",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-6-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ce2f6e05cd08256058400f5e8c8fa4d5b356355a1b01ba7590871db1d3a4bc2c.obj",
+      "bytes": 22898,
+      "sha256": "a18788c71c09438efa064d77b5be1fe7d6b4beacf84199b2ffd735a73a223799",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-6-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c60b7a2257d88a6e879bd5fa93fdb971b5ec6cbc1a87fbfcbbe0ce126b204b6c.obj",
+      "bytes": 28072,
+      "sha256": "90073f1e7bfd5407bce6ceb73db282c3225208050f8057621c0481ee135d79f1",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-7-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e4a3cd35fd373aa05e5008f005d91747326ff51203940501baeda6e41c9e313a.obj",
+      "bytes": 3567,
+      "sha256": "570c631a4581603d709c1ca468e020fe3cb0bbe5259c8197635306b3aa255cf4",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-7-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/6065ccda3d303f2ef4075599040e2448d5e053187c30a2b4b1ae9e16ca65ca6b.obj",
+      "bytes": 465,
+      "sha256": "c11d3621471caeb3cc2f19f61f9569613dc88af090a5bc2eb26a6a590089b2c1",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-7-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/0af66bf063309521588f6e42f7af29923651376ccf6b02588bd47d7447c69df9.obj",
+      "bytes": 22951,
+      "sha256": "2f457ceb27bfac32a647341840dd111ab15af2902edfd546e03299e82f449ced",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-7-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/be97d9637ede1533536797d12ee7964632b42f203c954a770ab1a3a0af4c41ea.obj",
+      "bytes": 28087,
+      "sha256": "9f23bdba37342202ca13fc3896d5efd261ec1725e50353765ed2ceb59d917fa6",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-8-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c176e064d06be76ff14f226e75430cc9f72503fc03ddaaf7f13ff36c614d1cc1.obj",
+      "bytes": 4242,
+      "sha256": "162a00979a1288616e44a80976f819461856e5d75bed6156e218860a61229473",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-8-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/557c785bcd5b176aec30bc1b9775335021806183258d88d0e55e5b1755561ce2.obj",
+      "bytes": 473,
+      "sha256": "951d785472d4cb948617f91aa0fd9a7faf30d6da4186e6d0a21dae90e551ce8c",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-8-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/0455a43dc061b97e7d4ba9ceeab05d6ed3d06a749b983221c638b34bccbfc1d0.obj",
+      "bytes": 22944,
+      "sha256": "165072a036812e9a1c085b18ebd93b4cda263258b00519f9f19b65f2c211e58d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-8-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1a58aabc824373ddfcbd37b8fb22c3137c0a028dfad2987cbb2188521d156ec3.obj",
+      "bytes": 28080,
+      "sha256": "e533a1463fc1313ca9bfa6d8eaebb5a0ffd32aa0565f0ebc1434034a79013729",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-9-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/b3ee28ba57b9861705b810a404f64c0d0d533b423ca6fe7c3ac9b93464b392dd.obj",
+      "bytes": 3847,
+      "sha256": "74c02c44d1fbe5ae3b3e13ccbd097904f31129a636f3dd4890e4803d93aedbcc",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-9-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3e3d46482a4e6273ae5f7b37dfacb3aa14e2f81cf949976d41d8cff0122c6c5f.obj",
+      "bytes": 473,
+      "sha256": "c56c1d0075411693a97478507e956acdc974c15fc9b7a35a56880a8b57040003",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-9-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ee40d80ecfaf187e6401f087b035afce65c2c7e05391a34c4ee9e2cd10e3c444.obj",
+      "bytes": 22906,
+      "sha256": "9960a408e7e883114e3358dff568da9798d03cc4bb68225241333ecff290ab0d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/outcrop-9-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/62a2aaf547d275a09b55803849fc81feec520876fe2a103809c1c22d77790fba.obj",
+      "bytes": 28080,
+      "sha256": "69b91fb9bf5cf8eb8876abd9e0cc5f97f0fa8418021ac75e00ac6590f9310c27",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-3-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/a2f3b67a85eeb2a6b46b19dff28229533a7282d3e05cfcac557671e4a3c41703.obj",
+      "bytes": 57174,
+      "sha256": "8b52209b91b5781d6f856efe09860e0c0525ee8303ead52bd3c9c0435f7dcf2d",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-3-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/22264746fca1047df60687b6c105284f3c3ceda8ce6a40b88c3612889afef987.obj",
+      "bytes": 282618,
+      "sha256": "330c76964a997cee9cb8ade68fd9dc28d0835a98ffe32590c660572fddb4509b",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-4-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/074ba04c32aac64ecc88bdbbb858ab7f1f4b586ae24e916f3f4c10574dda426a.obj",
+      "bytes": 57400,
+      "sha256": "c16a855f68583d95964ef5a2ec5c1fda49ca0bb119facc9791d88117549761f0",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-4-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/61dab8291fe5b7d9ec82975bc148782a2bdb652eb0235e43320b09fd3d10749a.obj",
+      "bytes": 283132,
+      "sha256": "215daa135bbfe15396bea06f588c950bd93ca1ecad924c0003abedab4982e0cc",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-5-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ed56b83fcb35a8404ba91d7722ed3ef3a5f26ad0b106f93e4640fec2bb949874.obj",
+      "bytes": 57322,
+      "sha256": "0f1511f75b1b34df3f94cd631ccf100e9f048dc7835e7e232dd41a61fdcbb875",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/oxygen-cage-5-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/4f7177022f85bde33b5e3e10a94ae501780c10c33e49adb956fe62212afb6540.obj",
+      "bytes": 283115,
+      "sha256": "6c879f7a8aec2e159f4389b9ff4421f6fb43066e710e771e98f295ebf68b7f16",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/d1fe13b7ef0f5aafcfdee5b1779dd1fa7f2416fc7adc65be91a2f9fbfb78f367.obj",
+      "bytes": 58672,
+      "sha256": "156d04857649d20057bce217dfb18591a10dcd70b0d8bb8d704cdcce48b88e00",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/938ea867bbeef69e0cf5c4ade6b93b38aff765f7c518fddf7cde7970c0306ba9.obj",
+      "bytes": 477,
+      "sha256": "f41f7e10ce612ac6e7b3d4e7a263fbc2626eae0a52d08d43770a6359274d3f33",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/f7997364f0fb64a652c2d9ec131d2bc6a2444bc314687631c17b42602c83a23e.obj",
+      "bytes": 412603,
+      "sha256": "d5061ee63db22f7c964cab2949cd4051c90125dad1e8aa45afda70f802d2c294",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1ab42968e1094d5afd420654cd18499001fde1fe01e9ddcb161b364cd1af9743.obj",
+      "bytes": 520125,
+      "sha256": "6e72ec5c3a05bc3fc6b45c0575b5f920e18a63782c189d2a0910dbecb978090f",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/2e8620ad59a5ec643d365696a60ba054c67b4d32dae314fb67531a98edb5e9a3.obj",
+      "bytes": 68560,
+      "sha256": "3cfadc72021ddf22b3030a27ebf839c548f0cf571b683a3dd6b60e8254d1abb6",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1b6337e1cadb26cc1c21684c9be158a9e014050e2aa7501fee021c56a0966257.obj",
+      "bytes": 477,
+      "sha256": "f41f7e10ce612ac6e7b3d4e7a263fbc2626eae0a52d08d43770a6359274d3f33",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1e63bf0d24564027b8382a08f7c7e6198fe507778eceac43fe40a919a7dc1195.obj",
+      "bytes": 573152,
+      "sha256": "b73ece24e777178ec0130c082ae3b9fa715ef7e155494cd6ec11cb075031d7be",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/pump-gallery-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/fb1bc518c303a666f6211aca87780fb09a0e3f2361b97b32ef3e8c43cced2f05.obj",
+      "bytes": 706571,
+      "sha256": "b1755e03b6a83337e4a8a9348958137434783097f6d76ced19cb934b8d9ccffb",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1b5311d3171efcef5fe3dbb1ef581ad2a6d01a9dbfd0ac6a441d97c547ed1a26.obj",
+      "bytes": 90498,
+      "sha256": "4f07374559d3470fc54f76fa95302657b49f4b8f695b280447ed7f4202a3a0e8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/9554fd0125f1b6a185f4709373d84330c4dc24b47070a5e49017b46c88f88c95.obj",
+      "bytes": 465,
+      "sha256": "dde106e36aad184ffaeaf5c4a5326d03719e304e20375c13c2e8a34d65f6dd2a",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/6ad3faad5f970bd5756155e3508e62224477e8668ebfd9eaf4061634a2446182.obj",
+      "bytes": 536248,
+      "sha256": "22ce6c8a27f5da4b37e8b0db5eaf94be020bae4ff5ad16cbb1e1f7139c2a6cc9",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/c33d5630df4295dec7d53976fd54573ccc22ad2aee0b4a9073b47c7da15b3975.obj",
+      "bytes": 688621,
+      "sha256": "47ea990cfd804533d7f46a30e404f56248d57aaa6aa3e4f3a65706f73dfaa0f3",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-2-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/ea2d7ce46cda6ba840cd1453cfac590ebb3053e1bd6ec6e86239ce2cb96f450c.obj",
+      "bytes": 93128,
+      "sha256": "846b2baefd0c3699ac5b12250f4e5d2e106e4287c357c3a4196f79ae37da99f9",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-2-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/639578d854e1ba4328f7f96095184c0118f764341f95b279504ffde0bd12018c.obj",
+      "bytes": 465,
+      "sha256": "dde106e36aad184ffaeaf5c4a5326d03719e304e20375c13c2e8a34d65f6dd2a",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-2-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/8f746d7e3ae51704ce1c9b87084b527fae3f5bb7d0be5c29e1d868b2bb450c7c.obj",
+      "bytes": 543050,
+      "sha256": "bad35efe3554f253f70120b686d10726aae33df9f3f34b445737efcf97cb22e5",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/recovery-lodge-2.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/46df6c914719a01886ae421a78b640ca4b5feb89fe0b05a7846e1cd186cdd21a.obj",
+      "bytes": 697491,
+      "sha256": "7788a93c479d2dc7f93fff4cb2c28c5016a53ffcbcb1ee1eaa4f16243eecd3b2",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/therapy-terrace-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/1b5c6bf2ed71c7d7a94abd4a8eda5bc90033b6a4765e3479416e3a0b27718752.obj",
+      "bytes": 27552,
+      "sha256": "91e13ae4de088bdca8e7728f59dd5cd89c6238be387a7c1e931a4542b6f23ea3",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/therapy-terrace-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/bf5dacb9d1a1b790e681d1eb068f52c7913de59b68d7760b5c2905dd5ad39ee2.obj",
+      "bytes": 481,
+      "sha256": "db6cdf3dcf01d57e25ff36a4ae74f1992fe7830b2b815903e52cb9e4c748cfb8",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/therapy-terrace-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/b6e501475116514b2613bf63067b0e0189d812cb658f19dbf078eacc93fa16dc.obj",
+      "bytes": 109679,
+      "sha256": "1f992965f74c87676cf5985a0ec517aca14c12a8b9b26cef86350a6924dfe23e",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/therapy-terrace-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3ee6ef6799561748f98a5e1218786c99f9fd692f1c9ae6db1d140e3e9b096e10.obj",
+      "bytes": 138013,
+      "sha256": "2779ede360b8fbfcbebd268a524870340443d097ebc7662506e58b7954bdd8da",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/west-hot-spring-1-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/dd653fdbba3f2eb782cde9962cc5c81c6c6e7a43c0ce02352c13656d74b50031.obj",
+      "bytes": 33282,
+      "sha256": "20586b830003438e670549968b5474c9a1666c00c426d3c770bff2a0a1c4c8aa",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/west-hot-spring-1-grid-collision.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/76324ab21d558934e1dc87d1b941fd8cb78b9d47a0840eb897d81b35e5a6a7ba.obj",
+      "bytes": 465,
+      "sha256": "03b72e68ce49b5ea92b6870de5e0c93987ee81690984d2cb06c57ee8053852df",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/west-hot-spring-1-grid.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/dfff5715f0be607a4a378bca9620784597c3707cd0ef03e7549dc0e29b79fee2.obj",
+      "bytes": 171501,
+      "sha256": "22c1d99d79b2a162251b7322f9df6d72568503bdcee8b8363cdfd42806891691",
+      "status": "passed"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c4cb30f2f3415316956a2d7414077ac39b23f4b/halcyon-thermal-baths-r5/Assets/west-hot-spring-1.obj",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/45af77aafa9e5f45ecbaa509f6e1d9694568be1a872babb4dd4c92f84291f6ff.obj",
+      "bytes": 210426,
+      "sha256": "cd7a3800633fb3adfdac0856efcc473fefc1d97d57a796beb82611a2f72076a6",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1762566040427237297/24773CDC003583D0A89786E7F2B4744B4BA537E7/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/2809a4579c67de726c8b4d42fe698e085b9aa39366be5195fffd84634de1880f",
+      "bytes": 811370,
+      "sha256": "72d7acea5e1ddc83f5cd3301856bf0a2fdab76783dad7019a501dc2313d5470b",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e33271226785e0977db6afd93b3e4a3d492325f2741ea99170e42215285ecf74",
+      "bytes": 7219,
+      "sha256": "34c24d9a7fa704dedba8a475890c367908af0dad7551983748015537c1b81963",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1769324428305686823/93B20974F9D6C077B6D2DDEAB90528244CDA93A3/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/e5b37d999bafae01a15b94636c41c8d4e5615f9e0b88f5cb48b766df883e25cf",
+      "bytes": 2609391,
+      "sha256": "3ceae9cac1e4de62e8b55f5ce20713a5d85ca738f2f6cbb6d39c9cd0ba114f72",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1769324428305712265/D896D5EC912EF1CC7F19AD7A20976BB9517ED7D0/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/3a82d7fc7f72e871dfee181a798e1de462402a57fc2cd6251a64a9c46833cf03",
+      "bytes": 2932214,
+      "sha256": "edccb5e01ddacc32edc3be0b70a5e3ee24bf9a40a41ba7b0d42b5d3a6d7a79b4",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1774951538401270769/BEB0E5B31086F75A2AB7B5EF91643CB2FDA16715/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/2e6aefbe2d02ffb36f75eb89c42de5bade897d51b2b0dd979aa6ae874bd34bd2",
+      "bytes": 2505402,
+      "sha256": "3b5c29d314fcf278f97f446bc29fdcf69d71f5bf0866acd80fd175c8f50ba259",
+      "status": "passed"
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1774951893767486413/E36D9DECD8F3A514D239D75F5DAB2536B8C0C3F0/",
+      "path": "/workspace/scratch/701ee207171a/asset-cache/5fa0c5eabcfb29d603f25c96b2f78218f0ace94e25b4da145c242dc39adc88fa",
+      "bytes": 2741409,
+      "sha256": "1986e35f46ab9a849686c35b8e3eab10a8f1daae80d7f2e1fca2fdda1c3fe1a3",
+      "status": "passed"
+    }
+  ]
+}

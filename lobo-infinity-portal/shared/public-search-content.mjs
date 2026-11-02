@@ -222,7 +222,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     description: shorten(publicTerrain.description, 170),
     intro: `${publicTerrain.description} ${publicTerrain.scope} Workshop bag: ${publicTerrain.bagName}. ${publicTerrain.controls}`,
     image: publicTerrain.overview, imageAlt: `${publicTerrain.name} rendered lower and upper decks`, imageWidth: 1800, imageHeight: 920,
-    links: [{label: 'Aurora VII maps', href: '/maps/aurora-vii'}, {label: 'Download public terrain bag', href: publicTerrain.download}, {label: 'Download seven-map installer', href: publicTerrain.installer}],
+    links: [{label: 'Aurora VII maps', href: '/maps/aurora-vii'}, {label: 'Download public terrain bag', href: publicTerrain.download}, {label: 'Download current map installer', href: publicTerrain.installer}],
   }
   const tournamentMap = TOP40_MAPS.find(map => map.href === pathname || (pathname === '/event/lobos-top-40/map-1' && map.key === 'winners-1'))
   if (tournamentMap) return {
@@ -232,7 +232,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
     description: `${tournamentMap.workshopLabel}: ${tournamentMap.mission}. Approved terrain, previews and TTS downloads.`,
     intro: `${tournamentMap.workshopLabel}. ${tournamentMap.mission}, 300 points. Assigned tournament round map.`,
     image: tournamentMap.angled, imageAlt: `${tournamentMap.name} rendered terrain preview`, imageWidth: 1600, imageHeight: 1400,
-    links: [{label: 'Top 40 preparation', href: '/event/lobos-top-40'}, {label: 'Matching general map', href: tournamentMap.generalHref}, {label: 'Download map bag', href: tournamentMap.download}, {label: 'Download seven-map installer', href: TOP40_APPROVED_MAPS_INSTALLER}],
+    links: [{label: 'Top 40 preparation', href: '/event/lobos-top-40'}, {label: 'Matching general map', href: tournamentMap.generalHref}, {label: 'Download map bag', href: tournamentMap.download}, {label: 'Download current map installer', href: TOP40_APPROVED_MAPS_INSTALLER}],
   }
   const auroraLocation = auroraMapLocationBySlug.get(pathname.split('/maps/')[1])
   if (auroraLocation) return {
@@ -376,3 +376,4 @@ function shorten(value, limit) {
   const clean = text(value)
   return clean.length <= limit ? clean : `${clean.slice(0, limit - 1).trimEnd()}…`
 }
+
