@@ -2,26 +2,28 @@
 from pathlib import Path
 import json,hashlib,zipfile,shutil,importlib.metadata
 ROOT=Path(__file__).resolve().parents[1]
-shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R1.png')
+shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.png')
 manifest=[]
 for p in sorted((ROOT/'Map-Bags').iterdir()):
  manifest.append({'path':str(p.relative_to(ROOT)).replace('/','\\'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()})
 (ROOT/'Install-Manifest.json').write_text(json.dumps(manifest,indent=2))
-(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R1 — UPLINK CENTER
+(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R2 — UPLINK CENTER
 Standalone map installer / review build
 
 1. Extract this ZIP into a fresh folder.
 2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
    Documents\\My Games\\Tabletop Simulator\\Saves\\Saved Objects
    Existing same-name files are backed up before replacement.
+   The superseded R1 Saved Object is also backed up and removed after R2 installs.
 3. In TTS, open Objects > Saved Objects and select:
-   Verdant-Exchange-Uplink-Center-R1
+   Verdant-Exchange-Uplink-Center-R2
 4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
+   First close any old import popup and use Clear Table to remove the R1 map.
 
 For a custom installation location, drag the Tabletop Simulator folder onto
 Install.cmd, or pass that folder as its first argument.
 
-59 root components; 14 buildings; 18 alternate interior states; four glazed
+75 root components; 14 buildings; 18 alternate interior states; four glazed
 conservatories; two covered service walkways; furnished labs; seed vaults;
 nutrient tanks; cabinets; irrigation equipment and planted beds.
 
@@ -33,8 +35,8 @@ The right-side Map Controls drawer starts open. It provides independent
 DZ / DZ +4 / DZ +8 guides, Booty, Metachemistry, per-player mission tabs,
 Day / Night / Background Off. Grid and snapping start off.
 
-Building states: 1 roof on; 2 interior or upper floor exposed; 3 ground floor
-exposed on two-storey buildings. Glazing follows the greenhouse state.
+Building states: 1 ground floor; 2 upper floor on two-storey buildings. The
+fully roofed view is the final state (2 or 3). Glazing follows the roofed state.
 Exterior ladders remain attached. Hover tooltips show each state's height.
 Use normal Infinity terrain rules and the modeled geometry. Planting does
 not add a special Difficult Terrain rule. Clear Table removes alternate
@@ -44,6 +46,10 @@ This package installs one Saved Object. It does not publish or replace the
 complete Steam Workshop collection, or release an event round assignment.
 The previews were rendered from the exact exported geometry, not concept art.
 Models and textures are pinned to an immutable hosted asset revision.
+
+Oversized greenhouse meshes are split into shells and separate planting
+beds, preserving their appearance. Every visual OBJ is audited for TTS
+vertex counts, UV seams and triangle corners. Compound collision is enabled.
 
 Automated geometry, route, controls, UI-lifecycle, deployment and cleanup
 checks passed. Live TTS physics and multiplayer playtesting remain unverified.
@@ -55,6 +61,7 @@ Use Python 3. Install packages in Source/requirements.txt.
 From this extracted package:
   python Source/build_map.py ASSET_COMMIT
   python Source/validate_geometry.py
+  python Source/test_model_import.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py

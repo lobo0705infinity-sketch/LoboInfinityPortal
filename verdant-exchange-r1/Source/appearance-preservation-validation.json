@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "greenhouse": "tropical-conservatory",
+      "view": "roof",
+      "identical_textured_triangles": 35480
+    },
+    {
+      "greenhouse": "tropical-conservatory",
+      "view": "state-2",
+      "identical_textured_triangles": 35184
+    },
+    {
+      "greenhouse": "temperate-conservatory",
+      "view": "roof",
+      "identical_textured_triangles": 35480
+    },
+    {
+      "greenhouse": "temperate-conservatory",
+      "view": "state-2",
+      "identical_textured_triangles": 35184
+    },
+    {
+      "greenhouse": "western-propagation-house",
+      "view": "roof",
+      "identical_textured_triangles": 46596
+    },
+    {
+      "greenhouse": "western-propagation-house",
+      "view": "state-2",
+      "identical_textured_triangles": 46292
+    },
+    {
+      "greenhouse": "eastern-propagation-house",
+      "view": "roof",
+      "identical_textured_triangles": 46596
+    },
+    {
+      "greenhouse": "eastern-propagation-house",
+      "view": "state-2",
+      "identical_textured_triangles": 46292
+    }
+  ]
+}

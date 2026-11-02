@@ -7,7 +7,7 @@
   },
   "maps": [
     {
-      "map": "SET_ITS18 Uplink Center \u2014 Verdant Exchange R1",
+      "map": "SET_ITS18 Uplink Center \u2014 Verdant Exchange R2",
       "chart_routing": "pass",
       "per_player_reference_visibility": "pass",
       "offset_geometry": "pass",

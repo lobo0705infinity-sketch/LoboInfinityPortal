@@ -1,13 +1,19 @@
 {
   "status": "passed",
-  "assets": 156,
-  "asset_revision": "e048f131ce472bb7e3faabdbb3a897b1a5a6b7cd",
+  "assets": 188,
+  "asset_revision": "e246b409c07f35b27b26c82fa440bfcb473255f8",
   "byte_identical_downloads": true,
   "checks": [
     {
       "name": "equipment-18-collider.obj",
       "bytes": 376,
       "sha256": "493e584aab9de4324a32273ec20258018ec6bd8be75a36df37ca7ceed4aed2bc",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-planting--1-1-collider.obj",
+      "bytes": 368,
+      "sha256": "40e80f97b5f1ce23d39ce5b4537df2415c8107e3a848ee61abb30cbf96be2d24",
       "status": "passed"
     },
     {
@@ -24,8 +30,8 @@
     },
     {
       "name": "eastern-propagation-house-roof-collider.obj",
-      "bytes": 17425,
-      "sha256": "9f05067ea30b3337ddc151d73ff7945b9c522b9c5d0d494486ca50b3abbf9341",
+      "bytes": 15837,
+      "sha256": "762e078be55c13a7c8f16ade1ef62ce47f64911e4fa501163b71605de0f7168e",
       "status": "passed"
     },
     {
@@ -44,6 +50,12 @@
       "name": "equipment-29.obj",
       "bytes": 5128,
       "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting--1-0-collider.obj",
+      "bytes": 376,
+      "sha256": "300aa6d3bcb8d70936b9221b788883be94408b34f467b0f5dc6f0b638ececa16",
       "status": "passed"
     },
     {
@@ -71,6 +83,12 @@
       "status": "passed"
     },
     {
+      "name": "temperate-conservatory-planting-1-0.obj",
+      "bytes": 330864,
+      "sha256": "a0614e550d06749484ca5ff2a958ccae58dde08c6282fe33b905df3695b149a5",
+      "status": "passed"
+    },
+    {
       "name": "equipment-28-collider.obj",
       "bytes": 1094,
       "sha256": "eff5d50aa450a300596d2831c7ef67a9e40ab5be1b727176320697d4055c857b",
@@ -78,14 +96,20 @@
     },
     {
       "name": "western-propagation-house-roof-collider.obj",
-      "bytes": 17425,
-      "sha256": "9f05067ea30b3337ddc151d73ff7945b9c522b9c5d0d494486ca50b3abbf9341",
+      "bytes": 15837,
+      "sha256": "762e078be55c13a7c8f16ade1ef62ce47f64911e4fa501163b71605de0f7168e",
       "status": "passed"
     },
     {
       "name": "research-administration-state-3-collider.obj",
       "bytes": 25404,
       "sha256": "5c86b5ac33bcc8da9e3eeaf4ee22198e4a494cfec46bb849ef9c6e4eb4ac5095",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting-1-0-collider.obj",
+      "bytes": 384,
+      "sha256": "b3ef4a6ebd8fb7f79e9f4352b6aedce41c4ab5e730089204fb55264c5f087864",
       "status": "passed"
     },
     {
@@ -180,8 +204,8 @@
     },
     {
       "name": "western-propagation-house-state-2.obj",
-      "bytes": 2068798,
-      "sha256": "3b822a99398f1565a24f659acb08403ba956dddeb8f8deb449c3232ec2e78323",
+      "bytes": 80601,
+      "sha256": "4d352d32fee1d2e76dc472d79502ec5869bbb512adb48131cd2ab87e0cc2a42e",
       "status": "passed"
     },
     {
@@ -200,6 +224,12 @@
       "name": "equipment-1-collider.obj",
       "bytes": 4790,
       "sha256": "9a45e0a45ad0c1fb8e0e52e39420cebc98c8d06414cbf9e9c5dbf98d36602770",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting--1-1.obj",
+      "bytes": 324250,
+      "sha256": "9651e1bca31a31e5e2deac53fb870cd3108f88e6a26129f40ca1204391c5b226",
       "status": "passed"
     },
     {
@@ -234,8 +264,8 @@
     },
     {
       "name": "temperate-conservatory-roof-collider.obj",
-      "bytes": 17425,
-      "sha256": "10ca913b34e75ebbfc104d36e506f958b8efc08faac4f9387ddb7a3abf4e5b77",
+      "bytes": 15837,
+      "sha256": "1a23e50d3bf5d3e7f36167935cada8b64bb6991b745fc4f1a6debdc6e6b4f369",
       "status": "passed"
     },
     {
@@ -269,9 +299,21 @@
       "status": "passed"
     },
     {
+      "name": "tropical-conservatory-planting-1-1-collider.obj",
+      "bytes": 376,
+      "sha256": "4d930b8c575fa18547f7306b1c110ae70b9089f8314233f1b2e4d0cf5b499c16",
+      "status": "passed"
+    },
+    {
       "name": "equipment-34.obj",
       "bytes": 8003,
       "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting--1-0.obj",
+      "bytes": 327271,
+      "sha256": "c3f691a35c3806096ac6349fc6e72b5cce262f1bc7f1452f519842d61fa22c52",
       "status": "passed"
     },
     {
@@ -294,8 +336,8 @@
     },
     {
       "name": "temperate-conservatory-state-2.obj",
-      "bytes": 1553322,
-      "sha256": "37f8d7e7cce5e0eb3cd09cb5f1ef60b3ba38bd870b80134d484a086f370c736f",
+      "bytes": 74714,
+      "sha256": "465573c2b68d9476f23d755b79bfd6057504edc8850896e4461f8a77636d3631",
       "status": "passed"
     },
     {
@@ -341,6 +383,18 @@
       "status": "passed"
     },
     {
+      "name": "eastern-propagation-house-planting-1-0.obj",
+      "bytes": 436594,
+      "sha256": "78da38ebe38717d4e3f23104384bb1f14c949c43eb41dafef79572ad91fe0f67",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-planting-1-1.obj",
+      "bytes": 439453,
+      "sha256": "5d153fffd42064deb68c3c7b86023a735e3ea4926a7b036470329b0b8d3d9403",
+      "status": "passed"
+    },
+    {
       "name": "seed-vault-roof-collider.obj",
       "bytes": 20006,
       "sha256": "49de27d635b99edc94d7c3aebc5f7aacfec294eb47d95a2039a4d0cefc1e5526",
@@ -359,15 +413,39 @@
       "status": "passed"
     },
     {
+      "name": "western-propagation-house-planting--1-0-collider.obj",
+      "bytes": 376,
+      "sha256": "2471fe03f89a8820e169d86269b36b137c08f5f0070374bdc0bd0c8b85a8fee0",
+      "status": "passed"
+    },
+    {
       "name": "specimen-archive-roof.obj",
       "bytes": 100548,
       "sha256": "ff4f04720023a78ef45987031b440fa82e776d730755cbf20479d11864bc8733",
       "status": "passed"
     },
     {
+      "name": "eastern-propagation-house-planting--1-0.obj",
+      "bytes": 439539,
+      "sha256": "a548515fba3130abd76b6be9a2a069348dc22b3b5b5067546c843f3589445336",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting-1-1-collider.obj",
+      "bytes": 376,
+      "sha256": "4d930b8c575fa18547f7306b1c110ae70b9089f8314233f1b2e4d0cf5b499c16",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting-1-0-collider.obj",
+      "bytes": 384,
+      "sha256": "b3ef4a6ebd8fb7f79e9f4352b6aedce41c4ab5e730089204fb55264c5f087864",
+      "status": "passed"
+    },
+    {
       "name": "western-propagation-house-roof.obj",
-      "bytes": 2083925,
-      "sha256": "827a98ea92092c4aa449adabe1be6039d5f72b29a35b2871d348e3d817a9c528",
+      "bytes": 94912,
+      "sha256": "54372721612d9c976dfec1892d659650341f6f802af83a3672401ea0d3252383",
       "status": "passed"
     },
     {
@@ -407,6 +485,12 @@
       "status": "passed"
     },
     {
+      "name": "eastern-propagation-house-planting--1-0-collider.obj",
+      "bytes": 376,
+      "sha256": "2471fe03f89a8820e169d86269b36b137c08f5f0070374bdc0bd0c8b85a8fee0",
+      "status": "passed"
+    },
+    {
       "name": "seed-vault-state-2-collider.obj",
       "bytes": 15850,
       "sha256": "a91e7b428368729d2193a0aafda52a97cfe6a5507d721ecf9efd70e46d170c3a",
@@ -425,9 +509,27 @@
       "status": "passed"
     },
     {
+      "name": "western-propagation-house-planting-1-1.obj",
+      "bytes": 439448,
+      "sha256": "4d199301401b319875900cebee1560fcb45173711a675a7748a40bc222cd306d",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting--1-1-collider.obj",
+      "bytes": 368,
+      "sha256": "d31ddc6dc42e113fa73e7cf934abd4d087200d50f1ae8cbe4d90ec49ec0730d4",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting-1-1.obj",
+      "bytes": 327249,
+      "sha256": "c0d7bcf1f51c69e085a9bebead7a7c514e0b5134b60342c3f6fb4d01f58e4afc",
+      "status": "passed"
+    },
+    {
       "name": "temperate-conservatory-roof.obj",
-      "bytes": 1568083,
-      "sha256": "86fbefe7cd2d67b32b64f0b97a26e53e045c00651201a0c32725f48436298c04",
+      "bytes": 88672,
+      "sha256": "4eeca4ff325479f1f073556257f9f10808f6ba764c028f34bc648185a0b7426a",
       "status": "passed"
     },
     {
@@ -455,6 +557,12 @@
       "status": "passed"
     },
     {
+      "name": "tropical-conservatory-planting--1-1-collider.obj",
+      "bytes": 368,
+      "sha256": "d31ddc6dc42e113fa73e7cf934abd4d087200d50f1ae8cbe4d90ec49ec0730d4",
+      "status": "passed"
+    },
+    {
       "name": "eastern-propagation-house-glazing-collider.obj",
       "bytes": 731,
       "sha256": "b43cafc1dc87ce956b8c92e55ca5221479d11ff7847da3eb6a79b74d19f8c8b9",
@@ -464,6 +572,12 @@
       "name": "southern-service-annex-state-2-collider.obj",
       "bytes": 9803,
       "sha256": "a6523bfd2365447899925a3346e2b08fef65f9e7956959794a28ebc918adf7d4",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-planting-1-1-collider.obj",
+      "bytes": 376,
+      "sha256": "607018121fc519722e0d8bf4960f0df5f7f35106797ba065b96ba777e30b3a9d",
       "status": "passed"
     },
     {
@@ -516,8 +630,8 @@
     },
     {
       "name": "tropical-conservatory-roof-collider.obj",
-      "bytes": 17425,
-      "sha256": "10ca913b34e75ebbfc104d36e506f958b8efc08faac4f9387ddb7a3abf4e5b77",
+      "bytes": 15837,
+      "sha256": "1a23e50d3bf5d3e7f36167935cada8b64bb6991b745fc4f1a6debdc6e6b4f369",
       "status": "passed"
     },
     {
@@ -536,6 +650,12 @@
       "name": "northern-service-annex-roof-collider.obj",
       "bytes": 12258,
       "sha256": "8c2fcba1f7b25d0eb883d337c6ca4f5fc008427ce3e5a9bf7be014286c4b2caa",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-planting--1-1.obj",
+      "bytes": 435150,
+      "sha256": "6daf578d5dba4a34f932d427cf94427d204abba096387c3c1cefa3ec3c18138b",
       "status": "passed"
     },
     {
@@ -570,8 +690,8 @@
     },
     {
       "name": "temperate-conservatory-state-2-collider.obj",
-      "bytes": 16218,
-      "sha256": "83edc23f8f9fd564df213f8bf556b27ccb5eea75f906cdb17c0d58489c8edec8",
+      "bytes": 14630,
+      "sha256": "e9723258673ac65ae886529652bbf865a62a4d9fc99157fb613f09bf6d4b3ce0",
       "status": "passed"
     },
     {
@@ -582,8 +702,8 @@
     },
     {
       "name": "tropical-conservatory-roof.obj",
-      "bytes": 1568157,
-      "sha256": "a30dbb63773637b0edc7a7b5685178d7d010064b58d7355e80ee85f5663179f5",
+      "bytes": 88672,
+      "sha256": "4eeca4ff325479f1f073556257f9f10808f6ba764c028f34bc648185a0b7426a",
       "status": "passed"
     },
     {
@@ -647,6 +767,12 @@
       "status": "passed"
     },
     {
+      "name": "western-propagation-house-planting-1-1-collider.obj",
+      "bytes": 376,
+      "sha256": "607018121fc519722e0d8bf4960f0df5f7f35106797ba065b96ba777e30b3a9d",
+      "status": "passed"
+    },
+    {
       "name": "verdant-ground-collider.obj",
       "bytes": 396,
       "sha256": "47521cac3118f2320c6ab5e59137e7c5b0e528e1be0e20558cea0b807a427398",
@@ -660,8 +786,8 @@
     },
     {
       "name": "eastern-propagation-house-state-2-collider.obj",
-      "bytes": 16218,
-      "sha256": "16170174dbfaf316eeb178e4274bbcacbb3ebe6445e104b9fef239d23c6394d4",
+      "bytes": 14630,
+      "sha256": "0261cf3f7a92c45ca9a1d609c658cd664a38929b129f36adb6d1f57a01de490e",
       "status": "passed"
     },
     {
@@ -678,14 +804,32 @@
     },
     {
       "name": "tropical-conservatory-state-2-collider.obj",
-      "bytes": 16218,
-      "sha256": "83edc23f8f9fd564df213f8bf556b27ccb5eea75f906cdb17c0d58489c8edec8",
+      "bytes": 14630,
+      "sha256": "e9723258673ac65ae886529652bbf865a62a4d9fc99157fb613f09bf6d4b3ce0",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting--1-0-collider.obj",
+      "bytes": 376,
+      "sha256": "300aa6d3bcb8d70936b9221b788883be94408b34f467b0f5dc6f0b638ececa16",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-planting-1-0-collider.obj",
+      "bytes": 384,
+      "sha256": "4327e0020de1c97e2dd7d671000dbf3960817284d6f95963b3a18bf718e01157",
       "status": "passed"
     },
     {
       "name": "equipment-9.obj",
       "bytes": 8003,
       "sha256": "d461d7c21ff5b6f4e00ff8c836b4dc53168fa92a78ea696466abc74539259a10",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting--1-0.obj",
+      "bytes": 327131,
+      "sha256": "10b4525901d00e6ca7b95dbedad147bc56b949eed45a3e3fa028f16a4ac09364",
       "status": "passed"
     },
     {
@@ -698,6 +842,12 @@
       "name": "nutrient-control-roof-collider.obj",
       "bytes": 16968,
       "sha256": "59f20185229dcb40487134f40a2644f8b0ee4df157610ce31f64f9bb89ddcafb",
+      "status": "passed"
+    },
+    {
+      "name": "tropical-conservatory-planting-1-0.obj",
+      "bytes": 330869,
+      "sha256": "36870690f4be93dc904fa842c74968b0f35f73a58cea5ff8450434bdc336fe3e",
       "status": "passed"
     },
     {
@@ -714,8 +864,8 @@
     },
     {
       "name": "western-propagation-house-state-2-collider.obj",
-      "bytes": 16218,
-      "sha256": "16170174dbfaf316eeb178e4274bbcacbb3ebe6445e104b9fef239d23c6394d4",
+      "bytes": 14630,
+      "sha256": "0261cf3f7a92c45ca9a1d609c658cd664a38929b129f36adb6d1f57a01de490e",
       "status": "passed"
     },
     {
@@ -726,8 +876,14 @@
     },
     {
       "name": "eastern-propagation-house-state-2.obj",
-      "bytes": 2068919,
-      "sha256": "4e3968b701d169e20c0246cef5180275fed1e58a6c112f72810817d306d49f9c",
+      "bytes": 80601,
+      "sha256": "4d352d32fee1d2e76dc472d79502ec5869bbb512adb48131cd2ab87e0cc2a42e",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-planting--1-0.obj",
+      "bytes": 439355,
+      "sha256": "542d159db5aa5c013fbdc46fe6b4f8de72752d7fe5319f68b13134e7d0231892",
       "status": "passed"
     },
     {
@@ -752,6 +908,12 @@
       "name": "western-propagation-house-glazing-collider.obj",
       "bytes": 731,
       "sha256": "b43cafc1dc87ce956b8c92e55ca5221479d11ff7847da3eb6a79b74d19f8c8b9",
+      "status": "passed"
+    },
+    {
+      "name": "eastern-propagation-house-planting--1-1.obj",
+      "bytes": 434936,
+      "sha256": "21abe99419e0c2a09dd669b6c307c67e2dffad0d584aa5a1b69404476778a857",
       "status": "passed"
     },
     {
@@ -821,6 +983,12 @@
       "status": "passed"
     },
     {
+      "name": "western-propagation-house-planting--1-1-collider.obj",
+      "bytes": 368,
+      "sha256": "40e80f97b5f1ce23d39ce5b4537df2415c8107e3a848ee61abb30cbf96be2d24",
+      "status": "passed"
+    },
+    {
       "name": "equipment-5.obj",
       "bytes": 5128,
       "sha256": "55f704cfea0691bdcff409f8c3630cc68092a82a3ee46453429e28dc49b9a472",
@@ -834,8 +1002,8 @@
     },
     {
       "name": "eastern-propagation-house-roof.obj",
-      "bytes": 2084046,
-      "sha256": "79361b87f60ce1dbebee019a1f33fc3561478a476dce1bda95a4bd1a6debfbfa",
+      "bytes": 94912,
+      "sha256": "54372721612d9c976dfec1892d659650341f6f802af83a3672401ea0d3252383",
       "status": "passed"
     },
     {
@@ -851,9 +1019,21 @@
       "status": "passed"
     },
     {
+      "name": "temperate-conservatory-planting--1-1.obj",
+      "bytes": 324224,
+      "sha256": "0b6520b7ef5d8ad9975885e83774c0c2a4eb65a058b22fd2ce806af0a0d5e068",
+      "status": "passed"
+    },
+    {
       "name": "equipment-11.obj",
       "bytes": 36673,
       "sha256": "7229fc5935500bbda062338008d92e30cccd31914032f397a19bd53f52ce0384",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-planting-1-0-collider.obj",
+      "bytes": 384,
+      "sha256": "4327e0020de1c97e2dd7d671000dbf3960817284d6f95963b3a18bf718e01157",
       "status": "passed"
     },
     {
@@ -890,6 +1070,18 @@
       "name": "uplink-data-exchange-roof-collider.obj",
       "bytes": 35429,
       "sha256": "90083fb92185e926029f441ecf246be2185fcccc1f305a7ed3bd4da177da5e5e",
+      "status": "passed"
+    },
+    {
+      "name": "western-propagation-house-planting-1-0.obj",
+      "bytes": 436548,
+      "sha256": "e425ae27752ebaa9841664d74f12bd8f95c2707a5beeefae8b429fb3350fa218",
+      "status": "passed"
+    },
+    {
+      "name": "temperate-conservatory-planting-1-1.obj",
+      "bytes": 327045,
+      "sha256": "e5ae46962447c19e4f0a598d962cdfa277f6e3f4c2ad572fb7826b8b4e365d7f",
       "status": "passed"
     },
     {
@@ -936,8 +1128,8 @@
     },
     {
       "name": "tropical-conservatory-state-2.obj",
-      "bytes": 1553396,
-      "sha256": "b89f6e4e9ef0c42c951c77ba8fbb4713dedc2764e279adf612cc52bb06967d8d",
+      "bytes": 74714,
+      "sha256": "465573c2b68d9476f23d755b79bfd6057504edc8850896e4461f8a77636d3631",
       "status": "passed"
     }
   ]

@@ -1,8 +1,8 @@
 {
   "status": "passed",
-  "root_objects": 59,
+  "root_objects": 75,
   "building_states": 18,
-  "unique_ids": 78,
+  "unique_ids": 94,
   "maximum_convex_component_vertices": 42,
   "minimum_objective_clearance_inches": 2.099,
   "routing": [

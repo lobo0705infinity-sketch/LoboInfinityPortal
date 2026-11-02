@@ -22,7 +22,7 @@
   [
     "Terrain",
     "Campus terrain and interiors",
-    "Use normal Infinity movement, cover and line-of-fire rules. Planting beds, water equipment and campus paving have no added Difficult Terrain rule. Use the solid geometry.\n\nStates: 1 roof on; 2 interior or upper floor exposed; 3 ground floor exposed on two-storey buildings. Exterior ladders remain in every state. Greenhouse roof glazing follows its parent state. The narrow metal roof spine is a maintenance walkway. Furnishings and partitions leave movement aisles."
+    "Use normal Infinity movement, cover and line-of-fire rules. Planting beds, water equipment and campus paving have no added Difficult Terrain rule. Use the solid geometry.\n\nState 1 exposes the ground floor. State 2 exposes the upper floor on two-storey buildings. The final state is the fully roofed view: state 2 for single-storey buildings; state 3 for two-storey buildings. Exterior ladders remain in every state. Greenhouse roof glazing follows the roofed state. Planting beds remain in place."
   ],
   [
     "Controls",

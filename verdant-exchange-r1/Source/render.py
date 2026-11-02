@@ -9,7 +9,7 @@ import trimesh,pyrender
 from PIL import Image,ImageDraw,ImageFont
 ROOT=Path(__file__).resolve().parents[1]
 (ROOT/'Previews').mkdir(exist_ok=True)
-BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R1.json').read_text())['ObjectStates'][0]
+BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json').read_text())['ObjectStates'][0]
 cache={}
 def pose(eye,target,up=[0,1,0]):
  eye,target=np.array(eye,float),np.array(target,float);z=eye-target;z/=np.linalg.norm(z);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x)
@@ -31,7 +31,9 @@ def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
   if not o.get('CustomMesh'):continue
   if state>1 and 'glass' in o.get('Tags',[]):continue
   if detail and o.get('Nickname','').startswith('Verdant Exchange | 48'):continue
-  if state>1 and o.get('States'):o=o['States'].get(str(state),o['States']['2'])
+  if o.get('States'):
+   if state==1:o=o['States'][str(max(map(int,o['States'])))]
+   elif state==2 and '3'in o['States']:o=o['States']['2']
   s.add(mesh(o),pose=transform(o))
  for eye2,intensity in [([20,60,20],2.25),([-40,40,-20],.75)]:s.add(pyrender.DirectionalLight(color=[1,.99,.96],intensity=intensity),pose=pose(eye2,[0,0,0]))
  up=[0,0,-1] if 'Overhead' in name else [0,1,0]
@@ -40,7 +42,7 @@ def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
  im=Image.fromarray(rgb);draw=ImageDraw.Draw(im);draw.rectangle((0,0,size[0],85),fill=(22,39,35))
  font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',28)
  small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',17)
- draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R1',font=font,fill=(239,237,213))
+ draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R2',font=font,fill=(239,237,213))
  draw.text((30,51),'Actual map geometry · 48 × 48 inches · '+('Roofs on' if state==1 else 'Interiors exposed')+' · 16-inch deployment zones',font=small,fill=(184,209,196))
  im.save(ROOT/'Previews'/name);cache.clear();print(name,flush=True)
 render('Verdant-Exchange-Overview.png',[58,66,62],[0,2,0],35)

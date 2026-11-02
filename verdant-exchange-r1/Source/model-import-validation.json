@@ -1,0 +1,658 @@
+{
+  "status": "passed",
+  "visual_models": 92,
+  "all_meshes_including_colliders": 184,
+  "maximum_uv_expanded_vertices": 16956,
+  "maximum_triangle_corners": 33324,
+  "building_state_order": "lowest floor first; fully roofed last",
+  "compound_collider_mode": "passed",
+  "deployment_line_world_width_inches": 0.055,
+  "official_reference": "https://kb.tabletopsimulator.com/custom-content/custom-model/",
+  "live_TTS_import": "Not verified in this environment",
+  "models": [
+    {
+      "name": "verdant-ground.obj",
+      "positions": 1250,
+      "uv_expanded_vertices": 1250,
+      "triangles": 2496,
+      "triangle_corners": 7488
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-3.obj",
+      "positions": 1992,
+      "uv_expanded_vertices": 6025,
+      "triangles": 3648,
+      "triangle_corners": 10944
+    },
+    {
+      "name": "botanical-genetics-laboratory-state-2.obj",
+      "positions": 3122,
+      "uv_expanded_vertices": 9653,
+      "triangles": 5796,
+      "triangle_corners": 17388
+    },
+    {
+      "name": "botanical-genetics-laboratory-roof.obj",
+      "positions": 4052,
+      "uv_expanded_vertices": 12131,
+      "triangles": 7240,
+      "triangle_corners": 21720
+    },
+    {
+      "name": "research-administration-state-3.obj",
+      "positions": 1992,
+      "uv_expanded_vertices": 6025,
+      "triangles": 3648,
+      "triangle_corners": 10944
+    },
+    {
+      "name": "research-administration-state-2.obj",
+      "positions": 3122,
+      "uv_expanded_vertices": 9653,
+      "triangles": 5796,
+      "triangle_corners": 17388
+    },
+    {
+      "name": "research-administration-roof.obj",
+      "positions": 4052,
+      "uv_expanded_vertices": 12131,
+      "triangles": 7240,
+      "triangle_corners": 21720
+    },
+    {
+      "name": "tropical-conservatory-state-2.obj",
+      "positions": 1062,
+      "uv_expanded_vertices": 3139,
+      "triangles": 1808,
+      "triangle_corners": 5424
+    },
+    {
+      "name": "tropical-conservatory-roof.obj",
+      "positions": 1254,
+      "uv_expanded_vertices": 3645,
+      "triangles": 2104,
+      "triangle_corners": 6312
+    },
+    {
+      "name": "tropical-conservatory-planting--1-0.obj",
+      "positions": 4294,
+      "uv_expanded_vertices": 12670,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "tropical-conservatory-planting--1-1.obj",
+      "positions": 4298,
+      "uv_expanded_vertices": 12678,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "tropical-conservatory-planting-1-0.obj",
+      "positions": 4299,
+      "uv_expanded_vertices": 12680,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "tropical-conservatory-planting-1-1.obj",
+      "positions": 4298,
+      "uv_expanded_vertices": 12678,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "tropical-conservatory-glazing.obj",
+      "positions": 16,
+      "uv_expanded_vertices": 38,
+      "triangles": 20,
+      "triangle_corners": 60
+    },
+    {
+      "name": "temperate-conservatory-state-2.obj",
+      "positions": 1062,
+      "uv_expanded_vertices": 3139,
+      "triangles": 1808,
+      "triangle_corners": 5424
+    },
+    {
+      "name": "temperate-conservatory-roof.obj",
+      "positions": 1254,
+      "uv_expanded_vertices": 3645,
+      "triangles": 2104,
+      "triangle_corners": 6312
+    },
+    {
+      "name": "temperate-conservatory-planting--1-0.obj",
+      "positions": 4299,
+      "uv_expanded_vertices": 12680,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "temperate-conservatory-planting--1-1.obj",
+      "positions": 4297,
+      "uv_expanded_vertices": 12676,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "temperate-conservatory-planting-1-0.obj",
+      "positions": 4299,
+      "uv_expanded_vertices": 12680,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "temperate-conservatory-planting-1-1.obj",
+      "positions": 4291,
+      "uv_expanded_vertices": 12664,
+      "triangles": 8344,
+      "triangle_corners": 25032
+    },
+    {
+      "name": "temperate-conservatory-glazing.obj",
+      "positions": 16,
+      "uv_expanded_vertices": 38,
+      "triangles": 20,
+      "triangle_corners": 60
+    },
+    {
+      "name": "western-propagation-house-state-2.obj",
+      "positions": 1138,
+      "uv_expanded_vertices": 3345,
+      "triangles": 1908,
+      "triangle_corners": 5724
+    },
+    {
+      "name": "western-propagation-house-roof.obj",
+      "positions": 1334,
+      "uv_expanded_vertices": 3866,
+      "triangles": 2212,
+      "triangle_corners": 6636
+    },
+    {
+      "name": "western-propagation-house-planting--1-0.obj",
+      "positions": 5800,
+      "uv_expanded_vertices": 16910,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "western-propagation-house-planting--1-1.obj",
+      "positions": 5811,
+      "uv_expanded_vertices": 16932,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "western-propagation-house-planting-1-0.obj",
+      "positions": 5518,
+      "uv_expanded_vertices": 16698,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "western-propagation-house-planting-1-1.obj",
+      "positions": 5804,
+      "uv_expanded_vertices": 16918,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "western-propagation-house-glazing.obj",
+      "positions": 16,
+      "uv_expanded_vertices": 38,
+      "triangles": 20,
+      "triangle_corners": 60
+    },
+    {
+      "name": "eastern-propagation-house-state-2.obj",
+      "positions": 1138,
+      "uv_expanded_vertices": 3345,
+      "triangles": 1908,
+      "triangle_corners": 5724
+    },
+    {
+      "name": "eastern-propagation-house-roof.obj",
+      "positions": 1334,
+      "uv_expanded_vertices": 3866,
+      "triangles": 2212,
+      "triangle_corners": 6636
+    },
+    {
+      "name": "eastern-propagation-house-planting--1-0.obj",
+      "positions": 5807,
+      "uv_expanded_vertices": 16924,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "eastern-propagation-house-planting--1-1.obj",
+      "positions": 5804,
+      "uv_expanded_vertices": 16918,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "eastern-propagation-house-planting-1-0.obj",
+      "positions": 5520,
+      "uv_expanded_vertices": 16702,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "eastern-propagation-house-planting-1-1.obj",
+      "positions": 5804,
+      "uv_expanded_vertices": 16918,
+      "triangles": 11096,
+      "triangle_corners": 33288
+    },
+    {
+      "name": "eastern-propagation-house-glazing.obj",
+      "positions": 16,
+      "uv_expanded_vertices": 38,
+      "triangles": 20,
+      "triangle_corners": 60
+    },
+    {
+      "name": "uplink-data-exchange-state-3.obj",
+      "positions": 1794,
+      "uv_expanded_vertices": 5179,
+      "triangles": 3088,
+      "triangle_corners": 9264
+    },
+    {
+      "name": "uplink-data-exchange-state-2.obj",
+      "positions": 2822,
+      "uv_expanded_vertices": 8404,
+      "triangles": 4964,
+      "triangle_corners": 14892
+    },
+    {
+      "name": "uplink-data-exchange-roof.obj",
+      "positions": 3793,
+      "uv_expanded_vertices": 10944,
+      "triangles": 6448,
+      "triangle_corners": 19344
+    },
+    {
+      "name": "signal-analysis-laboratory-state-3.obj",
+      "positions": 1794,
+      "uv_expanded_vertices": 5179,
+      "triangles": 3088,
+      "triangle_corners": 9264
+    },
+    {
+      "name": "signal-analysis-laboratory-state-2.obj",
+      "positions": 2822,
+      "uv_expanded_vertices": 8404,
+      "triangles": 4964,
+      "triangle_corners": 14892
+    },
+    {
+      "name": "signal-analysis-laboratory-roof.obj",
+      "positions": 3793,
+      "uv_expanded_vertices": 10944,
+      "triangles": 6448,
+      "triangle_corners": 19344
+    },
+    {
+      "name": "seed-vault-state-2.obj",
+      "positions": 1246,
+      "uv_expanded_vertices": 3728,
+      "triangles": 2212,
+      "triangle_corners": 6636
+    },
+    {
+      "name": "seed-vault-roof.obj",
+      "positions": 1306,
+      "uv_expanded_vertices": 3960,
+      "triangles": 2380,
+      "triangle_corners": 7140
+    },
+    {
+      "name": "specimen-archive-state-2.obj",
+      "positions": 1246,
+      "uv_expanded_vertices": 3728,
+      "triangles": 2212,
+      "triangle_corners": 6636
+    },
+    {
+      "name": "specimen-archive-roof.obj",
+      "positions": 1306,
+      "uv_expanded_vertices": 3960,
+      "triangles": 2380,
+      "triangle_corners": 7140
+    },
+    {
+      "name": "nutrient-control-state-2.obj",
+      "positions": 1198,
+      "uv_expanded_vertices": 3568,
+      "triangles": 2116,
+      "triangle_corners": 6348
+    },
+    {
+      "name": "nutrient-control-roof.obj",
+      "positions": 2118,
+      "uv_expanded_vertices": 5985,
+      "triangles": 3528,
+      "triangle_corners": 10584
+    },
+    {
+      "name": "irrigation-control-state-2.obj",
+      "positions": 1198,
+      "uv_expanded_vertices": 3568,
+      "triangles": 2116,
+      "triangle_corners": 6348
+    },
+    {
+      "name": "irrigation-control-roof.obj",
+      "positions": 2118,
+      "uv_expanded_vertices": 5985,
+      "triangles": 3528,
+      "triangle_corners": 10584
+    },
+    {
+      "name": "southern-service-annex-state-2.obj",
+      "positions": 756,
+      "uv_expanded_vertices": 2241,
+      "triangles": 1340,
+      "triangle_corners": 4020
+    },
+    {
+      "name": "southern-service-annex-roof.obj",
+      "positions": 1639,
+      "uv_expanded_vertices": 4556,
+      "triangles": 2700,
+      "triangle_corners": 8100
+    },
+    {
+      "name": "northern-service-annex-state-2.obj",
+      "positions": 756,
+      "uv_expanded_vertices": 2241,
+      "triangles": 1340,
+      "triangle_corners": 4020
+    },
+    {
+      "name": "northern-service-annex-roof.obj",
+      "positions": 1639,
+      "uv_expanded_vertices": 4556,
+      "triangles": 2700,
+      "triangle_corners": 8100
+    },
+    {
+      "name": "covered-walkway-1.obj",
+      "positions": 436,
+      "uv_expanded_vertices": 1363,
+      "triangles": 736,
+      "triangle_corners": 2208
+    },
+    {
+      "name": "covered-walkway-2.obj",
+      "positions": 436,
+      "uv_expanded_vertices": 1363,
+      "triangles": 736,
+      "triangle_corners": 2208
+    },
+    {
+      "name": "equipment-1.obj",
+      "positions": 514,
+      "uv_expanded_vertices": 1476,
+      "triangles": 932,
+      "triangle_corners": 2796
+    },
+    {
+      "name": "equipment-2.obj",
+      "positions": 514,
+      "uv_expanded_vertices": 1476,
+      "triangles": 932,
+      "triangle_corners": 2796
+    },
+    {
+      "name": "equipment-3.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-4.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-5.obj",
+      "positions": 74,
+      "uv_expanded_vertices": 214,
+      "triangles": 116,
+      "triangle_corners": 348
+    },
+    {
+      "name": "equipment-6.obj",
+      "positions": 74,
+      "uv_expanded_vertices": 214,
+      "triangles": 116,
+      "triangle_corners": 348
+    },
+    {
+      "name": "equipment-7.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-8.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-9.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-10.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-11.obj",
+      "positions": 514,
+      "uv_expanded_vertices": 1476,
+      "triangles": 932,
+      "triangle_corners": 2796
+    },
+    {
+      "name": "equipment-12.obj",
+      "positions": 514,
+      "uv_expanded_vertices": 1476,
+      "triangles": 932,
+      "triangle_corners": 2796
+    },
+    {
+      "name": "equipment-13.obj",
+      "positions": 5523,
+      "uv_expanded_vertices": 16714,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-14.obj",
+      "positions": 5817,
+      "uv_expanded_vertices": 16950,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-15.obj",
+      "positions": 5817,
+      "uv_expanded_vertices": 16950,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-16.obj",
+      "positions": 5532,
+      "uv_expanded_vertices": 16732,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-17.obj",
+      "positions": 5820,
+      "uv_expanded_vertices": 16956,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-18.obj",
+      "positions": 5811,
+      "uv_expanded_vertices": 16938,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-19.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-20.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-21.obj",
+      "positions": 328,
+      "uv_expanded_vertices": 904,
+      "triangles": 528,
+      "triangle_corners": 1584
+    },
+    {
+      "name": "equipment-22.obj",
+      "positions": 328,
+      "uv_expanded_vertices": 904,
+      "triangles": 528,
+      "triangle_corners": 1584
+    },
+    {
+      "name": "equipment-23.obj",
+      "positions": 328,
+      "uv_expanded_vertices": 904,
+      "triangles": 528,
+      "triangle_corners": 1584
+    },
+    {
+      "name": "equipment-24.obj",
+      "positions": 328,
+      "uv_expanded_vertices": 904,
+      "triangles": 528,
+      "triangle_corners": 1584
+    },
+    {
+      "name": "equipment-25.obj",
+      "positions": 5523,
+      "uv_expanded_vertices": 16714,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-26.obj",
+      "positions": 5810,
+      "uv_expanded_vertices": 16936,
+      "triangles": 11108,
+      "triangle_corners": 33324
+    },
+    {
+      "name": "equipment-27.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-28.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-29.obj",
+      "positions": 74,
+      "uv_expanded_vertices": 214,
+      "triangles": 116,
+      "triangle_corners": 348
+    },
+    {
+      "name": "equipment-30.obj",
+      "positions": 74,
+      "uv_expanded_vertices": 214,
+      "triangles": 116,
+      "triangle_corners": 348
+    },
+    {
+      "name": "equipment-31.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-32.obj",
+      "positions": 906,
+      "uv_expanded_vertices": 2369,
+      "triangles": 1396,
+      "triangle_corners": 4188
+    },
+    {
+      "name": "equipment-33.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "equipment-34.obj",
+      "positions": 118,
+      "uv_expanded_vertices": 363,
+      "triangles": 196,
+      "triangle_corners": 588
+    },
+    {
+      "name": "antenna-1.obj",
+      "positions": 154,
+      "uv_expanded_vertices": 440,
+      "triangles": 284,
+      "triangle_corners": 852
+    },
+    {
+      "name": "antenna-2.obj",
+      "positions": 154,
+      "uv_expanded_vertices": 440,
+      "triangles": 284,
+      "triangle_corners": 852
+    },
+    {
+      "name": "tech-coffin.obj",
+      "positions": 90,
+      "uv_expanded_vertices": 260,
+      "triangles": 164,
+      "triangle_corners": 492
+    }
+  ]
+}

@@ -8,7 +8,7 @@
     "floors": 2,
     "role": "Lab",
     "angle": 0,
-    "main": "2dd96d",
+    "main": "bc6eb0",
     "states": [
       "2",
       "3"
@@ -23,7 +23,7 @@
     "floors": 2,
     "role": "Lab",
     "angle": 180,
-    "main": "e92519",
+    "main": "7722bd",
     "states": [
       "2",
       "3"
@@ -38,7 +38,7 @@
     "floors": 1,
     "role": "Greenhouse",
     "angle": 0,
-    "main": "46ca9b",
+    "main": "fa5a93",
     "states": [
       "2"
     ]
@@ -52,7 +52,7 @@
     "floors": 1,
     "role": "Greenhouse",
     "angle": 180,
-    "main": "71e78e",
+    "main": "9ffd82",
     "states": [
       "2"
     ]
@@ -66,7 +66,7 @@
     "floors": 1,
     "role": "Greenhouse",
     "angle": 0,
-    "main": "b1ab0a",
+    "main": "76f9af",
     "states": [
       "2"
     ]
@@ -80,7 +80,7 @@
     "floors": 1,
     "role": "Greenhouse",
     "angle": 180,
-    "main": "922f69",
+    "main": "31326e",
     "states": [
       "2"
     ]
@@ -94,7 +94,7 @@
     "floors": 2,
     "role": "Comms",
     "angle": 45,
-    "main": "2117ed",
+    "main": "63300f",
     "states": [
       "2",
       "3"
@@ -109,7 +109,7 @@
     "floors": 2,
     "role": "Comms",
     "angle": 225,
-    "main": "7c8335",
+    "main": "3ed805",
     "states": [
       "2",
       "3"
@@ -124,7 +124,7 @@
     "floors": 1,
     "role": "Archive",
     "angle": 0,
-    "main": "352947",
+    "main": "a63a6e",
     "states": [
       "2"
     ]
@@ -138,7 +138,7 @@
     "floors": 1,
     "role": "Archive",
     "angle": 180,
-    "main": "6c1594",
+    "main": "3e7b49",
     "states": [
       "2"
     ]
@@ -152,7 +152,7 @@
     "floors": 1,
     "role": "Lab",
     "angle": 0,
-    "main": "60d8de",
+    "main": "c5f8ae",
     "states": [
       "2"
     ]
@@ -166,7 +166,7 @@
     "floors": 1,
     "role": "Lab",
     "angle": 180,
-    "main": "cceb23",
+    "main": "07425f",
     "states": [
       "2"
     ]
@@ -180,7 +180,7 @@
     "floors": 1,
     "role": "Lab",
     "angle": 0,
-    "main": "2a0fdb",
+    "main": "d2ee8f",
     "states": [
       "2"
     ]
@@ -194,7 +194,7 @@
     "floors": 1,
     "role": "Lab",
     "angle": 180,
-    "main": "8d0d9d",
+    "main": "642077",
     "states": [
       "2"
     ]

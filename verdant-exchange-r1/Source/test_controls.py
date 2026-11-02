@@ -28,7 +28,7 @@ castCount=0;castFrames={}
 Physics.cast=function(p)castCount=castCount+1;castFrames[frame]=(castFrames[frame] or 0)+1;return{}end
 ''')
 compile=L.eval('function(s)local f,e=load(s);return f~=nil,e end')
-collection=json.load(open(ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R1.json'))
+collection=json.load(open(ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json'))
 bags=[o for o in collection['ObjectStates'] if o.get('Nickname','').startswith('SET_')]
 bags=[b for b in bags if b['GUID']=='b90000']
 configs=json.load(open(ROOT/'Source/deployment-config.json'))

@@ -143,7 +143,8 @@ def greenhouse(w,d,state,seed=10):
  # Central 2.0-inch walking aisle, with a 1.8-inch cross aisle halfway along.
  for sign in [-1,1]:
   for j,zz in enumerate([-d*.28,d*.28]):
-   grow_bed(m,sign*(w/2-1.05),zz,.15,1.45,max(1.4,d*.35),True,seed+sign*40+j)
+   # Planting is exported separately so UV seams and detailed foliage cannot
+   # push a greenhouse shell over TTS's model-import vertex budget.
    cyl(m,(sign*(w/2-.4),.95,zz-.7),(sign*(w/2-.4),.95,zz+.7),.04,'rust',8,False)
  if state==1:
   for zz in np.linspace(-d/2,d/2,7):
@@ -174,10 +175,11 @@ def padded(m):
  return m
 
 def model(key,m,x,z,a=0,label=None,kind='scenery',y=BASE):
- padded(m);register(key,m)
+ if kind!='planting-bed':padded(m)
+ register(key,m)
  lo,hi=m[0].bounds();h=hi[1]-lo[1]
  g=hashlib.sha256(('VerdantExchangeR1:'+key).encode()).hexdigest()[:6]
- o={'GUID':g,'Name':'Custom_Model','Nickname':label or key,'Description':f'Height (base to top): {h:.2f} in\nVerdant Exchange | Uplink Center | 48 × 48 inches.\nUse physical geometry for cover, movement and line of fire.','Transform':dict(posX=x,posY=y,posZ=z,rotX=0,rotY=a,rotZ=0,scaleX=1,scaleY=1,scaleZ=1),'ColorDiffuse':dict(r=1,g=1,b=1),'Locked':True,'Grid':False,'Snap':False,'Hands':False,'Tooltip':True,'DragSelectable':True,'Tags':[TAG,'VerdantExchange',kind],'CustomMesh':{'MeshURL':URL+key+'.obj','DiffuseURL':URL+'verdant-materials.jpg','ColliderURL':URL+key+'-collider.obj','Convex':False,'MaterialIndex':3,'TypeIndex':0,'CastShadows':True},'LuaScript':'function onLoad() self.setLock(true) end\n','LuaScriptState':'','XmlUI':''}
+ o={'GUID':g,'Name':'Custom_Model','Nickname':label or key,'Description':f'Height (base to top): {h:.2f} in\nVerdant Exchange | Uplink Center | 48 × 48 inches.\nUse physical geometry for cover, movement and line of fire.','Transform':dict(posX=x,posY=y,posZ=z,rotX=0,rotY=a,rotZ=0,scaleX=1,scaleY=1,scaleZ=1),'ColorDiffuse':dict(r=1,g=1,b=1),'Locked':True,'Grid':False,'Snap':False,'Hands':False,'Tooltip':True,'DragSelectable':True,'Tags':[TAG,'VerdantExchange',kind],'CustomMesh':{'MeshURL':URL+key+'.obj','DiffuseURL':URL+'verdant-materials.jpg','ColliderURL':URL+key+'-collider.obj','Convex':True,'MaterialIndex':3,'TypeIndex':0,'CastShadows':True},'LuaScript':'function onLoad() self.setLock(true) end\n','LuaScriptState':'','XmlUI':''}
  poly=Polygon(np.array(m[1].v)[:,[0,2]]).convex_hull if m[1].v else Polygon()
  poly=affinity.rotate(poly,-a,origin=(0,0));poly=affinity.translate(poly,x,z)
  layouts.append(dict(guid=g,mesh=key,label=label or key,x=x,z=z,angle=a,y=y,kind=kind,footprint=list(poly.exterior.coords) if not poly.is_empty else [],bounds=[lo,hi]))
@@ -207,14 +209,28 @@ for i,(name,x,z,w,d,f,role,a) in enumerate(SPECS):
   mm=greenhouse(w,d,state,i*51)[0] if role=='Greenhouse' else lab(w,d,f,state,role)
   label='Upper floor exposed' if f==2 and state==2 else 'Ground floor exposed'
   o['States'][str(state)]=model(key+'-state-'+str(state),mm,x,z,a,name+' | '+label,'building-state')
- o['Description']+='\nStates: '+('1 roof on; 2 upper floor exposed; 3 ground floor exposed.' if f==2 else '1 roof on; 2 interior exposed.')+' Exterior access remains attached in every state.'
- objects.append(o)
+ roof_guid=o['GUID']
+ roof=copy.deepcopy(o);roof.pop('States',None)
+ lower=copy.deepcopy(o['States']['3'] if f==2 else o['States']['2'])
+ lower['Tags']=[TAG,'VerdantExchange','building']
+ lower['States']={'2':copy.deepcopy(o['States']['2']),'3':roof} if f==2 else {'2':roof}
+ order='1 ground floor; 2 upper floor; 3 fully roofed view.' if f==2 else '1 ground floor; 2 fully roofed view.'
+ for state_index,state_obj in [(1,lower)]+[(int(k),q)for k,q in lower['States'].items()]:
+  state_obj['Description']+='\nStates: '+order+' Exterior access remains attached in every state.'
+ objects.append(lower);o=lower
+ if role=='Greenhouse':
+  for sign in [-1,1]:
+   for j,zz in enumerate([-d*.28,d*.28]):
+    bed=pair();grow_bed(bed,sign*(w/2-1.05),zz,.15,1.45,max(1.4,d*.35),True,i*51+sign*40+j)
+    bed_obj=model(key+'-planting-'+str(sign)+'-'+str(j),bed,x,z,a,name+' | Planting bed '+str((0 if sign==-1 else 2)+j+1),'planting-bed')
+    bed_obj['Description']+='\nFixed ground-floor planting; stays aligned in every greenhouse state.'
+    objects.append(bed_obj)
  if glass[0].v:
   q=model(key+'-glazing',glass,x,z,a,name+' | Removable roof glazing','glass')
   q['CustomMesh'].update(MaterialIndex=4,CastShadows=False)
   q['ColorDiffuse']=dict(r=.76,g=.9,b=.91,a=.26)
   q['Description']='Glazed roof follows the parent greenhouse state automatically. Only the central metal service spine is a roof walkway.'
-  q['LuaScript']='local parent='+json.dumps(o['GUID'])+'\nlocal home='+json.dumps(json.dumps({'x':x,'y':BASE,'z':z}))+'\n'+'''
+  q['LuaScript']='local parent='+json.dumps(roof_guid)+'\nlocal home='+json.dumps(json.dumps({'x':x,'y':BASE,'z':z}))+'\n'+'''
 local colors={'White','Brown','Red','Orange','Yellow','Green','Teal','Blue','Purple','Pink','Grey','Black'}
 local timer=nil
 local function sync()
@@ -328,6 +344,7 @@ controller=copy.deepcopy(next(o for o in template['ContainedObjects'] if 'local 
 controller['GUID']='b9fffe';controller['Nickname']='Verdant Exchange | Map Controls';controller['Tags']=[TAG,'controller']
 controller['Transform'].update(posX=0,posY=24,posZ=0)
 script=controller['LuaScript'].replace('d60000',mat['GUID']).replace('d6fffe','b9fffe').replace('LoboMap:8102b2',TAG).replace('Sirocco Wells','Verdant Exchange').replace('SIROCCO WELLS','VERDANT EXCHANGE').replace('PROVISIONING |','UPLINK CENTER |')
+script=script.replace('thickness=.025/width','thickness=.085/width').replace('thickness=.015/width','thickness=.055/width')
 def lua_config(name,fn):
  global script
  rx=re.compile(r'local '+name+r'=JSON.decode\((".*")\)')
@@ -340,7 +357,7 @@ pages=[
  ('Scoring','Score at game end','Each Antenna Activated by your side: 2 OP.\nEach Antenna you physically Control: 1 OP.\nControl the central Tech-Coffin: 3 OP.\nHave an Active Lieutenant: 1 OP.\n\nActivation and physical Control are separate. A Lieutenant must avoid Null, Isolated and Immobilized states to count as Active.'),
  ('Deployment','16-inch deployment','Deploy on opposite X edges. Each zone is 16 inches deep, placing the front lines at X=-8 and X=+8.\n\nNo deployment in Silhouette contact with an Antenna or the Tech-Coffin.\n\nDZ +4 and DZ +8 are measuring aids. There is no added exclusion-zone overlay. No HVT Model, Secure HVT or Classified Deck is used.'),
  ('Antennas','Activation and Control','A Specialist in Silhouette contact Activates with a Normal WIP Roll, spending a Short Skill. The enemy may Activate it later and take activation ownership.\n\nControl requires at least one non-Null troop Model in Silhouette contact and no enemy qualifying Model in contact. Markers cannot Control.\n\nOperational Learning: consecutive retries by the same troop, Skill and target receive +3 WIP on the second Order; +3 and +1SD from the third. Interruptions or success reset the sequence.'),
- ('Terrain','Campus terrain and interiors','Use normal Infinity movement, cover and line-of-fire rules. Planting beds, water equipment and campus paving have no added Difficult Terrain rule. Use the solid geometry.\n\nStates: 1 roof on; 2 interior or upper floor exposed; 3 ground floor exposed on two-storey buildings. Exterior ladders remain in every state. Greenhouse roof glazing follows its parent state. The narrow metal roof spine is a maintenance walkway. Furnishings and partitions leave movement aisles.'),
+ ('Terrain','Campus terrain and interiors','Use normal Infinity movement, cover and line-of-fire rules. Planting beds, water equipment and campus paving have no added Difficult Terrain rule. Use the solid geometry.\n\nState 1 exposes the ground floor. State 2 exposes the upper floor on two-storey buildings. The final state is the fully roofed view: state 2 for single-storey buildings; state 3 for two-storey buildings. Exterior ladders remain in every state. Greenhouse roof glazing follows the roofed state. Planting beds remain in place.'),
  ('Controls','Controls and game end','The right-side drawer starts open. DZ, DZ +4, DZ +8, Booty, Metachemistry, Mission, Day, Night and Background Off are available.\n\nEach player opens mission references independently. Grid and snapping start off.\n\nThree Game Rounds; a turn beginning in Retreat! ends the game at that turn end.\n\nClear Table removes the complete map, including changed building states and glazing, and restores the prior background and lighting.'),
 ]
 def luastr(s):return json.dumps(s,ensure_ascii=False)
@@ -354,7 +371,7 @@ controller['LuaScript']=script;controller['LuaScriptState']='';controller['XmlUI
 controller['Description']='Verdant Exchange: right-side mission, deployment, reference tables and environment controls.'
 objects.append(controller)
 
-bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R1'
+bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R2'
 bag['Description']='Drop on STAGE > DROP BAGS HERE.\nVerdant Exchange | Botanical research and communications campus.\n48 × 48 inches; 300-point Uplink Center.\n16-inch deployment zones from opposite X edges. Two 40 mm Antennas at (0,-12)/(0,+12), central 40 mm Tech-Coffin.\n14 varied buildings including four glazed conservatories, four two-storey labs/data centres, seed archives and utility houses. Furnished interiors, real openings, permanent ladders, crop beds, irrigation and service equipment.\nIndividual day/night backgrounds. Right-side controls, Booty, Metachemistry, independent DZ guides and per-player mission reference. Live TTS physics and playtesting remain unverified.'
 bag['Tags']=['VerdantExchangeR1'];bag['ContainedObjects']=objects
 records=[]
@@ -362,7 +379,7 @@ for o in objects:
  for q in [o]+list(o.get('States',{}).values()):
   records.append('--'+q['GUID']+','+','.join(f"{q['Transform'][k]:.6f}" for k in ['posX','posY','posZ','rotX','rotY','rotZ']))
 bag['LuaScript']='\r\n'.join(records)+'\r\n';bag['LuaScriptState']='';bag['ColorDiffuse']=dict(r=.28,g=.5,b=.37)
-path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R1.json'
+path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json'
 path.write_text(json.dumps({'ObjectStates':[bag]},ensure_ascii=False,separators=(',',':'))+'\n')
 (ROOT/'Source/layout.json').write_text(json.dumps(layouts,indent=2))
 (ROOT/'Source/buildings.json').write_text(json.dumps(building_checks,indent=2))
