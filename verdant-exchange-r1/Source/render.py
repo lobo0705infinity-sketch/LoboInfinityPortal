@@ -9,13 +9,13 @@ import trimesh,pyrender
 from PIL import Image,ImageDraw,ImageFont
 ROOT=Path(__file__).resolve().parents[1]
 (ROOT/'Previews').mkdir(exist_ok=True)
-BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json').read_text())['ObjectStates'][0]
+BAG=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
 cache={}
 def pose(eye,target,up=[0,1,0]):
  eye,target=np.array(eye,float),np.array(target,float);z=eye-target;z/=np.linalg.norm(z);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x)
  p=np.eye(4);p[:3,:3]=np.stack([x,y,z],axis=1);p[:3,3]=eye;return p
 def transform(o):
- t=o['Transform'];a=math.radians(t['rotY']);p=np.eye(4);p[:3,:3]=[[math.cos(a),0,math.sin(a)],[0,1,0],[-math.sin(a),0,math.cos(a)]];p[:3,3]=[t['posX'],t['posY'],t['posZ']];return p
+ t=o['Transform'];a=math.radians(t['rotY']);p=np.eye(4);p[:3,:3]=np.array([[math.cos(a),0,math.sin(a)],[0,1,0],[-math.sin(a),0,math.cos(a)]])@np.diag([t['scaleX'],t['scaleY'],t['scaleZ']]);p[:3,3]=[t['posX'],t['posY'],t['posZ']];return p
 def mesh(o):
  cm=o['CustomMesh'];name=cm['MeshURL'].rsplit('/',1)[-1]
  if name in cache:return cache[name]
@@ -23,11 +23,21 @@ def mesh(o):
  tex=Image.open(ROOT/'Assets'/cm['DiffuseURL'].rsplit('/',1)[-1]).convert('RGB')
  m.visual=trimesh.visual.texture.TextureVisuals(uv=m.visual.uv,image=tex)
  glass=cm['MaterialIndex']==4
- mat=pyrender.MetallicRoughnessMaterial(baseColorTexture=tex,baseColorFactor=[.76,.9,.91,.26] if glass else [1.,1.,1.,1.],metallicFactor=.10 if glass else .04,roughnessFactor=.32 if glass else .90,doubleSided=glass,alphaMode='BLEND' if glass else 'OPAQUE')
+ ground='ground'in o.get('Tags',[])
+ mat=pyrender.MetallicRoughnessMaterial(baseColorTexture=tex,baseColorFactor=[.76,.9,.91,.26] if glass else [1.,1.,1.,1.],metallicFactor=0 if ground else .10 if glass else .04,roughnessFactor=1 if ground else .32 if glass else .90,doubleSided=glass,alphaMode='BLEND' if glass else 'OPAQUE')
  cache[name]=pyrender.Mesh.from_trimesh(m,material=mat,smooth=False);return cache[name]
 def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
  s=pyrender.Scene(bg_color=[.12,.15,.14,1],ambient_light=[.48,.48,.48])
  for o in BAG['ContainedObjects']:
+  if o.get('CustomAssetbundle'):
+   m=trimesh.load(ROOT/'Source/console-preview-grounded.obj',force='mesh',process=False)
+   tex=Image.open(ROOT/'Source/console-preview.png').convert('RGB');m.visual=trimesh.visual.texture.TextureVisuals(uv=m.visual.uv,image=tex)
+   material=pyrender.MetallicRoughnessMaterial(baseColorTexture=tex,metallicFactor=0.,roughnessFactor=.9)
+   s.add(pyrender.Mesh.from_trimesh(m,material=material,smooth=True),pose=transform(o))
+   for child in o.get('ChildObjects',[]):
+    cm=trimesh.load(ROOT/'Source/console-base-reference.obj',force='mesh',process=False);cm.vertices[:,0]*=-1;cm.faces=cm.faces[:,::-1]
+    s.add(pyrender.Mesh.from_trimesh(cm,material=pyrender.MetallicRoughnessMaterial(baseColorFactor=[.12,.15,.18,1.],metallicFactor=0.,roughnessFactor=1.)),pose=transform(o)@transform(child))
+   continue
   if not o.get('CustomMesh'):continue
   if state>1 and 'glass' in o.get('Tags',[]):continue
   if detail and o.get('Nickname','').startswith('Verdant Exchange | 48'):continue
@@ -42,7 +52,7 @@ def render(name,eye,target,mag,size=(1800,1500),state=1,detail=False):
  im=Image.fromarray(rgb);draw=ImageDraw.Draw(im);draw.rectangle((0,0,size[0],85),fill=(22,39,35))
  font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',28)
  small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',17)
- draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R2',font=font,fill=(239,237,213))
+ draw.text((28,12),'VERDANT EXCHANGE  /  UPLINK CENTER  /  R3',font=font,fill=(239,237,213))
  draw.text((30,51),'Actual map geometry · 48 × 48 inches · '+('Roofs on' if state==1 else 'Interiors exposed')+' · 16-inch deployment zones',font=small,fill=(184,209,196))
  im.save(ROOT/'Previews'/name);cache.clear();print(name,flush=True)
 render('Verdant-Exchange-Overview.png',[58,66,62],[0,2,0],35)
@@ -50,3 +60,5 @@ render('Verdant-Exchange-Overhead.png',[0,95,.01],[0,1,0],25.5,(1700,1700))
 render('Verdant-Exchange-Interiors.png',[42,55,48],[0,1,0],32,state=3)
 render('Verdant-Exchange-Laboratory-Detail.png',[-7,20,-1],[-16,2,-16],11,(1800,1350),state=3,detail=True)
 render('Verdant-Exchange-Conservatory-Detail.png',[-22,20,23],[-16,2,4],11,(1800,1350),state=2,detail=True)
+render('Verdant-Exchange-Roof-Repair.png',[10,7,-8],[17,3,-18],8,(1500,1100))
+render('Verdant-Exchange-Roof-Interior.png',[10,7,-8],[17,2,-18],8,(1500,1100),state=3)

@@ -18,15 +18,15 @@ try {
    if ((Get-FileHash -LiteralPath $destination -Algorithm SHA256).Hash -ne $entry.sha256) { throw ('Installed file verification failed: ' + $destination) }
   }
  }
- foreach ($legacyName in @('Verdant-Exchange-Uplink-Center-R1.json','Verdant-Exchange-Uplink-Center-R1.png')) {
+ foreach ($legacyName in @('Verdant-Exchange-Uplink-Center-R1.json','Verdant-Exchange-Uplink-Center-R1.png','Verdant-Exchange-Uplink-Center-R2.json','Verdant-Exchange-Uplink-Center-R2.png')) {
   $legacyPath = Join-Path $bagRoot $legacyName
   if (Test-Path -LiteralPath $legacyPath) {
    Copy-Item -LiteralPath $legacyPath -Destination $backup -Force
    Remove-Item -LiteralPath $legacyPath -Force
   }
  }
- Write-Host 'Installed Verdant Exchange R2 as Verdant-Exchange-Uplink-Center-R2 in the main Saved Objects folder.' -ForegroundColor Green
- Write-Host 'In TTS, open Objects > Saved Objects and choose Verdant-Exchange-Uplink-Center-R2. Drop its bag on the Infinity map deployment stage.'
+ Write-Host 'Installed Verdant Exchange R3 as Verdant-Exchange-Uplink-Center-R3 in the main Saved Objects folder.' -ForegroundColor Green
+ Write-Host 'In TTS, open Objects > Saved Objects and choose Verdant-Exchange-Uplink-Center-R3. Drop its bag on the Infinity map deployment stage.'
  Write-Host 'This installer does not publish to Steam.'
  exit 0
 } catch { Write-Host ('Installation failed: ' + $_.Exception.Message) -ForegroundColor Red; exit 1 }

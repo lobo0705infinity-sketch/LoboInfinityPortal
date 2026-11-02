@@ -7,7 +7,7 @@ from shapely import affinity
 from shapely.ops import unary_union
 from lupa import LuaRuntime
 ROOT=Path(__file__).resolve().parents[1]
-b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json').read_text())['ObjectStates'][0]
+b=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
 layouts=json.loads((ROOT/'Source/layout.json').read_text())
 all_objects=[b]+[q for o in b['ContainedObjects'] for q in [o]+list(o.get('States',{}).values())]
 ids=[o['GUID']for o in all_objects];assert len(ids)==len(set(ids))
@@ -88,6 +88,6 @@ for radius in [.5,.80]:
 # not a promise of tournament balance or a substitute for playtesting.
 solid=unary_union([p for p,h,n in all_parts if h>=1.55])
 open_lanes=[z for z in np.arange(-23,23.01,.5) if not solid.intersects(LineString([(-23.5,z),(23.5,z)]))]
-report=dict(status='passed',root_objects=len(b['ContainedObjects']),building_states=18,unique_ids=len(ids),maximum_convex_component_vertices=max_vertices,minimum_objective_clearance_inches=round(clearance,3),routing=routing,full_width_eye_height_lanes_z_inches=list(map(float,open_lanes)),limitations='No live Tabletop Simulator physics or multiplayer playtest performed.')
+report=dict(status='passed',root_objects=len(b['ContainedObjects']),building_states=sum(len(o.get('States',{}))for o in b['ContainedObjects']),unique_ids=len(ids),maximum_convex_component_vertices=max_vertices,minimum_objective_clearance_inches=round(clearance,3),routing=routing,full_width_eye_height_lanes_z_inches=list(map(float,open_lanes)),limitations='No live Tabletop Simulator physics or multiplayer playtest performed.')
 (ROOT/'Source/geometry-validation.json').write_text(json.dumps(report,indent=2))
 print(json.dumps(report,indent=2))

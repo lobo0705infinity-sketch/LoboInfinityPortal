@@ -2,7 +2,7 @@
 from pathlib import Path
 import json,math
 ROOT=Path(__file__).resolve().parents[1]
-bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json').read_text())['ObjectStates'][0]
+bag=json.loads((ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json').read_text())['ObjectStates'][0]
 objects=[q for o in bag['ContainedObjects'] for q in [o]+list(o.get('States',{}).values())]
 rows=[]
 def parse(path):

@@ -2,28 +2,28 @@
 from pathlib import Path
 import json,hashlib,zipfile,shutil,importlib.metadata
 ROOT=Path(__file__).resolve().parents[1]
-shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.png')
+shutil.copy2(ROOT/'Previews/Verdant-Exchange-Overview.png',ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.png')
 manifest=[]
 for p in sorted((ROOT/'Map-Bags').iterdir()):
  manifest.append({'path':str(p.relative_to(ROOT)).replace('/','\\'),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()})
 (ROOT/'Install-Manifest.json').write_text(json.dumps(manifest,indent=2))
-(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R2 — UPLINK CENTER
+(ROOT/'START-HERE.txt').write_text('''VERDANT EXCHANGE R3 — UPLINK CENTER
 Standalone map installer / review build
 
 1. Extract this ZIP into a fresh folder.
 2. Run Install.cmd. It places the JSON and matching thumbnail directly in:
    Documents\\My Games\\Tabletop Simulator\\Saves\\Saved Objects
    Existing same-name files are backed up before replacement.
-   The superseded R1 Saved Object is also backed up and removed after R2 installs.
+   Superseded R1 and R2 Saved Objects are backed up and removed after R3 installs.
 3. In TTS, open Objects > Saved Objects and select:
-   Verdant-Exchange-Uplink-Center-R2
+   Verdant-Exchange-Uplink-Center-R3
 4. Drop its bag on STAGE > DROP BAGS HERE in the normal Infinity mod.
-   First close any old import popup and use Clear Table to remove the R1 map.
+   First close any old import popup and use Clear Table to remove the previous map.
 
 For a custom installation location, drag the Tabletop Simulator folder onto
 Install.cmd, or pass that folder as its first argument.
 
-75 root components; 14 buildings; 18 alternate interior states; four glazed
+75 root components; 14 buildings; 16 alternate interior states; four glazed
 conservatories; two covered service walkways; furnished labs; seed vaults;
 nutrient tanks; cabinets; irrigation equipment and planted beds.
 
@@ -62,6 +62,7 @@ From this extracted package:
   python Source/build_map.py ASSET_COMMIT
   python Source/validate_geometry.py
   python Source/test_model_import.py
+  python Source/test_roofs_height_and_materials.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py
@@ -71,9 +72,9 @@ The immutable asset revision is in Source/asset-revision.txt.
 Models use inches, Y up. OBJ X handedness is converted on export for TTS.
 Pyrender previews use EGL; tests also need liblua5.4.so.0 for the stage harness.
 The source reference bag supplies only established controls and bag metadata;
-every active terrain model and objective in Verdant Exchange is newly exported.
+terrain is procedurally exported. Approved console assetbundles retain their original assets and credits.
 ''')
-packages=['numpy','trimesh','pyrender','Pillow','shapely','lupa']
+packages=['numpy','trimesh','pyrender','Pillow','shapely','lupa','UnityPy','scipy']
 (ROOT/'Source/requirements.txt').write_text('\n'.join(p+'=='+importlib.metadata.version(p)for p in packages)+'\n')
 # An installer dry run checks exact filenames, integrity, reinstallation and
 # backups. The PowerShell launcher itself has not been run on Windows here.
@@ -95,8 +96,10 @@ for p in sorted(ROOT.rglob('*')):
  if p.is_file() and '__pycache__'not in str(p) and p.name!='SHA256.txt':hashes.append(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(ROOT).as_posix())
 (ROOT/'SHA256.txt').write_text('\n'.join(hashes)+'\n')
 out=ROOT.parent/'Verdant-Exchange-Uplink-Center-Installer.zip'
-with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+temporary=out.with_suffix('.zip.partial')
+with zipfile.ZipFile(temporary,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
  for p in sorted(ROOT.rglob('*')):
   if p.is_file() and '__pycache__'not in str(p):z.write(p,p.relative_to(ROOT))
-with zipfile.ZipFile(out) as z:assert z.testzip()is None
+with zipfile.ZipFile(temporary) as z:assert z.testzip()is None
+temporary.replace(out)
 print(json.dumps({'zip':str(out),'bytes':out.stat().st_size,'installed_payload_files':len(manifest)}))

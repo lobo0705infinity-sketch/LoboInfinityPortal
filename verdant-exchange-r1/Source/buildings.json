@@ -5,13 +5,12 @@
     "z": -16,
     "w": 7,
     "d": 6,
-    "floors": 2,
+    "floors": 1,
     "role": "Lab",
     "angle": 0,
-    "main": "bc6eb0",
+    "main": "23d10f",
     "states": [
-      "2",
-      "3"
+      "2"
     ]
   },
   {
@@ -20,13 +19,12 @@
     "z": 16,
     "w": 7,
     "d": 6,
-    "floors": 2,
+    "floors": 1,
     "role": "Lab",
     "angle": 180,
-    "main": "7722bd",
+    "main": "3bc414",
     "states": [
-      "2",
-      "3"
+      "2"
     ]
   },
   {
@@ -87,7 +85,7 @@
   },
   {
     "name": "Uplink Data Exchange",
-    "x": -5,
+    "x": -4.25,
     "z": -4,
     "w": 5,
     "d": 5,
@@ -102,7 +100,7 @@
   },
   {
     "name": "Signal Analysis Laboratory",
-    "x": 5,
+    "x": 4.25,
     "z": 4,
     "w": 5,
     "d": 5,

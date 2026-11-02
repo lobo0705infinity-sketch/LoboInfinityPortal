@@ -104,6 +104,15 @@ def lab(w,d,floors,state,role='Lab'):
     for mm in m:
      mm.groups.append(len(mm.f));mm.face(points,'roof');mm.face([(x,y-.12,z) for x,y,z in points][::-1],'roof')
      for p,q in zip(points,points[1:]+points[:1]):mm.face([p,q,(q[0],q[1]-.12,q[2]),(p[0],p[1]-.12,p[2])],'metal')
+   # Close both curved gables down to the wall head. These infill panels are
+   # part of the roofed state only, so exposing the interior remains possible.
+   profile=Polygon([(-w/2,STEP-.02),(w/2,STEP-.02)]+[(w/2-i*w/14,STEP+.9*math.sin(i*math.pi/14))for i in range(15)])
+   for end in [-d/2,d/2]:
+    cap=pair();slab(cap,profile,-.10,.20,'concrete')
+    for mm in cap:
+     mm.v=[(x,vertical,end+depth)for x,depth,vertical in mm.v]
+     mm.f=[tuple(reversed(f))for f in mm.f]
+    m[0].merge(cap[0]);m[1].merge(cap[1])
    return m
   roof=box(-w/2-.08,-d/2-.08,w/2+.08,d/2+.08)
   # An open ladder arrival pocket, with usable roof cover around the remaining edges.
@@ -186,14 +195,14 @@ def model(key,m,x,z,a=0,label=None,kind='scenery',y=BASE):
  return o
 
 SPECS=[
- ('Botanical Genetics Laboratory',-16,-16,7,6,2,'Lab',0),
- ('Research Administration',16,16,7,6,2,'Lab',180),
+ ('Botanical Genetics Laboratory',-16,-16,7,6,1,'Lab',0),
+ ('Research Administration',16,16,7,6,1,'Lab',180),
  ('Tropical Conservatory',-6,-17,8,8,1,'Greenhouse',0),
  ('Temperate Conservatory',6,17,8,8,1,'Greenhouse',180),
  ('Western Propagation House',-16,4,7,10,1,'Greenhouse',0),
  ('Eastern Propagation House',16,-4,7,10,1,'Greenhouse',180),
- ('Uplink Data Exchange',-5,-4,5,5,2,'Comms',45),
- ('Signal Analysis Laboratory',5,4,5,5,2,'Comms',225),
+ ('Uplink Data Exchange',-4.25,-4,5,5,2,'Comms',45),
+ ('Signal Analysis Laboratory',4.25,4,5,5,2,'Comms',225),
  ('Seed Vault',17,-18,5.5,6,1,'Archive',0),
  ('Specimen Archive',-17,18,5.5,6,1,'Archive',180),
  ('Nutrient Control',-6,7.5,5,5,1,'Lab',0),
@@ -296,7 +305,7 @@ SCATTER=[
  ('grow',3,-16,90),('grow',-3,16,270),
  ('grow',-21,11,0),('grow',21,-11,180),
  ('grow',-21,-11,0),('grow',21,11,180),
- ('screen',-1,-6,90),('screen',1,6,270),
+ ('screen',0,-8.25,90),('screen',0,8.25,270),
  ('cart',-21,-21,0),('cart',21,21,180),
  ('cart',-11,22,0),('cart',11,-22,180),
  ('grow',-4.75,11.25,90),('grow',4.75,-11.25,270),
@@ -308,17 +317,20 @@ SCATTER=[
 for i,(kind,x,z,a) in enumerate(SCATTER):
  objects.append(model('equipment-'+str(i+1),equipment(kind,100+i),x,z,a,kind.title()+' cluster '+str(i+1),'scatter'))
 
-# Explicit, exact-diameter mission objectives with local assets and reliable collision.
-for i,z in enumerate([-12,12]):
- m=pair();cyl(m,(0,.02,0),(0,.14,0),40/25.4/2,'blue',32)
- solid(m,(0,.72,0),(.68,1.16,.55),'metal');cyl(m,(0,1.3,0),(0,2.75,0),.06,'silver',12)
- for yy,w in [(1.65,.7),(2.1,1.0),(2.5,.65)]:cyl(m,(-w/2,yy,0),(w/2,yy,0),.03,'silver',8,False)
- o=model('antenna-'+str(i+1),m,0,z,0,'Communication Antenna '+str(i+1)+' | 40 mm','mission')
- o['Description']='Uplink Center mission objective. Centre (X,Z) = (0, '+str(z)+') inches. 40 mm base. Activate with a Specialist; physical control and activation are separate.'
- objects.append(o)
-m=pair();cyl(m,(0,.02,0),(0,.14,0),40/25.4/2,'blue',32)
-solid(m,(0,.38,0),(.7,.48,1.15),'silver');solid(m,(0,.65,0),(.58,.06,.92),'glass')
-objects.append(model('tech-coffin',m,0,0,0,'Central Tech-Coffin | 40 mm','mission'))
+# Reuse Lobo's approved native console bundle at the existing mission positions.
+# Names preserve the two Antenna roles and the central Tech-Coffin role.
+console_template=json.loads((ROOT/'Source/console-template.json').read_text())
+for i,z in enumerate([-12,0,12]):
+ c=copy.deepcopy(console_template);c['GUID']=f'b9a00{i}'
+ c['Nickname']='Console | '+('Central Tech-Coffin' if z==0 else 'Communication Antenna '+str(1 if z<0 else 2))
+ c['Transform'].update(posX=0.,posY=BASE+.15,posZ=float(z),rotX=0.,rotY=270.,rotZ=0.)
+ c['Tags']=[TAG,'VerdantExchange','mission'];c['Locked']=True;c['Grid']=False;c['Snap']=False
+ c['Description']=console_template['Description']+'\nUplink Center objective at (0, '+str(z)+') inches. Approved console model used as the visible objective; 40 mm contact base.\n'+('Control as the central Tech-Coffin.' if z==0 else 'Activate and Control as a Communication Antenna.')
+ c['LuaScriptState']='';c['XmlUI']=''
+ for j,child in enumerate(c.get('ChildObjects',[])):
+  child['GUID']=f'b9c{i}0{j}';child['Tags']=[TAG,'mission'];child['Locked']=True;child['Grid']=False;child['Snap']=False
+ c['LuaScript']='function onLoad()\n self.setLock(true)\n Wait.condition(function() Wait.frames(function()\n  if self.isDestroyed()then return end\n  local b=self.getBounds();if b and b.center and b.size then local p=self.getPosition();p.y=p.y+1.012-(b.center.y-b.size.y/2);self.setPosition(p)end\n end,4)end,function()if self.isDestroyed()or self.loading_custom then return false end;local p=self.getPosition();return math.abs(p.x)<25 and math.abs(p.z)<25 and p.y<10 end,120)\nend\n'
+ objects.append(c)
 
 # Exact-sized model mat: no guessed native-tile scaling.
 ground=pair();solid(ground,(0,-.06,0),(48,.12,48),'concrete')
@@ -326,6 +338,7 @@ for mm in ground:
  mm.uv=[((x+24)/48,(z+24)/48) for x,y,z in mm.v]
 mat=model('verdant-ground',ground,0,0,0,'Verdant Exchange | 48 × 48 inch ground','ground')
 mat['CustomMesh'].update(DiffuseURL=URL+'verdant-ground.jpg',MaterialIndex=0)
+mat['CustomMesh'].update(MaterialIndex=3,CustomShader={'SpecularColor':{'r':0.,'g':0.,'b':0.},'SpecularIntensity':0.,'SpecularSharpness':0.,'FresnelStrength':0.})
 mat['DragSelectable']=False
 mat['Description']='48 × 48 inches. ITS18 Uplink Center. 300 points. Deployment along X=-24/+24; 16-inch-deep zones, fronts X=-8/+8. No additional terrain rules. Remove this anchor to clear the map.'
 mat['LuaScript']='''function onLoad()self.setLock(true)end
@@ -371,15 +384,15 @@ controller['LuaScript']=script;controller['LuaScriptState']='';controller['XmlUI
 controller['Description']='Verdant Exchange: right-side mission, deployment, reference tables and environment controls.'
 objects.append(controller)
 
-bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R2'
-bag['Description']='Drop on STAGE > DROP BAGS HERE.\nVerdant Exchange | Botanical research and communications campus.\n48 × 48 inches; 300-point Uplink Center.\n16-inch deployment zones from opposite X edges. Two 40 mm Antennas at (0,-12)/(0,+12), central 40 mm Tech-Coffin.\n14 varied buildings including four glazed conservatories, four two-storey labs/data centres, seed archives and utility houses. Furnished interiors, real openings, permanent ladders, crop beds, irrigation and service equipment.\nIndividual day/night backgrounds. Right-side controls, Booty, Metachemistry, independent DZ guides and per-player mission reference. Live TTS physics and playtesting remain unverified.'
+bag=copy.deepcopy(template);bag['GUID']='b90000';bag['Nickname']='SET_ITS18 Uplink Center — Verdant Exchange R3'
+bag['Description']='Drop on STAGE > DROP BAGS HERE.\nVerdant Exchange | Botanical research and communications campus.\n48 × 48 inches; 300-point Uplink Center.\n16-inch deployment zones from opposite X edges. Two 40 mm Antennas at (0,-12)/(0,+12), central 40 mm Tech-Coffin.\n14 varied buildings including four glazed conservatories, two midfield two-storey data centres and single-storey deployment labs, seed archives and utility houses. Furnished interiors, real openings, permanent ladders, crop beds, irrigation and service equipment.\nIndividual day/night backgrounds. Right-side controls, Booty, Metachemistry, independent DZ guides and per-player mission reference. Live TTS physics and playtesting remain unverified.'
 bag['Tags']=['VerdantExchangeR1'];bag['ContainedObjects']=objects
 records=[]
 for o in objects:
  for q in [o]+list(o.get('States',{}).values()):
   records.append('--'+q['GUID']+','+','.join(f"{q['Transform'][k]:.6f}" for k in ['posX','posY','posZ','rotX','rotY','rotZ']))
 bag['LuaScript']='\r\n'.join(records)+'\r\n';bag['LuaScriptState']='';bag['ColorDiffuse']=dict(r=.28,g=.5,b=.37)
-path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R2.json'
+path=ROOT/'Map-Bags/Verdant-Exchange-Uplink-Center-R3.json'
 path.write_text(json.dumps({'ObjectStates':[bag]},ensure_ascii=False,separators=(',',':'))+'\n')
 (ROOT/'Source/layout.json').write_text(json.dumps(layouts,indent=2))
 (ROOT/'Source/buildings.json').write_text(json.dumps(building_checks,indent=2))

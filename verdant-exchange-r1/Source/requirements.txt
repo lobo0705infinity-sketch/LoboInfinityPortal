@@ -4,3 +4,5 @@ pyrender==0.1.45
 Pillow==12.3.0
 shapely==2.2.0
 lupa==2.8
+UnityPy==1.25.4
+scipy==1.17.0

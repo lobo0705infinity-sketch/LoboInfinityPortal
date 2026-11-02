@@ -1,20 +1,20 @@
-VERDANT EXCHANGE R2 — MODEL IMPORT REPAIR
-The four greenhouse shell families bundled dense planting into each state.
-After UV seam expansion, the largest R1 shells had over 71,000 vertices.
-R2 exports the original four planting beds per greenhouse as separate models.
-The exact textured triangles were compared for all eight greenhouse views;
-no leaf, planter, roof, frame, material or layout change was needed.
-All 92 visual models are below 20,000 UV-expanded vertices. The largest is
-16,956; greenhouse shells are substantially smaller. All are triangulated.
-Compound collider mode is now set consistently with the compound OBJ groups.
-Each collider component is checked for the supported triangle/vertex budget.
-Building states now start with the lowest playable floor and end with the
-fully roofed view. Greenhouse glazing follows the fully roofed state.
-Deployment lines are bolder, with a contrasting dark underlay.
+VERDANT EXCHANGE R3 — ROOFS, MAT, HEIGHTS AND PREFERRED CONSOLES
+Both vaulted archives now have complete curved gable infill in the visible
+and collision models. The roof shells stay removable through building states.
+The ground uses the matte Wood material with zero specular and Fresnel settings;
+the photographed ground texture remains unchanged. Greenhouse glazing remains glass.
+Botanical Genetics Laboratory and Research Administration are now single-storey.
+The two remaining taller buildings sit wholly between the deployment fronts,
+with matching positions and clear access to all objectives from both sides.
+The three homemade objective pieces are replaced by the approved Micro Art Studio
+console assetbundle painted by MiG, on the established 40 mm mission bases.
+The two Antennas and central Tech-Coffin keep their original positions and roles.
+Detailed foliage, texture atlases, interior furniture and R2 model-budget repairs
+are preserved. No special terrain or mission rules have been introduced.
 
-R2 is a standalone review installer in the main Saved Objects folder.
-Fresh asset URLs avoid reusing the failed R1 import URLs.
-Close the old import popup, Clear Table, extract this ZIP into a fresh folder,
-run Install.cmd, then load Verdant-Exchange-Uplink-Center-R2.
-Automated import-format, geometry, control, stage and cleanup tests pass.
-Live TTS loading, physics and multiplayer testing remain unverified here.
+Extract into a fresh folder, run Install.cmd, then load the R3 Saved Object.
+Close old import popups and use Clear Table before dropping the new bag on STAGE.
+The installer backs up and removes superseded R1/R2 Saved Objects.
+Automated geometry, import format, roof coverage, height, material, objective,
+route, controls, lifecycle and alternate-state cleanup checks pass.
+Live TTS loading, reflection appearance, physics and play balance remain unverified.

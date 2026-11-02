@@ -1,0 +1,16 @@
+[
+  {
+    "label": "approved-console-bundle",
+    "url": "https://steamusercontent-a.akamaihd.net/ugc/1331327576943612361/DAF1E5F864A43C1AE1C7D4657FA1CACC28C78F9F/",
+    "filename": "console-reference.unity3d",
+    "bytes": 2398495,
+    "sha256": "870a9aee714115afa7ecb4b22a6bfeb0e113ae0e416662fcaf7a58d7c874d613"
+  },
+  {
+    "label": "approved-console-base",
+    "url": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+    "filename": "console-base-reference.obj",
+    "bytes": 7219,
+    "sha256": "34c24d9a7fa704dedba8a475890c367908af0dad7551983748015537c1b81963"
+  }
+]

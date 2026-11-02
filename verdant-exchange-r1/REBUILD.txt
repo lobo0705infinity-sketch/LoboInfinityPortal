@@ -4,6 +4,7 @@ From this extracted package:
   python Source/build_map.py ASSET_COMMIT
   python Source/validate_geometry.py
   python Source/test_model_import.py
+  python Source/test_roofs_height_and_materials.py
   python Source/test_controls.py
   python Source/test_lifecycle.py
   python Source/test_stage.py
@@ -13,4 +14,4 @@ The immutable asset revision is in Source/asset-revision.txt.
 Models use inches, Y up. OBJ X handedness is converted on export for TTS.
 Pyrender previews use EGL; tests also need liblua5.4.so.0 for the stage harness.
 The source reference bag supplies only established controls and bag metadata;
-every active terrain model and objective in Verdant Exchange is newly exported.
+terrain is procedurally exported. Approved console assetbundles retain their original assets and credits.

@@ -1,14 +1,14 @@
 {
   "status": "passed",
   "root_objects": 75,
-  "building_states": 18,
-  "unique_ids": 94,
+  "building_states": 16,
+  "unique_ids": 92,
   "maximum_convex_component_vertices": 42,
   "minimum_objective_clearance_inches": 2.099,
   "routing": [
     {
       "base_diameter_inches": 1.0,
-      "connected_cells": 7375,
+      "connected_cells": 7419,
       "objectives": [
         {
           "centre": [
@@ -35,14 +35,14 @@
     },
     {
       "base_diameter_inches": 1.6,
-      "connected_cells": 5237,
+      "connected_cells": 5235,
       "objectives": [
         {
           "centre": [
             0,
             -12
           ],
-          "reachable_contact_cells": 24
+          "reachable_contact_cells": 19
         },
         {
           "centre": [
@@ -56,7 +56,7 @@
             0,
             12
           ],
-          "reachable_contact_cells": 24
+          "reachable_contact_cells": 19
         }
       ]
     }

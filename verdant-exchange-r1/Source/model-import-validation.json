@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "visual_models": 92,
-  "all_meshes_including_colliders": 184,
+  "visual_models": 87,
+  "all_meshes_including_colliders": 174,
   "maximum_uv_expanded_vertices": 16956,
   "maximum_triangle_corners": 33324,
   "building_state_order": "lowest floor first; fully roofed last",
@@ -18,46 +18,32 @@
       "triangle_corners": 7488
     },
     {
-      "name": "botanical-genetics-laboratory-state-3.obj",
-      "positions": 1992,
-      "uv_expanded_vertices": 6025,
-      "triangles": 3648,
-      "triangle_corners": 10944
-    },
-    {
       "name": "botanical-genetics-laboratory-state-2.obj",
-      "positions": 3122,
-      "uv_expanded_vertices": 9653,
-      "triangles": 5796,
-      "triangle_corners": 17388
+      "positions": 1452,
+      "uv_expanded_vertices": 4581,
+      "triangles": 2744,
+      "triangle_corners": 8232
     },
     {
       "name": "botanical-genetics-laboratory-roof.obj",
-      "positions": 4052,
-      "uv_expanded_vertices": 12131,
-      "triangles": 7240,
-      "triangle_corners": 21720
-    },
-    {
-      "name": "research-administration-state-3.obj",
-      "positions": 1992,
-      "uv_expanded_vertices": 6025,
-      "triangles": 3648,
-      "triangle_corners": 10944
+      "positions": 2382,
+      "uv_expanded_vertices": 7059,
+      "triangles": 4188,
+      "triangle_corners": 12564
     },
     {
       "name": "research-administration-state-2.obj",
-      "positions": 3122,
-      "uv_expanded_vertices": 9653,
-      "triangles": 5796,
-      "triangle_corners": 17388
+      "positions": 1452,
+      "uv_expanded_vertices": 4581,
+      "triangles": 2744,
+      "triangle_corners": 8232
     },
     {
       "name": "research-administration-roof.obj",
-      "positions": 4052,
-      "uv_expanded_vertices": 12131,
-      "triangles": 7240,
-      "triangle_corners": 21720
+      "positions": 2382,
+      "uv_expanded_vertices": 7059,
+      "triangles": 4188,
+      "triangle_corners": 12564
     },
     {
       "name": "tropical-conservatory-state-2.obj",
@@ -306,10 +292,10 @@
     },
     {
       "name": "seed-vault-roof.obj",
-      "positions": 1306,
-      "uv_expanded_vertices": 3960,
-      "triangles": 2380,
-      "triangle_corners": 7140
+      "positions": 1414,
+      "uv_expanded_vertices": 4256,
+      "triangles": 2552,
+      "triangle_corners": 7656
     },
     {
       "name": "specimen-archive-state-2.obj",
@@ -320,10 +306,10 @@
     },
     {
       "name": "specimen-archive-roof.obj",
-      "positions": 1306,
-      "uv_expanded_vertices": 3960,
-      "triangles": 2380,
-      "triangle_corners": 7140
+      "positions": 1414,
+      "uv_expanded_vertices": 4256,
+      "triangles": 2552,
+      "triangle_corners": 7656
     },
     {
       "name": "nutrient-control-state-2.obj",
@@ -632,27 +618,6 @@
       "uv_expanded_vertices": 363,
       "triangles": 196,
       "triangle_corners": 588
-    },
-    {
-      "name": "antenna-1.obj",
-      "positions": 154,
-      "uv_expanded_vertices": 440,
-      "triangles": 284,
-      "triangle_corners": 852
-    },
-    {
-      "name": "antenna-2.obj",
-      "positions": 154,
-      "uv_expanded_vertices": 440,
-      "triangles": 284,
-      "triangle_corners": 852
-    },
-    {
-      "name": "tech-coffin.obj",
-      "positions": 90,
-      "uv_expanded_vertices": 260,
-      "triangles": 164,
-      "triangle_corners": 492
     }
   ]
 }
