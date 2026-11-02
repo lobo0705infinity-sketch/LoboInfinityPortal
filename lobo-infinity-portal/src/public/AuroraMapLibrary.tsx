@@ -27,7 +27,6 @@ function RegionIndex() {
   const search = query.trim().toLocaleLowerCase()
   const regions = auroraMapRegions.filter(region => (!regionId || region.id === regionId) &&
     `${region.name} ${region.settlement} ${region.locations.map(location => location.name).join(' ')}`.toLocaleLowerCase().includes(search))
-  const publicMaps = auroraPublicTerrain.filter(map => (!regionId || map.regionId === regionId) && `${map.name} ${map.region} ${map.description}`.toLocaleLowerCase().includes(search))
   function filter(key: string, value: string) {
     setParams(previous => { const next = new URLSearchParams(previous); if (value) next.set(key, value); else next.delete(key); return next }, { replace: true })
   }
@@ -39,8 +38,7 @@ function RegionIndex() {
       <Link to={`/maps/aurora-vii?region=${region.id}`} aria-label={`Browse ${region.name}`}><img src={region.locations[0].image.src} width={region.locations[0].image.width} height={region.locations[0].image.height} loading="lazy" decoding="async" alt={`${region.name} concept reference`} /></Link>
       <div className="lobo-map-card-info"><small>{region.settlement} · {region.vp} campaign VP</small><h2>{region.name}</h2><p>{region.description}</p><div className="aurora-location-links">{region.locations.map(location => <Link key={location.slug} to={`/maps/${location.slug}`}><strong>{location.name}</strong><span>Frontline · Supremacy →</span></Link>)}</div><small>Territory rule: {region.rule.title}</small></div>
     </article>)}</div>
-    {publicMaps.length ? <section aria-label="Additional public terrain"><h2>More Aurora VII terrain</h2><div className="lobo-maps-grid">{publicMaps.map(map => <article className="lobo-map-card" key={map.slug}><Link to={`/maps/${map.slug}`}><img src={map.overview} alt={`${map.name} rendered lower and upper decks`} width="1800" height="920" loading="lazy" decoding="async" /></Link><div className="lobo-map-card-info"><small>{map.region} · {map.revision} · Public terrain</small><h3><Link to={`/maps/${map.slug}`}>{map.name}</Link></h3><p>{map.description}</p><p>Choose a mission separately. <Link to={`/maps/${map.slug}`}>View terrain, rules and downloads →</Link></p></div></article>)}</div></section> : null}
-    {!regions.length && !publicMaps.length ? <p className="lobo-maps-empty">No regions or locations match. <Link to="/maps/aurora-vii">Reset filters</Link></p> : null}
+    {!regions.length ? <p className="lobo-maps-empty">No regions or locations match. <Link to="/maps/aurora-vii">Reset filters</Link></p> : null}
     <p className="lobo-maps-source-note"><a href={AURORA_TERRAIN_GUIDE_URL} target="_blank" rel="noopener noreferrer">Territory &amp; Terrain Guide ↗</a> · <Link to="/campaign/aurora-vii/map">Campaign territory map →</Link></p>
   </>
 }
