@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, impetuousWarbandValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
-  rosterConnections, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
+  rosterConnections, rosterDistance, rosterSignature, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
   createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
   searchBuildListFactions, searchBuildListMissions, searchBuildListUnits } from '../bot/build-list-command.mjs'
@@ -29,7 +29,7 @@ assert.ok(payload?.fireteamChart?.teams?.length, 'bundled official Corregidor so
 const roster = LIVE_ROSTER_UNIT_SLUGS.get(502)
 const input = { payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog,
-  mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
+  seed: 0, mission: 'Hardlock', mustInclude: ['Jazz', 'Iguana'], points: 300 }
 const profiles = availableProfiles({ payload, metadata: source.metadata, sectorialId: 502, rosterSlugs: roster,
   gunfighterCatalog: catalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
 const hassassinPayload = source.payloads.find(item => item.url?.endsWith('/402'))
@@ -125,6 +125,32 @@ assert.ok(results.every(result => result.profiles.filter(item => /warcor/i.test(
   'do not fill spare slots with multiple Irregular Warcors')
 assert.equal(new Set(results.map(item => item.profiles.map(profile => `${profile.combatGroup}:${profile.id}`).sort().join('|'))).size, 3)
 assert.ok(results.some(result => result.legality.totals.troopers === 15), 'prefer 15 models when the roster can support them')
+// Regressions for repeated requests and three near-identical alternatives.
+const movedRoster = results[0].profiles.map(item => ({ ...item, combatGroup: item.combatGroup === 1 ? 2 : 1 })).reverse()
+assert.equal(rosterSignature(results[0].profiles), rosterSignature(movedRoster),
+  'group changes, profile order and list names cannot disguise a repeated roster')
+assert.ok(Math.abs(rosterDistance(results[0].profiles, movedRoster)) < 1e-9)
+assert.notEqual(rosterSignature([transductor, transductor]), rosterSignature([transductor]),
+  'roster fingerprints preserve duplicate counts')
+assert.ok(results.slice(1).every((list, index) => results.slice(0, index + 1)
+  .every(other => rosterDistance(list.profiles, other.profiles) >= .15)),
+  'required Jazz/Iguana builds still offer meaningful whole-roster alternatives')
+const freshBuilds = [101, 202].map(seed => buildArmyListOptions({ ...input, seed }))
+assert.notDeepEqual(freshBuilds[0].map(list => rosterSignature(list.profiles)),
+  freshBuilds[1].map(list => rosterSignature(list.profiles)), 'a new request seed changes the roster results')
+assert.deepEqual(buildArmyListOptions({ ...input, seed: 101 }).map(list => list.code), freshBuilds[0].map(list => list.code),
+  'an explicit diagnostic seed reproduces the same Army codes')
+for (const list of freshBuilds.flat()) {
+  assert.equal(list.legality.status, 'legal')
+  assert.ok(list.points <= 300 && list.quality.gunfighters >= 2 && list.quality.aro >= 2)
+  for (const required of ['Jazz', 'Iguana']) {
+    assert.ok(list.profiles.some(profile => profile.id === resolveRequiredProfile(profiles, required).id))
+  }
+}
+const repeatRequests = Array.from({ length: 2 }, () => buildArmyListOptions({ ...input, seed: undefined }))
+assert.ok(repeatRequests[1].some(list => !repeatRequests[0].some(previous =>
+  rosterSignature(previous.profiles) === rosterSignature(list.profiles))),
+  'default production requests do not replay the same three rosters')
 const alguacilLieutenant = profiles.find(item => item.slug === 'corregidor-alguaciles' && item.lieutenant)
 const alguacilDecoy = profiles.find(item => item.slug === 'corregidor-alguaciles' && !item.lieutenant && item.optionId === 1)
 const alguacilParamedic = profiles.find(item => item.slug === 'corregidor-alguaciles' && !item.lieutenant && item.paramedic)

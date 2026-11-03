@@ -18,6 +18,8 @@ Grouped commands replace the nine legacy slash-menu entries listed below. Compac
 | Review incorrect-answer reports | `/admin reports` | `/bot-reports` |
 | Inventory server bots and webhook publishers | `/admin bots` | — |
 
+`/list build` refreshes its search on every use and selects alternatives by whole-roster differences. Moving the same models between Combat Groups does not count as a new army. It favors recent unseen rosters, keeps required models and mission checks, and targets S-grade combat coverage with competitive A-grade fallbacks for variety. Tight points or required-model constraints can limit how different the options are. Recent-result memory is bounded and resets when the bot restarts.
+
 `/rules` and `/mission` remain direct reference commands. `/mission` uses the `scenario` input.
 
 `/help` opens an ephemeral guide with Army Lists, Combat, Game Reference and Find a Game buttons. Server managers also see Server Tools. The report-review command remains restricted to Manage Server, with the permission checked again when invoked.

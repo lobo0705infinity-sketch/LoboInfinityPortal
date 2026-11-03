@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto'
 import { encodeArmyCode } from '../scripts/infinity-army-encode.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { validateInfListLegality } from './inf-list-legality.mjs'
@@ -23,6 +24,28 @@ export function missionSpecialistPenalty(item, plan, linked = false) {
 }
 
 export class ListBuilderError extends Error {}
+
+// Keep only roster fingerprints, bounded by request shapes and recent results.
+// An explicit seed is for reproducible diagnostics and bypasses this history.
+const recentBuilds = new Map()
+export const rosterSignature = profiles => profiles.map(item => item.id).sort().join('|')
+
+// Group moves and renames do not make a new army. Different loadouts matter,
+// but changing unit types carries more weight than swapping their weapons.
+export function rosterDistance(left, right) {
+  const overlap = key => {
+    const weights = profiles => {
+      const result = new Map()
+      for (const item of profiles) result.set(key(item), (result.get(key(item)) || 0) + item.points)
+      return result
+    }
+    const a = weights(left), b = weights(right)
+    const total = Math.max([...a.values()].reduce((n, value) => n + value, 0),
+      [...b.values()].reduce((n, value) => n + value, 0), 1)
+    return [...a].reduce((sum, [id, value]) => sum + Math.min(value, b.get(id) || 0), 0) / total
+  }
+  return 1 - (.7 * overlap(item => item.unitId) + .3 * overlap(item => item.id))
+}
 
 export function resolveRequiredProfile(profiles, name) {
   const query = token(name)
@@ -206,7 +229,7 @@ export function availableProfiles({ payload, metadata, sectorialId, rosterSlugs,
 }
 
 export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlugs, gunfighterCatalog,
-  aroCatalog, closeCombatCatalog, mobilityCatalog, teamTypeEvidence, mission, mustInclude = [], points = 300, count = 3 } = {}) {
+  aroCatalog, closeCombatCatalog, mobilityCatalog, teamTypeEvidence, mission, mustInclude = [], points = 300, count = 3, seed } = {}) {
   const faction = metadata?.factions?.find(item => Number(item.id) === Number(sectorialId))
   if (!faction) throw new ListBuilderError('Unknown Infinity Army faction.')
   if (!String(mission || '').trim() || String(mission).length > 60) throw new ListBuilderError('Enter a mission name of 60 characters or fewer.')
@@ -215,7 +238,8 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   }
   const profiles = availableProfiles({ payload, metadata, sectorialId: Number(sectorialId), rosterSlugs,
     gunfighterCatalog, aroCatalog, closeCombatCatalog, mobilityCatalog })
-  const constraints = { payload, points, mission: String(mission || '').trim(), sectorialId: Number(sectorialId) }
+  const requestSeed = seed ?? randomInt(0x100000000)
+  const constraints = { payload, points, requestSeed, mission: String(mission || '').trim(), sectorialId: Number(sectorialId) }
   const forced = (Array.isArray(mustInclude) ? mustInclude : String(mustInclude).split(','))
     .map(String).map(value => value.trim()).filter(Boolean).map(name => {
       const match = resolveRequiredProfile(profiles, name)
@@ -233,6 +257,8 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       || item.racerBot && item.regular && item.points <= 12
       || /warcor/i.test(item.slug) && item.points <= 5))
     .sort((a, b) => Number(b.racerBot) - Number(a.racerBot) || a.points - b.points || Number(b.regular) - Number(a.regular))
+  const historyKey = JSON.stringify([sectorialId, normalize(mission), points, forced.map(item => item.id).sort(), payload.version])
+  const recent = seed == null ? recentBuilds.get(historyKey) || [] : []
   const options = []
   const seen = new Set()
   for (let attempt = 0; attempt < 96 && options.length < 96; attempt++) {
@@ -316,7 +342,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     const decoded = decodeArmyCode(code)
     const legality = validateInfListLegality({ decoded, payload })
     if (legality.status !== 'legal') continue
-    const signature = grouped.map(item => `${item.combatGroup}:${item.id}`).sort().join('|')
+    const signature = rosterSignature(grouped) + (plan.focus.startsWith('Encryption:') ? `:objective:${plan.variant}` : '')
     if (seen.has(signature)) continue
     seen.add(signature)
     const fireteams = proposedFireteams(grouped, payload.fireteamChart, buildConstraints.side, teamPreference)
@@ -357,22 +383,45 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const pool = [...competitive].sort((a, b) => b.legality.totals.troopers - a.legality.totals.troopers
     || b.score - a.score)
   const chosen = []
+  const target = Math.min(3, count)
   const doubleBind = missionPlan(mission).focus.startsWith('Encryption:') && count >= 3
-  const firstPass = doubleBind
-    ? [0, 1, 2].map(variant => leadershipPool.find(item => item.missionPlan.variant === variant)
-      || candidates.find(item => item.missionPlan.variant === variant)
-      || ranked.find(item => item.missionPlan.variant === variant)).filter(Boolean)
-    : pool
-  for (const option of firstPass) {
-    const signature = option.fireteams.map(team => `${team.type}:${team.name}:${team.members.map(name => name.split(' · ')[0]).sort().join('+')}`).sort().join('|')
-    if (chosen.length && chosen.some(item => item.teamSignature === signature
-      && (!doubleBind || item.missionPlan.variant === option.missionPlan.variant))) continue
-    chosen.push({ ...option, teamSignature: signature })
-    if (chosen.length >= Math.min(3, count)) break
+  // Keep the strongest first option; allow competitive A-tier fallbacks for
+  // variety, retaining the same mission and preferred leadership checks.
+  const alternateCoverage = fallbackCoverage.filter(item => item.score >= leadershipPool[0].score - 18
+    && (item.missionPlan.tacticalLink ? item.lieutenantPlan.kind === 'apex-open'
+      : item.missionPlan.lieutenantKills ? item.lieutenantPlan.kind === 'apex-coc'
+        : ['cheap-decoy', 'apex-coc'].includes(item.lieutenantPlan.kind)))
+  const eligible = [...new Set([...pool, ...leadershipPool, ...alternateCoverage])]
+  const signatures = new Map(eligible.map(option => [option, rosterSignature(option.profiles)]))
+  for (let index = 0; index < target; index++) {
+    let remaining = eligible.filter(option => !chosen.includes(option))
+    if (doubleBind) {
+      const variant = remaining.filter(option => option.missionPlan.variant === index)
+      const fallback = [...new Set([...candidates, ...ranked])].filter(option => option.missionPlan.variant === index && !chosen.includes(option))
+      remaining = variant.length ? variant : fallback.length ? fallback : remaining
+    }
+    if (!remaining.length) remaining = [...new Set([...rolePool, ...candidates])]
+      .filter(option => !chosen.some(other => rosterSignature(other.profiles) === rosterSignature(option.profiles)))
+    if (!remaining.length) break
+    const fresh = remaining.filter(option => !recent.includes(signatures.get(option) || rosterSignature(option.profiles)))
+    if (fresh.length) remaining = fresh
+    if (!chosen.length) {
+      // Preserve the full-roster preference for the first option.
+      const preferred = remaining.filter(option => pool.includes(option))
+      if (preferred.length) remaining = preferred
+      chosen.push(remaining[0])
+      continue
+    }
+    const distance = option => Math.min(...chosen.map(other => rosterDistance(option.profiles, other.profiles)))
+    const distinct = remaining.filter(option => distance(option) >= .2)
+    if (distinct.length) remaining = distinct
+    remaining.sort((a, b) => distance(b) - distance(a) || b.score - a.score)
+    chosen.push(remaining[0])
   }
-  for (const option of [...pool, ...leadershipPool, ...rolePool, ...candidates]) {
-    if (chosen.length >= Math.min(3, count)) break
-    if (!chosen.some(item => item.code === option.code)) chosen.push(option)
+  if (seed == null) {
+    recentBuilds.delete(historyKey)
+    recentBuilds.set(historyKey, [...recent, ...chosen.map(option => rosterSignature(option.profiles))].slice(-18))
+    if (recentBuilds.size > 128) recentBuilds.delete(recentBuilds.keys().next().value)
   }
   return chosen.map((option, index) => {
     const combatGroups = [1, 2].map(group => ({ members: option.profiles.filter(item => item.combatGroup === group)
@@ -565,7 +614,11 @@ function bestNext(profiles, selected, constraints, attempt, mode) {
       + (item.defensive && !selected.some(profile => profile.defensive) ? 2 : 0)
       + (item.repeater && !selected.some(profile => profile.repeater) ? 1 : 0)
     const existing = selected.filter(profile => profile.unitId === item.unitId).length
-    const variation = ((hash(item.id + ':' + attempt * 701) % 100) / 100 - .5) * (attempt ? 1.3 : .15)
+    // Keep baseline attempts for quality, and explore new near-optimal choices
+    // with a fresh salt on the others. Seed zero reproduces the baseline search.
+    const salt = constraints.requestSeed && attempt % 3 ? constraints.requestSeed : 0
+    const variation = ((hash(item.id + ':' + attempt * 701 + (salt ? ':' + salt : '')) % (salt ? 1000 : 100)) / (salt ? 1000 : 100) - .5)
+      * (salt ? 5 : attempt ? 1.3 : .15)
     const spend = count >= 12 ? Math.min(item.points, remaining) * .055 : Math.min(item.points, 45) * .025
     // Most attempts reserve room for 15 troopers. Other attempts retain the
     // stronger expensive-profile builds for comparison in the final ranking.
