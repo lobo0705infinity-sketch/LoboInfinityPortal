@@ -1558,6 +1558,9 @@ function handleApiPost(e, action) {
         return refreshArmyIntelligence(e);
       });
 
+    case "getListExchangeReports":
+      return getListExchangeReports(e);
+
     case "processAutomationQueueBatch":
       return requireArmyIntelligenceWorkerOrPermission(e, function() {
         return processAutomationQueueBatch(e);

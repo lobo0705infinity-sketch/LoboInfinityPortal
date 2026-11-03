@@ -125,10 +125,10 @@ function lifGetCasualSchema_() {
     { title: "Player Information", type: "SECTION_HEADER" },
     { title: f.PLAYER, type: "LIST", required: true, choices: "players" },
     { title: f.PLAYER_FACTION, type: "LIST", required: true, choices: "factions" },
-    { title: f.PLAYER_ARMY_CODE, type: "TEXT", required: true, help: "Paste the complete Infinity Army code." },
+    { title: f.PLAYER_ARMY_CODE, type: "TEXT", required: false, help: "Required unless you provide an LLH Game Code for two locked lists." },
     { title: f.OPPONENT, type: "LIST", required: true, choices: "players" },
     { title: f.OPPONENT_FACTION, type: "LIST", required: true, choices: "factions" },
-    { title: f.OPPONENT_ARMY_CODE, type: "TEXT", required: true, help: "Paste the complete Infinity Army code." },
+    { title: f.OPPONENT_ARMY_CODE, type: "TEXT", required: false, help: "Required unless you provide an LLH Game Code for two locked lists." },
     { title: "Result", type: "SECTION_HEADER" },
     { title: f.MISSION, type: "LIST", required: true, choices: "missions" },
     { title: f.GAME_RESULT, type: "LIST", required: true, values: ["Player Victory", "Opponent Victory", "Draw"] },
@@ -144,7 +144,8 @@ function lifGetCasualSchema_() {
     { title: f.BEST_MOMENT, type: "PARAGRAPH_TEXT", required: false },
     { title: f.NOTES, type: "PARAGRAPH_TEXT", required: false },
     { title: f.WORKSHOP_MAP, type: "LIST", required: false, choices: "maps", help: "Choose the save you played. Leave blank if your table is not in the Lobo Workshop library." },
-    { title: f.MAP_RATING, type: "LIST", required: false, choices: "ratings", help: "Optional: rate the selected table from 1 (poor) to 5 (excellent)." }
+    { title: f.MAP_RATING, type: "LIST", required: false, choices: "ratings", help: "Optional: rate the selected table from 1 (poor) to 5 (excellent)." },
+    { title: "LLH Game Code", type: "TEXT", required: false, help: "Optional: use the game code from LLH after both players locked their lists. Leave both Army Code fields blank when using a code." }
   ];
 }
 

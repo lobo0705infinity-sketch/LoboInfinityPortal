@@ -16,7 +16,7 @@ const tournamentSubmit = extractFunctionBlock(submitResult, 'async function subm
 
 assert.match(
   casualSubmit,
-  /const submission = \{\s*\.\.\.casualResult,\s*bestMoment: getFormDataString\(new FormData\(event\.currentTarget\), 'bestMoment'\),\s*\}/,
+  /const submission = \{\s*\.\.\.casualResult,[\s\S]*?bestMoment: getFormDataString\(new FormData\(event\.currentTarget\), 'bestMoment'\),\s*\}/,
   'Casual submission must read the visible Best Moment form value into submission.bestMoment.',
 )
 assert.match(
@@ -43,7 +43,7 @@ assert.match(
 
 assert.match(
   leagueSubmit,
-  /const submission = \{\s*\.\.\.leagueResult,\s*bestMoment: getFormDataString\(new FormData\(event\.currentTarget\), 'bestMoment'\),\s*\}/,
+  /const submission = \{\s*\.\.\.leagueResult,[\s\S]*?bestMoment: getFormDataString\(new FormData\(event\.currentTarget\), 'bestMoment'\),\s*\}/,
   'League submission must read the visible Best Moment form value into submission.bestMoment.',
 )
 assert.match(
@@ -58,7 +58,7 @@ assert.match(
 )
 assert.match(
   submitResult,
-  /<textarea\s+name="bestMoment"\s+onChange=\{\(event\) => updateField\('bestMoment', event\.target\.value\)\}\s+required\s+rows=\{4\}\s+value=\{leagueResult\.bestMoment\}/,
+  /<textarea\s+name="bestMoment"\s+onChange=\{\(event\) => updateField\('bestMoment', event\.target\.value\)\}\s+required=\{eventHome\?\.event\.type !== 'Individual Double Elimination'\}\s+rows=\{4\}\s+value=\{leagueResult\.bestMoment\}/,
   'League Best Moment textarea must remain the named controlled leagueResult.bestMoment field.',
 )
 

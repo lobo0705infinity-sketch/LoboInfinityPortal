@@ -68,8 +68,16 @@ function canonicalGameId_(row, legacyId) {
   return Number.isSafeInteger(id) && id > 0 ? id : Number(legacyId);
 }
 
-function appendCanonicalGameDurably_(sheet, row, submissionId) {
+function normalizeListExchangeReportCode_(value) {
+  const code = String(value || "").trim().toUpperCase();
+  if (code && !/^LLH-[A-F0-9]{16}$/.test(code))
+    throw new Error("Enter a valid LLH game code, or leave it blank.");
+  return code;
+}
+
+function appendCanonicalGameDurably_(sheet, row, submissionId, listExchangeCode, listExchangeSubmittedAt) {
   return withGamePipelineLock_(function() {
+    const exchange = normalizeListExchangeReportCode_(listExchangeCode);
     const maximum = ensureCanonicalGameIdentities_(sheet);
     const key = String(submissionId || Utilities.getUuid());
     const values = sheet.getDataRange().getValues();
@@ -77,12 +85,27 @@ function appendCanonicalGameDurably_(sheet, row, submissionId) {
       if (String(values[index][26]) === key)
         return { targetRow: index + 1, gameId: canonicalGameId_(values[index], index), duplicate: true };
     }
+    if (exchange && values.slice(1).some(function(existing) { return existing[28] === exchange; }))
+      throw new Error("This LLH game code already belongs to a reported game. Use a new exchange for a new game.");
     const gameId = maximum + 1;
     // Reserve before append: crashes may leave a gap, never a reused identity.
     PropertiesService.getScriptProperties().setProperty("LIF_GAME_ID_HIGH_WATER", String(gameId));
     const persisted = row.slice(0, 25);
     while (persisted.length < 25) persisted.push("");
     persisted.push(gameId, key, "Pending");
+    if (exchange) {
+      // Store the exact association in the same durable append as the result.
+      // These trailing private fields are excluded from public projections.
+      const headers = ["LLH List Exchange Code", "LLH Report Submitted At"];
+      if (sheet.getMaxColumns() < 30) sheet.insertColumnsAfter(sheet.getMaxColumns(), 30 - sheet.getMaxColumns());
+      const existing = sheet.getRange(1, 29, 1, 2).getValues()[0];
+      headers.forEach(function(header, index) {
+        if (existing[index] && existing[index] !== header && existing[index] !== "Column " + (29 + index))
+          throw new Error("Private list exchange column conflict.");
+      });
+      sheet.getRange(1, 29, 1, 2).setValues([headers]);
+      persisted.push(exchange, listExchangeSubmittedAt == null ? Date.now() : Number(listExchangeSubmittedAt));
+    }
     sheet.appendRow(persisted);
     SpreadsheetApp.flush();
     return { targetRow: sheet.getLastRow(), gameId: gameId, duplicate: false };

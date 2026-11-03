@@ -38,5 +38,5 @@ export function createCampaignGameService({registrations,identity,notify,store=c
       return json(404,{error:'Not found.'})
     }catch(e){const safe=e.code==='CAMPAIGN_RULE'||/^(Choose|Enter|Objective|Photo|This|Only|Commissioner|Game not|Claim|You already|Campaign briefing|Lobo needs)/.test(e.message);return json(safe?400:503,{error:safe?e.message:'Campaign games are temporarily unavailable. Try again shortly.'})}
   }
-  return {handler,deliver}
+  return {handler,deliver,listExchangeReports: codes => store.listExchangeReports(codes)}
 }

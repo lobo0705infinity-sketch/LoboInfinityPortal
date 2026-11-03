@@ -21,8 +21,10 @@ export function validateCampaignGame(input,state,today) {
   const mission=kind==='narrative'?state.narrativeMission?.title:campaignText(input.mission,200,'mission',true)
   if(!mission||(kind==='territory'&&!AURORA_TURNS[state.turn-1].missions.some(m=>m.name===mission))) throw Error('Choose an active mission for this Turn.')
   const photos=campaignText(input.photos||'',3000,'photo links')
+  const listExchangeCode = campaignText(input.listExchangeCode || '', 20, 'LLH game code').toUpperCase()
+  if (listExchangeCode && !/^LLH-[A-F0-9]{16}$/.test(listExchangeCode)) throw Error('Enter a valid LLH game code, or leave it blank.')
   if(photos.split(/\s+/).filter(Boolean).some(v=>{try{const u=new URL(v);return u.protocol!=='https:'||Boolean(u.username||u.password)}catch{return true}})) throw Error('Photo links must be HTTPS links separated by spaces or new lines.')
-  return {turn:state.turn,date,kind,location,mission,opA:input.opA,opB:input.opB,...campaignScore(input.opA,input.opB),map:campaignText(input.map||'',200,'map'),notes:campaignText(input.notes||'',3000,'battle notes'),armyA:campaignText(input.armyA||'',4000,'army code'),armyB:campaignText(input.armyB||'',4000,'army code'),photos}
+  return {turn:state.turn,date,kind,location,mission,opA:input.opA,opB:input.opB,...campaignScore(input.opA,input.opB),map:campaignText(input.map||'',200,'map'),notes:campaignText(input.notes||'',3000,'battle notes'),armyA:campaignText(input.armyA||'',4000,'army code'),armyB:campaignText(input.armyB||'',4000,'army code'),photos,listExchangeCode}
 }
 export function campaignTotals(games,turn) {
   const rows=new Map()

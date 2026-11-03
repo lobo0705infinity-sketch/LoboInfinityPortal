@@ -1,0 +1,76 @@
+# Private game list exchange
+
+One exchange belongs to one game. Reports supported: League, Top 40, Team
+Tournament, Casual, and live Aurora VII campaign games.
+
+## Player flow
+
+1. Run `/list game create opponent:@opponent description:Top 40 W2` in the shared
+   server. Share the returned `LLH-…` game code with that opponent.
+2. Both players run `/list game submit game:LLH-… player:<exact portal name>
+   army-code:<full Army code or link>`. Replies are private to the requester.
+3. Both run `/list game ready game:LLH-…` before playing. Both lists must exist
+   first. Replacing either list clears both ready confirmations. When both
+   players are ready, both lists lock for that game.
+4. Enter **LLH Game Code** when reporting. Leave the two Army Code fields blank
+   in Google Forms or native League/Tournament/Casual forms: the backend obtains
+   the committed codes from LLH without returning them to the submitter.
+5. After the accepted report, LLH DMs each opponent's full code in a text
+   attachment, plus an Infinity Army link for codes under 1000 characters.
+   Polling runs every minute. Aurora also waits for opponent confirmation and
+   any required late/duplicate approvals.
+
+`/list game status` privately retrieves the opponent's list after release if
+DMs are closed. Before release it shows submission/ready status only.
+`/list game cancel` works before locking and removes submitted codes from that
+cancelled record. Use a new exchange for each rematch.
+
+## Storage and recovery
+
+The private ledger is `/data/llh-list-exchanges.json` on the Railway volume (or
+`RAILWAY_VOLUME_MOUNT_PATH`). It uses serialized mutations, atomic rename,
+file/directory fsync and file mode 0600. Unreadable existing data fails closed.
+Use the existing single worker replica with this file store.
+
+Canonical results atomically store their exchange code and report timestamp in
+trailing columns 29–30. Public projections omit these fields. Public campaign
+activity also omits exchange codes. Pre-game submissions never enter the
+community army-list vault.
+
+The machine-only receipt API checks the existing worker credential and returns
+no army codes. LLH checks the exact code, both names, a report timestamp after
+locking, accepted status, and campaign Discord identities. Missing, conflicting,
+early or mismatched receipts keep both lists private. Canonical reports reject
+reusing a game code on another canonical game.
+
+Release and recipient deliveries are durable. Before a DM retry, LLH covers
+message history back to the first attempt and uses a stable nonce. Incomplete
+history defers delivery. Replayed reports do not recreate deliveries.
+
+## Rollout
+
+1. Deploy the reviewed Apps Script files, preserving the existing deployment
+   identity. Verify its existing `ARMY_INTELLIGENCE_WORKER_TOKEN` Script Property.
+2. Add that same existing secret as `ARMY_INTELLIGENCE_WORKER_TOKEN` on Railway,
+   plus `LIST_EXCHANGE_API_URL` with the Apps Script web-app `/exec` URL. Do not
+   commit credentials. Railway already has `/data` and one replica.
+   `VITE_API_URL` is an alternative URL variable.
+3. Deploy LLH and the portal. Startup adds `/list game` to `/list`. Commands
+   return a setup-pending response until receipt verification is configured.
+4. Run `installListExchangeFormFields()` once in Apps Script. It updates the
+   four existing game Forms in place: one optional **LLH Game Code** text
+   question and conditional Army Code requirements. Question IDs, destinations
+   and other requirements remain intact. Without a code, backend validation
+   still requires both lists. The installer is safe to repeat. Do not run the
+   destructive League/Team form-rebuild routines for this rollout.
+5. Smoke-test with two designated accounts: submit, lock, verify pre-report
+   privacy, report/confirm, verify both DMs, then retry. Live Google Forms and
+   production Discord delivery are not exercised by the offline tests.
+
+## Validation
+
+`npm run test:list-exchange` covers SDK routing, ownership/server boundaries,
+missing lists, ready reset, locking, wrong/early/unconfirmed/duplicate reports,
+atomic storage, machine authentication, restart/crash-after-send recovery,
+closed DMs, long-code attachments, campaign acceptance and corrupt storage.
+Existing bot, campaign, canonical, bracket and Form regression checks also apply.

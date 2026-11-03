@@ -147,6 +147,7 @@ export type FlaggedArmySubmissionsData = {
 }
 
 export type LeagueResultSubmission = {
+  listExchangeCode?: string
   matchId?: string
   eventId: string
   round: string
@@ -4109,6 +4110,7 @@ export async function submitCasualResult(
 ): Promise<void> {
   const payload = await postRequest('submitCasualResult', options, {
     bestMoment: submission.bestMoment,
+    listExchangeCode: submission.listExchangeCode ?? '',
     commissionerMode: submission.commissionerMode ? 'true' : '',
     commissionerOverride: submission.commissionerOverride ? 'true' : '',
     commissionerReason: submission.commissionerReason ?? '',

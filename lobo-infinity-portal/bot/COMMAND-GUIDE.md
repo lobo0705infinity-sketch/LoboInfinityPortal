@@ -10,6 +10,7 @@ Grouped commands replace the nine legacy slash-menu entries listed below. Compac
 | Generate three mission-guided options | `/list build` | `/build-list` |
 | Generate a random legal army | `/list random` | `/random-list` |
 | Print a model identification sheet | `/list identify` | `/inf-id` |
+| Exchange lists after a game report | `/list game create/submit/ready/status/cancel` | — |
 | Compare two profiles | `/combat matchup` | `/matchup` |
 | Find ARO counters | `/combat counters` | `/aro-counter` |
 | Set/read/remove recurring availability | `/play availability set/show/clear` | `/availability set/show/clear` |

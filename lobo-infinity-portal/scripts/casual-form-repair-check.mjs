@@ -17,13 +17,17 @@ assert.match(casual, /setCollectEmail\(false\)/)
 assert.doesNotMatch(casual, /Date Played/)
 
 const required = [
-  'PLAYER', 'PLAYER_FACTION', 'PLAYER_ARMY_CODE', 'OPPONENT', 'OPPONENT_FACTION',
-  'OPPONENT_ARMY_CODE', 'MISSION', 'GAME_RESULT', 'FIRST_TURN', 'PLAYER_TP',
+  'PLAYER', 'PLAYER_FACTION', 'OPPONENT', 'OPPONENT_FACTION',
+  'MISSION', 'GAME_RESULT', 'FIRST_TURN', 'PLAYER_TP',
   'OPPONENT_TP', 'PLAYER_OP', 'OPPONENT_OP', 'PLAYER_VP', 'OPPONENT_VP',
 ]
 for (const field of required) {
   assert.match(casual, new RegExp(`f\\.${field}[^\\n]+required: true`), `${field} must remain required.`)
 }
+for (const field of ['PLAYER_ARMY_CODE', 'OPPONENT_ARMY_CODE']) {
+  assert.match(casual, new RegExp(`f\\.${field}[^\\n]+required: false`), `${field} is conditional on an LLH game code.`)
+}
+assert.match(casual, /title: "LLH Game Code"[^\n]+required: false/)
 assert.match(casual, /f\.BEST_MOMENT[^\n]+required: false/)
 assert.match(casual, /f\.NOTES[^\n]+required: false/)
 assert.equal((casual.match(/type: "SCORE"/g) ?? []).length, 6)
