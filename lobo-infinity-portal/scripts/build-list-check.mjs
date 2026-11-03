@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises'
 import { gunzipSync } from 'node:zlib'
 import { assessLieutenantPackage, buildArmyListOptions, availableProfiles, fireteamUsefulness, impactAnchorValue, impetuousWarbandValue, ListBuilderError, matchingLieutenantDecoy, missionSpecialistPenalty, ncoCombatValue, optimizeCombatGroups,
   projectedRegularOrders, proposedFireteams, resolveRequiredProfile, roleCoverage,
-  rosterConnections, rosterDistance, rosterSignature, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
+  combatCoreDistance, hasTag, hasActiveLieutenant, rosterConnections, rosterDistance, rosterSignature, rosterRedundancy, rosterSynergy } from '../bot/build-list-generator.mjs'
 import { BUILD_LIST_COMMAND_DEFINITION, BUILD_LIST_EXTRA_MODEL_OPTIONS, buildListResponses, createBuildListAutocompleteHandler,
   createBuildListInteractionHandler, ensureBuildListCommand, formatBuiltList, getCurrentArmySource,
   searchBuildListFactions, searchBuildListMissions, searchBuildListUnits } from '../bot/build-list-command.mjs'
@@ -42,6 +42,16 @@ const exclusiveRoles = roleCoverage([gradeFixture('hybrid', 'S', 'S', 'S'), grad
 assert.deepEqual([exclusiveRoles.gunfighters, exclusiveRoles.aro, exclusiveRoles.cc], [3, 1, 3],
   'gunfighters may also fight in CC, while the assigned ARO model cannot fill either role')
 assert.deepEqual([exclusiveRoles.sGunfighters, exclusiveRoles.sAro, exclusiveRoles.sCc], [3, 1, 3])
+const coreGun = { id: 'gun-hmg', unitId: 7001, points: 30, gunfighterGrade: 'A' }
+const sameCore = { ...coreGun, id: 'gun-sniper', points: 29 }
+assert.equal(combatCoreDistance([coreGun], [sameCore, sameCore]), 0,
+  'changing weapons or taking extra copies does not replace a combat unit type')
+const linkedLt = { ...coreGun, lieutenant: true, gunfighterGrade: 'C', linkedGunfighterGrade: 'A', label: 'Combat Lt', combatGroup: 1 }
+const ltFixture = { profiles: [linkedLt], lieutenantPlan: { lieutenant: linkedLt }, fireteams: [] }
+assert.equal(hasActiveLieutenant(ltFixture), false, 'a theoretical linked grade cannot qualify an unlinked Lieutenant')
+assert.equal(hasActiveLieutenant({ ...ltFixture, fireteams: [{ level: 2, combatGroup: 1, members: [linkedLt.label] }] }), true,
+  'a legal linked A-grade Lieutenant qualifies as an active combat plan')
+assert.equal(hasTag({ profiles: [{ troopType: 5 }] }), false, 'a REM is not a TAG')
 assert.ok(hassassinProfiles.some(item => item.pitcher && item.linkable && item.points <= 25))
 assert.ok(hassassinProfiles.some(item => item.hacker && item.trinityHacker && item.armyCcGrade))
 const hackerPackage = buildArmyListOptions({ ...input, payload: hassassinPayload, sectorialId: 402,
@@ -117,14 +127,16 @@ assert.equal(controlledGroup.filter(item => item.groupId === 2).length, 1)
 assert.ok(controlledGroup.every(item => item.combatGroup === controlledGroup[0].combatGroup),
   'the group optimizer keeps Kuang Shi and their Monitor together')
 const results = buildArmyListOptions(input)
-assert.equal(results.length, 3)
+assert.ok(results.length >= 1 && results.length <= 3)
+if (results.length < 3) assert.ok(results[0].varietyNotes.some(note => /distinct/.test(note)), 'tight required-model constraints report a short portfolio instead of clones')
 assert.ok(results.some(result => result.points >= 298 && result.profiles.some(item => item.id === transductor.id)
   && result.quality.gunfighters >= 2 && result.quality.aro >= 2),
 'a cheap Regular Flash Pulse remote can release points for a strong, nearly full roster')
 assert.ok(results.every(result => result.profiles.filter(item => /warcor/i.test(item.slug)).length <= 1),
   'do not fill spare slots with multiple Irregular Warcors')
-assert.equal(new Set(results.map(item => item.profiles.map(profile => `${profile.combatGroup}:${profile.id}`).sort().join('|'))).size, 3)
-assert.ok(results.some(result => result.legality.totals.troopers === 15), 'prefer 15 models when the roster can support them')
+assert.equal(new Set(results.map(item => item.profiles.map(profile => `${profile.combatGroup}:${profile.id}`).sort().join('|'))).size, results.length)
+assert.ok(results.every(result => result.legality.totals.troopers >= 12),
+  'TAG and active-Lieutenant alternatives retain a viable order base while changing the combat core')
 // Regressions for repeated requests and three near-identical alternatives.
 const movedRoster = results[0].profiles.map(item => ({ ...item, combatGroup: item.combatGroup === 1 ? 2 : 1 })).reverse()
 assert.equal(rosterSignature(results[0].profiles), rosterSignature(movedRoster),
@@ -156,10 +168,10 @@ const alguacilDecoy = profiles.find(item => item.slug === 'corregidor-alguaciles
 const alguacilParamedic = profiles.find(item => item.slug === 'corregidor-alguaciles' && !item.lieutenant && item.paramedic)
 assert.ok(matchingLieutenantDecoy(alguacilLieutenant, alguacilDecoy), 'the ordinary Alguacil has the Lieutenant’s exact loadout')
 assert.ok(!matchingLieutenantDecoy(alguacilLieutenant, alguacilParamedic), 'a visible MediKit is not an identical decoy')
-assert.ok(results.every(result => result.lieutenantPlan.kind === 'cheap-decoy'
-  && matchingLieutenantDecoy(result.lieutenantPlan.lieutenant, result.lieutenantPlan.partner)),
-'Corregidor must pair its cheap LI Lieutenant with a truly identical non-Lieutenant')
-assert.ok(results.every(result => result.lieutenantPlan.nco && result.lieutenantPlan.nco.nco
+assert.ok(results.filter(result => result.lieutenantPlan.kind === 'cheap-decoy').every(result =>
+  matchingLieutenantDecoy(result.lieutenantPlan.lieutenant, result.lieutenantPlan.partner)),
+'cheap LI Lieutenant options retain truly identical decoys')
+assert.ok(results.filter(result => result.lieutenantPlan.kind === 'cheap-decoy').every(result => result.lieutenantPlan.nco && result.lieutenantPlan.nco.nco
   && ['A', 'B', 'S'].includes(result.lieutenantPlan.nco.gunfighterGrade)),
 'a cheap Lieutenant with a decoy needs a capable NCO to spend the Lieutenant Order')
 const wildcatPlusOne = profiles.find(item => item.slug === 'wildcats'
@@ -324,7 +336,8 @@ assert.doesNotMatch(formatBuiltList(warcorList, 1), /WARCOR[^\n]*Irregular/,
   'compact Discord summaries leave individual models to the linked Army list')
 
 const lowPointLists = buildArmyListOptions({ ...input, points: 200 })
-assert.equal(lowPointLists.length, 3)
+assert.ok(lowPointLists.length >= 1 && lowPointLists.length <= 3)
+if (lowPointLists.length < 3) assert.ok(lowPointLists[0].varietyNotes.length)
 assert.ok(lowPointLists.some(list => list.legality.totals.troopers >= 11),
   'at 200 points the forced TAG should still allow at least 11 actual Troopers')
 assert.ok(lowPointLists.every(list => list.legality.status === 'legal'
@@ -512,14 +525,31 @@ const vanilla = buildArmyListOptions({ ...input, payload: { ...payload, fireteam
 assert.equal(vanilla.length, 1)
 assert.deepEqual(vanilla[0].fireteams, [], 'armies without a chart must still get a list')
 
+// Exact production complaint: changing Kamau/Montesa loadouts is not a new
+// combat core. TAG and active-Lt requirements must survive portfolio selection.
+const varunaInput = { ...input, payload: source.payloads.find(item => item.url?.endsWith('/105')),
+  sectorialId: 105, rosterSlugs: LIVE_ROSTER_UNIT_SLUGS.get(105), mission: 'Corporate Appropriation', mustInclude: [],
+  teamTypeEvidence: { preferences: { global: { DUO: .04, HARIS: .05, CORE: -.007 } } } }
+for (const seed of [0, 101, 202]) {
+  const lists = buildArmyListOptions({ ...varunaInput, seed })
+  assert.equal(lists.length, 3, `Varuna Corporate Appropriation seed ${seed}: three distinct options`)
+  assert.ok(lists.some(hasTag), 'at least one option contains an official TAG (troop type 4)')
+  assert.ok(lists.some(hasActiveLieutenant), 'at least one has an A/S combat Lieutenant, verifying actual links')
+  assert.ok(lists.every(list => list.legality.status === 'legal' && list.points <= 300
+    && list.quality.specialists >= list.quality.specialistTarget), 'strategic variety retains legality and mission specialists')
+  assert.ok(lists.slice(1).every((list, index) => lists.slice(0, index + 1).every(other =>
+    combatCoreDistance(list.profiles, other.profiles) >= 1 / 3 && rosterDistance(list.profiles, other.profiles) >= .2)),
+  'every pair replaces at least a third of the smaller combat core, independently of loadouts')
+  assert.ok(lists.every(list => formatBuiltList(list).length <= 1990))
+}
 const messages = await buildListResponses({ faction: 'Corregidor', mission: 'Hardlock', mustInclude: 'Jazz, Iguana',
   getSource: async () => ({ faction: source.metadata.factions.find(item => item.id === 502), payload, metadata: source.metadata }),
   getCatalog: async () => catalog, getAroCatalog: async () => aroCatalog,
   getCloseCombatCatalog: async () => closeCombatCatalog, getMobilityCatalog: async () => mobilityCatalog,
   getTeamEvidence: async () => null })
-assert.equal(messages.length, 3, '/build-list sends three ranked armies')
-assert.equal(new Set(messages.map(message => message.content.match(/\[Open in Infinity Army\]\(([^)]+)\)/)?.[1])).size, 3,
-  'all three responses link to distinct full rosters')
+assert.ok(messages.length >= 1 && messages.length <= 3, '/build-list sends the distinct armies actually found')
+assert.equal(new Set(messages.map(message => message.content.match(/\[Open in Infinity Army\]\(([^)]+)\)/)?.[1])).size, messages.length,
+  'all responses link to distinct full rosters')
 for (const [index, message] of messages.entries()) {
   assert.ok(message.content.length <= 2000)
   assert.match(message.content, new RegExp(`\\*\\*Option ${index + 1} · .*Corregidor · Hardlock\\*\\*`))
@@ -549,7 +579,7 @@ const handled = await handler({
   followUp: async result => calls.push(result),
 })
 assert.equal(handled, true)
-assert.equal(calls.length, 4, 'defer, edit the initial reply, then follow up with the second and third lists')
+assert.equal(calls.length, messages.length + 1, 'defer, edit the initial reply, then follow up with remaining distinct lists')
 assert.deepEqual(calls.slice(1), messages)
 assert.deepEqual(selectedModels, ['Jazz', 'Iguana', 'ALGUACIL', 'ALGUACIL', 'SOMBRA'],
   'independent model slots combine with the original comma input and preserve requested copies')
