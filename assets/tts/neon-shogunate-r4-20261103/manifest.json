@@ -1,0 +1,75 @@
+{
+  "revision": "R4 / 13 approved designs across 28 signs / night only",
+  "designs": [
+    {
+      "index": 0,
+      "title": "Lobo\u2019s Last Call Neon Bar",
+      "placements": 3
+    },
+    {
+      "index": 1,
+      "title": "Crimson Silk Kimono Craft",
+      "placements": 3
+    },
+    {
+      "index": 2,
+      "title": "VOLT beneath the neon shogunate skyline",
+      "placements": 2
+    },
+    {
+      "index": 3,
+      "title": "Shinko Electronics precision optics",
+      "placements": 2
+    },
+    {
+      "index": 4,
+      "title": "Kitsune Express Delivery Drone",
+      "placements": 2
+    },
+    {
+      "index": 5,
+      "title": "Nami Bathhouse: Warm Water, Quiet Mind",
+      "placements": 2
+    },
+    {
+      "index": 6,
+      "title": "Yoru Hotel: Emerald Japanese Guest Room",
+      "placements": 2
+    },
+    {
+      "index": 7,
+      "title": "Raijin Arcade: Neon Thunder",
+      "placements": 2
+    },
+    {
+      "index": 8,
+      "title": "Neon sushi after dark",
+      "placements": 2
+    },
+    {
+      "index": 9,
+      "title": "Hana Clinic Holographic Heart Ad",
+      "placements": 2
+    },
+    {
+      "index": 10,
+      "title": "Kuma Robotics precision hand hologram",
+      "placements": 2
+    },
+    {
+      "index": 11,
+      "title": "Aoi Tea neon night sign",
+      "placements": 2
+    },
+    {
+      "index": 12,
+      "title": "Neon Night Market Ramen",
+      "placements": 2
+    }
+  ],
+  "signs": 28,
+  "background_modes": [
+    "night",
+    "off"
+  ]
+}
