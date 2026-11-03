@@ -8,7 +8,7 @@ import { getEventNavigationConfig } from '../config/eventNavigation'
 import { resolveMissionGeistNavigation } from '../config/missionGeistNavigation'
 import { loboWorkshopMaps, LOBO_WORKSHOP_URL } from '../../shared/lobo-workshop-maps.mjs'
 import type { MissionGeistCatalog } from '../services/publicSnapshot'
-import type { PublicArmyList, PublicEvent, PublicSchedule } from './snapshotTypes'
+import type { PublicArmyList, PublicGame, PublicEvent, PublicSchedule } from './snapshotTypes'
 import { useSnapshotData } from './useSnapshotData'
 import { activePreparationMatches, buildPreparationAssignments, groupPublicEventLists, isTop40Registration, preparationDate, top40RegistrationState, TOP40_PLANNED_OPENING_LABEL, TOP40_EVENT_ID, type PreparationAssignment } from './top40PreparationModel'
 import './Top40PreparationPage.css'
@@ -21,13 +21,14 @@ export default function Top40PreparationPage() {
   const registrations = useSnapshotData<unknown>('top-40-registrations')
   const schedules = useSnapshotData<PublicSchedule[]>('schedule')
   const armyLists = useSnapshotData<PublicArmyList[]>('army-lists')
+  const games = useSnapshotData<PublicGame[]>('games')
   const catalog = useSnapshotData<MissionGeistCatalog>('mission-catalog')
   const event = events.data?.find(item => item.id === TOP40_EVENT_ID)
   const registration = isTop40Registration(registrations.data) ? registrations.data : null
   const state = top40RegistrationState(event)
   const assignments = event ? buildPreparationAssignments(event, schedules.data ?? []) : []
   const matches = event ? activePreparationMatches(event) : []
-  const listGroups = groupPublicEventLists(armyLists.data ?? [], TOP40_EVENT_ID)
+  const listGroups = groupPublicEventLists(armyLists.data ?? [], TOP40_EVENT_ID, games.data ?? [])
   const config = getEventNavigationConfig(TOP40_EVENT_ID)
   const [checked, setChecked] = useState<boolean[]>(() => {
     try { const saved: unknown = JSON.parse(localStorage.getItem(checklistKey) || 'null'); if (Array.isArray(saved) && saved.length === 3 && saved.every(item => typeof item === 'boolean')) return saved } catch { /* Device storage is optional. */ }
@@ -87,7 +88,7 @@ export default function Top40PreparationPage() {
         </PreparationPanel>
         <PreparationPanel title="Army lists">
           <p>You can change your army and your army list between rounds. You are not required to use the same army or list throughout the tournament. Keep every list within the 300-point limit.</p>
-          {armyLists.error ? <DataNotice message="Published event lists are temporarily unavailable." retry={armyLists.retry}/> : !armyLists.data ? <p>Loading published lists…</p> : listGroups.length ? <div className="top40-preparation-lists">{listGroups.map(group => <details key={group.player}><summary>{group.displayName} <span>{group.lists.length} {group.lists.length === 1 ? 'list' : 'lists'}</span></summary>{group.lists.map(list => <article key={list.id}><h3>{list.armyName || list.sectorial || list.faction || 'Army list'}</h3><p>{list.mission || 'Mission not specified'} · {preparationDate(list.date)}</p>{list.opponentDisplayName || list.opponent ? <p>vs {list.opponentDisplayName || list.opponent}</p> : null}<div className="top40-preparation-actions">{list.armyLink ? <InfinityArmyLink mobileCopyOnly href={list.armyLink}>View List</InfinityArmyLink> : <span>Army code unavailable</span>}{list.gameId ? <Link to={`/games/${list.gameId}`}>View game →</Link> : null}</div></article>)}</details>)}</div> : <div className="top40-preparation-empty"><h3>No public event lists yet</h3><p>Published Top 40 lists will appear here, grouped by player and game.</p></div>}
+          {(armyLists.error || games.error) ? <DataNotice message="Published event lists are temporarily unavailable." retry={() => { armyLists.retry(); games.retry() }}/> : (!armyLists.data || !games.data) ? <p>Loading published lists…</p> : listGroups.length ? <div className="top40-preparation-lists">{listGroups.map(group => <details key={group.player}><summary>{group.displayName} <span>{group.lists.length} {group.lists.length === 1 ? 'list' : 'lists'}</span></summary>{group.lists.map(list => <article key={`${list.gameId}:${list.id}`}><h3>{list.armyName || list.sectorial || list.faction || 'Army list'}</h3><p>{list.mission || 'Mission not specified'} · {preparationDate(list.date)}</p>{list.opponentDisplayName || list.opponent ? <p>vs {list.opponentDisplayName || list.opponent}</p> : null}<div className="top40-preparation-actions">{list.armyLink ? <InfinityArmyLink mobileCopyOnly href={list.armyLink}>View List</InfinityArmyLink> : <span>Army code unavailable</span>}{list.gameId ? <Link to={`/games/${list.gameId}`}>View game →</Link> : null}</div></article>)}</details>)}</div> : <div className="top40-preparation-empty"><h3>No public event lists yet</h3><p>Published Top 40 lists will appear here, grouped by player and game.</p></div>}
           <Link to="/army-lists">Browse community lists →</Link>
         </PreparationPanel>
         <PreparationPanel title="Rules at a glance"><dl className="top40-preparation-facts"><Fact label="Army size" value="300 points"/><Fact label="Elimination" value="After your second loss"/><Fact label="Draw tiebreak" value="Victory Points, then Organizer ruling"/></dl><Link to={`/event/${TOP40_EVENT_ID}/rules`}>Read full tournament rules →</Link></PreparationPanel>

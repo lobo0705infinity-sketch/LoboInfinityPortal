@@ -1,5 +1,5 @@
 import { withTop40RoundMaps } from '../../shared/top40-round-maps.mjs'
-import type { PublicArmyList, PublicEvent, PublicMissionAssignment, PublicSchedule } from './snapshotTypes'
+import type { PublicArmyList, PublicGame, PublicEvent, PublicMissionAssignment, PublicSchedule } from './snapshotTypes'
 
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
 // Start date announced by the Commissioner; the event snapshot takes precedence.
@@ -47,9 +47,38 @@ export function activePreparationMatches(event: PublicEvent) {
     .map(record => ({ id: text(record.matchId), playerA: text(record.playerA), playerB: text(record.playerB), deadline: text(record.deadline) }))
 }
 
-export function groupPublicEventLists(lists: PublicArmyList[], eventId: string) {
+export function groupPublicEventLists(lists: PublicArmyList[], eventId: string, games: PublicGame[] = []) {
+  // The list vault deduplicates rosters and its legacy export omits eventId/gameId.
+  // Rebuild each public game appearance from canonical list IDs, never from names
+  // or mission alone. A reused roster can belong to several rounds and events.
+  const appearances = new Map<PublicArmyList, PublicArmyList[]>()
+  const identity = (value: string) => text(value).toLowerCase()
+  for (const game of games) {
+    const draw = game.winner === 'Draw'
+    for (const side of ['winner', 'loser'] as const) {
+      const id = text(game[`${side}ArmyListId`])
+      if (!id) continue
+      const winnerSide = side === 'winner'
+      const player = draw ? (winnerSide ? game.player1 : game.player2) : game[side]
+      const opponent = draw ? (winnerSide ? game.player2 : game.player1) : game[winnerSide ? 'loser' : 'winner']
+      const playerDisplayName = draw ? (winnerSide ? game.player1DisplayName : game.player2DisplayName) : game[`${side}DisplayName`]
+      const opponentDisplayName = draw ? (winnerSide ? game.player2DisplayName : game.player1DisplayName) : game[winnerSide ? 'loserDisplayName' : 'winnerDisplayName']
+      const list = lists.find(item => item.id === id && [item.player, item.playerDisplayName].some(name => identity(name) && [player, playerDisplayName].some(participant => identity(name) === identity(participant))) && item.approved !== false)
+      if (!list) continue
+      const records = appearances.get(list) ?? []
+      if (!records.some(item => item.gameId === game.id && item.player === player)) records.push({
+        ...list, player, playerDisplayName: playerDisplayName || list.playerDisplayName || player,
+        gameId: game.id, eventId: game.eventId, eventName: game.eventName,
+        gameType: game.gameType, date: game.date, mission: game.mission,
+        opponent, opponentDisplayName: opponentDisplayName || opponent,
+        result: draw ? 'Draw' : winnerSide ? 'Win' : 'Loss', battleReportPath: `/games/${game.id}`,
+      })
+      appearances.set(list, records)
+    }
+  }
+  const eventLists = lists.flatMap(list => appearances.get(list) ?? [list])
   const groups = new Map<string, { player: string; displayName: string; lists: PublicArmyList[] }>()
-  for (const list of lists) {
+  for (const list of eventLists) {
     if (list.eventId !== eventId || list.approved === false) continue
     const group = groups.get(list.player) ?? { player: list.player, displayName: list.playerDisplayName || list.player, lists: [] }
     group.lists.push(list)
