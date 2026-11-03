@@ -83,7 +83,10 @@ try {
   assert(interaction.payload.content.includes('SECRET') === false, 'only the full-list attachment contains raw private codes')
   assert.equal(interaction.payload.files[0].attachment.toString(), 'REPLACED-B')
   const definition = ApplicationCommandManager.transformCommand(GROUPED_COMMAND_DEFINITIONS.find(command => command.name === 'list'))
-  assert.equal(definition.options.find(option => option.name === 'game').options.length, 5)
+  assert.equal(definition.options.find(option => option.name === 'game').options.length, 6)
+  const gameDefinition = definition.options.find(option => option.name === 'game')
+  assert.deepEqual(gameDefinition.options.find(option => option.name === 'create').options.map(option => option.name), ['opponent', 'army-code', 'game-name'])
+  assert.deepEqual(gameDefinition.options.find(option => option.name === 'join').options.map(option => option.name), ['game', 'army-code'])
   const submitDefinition = definition.options.find(option => option.name === 'game').options.find(option => option.name === 'submit')
   assert.equal(submitDefinition.options.find(option => option.name === 'player').type, 6, 'Discord account picker replaces free-text names')
 
@@ -127,6 +130,83 @@ try {
   await pickerStore.ready(pickerGame.code, A, guildId); await pickerStore.ready(pickerGame.code, B, guildId)
   assert.deepEqual(await pickerStore.resolveLocked(pickerGame.code, ['Alice', 'Bob']), [army, army])
   assert.match(await submitAs(A, A), /locked/)
+
+  // New invitation flow uses real SDK option parsing and the persistent store.
+  // Creation saves A atomically; only invited B can join and lock both lists.
+  const invitePath = join(directory, 'invites.json')
+  const invites = createListExchangeStore(invitePath, { now: () => now })
+  const notifications = []
+  let closedDM = false
+  const inviteClient = { users: { fetch: async id => ({ bot: false, createDM: async () => ({ send: async payload => {
+    if (closedDM) throw Error('DM closed')
+    notifications.push({ id, ...payload }); return { id: `invite-${notifications.length}` }
+  } }) }) } }
+  let inviteLookups = 0
+  const inviteService = createListExchangeService({ store: invites, reports: { configured: true, load: async () => [] }, logger: quiet,
+    linkedPlayers: async () => { inviteLookups++; return [{ userId: A, name: 'Alice' }, { userId: B, name: 'Bob' }] } })
+  const inviteRoute = createGroupedCommandHandler({ handlers: { 'list-game': inviteService.handler }, logger: quiet })
+  async function invitationCommand(actor, action, options, requestedGuild = guildId) {
+    const input = { ...interaction, user: { id: actor }, client: inviteClient, guildId: requestedGuild,
+      guild: { name: 'Test server', members: { fetch: async id => ({ user: { id, bot: false } }) } },
+      options: new CommandInteractionOptionResolver({}, [{ name: 'game', type: 2, options: [{ name: action, type: 1, options }] }], {}) }
+    assert.equal(await inviteRoute(input), true)
+    assert.deepEqual(input.payload.allowedMentions, { parse: [] })
+    return input.payload
+  }
+  const str = (name, value) => ({ name, value, type: 3 })
+  const createOptions = code => [{ name: 'opponent', type: 6, value: B, user: { id: B, username: 'Bob', bot: false } }, str('army-code', code), str('game-name', 'Top 40 W2')]
+  assert.match((await invitationCommand(A, 'create', createOptions('invalid'))).content, /decodable/)
+  const createdInvite = await invitationCommand(A, 'create', createOptions(army))
+  assert.match(createdInvite.content, /Game created/)
+  const inviteCode = createdInvite.content.match(/LLH-[A-F0-9]{16}/)[0]
+  assert.equal(notifications.length, 1); assert.equal(notifications[0].id, B)
+  assert(notifications[0].content.includes(`<@${A}>`)); assert(notifications[0].content.includes(inviteCode))
+  assert(notifications[0].content.includes('/list game join')); assert(!JSON.stringify(notifications).includes(army))
+  const beforeJoin = await invites.status(inviteCode, B, guildId)
+  assert.equal(beforeJoin.status, 'open'); assert.equal(beforeJoin.opponent.submitted, true)
+  assert(!JSON.stringify(beforeJoin).includes(army), 'invited player cannot see creator list')
+  assert.equal((await invites.status(inviteCode, A, guildId)).own.armyCode, army)
+  const joinOptions = [str('game', inviteCode.toLowerCase()), str('army-code', army)]
+  const beforeLookups = inviteLookups
+  assert.match((await invitationCommand(C, 'join', joinOptions)).content, /Only the two/)
+  assert.match((await invitationCommand(A, 'join', joinOptions)).content, /Only the invited/)
+  assert.match((await invitationCommand(B, 'join', joinOptions, 'another-server')).content, /Only the two/)
+  assert.equal(inviteLookups, beforeLookups, 'check invitation ownership before identity lookup or list decoding')
+  assert.match((await invitationCommand(B, 'join', [str('game', inviteCode), str('army-code', 'invalid')])).content, /decodable/)
+  assert.equal((await invites.status(inviteCode, A, guildId)).status, 'open')
+  await assert.rejects(invites.submit(inviteCode, A, guildId, 'Alice', army), /invited game/)
+  await assert.rejects(invites.ready(inviteCode, A, guildId), /No ready/)
+  const joined = await invitationCommand(B, 'join', joinOptions)
+  assert.match(joined.content, /Game submitted/)
+  assert.equal(notifications.length, 2); assert.equal(notifications[1].id, A)
+  assert(notifications[1].content.includes(`<@${B}>`)); assert(!JSON.stringify(notifications).includes(army))
+  assert.equal((await invites.status(inviteCode, A, guildId)).status, 'locked')
+  assert.equal((await invites.status(inviteCode, B, guildId)).opponent.armyCode, undefined)
+  assert.deepEqual(await invites.resolveLocked(inviteCode, ['Alice', 'Bob'], now), [army, army])
+  await invitationCommand(B, 'join', joinOptions)
+  assert.equal(notifications.length, 2, 'repeated join cannot mutate or notify twice')
+  await invites.reconcile([report(inviteCode, { submittedAt: now - 1 })])
+  assert.equal((await invites.status(inviteCode, A, guildId)).status, 'locked')
+  await invites.reconcile([report(inviteCode)])
+  assert.equal((await invites.status(inviteCode, A, guildId)).opponent.armyCode, army)
+  assert.equal((await createListExchangeStore(invitePath).status(inviteCode, B, guildId)).status, 'released')
+
+  // Closed DMs leave a saved game, clear fallback instructions and usable code.
+  closedDM = true
+  const fallback = await invitationCommand(A, 'create', createOptions(army))
+  assert.match(fallback.content, /could not DM/)
+  const fallbackCode = fallback.content.match(/LLH-[A-F0-9]{16}/)[0]
+  const fallbackJoin = await invitationCommand(B, 'join', [str('game', fallbackCode), str('army-code', army)])
+  assert.match(fallbackJoin.content, /Game submitted/); assert.match(fallbackJoin.content, /could not DM/)
+  assert.equal((await invites.status(fallbackCode, A, guildId)).status, 'locked')
+  const race = await invites.create({ userId: A, opponentId: B, guildId, title: 'Concurrent join', name: 'Alice', armyCode: army })
+  const raceResults = await Promise.allSettled([invites.join(race.code, B, guildId, 'Bob', army), invites.join(race.code, B, guildId, 'Bob', 'replacement')])
+  assert.equal(raceResults.filter(result => result.status === 'fulfilled').length, 1)
+  assert.deepEqual(await invites.resolveLocked(race.code, ['Alice', 'Bob'], now), [army, army])
+  const cancelledInvite = await invites.create({ userId: A, opponentId: B, guildId, title: 'Cancel invitation', name: 'Alice', armyCode: army })
+  await invites.cancel(cancelledInvite.code, A, guildId)
+  await assert.rejects(invites.join(cancelledInvite.code, B, guildId, 'Bob', army), /closed/)
+  console.log('PASS invitations: atomic create with own list, account-bound join, automatic lock, private DMs, closed-DM fallback, duplicate/concurrent join, cancellation, restart and accepted-report release.')
 
   // Authenticated machine resolution never gives the browser a private list.
   const locked = await createLocked('HTTP test')

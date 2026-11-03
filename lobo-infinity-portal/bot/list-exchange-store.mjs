@@ -49,7 +49,7 @@ export function createListExchangeStore(path, { now = Date.now } = {}) {
     const own = game.players.find(player => player.id === userId)
     const opponent = game.players.find(player => player.id !== userId)
     return {
-      code: game.code, title: game.title, status: game.status, lockedAt: game.lockedAt,
+      code: game.code, title: game.title, status: game.status, lockedAt: game.lockedAt, workflow: game.workflow, creatorId: game.players[0].id,
       reportId: game.report?.id, issue: game.issue || '',
       own: { ...own },
       opponent: { id: opponent.id, name: opponent.name, submitted: Boolean(opponent.armyCode), ready: opponent.ready,
@@ -62,17 +62,36 @@ export function createListExchangeStore(path, { now = Date.now } = {}) {
       if (!/^\d{17,20}$/.test(input.userId) || !/^\d{17,20}$/.test(input.opponentId) || input.userId === input.opponentId) fail('Choose another human Discord player.')
       const title = String(input.title || '').trim()
       if (!title || title.length > 100 || /[\u0000-\u001f\u007f]/.test(title)) fail('Enter a game description of 1–100 characters.')
+      const name = String(input.name || '').normalize('NFKC').trim()
+      if (input.armyCode !== undefined && (!name || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name) || typeof input.armyCode !== 'string' || !input.armyCode || input.armyCode.length > 4000)) fail('A linked portal name and valid Army code are required to create this game.')
       const state = await read()
       if (state.games.filter(game => ['open', 'locked'].includes(game.status) && game.players.some(player => player.id === input.userId)).length >= 20) fail('You already have 20 pending games. Cancel an unused open exchange first.')
       let code
       do { code = `LLH-${randomBytes(8).toString('hex').toUpperCase()}` } while (state.games.some(game => game.code === code))
       const game = { code, guildId: input.guildId, title, status: 'open', createdAt: now(),
         players: [input.userId, input.opponentId].map(id => ({ id, name: '', armyCode: '', ready: false })), deliveries: {} }
+      if (input.armyCode !== undefined) {
+        game.workflow = 'invite'
+        Object.assign(game.players[0], { name, armyCode: input.armyCode, ready: true })
+      }
       state.games.push(game); await write(state); return view(game, input.userId)
     }),
     status: (code, userId, guildId) => run(async () => view(find(await read(), code, userId, guildId), userId)),
+    join: (code, userId, guildId, name, armyCode) => run(async () => {
+      const state = await read(), game = find(state, code, userId, guildId)
+      if (game.workflow !== 'invite' || game.players[1].id !== userId) fail('Only the invited opponent can join this game. Use /list game status to check your game.')
+      if (game.status !== 'open') fail('This game is already submitted or closed. Lists cannot be replaced.')
+      name = String(name || '').normalize('NFKC').trim()
+      if (!name || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name)) fail('A linked portal player name is required.')
+      if (normalizedName(game.players[0].name) === normalizedName(name)) fail('The two players must have different portal names.')
+      if (typeof armyCode !== 'string' || !armyCode || armyCode.length > 4000) fail('Enter a valid Infinity Army code.')
+      Object.assign(game.players[1], { name, armyCode, ready: true })
+      game.status = 'locked'; game.lockedAt = now()
+      await write(state); return view(game, userId)
+    }),
     submit: (code, userId, guildId, name, armyCode) => run(async () => {
       const state = await read(), game = find(state, code, userId, guildId)
+      if (game.workflow === 'invite') fail('For an invited game, the opponent uses /list game join. Submitted lists cannot be replaced; cancel an open game and create a new one if needed.')
       if (game.status !== 'open') fail('These lists are locked or this exchange is closed. They cannot be replaced.')
       name = String(name || '').normalize('NFKC').trim()
       if (!name || name.length > 80 || /[\u0000-\u001f\u007f]/.test(name)) fail('Enter your exact portal player name (1–80 characters).')
@@ -84,6 +103,7 @@ export function createListExchangeStore(path, { now = Date.now } = {}) {
     }),
     ready: (code, userId, guildId) => run(async () => {
       const state = await read(), game = find(state, code, userId, guildId)
+      if (game.workflow === 'invite') fail('No ready command is needed. The invited opponent uses /list game join to submit and lock both lists.')
       if (game.status !== 'open') fail('This exchange is already locked or closed.')
       if (game.players.some(player => !player.armyCode || !player.name)) fail('Both players must submit their lists before confirming ready.')
       game.players.find(player => player.id === userId).ready = true

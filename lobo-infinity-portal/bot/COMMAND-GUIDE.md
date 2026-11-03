@@ -10,7 +10,7 @@ Grouped commands replace the nine legacy slash-menu entries listed below. Compac
 | Generate three mission-guided options | `/list build` | `/build-list` |
 | Generate a random legal army | `/list random` | `/random-list` |
 | Print a model identification sheet | `/list identify` | `/inf-id` |
-| Exchange lists after a game report | `/list game create/submit/ready/status/cancel` | — |
+| Exchange lists after a game report | `/list game create/join/status/cancel` | — |
 | Compare two profiles | `/combat matchup` | `/matchup` |
 | Find ARO counters | `/combat counters` | `/aro-counter` |
 | Set/read/remove recurring availability | `/play availability set/show/clear` | `/availability set/show/clear` |
@@ -23,6 +23,8 @@ Grouped commands replace the nine legacy slash-menu entries listed below. Compac
 Alternatives must change at least a third of their smaller combat core (unit types, ignoring loadouts and copies) and pass a whole-roster difference check. Required unit types are excluded from the core comparison. If the search cannot find three distinct options or include a requested strategic choice, the initial response says so; it does not pad the set with near-identical lists. Recent-result memory is bounded and resets when the bot restarts.
 
 `/rules` and `/mission` remain direct reference commands. `/mission` uses the `scenario` input.
+
+`/list game create` takes the opponent's Discord account, your own `army-code` and a `game-name`. LLH saves your list and DMs the opponent a game code. The invited account uses `/list game join game:LLH-… army-code:…` in the same server to save their own list and automatically lock both. LLH privately confirms each action and DMs the creator when the opponent joins. If a DM fails, the private response explains how to continue. Enter the code when reporting; the existing accepted-report exchange remains unchanged. The older submit/ready commands remain available for games created before this flow.
 
 `/help` opens an ephemeral guide with Army Lists, Combat, Game Reference and Find a Game buttons. Server managers also see Server Tools. The report-review command remains restricted to Manage Server, with the permission checked again when invoked.
 
