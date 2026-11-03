@@ -40,7 +40,8 @@ function canonicalValidatePortalTop40Game_(command) {
   const opponentArmyList = validateResultSubmissionArmyListId(params.opponentArmyListId, bracket.opponent, opponentFaction, params.opponentArmyCode || params.player2ArmyCode);
   if (!opponentArmyList.valid) return canonicalValidationFailure_(opponentArmyList.error);
   return canonicalValidationSuccess_(canonicalBuildPortalValidationValue_(
-    bracket.eventId, bracket.player, bracket.opponent, scores, params.winner,
+    // Resolve form labels to the canonical player before building the game row.
+    bracket.eventId, bracket.player, bracket.opponent, scores, bracket.winner,
     playerFaction, opponentFaction, playerArmyList, opponentArmyList
   ));
 }
