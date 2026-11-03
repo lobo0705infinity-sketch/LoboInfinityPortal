@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "live_TTS_physics": false,
+  "states": [
+    {
+      "state": "open",
+      "visible_entrance_rays": 1984,
+      "clear_width_inches": 2.3,
+      "clear_height_inches": 2.7,
+      "S2_swept_paths": 2,
+      "threshold_support": "continuous",
+      "visual_vertices": 728,
+      "collision_vertices": 184,
+      "convex_collision_groups": 25,
+      "opaque_central_sides": "retained"
+    },
+    {
+      "state": "roof",
+      "visible_entrance_rays": 1984,
+      "clear_width_inches": 2.3,
+      "clear_height_inches": 2.7,
+      "S2_swept_paths": 2,
+      "threshold_support": "continuous",
+      "visual_vertices": 964,
+      "collision_vertices": 192,
+      "convex_collision_groups": 26,
+      "opaque_central_sides": "retained"
+    }
+  ]
+}
