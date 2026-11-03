@@ -4,6 +4,7 @@ import { createKillInteractionHandler } from './kill-command.mjs'
 import { createAuroraRegistrationService } from './aurora-registration-command.mjs'
 import { createTop40Notifications } from './top40-notifications.mjs'
 import { createListExchangeService, createListExchangeReportSource } from './list-exchange.mjs'
+import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
 import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands, retireLegacySlashCommands } from './grouped-commands.mjs'
 import { installFeedbackCapture, createBotFeedbackHandler, reportableResponse } from './bot-feedback.mjs'
@@ -118,8 +119,14 @@ export function createLobosLittleHelper() {
   client.setMaxListeners(23)
   const auroraRegistration = createAuroraRegistrationService()
   client.auroraRegistration = auroraRegistration
-  client.listExchange = createListExchangeService({ reports: createListExchangeReportSource({ campaignReports: codes => auroraRegistration.listExchangeReports(codes) }) })
   client.top40Notifications = createTop40Notifications({ registeredPlayers: () => auroraRegistration.registeredPlayers() })
+  client.listExchange = createListExchangeService({
+    reports: createListExchangeReportSource({ campaignReports: codes => auroraRegistration.listExchangeReports(codes) }),
+    linkedPlayers: async guildId => guildId === AURORA_DISCORD_GUILD_ID ? [
+      ...await client.top40Notifications.linkedPlayers(guildId),
+      ...await auroraRegistration.registeredPlayers(),
+    ] : [],
+  })
   client.on(Events.InteractionCreate, client.top40Notifications.handler)
   client.on(Events.InteractionCreate, auroraRegistration.handler)
   const handleInfList = createInfListInteractionHandler()

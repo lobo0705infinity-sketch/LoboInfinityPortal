@@ -7,8 +7,13 @@ Tournament, Casual, and live Aurora VII campaign games.
 
 1. Run `/list game create opponent:@opponent description:Top 40 W2` in the shared
    server. Share the returned `LLH-…` game code with that opponent.
-2. Both players run `/list game submit game:LLH-… player:<exact portal name>
-   army-code:<full Army code or link>`. Replies are private to the requester.
+2. Both players run `/list game submit game:LLH-… player:@yourself
+   army-code:<full Army code or link>`. Select your own account from Discord's
+   player picker. LLH uses the portal name from your existing confirmed Top 40
+   account link or self-linked Aurora registration and shows it in the private
+   response. No manual name entry is needed. Unlinked or conflicting accounts
+   must have their links corrected by Lobo before submitting; Discord display
+   names are never guessed. Replies are private to the requester.
 3. Both run `/list game ready game:LLH-…` before playing. Both lists must exist
    first. Replacing either list clears both ready confirmations. When both
    players are ready, both lists lock for that game.
