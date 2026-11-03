@@ -7,6 +7,7 @@ import { INF_ID_COMMAND_DEFINITION } from './inf-id-command.mjs'
 import { MATCHUP_COMMAND_DEFINITION } from './matchup-command.mjs'
 import { ARO_VS_COMMAND_DEFINITION } from './aro-vs-command.mjs'
 import { AVAILABILITY_COMMAND_DEFINITION, FIND_GAME_COMMAND_DEFINITION } from './matchmaking-command.mjs'
+import { LIST_GAME_COMMAND } from './list-exchange.mjs'
 
 const subcommand = (name, definition) => ({ name, description: definition.description, type: Type.Subcommand, options: structuredClone(definition.options || []) })
 const group = (name, definition) => ({ name, description: definition.description, type: Type.SubcommandGroup, options: structuredClone(definition.options || []) })
@@ -15,6 +16,7 @@ export const GROUPED_COMMAND_DEFINITIONS = Object.freeze([
   { name: 'list', description: 'Analyse, build, randomize or identify an Infinity army', options: [
     subcommand('analyse', INF_LIST_COMMAND_DEFINITION), subcommand('build', BUILD_LIST_COMMAND_DEFINITION),
     subcommand('random', RANDOM_LIST_COMMAND_DEFINITION), subcommand('identify', INF_ID_COMMAND_DEFINITION),
+    group('game', LIST_GAME_COMMAND),
   ] },
   { name: 'combat', description: 'Compare profiles or find ARO counters', options: [
     subcommand('matchup', MATCHUP_COMMAND_DEFINITION), subcommand('counters', ARO_VS_COMMAND_DEFINITION),
@@ -38,6 +40,7 @@ const routes = {
 export function groupedCommandRoute(interaction) {
   const table = routes[interaction.commandName]
   if (!table || !(interaction.isChatInputCommand?.() || interaction.isAutocomplete?.())) return null
+  if (interaction.commandName === 'list' && interaction.options.getSubcommandGroup(false) === 'game') return 'list-game'
   const key = interaction.commandName === 'play'
     ? interaction.options.getSubcommandGroup(false) : interaction.options.getSubcommand(false)
   return table[key] || null
@@ -76,7 +79,7 @@ const manager = interaction => Boolean(interaction.guildId && interaction.member
 const topics = {
   lists: {
     title: 'Army Lists',
-    description: '**/list analyse** — Army code → readable list, legality, brief summary and TTS export. Detail buttons open Tactical Brief, Ratings, Classifieds and TTS Notes privately.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options with Analyse This List and Create ID Sheet buttons. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list with private roster/details and connected actions.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`',
+    description: '**/list analyse** — Army code → readable list, legality, brief summary and TTS export. Detail buttons open Tactical Brief, Ratings, Classifieds and TTS Notes privately.\nExample: `/list analyse army-code:<your Army code>`\n\n**/list build** — Faction + mission → three guided list options with Analyse This List and Create ID Sheet buttons. Required models are optional.\nExample: `/list build faction:Corregidor mission:Hardlock must-include:Jazz, Iguana`\n\n**/list random** — Faction + points + SWC → a random legal list with private roster/details and connected actions.\nExample: `/list random faction:TAK points:300 swc:6`\n\n**/list identify** — Army code → printable model identification sheet.\nExample: `/list identify army-code:<your Army code>`\n\n**/list game create** — Choose your opponent and share the private response’s game code. Both players use **/list game submit** with their exact portal names, then **/list game ready**. Include the code in the portal result form. After the accepted report, LLH DMs both full lists. **/list game status** retrieves a released list if DMs are closed. **/list game cancel** cancels an exchange before locking.',
   },
   combat: {
     title: 'Combat',

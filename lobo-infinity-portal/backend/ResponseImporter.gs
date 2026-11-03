@@ -19,15 +19,20 @@ function handleLoboFormSubmit(e) {
     const namedValues = formType === LIF_FORMS.TYPES.CASUAL || formType === LIF_FORMS.TYPES.TOP40
       ? lifBuildCasualNamedValuesFromResponseRow_(e)
       : e.namedValues;
+    // Native Date cells preserve the exact report instant regardless of the
+    // form's display locale or any delay before the import trigger runs.
+    const responseTimestamp = String((namedValues["LLH Game Code"] || [""])[0] || "").trim()
+      ? sourceSheet.getRange(e.range.getRow(), 1).getValue()
+      : e.values && e.values[0];
     if (formType === LIF_FORMS.TYPES.TOP40) {
-      importTop40FormSubmission_(namedValues, e.values && e.values[0], responseKey, log, target, e.range.getRow());
+      importTop40FormSubmission_(namedValues, responseTimestamp, responseKey, log, target, e.range.getRow());
       return;
     }
     const command = createSubmissionCommand({
       source: "google-form",
       workflow: formType,
       namedValues: namedValues,
-      timestamp: e.values && e.values[0],
+      timestamp: responseTimestamp,
       targetSpreadsheet: target,
       importLog: log,
       responseKey: responseKey
@@ -145,6 +150,7 @@ function lifReadSubmission_(named, formType, timestamp, targetSpreadsheet) {
     playerFaction: get(f.PLAYER_FACTION), opponentFaction: get(f.OPPONENT_FACTION),
     playerArmyCode: lifNormalizeArmyCode_(get(f.PLAYER_ARMY_CODE)),
     opponentArmyCode: lifNormalizeArmyCode_(get(f.OPPONENT_ARMY_CODE)),
+    listExchangeCode: get("LLH Game Code"),
     playerTp: get(f.PLAYER_TP), opponentTp: get(f.OPPONENT_TP),
     playerOp: get(f.PLAYER_OP), opponentOp: get(f.OPPONENT_OP),
     playerVp: get(f.PLAYER_VP), opponentVp: get(f.OPPONENT_VP),

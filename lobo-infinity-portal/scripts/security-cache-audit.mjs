@@ -129,6 +129,7 @@ const endpointPolicy = {
   armyIntelligenceSnapshotState: { authRequired: true, userScoped: false },
   installArmyIntelligenceScheduler: { authRequired: true, userScoped: false },
   processAutomationQueueBatch: { authRequired: true, userScoped: false },
+  getListExchangeReports: { authRequired: true, userScoped: false },
   requestCanonicalRebuildRecovery: { authRequired: true, userScoped: false },
   requestPreparedProjectionRecovery: { authRequired: true, userScoped: false },
   getPreparedProjectionReliabilityStatus: { authRequired: true, userScoped: false },

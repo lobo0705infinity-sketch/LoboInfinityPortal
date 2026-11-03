@@ -3,6 +3,7 @@ import { createBotInventoryHandler, inventoryAtStartup } from './bot-inventory.m
 import { createKillInteractionHandler } from './kill-command.mjs'
 import { createAuroraRegistrationService } from './aurora-registration-command.mjs'
 import { createTop40Notifications } from './top40-notifications.mjs'
+import { createListExchangeService, createListExchangeReportSource } from './list-exchange.mjs'
 import { createDetailInteractionHandler } from './response-details.mjs'
 import { createGroupedCommandHandler, createHelpInteractionHandler, ensureGroupedCommands, retireLegacySlashCommands } from './grouped-commands.mjs'
 import { installFeedbackCapture, createBotFeedbackHandler, reportableResponse } from './bot-feedback.mjs'
@@ -117,6 +118,7 @@ export function createLobosLittleHelper() {
   client.setMaxListeners(23)
   const auroraRegistration = createAuroraRegistrationService()
   client.auroraRegistration = auroraRegistration
+  client.listExchange = createListExchangeService({ reports: createListExchangeReportSource({ campaignReports: codes => auroraRegistration.listExchangeReports(codes) }) })
   client.top40Notifications = createTop40Notifications({ registeredPlayers: () => auroraRegistration.registeredPlayers() })
   client.on(Events.InteractionCreate, client.top40Notifications.handler)
   client.on(Events.InteractionCreate, auroraRegistration.handler)
@@ -137,7 +139,7 @@ export function createLobosLittleHelper() {
   const handleFeedback = createBotFeedbackHandler()
   const handleBotInventory = createBotInventoryHandler()
   const handleGrouped = createGroupedCommandHandler({ handlers: {
-    'inf-list': handleInfList, 'build-list': handleBuildList, 'random-list': handleRandomList, 'inf-id': handleInfId,
+    'inf-list': handleInfList, 'build-list': handleBuildList, 'random-list': handleRandomList, 'inf-id': handleInfId, 'list-game': client.listExchange.handler,
     'matchup': handleMatchup, 'aro-counter': handleAroVs, 'availability': handleMatchmaking, 'find-game': handleMatchmaking, 'bot-reports': handleFeedback, 'bot-inventory': handleBotInventory,
   }, autocompleteHandlers: {
     'build-list': handleBuildListAutocomplete, 'random-list': handleRandomListAutocomplete,
@@ -188,6 +190,7 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   catch (error) { process.stderr.write(`Aurora VII registration could not start: ${error.message}\n`) }
   try { await client.top40Notifications.start(client) }
   catch { process.stderr.write('Top 40 match notifications could not start; other bot commands remain available.\n') }
+  await client.listExchange.start(client)
   try {
     const commands = await ensureMissionCommand(client)
     const rulesCommands = await ensureRulesCommand(client)

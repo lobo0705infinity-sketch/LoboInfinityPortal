@@ -29,9 +29,14 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
     operate:(input,players,publication)=>run(async()=>{const s=await read();const result=mutateOperations(s,input,players,publication,now());await write(s);return result}),
     view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn),reporting:s.operations?{turn:publication.turn,phase:s.operations.turns[publication.turn]?.phase||'unprepared'}:null}}),
     totals:turn=>run(async()=>campaignTotals((await read()).games,turn)),
+    listExchangeReports: codes => run(async () => (await read()).games.filter(g => codes.includes(g.listExchangeCode)).map(g => ({
+      code: g.listExchangeCode, id: `aurora:${g.id}`, players: [g.playerA.name, g.playerB.name], playerIds: [g.playerA.id, g.playerB.id],
+      submittedAt: Date.parse(g.createdAt), accepted: g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved),
+    }))),
     activity:turn=>run(async()=>{const s=await read(),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved));return {turn,totals:campaignTotals(games,turn),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB}))}}),
     submit:(input,player,opponent,publication)=>run(async()=>{
       const s=await read();if(!player||!opponent||player.userId===opponent.userId)fail('Choose another registered campaign player.')
+      if (input.listExchangeCode && s.games.some(g => g.listExchangeCode === String(input.listExchangeCode).trim().toUpperCase())) fail('Choose a new LLH game code; this exchange is already attached to a campaign report.')
       guardCampaignGame(s,input.turn,'submit')
       if(player.faction===opponent.faction)fail('Choose an opponent from a different campaign faction. Same-faction games are prohibited.')
       if(publication.turn)s.turns[publication.turn]=publication

@@ -78,6 +78,7 @@ function addTop40FormFields_(form, players, missions, factions) {
     else item=form.addListItem().setTitle(spec[0]).setChoiceValues(source === "players" ? unavailable : source === "missions" ? missions : source === "factions" ? factions : source).setRequired(spec[2]);
   });
   form.setAcceptingResponses(false);
+  ensureListExchangeFormField_(form);
 }
 
 function refreshTop40GameSubmissionForm(releasing) {
@@ -115,6 +116,8 @@ function importTop40FormSubmission_(named, timestamp, responseKey, log, target, 
   const canonicalMission=getEventBracketMission_(TOP40_FORM_EVENT_ID,matches[0].bracket,matches[0].bracketRound);
   if(submission.mission!==canonicalMission) throwTop40FormRejection_(log,responseKey,responseRow,"The submitted mission does not match the mission assigned to this Top 40 match.");
   const params={eventId:TOP40_FORM_EVENT_ID,matchId:matches[0].matchId,player:submission.player,opponent:submission.opponent,mission:submission.mission,winner:submission.gameResult,firstTurn:submission.firstTurn,playerFaction:submission.playerFaction,opponentFaction:submission.opponentFaction,player1ArmyCode:submission.playerArmyCode,player2ArmyCode:submission.opponentArmyCode,playerTournamentPoints:submission.playerTp,opponentTournamentPoints:submission.opponentTp,playerObjectivePoints:submission.playerOp,opponentObjectivePoints:submission.opponentOp,playerVictoryPoints:submission.playerVp,opponentVictoryPoints:submission.opponentVp,bestMoment:submission.bestMoment,notes:submission.notes};
+  params.listExchangeCode = submission.listExchangeCode;
+  if (submission.listExchangeCode) params.listExchangeSubmittedAt = new Date(submission.timestamp).getTime();
   const result=submitTop40ResultService_(params,{},{parameter:{}});
   lifWriteImportLog_(log,responseKey,LIF_FORMS.TYPES.TOP40,responseRow,"Imported","Game ID " + result.gameId + "; Match ID " + result.matchId);
   return result;

@@ -107,6 +107,7 @@ function lifAddLeagueGameFields_(form, players, missions, factions, formType) {
   lifAddParagraph_(form, f.BEST_MOMENT, false);
   lifAddParagraph_(form, f.NOTES, false);
   lifAddWorkshopMapFields_(form, formType || LIF_FORMS.TYPES.LEAGUE);
+  ensureListExchangeFormField_(form);
   return form;
 }
 

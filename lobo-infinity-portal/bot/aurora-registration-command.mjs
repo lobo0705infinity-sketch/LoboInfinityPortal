@@ -178,6 +178,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
     registeredPlayers: () => store.players(),
     summary: async () => ({ ...await store.summary(), available, issue, channelsReady, channelCount, ariadnaBriefing: briefings.ariadna, briefings }),
     async start(client, { port = Number(process.env.PORT || 8080), serve = true } = {}) {
+      // The private list-exchange service reads confirmed live games only.
       guild = client.guilds.cache.get(AURORA_DISCORD_GUILD_ID)
       if (!guild) throw Error('Aurora VII server is not connected to this bot.')
       const commands = await guild.commands.fetch(), existing = commands.find(command => command.name === 'aurora')
@@ -198,6 +199,10 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
         server = createServer(async (request, response) => {
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
+          if (request.url === '/list-exchange/resolve') {
+            if (!client.listExchange) { response.writeHead(503); response.end('{"success":false}'); return }
+            await client.listExchange.resolveRequest(request, response); return
+          }
           if (request.method === 'GET' && request.url === '/top40/notifications') {
             response.end(JSON.stringify(client.top40Notifications?.summary() || { enabled:false, issue:'Top 40 monitoring is starting.' })); return
           }
@@ -219,6 +224,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
       }
       logger.info?.(`Aurora VII registration ready: roles=${roles.size} available=${available} port=${port}`)
     },
+    listExchangeReports: codes => { if (!games) throw Error('Campaign game verification is starting.'); return games.listExchangeReports(codes) },
     stop() { clearInterval(timer); server?.close() },
     recover,
   }

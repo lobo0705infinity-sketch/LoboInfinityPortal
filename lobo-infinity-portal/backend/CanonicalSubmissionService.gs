@@ -37,6 +37,13 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
     command.timestamp,
     command.targetSpreadsheet
   );
+  if (submission.listExchangeCode) {
+    const exchangeCommand = { params: { listExchangeCode: submission.listExchangeCode, player: submission.player, opponent: submission.opponent, listExchangeSubmittedAt: new Date(submission.timestamp).getTime() } };
+    resolveListExchangeSubmission_(exchangeCommand);
+    submission.playerArmyCode = exchangeCommand.params.playerArmyCode;
+    submission.opponentArmyCode = exchangeCommand.params.opponentArmyCode;
+    submission.listExchangeCode = exchangeCommand.params.listExchangeCode;
+  }
   const validation = validateCanonicalGame({
     source: "google-form",
     workflow: workflow,
@@ -62,7 +69,7 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
     : null;
-  const persisted = appendCanonicalGameDurably_(sheet, row, "google-form:" + responseKey);
+  const persisted = appendCanonicalGameDurably_(sheet, row, "google-form:" + responseKey, submission.listExchangeCode, new Date(submission.timestamp).getTime());
   const targetRow = persisted.targetRow;
 
   lifWriteImportLog_(log, responseKey, workflow, targetRow, "Imported", "");
@@ -96,6 +103,7 @@ function canonicalSubmitGoogleFormGame_(command, workflow) {
 }
 
 function canonicalSubmitPortalGame_(command, workflow) {
+  if (command.params && command.params.listExchangeCode) resolveListExchangeSubmission_(command);
   const validation = validateCanonicalGame({
     source: "portal",
     workflow: workflow,
@@ -119,7 +127,7 @@ function canonicalSubmitPortalGame_(command, workflow) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
     : null;
-  const persisted = appendCanonicalGameDurably_(sheet, row);
+  const persisted = appendCanonicalGameDurably_(sheet, row, null, command.params && command.params.listExchangeCode, command.params && command.params.listExchangeSubmittedAt);
   const targetRow = persisted.targetRow;
 
   canonicalSubmissionRecordPortalAudit_(
@@ -158,6 +166,7 @@ function canonicalSubmitPortalGame_(command, workflow) {
 }
 
 function canonicalSubmitPortalTeamTournamentGame_(command) {
+  if (command.params && command.params.listExchangeCode) resolveListExchangeSubmission_(command);
   const params = command.params || {};
   const validation = validateCanonicalGame({
     source: "portal",
@@ -221,7 +230,7 @@ function canonicalSubmitPortalTeamTournamentGame_(command) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: "team-tournament" })
     : null;
-  const persisted = appendCanonicalGameDurably_(sheet, row);
+  const persisted = appendCanonicalGameDurably_(sheet, row, null, params.listExchangeCode);
   const targetRow = persisted.targetRow;
 
   SpreadsheetApp.flush();

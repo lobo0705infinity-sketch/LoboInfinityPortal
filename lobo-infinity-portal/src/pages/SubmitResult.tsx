@@ -1,3 +1,4 @@
+import ListExchangeField from '../components/ListExchangeField'
 import { eventReportingClosure } from '../config/eventLifecycle'
 import AuroraPortalCard from '../campaign/AuroraPortalCard'
 import CompactArtwork from '../components/CompactArtwork'
@@ -82,6 +83,7 @@ function SubmitResult() {
   return (
     <main className="portal-shell submit-game-page">
       <CompactArtwork title="Submit Game" eyebrow="Log your battles. Fuel the league." src="/src/assets/game-submission-hero.png"/>
+      <p>Using LLH’s private list exchange? Both players submit and lock lists with <strong>/list game</strong>, then include the <strong>LLH Game Code</strong> in the game report. LLH sends each player their opponent’s list after the report is accepted.</p>
 
       <section className="submit-game-form-grid" aria-label="Game submissions">
         <AuroraPortalCard reporting/>
@@ -505,6 +507,7 @@ export function LegacySubmitResult() {
 
     const submission = {
       ...casualResult,
+      listExchangeCode: getFormDataString(new FormData(event.currentTarget), 'listExchangeCode'),
       bestMoment: getFormDataString(new FormData(event.currentTarget), 'bestMoment'),
     }
     const validation = validateCasualResult(submission, {
@@ -656,16 +659,17 @@ export function LegacySubmitResult() {
             required
             value={casualResult.opponentFaction}
           />
+          <ListExchangeField onChange={value => updateCasualField('listExchangeCode', value)} />
           <FormField
             label="Player 1 Army Code"
             onChange={(value) => updateCasualField('player1ArmyCode', value)}
-            required
+            required={!casualResult.listExchangeCode?.trim()}
             value={casualResult.player1ArmyCode ?? ''}
           />
           <FormField
             label="Player 2 Army Code"
             onChange={(value) => updateCasualField('player2ArmyCode', value)}
-            required
+            required={!casualResult.listExchangeCode?.trim()}
             value={casualResult.player2ArmyCode ?? ''}
           />
           <SearchableSelect
@@ -795,6 +799,7 @@ export function LegacySubmitResult() {
 
     const submission = {
       ...leagueResult,
+      listExchangeCode: getFormDataString(new FormData(event.currentTarget), 'listExchangeCode'),
       bestMoment: getFormDataString(new FormData(event.currentTarget), 'bestMoment'),
     }
     const validation = eventHome.event.type === 'Individual Double Elimination' ? validateTop40Result(submission, {
@@ -971,16 +976,17 @@ export function LegacySubmitResult() {
           placeholder="Search approved lists"
           value={leagueResult.opponentArmyListId || ''}
         />
+        <ListExchangeField onChange={value => updateField('listExchangeCode', value)} />
         <FormField
           label="Player 1 Army Code"
           onChange={(value) => updateField('player1ArmyCode', value)}
-          required
+          required={!leagueResult.listExchangeCode?.trim()}
           value={leagueResult.player1ArmyCode ?? ''}
         />
         <FormField
           label="Player 2 Army Code"
           onChange={(value) => updateField('player2ArmyCode', value)}
-          required
+          required={!leagueResult.listExchangeCode?.trim()}
           value={leagueResult.player2ArmyCode ?? ''}
         />
         <SelectField
@@ -1162,6 +1168,7 @@ function TeamTournamentResultSubmission({
 }) {
   const [state, setState] = useState<SubmitState>({ status: 'idle' })
   const [winner, setWinner] = useState('')
+  const [listExchangeCode, setListExchangeCode] = useState('')
   const currentTournamentRegistration =
     eventHome.registration.currentPlayer ||
     data?.registration.currentPlayer ||
@@ -1330,8 +1337,9 @@ function TeamTournamentResultSubmission({
           required
           value={winner}
         />
-        <FormField label="Player 1 Army Code" name="player1ArmyCode" required value="" />
-        <FormField label="Player 2 Army Code" name="player2ArmyCode" required value="" />
+        <ListExchangeField onChange={setListExchangeCode} />
+        <FormField label="Player 1 Army Code" name="player1ArmyCode" required={!listExchangeCode.trim()} value="" />
+        <FormField label="Player 2 Army Code" name="player2ArmyCode" required={!listExchangeCode.trim()} value="" />
         <FormField label="Tournament Points" name="tournamentPoints" required value="" />
         <FormField label="Objective Points" name="objectivePoints" required value="" />
         <FormField label="Victory Points" name="victoryPoints" required value="" />
@@ -1401,7 +1409,7 @@ function validateLeagueResult(
     issues.push('Both factions are required.')
   }
 
-  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) {
+  if (!submission.listExchangeCode?.trim() && (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim())) {
     issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   }
 
@@ -1469,7 +1477,7 @@ function validateCasualResult(
     issues.push('Both factions are required.')
   }
 
-  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) {
+  if (!submission.listExchangeCode?.trim() && (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim())) {
     issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   }
 
@@ -1657,7 +1665,7 @@ function validateTop40Result(
   if (!submission.player.trim()) issues.push('Player is required.')
   if (!submission.matchId || !submission.opponent.trim()) issues.push('An Active Top 40 bracket match is required.')
   if (!submission.playerFaction.trim() || !submission.opponentFaction.trim()) issues.push('Both factions are required.')
-  if (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim()) issues.push('Player 1 Army Code and Player 2 Army Code are required.')
+  if (!submission.listExchangeCode?.trim() && (!submission.player1ArmyCode?.trim() || !submission.player2ArmyCode?.trim())) issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   if (submission.playerFaction && !optionContains(options.factions, submission.playerFaction)) issues.push('Registered Faction must be selected from the faction database.')
   if (submission.opponentFaction && !optionContains(options.factions, submission.opponentFaction)) issues.push('Opponent Faction must be selected from the faction database.')
   if (!submission.mission.trim()) issues.push('A mission has not been assigned to this bracket round.')
@@ -1713,7 +1721,7 @@ function validateTournamentResult(
     issues.push('Player 1 and Player 2 are required.')
   }
 
-  if (!params.player1ArmyCode?.trim() || !params.player2ArmyCode?.trim()) {
+  if (!params.listExchangeCode?.trim() && (!params.player1ArmyCode?.trim() || !params.player2ArmyCode?.trim())) {
     issues.push('Player 1 Army Code and Player 2 Army Code are required.')
   }
 
