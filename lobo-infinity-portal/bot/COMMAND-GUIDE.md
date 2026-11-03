@@ -18,7 +18,9 @@ Grouped commands replace the nine legacy slash-menu entries listed below. Compac
 | Review incorrect-answer reports | `/admin reports` | `/bot-reports` |
 | Inventory server bots and webhook publishers | `/admin bots` | — |
 
-`/list build` refreshes its search on every use and selects alternatives by whole-roster differences. Moving the same models between Combat Groups does not count as a new army. It favors recent unseen rosters, keeps required models and mission checks, and targets S-grade combat coverage with competitive A-grade fallbacks for variety. Tight points or required-model constraints can limit how different the options are. Recent-result memory is bounded and resets when the bot restarts.
+`/list build` refreshes its search on every use. Across three options it searches for a TAG and a capable active combat Lieutenant, subject to faction availability, required models, points and mission checks. A linked Lieutenant qualifies only when its legal Fireteam is present. Active Lieutenant options identify whether Chain of Command is available.
+
+Alternatives must change at least a third of their smaller combat core (unit types, ignoring loadouts and copies) and pass a whole-roster difference check. Required unit types are excluded from the core comparison. If the search cannot find three distinct options or include a requested strategic choice, the initial response says so; it does not pad the set with near-identical lists. Recent-result memory is bounded and resets when the bot restarts.
 
 `/rules` and `/mission` remain direct reference commands. `/mission` uses the `scenario` input.
 

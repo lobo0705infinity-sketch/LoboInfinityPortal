@@ -47,6 +47,30 @@ export function rosterDistance(left, right) {
   return 1 - (.7 * overlap(item => item.unitId) + .3 * overlap(item => item.id))
 }
 
+// Treat an attack/defence unit as the same core choice across loadouts and
+// copies. Cheap order support and required unit types do not constrain variety.
+const potentialActiveLieutenant = item => item.lieutenant && item.points >= 25
+  && [item.gunfighterGrade, item.linkedGunfighterGrade, item.ccGrade].some(grade => gradeRank(grade) >= 4)
+export const hasTag = list => list.profiles.some(item => item.troopType === 4)
+export const hasActiveLieutenant = list => {
+  const lt = list.lieutenantPlan.lieutenant
+  const linked = list.fireteams.some(team => team.level >= 2 && team.combatGroup === lt.combatGroup && team.members.includes(lt.label))
+  return lt.points >= 25 && (gradeRank(lt.gunfighterGrade) >= 4 || gradeRank(lt.ccGrade) >= 4
+    || linked && gradeRank(lt.linkedGunfighterGrade) >= 4)
+}
+
+export function combatCore(profiles, requiredUnits = new Set()) {
+  return new Set(profiles.filter(item => !requiredUnits.has(item.unitId) && (!item.lieutenant || potentialActiveLieutenant(item))
+    && item.points >= 15 && (item.forwardDeployment || [item.gunfighterGrade, item.linkedGunfighterGrade,
+      item.aroGrade, item.linkedAroGrade, item.ccGrade].some(grade => gradeRank(grade) >= 4)))
+    .map(item => item.unitId))
+}
+export function combatCoreDistance(left, right, requiredUnits = new Set()) {
+  const a = combatCore(left, requiredUnits), b = combatCore(right, requiredUnits)
+  if (!a.size || !b.size) return 1
+  return 1 - [...a].filter(id => b.has(id)).length / Math.min(a.size, b.size)
+}
+
 export function resolveRequiredProfile(profiles, name) {
   const query = token(name)
   if (!query) return null
@@ -259,14 +283,24 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
     .sort((a, b) => Number(b.racerBot) - Number(a.racerBot) || a.points - b.points || Number(b.regular) - Number(a.regular))
   const historyKey = JSON.stringify([sectorialId, normalize(mission), points, forced.map(item => item.id).sort(), payload.version])
   const recent = seed == null ? recentBuilds.get(historyKey) || [] : []
+  const requiredUnits = new Set(forced.map(item => item.unitId))
   const options = []
   const seen = new Set()
-  for (let attempt = 0; attempt < 96 && options.length < 96; attempt++) {
+  const attemptLimit = count > 1 ? 192 : 96
+  for (let attempt = 0; attempt < attemptLimit; attempt++) {
     const selected = []
-    const baseAttempt = attempt < 48 ? attempt : attempt - 48
-    const seed = seeds[baseAttempt % Math.max(1, seeds.length)]
+    const baseAttempt = attempt % 48
+    // Keep the original 96 attempts as a quality baseline, then explore leaving
+    // out pairs from that baseline's combat core, so scoring cannot funnel
+    // every attempt back into the same few attackers and ARO units.
+    const baseline = attempt >= 96 && attempt < 144 && options.reduce((best, item) => !best || item.score > best.score ? item : best, null)
+    const core = baseline ? [...combatCore(baseline.profiles, requiredUnits)] : []
+    const excludedUnits = new Set(core.length > 2 ? [core[baseAttempt % core.length],
+      core[(baseAttempt + 1 + Math.floor(baseAttempt / core.length)) % core.length]] : [])
+    const starterPool = seeds.filter(team => team.members.every(item => !excludedUnits.has(item.unitId)))
+    const seed = starterPool[baseAttempt % Math.max(1, starterPool.length)]
     const plan = missionPlan(mission, attempt % 3)
-    const buildConstraints = { ...constraints, plan, side: side || (/\bSurface\b/i.test(seed?.name || '') ? 'Surface'
+    const buildConstraints = { ...constraints, plan, excludedUnits, side: side || (/\bSurface\b/i.test(seed?.name || '') ? 'Surface'
       : /\bDeepspace\b/i.test(seed?.name || '') ? 'Deepspace' : null) }
     for (const item of forced) {
       if (isKuangShiFighter(item)) {
@@ -281,6 +315,15 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       }
       if (!canAdd(selected, item, 1, buildConstraints)) throw new ListBuilderError('Required profiles conflict with the selected Army limits or Surface/Deepspace restriction.')
       selected.push({ ...item, combatGroup: 1 })
+    }
+    const design = attempt >= 168 ? 'active-lieutenant' : attempt >= 144 ? 'tag' : null
+    if (design && !selected.some(item => design === 'tag' ? item.troopType === 4 : potentialActiveLieutenant(item))) {
+      if (design === 'active-lieutenant' && selected.some(item => item.lieutenant)) continue
+      const anchors = profiles.filter(item => design === 'tag' ? item.troopType === 4 : potentialActiveLieutenant(item))
+        .filter(item => canAdd(selected, item, 1, buildConstraints))
+      const anchor = anchors[baseAttempt % Math.max(1, anchors.length)]
+      if (!anchor) continue
+      selected.push({ ...anchor, combatGroup: 1 })
     }
     if (seed) for (const item of seed.members) {
       if (canAdd(selected, item, 1, buildConstraints)) selected.push({ ...item, combatGroup: 1 })
@@ -385,39 +428,83 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
   const chosen = []
   const target = Math.min(3, count)
   const doubleBind = missionPlan(mission).focus.startsWith('Encryption:') && count >= 3
-  // Keep the strongest first option; allow competitive A-tier fallbacks for
-  // variety, retaining the same mission and preferred leadership checks.
-  const alternateCoverage = fallbackCoverage.filter(item => item.score >= leadershipPool[0].score - 18
+  // Try the preferred full roster first, then broaden the primary core when
+  // necessary to fit the TAG/active-Lt portfolio. Preserve mission and role floors.
+  const alternateCoverage = viable.filter(item => item.score >= leadershipPool[0].score - 30
+    && item.quality.specialists >= item.quality.specialistTarget
+    && item.quality.gunfighters >= Math.min(2, leadershipPool[0].quality.gunfighters)
+    && item.quality.aro >= Math.min(2, leadershipPool[0].quality.aro)
+    && item.quality.cc >= Math.min(2, leadershipPool[0].quality.cc)
     && (item.missionPlan.tacticalLink ? item.lieutenantPlan.kind === 'apex-open'
       : item.missionPlan.lieutenantKills ? item.lieutenantPlan.kind === 'apex-coc'
         : ['cheap-decoy', 'apex-coc'].includes(item.lieutenantPlan.kind)))
-  const eligible = [...new Set([...pool, ...leadershipPool, ...alternateCoverage])]
+  const strategic = viable.filter(item => item.score >= leadershipPool[0].score - 55
+    && item.quality.specialists >= item.quality.specialistTarget
+    && item.quality.gunfighters >= Math.min(2, leadershipPool[0].quality.gunfighters)
+    && item.quality.aro >= Math.min(2, leadershipPool[0].quality.aro)
+    && item.quality.cc >= Math.min(2, leadershipPool[0].quality.cc)
+    && (hasTag(item) || hasActiveLieutenant(item)))
+  const eligible = [...new Set([...pool, ...leadershipPool, ...alternateCoverage, ...strategic])]
+  const needsTag = target >= 3 && eligible.some(hasTag)
+  const needsActive = target >= 3 && eligible.some(hasActiveLieutenant)
   const signatures = new Map(eligible.map(option => [option, rosterSignature(option.profiles)]))
-  for (let index = 0; index < target; index++) {
-    let remaining = eligible.filter(option => !chosen.includes(option))
-    if (doubleBind) {
-      const variant = remaining.filter(option => option.missionPlan.variant === index)
-      const fallback = [...new Set([...candidates, ...ranked])].filter(option => option.missionPlan.variant === index && !chosen.includes(option))
-      remaining = variant.length ? variant : fallback.length ? fallback : remaining
-    }
-    if (!remaining.length) remaining = [...new Set([...rolePool, ...candidates])]
-      .filter(option => !chosen.some(other => rosterSignature(other.profiles) === rosterSignature(option.profiles)))
-    if (!remaining.length) break
-    const fresh = remaining.filter(option => !recent.includes(signatures.get(option) || rosterSignature(option.profiles)))
-    if (fresh.length) remaining = fresh
-    if (!chosen.length) {
-      // Preserve the full-roster preference for the first option.
-      const preferred = remaining.filter(option => pool.includes(option))
-      if (preferred.length) remaining = preferred
-      chosen.push(remaining[0])
-      continue
-    }
-    const distance = option => Math.min(...chosen.map(other => rosterDistance(option.profiles, other.profiles)))
-    const distinct = remaining.filter(option => distance(option) >= .2)
-    if (distinct.length) remaining = distinct
-    remaining.sort((a, b) => distance(b) - distance(a) || b.score - a.score)
-    chosen.push(remaining[0])
+  const fresh = option => !recent.includes(signatures.get(option))
+  const distanceCache = new Map()
+  const compatible = (a, b) => {
+    const ia = eligible.indexOf(a), ib = eligible.indexOf(b), key = [Math.min(ia, ib), Math.max(ia, ib)].join(':')
+    if (!distanceCache.has(key)) distanceCache.set(key, {
+      core: combatCoreDistance(a.profiles, b.profiles, requiredUnits),
+      roster: rosterDistance(a.profiles, b.profiles),
+    })
+    return distanceCache.get(key)
   }
+  const distinct = (a, b) => {
+    const distance = compatible(a, b)
+    return signatures.get(a) !== signatures.get(b) && distance.core >= 1 / 3 && distance.roster >= .2
+  }
+  // Pick the alternatives together: a greedy TAG choice can otherwise block
+  // the active-Lt option even when a different pair satisfies both requests.
+  const primary = doubleBind ? eligible.filter(item => item.missionPlan.variant === 0) : [...new Set([...pool, ...eligible])]
+  const firstSeen = new Set()
+  const firstChoices = [...primary].sort((a, b) => Number(fresh(b)) - Number(fresh(a))).filter(item => {
+    const key = [[...combatCore(item.profiles, requiredUnits)].sort().join(','), hasTag(item), hasActiveLieutenant(item)].join(':')
+    if (firstSeen.has(key)) return false
+    firstSeen.add(key)
+    return true
+  })
+  let bestPartial = firstChoices.length ? [firstChoices[0]] : []
+  for (const first of firstChoices.slice(0, target >= 3 ? firstChoices.length : 1)) {
+    const others = eligible.filter(item => item !== first && distinct(first, item))
+    if (target === 1) { chosen.push(first); break }
+    let best = null
+    for (let a = 0; a < others.length; a++) {
+      if (doubleBind && ![1, 2].includes(others[a].missionPlan.variant)) continue
+      if (first === firstChoices[0] && bestPartial.length < 2) bestPartial = [first, others[a]]
+      if (target === 2) { best = { lists: [first, others[a]] }; break }
+      for (let b = a + 1; b < others.length; b++) {
+        const pair = [others[a], others[b]]
+        if (doubleBind && new Set(pair.map(item => item.missionPlan.variant)).size !== 2) continue
+        if (doubleBind && !pair.some(item => item.missionPlan.variant === 2)) continue
+        if (!distinct(...pair)) continue
+        const lists = [first, ...pair]
+        if (needsTag && !lists.some(hasTag) || needsActive && !lists.some(hasActiveLieutenant)) continue
+        const distances = [compatible(first, pair[0]), compatible(first, pair[1]), compatible(...pair)]
+        const value = lists.filter(fresh).length * 10000
+          + Math.min(...distances.map(item => item.core)) * 1000
+          + Math.min(...distances.map(item => item.roster)) * 100
+          + lists.reduce((total, item) => total + item.score, 0) / 100
+        if (!best || value > best.value) best = { lists, value }
+      }
+    }
+    if (best) { chosen.push(...(doubleBind ? best.lists.sort((a, b) => a.missionPlan.variant - b.missionPlan.variant) : best.lists)); break }
+    if (!bestPartial.length) bestPartial = [first]
+  }
+  if (!chosen.length) chosen.push(...bestPartial)
+  const varietyNotes = target >= 3 ? [
+    ...(chosen.length < target ? [`Found ${chosen.length} meaningfully distinct legal option${chosen.length === 1 ? '' : 's'} for these constraints.`] : []),
+    ...(profiles.some(item => item.troopType === 4) && !chosen.some(hasTag) ? ['The search could not include a TAG while meeting these constraints.'] : []),
+    ...(profiles.some(potentialActiveLieutenant) && !chosen.some(hasActiveLieutenant) ? ['The search could not include an active combat Lieutenant while meeting these constraints.'] : []),
+  ] : []
   if (seed == null) {
     recentBuilds.delete(historyKey)
     recentBuilds.set(historyKey, [...recent, ...chosen.map(option => rosterSignature(option.profiles))].slice(-18))
@@ -428,7 +515,7 @@ export function buildArmyListOptions({ payload, metadata, sectorialId, rosterSlu
       .map(({ unitId, groupId, optionId }) => ({ unitId, groupId, optionId })) })).filter(group => group.members.length)
     const code = encodeArmyCode({ sectorialId: Number(sectorialId), sectorialSlug: faction.slug,
       listName: `Lobo ${mission || 'mission'}${count === 1 ? '' : ` ${index + 1}`}`, maxPoints: points, combatGroups })
-    return { ...option, code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}` }
+    return { ...option, varietyNotes, code, url: `https://infinitytheuniverse.com/army/list/${encodeURIComponent(code)}` }
   })
 }
 
@@ -440,7 +527,8 @@ function isKuangShiMonitor(item) {
   return item.slug === 'kuang-shi' && item.groupId === 2
 }
 
-function canAdd(selected, profile, combatGroup, { points, payload, side: requiredSide }) {
+function canAdd(selected, profile, combatGroup, { points, payload, side: requiredSide, excludedUnits }) {
+  if (excludedUnits?.has(profile.unitId)) return false
   if (profile.unarmedBaggageBot && selected.some(item => item.unarmedBaggageBot)) return false
   const side = requiredSide || selected.find(item => item.side)?.side
   if (profile.side && side && profile.side !== side) return false
@@ -571,11 +659,15 @@ export function assessLieutenantPackage(profiles, fireteams = [], plan = {}) {
     score: (plan.lieutenantKills ? 22 : 11) + ncoScore }
   if (cheap) return { kind: 'cheap-decoy', lieutenant, partner: decoy, grade, nco,
     score: (plan.lieutenantKills ? 3 : 11) + ncoScore }
+  const active = lieutenant.points >= 25 && (gradeRank(lieutenant.gunfighterGrade) >= 4
+    || gradeRank(lieutenant.ccGrade) >= 4 || linked && gradeRank(lieutenant.linkedGunfighterGrade) >= 4)
+  if (active) return { kind: successor ? 'active-coc' : 'active-open', lieutenant, partner: successor || null,
+    grade, nco, score: -6 + ncoScore }
   return { kind: 'fallback', lieutenant, partner: null, grade, nco, score: -6 + ncoScore }
 }
 
 function bestNext(profiles, selected, constraints, attempt, mode) {
-  const hasTag = selected.some(item => item.slug === 'iguana-squadron' || item.slug === 'gator-squadron')
+  const hasTag = selected.some(item => item.troopType === 4)
   const specialists = selected.filter(item => item.specialist).length
   const engineers = selected.filter(item => item.engineer).length
   const count = selected.reduce((n, item) => n + item.slots, 0)

@@ -174,7 +174,7 @@ export async function buildListResponses({ faction, mission, mustInclude = '', p
     const tts = ttsDiscordAttachment({ armyCode: list.code, payload: source.payload, metadata: source.metadata })
     const response = { allowedMentions: { parse: [] }, content: formatBuiltList(list, index + 1), files: tts.files, embeds: [{ description: tts.text.slice(0,3500) }, { description: unmetTargetExplanation(list, { points, mustInclude }).slice(0,2000) }] }
     const classifieds = assessGeneratedListClassifieds({ code: list.code, payload: source.payload, metadata: source.metadata })
-    return withResponseDetails(response, { initial: { content: response.content, files: tts.files.filter(file => file.name.endsWith('-tts-2d.json')) }, views: {
+    return withResponseDetails(response, { initial: { content: response.content, files: tts.files.filter(file => file.name.endsWith('-tts-2d.json')), ...(index === 0 && list.varietyNotes?.length ? { embeds: [{ description: list.varietyNotes.join(' ') }] } : {}) }, views: {
       notes: { label: 'Build Notes', payload: { embeds: [{ description: unmetTargetExplanation(list, { points, mustInclude }).slice(0,2000) }] } },
       classifieds: { label: 'Classifieds', payload: { embeds: formatInfListClassifiedEmbeds(classifieds) } },
       tts: { label: 'TTS Notes', payload: { embeds: [{ description: tts.text.slice(0,4000) }], files: tts.files.filter(file => file.name === 'tts-validation.txt') } },
@@ -200,7 +200,9 @@ export function formatBuiltList(list, index = 1) {
       ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter) + ${ltPlan.partner.optionName} (Chain of Command)${ncoNote}`
       : ltPlan?.kind === 'apex-open'
         ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} (S gunfighter); Tactical Link reveals the Lt${ncoNote}`
-        : `**Lieutenant plan** ${ltPlan?.lieutenant?.optionName || 'No Lieutenant plan available'}`
+        : ltPlan?.kind?.startsWith('active-')
+          ? `**Lieutenant plan** ${ltPlan.lieutenant.optionName} · active combat Lt${ltPlan.partner ? ` + ${ltPlan.partner.optionName} (Chain of Command)` : '; no Chain of Command backup'}`
+          : `**Lieutenant plan** ${ltPlan?.lieutenant?.optionName || 'No Lieutenant plan available'}`
   const header = `**Option ${index} · ${list.faction} · ${list.mission}** · ${list.points}/${list.legality.limits.points} pts · ${list.swc}/${list.legality.limits.swc} SWC`
   const missionNote = `**Mission plan** ${list.missionSummary || list.missionPlan?.focus || 'Complete mission objectives'}`
   const body = [header, `**Proposed fireteams**\n${fireteams}`, quality, missionNote, leadershipNote].filter(Boolean).join('\n')
