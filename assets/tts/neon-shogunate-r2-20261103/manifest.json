@@ -1,0 +1,618 @@
+{
+  "map": "Neon Shogunate",
+  "revision": "R2",
+  "purpose": "Approved public TTS multiplayer meshes, textures and backgrounds",
+  "provenance": "Original procedural map geometry; vending kiosk derived from the user-approved original design. Existing approved map-specific panoramas retained.",
+  "assets": [
+    {
+      "path": "day.png",
+      "bytes": 2997179,
+      "sha256": "4843886e83b3d2dbe18b88d296bee3c7d8456e80595c4fb10ba7bfc9ae762809"
+    },
+    {
+      "path": "models/aoi-tea-house-view-1-collider.obj",
+      "bytes": 172217,
+      "sha256": "d4d5f700fd46c899cf0936de2a3895bf3d2313d0e5e3c96e459edf1744f771a0"
+    },
+    {
+      "path": "models/aoi-tea-house-view-1.obj",
+      "bytes": 261669,
+      "sha256": "cccc618231a1ec95f9802a840f7e646766a8fe578ccc7d0e9a490e8d05563c45"
+    },
+    {
+      "path": "models/aoi-tea-house-view-2-collider.obj",
+      "bytes": 173825,
+      "sha256": "f49ce5acc9ead094c1465841544764ae7823cbfc95d519173f3bab6f6aea8bf2"
+    },
+    {
+      "path": "models/aoi-tea-house-view-2.obj",
+      "bytes": 606441,
+      "sha256": "362b26fd3fb6d1a91c457b35b070272a22ef7ba9d79eb0666fc33d57e51abaaa"
+    },
+    {
+      "path": "models/cart-12-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-12.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/cart-13-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-13.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/cart-14-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-14.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/cart-15-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-15.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/cart-16-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-16.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/cart-17-collider.obj",
+      "bytes": 17795,
+      "sha256": "2f86522119b9768e3a3ebdfc3191188c5df64db68baf35a879498ed536ea48e7"
+    },
+    {
+      "path": "models/cart-17.obj",
+      "bytes": 28813,
+      "sha256": "372442fc9eea54a5ef0852df6b3b0df8266862a2558c57ef201b4e22bae2623e"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-1-collider.obj",
+      "bytes": 227409,
+      "sha256": "81e071a13fc153a4e4def420187d199c790342d1e0fca14a81dd5cb9d84e58f4"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-1.obj",
+      "bytes": 333563,
+      "sha256": "6e4e78f78773360902993de789b16e46f1e666481415afd8b06161d3d0ab0703"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-2-collider.obj",
+      "bytes": 383601,
+      "sha256": "3e744063e2c6fa868bf144673c80033de4107bd2e8837e5d25c7ee617e6f21f1"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-2.obj",
+      "bytes": 560629,
+      "sha256": "e41f4d07a343da1b30883c0ad227d40673bcad197785e3736bb4ce8b39551bc9"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-3-collider.obj",
+      "bytes": 393201,
+      "sha256": "7726282da932f0237e2f5e3fb2560d402b34f4ab4fc7b8d93449d028bcf100ef"
+    },
+    {
+      "path": "models/crimson-ledger-house-view-3.obj",
+      "bytes": 909519,
+      "sha256": "67a045e4d966040b1041c926e4dc64572a6f13829f20b5223e3e9c4d208ed27e"
+    },
+    {
+      "path": "models/east-ryokan-view-1-collider.obj",
+      "bytes": 233793,
+      "sha256": "d76f986fa17d96968509edb73e69ea08fbdb77e7018b5169a0b3002669268838"
+    },
+    {
+      "path": "models/east-ryokan-view-1.obj",
+      "bytes": 333087,
+      "sha256": "94909aadcadd00eb81064240681bf8a12fd7bd13f023b3822121cbddef40fa19"
+    },
+    {
+      "path": "models/east-ryokan-view-2-collider.obj",
+      "bytes": 383553,
+      "sha256": "13024ad549d50c4dd094bbd7848947d3b57c9ad0f7919018bc01b5359f4be9c4"
+    },
+    {
+      "path": "models/east-ryokan-view-2.obj",
+      "bytes": 544457,
+      "sha256": "9badbd0ba8ade5ecd2c30e019c932852f75a73322978dacc19c1dc858f7cacfe"
+    },
+    {
+      "path": "models/east-ryokan-view-3-collider.obj",
+      "bytes": 393153,
+      "sha256": "c8a4bc61b769b0ba8b6ccd7efe0945137cf5d5390ba212ef85f906517b3c9e3c"
+    },
+    {
+      "path": "models/east-ryokan-view-3.obj",
+      "bytes": 892723,
+      "sha256": "af108be101bcf6d0c57e290a10b8fa2916a74bd8d9903ebabfe37bb09f93dcd3"
+    },
+    {
+      "path": "models/east-service-house-view-1-collider.obj",
+      "bytes": 143237,
+      "sha256": "4c5d83bf8a2d52a41dc1aa3c63dfeb8fdb4f0f7d6249915627e605bc4d359c05"
+    },
+    {
+      "path": "models/east-service-house-view-1.obj",
+      "bytes": 228039,
+      "sha256": "2577d01c32d88d3ec02584b053fec00bf30867409a0675b7a7727e84e5754a0b"
+    },
+    {
+      "path": "models/east-service-house-view-2-collider.obj",
+      "bytes": 144845,
+      "sha256": "d58c5545c110f802dbf0e453dfd3cd8561c9ab40c18cf81ae196f2b703b0b01a"
+    },
+    {
+      "path": "models/east-service-house-view-2.obj",
+      "bytes": 554807,
+      "sha256": "cf86a068e0bc515bc8417e610a192bbbedf2e470adf67bdc5cc93f971e874832"
+    },
+    {
+      "path": "models/gatehouse-archive-view-1-collider.obj",
+      "bytes": 140045,
+      "sha256": "5e48c63d74fac4425c5e5157e9f1c0143313d30c39a9d1d411892790dee5b397"
+    },
+    {
+      "path": "models/gatehouse-archive-view-1.obj",
+      "bytes": 223599,
+      "sha256": "02d0eb769fdcad87fdf5c97053b7041a50f66ae3dd579002142c844dcb0919f3"
+    },
+    {
+      "path": "models/gatehouse-archive-view-2-collider.obj",
+      "bytes": 141653,
+      "sha256": "b5a9513a919220fae861dc39cb5bf21d5a893830b9abb807038db93c9c3598d9"
+    },
+    {
+      "path": "models/gatehouse-archive-view-2.obj",
+      "bytes": 532139,
+      "sha256": "c1563053679a1a0e70a6bac8efce0ee5b814cd6bdc1022fc0659855a0ebd70ea"
+    },
+    {
+      "path": "models/ground-collider.obj",
+      "bytes": 1561,
+      "sha256": "4b0fc87c26ae21a08d50991bdae946f9a882abcd08e79569bbfa3c3675308401"
+    },
+    {
+      "path": "models/ground.obj",
+      "bytes": 794143,
+      "sha256": "f7b6a1c709d9916f54acc98870f9c8679ef9ce782a2fb0dd20a125a53e2e9b76"
+    },
+    {
+      "path": "models/hoshi-books-view-1-collider.obj",
+      "bytes": 140045,
+      "sha256": "ef46443c39a15de7b0eab9e504855a19b58f5c1fc92914560f784cc3b3032c31"
+    },
+    {
+      "path": "models/hoshi-books-view-1.obj",
+      "bytes": 223647,
+      "sha256": "7ee65af644e670e50dfe49b7513b460afd67a93c2359864efcadd9e0c14812dc"
+    },
+    {
+      "path": "models/hoshi-books-view-2-collider.obj",
+      "bytes": 141653,
+      "sha256": "2c215d70c10b4f00461837a4122a208ede472783a70eb39e04e808cb9fcde6d7"
+    },
+    {
+      "path": "models/hoshi-books-view-2.obj",
+      "bytes": 550103,
+      "sha256": "151715dd3676eed7763676608a01b991e5b13e9be686768483fc517718fb6bc4"
+    },
+    {
+      "path": "models/kiosk-08-collider.obj",
+      "bytes": 1501,
+      "sha256": "d0c2bfde4a268868fee0f4ef0276d4b45631b45aeba5e122fd633fe2cdda3143"
+    },
+    {
+      "path": "models/kiosk-08.obj",
+      "bytes": 890544,
+      "sha256": "9ec7e8a4776c7ea87b879c8da1cf9c9bb77a3543dc944a78134faeddff459fd9"
+    },
+    {
+      "path": "models/kiosk-09-collider.obj",
+      "bytes": 1501,
+      "sha256": "d0c2bfde4a268868fee0f4ef0276d4b45631b45aeba5e122fd633fe2cdda3143"
+    },
+    {
+      "path": "models/kiosk-09.obj",
+      "bytes": 890544,
+      "sha256": "9ec7e8a4776c7ea87b879c8da1cf9c9bb77a3543dc944a78134faeddff459fd9"
+    },
+    {
+      "path": "models/kiosk-10-collider.obj",
+      "bytes": 1501,
+      "sha256": "d0c2bfde4a268868fee0f4ef0276d4b45631b45aeba5e122fd633fe2cdda3143"
+    },
+    {
+      "path": "models/kiosk-10.obj",
+      "bytes": 890544,
+      "sha256": "9ec7e8a4776c7ea87b879c8da1cf9c9bb77a3543dc944a78134faeddff459fd9"
+    },
+    {
+      "path": "models/kiosk-11-collider.obj",
+      "bytes": 1501,
+      "sha256": "d0c2bfde4a268868fee0f4ef0276d4b45631b45aeba5e122fd633fe2cdda3143"
+    },
+    {
+      "path": "models/kiosk-11.obj",
+      "bytes": 890544,
+      "sha256": "9ec7e8a4776c7ea87b879c8da1cf9c9bb77a3543dc944a78134faeddff459fd9"
+    },
+    {
+      "path": "models/kuma-robotics-view-1-collider.obj",
+      "bytes": 245073,
+      "sha256": "10eb2dc7bc634d62294a20e8b6bacb94bf3103fa3cca52c1169f554598bda3ed"
+    },
+    {
+      "path": "models/kuma-robotics-view-1.obj",
+      "bytes": 352427,
+      "sha256": "b763e79a5d4672ce28237f539c7fe1c38cd489c00cef34a2fe721e22d8c8b235"
+    },
+    {
+      "path": "models/kuma-robotics-view-2-collider.obj",
+      "bytes": 415761,
+      "sha256": "d2acd37634913594f2760595ec42e2d396379815d11dd06a2d2ec2cdab564c02"
+    },
+    {
+      "path": "models/kuma-robotics-view-2.obj",
+      "bytes": 593989,
+      "sha256": "3ab77fa6738877804eb70657dfbaf584855642202c76a94d2caec22d5bd963ac"
+    },
+    {
+      "path": "models/kuma-robotics-view-3-collider.obj",
+      "bytes": 425361,
+      "sha256": "b7921207a8725ded518fafb7f30312b0313390d35e30c9181fceca60930f26a7"
+    },
+    {
+      "path": "models/kuma-robotics-view-3.obj",
+      "bytes": 1001045,
+      "sha256": "c9022afd57004cbe43133d2f96b16380ccc2817fc2144583c8ab592ad9454049"
+    },
+    {
+      "path": "models/lantern-tea-shop-view-1-collider.obj",
+      "bytes": 152861,
+      "sha256": "49f63d90d0406802c93f0b056861a91f9bc933733f603092aa6b20dcc80c208f"
+    },
+    {
+      "path": "models/lantern-tea-shop-view-1.obj",
+      "bytes": 238867,
+      "sha256": "3d15f8232c378e72436bb946cca7b45cf8c3655af02f097f6976715fbeed23ca"
+    },
+    {
+      "path": "models/lantern-tea-shop-view-2-collider.obj",
+      "bytes": 154469,
+      "sha256": "bc6634eb71a4058db57c0b08fc27c40f989e450673f254b210decc0766bc7a72"
+    },
+    {
+      "path": "models/lantern-tea-shop-view-2.obj",
+      "bytes": 565383,
+      "sha256": "8993d0a2afed86b2e431682f4335ab475ddc9bab9975f5e089482f2cf50f0850"
+    },
+    {
+      "path": "models/north-watch-house-view-1-collider.obj",
+      "bytes": 140045,
+      "sha256": "5e48c63d74fac4425c5e5157e9f1c0143313d30c39a9d1d411892790dee5b397"
+    },
+    {
+      "path": "models/north-watch-house-view-1.obj",
+      "bytes": 223599,
+      "sha256": "02d0eb769fdcad87fdf5c97053b7041a50f66ae3dd579002142c844dcb0919f3"
+    },
+    {
+      "path": "models/north-watch-house-view-2-collider.obj",
+      "bytes": 141653,
+      "sha256": "b5a9513a919220fae861dc39cb5bf21d5a893830b9abb807038db93c9c3598d9"
+    },
+    {
+      "path": "models/north-watch-house-view-2.obj",
+      "bytes": 532139,
+      "sha256": "c1563053679a1a0e70a6bac8efce0ee5b814cd6bdc1022fc0659855a0ebd70ea"
+    },
+    {
+      "path": "models/planter-00-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-00-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-00-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-00.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-01-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-01-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-01-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-01.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-02-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-02-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-02-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-02.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-03-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-03-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-03-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-03.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-04-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-04-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-04-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-04.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-05-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-05-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-05-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-05.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-06-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-06-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-06-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-06.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/planter-07-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-07-leaf-off-collider.obj",
+      "bytes": 13115,
+      "sha256": "e635a0aa378e4e9e376cfba166903f84f823c93473ca092d45d932e413686af9"
+    },
+    {
+      "path": "models/planter-07-leaf-off.obj",
+      "bytes": 32749,
+      "sha256": "99b148f0de5320666b0bf2523b9b90f2cd496275176cdad43665c0dc3cca4a61"
+    },
+    {
+      "path": "models/planter-07.obj",
+      "bytes": 46609,
+      "sha256": "5e2f4cc7037c8c873d968b5596d115cab29fc33d520a29d48996d287e6566ead"
+    },
+    {
+      "path": "models/shogun-manor-view-1-collider.obj",
+      "bytes": 277693,
+      "sha256": "b0474badfb9787e18be1a4b3ebbd058880262670a3ccbef86543c0d3769edf47"
+    },
+    {
+      "path": "models/shogun-manor-view-1.obj",
+      "bytes": 387293,
+      "sha256": "8b594ccbecb29d26d11cec23cbef8e5807834655c69de44c7640ecda0bb98370"
+    },
+    {
+      "path": "models/shogun-manor-view-2-collider.obj",
+      "bytes": 467809,
+      "sha256": "519d50d55c701ca05030709747df7d10134efe04d3a1308d5ae913edf5c7ab2f"
+    },
+    {
+      "path": "models/shogun-manor-view-2.obj",
+      "bytes": 671173,
+      "sha256": "4913585c0684635b0154f0bc66150fbda95f63f8aa9d20eee7199ccc9734d0a7"
+    },
+    {
+      "path": "models/shogun-manor-view-3-collider.obj",
+      "bytes": 641689,
+      "sha256": "e02376f5f7a525d4e1e691caf9d0dc5d7bd631a12037cc1445a3556671ce29f7"
+    },
+    {
+      "path": "models/shogun-manor-view-3.obj",
+      "bytes": 927901,
+      "sha256": "838a3505211ef3acb115c7cea0f0af4f98819ae0c7df679322b09f2d00d67cd9"
+    },
+    {
+      "path": "models/shogun-manor-view-4-collider.obj",
+      "bytes": 651337,
+      "sha256": "1e2e77bf21b45dc601b73a879ae849a8bee8caf6f3014727b45670ce8f644b5c"
+    },
+    {
+      "path": "models/shogun-manor-view-4.obj",
+      "bytes": 1341031,
+      "sha256": "e01df53f780073b0a625e4089850ff93bb08b37a18034f175e6dae8736d21f1f"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-1-collider.obj",
+      "bytes": 233793,
+      "sha256": "8040e2b905933940a85c63a042651c4da6135279e08209df82dfcc11ffcf3840"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-1.obj",
+      "bytes": 333087,
+      "sha256": "2e0f5ce9076e36f234bcccdfe13e06f19fe78c26974b3d22afa283f463fadaf7"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-2-collider.obj",
+      "bytes": 383553,
+      "sha256": "c3a23f75845e0aa61a418ebee2499979b5eda59cdee06b994a029cc751b64f25"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-2.obj",
+      "bytes": 544457,
+      "sha256": "82b050961cdf1793ed1350d270ce8791dfda2188aec5b36b3073f3b3ed6c2228"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-3-collider.obj",
+      "bytes": 393153,
+      "sha256": "328c14eb68bf5728941dbe092f7ff38e50f090a924f385ec795c28c1a6d368f7"
+    },
+    {
+      "path": "models/west-kitsune-inn-view-3.obj",
+      "bytes": 892723,
+      "sha256": "39cff2102220bd461282a0b7b181bc70469a2c09fc7dd80697d05b299b6089bb"
+    },
+    {
+      "path": "models/west-lantern-lodge-view-1-collider.obj",
+      "bytes": 146441,
+      "sha256": "1a0af3faaf0c1549a1af74c93f50c535bd5e64022ecbe98789211af7804b3253"
+    },
+    {
+      "path": "models/west-lantern-lodge-view-1.obj",
+      "bytes": 223195,
+      "sha256": "d1d4052af5ca59619e637fe067faa011a85843beb024ba04533e2010567b4446"
+    },
+    {
+      "path": "models/west-lantern-lodge-view-2-collider.obj",
+      "bytes": 148049,
+      "sha256": "5be8baa73fa31902f3c459e8552d2913fc3c9c818453b512db03bd1545fc951e"
+    },
+    {
+      "path": "models/west-lantern-lodge-view-2.obj",
+      "bytes": 549963,
+      "sha256": "d0069518e6159878ea80210afd3793f9c9eee9b0fa5b1ba00fa14ba7ec88af20"
+    },
+    {
+      "path": "models/yoru-baths-view-1-collider.obj",
+      "bytes": 172217,
+      "sha256": "d4d5f700fd46c899cf0936de2a3895bf3d2313d0e5e3c96e459edf1744f771a0"
+    },
+    {
+      "path": "models/yoru-baths-view-1.obj",
+      "bytes": 261669,
+      "sha256": "03f408ea79ebc67a1a04e8ffa11780be054a7f4ce65a23041699df54f1aa1f12"
+    },
+    {
+      "path": "models/yoru-baths-view-2-collider.obj",
+      "bytes": 173825,
+      "sha256": "f49ce5acc9ead094c1465841544764ae7823cbfc95d519173f3bab6f6aea8bf2"
+    },
+    {
+      "path": "models/yoru-baths-view-2.obj",
+      "bytes": 606441,
+      "sha256": "afbdafb3dcc418f0f48f75c516aa52fb2fa5b00979ceece3a394160587c848db"
+    },
+    {
+      "path": "night.png",
+      "bytes": 2996624,
+      "sha256": "5092e2dd7e4e4f20c7feb70ee84ca3e513112d16ee18328ef6291c6716ddaf07"
+    },
+    {
+      "path": "off.png",
+      "bytes": 2714,
+      "sha256": "987db1bfa8b61c8762a7370396973b3b256e5de06142a7133253d7279d59a500"
+    },
+    {
+      "path": "shogunate-materials.png",
+      "bytes": 4504696,
+      "sha256": "1c78adb73d45620ef1b0e67da2591576fea4c5d2966db6190a1d8f3522a6a5fc"
+    }
+  ]
+}
