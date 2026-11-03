@@ -5,18 +5,20 @@ Tournament, Casual, and live Aurora VII campaign games.
 
 ## Player flow
 
-1. Run `/list game create opponent:@opponent description:Top 40 W2` in the shared
-   server. Share the returned `LLH-…` game code with that opponent.
-2. Both players run `/list game submit game:LLH-… player:@yourself
-   army-code:<full Army code or link>`. Select your own account from Discord's
-   player picker. LLH uses the portal name from your existing confirmed Top 40
-   account link or self-linked Aurora registration and shows it in the private
-   response. No manual name entry is needed. Unlinked or conflicting accounts
-   must have their links corrected by Lobo before submitting; Discord display
-   names are never guessed. Replies are private to the requester.
-3. Both run `/list game ready game:LLH-…` before playing. Both lists must exist
-   first. Replacing either list clears both ready confirmations. When both
-   players are ready, both lists lock for that game.
+1. Player A runs `/list game create opponent:@opponent army-code:<your own code or link>
+   game-name:Top 40 W2` in the shared server. The bot atomically creates the game
+   with A's list already saved and privately confirms **Game created**.
+2. LLH DMs Player B: A has created the named game, its `LLH-…` code and the join
+   command. If the DM fails, A's private confirmation includes the code and
+   instructions to pass it along. No Army codes appear in setup notifications.
+3. Player B runs `/list game join game:LLH-… army-code:<your own code or link>`
+   in the same server. Only the invited Discord account can join. Joining
+   atomically saves B's list and locks both, with no separate ready step.
+   B privately sees **Game submitted**; A receives a DM that both players are
+   ready. Failed DM delivery is reported in B's private confirmation.
+   LLH uses each account's linked portal name, without manual name entry or
+   guessing Discord display names. Unlinked/conflicting accounts need Lobo to
+   correct their link. Duplicate joins cannot replace a list or notify twice.
 4. Enter **LLH Game Code** when reporting. Leave the two Army Code fields blank
    in Google Forms or native League/Tournament/Casual forms: the backend obtains
    the committed codes from LLH without returning them to the submitter.
@@ -29,6 +31,10 @@ Tournament, Casual, and live Aurora VII campaign games.
 DMs are closed. Before release it shows submission/ready status only.
 `/list game cancel` works before locking and removes submitted codes from that
 cancelled record. Use a new exchange for each rematch.
+
+Games created before the invitation flow retain `/list game submit` and
+`/list game ready`. Each legacy submission resets both ready confirmations.
+New invited games use only create/join to save and lock their lists.
 
 ## Storage and recovery
 
@@ -68,13 +74,14 @@ history defers delivery. Replayed reports do not recreate deliveries.
    and other requirements remain intact. Without a code, backend validation
    still requires both lists. The installer is safe to repeat. Do not run the
    destructive League/Team form-rebuild routines for this rollout.
-5. Smoke-test with two designated accounts: submit, lock, verify pre-report
+5. Smoke-test with two designated accounts: create, join, verify pre-report
    privacy, report/confirm, verify both DMs, then retry. Live Google Forms and
    production Discord delivery are not exercised by the offline tests.
 
 ## Validation
 
-`npm run test:list-exchange` covers SDK routing, ownership/server boundaries,
+`npm run test:list-exchange` covers create/join SDK routing, invitation DMs,
+closed-DM fallbacks, automatic locking, concurrent joins, ownership/server boundaries,
 missing lists, ready reset, locking, wrong/early/unconfirmed/duplicate reports,
 atomic storage, machine authentication, restart/crash-after-send recovery,
 closed DMs, long-code attachments, campaign acceptance and corrupt storage.

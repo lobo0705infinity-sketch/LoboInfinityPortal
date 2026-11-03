@@ -8,16 +8,20 @@ const codeOption = { name: 'game', description: 'The LLH game code shared by the
 export const LIST_GAME_COMMAND = {
   description: 'Privately commit lists for one game and exchange them after its accepted report',
   options: [
-    { name: 'create', description: 'Start a private exchange for one game; share the returned code with your opponent', type: Type.Subcommand, options: [
+    { name: 'create', description: 'Save your list, create a game and DM your opponent an invitation code', type: Type.Subcommand, options: [
       { name: 'opponent', description: 'Your opponent’s Discord account', type: Type.User, required: true },
-      { name: 'description', description: 'Identify this game, such as Top 40 W2 or Tuesday casual game', type: Type.String, required: true, maxLength: 100 },
+      { name: 'army-code', description: 'Your own full Infinity Army code or Army link', type: Type.String, required: true, maxLength: 4000 },
+      { name: 'game-name', description: 'Identify this game, such as Top 40 W2 or Tuesday casual game', type: Type.String, required: true, maxLength: 100 },
     ] },
-    { name: 'submit', description: 'Privately submit or replace your list before both players lock', type: Type.Subcommand, options: [codeOption,
+    { name: 'join', description: 'Join your invited game with its code and submit your own list; both lists then lock', type: Type.Subcommand, options: [codeOption,
+      { name: 'army-code', description: 'Your own full Infinity Army code or Army link', type: Type.String, required: true, maxLength: 4000 },
+    ] },
+    { name: 'submit', description: 'Legacy games only: submit or replace your list before both players lock', type: Type.Subcommand, options: [codeOption,
       { name: 'player', description: 'Select your own Discord account; LLH uses its linked portal player name', type: Type.User, required: true },
       { name: 'army-code', description: 'Your full Infinity Army code or Army link', type: Type.String, required: true, maxLength: 4000 },
     ] },
     ...[
-      ['ready', 'Confirm your submitted list; both players being ready locks the lists'],
+      ['ready', 'Legacy games only: confirm your list; both players being ready locks the lists'],
       ['status', 'Privately see submission, locking and delivery status, or retrieve a released list'],
       ['cancel', 'Cancel an unused exchange before the lists lock'],
     ].map(([name, description]) => ({ name, description, type: Type.Subcommand, options: [codeOption] })),
@@ -61,7 +65,9 @@ export function exchangeStatusMessage(game) {
     `Opponent’s list: ${game.opponent.submitted ? 'submitted' : 'missing'} · ${game.opponent.ready ? 'ready' : 'not ready'}`,
   ]
   if (game.own.name) lines.push(`Your portal player: **${clean(game.own.name)}**`)
-  if (game.status === 'open') lines.push('Both players use `/list game submit`, then `/list game ready`. Replacing either list resets both ready confirmations.')
+  if (game.status === 'open') lines.push(game.workflow === 'invite'
+    ? 'Waiting for the invited opponent to use `/list game join` with this code and their own Army code. Joining locks both lists automatically; no ready command is needed.'
+    : 'Both players use `/list game submit`, then `/list game ready`. Replacing either list resets both ready confirmations.')
   if (game.status === 'locked') lines.push('Lists are locked. Enter this code in the portal’s **LLH game code** field when reporting this game. Both lists stay private until the accepted report matches.')
   const list = game.status === 'released' ? fullListPayload(game.opponent.armyCode) : null
   if (list) lines.push(`Report: ${clean(game.reportId)}`, `**${clean(game.opponent.name)}’s full list:** ${list.text}`, `DM delivery: ${game.delivery}. You can always retrieve the list here.`)
@@ -144,6 +150,15 @@ export function createListExchangeService({
     if (!running) running = tickInner().catch(() => logger.error?.('Private list exchange verification is unavailable; unreleased lists remain private.')).finally(() => { running = null })
     return running
   }
+  async function notify(interaction, userId, content) {
+    try {
+      const user = await interaction.client.users.fetch(userId)
+      if (user.bot) throw Error('Player account is unavailable.')
+      const channel = await user.createDM()
+      await channel.send({ content, allowedMentions: { parse: [] } })
+      return true
+    } catch { return false }
+  }
   async function handler(interaction) {
     if (!interaction.isChatInputCommand?.() || interaction.commandName !== 'list-game') return false
     await interaction.deferReply({ flags: 64 })
@@ -152,18 +167,35 @@ export function createListExchangeService({
       if (!interaction.guildId) throw new ExchangeError('Use this command in the server where you arranged your game. Responses are private.')
       if (reports.configured === false) throw new ExchangeError('Private list exchanges are awaiting game-report verification setup. Please contact Lobo.')
       const command = interaction.options.getSubcommand(), userId = interaction.user.id, guildId = interaction.guildId
-      let game
+      let game, confirmation = ''
       if (command === 'create') {
         const opponent = interaction.options.getUser('opponent', true)
         const member = await interaction.guild.members.fetch(opponent.id)
         if (opponent.bot || member.user.bot) throw new ExchangeError('Choose another human player in this server.')
-        game = await store.create({ userId, opponentId: opponent.id, guildId, title: interaction.options.getString('description', true) })
+        const name = linkedExchangePlayerName(await linkedPlayers(guildId), userId)
+        const armyCode = normalizeExchangeArmyCode(interaction.options.getString('army-code', true))
+        game = await store.create({ userId, opponentId: opponent.id, guildId, name, armyCode, title: interaction.options.getString('game-name', true) })
+        const sent = await notify(interaction, opponent.id,
+          `<@${userId}> has created a game with you: **${clean(game.title)}**.\nGame code: \`${game.code}\`\nIn **${clean(interaction.guild.name || 'your shared server')}**, use \`/list game join game:${game.code} army-code:<your own Army code or link>\`.\nBoth lists lock when you join and stay private until the game result is reported and accepted.`)
+        confirmation = sent
+          ? '**Game created.** Your list is saved. Invitation sent to your opponent.'
+          : '**Game created.** Your list is saved, but I could not DM your opponent. Give them the game code below and ask them to use `/list game join` in this server.'
       } else {
         const code = exchangeCode(interaction.options.getString('game', true))
         if (!validExchangeCode(code)) throw new ExchangeError('Enter the full LLH game code.')
         // Check ownership before decoding private inputs or changing any state.
-        await store.status(code, userId, guildId)
-        if (command === 'submit') {
+        const current = await store.status(code, userId, guildId)
+        if (command === 'join') {
+          if (current.workflow !== 'invite' || current.creatorId === userId) throw new ExchangeError('Only the invited opponent can join this game. Use /list game status to check your game.')
+          if (current.status !== 'open') throw new ExchangeError('This game is already submitted or closed. Use /list game status to check it.')
+          const name = linkedExchangePlayerName(await linkedPlayers(guildId), userId)
+          game = await store.join(code, userId, guildId, name, normalizeExchangeArmyCode(interaction.options.getString('army-code', true)))
+          const sent = await notify(interaction, game.opponent.id,
+            `<@${userId}> has submitted their list for **${clean(game.title)}**.\n**Game submitted. Both players are ready.** Both lists are saved and locked.\nGame code: \`${game.code}\`\nEnter this code when reporting the result. Lists remain private until the accepted report.`)
+          confirmation = '**Game submitted.** Your list is saved. Both lists are locked and will be shared after the accepted game report.'
+            + (sent ? ' Your opponent has been notified.' : ' I could not DM your opponent; let them know both players are ready. They can check `/list game status`.')
+        }
+        else if (command === 'submit') {
           const player = interaction.options.getUser('player', true)
           if (player.id !== userId || player.bot) throw new ExchangeError('Select your own Discord account. Each player must submit their own list.')
           const name = linkedExchangePlayerName(await linkedPlayers(guildId), userId)
@@ -174,7 +206,9 @@ export function createListExchangeService({
         else if (command === 'status') { await tick(); game = await store.status(code, userId, guildId) }
         else throw new ExchangeError('Choose a list exchange action.')
       }
-      await reply(exchangeStatusMessage(game))
+      const payload = exchangeStatusMessage(game)
+      if (confirmation) payload.content = `${confirmation}\n\n${payload.content}`
+      await reply(payload)
     } catch (error) {
       await reply(error instanceof ExchangeError ? error.message : 'Private list exchange is temporarily unavailable. Existing lists remain private; try again shortly.')
     }
