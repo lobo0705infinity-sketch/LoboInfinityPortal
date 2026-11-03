@@ -13,7 +13,7 @@ export const LIST_GAME_COMMAND = {
       { name: 'description', description: 'Identify this game, such as Top 40 W2 or Tuesday casual game', type: Type.String, required: true, maxLength: 100 },
     ] },
     { name: 'submit', description: 'Privately submit or replace your list before both players lock', type: Type.Subcommand, options: [codeOption,
-      { name: 'player', description: 'Your exact portal player name, as it appears on your game report', type: Type.String, required: true, maxLength: 80 },
+      { name: 'player', description: 'Select your own Discord account; LLH uses its linked portal player name', type: Type.User, required: true },
       { name: 'army-code', description: 'Your full Infinity Army code or Army link', type: Type.String, required: true, maxLength: 4000 },
     ] },
     ...[
@@ -22,6 +22,17 @@ export const LIST_GAME_COMMAND = {
       ['cancel', 'Cancel an unused exchange before the lists lock'],
     ].map(([name, description]) => ({ name, description, type: Type.Subcommand, options: [codeOption] })),
   ],
+}
+
+const normalizedPlayerName = value => String(value || '').normalize('NFKC').trim().toLocaleLowerCase('en-US')
+export function linkedExchangePlayerName(players, userId) {
+  const matches = players.filter(player => player.userId === userId && normalizedPlayerName(player.name))
+  const names = new Set(matches.map(player => normalizedPlayerName(player.name)))
+  if (!names.size) throw new ExchangeError('Your Discord account is not linked to a portal player name. Ask Lobo to check your account link before submitting.')
+  if (names.size !== 1 || players.some(player => player.userId !== userId && names.has(normalizedPlayerName(player.name)))) {
+    throw new ExchangeError('Your Discord account has conflicting portal player links. Ask Lobo to correct the links before submitting.')
+  }
+  return matches[0].name.normalize('NFKC').trim()
 }
 
 export function normalizeExchangeArmyCode(input) {
@@ -49,6 +60,7 @@ export function exchangeStatusMessage(game) {
     `Your list: ${game.own.armyCode ? 'submitted' : 'missing'} · ${game.own.ready ? 'ready' : 'not ready'}`,
     `Opponent’s list: ${game.opponent.submitted ? 'submitted' : 'missing'} · ${game.opponent.ready ? 'ready' : 'not ready'}`,
   ]
+  if (game.own.name) lines.push(`Your portal player: **${clean(game.own.name)}**`)
   if (game.status === 'open') lines.push('Both players use `/list game submit`, then `/list game ready`. Replacing either list resets both ready confirmations.')
   if (game.status === 'locked') lines.push('Lists are locked. Enter this code in the portal’s **LLH game code** field when reporting this game. Both lists stay private until the accepted report matches.')
   const list = game.status === 'released' ? fullListPayload(game.opponent.armyCode) : null
@@ -103,6 +115,7 @@ export async function findExchangeDelivery(channel, marker, botId, since) {
 export function createListExchangeService({
   store = createListExchangeStore(join(process.env.RAILWAY_VOLUME_MOUNT_PATH || '/data', 'llh-list-exchanges.json')),
   reports = createListExchangeReportSource(), logger = console, workerToken = process.env.ARMY_INTELLIGENCE_WORKER_TOKEN,
+  linkedPlayers = async () => [],
 } = {}) {
   let client, timer, running
   async function tickInner() {
@@ -150,7 +163,12 @@ export function createListExchangeService({
         if (!validExchangeCode(code)) throw new ExchangeError('Enter the full LLH game code.')
         // Check ownership before decoding private inputs or changing any state.
         await store.status(code, userId, guildId)
-        if (command === 'submit') game = await store.submit(code, userId, guildId, interaction.options.getString('player', true), normalizeExchangeArmyCode(interaction.options.getString('army-code', true)))
+        if (command === 'submit') {
+          const player = interaction.options.getUser('player', true)
+          if (player.id !== userId || player.bot) throw new ExchangeError('Select your own Discord account. Each player must submit their own list.')
+          const name = linkedExchangePlayerName(await linkedPlayers(guildId), userId)
+          game = await store.submit(code, userId, guildId, name, normalizeExchangeArmyCode(interaction.options.getString('army-code', true)))
+        }
         else if (command === 'ready') game = await store.ready(code, userId, guildId)
         else if (command === 'cancel') game = await store.cancel(code, userId, guildId)
         else if (command === 'status') { await tick(); game = await store.status(code, userId, guildId) }

@@ -164,7 +164,8 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
         const member=await guild.members.fetch(id)
         if(!member.user.bot) {
           result.set(name,id)
-          if(!explicit)state.links[normalize(name)]={userId:id,source:contacts.get(normalize(name))===id?'Top 40 registration Discord contact':'Self-linked campaign registration',confirmedAt:new Date(now()).toISOString()}
+          if(!explicit)state.links[normalize(name)]={userId:id,playerName:name,source:contacts.get(normalize(name))===id?'Top 40 registration Discord contact':'Self-linked campaign registration',confirmedAt:new Date(now()).toISOString()}
+          else explicit.playerName=name
         }
       } catch {/* Leave this player unresolved. */}
     }
@@ -217,7 +218,7 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
           const user=interaction.options.getUser('account',true),member=await guild.members.fetch(user.id)
           if(member.user.bot){await reply('Choose the player’s human Discord account.');return}
           if(Object.entries(state.links).some(([key,value])=>key!==normalize(name)&&value.userId===user.id)){await reply('That account is already linked to another Top 40 player.');return}
-          state.links[normalize(name)]={userId:user.id,confirmedBy:interaction.user.id,confirmedAt:new Date(now()).toISOString()};await store.write(state)
+          state.links[normalize(name)]={userId:user.id,playerName:name,confirmedBy:interaction.user.id,confirmedAt:new Date(now()).toISOString()};await store.write(state)
           await reply(`Confirmed the Discord account for ${text(name)}. Match notifications will use this account.`)
         } else if(command==='role') {
           const projection=await source(),linked=await accounts(projection,state)
@@ -234,6 +235,7 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     });return true
   }
   return {handler,tick,summary:()=>({...last,missing:undefined,unlinked:last.missing.length}),
+    linkedPlayers: guildId => serial(async()=>guildId===AURORA_DISCORD_GUILD_ID ? Object.entries((await store.read()).links).filter(([,link])=>validId(link.userId)).map(([name,link])=>({userId:link.userId,name:link.playerName || name})) : []),
     async start(connected,{schedule=true}={}) {
       client=connected;guild=client.guilds.cache.get(AURORA_DISCORD_GUILD_ID)
       if(!guild)throw Error('Top 40 server is unavailable.')

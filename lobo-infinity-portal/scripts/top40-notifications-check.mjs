@@ -62,5 +62,9 @@ try {
   const identityService=createTop40Notifications({...options,store:createTop40Store(join(dir,'identity.json')),resolveAccounts:undefined,registeredPlayers:async()=>[]})
   await identityService.start(client,{schedule:false});assert.equal(identityService.summary().linked,0)
   service.stop();identityService.stop()
+  // Existing ledger keys still resolve; new links preserve the portal spelling.
+  await store.write({ version: 1, links: { alpha: { userId: ids[0], playerName: 'Alpha' }, beta: { userId: ids[1] } }, deliveries: {} })
+  assert.deepEqual(await service.linkedPlayers(AURORA_DISCORD_GUILD_ID), [{ userId: ids[0], name: 'Alpha' }, { userId: ids[1], name: 'beta' }])
+  assert.deepEqual(await service.linkedPlayers('another-server'), [])
   console.log('PASS Top 40 launch pings, 72-hour checks, completed/pending/bye suppression, exact recipient scope, restart and concurrent deduplication, uncertain-send recovery, corrupt-ledger safety and owner-only account management.')
 } finally {await rm(dir,{recursive:true,force:true})}

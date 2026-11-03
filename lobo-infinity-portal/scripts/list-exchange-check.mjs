@@ -6,7 +6,7 @@ import { Readable } from 'node:stream'
 import vm from 'node:vm'
 import { CommandInteractionOptionResolver, ApplicationCommandManager } from 'discord.js'
 import { createListExchangeStore } from '../bot/list-exchange-store.mjs'
-import { createListExchangeService, createListExchangeReportSource, normalizeExchangeArmyCode, exchangeStatusMessage } from '../bot/list-exchange.mjs'
+import { createListExchangeService, createListExchangeReportSource, normalizeExchangeArmyCode, exchangeStatusMessage, linkedExchangePlayerName } from '../bot/list-exchange.mjs'
 import { createGroupedCommandHandler, GROUPED_COMMAND_DEFINITIONS } from '../bot/grouped-commands.mjs'
 import { createCampaignGameStore } from '../bot/aurora-game-store.mjs'
 import { emptyAuroraState } from '../shared/aurora-public-state.mjs'
@@ -84,6 +84,49 @@ try {
   assert.equal(interaction.payload.files[0].attachment.toString(), 'REPLACED-B')
   const definition = ApplicationCommandManager.transformCommand(GROUPED_COMMAND_DEFINITIONS.find(command => command.name === 'list'))
   assert.equal(definition.options.find(option => option.name === 'game').options.length, 5)
+  const submitDefinition = definition.options.find(option => option.name === 'game').options.find(option => option.name === 'submit')
+  assert.equal(submitDefinition.options.find(option => option.name === 'player').type, 6, 'Discord account picker replaces free-text names')
+
+  // Resolve stable account IDs, never nicknames; reject missing/conflicting
+  // links and submitting as the opponent before any private list is changed.
+  assert.equal(linkedExchangePlayerName([{ userId: A, name: 'Alice' }, { userId: A, name: ' ALICE ' }], A), 'Alice')
+  assert.throws(() => linkedExchangePlayerName([{ userId: B, name: 'Alice' }], A), /not linked/)
+  assert.throws(() => linkedExchangePlayerName([{ userId: A, name: 'Alice' }, { userId: A, name: 'Other' }], A), /conflicting/)
+  assert.throws(() => linkedExchangePlayerName([{ userId: A, name: 'Alice' }, { userId: B, name: ' ALICE ' }], A), /conflicting/)
+  const pickerStore = createListExchangeStore(join(directory, 'picker.json'), { now: () => now })
+  let links = [{ userId: A, name: 'Alice' }, { userId: B, name: 'Bob' }], lookupCount = 0
+  const pickerGame = await pickerStore.create({ userId: A, opponentId: B, guildId, title: 'Account picker' })
+  const pickerService = createListExchangeService({ store: pickerStore, reports: { configured: true, load: async () => [] }, logger: quiet,
+    linkedPlayers: async requestedGuild => { assert.equal(requestedGuild, guildId); lookupCount++; return links } })
+  const pickerRoute = createGroupedCommandHandler({ handlers: { 'list-game': pickerService.handler }, logger: quiet })
+  async function submitAs(actor, selected, requestedCode = pickerGame.code) {
+    const input = { ...interaction, user: { id: actor }, options: new CommandInteractionOptionResolver({}, [
+      { name: 'game', type: 2, options: [{ name: 'submit', type: 1, options: [
+        { name: 'game', type: 3, value: requestedCode },
+        { name: 'player', type: 6, value: selected, user: { id: selected, username: 'MisleadingNickname', bot: false } },
+        { name: 'army-code', type: 3, value: army },
+      ] }] },
+    ], {}) }
+    assert.equal(await pickerRoute(input), true)
+    return input.payload.content
+  }
+  assert.match(await submitAs(A, B), /own Discord account/)
+  assert.equal(lookupCount, 0)
+  assert.equal((await pickerStore.status(pickerGame.code, A, guildId)).own.armyCode, '')
+  links = []
+  assert.match(await submitAs(A, A), /not linked/)
+  links = [{ userId: A, name: 'Alice' }, { userId: A, name: 'Other' }]
+  assert.match(await submitAs(A, A), /conflicting/)
+  assert.equal((await pickerStore.status(pickerGame.code, A, guildId)).own.armyCode, '')
+  links = [{ userId: A, name: 'Alice' }, { userId: B, name: 'Bob' }]
+  assert.match(await submitAs(C, C), /Only the two/)
+  assert.match(await submitAs(A, A), /Your portal player: \*\*Alice\*\*/)
+  assert.equal((await pickerStore.status(pickerGame.code, A, guildId)).own.name, 'Alice')
+  assert.match(await submitAs(B, B), /Your portal player: \*\*Bob\*\*/)
+  assert(!JSON.stringify(await pickerStore.status(pickerGame.code, B, guildId)).includes('MisleadingNickname'))
+  await pickerStore.ready(pickerGame.code, A, guildId); await pickerStore.ready(pickerGame.code, B, guildId)
+  assert.deepEqual(await pickerStore.resolveLocked(pickerGame.code, ['Alice', 'Bob']), [army, army])
+  assert.match(await submitAs(A, A), /locked/)
 
   // Authenticated machine resolution never gives the browser a private list.
   const locked = await createLocked('HTTP test')
