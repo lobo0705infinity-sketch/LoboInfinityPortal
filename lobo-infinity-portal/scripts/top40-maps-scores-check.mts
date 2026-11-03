@@ -6,17 +6,19 @@ import { buildPreparationAssignments, TOP40_EVENT_ID } from '../src/public/top40
 import type { PublicEvent, PublicGame } from '../src/public/snapshotTypes.ts'
 const plan=JSON.parse(readFileSync('shared/top40-launch-plan.json','utf8'))
 const assignments=withTop40RoundMaps(plan.rounds)
-assert.equal(assignments.filter(record=>record.map!=='TBD').length,10)
-assert.equal(assignments.filter(record=>record.map==='TBD').length,4)
+assert.equal(assignments.filter(record=>record.map!=='TBD').length,11)
+assert.equal(assignments.filter(record=>record.map==='TBD').length,3)
 for(const map of TOP40_ROUND_MAPS) {
  assert.ok(existsSync('public'+map.download),map.download)
  const save=JSON.parse(readFileSync('public'+map.download,'utf8'))
  assert.equal(save.ObjectStates[0].Nickname,'SET_'+map.workshopLabel)
  assert.equal(assignments.find(r=>r.bracket===map.bracket&&r.bracketRound===map.round)?.map,map.workshopLabel)
 }
-assert.equal(TOP40_MAPS.length,10)
+assert.equal(TOP40_MAPS.length,11)
 assert.ok(TOP40_MAPS.every(map=>map.round && map.mission!=='Data Harvest' && map.key!=='kestrel'),'Top 40 contains only assigned tournament maps')
 assert.equal(assignments.find(r=>r.bracket==='Winners'&&r.bracketRound===3)?.map,"Lobo's Top 40 Winners Round 3 Map")
+assert.equal(assignments.find(r=>r.bracket==='Grand Final')?.map,"Lobo's Top 40 Final Map")
+assert.equal(withTop40RoundMaps([{bracket:'Grand Final',bracketRound:2,mission:'Double Bind'}])[0].map,"Lobo's Top 40 Final Map",'A required final reset uses the approved final terrain')
 const event={id:TOP40_EVENT_ID,bracketMissions:plan.rounds,bracket:[]} as unknown as PublicEvent
 const original=structuredClone(event)
 const projection={eventId:TOP40_EVENT_ID,home:{event},bracket:{eventId:TOP40_EVENT_ID,missions:plan.rounds,matches:[{bracket:'Winners',bracketRound:2,status:'Active',playerA:'A',playerB:'B',deadline:'2026-11-08'}]},publicData:{event,games:[],armyLists:[]}}
@@ -25,7 +27,7 @@ assert.deepEqual(event,original,'map display does not mutate the stored event')
 assert.deepEqual(mapped.publicData.games,[])
 assert.equal(mapped.bracket.matches[0].map,TOP40_ROUND_MAPS[1].workshopLabel)
 assert.equal(mapped.bracket.matches[0].deadline,'2026-11-08')
-assert.equal(buildPreparationAssignments(event,[]).filter(r=>r.maps[0]==='TBD').length,4,'fixed snapshot fallback uses TBD too')
+assert.equal(buildPreparationAssignments(event,[]).filter(r=>r.maps[0]==='TBD').length,3,'fixed snapshot fallback uses TBD too')
 const other={eventId:'other',publicData:{event:{id:'other'}}};assert.equal(applyTop40MapAssignments(other),other)
 const game={player1:'Zhukov2',player1DisplayName:'Zhukov2',player1Faction:'Tohaa',player2:'Snakes / Lucas',player2DisplayName:'Snakes / Lucas',player2Faction:'Yu Jing',winner:'Snakes / Lucas',tp:'5–1',op:'5–4',vp:'150–93'} as PublicGame
 assert.deepEqual(getTop40ResultSides(game),[
@@ -36,7 +38,7 @@ assert.equal(getTop40ResultSides({...game,winner:'Zhukov2'})[0].player,'Zhukov2'
 assert.deepEqual(getTop40ResultSides({...game,winner:'Draw',tp:'2-2',op:'5—5',vp:'90–100'}).map(s=>[s.player,s.result,s.tp,s.vp]),[['Zhukov2','Draw','2','90'],['Snakes / Lucas','Draw','2','100']])
 assert.ok(getTop40ResultSides({...game,winner:'Unknown'}).every(s=>s.result==='Result unavailable'&&s.tp==='—'))
 assert.ok(getTop40ResultSides({...game,tp:'bad'}).every(s=>s.tp==='—'))
-console.log('PASS: ten assigned round maps, four TBD slots, exact bag downloads, unchanged event progression, winner-first score ownership, draws and invalid scores.')
+console.log('PASS: eleven assigned round maps, three TBD slots, exact bag downloads, unchanged event progression, winner-first score ownership, draws and invalid scores.')
 
 // Exercise the deployed GET handler: the API must agree with the UI and leave scores intact.
 const { default: handler } = await import('../api/public-event-projection.mjs')
@@ -50,12 +52,12 @@ const response={setHeader(){},status(code:number){status=code;return this},send(
 try {
  await handler({method:'GET',url:'/api/public-event-projection?eventId='+TOP40_EVENT_ID},response)
  assert.equal(status,200)
- assert.equal(body.projection.publicData.event.bracketMissions.filter((r:any)=>r.map==='TBD').length,4)
+ assert.equal(body.projection.publicData.event.bracketMissions.filter((r:any)=>r.map==='TBD').length,3)
  assert.deepEqual(body.projection.publicData.games,[game],'map publication must not alter any score or result')
 } finally {
  globalThis.fetch=oldFetch
  if(oldFileId===undefined)delete process.env.TOP40_PUBLIC_PROJECTION_FILE_ID
  else process.env.TOP40_PUBLIC_PROJECTION_FILE_ID=oldFileId
 }
-console.log('PASS: public event API publishes the same ten/TBD assignments without changing scores.')
+console.log('PASS: public event API publishes the same eleven/TBD assignments without changing scores.')
 

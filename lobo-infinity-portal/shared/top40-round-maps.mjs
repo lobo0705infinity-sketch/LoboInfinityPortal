@@ -1,5 +1,5 @@
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
-export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/approved-five-map-update-20261102-r1/Lobo-Five-Map-Workshop-Update-Installer.zip'
+export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/verdant-neon-final-20261103-r1/Lobo-Verdant-Neon-Final-Workshop-Update-Installer.zip'
 
 // Only announced round assignments belong in the tournament map collection.
 export const TOP40_ROUND_MAPS = [
@@ -35,9 +35,9 @@ export const TOP40_ROUND_MAPS = [
     "name": "Verdant Exchange",
     "workshopLabel": "Lobo's Top 40 Winners Round 3 Map",
     "href": "/event/lobos-top-40/maps/winners-3",
-    "download": "/assets/maps/seven-map-update-20261102-r1/Lobos-Top-40-Winners-Round-3-Map.json",
-    "angled": "/assets/maps/seven-map-update-20261102-r1/verdant-angled.webp",
-    "overhead": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
+    "download": "/assets/maps/verdant-neon-final-20261103-r1/Lobos-Top-40-Winners-Round-3-Map.json",
+    "angled": "/assets/maps/verdant-neon-final-20261103-r1/verdant-angled.webp",
+    "overhead": "/assets/maps/verdant-neon-final-20261103-r1/verdant-overhead.webp",
     "generalHref": "/maps/uplink-center-2",
     "bracket": "Winners",
     "round": 3
@@ -132,13 +132,27 @@ export const TOP40_ROUND_MAPS = [
     "generalHref": "/maps/hardlock-1-satellite",
     "bracket": "Losers",
     "round": 7
+  },
+  {
+    "key": "grand-final",
+    "mission": "Double Bind",
+    "name": "Neon Shogunate",
+    "workshopLabel": "Lobo's Top 40 Final Map",
+    "href": "/event/lobos-top-40/maps/grand-final",
+    "download": "/assets/maps/verdant-neon-final-20261103-r1/Lobos-Top-40-Final-Map.json",
+    "angled": "/assets/maps/verdant-neon-final-20261103-r1/neon-angled.webp",
+    "overhead": "/assets/maps/verdant-neon-final-20261103-r1/neon-overhead.webp",
+    "generalHref": "/maps/double-bind-1",
+    "bracket": "Grand Final",
+    "round": 1
   }
 ]
 
 export const TOP40_MAPS = [...TOP40_ROUND_MAPS]
 
 export function getTop40RoundMap(bracket, round, mission = '') {
-  return TOP40_ROUND_MAPS.find(map => map.bracket === bracket && map.round === Number(round)
+  const mapRound = bracket === 'Grand Final' && Number(round) === 2 ? 1 : Number(round)
+  return TOP40_ROUND_MAPS.find(map => map.bracket === bracket && map.round === mapRound
     && (!mission || map.mission.toLowerCase() === String(mission).trim().toLowerCase()))
 }
 

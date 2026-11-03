@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-02",
-  "download": "/assets/maps/approved-five-map-update-20261102-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-03",
+  "download": "/assets/maps/verdant-neon-final-20261103-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -665,32 +665,36 @@
       "id": "3719263238:100993",
       "guid": "100993",
       "slug": "double-bind-1",
-      "name": "Tidal Turbines",
-      "workshopName": "ITS18 Double Bind — Tidal Turbines — REVISED",
-      "workshopBagName": "SET_ITS18 Double Bind — Tidal Turbines — REVISED",
+      "name": "Neon Shogunate",
+      "workshopName": "ITS18 Double Bind — Neon Shogunate",
+      "workshopBagName": "SET_ITS18 Double Bind — Neon Shogunate",
       "collectionTitle": "ITS Season 18",
       "family": "Standard deployment",
-      "layoutKey": 6,
+      "layoutKey": 2025,
       "missionSetups": [
         "Double Bind"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 97,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/double-bind-1-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/double-bind-1-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/double-bind-1.png",
-      "download": "/assets/maps/seven-map-update-20261102-r1/double-bind-1.json",
+      "objectCount": 179,
+      "sourceNote": "Official Double Bind grand-final map: five city districts, illuminated signs and kiosks, cycling billboards and sky traffic. Replaces the Tidal Turbines Double Bind slot; other Tidal Turbines missions remain. Matching Top 40 Final map. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
+      "overhead": "/assets/maps/verdant-neon-final-20261103-r1/neon-overhead.webp",
+      "angled": "/assets/maps/verdant-neon-final-20261103-r1/neon-angled.webp",
+      "diagram": "/assets/maps/verdant-neon-final-20261103-r1/neon-overhead.webp",
+      "download": "/assets/maps/verdant-neon-final-20261103-r1/double-bind-1.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/06-normal-2-irl-tourney-overhead.jpg",
-      "sourceAngled": "/assets/maps/06-normal-2-irl-tourney-angled.jpg",
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0",
       "labelAliases": [
         "SET_ITS18 Double Bind — Tidal Turbines — REVISED",
         "ITS18 Double Bind — Tidal Turbines — REVISED",
-        "Tidal Turbines"
-      ]
+        "Tidal Turbines",
+        "Neon Shogunate",
+        "ITS18 Double Bind — Neon Shogunate",
+        "SET_ITS18 Double Bind — Neon Shogunate"
+      ],
+      "captureDate": "2026-11-03"
     },
     {
       "index": 22,
@@ -1315,12 +1319,12 @@
         "Uplink Center"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 75,
-      "sourceNote": "Approved Verdant Exchange R5: four glass conservatories, laboratory buildings, covered walkways and organized equipment. Rebuilt ladders include wall mounts, handholds, clear landings and roof openings. Grounded scatter, playable interiors and integrated roof/glass states. Matching Top 40 Winners Round 3 map; replaces the Uplink Center Dustline Outpost slot. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/verdant-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/verdant-overhead.webp",
-      "download": "/assets/maps/seven-map-update-20261102-r1/uplink-center-2.json",
+      "objectCount": 73,
+      "sourceNote": "Exact user-edited TS_Save_42 final layout; two removed screen clusters stay removed. Matching Top 40 Winners Round 3. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
+      "overhead": "/assets/maps/verdant-neon-final-20261103-r1/verdant-overhead.webp",
+      "angled": "/assets/maps/verdant-neon-final-20261103-r1/verdant-angled.webp",
+      "diagram": "/assets/maps/verdant-neon-final-20261103-r1/verdant-overhead.webp",
+      "download": "/assets/maps/verdant-neon-final-20261103-r1/uplink-center-2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1329,12 +1333,15 @@
       "labelAliases": [
         "SET_ITS18 Uplink Center — Dustline Outpost — REVISED",
         "ITS18 Uplink Center — Dustline Outpost — REVISED",
-        "Dustline Outpost"
+        "Dustline Outpost",
+        "Verdant Exchange",
+        "ITS18 Uplink Center — Verdant Exchange",
+        "SET_ITS18 Uplink Center — Verdant Exchange"
       ],
-      "captureDate": "2026-11-02"
+      "captureDate": "2026-11-03"
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "approved-five-map-update-20261102-r1",
-  "installer": "/assets/maps/approved-five-map-update-20261102-r1/Lobo-Five-Map-Workshop-Update-Installer.zip"
+  "downloadRevision": "verdant-neon-final-20261103-r1",
+  "installer": "/assets/maps/verdant-neon-final-20261103-r1/Lobo-Verdant-Neon-Final-Workshop-Update-Installer.zip"
 }

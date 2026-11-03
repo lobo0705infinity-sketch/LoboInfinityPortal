@@ -1,0 +1,1794 @@
+{
+  "checked": 447,
+  "failed": [],
+  "results": [
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-09f174.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-585cf9.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-7b2ac2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-9a471c.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-af6ab3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-ccc2db.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-cd30f6.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-f15480.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-f64032.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-attached-fa3161.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-restrained-puddles.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/271deaae134d72c29b8ddb608d79e143a4499191/assets/tts/neon-shogunate-final-realism-20261103/models/final-street-drainage.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/lantern-market-materials.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-00-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-00-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-00-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-01-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-01-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-01-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-02-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-02-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-02-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-03-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-03-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-03-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-04-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-04-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-04-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-05-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-05-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-05-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-06-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-06-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-06-roofed.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-07-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/313570ee4be2170dcaaf1821f420385a9148abb8/assets/tts/neon-shogunate-lantern-market-20261103/models/lantern-market-07-open.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-bathhouse-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-bathhouse-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-bathhouse-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-bathhouse-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-00.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-01.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-02.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-03.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-04.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-05.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-06.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-07.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-08.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-09.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-10.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-11.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-12.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-landscape-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-00.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-01.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-02.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-03.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-04.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-05.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-06.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-07.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-08.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-09.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-10.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-11.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-12.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-billboard-portrait-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-garage-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-garage-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-garage-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-garage-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-greenhouse-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-greenhouse-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-greenhouse-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-greenhouse-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-shrine-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-shrine-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-shrine-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-shrine-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-transit-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-transit-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-transit-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/4a7cf18d69e6cc953e34fed2ae0a953fe837e4ac/assets/tts/neon-shogunate-living-city-20261103/models/city-transit-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-01.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-02.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-04.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-05.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-06.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-07.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-08.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-09.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-10.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-11.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-13.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-14.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-15.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-16.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-17.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-18.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-19.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-20.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-21.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-22.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-24.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-26.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/722aa4efc5336f1a9c85484fb1986c8c24efa3ce/assets/tts/neon-shogunate-r4-20261103/models/advertising-27.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/hovercar-blue.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/hovercar-red.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/hovercar-silver.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/models/cart-16.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/models/cart-17.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/models/cart-18.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/models/closed-hovercar-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/9c5b2b8ea1c8125ab4109852f37b7e37c4321f05/assets/tts/neon-shogunate-closed-cars-20261103/models/closed-hovercar.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/botanical-genetics-laboratory-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/botanical-genetics-laboratory-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/botanical-genetics-laboratory-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/botanical-genetics-laboratory-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/covered-walkway-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/covered-walkway-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/covered-walkway-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/covered-walkway-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-glazing-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-glazing.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting--1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting--1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting--1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting--1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting-1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting-1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting-1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-planting-1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/eastern-propagation-house-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-11-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-11.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-12-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-12.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-13-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-13.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-14-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-14.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-15-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-15.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-16-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-16.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-17-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-17.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-18-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-18.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-19-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-19.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-20-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-20.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-21-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-21.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-22-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-22.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-23-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-23.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-24-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-24.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-25-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-25.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-26-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-26.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-27-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-27.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-28-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-28.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-29-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-29.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-30-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-30.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-31-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-31.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-32-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-32.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-34-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-34.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-4-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-4.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-5-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-5.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-6-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-6.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-7-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-7.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-8-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-8.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-9-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/equipment-9.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/irrigation-control-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/irrigation-control-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/irrigation-control-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/irrigation-control-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/northern-service-annex-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/northern-service-annex-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/northern-service-annex-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/northern-service-annex-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/nutrient-control-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/nutrient-control-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/nutrient-control-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/nutrient-control-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/research-administration-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/research-administration-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/research-administration-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/research-administration-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/seed-vault-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/seed-vault-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/seed-vault-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/seed-vault-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-state-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/signal-analysis-laboratory-state-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/southern-service-annex-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/southern-service-annex-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/southern-service-annex-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/southern-service-annex-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/specimen-archive-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/specimen-archive-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/specimen-archive-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/specimen-archive-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-glazing-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-glazing.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting--1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting--1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting--1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting--1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting-1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting-1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting-1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-planting-1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/temperate-conservatory-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-glazing-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-glazing.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting--1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting--1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting--1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting--1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting-1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting-1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting-1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-planting-1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/tropical-conservatory-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-state-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/uplink-data-exchange-state-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/verdant-ground-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/verdant-ground.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/verdant-ground.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/verdant-materials.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-glazing-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-glazing.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting--1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting--1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting--1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting--1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting-1-0-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting-1-0.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting-1-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-planting-1-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-roof-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-roof.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-state-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/a8dbe914578f3c0c648c5029e589d149fc65f503/verdant-exchange-r1/Assets/western-propagation-house-state-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-01-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-02-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-04-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-04.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-05-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-06-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-07-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-08-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-09-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-10-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-11-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-13-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-14-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-15-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-16-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-17-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-18-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-19-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-20-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-21-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-22-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-24-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-26-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/advertising-27-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/akari-noodle-kitchen-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/akari-noodle-kitchen-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/akari-noodle-kitchen-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/akari-noodle-kitchen-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/aoi-tea-house-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/aoi-tea-house-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/aoi-tea-house-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/aoi-tea-house-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/cart-16-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/cart-17-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/cart-18-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-courier-office-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-courier-office-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-courier-office-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-courier-office-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/east-ryokan-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/gatehouse-archive-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/gatehouse-archive-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/gatehouse-archive-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/gatehouse-archive-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/ground-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/ground.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/hoshi-books-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/hoshi-books-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/hoshi-books-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/hoshi-books-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-08-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-08.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-09-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-09.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-10-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-10.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-11-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-11.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-12-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-12.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-13-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-13.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-14-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-14.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-15-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kiosk-15.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kobayashi-tailor-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/kuma-robotics-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/moon-gate-bookshop-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/moon-gate-bookshop-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/moon-gate-bookshop-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/moon-gate-bookshop-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/noren-noodle-bar-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/north-watch-house-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/north-watch-house-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-00-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-00-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-00-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-00.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-01-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-01-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-01-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-01.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-02-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-02-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-02-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-02.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-03-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-03-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-03-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-03.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-04-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-04-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-04-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-04.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-05-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-05-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-05-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-05.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-06-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-06-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-06-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-06.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-07-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-07-leaf-off-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-07-leaf-off.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/planter-07.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/sakura-repair-shop-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-4-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/shogun-manor-view-4.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/west-kitsune-inn-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-3-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/willow-guest-house-view-3.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/yoru-baths-view-1-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/yoru-baths-view-1.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/yoru-baths-view-2-collider.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/models/yoru-baths-view-2.obj",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/shogunate-materials.png",
+      "status": 200
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/adeed7340a3d53be43a08fb3a0c7f7f41e14e2c7/assets/tts/neon-shogunate-r4-20261103/sign-art-atlas.jpg",
+      "status": 200
+    },
+    {
+      "url": "https://steamusercontent-a.akamaihd.net/ugc/1762566040434516925/35B6115843155E46391551B0AC37D029EF9F3C63/",
+      "status": 200
+    }
+  ]
+}

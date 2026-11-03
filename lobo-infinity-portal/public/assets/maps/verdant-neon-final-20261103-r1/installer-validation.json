@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "runtime": "PowerShell 7.4.6 on Linux",
+  "fresh": true,
+  "reinstall": true,
+  "legacyBackupAndRetirement": true,
+  "injectedWriteFailureRollback": true,
+  "corruptionRejectedBeforeWrites": true,
+  "nativeWindowsTested": false
+}

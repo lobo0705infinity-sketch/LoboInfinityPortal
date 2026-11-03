@@ -4,10 +4,10 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-const release = JSON.parse(readFileSync('public/assets/maps/approved-five-map-update-20261102-r1/release-inventory.json', 'utf8'))
+const release = JSON.parse(readFileSync('public/assets/maps/verdant-neon-final-20261103-r1/release-inventory.json', 'utf8'))
 assert.equal(loboWorkshopMaps.length,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,33)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,34)
 const missions=new Map()
 for(const map of loboWorkshopMaps){
  assert.equal(map.isCurrent,true)
@@ -69,8 +69,8 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 27)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 13)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 26)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
