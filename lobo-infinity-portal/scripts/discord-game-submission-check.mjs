@@ -6,9 +6,14 @@ const automation = readFileSync('backend/AutomationApi.gs', 'utf8')
 const discord = readFileSync('backend/DiscordApi.gs', 'utf8')
 const deepLinks = readFileSync('backend/DeepLinkApi.gs', 'utf8')
 
+const portalStart = canonical.indexOf('function canonicalSubmitPortalGame_(')
+const portalEnd = canonical.indexOf('\nfunction ', portalStart + 1)
+const portalSubmission = canonical.slice(portalStart, portalEnd < 0 ? undefined : portalEnd)
+
 const checks = [
   ['Google Form submissions enqueue after persistence and before canonical rebuild', /SpreadsheetApp\.flush\(\);[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow[\s\S]*?coordinateCanonicalRebuild\(/.test(canonical)],
-  ['All canonical branches enqueue once through the shared hook', (canonical.match(/canonicalSubmissionEnqueueGameAutomation_\(targetRow, \{/g) || []).length === 3],
+  ['All canonical branches enqueue once through the shared hook', (canonical.match(/canonicalSubmissionEnqueueGameAutomation_\(targetRow, \{/g) || []).length === 4],
+  ['Top 40 returns after its dedicated enqueue before the generic portal enqueue', /if \(workflow === "top-40"\) \{\s*completeTop40CanonicalCommit_[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow,[\s\S]*?return canonicalSubmissionSuccess_[\s\S]*?\n  \}\s*\n\s*canonicalSubmissionRecordPortalAudit_[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow,/.test(portalSubmission)],
   ['Portal Team Tournament enqueues before canonical rebuild', /canonicalSubmitPortalTeamTournamentGame_[\s\S]*?canonicalSubmissionEnqueueGameAutomation_\(targetRow[\s\S]*?coordinateCanonicalRebuild\(/.test(canonical)],
   ['Shared hook resolves the submitted canonical Game ID without analytics', /const gameId = canonicalGameId_\(row, Number\(targetRow\) - 1\);/.test(canonical) && !/canonicalSubmissionEnqueueGameAutomation_[\s\S]*getAllRecentGameObjects/.test(canonical)],
   ['Shared hook records enqueue failure and returns for rebuild', /Game submitted automation enqueue failed[\s\S]*return null/.test(canonical)],
