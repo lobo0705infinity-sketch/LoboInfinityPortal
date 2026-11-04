@@ -63,7 +63,8 @@ assert.equal(pending.status, 'Pending')
 const pastDeadline = { status: 'Active', deadline: '2020-01-01 00:00:00' }
 assert.equal(pastDeadline.status, 'Active')
 
-assert.match(bracketSource, /submitCanonicalGame[\s\S]*setEventBracketMatchGameId_[\s\S]*applyTop40BracketProgression_/)
+assert.match(submissionSource, /appendCanonicalGameDurably_[\s\S]*completeTop40CanonicalCommit_/)
+assert.match(bracketSource, /withGamePipelineLock_/)
 assert.match(bracketSource, /Game recorded; bracket progression requires Commissioner attention\./)
 assert.match(bracketSource, /Multiple Active matches require Commissioner correction\./)
 assert.match(bracketSource, /Top 40 bracket matches require a winner\./)

@@ -127,8 +127,33 @@ function canonicalSubmitPortalGame_(command, workflow) {
   const rebuildObligation = typeof markCanonicalRebuildRequired_ === "function"
     ? markCanonicalRebuildRequired_({ reason: "canonical-game-append", workflow: workflow })
     : null;
-  const persisted = appendCanonicalGameDurably_(sheet, row, null, command.params && command.params.listExchangeCode, command.params && command.params.listExchangeSubmittedAt);
+  // One durable identity per bracket match, including retries after an append timeout.
+  const submissionKey = workflow === "top-40"
+    ? top40MatchSubmissionKey_(command.params.eventId, command.params.matchId)
+    : null;
+  const persisted = appendCanonicalGameDurably_(sheet, row, submissionKey, command.params && command.params.listExchangeCode, command.params && command.params.listExchangeSubmittedAt);
   const targetRow = persisted.targetRow;
+
+  // Complete the bracket before audit, notifications, analytics or publication.
+  // The saved submission key lets the independent recovery job resume any crash.
+  if (workflow === "top-40") {
+    completeTop40CanonicalCommit_(command.params.eventId, command.params.matchId, persisted.gameId);
+    try {
+      canonicalSubmissionRecordPortalAudit_(command.commissionerContext, workflow, validation.value, row);
+      canonicalSubmissionEnqueueGameAutomation_(targetRow, {
+        eventId:validation.value.eventId, gameType:"tournament"
+      });
+      invalidateResultSubmissionCaches();
+    } catch (error) {
+      // The durable outbox and rebuild obligation remain available to workers.
+      console.error("TOP40_POST_COMMIT_DEFERRED " + String(error.message || error));
+    }
+    return canonicalSubmissionSuccess_("Submitted", row, targetRow, validation, {
+      workflow:workflow, eventId:validation.value.eventId,
+      player:validation.value.player, opponent:validation.value.opponent,
+      gameId:persisted.gameId, bracketMatchId:command.params.matchId
+    });
+  }
 
   canonicalSubmissionRecordPortalAudit_(
     command.commissionerContext,
@@ -140,7 +165,9 @@ function canonicalSubmitPortalGame_(command, workflow) {
     eventId: validation.value.eventId,
     gameType: canonicalSubmissionGameType_(workflow)
   });
-  coordinateCanonicalRebuild({
+  // The existing durable rebuild obligation is consumed by the queue worker.
+  // A slow or failed analytics rebuild must never strand a Top 40 bracket.
+  if (workflow !== "top-40") coordinateCanonicalRebuild({
     workflow: workflow,
     targetRow: null,
     logMissing: false,

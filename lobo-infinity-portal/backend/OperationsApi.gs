@@ -1401,7 +1401,8 @@ function enableLinkedIdentityUsers() {
 
 function buildLeagueAudit() {
 
-  const issues = [];
+  const issues = typeof getTop40SubmissionHealthIssues_ === "function"
+    ? getTop40SubmissionHealthIssues_() : [];
   const games =
     getAllRecentGameObjects();
   const players =

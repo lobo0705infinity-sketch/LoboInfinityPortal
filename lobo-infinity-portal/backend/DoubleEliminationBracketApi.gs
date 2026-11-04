@@ -63,17 +63,15 @@ function submitTop40Result(e) {
 }
 
 function submitTop40ResultService_(params, auth, requestEvent) {
+  // Form imports and portal submissions share the same reentrant mutation lock.
+  return withGamePipelineLock_(function() {
     const before = validateTop40BracketSubmission_(params);
     if (!before.valid) throw new Error(before.error);
+    params.matchId = before.match.matchId;
     if (before.match.gameId) {
-      if (before.match.status === "Completed")
-        return { success:true, status:"Already Submitted", gameId:Number(before.match.gameId), matchId:before.match.matchId };
-      try {
-        const recovered = applyTop40BracketProgression_(before.eventId, before.match.matchId, Number(before.match.gameId), before.winner, before.loser, new Date());
-        return { success:true, status:"Recovered", gameId:Number(before.match.gameId), bracket:recovered };
-      } catch (error) {
-        throw new Error("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
-      }
+      completeTop40CanonicalCommit_(before.eventId, before.match.matchId, Number(before.match.gameId));
+      invalidateEventManagerCaches(before.eventId);
+      return { success:true, status:"Already Submitted", gameId:Number(before.match.gameId), matchId:before.match.matchId };
     }
     const commissionerContext = getResultSubmissionCommissionerContext(requestEvent || {}, auth || {}, params);
     if (commissionerContext.error) throw new Error(commissionerContext.error);
@@ -82,13 +80,12 @@ function submitTop40ResultService_(params, auth, requestEvent) {
     if (!submission.success) throw new Error(submission.error);
     const gameId = Number(submission.context.gameId);
     if (!gameId) throw new Error("Game recorded; bracket progression requires Commissioner attention.");
-    setEventBracketMatchGameId_(before.eventId, before.match.matchId, gameId);
-    try {
-      const bracket = applyTop40BracketProgression_(before.eventId, before.match.matchId, gameId, before.winner, before.loser, new Date());
-      return { success:true, status:"Submitted", gameId:gameId, matchId:before.match.matchId, bracket:bracket };
-    } catch (error) {
-      throw new Error("Game recorded; bracket progression requires Commissioner attention. " + String(error.message || error));
-    }
+    // The canonical commit has already linked and advanced the bracket. Publication
+    // is best effort and has a durable retry obligation independent of analytics.
+    invalidateEventManagerCaches(before.eventId);
+    return { success:true, status:"Submitted", gameId:gameId, matchId:before.match.matchId,
+      bracket:buildEventBracketProjection_(getEventById(before.eventId), getEventRegistrationRows(before.eventId)) };
+  });
 }
 
 function awardEventBracketForfeit(e) {
