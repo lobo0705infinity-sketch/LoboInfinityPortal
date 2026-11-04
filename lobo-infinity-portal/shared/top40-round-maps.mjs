@@ -1,5 +1,5 @@
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
-export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/verdant-neon-final-20261103-r1/Lobo-Verdant-Neon-Final-Workshop-Update-Installer.zip'
+export const TOP40_APPROVED_MAPS_INSTALLER = '/assets/maps/sirocco-approved-ts46-20261104/Lobo-Sirocco-Approved46-Workshop-Update-Installer.zip'
 
 // Only announced round assignments belong in the tournament map collection.
 export const TOP40_ROUND_MAPS = [
@@ -67,6 +67,19 @@ export const TOP40_ROUND_MAPS = [
     "generalHref": "/maps/annihilation-2",
     "bracket": "Losers",
     "round": 1
+  },
+  {
+    "key": "losers-2",
+    "mission": "Provisioning",
+    "name": "Sirocco Wells",
+    "workshopLabel": "Lobo's Top 40 Losers Round 2 Map",
+    "href": "/event/lobos-top-40/maps/losers-2",
+    "download": "/assets/maps/sirocco-approved-ts46-20261104/Lobos-Top-40-Losers-Round-2-Map.json",
+    "angled": "/assets/maps/sirocco-approved-ts46-20261104/angled.webp",
+    "overhead": "/assets/maps/sirocco-approved-ts46-20261104/overhead.webp",
+    "generalHref": "/maps/provisioning-2-satellite",
+    "bracket": "Losers",
+    "round": 2
   },
   {
     "key": "losers-3",
@@ -182,4 +195,5 @@ export function applyTop40MapAssignments(projection) {
     ...(projection.publicData ? { publicData: { ...projection.publicData, event: updateEvent(projection.publicData.event) } } : {}),
   }
 }
+
 

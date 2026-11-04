@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-03",
-  "download": "/assets/maps/verdant-neon-final-20261103-r1/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-04",
+  "download": "/assets/maps/sirocco-approved-ts46-20261104/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -1104,8 +1104,8 @@
       "guid": "8102b2",
       "slug": "provisioning-2-satellite",
       "name": "Sirocco Wells",
-      "workshopName": "ITS18 Provisioning — Sirocco Wells Approved R7",
-      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells Approved R7",
+      "workshopName": "ITS18 Provisioning — Sirocco Wells — Approved TS46",
+      "workshopBagName": "SET_ITS18 Provisioning — Sirocco Wells — Approved TS46",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
       "layoutKey": 2007,
@@ -1113,12 +1113,12 @@
         "Provisioning"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 58,
-      "sourceNote": "Approved R7 adopts the user-approved TS_Save_31 layout exactly: 58 active map objects, 20 buildings and 9 individual ridges. Approved transforms, scales, copied buildings, rooftop equipment, models, furnished interiors, controls and matching backgrounds retained. Alternate-state IDs and loader/cleanup records normalized. Offline loading, floor-state, controls, reload and Clear Table checks pass.",
-      "overhead": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
-      "angled": "/assets/maps/sirocco-wells-approved-20261101-r7/angled.webp",
-      "diagram": "/assets/maps/sirocco-wells-approved-20261101-r7/overhead.webp",
-      "download": "/assets/maps/seven-map-update-20261102-r1/provisioning-2-satellite.json",
+      "objectCount": 80,
+      "sourceNote": "Approved TS_Save_46: the user-approved active building states, all 20 building placements, 9 movable ridges, furnishings, materials, objectives and 22 night lights are retained. Inactive state placements and session-only environment baseline normalized for reuse. All 103 custom asset URLs downloaded successfully; both general and independent Top 40 bags pass offline Stage load/alternate-state/cleanup checks. Matching Top 40 Losers Round 2 (Provisioning).",
+      "overhead": "/assets/maps/sirocco-approved-ts46-20261104/overhead.webp",
+      "angled": "/assets/maps/sirocco-approved-ts46-20261104/angled.webp",
+      "diagram": "/assets/maps/sirocco-approved-ts46-20261104/overhead.webp",
+      "download": "/assets/maps/sirocco-approved-ts46-20261104/Sirocco-Wells-Approved-TS46.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -1132,9 +1132,13 @@
         "ITS18 Provisioning — Palisade Depot — SATELLITE EDITION",
         "SET_ITS18 Provisioning — Sirocco Wells Approved R7",
         "ITS18 Provisioning — Sirocco Wells Approved R7",
-        "Sirocco Wells"
+        "Sirocco Wells",
+        "SET_ITS18 Provisioning — Sirocco Wells — Approved TS46",
+        "ITS18 Provisioning — Sirocco Wells — Approved TS46",
+        "Sirocco Wells R8 Settlement",
+        "Sirocco Wells R8.1 Import Fix"
       ],
-      "captureDate": "2026-11-01"
+      "captureDate": "2026-11-04"
     },
     {
       "index": 35,
@@ -1342,6 +1346,7 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "verdant-neon-final-20261103-r1",
-  "installer": "/assets/maps/verdant-neon-final-20261103-r1/Lobo-Verdant-Neon-Final-Workshop-Update-Installer.zip"
+  "downloadRevision": "approved-sirocco-ts46-20261104",
+  "installer": "/assets/maps/sirocco-approved-ts46-20261104/Lobo-Sirocco-Approved46-Workshop-Update-Installer.zip",
+  "releaseInventory": "/assets/maps/sirocco-approved-ts46-20261104/release-inventory.json"
 }

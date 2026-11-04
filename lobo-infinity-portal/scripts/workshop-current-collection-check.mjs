@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-const release = JSON.parse(readFileSync('public/assets/maps/verdant-neon-final-20261103-r1/release-inventory.json', 'utf8'))
+const release = JSON.parse(readFileSync('public/assets/maps/sirocco-approved-ts46-20261104/release-inventory.json', 'utf8'))
 assert.equal(loboWorkshopMaps.length,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,34)
@@ -91,3 +91,4 @@ for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-sat
   assert.equal(separate.get(replacement.layoutKey).average, 1)
 }
 console.log('Current Workshop catalogue, downloads, mission coverage, archived links and shared ratings passed.')
+
