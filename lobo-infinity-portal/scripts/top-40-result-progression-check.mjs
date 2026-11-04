@@ -88,3 +88,6 @@ console.log('PASS validation: draw, wrong player, Pending, multiple Active, and 
 console.log('PASS idempotency: one Game linkage and one progression per match')
 console.log('PASS failure order: canonical Game precedes durable linkage and recoverable progression')
 console.log('PASS four-player complete tournament progression')
+
+// Run interruption and recovery regressions with the existing Top 40 build gate.
+await import("./top40-submission-reliability-check.mjs")
