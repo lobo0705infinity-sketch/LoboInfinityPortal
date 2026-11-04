@@ -119,7 +119,14 @@ def build(view):
  box((0,1.12,-2.9),(3.5,.18,.7),'wood')
  for x in [-1.2,0,1.2]:stool(x,.25,-3.7);bowl(x,1.23,-2.9)
  table(-2.4,.25,.1);table(1.8,.25,.1)
- panel(-2.45,1.8,-3.05,1.0,1.35,'menu');panel(0,1.95,3.88,2.5,.65,'joke',True)
+ # Exterior menu sits flush to the front diagonal wall, between the posts.
+ start=len(parts)
+ box((0,0,.04),(1.2,1.5,.07),'black',False)
+ panel(0,0,-.01,1.1,1.4,'menu')
+ theta=math.pi/4;rot=np.array([[math.cos(theta),0,math.sin(theta)],[0,1,0],[-math.sin(theta),0,math.cos(theta)]])
+ for index in range(start,len(parts)):
+  vv,ff,mat,col=parts[index];parts[index]=(vv@rot.T+np.array([-2.98,1.9,-2.98]),ff,mat,col)
+ panel(0,1.95,3.88,2.5,.65,'joke',True)
  # External stair, 1.25 inch clear treads. Fixed .25 inch risers.
  for i in range(12):box((4.75,.25+(i+1)*.25/2, -2.9+i*.43),(1.25,(i+1)*.25,.43),'stone')
  box((4.75,3.13,2.45),(1.25,.24,1.0),'plank')
@@ -171,15 +178,13 @@ def merge(ps,collision=False):
   if collision and not col:continue
   start=len(verts);verts.extend(vv);faces.extend(tuple(start+i for i in f)for f in ff)
   x0,y0,x1,y1=rects[mat];coords=[(x0/2048,1-y1/2048),(x1/2048,1-y1/2048),(x1/2048,1-y0/2048),(x0/2048,1-y0/2048)]
-  if mat in ['sign','menu','joke']:
-   coords=[((x0+x1)/2048-u,w)for u,w in coords]
   if mat in ['stone','plank'] and np.ptp(vv[:,1])<.001:
    coords=[((x0+(x+5.5)/11*(x1-x0))/2048,1-(y0+(z+5.5)/11*(y1-y0))/2048)for x,y,z in vv]
   uv.extend(coords[:len(vv)])
  return np.array(verts),np.array(faces),np.array(uv)
 def objwrite(path,ps,coll=False):
  v,f,uv=merge(ps,coll)
- # Unity OBJ import reverses X. Reflect positions and winding at export only.
+ # TTS mesh handedness: preserve established reflected X positions; UVs remain unreflected.
  with open(path,'w')as out:
   out.write('# Lo-Bo Noodle Hut / inches / Unity OBJ handedness\n')
   for x,y,z in v:out.write(f'v {-x:.5f} {y:.5f} {z:.5f}\n')

@@ -12,7 +12,7 @@ for view in [3,2,1]:
  ps,_=b.build(view);scene=pyrender.Scene(bg_color=[.025,.035,.055,1],ambient_light=[.42,.42,.42]);texture=b.atlas
  # Material batches permit emissive lanterns and artwork without extra scene objects in TTS.
  for emissive in [False,True]:
-  subset=[p for p in ps if (p[2]in ['amber','sign','cyan','pink'])==emissive];v,f,uv=b.merge(subset)
+  subset=[p for p in ps if (p[2]in ['amber','sign','cyan','pink'])==emissive];v,f,uv=b.merge(subset);v[:,0]*=-1;f=f[:,::-1]
   if len(v)==0:continue
   mesh=trimesh.Trimesh(vertices=v,faces=f,process=False);mesh.visual=trimesh.visual.texture.TextureVisuals(uv=uv,image=texture)
   mat=pyrender.MetallicRoughnessMaterial(baseColorTexture=texture,metallicFactor=.05,roughnessFactor=.85,doubleSided=True,emissiveTexture=texture if emissive else None,emissiveFactor=[.55]*3 if emissive else None)
