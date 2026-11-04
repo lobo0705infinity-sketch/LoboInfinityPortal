@@ -107,7 +107,7 @@ def panel(x,y,z,w,h,mat,back=False):
  # second matching face for rearward readability
  if mat=='sign':parts.append((np.array([(x+w/2,y-h/2,z+.16),(x-w/2,y-h/2,z+.16),(x-w/2,y+h/2,z+.16),(x+w/2,y+h/2,z+.16)]),[(2,1,0),(3,2,0)],mat,False))
 def build(view):
- global parts;parts=[];deck(4.5,0,.25,'stone');walls(4.05,.25)
+ global parts;parts=[];deck(4.5,.05,.20,'stone');walls(4.05,.25)
  # Detailed kitchen occupies back wall, preserving central routes.
  box((-.5,.75,2.9),(4.3,1,.65),'metal');box((-.5,1.30,2.9),(4.5,.12,.8),'metal')
  box((-.5,2.25,3.0),(3.6,.55,.9),'metal');box((-2.4,1.35,2.5),(.65,2.1,.75),'metal')
@@ -125,7 +125,7 @@ def build(view):
  panel(0,0,-.01,1.1,1.4,'menu')
  theta=math.pi/4;rot=np.array([[math.cos(theta),0,math.sin(theta)],[0,1,0],[-math.sin(theta),0,math.cos(theta)]])
  for index in range(start,len(parts)):
-  vv,ff,mat,col=parts[index];parts[index]=(vv@rot.T+np.array([-2.98,1.9,-2.98]),ff,mat,col)
+  vv,ff,mat,col=parts[index];parts[index]=(vv@rot.T+np.array([-3.28,1.9,-2.68]),ff,mat,col)
  panel(0,1.95,3.88,2.5,.65,'joke',True)
  # External stair, 1.25 inch clear treads. Fixed .25 inch risers.
  for i in range(12):box((4.75,.25+(i+1)*.25/2, -2.9+i*.43),(1.25,(i+1)*.25,.43),'stone')
@@ -170,7 +170,18 @@ def build(view):
     a=j*2*math.pi/12;b=(j+1)*2*math.pi/12;beam((rr*math.cos(a),8.02,-.6+rr*math.sin(a)),(rr*math.cos(b),8.02,-.6+rr*math.sin(b)),.04,'cream',False)
   cyl((.4,8.05,-.3),.25,.06,'cream',20,False);cyl((.4,8.09,-.3),.12,.03,'amber',16,False)
   for dx in [-.12,.12]:beam((-.5+dx,7.9,-.4),(1.7+dx,9.1,-.3),.055,'wood',False)
- return list(parts),lanterns
+ # Remove downward caps coincident with playable floor surfaces. Vertical posts
+ # remain supported by the continuous floor, without opposing coplanar faces.
+ cleaned=[]
+ for vv,ff,mat,col in parts:
+  keep=[]
+  for face in ff:
+   tri=vv[list(face)];normal=np.cross(tri[1]-tri[0],tri[2]-tri[0])
+   on_floor=np.ptp(tri[:,1])<1e-7 and any(abs(tri[0,1]-h)<1e-7 for h in [.25,3.25,6.25])
+   if on_floor and normal[1]<-1e-9:continue
+   keep.append(face)
+  if keep:cleaned.append((vv,keep,mat,col))
+ return cleaned,lanterns
 
 def merge(ps,collision=False):
  verts=[];uv=[];faces=[]
