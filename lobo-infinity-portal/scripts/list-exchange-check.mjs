@@ -83,7 +83,7 @@ try {
   assert(interaction.payload.content.includes('SECRET') === false, 'only the full-list attachment contains raw private codes')
   assert.equal(interaction.payload.files[0].attachment.toString(), 'REPLACED-B')
   const definition = ApplicationCommandManager.transformCommand(GROUPED_COMMAND_DEFINITIONS.find(command => command.name === 'list'))
-  assert.equal(definition.options.find(option => option.name === 'game').options.length, 6)
+  assert.equal(definition.options.find(option => option.name === 'game').options.length, 7)
   const gameDefinition = definition.options.find(option => option.name === 'game')
   assert.deepEqual(gameDefinition.options.find(option => option.name === 'create').options.map(option => option.name), ['opponent', 'army-code', 'game-name'])
   assert.deepEqual(gameDefinition.options.find(option => option.name === 'join').options.map(option => option.name), ['game', 'army-code'])
@@ -162,6 +162,20 @@ try {
   assert.equal(notifications.length, 1); assert.equal(notifications[0].id, B)
   assert(notifications[0].content.includes(`<@${A}>`)); assert(notifications[0].content.includes(inviteCode))
   assert(notifications[0].content.includes('/list game join')); assert(!JSON.stringify(notifications).includes(army))
+  assert.match(createdInvite.content, new RegExp(`DM to <@${B}>`))
+  assert.equal(createdInvite.components[0].components[0].label, 'Resend invitation')
+  assert.equal(gameDefinition.options.find(option => option.name === 'status').options[0].required, false)
+  assert.equal(gameDefinition.options.find(option => option.name === 'resend').options[0].required, true)
+  const savedReceipt = (await createListExchangeStore(invitePath).status(inviteCode, A, guildId)).notifications.invite
+  assert.equal(savedReceipt.messageId, 'invite-1'); assert.equal(savedReceipt.recipientId, B)
+  assert.equal(savedReceipt.status, 'sent'); assert(Number.isFinite(savedReceipt.sentAt))
+  const inbox = await invitationCommand(B, 'status', [])
+  assert(inbox.content.includes(inviteCode)); assert(!inbox.content.includes(army))
+  assert(!(await invitationCommand(C, 'status', [])).content.includes(inviteCode))
+  assert(!(await invitationCommand(B, 'status', [], 'another-server')).content.includes(inviteCode))
+  assert.match((await invitationCommand(A, 'resend', [str('game', inviteCode)])).content, /one minute/)
+  assert.match((await invitationCommand(B, 'resend', [str('game', inviteCode)])).content, /Only the creator/)
+  assert.equal(notifications.length, 1)
   const beforeJoin = await invites.status(inviteCode, B, guildId)
   assert.equal(beforeJoin.status, 'open'); assert.equal(beforeJoin.opponent.submitted, true)
   assert(!JSON.stringify(beforeJoin).includes(army), 'invited player cannot see creator list')
@@ -207,6 +221,40 @@ try {
   await invites.cancel(cancelledInvite.code, A, guildId)
   await assert.rejects(invites.join(cancelledInvite.code, B, guildId, 'Bob', army), /closed/)
   console.log('PASS invitations: atomic create with own list, account-bound join, automatic lock, private DMs, closed-DM fallback, duplicate/concurrent join, cancellation, restart and accepted-report release.')
+
+  // A failed DM is recorded, and the existing invitation can be recovered and resent.
+  const missed = await invitationCommand(A, 'create', createOptions(army))
+  const missedCode = missed.content.match(/LLH-[A-F0-9]{16}/)[0]
+  assert.equal((await invites.status(missedCode, A, guildId)).notifications.invite.status, 'failed')
+  assert((await invitationCommand(B, 'status', [])).content.includes(missedCode))
+  now += 60_000
+  closedDM = false
+  const button = { ...interaction, user: { id: A }, client: inviteClient, guildId,
+    guild: { name: 'Test server' }, isChatInputCommand: () => false, isButton: () => true,
+    customId: `llh-invite-resend:${missedCode}` }
+  assert.equal(await inviteService.handler(button), true)
+  assert.match(button.payload.content, /Discord accepted/)
+  assert.equal((await createListExchangeStore(invitePath).status(missedCode, A, guildId)).notifications.invite.status, 'sent')
+  assert(!button.payload.content.includes(army))
+  const countBeforeRace = notifications.length
+  const raceResends = await Promise.all([invitationCommand(A, 'resend', [str('game', missedCode)]), invitationCommand(A, 'resend', [str('game', missedCode)])])
+  assert(raceResends.every(payload => /one minute/.test(payload.content)))
+  assert.equal(notifications.length, countBeforeRace)
+  now += 60_000
+  const concurrentResends = await Promise.all([invitationCommand(A, 'resend', [str('game', missedCode)]), invitationCommand(A, 'resend', [str('game', missedCode)])])
+  assert.equal(concurrentResends.filter(payload => /Discord accepted/.test(payload.content)).length, 1)
+  assert.equal(notifications.length, countBeforeRace + 1)
+  assert.match((await invitationCommand(A, 'resend', [str('game', inviteCode)])).content, /Only the creator/)
+  assert(!(await invitationCommand(B, 'status', [])).content.includes(inviteCode), 'joined games leave the inbox')
+  assert(!(await invitationCommand(B, 'status', [])).content.includes(cancelledInvite.code), 'cancelled games leave the inbox')
+  const whitespace = await invites.create({ userId: A, opponentId: B, guildId, title: 'Names', name: '  Alice   Smith  ', armyCode: army })
+  await invites.join(whitespace.code, B, guildId, 'Bob  Jones', army)
+  assert.deepEqual(await invites.resolveLocked(whitespace.code, ['alice smith', 'BOB JONES'], now), [army, army])
+  await invites.reconcile([report(whitespace.code, { players: ['Alice Smith', 'Bob Jones'] })])
+  assert.equal((await invites.status(whitespace.code, B, guildId)).status, 'released')
+  assert.equal(linkedExchangePlayerName([{ userId: A, name: 'Alice  Smith' }, { userId: A, name: 'alice smith' }], A), 'Alice  Smith')
+  assert.throws(() => linkedExchangePlayerName([{ userId: A, name: 'Alice  Smith' }, { userId: B, name: 'alice smith' }], A), /conflicting/)
+  console.log('PASS invitation recovery: durable receipts, private inbox, account/server boundaries, resend button, cooldown, closed/locked games, whitespace names.')
 
   // Authenticated machine resolution never gives the browser a private list.
   const locked = await createLocked('HTTP test')

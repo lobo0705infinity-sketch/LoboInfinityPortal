@@ -86,3 +86,7 @@ missing lists, ready reset, locking, wrong/early/unconfirmed/duplicate reports,
 atomic storage, machine authentication, restart/crash-after-send recovery,
 closed DMs, long-code attachments, campaign acceptance and corrupt storage.
 Existing bot, campaign, canonical, bracket and Form regression checks also apply.
+
+## Invitation recovery
+
+Creation names the selected Discord recipient and records the DM message ID and time. Discord acceptance does not confirm the recipient read it. Both participants can inspect the invitation receipt with `/list game status game:LLH-…`. The invited opponent can run `/list game status` without a code to privately list pending invitations in that server, including older games. The creator can use the **Resend invitation** button or `/list game resend game:LLH-…` while the game is open, at most once per minute. Failed DMs leave the saved game available; share its code or use the pending invitation lookup. Portal player-name matching ignores case, leading/trailing spaces and repeated internal whitespace.

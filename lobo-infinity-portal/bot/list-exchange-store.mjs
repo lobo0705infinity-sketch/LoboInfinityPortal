@@ -4,7 +4,7 @@ import { dirname } from 'node:path'
 
 export const exchangeCode = value => String(value || '').trim().toUpperCase()
 export const validExchangeCode = value => /^LLH-[A-F0-9]{16}$/.test(value)
-const normalizedName = value => String(value || '').normalize('NFKC').trim().toLocaleLowerCase('en-US')
+const normalizedName = value => String(value || '').normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase('en-US')
 const fail = message => { throw new ExchangeError(message) }
 export class ExchangeError extends Error {}
 
@@ -51,6 +51,7 @@ export function createListExchangeStore(path, { now = Date.now } = {}) {
     return {
       code: game.code, title: game.title, status: game.status, lockedAt: game.lockedAt, workflow: game.workflow, creatorId: game.players[0].id,
       reportId: game.report?.id, issue: game.issue || '',
+      notifications: structuredClone(game.notifications || {}),
       own: { ...own },
       opponent: { id: opponent.id, name: opponent.name, submitted: Boolean(opponent.armyCode), ready: opponent.ready,
         ...(game.status === 'released' ? { armyCode: opponent.armyCode } : {}) },
@@ -77,6 +78,29 @@ export function createListExchangeStore(path, { now = Date.now } = {}) {
       state.games.push(game); await write(state); return view(game, input.userId)
     }),
     status: (code, userId, guildId) => run(async () => view(find(await read(), code, userId, guildId), userId)),
+    invitations: (userId, guildId) => run(async () => (await read()).games
+      .filter(game => game.guildId === guildId && game.workflow === 'invite' && game.status === 'open' && game.players[1].id === userId)
+      .map(game => ({ code: game.code, title: game.title, creatorId: game.players[0].id }))),
+    beginNotification: (code, userId, guildId, kind) => run(async () => {
+      const state = await read(), game = find(state, code, userId, guildId)
+      if (!['invite', 'joined'].includes(kind) || game.workflow !== 'invite' ||
+          (kind === 'invite' ? game.status !== 'open' || game.players[0].id !== userId : game.status !== 'locked' || game.players[1].id !== userId)) {
+        fail('Only the creator can resend an invitation for an open game.')
+      }
+      game.notifications ||= {}
+      const previous = game.notifications[kind]
+      if (previous && now() - previous.attemptedAt < 60_000) fail('Please wait one minute before resending this invitation.')
+      const receipt = { recipientId: game.players.find(player => player.id !== userId).id, attemptedAt: now(), status: 'sending', attemptId: randomUUID() }
+      game.notifications[kind] = receipt
+      await write(state); return { ...receipt }
+    }),
+    finishNotification: (code, userId, guildId, kind, attemptId, result) => run(async () => {
+      const state = await read(), game = find(state, code, userId, guildId)
+      const receipt = game.notifications?.[kind]
+      if (!receipt || receipt.attemptId !== attemptId) throw Error('Notification attempt changed.')
+      Object.assign(receipt, result, { completedAt: now() })
+      await write(state)
+    }),
     join: (code, userId, guildId, name, armyCode) => run(async () => {
       const state = await read(), game = find(state, code, userId, guildId)
       if (game.workflow !== 'invite' || game.players[1].id !== userId) fail('Only the invited opponent can join this game. Use /list game status to check your game.')
