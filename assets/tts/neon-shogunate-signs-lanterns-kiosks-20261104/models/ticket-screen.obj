@@ -1,0 +1,11 @@
+# Ticket screen: fitted 3:4 art, 0.003 inches in front of existing glass
+v 2.17375 1.05 -1.733
+v 1.68625 1.05 -1.733
+v 1.68625 1.70 -1.733
+v 2.17375 1.70 -1.733
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+f 1/1 2/2 3/3
+f 1/1 3/3 4/4
