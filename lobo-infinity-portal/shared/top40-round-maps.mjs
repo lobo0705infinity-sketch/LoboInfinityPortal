@@ -147,6 +147,15 @@ export const TOP40_ROUND_MAPS = [
     "round": 7
   },
   {
+    "key": "losers-8",
+    "mission": "Critical Intervention",
+    "name": "Meridian Exchange",
+    "workshopLabel": "Lobo's Top 40 Losers Round 8 Map - Meridian Exchange",
+    "href": "/event/lobos-top-40/maps/losers-8",
+    "bracket": "Losers",
+    "round": 8
+  },
+  {
     "key": "grand-final",
     "mission": "Double Bind",
     "name": "Neon Shogunate",

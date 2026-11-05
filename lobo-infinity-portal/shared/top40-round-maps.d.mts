@@ -1,4 +1,4 @@
-export type Top40Map = { key: string; mission: string; name: string; workshopLabel: string; href: string; download: string; angled: string; overhead: string; generalHref: string; bracket?: string; round?: number }
+export type Top40Map = { key: string; mission: string; name: string; workshopLabel: string; href: string; download?: string; angled?: string; overhead?: string; generalHref?: string; bracket?: string; round?: number }
 export type Top40RoundMap = Top40Map & { bracket: string; round: number }
 export const TOP40_EVENT_ID: string
 export const TOP40_APPROVED_MAPS_INSTALLER: string
