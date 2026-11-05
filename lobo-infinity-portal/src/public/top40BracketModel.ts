@@ -11,8 +11,8 @@ export function buildTop40BracketSections(event: PublicEvent) {
   }).filter((section) => section.rounds.length)
 }
 
-export function top40BracketSlot(match: Record<string, unknown>, slot: 'A' | 'B') {
+export function top40BracketSlot(match: Record<string, unknown>, slot: 'A' | 'B', showSeed = true) {
   const player = String(match[`player${slot}`] || '')
   const seed = Number(match[`seed${slot}`])
-  return player ? `${seed ? `#${seed} · ` : ''}${player}` : String(match[`player${slot}Source`] || 'Awaiting opponent')
+  return player ? `${showSeed && seed ? `#${seed} · ` : ''}${player}` : String(match[`player${slot}Source`] || 'Awaiting opponent')
 }

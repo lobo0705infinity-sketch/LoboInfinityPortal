@@ -144,3 +144,12 @@
     flex-basis: min(260px, calc(100vw - 76px));
   }
 }
+
+.top40-bracket-seed {
+  display: inline-block;
+  margin-inline-end: .45rem;
+  padding: .1rem .35rem;
+  border: 1px solid currentColor;
+  border-radius: .35rem;
+  font-variant-numeric: tabular-nums;
+}
