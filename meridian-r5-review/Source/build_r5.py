@@ -54,7 +54,7 @@ sheet.save(A/'r5-signage.png')
 class SignMesh:
  def __init__(self):self.v=[];self.uv=[];self.f=[]
  def quad(self,pts,uv):
-  j=len(self.v);self.v+=pts;u0=min(u for u,v in uv);u1=max(u for u,v in uv);self.uv += [(u0+u1-u,v)for u,v in uv];self.f += [(j,j+2,j+1),(j,j+3,j+2)]
+  j=len(self.v);self.v+=pts;self.uv+=uv;self.f += [(j,j+2,j+1),(j,j+3,j+2)]
  def box(self,x,y,z,w,h,d):
   a,b=x-w/2,x+w/2;c,e=y,y+h;f,g=z-d/2,z+d/2
   uv=[(.015,.99)]*4

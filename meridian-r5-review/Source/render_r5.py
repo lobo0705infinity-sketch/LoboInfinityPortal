@@ -15,16 +15,17 @@ def path(u):
   if(root/n).is_file():return root/n
  return None
 def look(eye,target):
- eye=np.array(eye,float);z=eye-np.array(target,float);z/=np.linalg.norm(z);up=np.array([0,1,0.]);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x);p=np.eye(4);p[:3,:3]=np.column_stack([x,y,z]);p[:3,3]=eye;return p
+ eye=np.array(eye,float);eye[2]*=-1;target=np.array(target,float);target[2]*=-1;z=eye-target;z/=np.linalg.norm(z);up=np.array([0,1,0.]);x=np.cross(up,z);x/=np.linalg.norm(x);y=np.cross(z,x);p=np.eye(4);p[:3,:3]=np.column_stack([x,y,z]);p[:3,3]=eye;return p
 def item(sc,o,pose=None):
  cm=o.get('CustomMesh');t=o['Transform'];p=np.eye(4)
- # Reverse OBJ import X to the source geometry coordinate convention.
- p[:3,3]=[t['posX'],t['posY'],t['posZ']]
+ # Undo the authored OBJ X reflection, then reflect source Z to convert
+ # the Unity left-handed scene and camera together into a right-handed renderer.
+ p[:3,3]=[t['posX'],t['posY'],-t['posZ']]
  if pose is not None:p=pose@p
  if cm:
   f=path(cm.get('MeshURL',''));impath=path(cm.get('DiffuseURL',''))
   if f and impath:
-   m=trimesh.load(f,force='mesh',process=False);m.apply_transform(np.diag([-1,1,1,1]));im=Image.open(impath).convert('RGB')
+   m=trimesh.load(f,force='mesh',process=False);m.apply_transform(np.diag([-1,1,-1,1]));im=Image.open(impath).convert('RGB')
    uv=m.visual.uv if hasattr(m.visual,'uv')else None
    if uv is not None:
     material=pyrender.MetallicRoughnessMaterial(baseColorTexture=pyrender.Texture(source=im,source_channels='RGB'),metallicFactor=0,roughnessFactor=.93,doubleSided=True)
