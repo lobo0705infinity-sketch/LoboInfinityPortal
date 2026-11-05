@@ -128,3 +128,49 @@ export function getTop40ResultSides(game: PublicGame): [Top40ResultSide, Top40Re
   })
   return !draw && winnerIndex === 1 ? [sides[1], sides[0]] : [sides[0], sides[1]]
 }
+
+export function buildTop40Bulletins(event: PublicEvent, games: PublicGame[]) {
+  const matches = (event.bracket ?? []).filter((match) =>
+    text(match, 'status') === 'Completed' && numeric(match, 'gameId') > 0 &&
+    text(match, 'resolution').toLowerCase() !== 'forfeit',
+  )
+  const byGame = new Map(matches.map((match) => [numeric(match, 'gameId'), match]))
+  const normalize = (name: string) => name.trim().toLowerCase()
+  const rows = buildTop40ResultRows(event, games.filter((game) => game.eventId === event.id && byGame.has(game.id)))
+  return rows.flatMap(({ game, sides: [winner, loser], bracket, round }) => {
+    const match = byGame.get(game.id)!
+    const winnerName = normalize(text(match, 'winner'))
+    const loserName = normalize(text(match, 'loser'))
+    const matchesPlayer = (name: string, side: Top40ResultSide) =>
+      name === normalize(side.player) || name === normalize(side.name)
+
+    if (winner.result !== 'Winner' || loser.result !== 'Defeated' ||
+        !winnerName || !loserName || !matchesPlayer(winnerName, winner) || !matchesPlayer(loserName, loser)) return []
+
+    const aWon = normalize(text(match, 'playerA')) === winnerName
+    const winnerSeed = numeric(match, aWon ? 'seedA' : 'seedB')
+    const loserSeed = numeric(match, aWon ? 'seedB' : 'seedA')
+    const seedsVerified = normalize(text(match, aWon ? 'playerB' : 'playerA')) === loserName &&
+      normalize(text(match, aWon ? 'playerA' : 'playerB')) === winnerName
+    const gap = seedsVerified && winnerSeed > 0 && loserSeed > 0 ? winnerSeed - loserSeed : 0
+    const isLosers = text(match, 'bracket') === 'Losers'
+    const winsInRun = isLosers ? matches.filter((earlier) =>
+      text(earlier, 'bracket') === 'Losers' &&
+      numeric(earlier, 'bracketRound') <= numeric(match, 'bracketRound') &&
+      normalize(text(earlier, 'winner')) === winnerName,
+    ).length : 0
+
+    if (gap < 8 && !isLosers) return []
+
+    const winnerLabel = seedsVerified && winnerSeed > 0 ? `#${winnerSeed} ${winner.name}` : winner.name
+    const loserLabel = seedsVerified && loserSeed > 0 ? `#${loserSeed} ${loser.name}` : loser.name
+    const score = winner.op !== '—' && loser.op !== '—' ? `, ${winner.op}–${loser.op} OP` : ''
+    const verb = gap >= 15 ? 'stuns' : gap >= 8 ? 'upsets' : 'eliminates'
+    const label = gap >= 15 ? 'Major upset' : gap >= 8 ? 'Upset' : winsInRun >= 3 ? 'Losers Bracket run' : 'Elimination'
+    const detail = isLosers
+      ? winsInRun >= 3 ? `${winner.name} has won ${winsInRun} played elimination matches. ${loser.name} is eliminated.` : `${loser.name} is eliminated.`
+      : bracket === 'Winners Bracket' ? `${loser.name} drops to the Losers Bracket.` : ''
+
+    return [{ gameId: game.id, bracket, round, gap, label, headline: `${winnerLabel} ${verb} ${loserLabel}${score}.`, detail }]
+  })
+}

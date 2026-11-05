@@ -1,3 +1,4 @@
+import Top40News from './Top40News'
 import { TOP40_ROUND_MAPS, TOP40_APPROVED_MAPS_INSTALLER } from '../../shared/top40-round-maps.mjs'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -44,6 +45,7 @@ export default function Top40PreparationPage() {
     <CompactArtwork title="Lobo’s Top 40" eyebrow="Event preparation" src="/assets/events/top-40-overview-v2.png"/>
     <EventSectionTabs eventId={TOP40_EVENT_ID} items={['overview', 'registration', 'bracket', 'results', 'rules']}/>
     <header className="top40-preparation-heading"><div><p className="eyebrow">300 points · Double elimination</p><h1>Get ready for the tournament</h1><p>Registration, deadlines, missions, maps, and public army lists in one place.</p></div><span>Planned opening: {TOP40_PLANNED_OPENING_LABEL}</span></header>
+    {event && games.data ? <Top40News event={event} games={games.data} /> : null}
     <section className="panel top40-preparation-panel top40-player-briefing" aria-labelledby="top40-briefing-title">
       <div>
         <p className="eyebrow">Player briefing</p>
