@@ -23,7 +23,7 @@ const { xml, snapshotAvailable } = await buildSitemap({ fetchObject })
 
 assert.equal(snapshotAvailable, true)
 assert.match(xml, /^<\?xml version="1.0" encoding="UTF-8"\?>/)
-for (const path of ['/', '/little-helper', '/army-intelligence', '/games/117', '/maps', '/maps/critical-intervention-2', '/maps/the-dig-2-satellite', '/event/event-current-league', '/factions/Yu%20Jing', '/missions/The%20Dig']) {
+for (const path of ['/', '/little-helper', '/army-intelligence', '/games/117', '/maps', '/maps/meridian-exchange', '/maps/the-dig-2-satellite', '/event/event-current-league', '/factions/Yu%20Jing', '/missions/The%20Dig']) {
   assert.ok(xml.includes(`<loc>https://lobo-infinity-portal.vercel.app${path}</loc>`), path)
 }
 assert.doesNotMatch(xml, /commissioner/)
@@ -39,7 +39,7 @@ const fallback = await buildSitemap({ fetchObject: async () => ({ ok: false, sta
 assert.equal(fallback.snapshotAvailable, false)
 assert.match(fallback.xml, /<loc>https:\/\/lobo-infinity-portal.vercel.app\/army-intelligence<\/loc>/)
 assert.match(fallback.xml, /<loc>https:\/\/lobo-infinity-portal.vercel.app\/little-helper<\/loc>/)
-assert.match(fallback.xml, /<loc>https:\/\/lobo-infinity-portal.vercel.app\/maps\/critical-intervention-2<\/loc>/)
+assert.match(fallback.xml, /<loc>https:\/\/lobo-infinity-portal.vercel.app\/maps\/meridian-exchange<\/loc>/)
 assert.doesNotMatch(fallback.xml, /\/games\/117/)
 assert.doesNotMatch(fallback.xml, /\/hall-of-fame|\/rivalries/)
 
