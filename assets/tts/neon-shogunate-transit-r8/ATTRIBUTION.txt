@@ -1,0 +1,1 @@
+Derived light prefab from Lighting and Effects by Fenrys, Steam Workshop item 1469725554. R8 edit retains one white root point light and disables the visual sphere, collider, extra light children and switching behaviour. For Lobo Neon Shogunate transit sign illumination.
