@@ -150,8 +150,9 @@ export const TOP40_ROUND_MAPS = [
     "key": "losers-8",
     "mission": "Critical Intervention",
     "name": "Meridian Exchange",
-    "workshopLabel": "Lobo's Top 40 Losers Round 8 Map - Meridian Exchange",
+    "workshopLabel": "Lobo's Top 40 Losers Round 8 Map",
     "href": "/event/lobos-top-40/maps/losers-8",
+    "generalHref": "/maps/meridian-exchange",
     "bracket": "Losers",
     "round": 8
   },

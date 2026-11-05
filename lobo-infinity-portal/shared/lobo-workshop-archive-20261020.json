@@ -349,5 +349,37 @@
     "sourceOverhead": "/assets/maps/13-normal-6-irl-tourney-overhead.jpg",
     "sourceAngled": "/assets/maps/13-normal-6-irl-tourney-angled.jpg",
     "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955"
+  },
+  {
+    "index": 14,
+    "id": "3719263238:1005e4",
+    "guid": "1005e4",
+    "slug": "critical-intervention-2",
+    "name": "Bastion Courtyard",
+    "workshopName": "ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+    "workshopBagName": "SET_ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+    "collectionTitle": "ITS Season 18",
+    "family": "Objective rooms",
+    "layoutKey": 1001,
+    "missionSetups": [
+      "Critical Intervention"
+    ],
+    "exactDuplicateOf": null,
+    "objectCount": 82,
+    "sourceNote": "",
+    "overhead": "/assets/maps/captures-20261015T080142Z/critical-intervention-2-overhead.webp",
+    "angled": "/assets/maps/captures-20261015T080142Z/critical-intervention-2-angled.webp",
+    "diagram": "/assets/maps/its18-20261015T064536Z/critical-intervention-2.png",
+    "download": "/assets/maps/seven-map-update-20261102-r1/critical-intervention-2.json",
+    "isCurrent": false,
+    "previewKind": "tts",
+    "sourceOverhead": null,
+    "sourceAngled": null,
+    "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4",
+    "labelAliases": [
+      "SET_ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+      "ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
+      "Bastion Courtyard"
+    ]
   }
 ]
