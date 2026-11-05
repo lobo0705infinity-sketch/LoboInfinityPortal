@@ -14,6 +14,13 @@ for(const map of loboWorkshopMaps){
  assert.equal(map.missionSetups.length,1)
  const mission=map.missionSetups[0];missions.set(mission,[...(missions.get(mission)||[]),map.layoutKey])
  assert.equal(resolveLoboWorkshopMapLabel(map.workshopBagName)?.id,map.id)
+ if (map.previewKind === 'workshop') {
+  assert.equal(map.slug, 'meridian-exchange')
+  assert.equal(mission, 'Critical Intervention')
+  assert.equal(map.download, undefined)
+  assert.ok(!map.overhead && !map.angled && !map.diagram)
+  continue
+ }
  for(const url of [map.overhead,map.angled,map.diagram,map.download]){
   assert.ok(url?.startsWith('/assets/maps/'));assert.ok(existsSync(fileURLToPath(new URL('../public'+url,import.meta.url))),url)
  }
@@ -61,6 +68,7 @@ for (const section of loboWorkshopMapSections) {
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
+  if (map.previewKind === 'workshop') continue
   assert.ok(['tts', 'geometry'].includes(map.previewKind))
   assert.notEqual(map.overhead, map.angled)
   if (map.slug.endsWith('-satellite') && map.previewKind === 'tts') {
@@ -69,8 +77,9 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 26)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 25)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 1)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
