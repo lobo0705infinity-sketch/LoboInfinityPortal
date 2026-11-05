@@ -21,11 +21,11 @@ names=['concourse','customs','freight','cafe','atelier','service','signals','tic
 for i,slug in enumerate(names):
  col,row=i%4,i//4;fw,fh=floors.size
  tile=floors.crop((round(col*fw/4),round(row*fh/3),round((col+1)*fw/4),round((row+1)*fh/3))).resize((tw,th),Image.Resampling.LANCZOS)
- im=atlas.copy();im.paste(tile,(2*tw,3*th));im.save(A/f'r5-{slug}-atlas.jpg',quality=93,subsampling=0)
+ im=atlas.copy();im.paste(tile,(2*tw,0 if slug=='server-room' else 3*th));im.save(A/f'r5-{slug}-atlas.jpg',quality=93,subsampling=0)
  # Low relief normals for the new surface only; preserve the verified R4 map elsewhere.
  gray=np.asarray(tile.convert('L'),float)/255;gy,gx=np.gradient(gray);n=np.stack([-gx*.6,-gy*.6,np.ones_like(gx)],axis=-1);n/=np.linalg.norm(n,axis=-1,keepdims=True)
  nt=Image.fromarray(np.uint8(np.clip((n*.5+.5)*255,0,255)))
- nm=normal.copy();nm.paste(nt.resize((nm.width//4,nm.height//4)),(nm.width//2,3*nm.height//4));tmp=A/f'r5-{slug}-normal.tmp';nm.resize((1024,1024),Image.Resampling.LANCZOS).save(tmp,format='PNG');Image.open(tmp).load();tmp.replace(A/f'r5-{slug}-normal.png')
+ nm=normal.copy();nm.paste(nt.resize((nm.width//4,nm.height//4)),(nm.width//2,0 if slug=='server-room' else 3*nm.height//4));tmp=A/f'r5-{slug}-normal.tmp';nm.resize((1024,1024),Image.Resampling.LANCZOS).save(tmp,format='PNG');Image.open(tmp).load();tmp.replace(A/f'r5-{slug}-normal.png')
 # Full-sheet UVs for the ground, using the latest hyperrealistic mat artwork.
 mat=Image.open(P.parent/'generated_images/exec-c8ce2d01-cee5-4979-b677-bf2ea33e3cc4.png').convert('RGB');mat.resize((3072,3072),Image.Resampling.LANCZOS).save(A/'r5-meridian-mat.jpg',quality=95,subsampling=0)
 for mode,fn in [('day','exec-3fb04f4d-16ab-4f7d-b056-1fd5b412230c.png'),('night','exec-0dd54120-1776-4678-93ab-35c3c777d840.png')]:
