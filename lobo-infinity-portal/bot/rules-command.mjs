@@ -75,6 +75,19 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  const retreatConsole = /^(?:can|may) (?:you|i|(?:a |the |my )?(?:trooper|model|specialist)) (?:still )?(?:click|activate|use|hit|press|push) (?:a |the )?(?:console|button) (?:(?:while|when|if) )?(?:(?:you|i|it|the trooper|my army|your army|the army) (?:are|am|is) )?in retreat(?: state| situation)?$/.test(words)
+  if (retreatConsole) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'VERIFIED RULES ANSWER', answerSource: 'VERIFIED_RULES',
+      deepSeek: {
+        conclusion: 'DEPENDS', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: 'A trooper in Retreat! State cannot declare Activate Console. If your army is in Retreat!, a trooper that ignores Retreat! State, such as one with Courage, Religious Troop, or Warhorse, can activate the console if it meets the mission requirements. You can also spend a Command Token to cancel a trooper’s Retreat! State. Loss of Lieutenant still applies separately: Courage and Religious Troop do not exempt a trooper from it, while Warhorse lets the trooper remain Regular.',
+        sources: ['Retreat_State', 'Retreat!_and_Loss_of_Lieutenant_Summary_Chart'].map((page, index) => ({ id: 'RC' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+      },
+    }
+  }
   // Bound this correction to a single plain T2 Critical with both saves failed.
   // Other failure combinations, extra hits and special interactions need evidence.
   const t2BothFailed = /^(?:if (?:you|i) get crit by t2(?: ammunition)? and fail both (?:saves|saving rolls) how many wounds (?:do|would) (?:you|i) take|(?:how many wounds (?:do|would) (?:you|i) take|what happens) (?:if|when|from) (?:you|i) (?:get|am|are) (?:crit by t2|hit by a t2 critical)(?: ammunition)? and fail both (?:saves|saving rolls)|(?:a |one |single )?t2 crit(?:ical)?(?: hit)? (?:and |with )?(?:both|all two) (?:saves|saving rolls) fail(?:ed)?(?: how many wounds)?)$/.test(words)
