@@ -153,9 +153,13 @@ export function top40Upsets(projection) {
     const gap=winningSeed-losingSeed
     if(!Number.isInteger(winningSeed) || !Number.isInteger(losingSeed) || losingSeed<1 || gap<8)return []
     const op=String(game.op || '').match(/^(\d+)\s*[-–—]\s*(\d+)$/)
-    const score=op?`, ${op[1]}–${op[2]} OP`:''
-    const label=gap>=15?'Major upset':'Upset'
-    return [{id:game.id,line:`**${label}** · #${winningSeed} ${text(match.winner).slice(0,64)} beat #${losingSeed} ${text(match.loser).slice(0,64)}${score} (gap: ${gap}). <${ORIGIN}/games/${game.id}>`}]
+    const score=op?`**${op[1]}–${op[2]} OP** · `:''
+    const major=gap>=15
+    const label=major?'🚨 MAJOR UPSET':'⚡ UPSET'
+    const round=Number(match.bracketRound)
+    const stage=match.bracket==='Grand Final'?'Grand Final':`${text(match.bracket)} Bracket${round>0?` · Round ${round}`:''}`
+    const headline=`#${winningSeed} ${text(match.winner).slice(0,64)} ${major?'stuns':'upsets'} #${losingSeed} ${text(match.loser).slice(0,64)}`
+    return [{id:game.id,line:`**${label}** · ${stage}\n**${headline}**\n${score}${gap}-seed gap · [Match report](${ORIGIN}/games/${game.id})`}]
   })
 }
 
@@ -223,7 +227,11 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     const previous=await findTop40Delivery(channel,batch.marker,client.user.id,batch.firstAttemptAt)
     const current=upsets.filter(item=>batch.ids.includes(item.id))
     if(previous || current.length) {
-      const content=[users.map(id=>`<@${id}>`).join(' '),'**Lobo’s Top 40 Results**',...current.map(item=>item.line),`-# ${batch.marker}`].join('\n')
+      const content=[
+        '## 🐺 Lobo’s Top 40 | Bracket Bulletin',
+        ...current.map(item=>item.line),
+        `[View the bracket](${ORIGIN}/event/lobos-top-40/bracket)\n${users.map(id=>`<@${id}>`).join(' ')}\n-# ${batch.marker}`,
+      ].join('\n\n')
       const nonce=createHash('sha256').update(batch.marker).digest('hex').slice(0,24)
       const message=previous?{id:previous}:await channel.send({content,nonce,enforceNonce:true,allowedMentions:{parse:[],users}})
       for(const id of previous?batch.ids:current.map(item=>item.id))results.sent[id]=message.id
