@@ -203,11 +203,9 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     await store.write(state)
     return result
   }
-  async function publishUpsets(projection,state,names,linked) {
+  async function publishUpsets(projection,state) {
     const upsets=top40Upsets(projection)
-    if(!upsets.length || !names.length || names.some(name=>!validId(linked.get(name))))return
-    const users=[...new Set(names.map(name=>linked.get(name)))]
-    if(users.length!==names.length)return
+    if(!upsets.length)return
 
     const results=state.results ||= {sent:{}}
     const pending=upsets.filter(item=>!results.sent[item.id])
@@ -217,6 +215,11 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     if(channel?.id!==TOP40_RESULTS_CHANNEL_ID || channel.guildId!==AURORA_DISCORD_GUILD_ID || channel.type!==ChannelType.GuildText)throw Error('Top 40 results channel is unavailable.')
     const me=guild.members.me || await guild.members.fetchMe()
     if(!channel.permissionsFor(me)?.has([PermissionFlagsBits.ViewChannel,PermissionFlagsBits.SendMessages,PermissionFlagsBits.ReadMessageHistory]))throw Error('Top 40 results channel permissions are incomplete.')
+
+    const roles=[...(await guild.roles.fetch()).values()].filter(role=>role.name==='Lobo top 40')
+    if(roles.length!==1)throw Error('Expected one Lobo top 40 role.')
+    const role=roles[0]
+    if(!role.mentionable && !channel.permissionsFor(me)?.has(PermissionFlagsBits.MentionEveryone))throw Error('LLH cannot mention the Lobo top 40 role in results.')
 
     if(!results.batch) {
       const ids=pending.slice(0,3).map(item=>item.id)
@@ -230,10 +233,10 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
       const content=[
         '## 🐺 Lobo’s Top 40 | Bracket Bulletin',
         ...current.map(item=>item.line),
-        `[View the bracket](${ORIGIN}/event/lobos-top-40/bracket)\n${users.map(id=>`<@${id}>`).join(' ')}\n-# ${batch.marker}`,
+        `[View the bracket](${ORIGIN}/event/lobos-top-40/bracket)\n<@&${role.id}>\n-# ${batch.marker}`,
       ].join('\n\n')
       const nonce=createHash('sha256').update(batch.marker).digest('hex').slice(0,24)
-      const message=previous?{id:previous}:await channel.send({content,nonce,enforceNonce:true,allowedMentions:{parse:[],users}})
+      const message=previous?{id:previous}:await channel.send({content,nonce,enforceNonce:true,allowedMentions:{parse:[],roles:[role.id],users:[]}})
       for(const id of previous?batch.ids:current.map(item=>item.id))results.sent[id]=message.id
     }
     delete results.batch
@@ -267,7 +270,7 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
       await store.write(state)
     }
     if(projection.publicData?.games?.length) {
-      try {await publishUpsets(projection,state,names,linked)} catch {
+      try {await publishUpsets(projection,state)} catch {
         last.resultsIssue='Results delivery will retry.'
         logger.error?.('Top 40 results delivery failed; pending announcements are retained.')
       }
