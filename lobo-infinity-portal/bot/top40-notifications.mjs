@@ -6,6 +6,7 @@ import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
 
 export const TOP40_EVENT_ID = 'event-lobo-s-american-top-40'
 export const TOP40_SCHEDULING_CHANNEL_ID = '1541851304228421794'
+const TOP40_RESULTS_CHANNEL_ID = '1568051982114230385'
 export const TOP40_REMINDER_DELAY_MS = 3 * 24 * 60 * 60 * 1000
 export const TOP40_POLL_MS = 60_000
 const ORIGIN = 'https://lobo-infinity-portal.vercel.app'
@@ -134,6 +135,30 @@ export const TOP40_COMMAND = {
   ],
 }
 
+export function top40Upsets(projection) {
+  const {event,games}=projection.publicData || {}
+  if(event?.id!==TOP40_EVENT_ID || !Array.isArray(games))return []
+  const byId=new Map(games.filter(game=>game.eventId===TOP40_EVENT_ID).map(game=>[game.id,game]))
+  return (event.bracket || []).flatMap(match=>{
+    const game=byId.get(Number(match.gameId))
+    if(match.status!=='Completed' || normalize(match.resolution)==='forfeit' || !game || !match.winner || !match.loser)return []
+    const winner=normalize(match.winner),loser=normalize(match.loser)
+    const sides=[[game.player1,game.player1DisplayName],[game.player2,game.player2DisplayName]]
+    const winningSide=sides.findIndex(side=>normalize(side[0])===normalize(game.winner))
+    if(!game.winner || winningSide<0 || !sides[winningSide].some(name=>normalize(name)===winner) ||
+      !sides[1-winningSide].some(name=>normalize(name)===loser))return []
+    const aWon=winner===normalize(match.playerA)
+    if(winner!==normalize(aWon?match.playerA:match.playerB) || loser!==normalize(aWon?match.playerB:match.playerA))return []
+    const winningSeed=Number(aWon?match.seedA:match.seedB),losingSeed=Number(aWon?match.seedB:match.seedA)
+    const gap=winningSeed-losingSeed
+    if(!Number.isInteger(winningSeed) || !Number.isInteger(losingSeed) || losingSeed<1 || gap<8)return []
+    const op=String(game.op || '').match(/^(\d+)\s*[-–—]\s*(\d+)$/)
+    const score=op?`, ${op[1]}–${op[2]} OP`:''
+    const label=gap>=15?'Major upset':'Upset'
+    return [{id:game.id,line:`**${label}** · #${winningSeed} ${text(match.winner).slice(0,64)} beat #${losingSeed} ${text(match.loser).slice(0,64)}${score} (gap: ${gap}). <${ORIGIN}/games/${game.id}>`}]
+  })
+}
+
 export function createTop40Notifications({store=createTop40Store(),registeredPlayers=async()=>[],fetchObject=fetch,now=Date.now,logger=console,loadProjection,resolveAccounts,registeredContacts=process.env.TOP40_REGISTERED_DISCORD_CONTACTS || '{}'}={}) {
   let client,guild,timer,queue=Promise.resolve(),last={enabled:true,checkedAt:null,issue:'Starting',registered:0,linked:0,missing:[],active:0}
   const serial=fn=>{const p=queue.then(fn);queue=p.catch(()=>{});return p}
@@ -174,6 +199,38 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     await store.write(state)
     return result
   }
+  async function publishUpsets(projection,state,names,linked) {
+    const upsets=top40Upsets(projection)
+    if(!upsets.length || !names.length || names.some(name=>!validId(linked.get(name))))return
+    const users=[...new Set(names.map(name=>linked.get(name)))]
+    if(users.length!==names.length)return
+
+    const results=state.results ||= {sent:{}}
+    const pending=upsets.filter(item=>!results.sent[item.id])
+    if(!pending.length && !results.batch)return
+
+    const channel=await client.channels.fetch(TOP40_RESULTS_CHANNEL_ID)
+    if(channel?.id!==TOP40_RESULTS_CHANNEL_ID || channel.guildId!==AURORA_DISCORD_GUILD_ID || channel.type!==ChannelType.GuildText)throw Error('Top 40 results channel is unavailable.')
+    const me=guild.members.me || await guild.members.fetchMe()
+    if(!channel.permissionsFor(me)?.has([PermissionFlagsBits.ViewChannel,PermissionFlagsBits.SendMessages,PermissionFlagsBits.ReadMessageHistory]))throw Error('Top 40 results channel permissions are incomplete.')
+
+    if(!results.batch) {
+      const ids=pending.slice(0,3).map(item=>item.id)
+      results.batch={ids,firstAttemptAt:now(),marker:`top40:results:${ids.join('-')}:${now()}`}
+      await store.write(state)
+    }
+    const batch=results.batch
+    const previous=await findTop40Delivery(channel,batch.marker,client.user.id,batch.firstAttemptAt)
+    const current=upsets.filter(item=>batch.ids.includes(item.id))
+    if(previous || current.length) {
+      const content=[users.map(id=>`<@${id}>`).join(' '),'**Lobo’s Top 40 Results**',...current.map(item=>item.line),`-# ${batch.marker}`].join('\n')
+      const nonce=createHash('sha256').update(batch.marker).digest('hex').slice(0,24)
+      const message=previous?{id:previous}:await channel.send({content,nonce,enforceNonce:true,allowedMentions:{parse:[],users}})
+      for(const id of previous?batch.ids:current.map(item=>item.id))results.sent[id]=message.id
+    }
+    delete results.batch
+    await store.write(state)
+  }
   async function tickInner() {
     const projection=await source(),matches=top40ActiveMatches(projection,now()),state=await store.read(),linked=await accounts(projection,state)
     const names=projection.publicData.event.participants.filter(p=>['registered','approved'].includes(normalize(p.status))).map(p=>p.player)
@@ -200,6 +257,12 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
       // together when recovering after a long outage or a missing account link.
       if(kind==='live'&&day3)delivery.day3={...delivery.live,coveredByLiveCatchup:true}
       await store.write(state)
+    }
+    if(projection.publicData?.games?.length) {
+      try {await publishUpsets(projection,state,names,linked)} catch {
+        last.resultsIssue='Results delivery will retry.'
+        logger.error?.('Top 40 results delivery failed; pending announcements are retained.')
+      }
     }
     return last
   }
