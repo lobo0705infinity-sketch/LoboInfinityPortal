@@ -31,3 +31,13 @@ These are standing user requirements. Preserve them across revisions without req
 
 ## Workshop design goal
 - The user wants a premier Ancients wargaming workshop. Terrain affecting play must be genuinely modeled in 3D with matching collision: banks, river channels, rising ground, hills, rocky ground, woods, bridges and buildings where appropriate to the scenario. Ground textures provide surface appearance; figures may remain detailed 2D standees. Keep terrain historically justified in each complete battle pack.
+
+## Ancients R4 workshop requirements
+- Preserve the Granicus Arrian-sized and explicitly labeled reduced-Persian scenario variants, each with map, armies, deployment notes, suggested objectives, sources and uncertainty disclosures. Do not describe unbuilt historical battles as present in the library.
+- Keep the four off-board battle controls: Load Battle, Reset Deployment, Archive and Resume. Archive and custom slots retain actual object data and transforms; reset preserves a recovery snapshot. Never duplicate an already deployed battle or clear the permanent table/tools.
+- Keep group movement, configurable wheel angle and outer-edge/centre pivots, alignment, per-player movement undo, exact 12-inch ruler, dice tray and configurable status markers. Shared visible settings must match the values every client actually uses.
+- Builder must browse the existing profiles by class, quality and weapons, support independent army saves and complete custom battles, and include explicitly selected imported map/terrain objects while protecting permanent workshop objects.
+- Maintain eight custom battle slots and eight army slots. Save Game is needed for persistence; never silently promise cross-save migration.
+- Use genuine 3D terrain models and colliders; simplified tree/bridge collision envelopes must remain close to the rendered extents and below the TTS collider triangle limit. Keep optional generic terrain out of historical deployments unless supported by the scenario evidence.
+- Ship clear tutorial/reference material, camera presets, restrained lighting and consistent Workshop presentation.
+- Release gates: verify final immutable hosted URLs byte-for-byte, geometry and footprint, typed save fields, Lua behaviour and UI callback bindings. Actual TTS loading, fresh-cache and two-client multiplayer checks are distinct required gates. If no live engine is available, label the package a release candidate and explicitly leave those gates untested. Never claim Steam Workshop publication without observing it.
