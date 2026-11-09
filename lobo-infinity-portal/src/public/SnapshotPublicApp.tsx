@@ -1,3 +1,4 @@
+import PlayerRatings, { PlayerRating } from './PlayerRatings'
 import Top40PublicationStatus from './Top40PublicationStatus'
 import Top40MapPage from './Top40MapPage'
 import { eventEditionName, eventLifecycle, isPastEvent } from '../config/eventLifecycle'
@@ -71,6 +72,7 @@ export default function SnapshotPublicApp() {
     <Route path="/" element={<Dashboard />} />
     <Route path="/dashboard" element={<Dashboard />} />
     <Route path="/players" element={<Players />} />
+    <Route path="/elo" element={<PlayerRatings />} />
     <Route path="/community" element={<Community />} />
     <Route path="/players/:playerName" element={<PlayerProfile />} />
     <Route path="/player/:playerName" element={<PlayerProfile />} />
@@ -285,6 +287,7 @@ function PlayersDirectory({ players, events }: { players: PublicPlayer[]; events
 
   return <main className="portal-shell snapshot-public-page snapshot-players-page" data-page="players">
     <CompactArtwork title="Players" eyebrow="Lobo Infinity Portal" src={playersArtwork}/>
+    <p><Link to="/elo">Lobo Portal ELO leaderboard →</Link></p>
     <section className="snapshot-players-controls" aria-label="Player directory filters">
       <label htmlFor="players-event-filter">Event:</label>
       <select id="players-event-filter" value={selectedEventId} onChange={event => {
@@ -340,7 +343,7 @@ function PlayerDirectoryCard({ entry }: { entry: PlayerDirectoryEntry }) {
     ? <Link className="snapshot-player-directory-entry" to={`/players/${encodeURIComponent(entry.profile.player)}`}>{content}</Link>
     : <article className="snapshot-player-directory-entry">{content}</article>
 }
-function PlayerProfile(){const {playerName=''}=useParams();const players=useSnapshotData<PublicPlayer[]>('players');const games=useSnapshotData<PublicGame[]>('games');const events=useSnapshotData<PublicEvent[]>('events');return <DataGate states={[players,games,events]}>{()=>{const p=players.data!.find(x=>x.player===decodeURIComponent(playerName));if(!p)return <Missing label="Player"/>;const history=sortPublicStreamsByDate(games.data!.filter(g=>isPlayerInGame(g,p.player)));return <main className="portal-shell snapshot-public-page snapshot-player-profile" data-page="player-profile"><PlayerProfileHero artwork={resolvePlayerProfileHero(p.preferredArmy)} division={p.divisionLabel||p.division} playerName={p.displayName}/><MetricGrid items={[['Games',p.games],['Record',`${p.wins}-${p.losses}-${p.draws}`],['TP',p.tp],['OP',p.op],['VP',p.vp]]} /><div className="snapshot-player-army"><span>Preferred army</span>{p.preferredArmy?<Link to={`/factions/${encodeURIComponent(p.preferredArmy)}`}>{p.preferredArmy}</Link>:<strong>No Army Selected</strong>}</div><Panel title="Event History"><CardGrid>{events.data!.filter(event=>history.some(game=>game.eventId===event.id)||event.participants?.some(participant=>String(participant.player||participant.name||'')===p.player)||event.teams?.some(team=>Array.isArray(team.players)&&team.players.includes(p.player))).map(event=><LinkCard key={event.id} to={`/event/${eventUrlSlug(event.id)}`} title={eventEditionName(event)} meta={eventLifecycle(event)}/>)}</CardGrid></Panel><Panel title="Game History"><GameTable games={history} perspectivePlayer={p.player}/></Panel></main>}}</DataGate>}
+function PlayerProfile(){const {playerName=''}=useParams();const players=useSnapshotData<PublicPlayer[]>('players');const games=useSnapshotData<PublicGame[]>('games');const events=useSnapshotData<PublicEvent[]>('events');return <DataGate states={[players,games,events]}>{()=>{const p=players.data!.find(x=>x.player===decodeURIComponent(playerName));if(!p)return <Missing label="Player"/>;const history=sortPublicStreamsByDate(games.data!.filter(g=>isPlayerInGame(g,p.player)));return <main className="portal-shell snapshot-public-page snapshot-player-profile" data-page="player-profile"><PlayerProfileHero artwork={resolvePlayerProfileHero(p.preferredArmy)} division={p.divisionLabel||p.division} playerName={p.displayName}/><PlayerRating player={p.player}/><MetricGrid items={[['Games',p.games],['Record',`${p.wins}-${p.losses}-${p.draws}`],['TP',p.tp],['OP',p.op],['VP',p.vp]]} /><div className="snapshot-player-army"><span>Preferred army</span>{p.preferredArmy?<Link to={`/factions/${encodeURIComponent(p.preferredArmy)}`}>{p.preferredArmy}</Link>:<strong>No Army Selected</strong>}</div><Panel title="Event History"><CardGrid>{events.data!.filter(event=>history.some(game=>game.eventId===event.id)||event.participants?.some(participant=>String(participant.player||participant.name||'')===p.player)||event.teams?.some(team=>Array.isArray(team.players)&&team.players.includes(p.player))).map(event=><LinkCard key={event.id} to={`/event/${eventUrlSlug(event.id)}`} title={eventEditionName(event)} meta={eventLifecycle(event)}/>)}</CardGrid></Panel><Panel title="Game History"><GameTable games={history} perspectivePlayer={p.player}/></Panel></main>}}</DataGate>}
 
 function PlayerProfileHero({artwork,division,playerName}:{artwork:PlayerProfileHeroArtwork|null;division:string;playerName:string}){if(!artwork)return <section className="page-header snapshot-player-profile-fallback"><p className="eyebrow">{division}</p><h1>{playerName}</h1></section>;return <><CompactArtwork title={playerName} eyebrow={division} src={artwork.src} alt={artwork.alt}/></>}
 function Games(){const state=useSnapshotData<PublicGame[]>('games');return <DataGate states={[state]}>{()=><main className="portal-shell snapshot-public-page" data-page="battle-reports"><CompactArtwork title="Battle Reports" eyebrow="Public results" src="/assets/portal-artwork/battle-reports-approved-v1.webp" alt="Ochre-armoured combat machine fighting through a ruined futuristic city"/><p className="snapshot-section-intro">Open a recorded game to read its result, submitted highlight, and review.</p><BattleReportDirectory games={state.data!}/></main>}</DataGate>}
