@@ -2,12 +2,13 @@ import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { calculatePortalElo, campaignEloGames, ratingBand } from '../shared/portal-elo.mjs'
+import { calculatePortalElo as replayPortalElo, portalInactivity, portalRatingDate, campaignEloGames, ratingBand } from '../shared/portal-elo.mjs'
 import { loadRatingSnapshot, loadMetaRatings, matchRatingMembers, syncRatingRoles, createPlayerRatings, ELO_COMMAND, eloCommandReply } from '../bot/player-ratings.mjs'
 import { createTop40Store } from '../bot/top40-notifications.mjs'
 import { createCampaignGameStore } from '../bot/aurora-game-store.mjs'
 import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
 const g = (id,winner='A',date='2026-01-01') => ({id,player1:'A',player2:'B',winner,date})
+const calculatePortalElo = (games, options = { asOf: '2026-01-02' }) => replayPortalElo(games, options)
 const first = calculatePortalElo([g(1)])
 assert.equal(ELO_COMMAND.defaultMemberPermissions, undefined, 'Everyone can discover /elo')
 const publicReply=eloCommandReply({projection:first,portalPlayer:'A',metaPlayer:{rating:1886.2},name:'@everyone'})
@@ -61,9 +62,9 @@ const dir=await mkdtemp(join(tmpdir(),'lobo-ratings-'))
 try {
   const campaignStore=createCampaignGameStore(join(dir,'campaign.json'))
   assert.deepEqual(await campaignStore.ratingGames(),[])
-  let failed=false
+  let failed=false, clock = new Date('2026-01-02T12:00:00Z')
   const fakeGuild={...guild,members:{me:{permissions:{has:()=>false}},list:async()=>new Map()},commands:{fetch:async()=>({find:()=>undefined}),create:async()=>{}}}
-  const service=createPlayerRatings({store:createTop40Store(join(dir,'roles.json')),loadSnapshot:async()=>{if(failed)throw Error('offline');return {snapshotId:'x',sourceCutoff:'2026-01-01',games:[g(1)],players:[]}},loadMeta:async()=>{throw Error('offline')},logger:{info(){},error(){}}})
+  const service=createPlayerRatings({now:()=>clock,store:createTop40Store(join(dir,'roles.json')),loadSnapshot:async()=>{if(failed)throw Error('offline');return {snapshotId:'x',sourceCutoff:'2026-01-01',games:[g(1)],players:[]}},loadMeta:async()=>{throw Error('offline')},logger:{info(){},error(){}}})
   await service.start({guilds:{cache:new Map([[AURORA_DISCORD_GUILD_ID,fakeGuild]])}});await service.tick()
   // Discord/API failure must not prevent a valid Portal calculation.
   assert.equal(service.publicProjection().gameCount,1)
@@ -71,7 +72,62 @@ try {
   let deferred, reply
   assert.equal(await service.handler({isChatInputCommand:()=>true,commandName:'elo',guildId:AURORA_DISCORD_GUILD_ID,user:{id:'10000000000000001',username:'A'},member:{displayName:'A'},options:{getUser:()=>null},deferReply:async value=>{deferred=value},editReply:async value=>{reply=value}}),true)
   assert.equal(deferred.ephemeral,true);assert.match(reply.content,/Portal top five/);assert.doesNotMatch(reply.content,/Manage Server is required/)
+  clock = new Date('2026-02-01T12:00:00Z'); await service.tick()
+  assert.ok(service.publicProjection().leaderboard[0].inactivity.amount > 0, 'Daily decay advances without a new snapshot or game')
+  const dailyProjection = service.publicProjection()
+  await service.tick(); assert.deepEqual(service.publicProjection(), dailyProjection, 'Repeated minute refresh does not compound daily deductions')
+  clock = new Date('2026-06-30T12:00:00Z'); await service.tick()
+  assert.equal(service.publicProjection().leaderboard[0].inactivity.inactive, true)
   failed=true;await service.tick();assert.throws(()=>service.publicProjection(),/unavailable/)
   service.stop()
 } finally {await rm(dir,{recursive:true,force:true})}
+// Approved policy boundaries: day 31 starts deductions; day 180 reaches the
+// floor and marks every player inactive, including players below the floor.
+const close = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} != ${expected}`)
+for (const [date, expected, inactive] of [
+  ['2026-01-31',1775,false], ['2026-02-01',1775-275/150,false],
+  ['2026-03-02',1720,false], ['2026-04-01',1665,false],
+  ['2026-05-01',1610,false], ['2026-05-31',1555,false],
+  ['2026-06-29',1500+275/150,false], ['2026-06-30',1500,true], ['2027-01-01',1500,true],
+]) {
+  const idle = portalInactivity(1775, '2026-01-01', date)
+  close(idle.rating, expected); assert.equal(idle.inactive, inactive)
+}
+assert.equal(portalInactivity(1400,'2026-01-01','2026-06-30').rating,1400)
+assert.equal(portalInactivity(1400,'2026-01-01','2026-06-30').inactive,true)
+assert.equal(portalInactivity(1500,'2026-01-01','2026-06-30').amount,0)
+assert.equal(portalRatingDate(new Date('2026-02-01T04:59:59Z')),'2026-01-31')
+assert.equal(portalRatingDate(new Date('2026-02-01T05:00:00Z')),'2026-02-01')
+assert.equal(portalRatingDate(new Date('2026-07-01T03:59:59Z')),'2026-06-30')
+assert.throws(()=>calculatePortalElo([],{asOf:'2026-02-31'}),/Invalid rating date/)
+const idleBoard=calculatePortalElo([g(1)],{asOf:'2026-03-02'})
+close(idleBoard.leaderboard.find(p=>p.player==='A').rating,1512.8)
+assert.equal(idleBoard.gameCount,1); assert.equal(idleBoard.history.length,1)
+assert.equal(idleBoard.leaderboard.find(p=>p.player==='A').lastChange,16, 'Decay is not a last-game result')
+assert.equal(idleBoard.leaderboard.find(p=>p.player==='A').losses,0)
+assert.equal(idleBoard.decayHistory.length,1)
+const idleReply=eloCommandReply({projection:idleBoard,portalPlayer:'A',name:'A'})
+assert.match(idleReply.content,/Inactivity decay/); assert.match(idleReply.content,/Active/)
+const floorBoard=calculatePortalElo([g(1)],{asOf:'2026-06-30'})
+assert.equal(floorBoard.leaderboard.find(p=>p.player==='A').rating,1500)
+assert.ok(floorBoard.leaderboard.every(p=>p.inactivity.inactive))
+assert.match(eloCommandReply({projection:floorBoard,portalPlayer:'A',name:'A'}).content,/Inactive/)
+// Historical inactivity settles before a returning player's normal game.
+const returned=calculatePortalElo([g(1),g(2,'A','2026-06-30')],{asOf:'2026-06-30'})
+close(returned.history[1].player1Before,1500)
+close(returned.history[1].player2Before,1484)
+const expectedWin=32*(1-1/(1+10**((1484-1500)/400)))
+close(returned.history[1].player1After,1500+expectedWin)
+assert.ok(returned.leaderboard.every(p=>!p.inactivity.inactive && p.inactivity.inactiveDays===0))
+assert.equal(returned.decayHistory.length,1)
+assert.ok(returned.decayHistory[0].sequence < returned.history[1].sequence)
+const graceAgain=calculatePortalElo([g(1),g(2,'A','2026-06-30')],{asOf:'2026-07-30'})
+close(graceAgain.leaderboard.find(p=>p.player==='A').rating,1500+expectedWin)
+const monthly=calculatePortalElo(Array.from({length:8},(_,i)=>g(i,'A',new Date(Date.UTC(2026,0,1+i*30)).toISOString().slice(0,10))),{asOf:'2026-07-30'})
+assert.equal(monthly.decayHistory.length,0, 'One game every 30 days prevents decay')
+assert.equal(monthly.leaderboard.find(p=>p.player==='A').totalDecay,0)
+assert.deepEqual(calculatePortalElo([g(1),g(2,'A','2026-06-30')],{asOf:'2026-06-30'}),returned, 'Restart/replay cannot double deduct')
+assert.equal(calculatePortalElo([g(1,'B')],{asOf:'2026-06-30'}).leaderboard.find(p=>p.player==='B').rating,1500, 'Corrected result replays decay for the right player')
+assert.deepEqual(calculatePortalElo([g(1)],{asOf:'2026-06-30'}),floorBoard, 'Deleting a return game restores the original inactivity clock')
+console.log('PASS approved decay: 30-day grace, daily linear deductions, 1500 floor at day 180, inactive status, return-game expectations, monthly play, corrections, deletion, Eastern calendar dates, replay and refresh idempotence.')
 console.log('PASS player ratings: ELO outcomes, chronology, replay, corrections, deletion, campaign eligibility, source validation, identity ambiguity, permissions, role isolation/idempotence, and independent Portal availability.')

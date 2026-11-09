@@ -132,14 +132,20 @@ export function eloCommandReply({ projection, portalPlayer, metaPlayer, name }) 
   const lines = [`**${safeName} — player ratings**`]
   lines.push(portal ? `Portal ELO: **${portal.elo}** · #${portal.rank} · ${portal.games} games · ${portal.provisional ? 'Provisional' : 'Established'}`
     : portalPlayer ? 'Portal ELO: **Unrated** — no completed Portal games yet.' : 'Portal ELO: no confirmed Portal account match. Ask Lobo to link your account.')
+  if (portal?.inactivity) {
+    const idle = portal.inactivity
+    lines.push(`Activity: **${idle.inactive ? 'Inactive' : 'Active'}** · last rated game ${portal.lastPlayed} (${idle.inactiveDays} days ago)`)
+    if (idle.amount > 0) lines.push(`Inactivity decay since last game: **−${idle.amount.toFixed(2)} ELO**${idle.inactive ? ' · 1500 decay floor reached' : ` · ${idle.dailyRate.toFixed(2)} per day`}`)
+    else if (!idle.inactive && idle.dailyRate > 0) lines.push(`Inactivity decay starts ${idle.startsOn} if no rated game is completed.`)
+  }
   lines.push(metaPlayer ? `Infinity the Meta: **${Math.round(metaPlayer.rating)}** (Glicko-2)` : 'Infinity the Meta: no unique profile match is available yet.')
-  if (projection?.leaderboard.length) lines.push('', '**Portal top five**', ...projection.leaderboard.slice(0,5).map(p => `${p.rank}. ${String(p.displayName || p.player).replace(/[\r\n<>@`*_]/g,' ').slice(0,80)} — **${p.elo}**${p.provisional ? ' · provisional' : ''}`))
+  if (projection?.leaderboard.length) lines.push('', '**Portal top five**', ...projection.leaderboard.slice(0,5).map(p => `${p.rank}. ${String(p.displayName || p.player).replace(/[\r\n<>@`*_]/g,' ').slice(0,80)} — **${p.elo}**${p.provisional ? ' · provisional' : ''}${p.inactivity?.inactive ? ' · inactive' : ''}`))
   lines.push('', 'Rating-band roles appear on member profiles. Portal and Meta ratings are separate.')
   return { content: lines.join('\n'), allowedMentions: { parse: [], repliedUser: false }, components: [{ type: 1, components: [{ type: 2, style: 5, label: 'Open the ELO leaderboard', url: 'https://lobo-infinity-portal.vercel.app/elo' }] }] }
 }
 
 export function createPlayerRatings({ store = createTop40Store(join(process.env.RAILWAY_VOLUME_MOUNT_PATH || '/data','player-ratings.json')),
-  linkedPlayers = async () => [], campaignGames = async () => [], loadSnapshot = loadRatingSnapshot, loadMeta = loadMetaRatings, logger = console } = {}) {
+  linkedPlayers = async () => [], campaignGames = async () => [], loadSnapshot = loadRatingSnapshot, loadMeta = loadMetaRatings, now = () => new Date(), logger = console } = {}) {
   let guild, running, timer, projection, report = { status: 'starting' }, meta, metaAt = 0, dataIssue = true, linking = false
   let portalAccounts = new Map(), metaAccounts = new Map()
   async function tick() {
@@ -152,10 +158,11 @@ export function createPlayerRatings({ store = createTop40Store(join(process.env.
       const links = { ...Object.fromEntries(confirmed.map(p => [ratingKey(p.playerName || p.name), { userId: p.userId }])), ...state.links }
       const canonical = new Map(Object.entries(links).map(([name, p]) => [p.userId, snapshot.players.find(v => ratingKey(v.player) === name)?.player]))
       const campaign = (await campaignGames()).map(g => ({ ...g, playerA: { ...g.playerA, name: canonical.get(g.playerA.id) || g.playerA.name }, playerB: { ...g.playerB, name: canonical.get(g.playerB.id) || g.playerB.name } }))
-      const elo = calculatePortalElo([...snapshot.games, ...campaignEloGames(campaign, snapshot.players)])
+      const calculatedAt = now()
+      const elo = calculatePortalElo([...snapshot.games, ...campaignEloGames(campaign, snapshot.players)], { asOf: calculatedAt })
       const names = new Map(snapshot.players.map(p => [ratingKey(p.player), p.displayName]))
       elo.leaderboard.forEach(p => { p.displayName = names.get(ratingKey(p.player)) || p.displayName })
-      projection = { ...elo, snapshotId: snapshot.snapshotId, sourceCutoff: snapshot.sourceCutoff, generatedAt: new Date().toISOString() }
+      projection = { ...elo, snapshotId: snapshot.snapshotId, sourceCutoff: snapshot.sourceCutoff, generatedAt: new Date(calculatedAt).toISOString() }
       dataIssue = false
       published = true
       const members = await listRatingMembers(guild)
