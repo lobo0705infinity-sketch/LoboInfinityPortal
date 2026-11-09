@@ -123,9 +123,25 @@ export const RATINGS_COMMAND = { name: 'ratings', description: 'Manage Portal EL
     ] },
   ] }
 
+export const ELO_COMMAND = { name: 'elo', description: 'See your Portal ELO, Meta rating, and the leaderboard', dmPermission: false,
+  options: [{ name: 'player', description: 'Look up another server member', type: Type.User, required: false }] }
+
+export function eloCommandReply({ projection, portalPlayer, metaPlayer, name }) {
+  const portal = projection?.leaderboard.find(p => ratingKey(p.player) === ratingKey(portalPlayer))
+  const safeName = String(name || 'Player').replace(/[\r\n<>@`*_]/g, ' ').slice(0,80)
+  const lines = [`**${safeName} — player ratings**`]
+  lines.push(portal ? `Portal ELO: **${portal.elo}** · #${portal.rank} · ${portal.games} games · ${portal.provisional ? 'Provisional' : 'Established'}`
+    : portalPlayer ? 'Portal ELO: **Unrated** — no completed Portal games yet.' : 'Portal ELO: no confirmed Portal account match. Ask Lobo to link your account.')
+  lines.push(metaPlayer ? `Infinity the Meta: **${Math.round(metaPlayer.rating)}** (Glicko-2)` : 'Infinity the Meta: no unique profile match is available yet.')
+  if (projection?.leaderboard.length) lines.push('', '**Portal top five**', ...projection.leaderboard.slice(0,5).map(p => `${p.rank}. ${String(p.displayName || p.player).replace(/[\r\n<>@`*_]/g,' ').slice(0,80)} — **${p.elo}**${p.provisional ? ' · provisional' : ''}`))
+  lines.push('', 'Rating-band roles appear on member profiles. Portal and Meta ratings are separate.')
+  return { content: lines.join('\n'), allowedMentions: { parse: [], repliedUser: false }, components: [{ type: 1, components: [{ type: 2, style: 5, label: 'Open the ELO leaderboard', url: 'https://lobo-infinity-portal.vercel.app/elo' }] }] }
+}
+
 export function createPlayerRatings({ store = createTop40Store(join(process.env.RAILWAY_VOLUME_MOUNT_PATH || '/data','player-ratings.json')),
   linkedPlayers = async () => [], campaignGames = async () => [], loadSnapshot = loadRatingSnapshot, loadMeta = loadMetaRatings, logger = console } = {}) {
   let guild, running, timer, projection, report = { status: 'starting' }, meta, metaAt = 0, dataIssue = true, linking = false
+  let portalAccounts = new Map(), metaAccounts = new Map()
   async function tick() {
     if (running) return running
     if (linking) return
@@ -145,6 +161,7 @@ export function createPlayerRatings({ store = createTop40Store(join(process.env.
       const members = await listRatingMembers(guild)
       const roster = [...snapshot.players, ...elo.leaderboard.filter(p => !snapshot.players.some(v => ratingKey(v.player) === ratingKey(p.player)))]
       const matched = matchRatingMembers(members, roster, links)
+      portalAccounts = new Map([...matched.matches].map(([player, member]) => [member.id, player]))
       const assignments = elo.leaderboard.flatMap(p => { const member = matched.matches.get(ratingKey(p.player)); return member ? [{ member, source: 'portal', rating: p.rating }] : [] })
       const rated = new Set(elo.leaderboard.map(p => ratingKey(p.player)))
       for (const [name, member] of matched.matches) if (!rated.has(name)) assignments.push({ member, source: 'portal', rating: null })
@@ -167,6 +184,7 @@ export function createPlayerRatings({ store = createTop40Store(join(process.env.
         if (metaCandidates.filter(p => p.personId === candidate.personId).length === 1) assignments.push(candidate)
         else metaUnmatched.push({ member: candidate.member.displayName, reason: 'Meta profile matches multiple Discord accounts' })
       }
+      if (meta && !metaIssue) metaAccounts = new Map(metaCandidates.filter(candidate => metaCandidates.filter(p => p.personId === candidate.personId).length === 1).map(candidate => [candidate.member.id, {rating:candidate.rating}]))
       const sync = await syncRatingRoles(guild, assignments, state, s => store.write(s))
       report = { status: metaIssue || sync.failed.length ? 'attention' : 'current', snapshotId: snapshot.snapshotId, updatedAt: projection.generatedAt,
         portalPlayers: elo.leaderboard.length, portalGames: elo.gameCount, portalMatched: matched.matches.size,
@@ -184,10 +202,22 @@ export function createPlayerRatings({ store = createTop40Store(join(process.env.
       if (!guild) throw Error('Lobo Discord is not connected.')
       const commands = await guild.commands.fetch(), existing = commands.find(c => c.name === 'ratings')
       if (existing) await existing.edit(RATINGS_COMMAND); else await guild.commands.create(RATINGS_COMMAND)
+      const elo = commands.find(c => c.name === 'elo')
+      if (elo) await elo.edit({ ...ELO_COMMAND, defaultMemberPermissions: null }); else await guild.commands.create(ELO_COMMAND)
       void tick(); timer = setInterval(() => void tick(), 60000); timer.unref()
     },
     stop() { clearInterval(timer) },
     async handler(interaction) {
+      if (interaction.isChatInputCommand?.() && interaction.commandName === 'elo') {
+        if (interaction.guildId !== AURORA_DISCORD_GUILD_ID) { await interaction.reply({content:'Use /elo in the Lobo server.',ephemeral:true}); return true }
+        await interaction.deferReply({ephemeral:true})
+        if (!projection || dataIssue) { await interaction.editReply({content:'Ratings are starting or temporarily unavailable. Try again shortly.'}); return true }
+        const account = interaction.options.getUser('player') || interaction.user
+        const member = interaction.options.getMember?.('player') || (account.id === interaction.user.id ? interaction.member : null)
+        const reply = eloCommandReply({projection,portalPlayer:portalAccounts.get(account.id),metaPlayer:metaAccounts.get(account.id),name:member?.displayName || account.globalName || account.username})
+        await interaction.editReply(reply)
+        return true
+      }
       if (!interaction.isChatInputCommand?.() || interaction.commandName !== 'ratings') return false
       if (interaction.guildId !== AURORA_DISCORD_GUILD_ID || !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) { await interaction.reply({ content: 'Manage Server is required.', ephemeral: true }); return true }
       await interaction.deferReply({ ephemeral: true })

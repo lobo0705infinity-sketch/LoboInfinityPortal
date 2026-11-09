@@ -24,6 +24,7 @@ export const topLevelItems: NavigationItem[] = [
     label: 'All Events',
     to: '/events',
   },
+  { icon: 'hall', label: 'Portal ELO', to: '/elo' },
   {
     icon: 'submit',
     label: 'Submit Game',
