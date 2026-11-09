@@ -24,6 +24,7 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
   function setDuplicate(s,g){const d=duplicate(s,g);if(d){g.duplicateOf=d.id;g.duplicateApproved=false}else{delete g.duplicateOf;delete g.duplicateApproved}}
   const confirmedStatus=g=>g.late&&!g.lateApproved?'awaiting_late_approval':g.duplicateOf&&!g.duplicateApproved?'awaiting_duplicate_review':'confirmed'
   return {
+    ratingGames:()=>run(async()=>(await read()).games.filter(g=>g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved)).map(g=>({id:g.id,date:g.date,playerA:{id:g.playerA.id,name:g.playerA.name},playerB:{id:g.playerB.id,name:g.playerB.name},opA:g.opA,opB:g.opB,status:g.status,late:g.late,lateApproved:g.lateApproved,duplicateOf:g.duplicateOf,duplicateApproved:g.duplicateApproved}))),
     resetPractice:()=>run(async()=>{if(!allowPracticeReset)fail('Only a practice ledger can be reset.');await write({version:1,games:[],claims:[],turns:{}})}),
     operations:()=>run(async()=>operationsView(await read())),
     operate:(input,players,publication)=>run(async()=>{const s=await read();const result=mutateOperations(s,input,players,publication,now());await write(s);return result}),

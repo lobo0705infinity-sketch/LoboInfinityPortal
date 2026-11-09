@@ -199,6 +199,14 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
         server = createServer(async (request, response) => {
           response.setHeader('content-type', 'application/json; charset=utf-8'); response.setHeader('x-content-type-options', 'nosniff')
           response.setHeader('cache-control', 'no-store')
+          if (request.method === 'GET' && request.url === '/ratings') {
+            try { response.end(JSON.stringify(client.playerRatings.publicProjection())) }
+            catch { response.writeHead(503); response.end('{"error":"Player ratings are temporarily unavailable."}') }
+            return
+          }
+          if (request.method === 'GET' && request.url === '/ratings/status') {
+            response.end(JSON.stringify(client.playerRatings?.publicSummary() || {status:'starting'})); return
+          }
           if (request.url === '/list-exchange/resolve') {
             if (!client.listExchange) { response.writeHead(503); response.end('{"success":false}'); return }
             await client.listExchange.resolveRequest(request, response); return
@@ -225,6 +233,7 @@ export function createAuroraRegistrationService({ store = createRegistrationStor
       logger.info?.(`Aurora VII registration ready: roles=${roles.size} available=${available} port=${port}`)
     },
     listExchangeReports: codes => { if (!games) throw Error('Campaign game verification is starting.'); return games.listExchangeReports(codes) },
+    ratingGames: () => { if (!games) throw Error('Campaign game verification is starting.'); return games.ratingGames() },
     stop() { clearInterval(timer); server?.close() },
     recover,
   }

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { createBotInventoryHandler, inventoryAtStartup } from './bot-inventory.mjs'
+import { createPlayerRatings } from './player-ratings.mjs'
 import { createKillInteractionHandler } from './kill-command.mjs'
 import { createAuroraRegistrationService } from './aurora-registration-command.mjs'
 import { createTop40Notifications } from './top40-notifications.mjs'
@@ -116,10 +117,15 @@ export function formatWorkshopAnnouncement(item) {
 
 export function createLobosLittleHelper() {
   const client = new Client({ intents: REQUIRED_INTENTS })
-  client.setMaxListeners(23)
+  client.setMaxListeners(24)
   const auroraRegistration = createAuroraRegistrationService()
   client.auroraRegistration = auroraRegistration
   client.top40Notifications = createTop40Notifications({ registeredPlayers: () => auroraRegistration.registeredPlayers() })
+  client.playerRatings = createPlayerRatings({
+    linkedPlayers: async () => [...await client.top40Notifications.linkedPlayers(AURORA_DISCORD_GUILD_ID), ...await auroraRegistration.registeredPlayers()],
+    campaignGames: () => auroraRegistration.ratingGames(),
+  })
+  client.on(Events.InteractionCreate, client.playerRatings.handler)
   client.listExchange = createListExchangeService({
     reports: createListExchangeReportSource({ campaignReports: codes => auroraRegistration.listExchangeReports(codes) }),
     linkedPlayers: async guildId => guildId === AURORA_DISCORD_GUILD_ID ? [
@@ -199,6 +205,8 @@ export async function startLobosLittleHelper({ token = process.env[DISCORD_TOKEN
   try { await client.top40Notifications.start(client) }
   catch { process.stderr.write('Top 40 match notifications could not start; other bot commands remain available.\n') }
   await client.listExchange.start(client)
+  try { await client.playerRatings.start(client) }
+  catch (error) { process.stderr.write(`Player rating sync could not start: ${error.message}\n`) }
   try {
     const commands = await ensureMissionCommand(client)
     const rulesCommands = await ensureRulesCommand(client)
