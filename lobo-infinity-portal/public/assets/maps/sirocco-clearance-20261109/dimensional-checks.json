@@ -1,0 +1,70 @@
+[
+  {
+    "check": "Pump House door width",
+    "role": "mesh",
+    "state": "1",
+    "mm": 26.7000228
+  },
+  {
+    "check": "Pump House door width",
+    "role": "mesh",
+    "state": "roof",
+    "mm": 26.7000228
+  },
+  {
+    "check": "Clinic exterior door width",
+    "role": "mesh",
+    "z": -3,
+    "mm": 26.700022799999996
+  },
+  {
+    "check": "Clinic exterior door width",
+    "role": "mesh",
+    "z": 3,
+    "mm": 26.700022799999996
+  },
+  {
+    "check": "Clinic partition removed",
+    "role": "mesh",
+    "passed": true
+  },
+  {
+    "check": "Sofa to wall clearance",
+    "role": "mesh",
+    "mm": 28.066999999999997
+  },
+  {
+    "check": "Pump House door width",
+    "role": "collider",
+    "state": "1",
+    "mm": 26.7000228
+  },
+  {
+    "check": "Pump House door width",
+    "role": "collider",
+    "state": "roof",
+    "mm": 26.7000228
+  },
+  {
+    "check": "Clinic exterior door width",
+    "role": "collider",
+    "z": -3,
+    "mm": 26.700022799999996
+  },
+  {
+    "check": "Clinic exterior door width",
+    "role": "collider",
+    "z": 3,
+    "mm": 26.700022799999996
+  },
+  {
+    "check": "Clinic partition removed",
+    "role": "collider",
+    "passed": true
+  },
+  {
+    "check": "Sofa to wall clearance",
+    "role": "collider",
+    "mm": 28.066999999999997
+  }
+]
