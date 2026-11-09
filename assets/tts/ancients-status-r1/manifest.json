@@ -1,0 +1,1060 @@
+[
+  {
+    "kind": "M01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M01.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 7228,
+    "vertices": 7231
+  },
+  {
+    "kind": "M01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M01.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 4793,
+    "vertices": 4795
+  },
+  {
+    "kind": "M02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M02.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7
+    ],
+    "triangles": 5314,
+    "vertices": 5320
+  },
+  {
+    "kind": "M02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M02.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 3494,
+    "vertices": 3494
+  },
+  {
+    "kind": "M03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M03.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 7600,
+    "vertices": 7634
+  },
+  {
+    "kind": "M03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M03.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 5041,
+    "vertices": 5063
+  },
+  {
+    "kind": "M04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M04.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 7600,
+    "vertices": 7634
+  },
+  {
+    "kind": "M04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M04.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 5041,
+    "vertices": 5063
+  },
+  {
+    "kind": "M05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M05.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 4956,
+    "vertices": 4974
+  },
+  {
+    "kind": "M05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M05.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 2900,
+    "vertices": 2908
+  },
+  {
+    "kind": "M06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M06.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 4956,
+    "vertices": 4974
+  },
+  {
+    "kind": "M06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M06.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 2900,
+    "vertices": 2908
+  },
+  {
+    "kind": "M07",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M07.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 4956,
+    "vertices": 4974
+  },
+  {
+    "kind": "M07",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M07.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 2900,
+    "vertices": 2908
+  },
+  {
+    "kind": "M08",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M08.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 3093,
+    "vertices": 3095
+  },
+  {
+    "kind": "M08",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M08.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      2,
+      3
+    ],
+    "triangles": 1959,
+    "vertices": 1959
+  },
+  {
+    "kind": "M09",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M09.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 3392,
+    "vertices": 3372
+  },
+  {
+    "kind": "M09",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M09.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      2,
+      3
+    ],
+    "triangles": 2208,
+    "vertices": 2194
+  },
+  {
+    "kind": "M10",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M10.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6878,
+    "vertices": 6890
+  },
+  {
+    "kind": "M10",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M10.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4548,
+    "vertices": 4554
+  },
+  {
+    "kind": "M11",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M11.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6878,
+    "vertices": 6890
+  },
+  {
+    "kind": "M11",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M11.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4548,
+    "vertices": 4554
+  },
+  {
+    "kind": "M12",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M12.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6878,
+    "vertices": 6890
+  },
+  {
+    "kind": "M12",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M12.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4548,
+    "vertices": 4554
+  },
+  {
+    "kind": "M13",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M13.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6230,
+    "vertices": 6228
+  },
+  {
+    "kind": "M13",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M13.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3734,
+    "vertices": 3730
+  },
+  {
+    "kind": "P01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P01.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6747,
+    "vertices": 7006
+  },
+  {
+    "kind": "P01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P01.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4469,
+    "vertices": 4638
+  },
+  {
+    "kind": "P02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P02.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6747,
+    "vertices": 7006
+  },
+  {
+    "kind": "P02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P02.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4469,
+    "vertices": 4638
+  },
+  {
+    "kind": "P03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P03.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 6747,
+    "vertices": 7006
+  },
+  {
+    "kind": "P03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P03.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4469,
+    "vertices": 4638
+  },
+  {
+    "kind": "P04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P04.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6506,
+    "vertices": 6506
+  },
+  {
+    "kind": "P04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P04.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3810,
+    "vertices": 3810
+  },
+  {
+    "kind": "P05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P05.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6506,
+    "vertices": 6506
+  },
+  {
+    "kind": "P05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P05.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3810,
+    "vertices": 3810
+  },
+  {
+    "kind": "P06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P06.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 7600,
+    "vertices": 7634
+  },
+  {
+    "kind": "P06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P06.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 5041,
+    "vertices": 5063
+  },
+  {
+    "kind": "hastati",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/hastati.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 9338,
+    "vertices": 9471
+  },
+  {
+    "kind": "hastati",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/hastati.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 6230,
+    "vertices": 6318
+  },
+  {
+    "kind": "principes",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/principes.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 9941,
+    "vertices": 9975
+  },
+  {
+    "kind": "principes",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/principes.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 6632,
+    "vertices": 6654
+  },
+  {
+    "kind": "triarii",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/triarii.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 8699,
+    "vertices": 8841
+  },
+  {
+    "kind": "triarii",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/triarii.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 5804,
+    "vertices": 5898
+  },
+  {
+    "kind": "velites",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/velites.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      1
+    ],
+    "triangles": 3023,
+    "vertices": 3129
+  },
+  {
+    "kind": "velites",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/velites.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1
+    ],
+    "triangles": 2020,
+    "vertices": 2090
+  },
+  {
+    "kind": "roman-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/roman-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 5432,
+    "vertices": 5514
+  },
+  {
+    "kind": "roman-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/roman-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 3626,
+    "vertices": 3680
+  },
+  {
+    "kind": "italian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/italian-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 5432,
+    "vertices": 5514
+  },
+  {
+    "kind": "italian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/italian-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 3626,
+    "vertices": 3680
+  },
+  {
+    "kind": "iberians",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/iberians.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      3
+    ],
+    "triangles": 9545,
+    "vertices": 9615
+  },
+  {
+    "kind": "iberians",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/iberians.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 6368,
+    "vertices": 6414
+  },
+  {
+    "kind": "celts",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/celts.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      3
+    ],
+    "triangles": 8240,
+    "vertices": 8409
+  },
+  {
+    "kind": "celts",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/celts.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 5498,
+    "vertices": 5610
+  },
+  {
+    "kind": "veterans",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/veterans.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 10139,
+    "vertices": 10191
+  },
+  {
+    "kind": "veterans",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/veterans.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 6764,
+    "vertices": 6798
+  },
+  {
+    "kind": "cannae-skirmishers",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/cannae-skirmishers.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      1
+    ],
+    "triangles": 3023,
+    "vertices": 3129
+  },
+  {
+    "kind": "cannae-skirmishers",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/cannae-skirmishers.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1
+    ],
+    "triangles": 2020,
+    "vertices": 2090
+  },
+  {
+    "kind": "iberian-celtic-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/iberian-celtic-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 5330,
+    "vertices": 5400
+  },
+  {
+    "kind": "iberian-celtic-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/iberian-celtic-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 3558,
+    "vertices": 3604
+  },
+  {
+    "kind": "numidian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/numidian-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 5649,
+    "vertices": 5732
+  },
+  {
+    "kind": "numidian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/numidian-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2
+    ],
+    "triangles": 3395,
+    "vertices": 3444
+  }
+]
