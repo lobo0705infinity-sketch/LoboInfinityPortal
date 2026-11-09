@@ -1,0 +1,93 @@
+{
+  "measured_door_sections": [
+    {
+      "mesh": "r15-parcel-office-ground.obj",
+      "wall_z": -2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-ground.obj",
+      "wall_z": 2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-ground-collider.obj",
+      "wall_z": -2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-ground-collider.obj",
+      "wall_z": 2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-roof.obj",
+      "wall_z": -2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-roof.obj",
+      "wall_z": 2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-roof-collider.obj",
+      "wall_z": -2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-parcel-office-roof-collider.obj",
+      "wall_z": 2.25,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-ground.obj",
+      "wall_z": -2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-ground.obj",
+      "wall_z": 2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-ground-collider.obj",
+      "wall_z": -2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-ground-collider.obj",
+      "wall_z": 2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-roof.obj",
+      "wall_z": -2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-roof.obj",
+      "wall_z": 2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-roof-collider.obj",
+      "wall_z": -2.0,
+      "clear_mm": 26.67
+    },
+    {
+      "mesh": "r15-north-service-office-roof-collider.obj",
+      "wall_z": 2.0,
+      "clear_mm": 26.67
+    }
+  ],
+  "rotated_buildings_in_all_states": 3,
+  "rotated_buildings_inside_board": true,
+  "rotated_buildings_overlap_other_buildings": false,
+  "live_tts_tested": false,
+  "hosted_assets_verified": 9,
+  "all_unrelated_table_objects_preserved": true,
+  "table_objects": 212,
+  "map_objects": 77,
+  "workshop_published": false
+}

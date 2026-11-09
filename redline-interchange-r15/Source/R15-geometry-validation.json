@@ -1,0 +1,77 @@
+{
+  "clear_door_mm": 26.669999999999998,
+  "collider_gap_mm": 26.669999999999998,
+  "doors_changed": [
+    "177826",
+    "061016",
+    "9bcf50",
+    "ee8cee",
+    "4ccb4d"
+  ],
+  "rotated_buildings": [
+    "193c66",
+    "b3711b",
+    "eaa1fd"
+  ],
+  "rotated_attachments": [
+    "9a74ee"
+  ],
+  "surface_cleanup": [
+    {
+      "source": "r15-raw-parcel-office-ground.obj",
+      "output": "r15-parcel-office-ground.obj",
+      "triangles_before": 3724,
+      "triangles_after": 3828,
+      "before": {
+        "overlap_pairs": 1174,
+        "overlap_area": 26.94664
+      },
+      "after": {
+        "overlap_pairs": 0,
+        "overlap_area": 0.0
+      }
+    },
+    {
+      "source": "r15-raw-parcel-office-roof.obj",
+      "output": "r15-parcel-office-roof.obj",
+      "triangles_before": 3808,
+      "triangles_after": 3958,
+      "before": {
+        "overlap_pairs": 1331,
+        "overlap_area": 30.375707
+      },
+      "after": {
+        "overlap_pairs": 0,
+        "overlap_area": 0.0
+      }
+    },
+    {
+      "source": "r15-raw-north-service-office-ground.obj",
+      "output": "r15-north-service-office-ground.obj",
+      "triangles_before": 2032,
+      "triangles_after": 2099,
+      "before": {
+        "overlap_pairs": 693,
+        "overlap_area": 14.85904
+      },
+      "after": {
+        "overlap_pairs": 0,
+        "overlap_area": 0.0
+      }
+    },
+    {
+      "source": "r15-raw-north-service-office-roof.obj",
+      "output": "r15-north-service-office-roof.obj",
+      "triangles_before": 2102,
+      "triangles_after": 2199,
+      "before": {
+        "overlap_pairs": 818,
+        "overlap_area": 17.483815
+      },
+      "after": {
+        "overlap_pairs": 0,
+        "overlap_area": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+[
+  {
+    "name": "Station Operations",
+    "x": -17.0,
+    "z": 17.0,
+    "w": 7.0,
+    "d": 6.0,
+    "floors": 2,
+    "role": "office",
+    "shape": "stepped",
+    "angle": 90,
+    "main": "13af9b",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "West Ticket Hall",
+    "x": -1.0,
+    "z": 17.0,
+    "w": 8.0,
+    "d": 7.0,
+    "floors": 1,
+    "role": "ticket",
+    "shape": "barrel",
+    "angle": 90,
+    "main": "5500a5",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Traction Workshop",
+    "x": 16.5,
+    "z": 17.0,
+    "w": 7.5,
+    "d": 7.0,
+    "floors": 1,
+    "role": "workshop",
+    "shape": "sawtooth",
+    "angle": 90,
+    "main": "1b62f4",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Dispatch Administration",
+    "x": 17.0,
+    "z": -17.0,
+    "w": 7.5,
+    "d": 6.0,
+    "floors": 2,
+    "role": "office",
+    "shape": "octagon",
+    "angle": 270,
+    "main": "6e3a96",
+    "states": [
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "Platform Cafe",
+    "x": 1.0,
+    "z": -17.0,
+    "w": 8.0,
+    "d": 7.0,
+    "floors": 1,
+    "role": "cafe",
+    "shape": "pavilion",
+    "angle": 270,
+    "main": "7f0a34",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Crew Mess",
+    "x": -16.5,
+    "z": -17.0,
+    "w": 7.5,
+    "d": 6.5,
+    "floors": 1,
+    "role": "mess",
+    "shape": "gable",
+    "angle": 270,
+    "main": "f5057a",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Signal Relay House",
+    "x": -20.0,
+    "z": 1.0,
+    "w": 6.0,
+    "d": 4.0,
+    "floors": 1,
+    "role": "signal",
+    "shape": "capsule",
+    "angle": 90,
+    "main": "8abd3b",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "Parcel Office",
+    "x": 20.0,
+    "z": -1.0,
+    "w": 6.5,
+    "d": 4.5,
+    "floors": 1,
+    "role": "office",
+    "shape": "loading",
+    "angle": 270,
+    "main": "dd54c8",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "South Security Office",
+    "x": -19.0,
+    "z": -8.0,
+    "w": 4.0,
+    "d": 4.0,
+    "floors": 1,
+    "role": "office",
+    "shape": "booth",
+    "angle": 135,
+    "main": "f3d23e",
+    "states": [
+      "2"
+    ]
+  },
+  {
+    "name": "North Service Office",
+    "x": 19.0,
+    "z": 8.0,
+    "w": 4.0,
+    "d": 4.0,
+    "floors": 1,
+    "role": "office",
+    "shape": "container",
+    "angle": 315,
+    "main": "8b234c",
+    "states": [
+      "2"
+    ]
+  }
+]
