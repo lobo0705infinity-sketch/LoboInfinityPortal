@@ -82,7 +82,6 @@ def footprint(o):
  return affinity.translate(MultiPoint(v).convex_hull,xoff=x,yoff=z)
 hard=[]
 for rec in building:
- p=affinity.translate(affinity.rotate(PolygonProxy(rec['footprint']),-rec['yaw'],origin=(0,0)),xoff=rec['x'],yoff=rec['z']) if False else None
  o=next(o for o in bag['ContainedObjects'] if o['GUID']==rec['guid']);p=footprint(o)
  assert box(-24,-24,24,24).covers(p),(rec['name'],p.bounds)
  for name,other in hard:assert p.intersection(other).area<.03,(rec['name'],name,p.intersection(other).area)
@@ -104,7 +103,7 @@ for i,(kind,x,z,yaw) in enumerate([('01',-12,10,30),('03',-23,11,90),('01',-12,-
  o=copy.deepcopy(json.load(open(R/('tree-'+kind+'.json'))));o['GUID']=allocate();scale=(.43,.5,.43) if kind=='01' else (.38,.55,.38)
  for st in states(o):
   if st is not o:st['GUID']=allocate()
-  st['Tags']=['LoboCanopyTrees','VerdantExchange',tag];st['Transform'].update(scaleX=scale[0],scaleY=scale[1],scaleZ=scale[2],rotY=yaw);places[st['GUID']]=[x,1,z,0,yaw,0]
+  st['CustomMesh']={k:(v.replace('steamusercontent-a.akamaihd.net','cdn.steamusercontent.com') if isinstance(v,str) else v) for k,v in st['CustomMesh'].items()};st['Tags']=['LoboCanopyTrees','VerdantExchange',tag];st['Transform'].update(scaleX=scale[0],scaleY=scale[1],scaleZ=scale[2],rotY=yaw);places[st['GUID']]=[x,1,z,0,yaw,0]
  o['Nickname']='Verdant specimen tree '+str(i+1);bag['ContainedObjects'].append(o)
 
 # Compact flush-mounted printed signs; no new building meshes or frame structures.

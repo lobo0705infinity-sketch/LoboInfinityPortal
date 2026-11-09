@@ -59,7 +59,7 @@ ps=(old/'Install.ps1').read_text().replace('VerdantJsonR3','VerdantJsonR5').repl
 ps=ps.replace("$mapTitle = 'Verdant Exchange - Asymmetric R3 Review'","$mapTitle = '"+title+"'")
 ps=ps.replace('$collectionTitle = "Lobo\'s Infinity Maps - Verdant Asymmetric R3 Review"','$collectionTitle = "'+collectiontitle+'"')
 ps=ps.replace("@($mapTitle,'Verdant Exchange - Living Collections R2 Review')","@($mapTitle,'Verdant Exchange - Living Collections R2 Review','Verdant Exchange - Asymmetric R3 Review','Verdant Exchange - Campus Rebuild R4 Review')")
-ps=ps.replace('@($collectionTitle,"Lobo\'s Infinity Maps - Verdant Living Collections R2 Review")','@($collectionTitle,"Lobo\'s Infinity Maps - Verdant Living Collections R2 Review","Lobo\'s Infinity Maps - Verdant Asymmetric R3 Review","Lobo's Infinity Maps - Verdant Campus Rebuild R4 Review")')
+ps=ps.replace('@($collectionTitle,"Lobo\'s Infinity Maps - Verdant Living Collections R2 Review")','@($collectionTitle,"Lobo\'s Infinity Maps - Verdant Living Collections R2 Review","Lobo\'s Infinity Maps - Verdant Asymmetric R3 Review","Lobo\'s Infinity Maps - Verdant Campus Rebuild R4 Review")')
 ps=ps.replace("@('Verdant-Exchange-Living-Collections-R2','Lobos-Top-40-Winners-Round-3-R2')","@('Verdant-Exchange-R5-General','Verdant-Exchange-R5-Top40')").replace('Load > Verdant Exchange - Asymmetric R3 Review','Load > '+title)
 ps=ps.replace("Write-Host ''\nWrite-Host 'Updated", """# Retire only the exact older saved-object files installed by the previous packages.
 foreach ($legacy in @('Verdant-Exchange-Living-Collections-R2','Lobos-Top-40-Winners-Round-3-R2','Verdant-Exchange-R4-General','Verdant-Exchange-R4-Top40')) {
@@ -99,7 +99,7 @@ collection. Other maps are preserved. If no eligible local collection exists,
 the bundled November 8 snapshot is used as a fallback.
 
 The installer replaces matching older R2/R3/R4/R5 review saves. Previous files are
-backed up outside the TTS Saves folder. New R4 saved-object bags replace the exact
+backed up outside the TTS Saves folder. New R5 saved-object bags replace the exact
 older saved-object filenames installed by our earlier Verdant packages.
 
 Fifteen detailed campus buildings use the approved original assets. The two long
