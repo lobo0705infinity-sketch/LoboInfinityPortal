@@ -22,9 +22,12 @@ These are standing user requirements. Preserve them across revisions without req
 - Walk nested saved objects and validate numeric RGB structures in all typed color fields before packaging. Keep a regression check for the notebook visibleColor load failure.
 
 ## Granicus R2 requirements
-- Rotate the complete playing board and scenario consistently to 72 inches wide by 96 inches deep. Preserve the readable off-board archive.
+- Rotate only the battlefield map when requested, never the table itself. Keep the original table orientation at 96 inches wide by 72 inches deep, with the archive on the right. Fit the rotated battlefield and deployment to that surface without changing figure or base scales.
 - Use source-led deployment: Alexander and his Companion/hypaspist/light-troop group on the Macedonian right; Thessalians/allied horse on the left; Persian horse along the far bank and Greek mercenaries behind. Mark contingents with unrecorded exact positions as unassigned rather than presenting guessed reserve grids as historical.
 - Every visible figure, horse, shield and weapon must stay inside its three-inch base in plan view. Preserve sprite aspect ratios and figure heights; arrange mounted files/ranks to fit. Check actual mesh bounds, not just collider dimensions.
 - Base ground must match the battlefield mat's material and palette. Avoid the old golden/desert ground when the mat is grass/soil.
 - Represent the uneven banks and higher Persian-side ground as well as the river. Treat exact relief and bank geometry as an interpretive tabletop reconstruction, not a measured historical survey. Do not add unsupported major terrain obstacles.
 
+
+## Workshop design goal
+- The user wants a premier Ancients wargaming workshop. Terrain affecting play must be genuinely modeled in 3D with matching collision: banks, river channels, rising ground, hills, rocky ground, woods, bridges and buildings where appropriate to the scenario. Ground textures provide surface appearance; figures may remain detailed 2D standees. Keep terrain historically justified in each complete battle pack.
