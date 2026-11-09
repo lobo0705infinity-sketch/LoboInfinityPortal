@@ -20,3 +20,11 @@ These are standing user requirements. Preserve them across revisions without req
 ## Save-format regression checks
 - Validate field types against the official TTS save schema, not only JSON syntax. TabStates entries have a string `color` label, a numeric RGB ColourState object in `visibleColor`, and an integer `id`. Never put a player-color string such as `Grey` in a ColourState field.
 - Walk nested saved objects and validate numeric RGB structures in all typed color fields before packaging. Keep a regression check for the notebook visibleColor load failure.
+
+## Granicus R2 requirements
+- Rotate the complete playing board and scenario consistently to 72 inches wide by 96 inches deep. Preserve the readable off-board archive.
+- Use source-led deployment: Alexander and his Companion/hypaspist/light-troop group on the Macedonian right; Thessalians/allied horse on the left; Persian horse along the far bank and Greek mercenaries behind. Mark contingents with unrecorded exact positions as unassigned rather than presenting guessed reserve grids as historical.
+- Every visible figure, horse, shield and weapon must stay inside its three-inch base in plan view. Preserve sprite aspect ratios and figure heights; arrange mounted files/ranks to fit. Check actual mesh bounds, not just collider dimensions.
+- Base ground must match the battlefield mat's material and palette. Avoid the old golden/desert ground when the mat is grass/soil.
+- Represent the uneven banks and higher Persian-side ground as well as the river. Treat exact relief and bank geometry as an interpretive tabletop reconstruction, not a measured historical survey. Do not add unsupported major terrain obstacles.
+
