@@ -1,0 +1,1498 @@
+[
+  {
+    "kind": "M01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M01.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 8036,
+    "vertices": 8407,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M01.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 6525,
+    "vertices": 7031,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "M02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M02.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7
+    ],
+    "triangles": 5882,
+    "vertices": 6052,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M02.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 4652,
+    "vertices": 5070,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "M03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M03.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 8416,
+    "vertices": 8902,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M03.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 6769,
+    "vertices": 7431,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "M04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M04.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 8416,
+    "vertices": 8902,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M04.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 6769,
+    "vertices": 7431,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "M05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M05.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 5308,
+    "vertices": 5326,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M05.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3624,
+    "vertices": 4004,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M06.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 5308,
+    "vertices": 5326,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M06.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3624,
+    "vertices": 4004,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M07",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M07.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 5308,
+    "vertices": 5326,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M07",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M07.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 3624,
+    "vertices": 4004,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "M08",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M08.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 3521,
+    "vertices": 3523,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M08",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M08.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      2,
+      3
+    ],
+    "triangles": 2529,
+    "vertices": 2671,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M09",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M09.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 3872,
+    "vertices": 3852,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M09",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M09.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      2,
+      3
+    ],
+    "triangles": 2860,
+    "vertices": 3018,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M10",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M10.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7458,
+    "vertices": 7682,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M10",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M10.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5748,
+    "vertices": 6234,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "M11",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M11.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7458,
+    "vertices": 7682,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M11",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M11.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5748,
+    "vertices": 6234,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "M12",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M12.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7458,
+    "vertices": 7682,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "M12",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M12.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5748,
+    "vertices": 6234,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "M13",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M13.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6642,
+    "vertices": 6640,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "M13",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/M13.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 4588,
+    "vertices": 5026,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "P01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P01.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7337,
+    "vertices": 7770,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "P01",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P01.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5765,
+    "vertices": 6402,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "P02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P02.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7337,
+    "vertices": 7770,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "P02",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P02.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5765,
+    "vertices": 6402,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "P03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P03.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      6,
+      7
+    ],
+    "triangles": 7337,
+    "vertices": 7770,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "P03",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P03.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "triangles": 5765,
+    "vertices": 6402,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "P04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P04.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6942,
+    "vertices": 6942,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "P04",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P04.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 4706,
+    "vertices": 5166,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "P05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P05.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      5
+    ],
+    "triangles": 6942,
+    "vertices": 6942,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "P05",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P05.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      3,
+      4,
+      5
+    ],
+    "triangles": 4706,
+    "vertices": 5166,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "P06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P06.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      8,
+      10,
+      11
+    ],
+    "triangles": 8416,
+    "vertices": 8902,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "P06",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7d7b4f856ac517ca9b8b824fbaf4f3fdd788a9c9/assets/tts/workshop-r5/P06.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      4,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "triangles": 6769,
+    "vertices": 7431,
+    "casualty_family": "greek-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "hastati",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/hastati.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 10244,
+    "vertices": 10803,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "hastati",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/hastati.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 8136,
+    "vertices": 8806,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "principes",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/principes.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 10841,
+    "vertices": 11307,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "principes",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/principes.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 8502,
+    "vertices": 9106,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "triarii",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/triarii.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 9657,
+    "vertices": 10249,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "triarii",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/triarii.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 7902,
+    "vertices": 8634,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "velites",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/velites.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      1
+    ],
+    "triangles": 3519,
+    "vertices": 3625,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "velites",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/velites.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1
+    ],
+    "triangles": 2656,
+    "vertices": 2866,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "roman-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/roman-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 6136,
+    "vertices": 6366,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "roman-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/roman-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 5006,
+    "vertices": 5460,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "italian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/italian-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 6136,
+    "vertices": 6366,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "italian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/italian-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 5006,
+    "vertices": 5460,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "iberians",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/iberians.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      3
+    ],
+    "triangles": 10513,
+    "vertices": 11031,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "iberians",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/iberians.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 8390,
+    "vertices": 9058,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "celts",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/celts.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      3
+    ],
+    "triangles": 9032,
+    "vertices": 9589,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "celts",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/celts.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 7194,
+    "vertices": 7850,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "veterans",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/veterans.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 12,
+    "visible_figures": 9,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      2,
+      3
+    ],
+    "triangles": 11113,
+    "vertices": 11655,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  },
+  {
+    "kind": "veterans",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/veterans.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 12,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "triangles": 8782,
+    "vertices": 9490,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4",
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 6
+  },
+  {
+    "kind": "cannae-skirmishers",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/cannae-skirmishers.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 4,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      1
+    ],
+    "triangles": 3519,
+    "vertices": 3625,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "cannae-skirmishers",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/cannae-skirmishers.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 4,
+    "visible_figures": 2,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1
+    ],
+    "triangles": 2656,
+    "vertices": 2866,
+    "casualty_family": "cannae-foot",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "iberian-celtic-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/iberian-celtic-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 8,
+    "visible_figures": 6,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      3
+    ],
+    "triangles": 5876,
+    "vertices": 6124,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3"
+    ],
+    "casualty_figures": 2
+  },
+  {
+    "kind": "iberian-celtic-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/24eb18fb69bf79223e217ecdeddb96bb60da72e4/assets/tts/cannae-r1/iberian-celtic-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 8,
+    "visible_figures": 4,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "triangles": 4746,
+    "vertices": 5224,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2",
+      "wounded-4"
+    ],
+    "casualty_figures": 4
+  },
+  {
+    "kind": "numidian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/numidian-horse.obj",
+    "state": 2,
+    "label": "Disordered",
+    "casualty_percent": 25,
+    "full_figures": 6,
+    "visible_figures": 5,
+    "rounded": true,
+    "removed_placements": [
+      2
+    ],
+    "triangles": 6165,
+    "vertices": 6248,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "wounded-3"
+    ],
+    "casualty_figures": 1
+  },
+  {
+    "kind": "numidian-horse",
+    "source_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/7967725c6fdae888c537f9de66f1e9b4ec1c482b/assets/tts/zama-r2/numidian-horse.obj",
+    "state": 3,
+    "label": "Shaken",
+    "casualty_percent": 50,
+    "full_figures": 6,
+    "visible_figures": 3,
+    "rounded": false,
+    "removed_placements": [
+      0,
+      1,
+      2
+    ],
+    "triangles": 4363,
+    "vertices": 4864,
+    "casualty_family": "mounted",
+    "casualty_poses": [
+      "fallen-1",
+      "wounded-3",
+      "fallen-2"
+    ],
+    "casualty_figures": 3
+  }
+]
