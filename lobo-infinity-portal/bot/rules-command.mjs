@@ -75,6 +75,22 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
+  // Only plain placement questions use this verified response. Named profiles,
+  // extra conditions and compound interactions retain the full evidence path.
+  const dispenserCamo = /^(?:can|may) (?:you|i|a trooper|a model) (?:shoot|fire|launch|place) (?:a |the )?mine (?:with|using|from) (?:a |the )?mine dispenser (?:underneath|under|next to|near|within trigger (?:area|range) of) (?:an? |the )?(?:enemy )?(?:camo|camouflage|camouflaged) marker$/.test(words)
+    || /^(?:can|may) (?:you|i) (?:shoot|fire|use) (?:a |the )?mine dispenser (?:underneath|under|next to|near) (?:an? |the )?(?:enemy )?(?:camo|camouflage|camouflaged) marker$/.test(words)
+  if (dispenserCamo) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'VERIFIED RULES ANSWER', answerSource: 'VERIFIED_RULES',
+      deepSeek: {
+        conclusion: 'DEPENDS', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: 'It depends. No if the enemy Camouflage Marker is the only enemy in the mine’s Trigger Area. A Mine Dispenser follows Drop Bears in BS Mode: you cannot place its mine with an enemy Camouflage Marker inside its Trigger Area unless a valid, non-camouflaged enemy is also inside that area. Targetless lets you choose a location; it does not waive this restriction. If the valid enemy is also present, placement is allowed subject to normal placement requirements. Total Cover is excluded from the Trigger Area, so merely being nearby is not enough. The mine cannot detonate during the Order in which it is fired.',
+        sources: ['Mine_Dispenser', 'Drop_Bears', 'Mines'].map((page, index) => ({ id: 'MD' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+      },
+    }
+  }
   const retreatConsole = /^(?:can|may) (?:you|i|(?:a |the |my )?(?:trooper|model|specialist)) (?:still )?(?:click|activate|use|hit|press|push) (?:a |the )?(?:console|button) (?:(?:while|when|if) )?(?:(?:you|i|it|the trooper|my army|your army|the army) (?:are|am|is) )?in retreat(?: state| situation)?$/.test(words)
   if (retreatConsole) {
     return {

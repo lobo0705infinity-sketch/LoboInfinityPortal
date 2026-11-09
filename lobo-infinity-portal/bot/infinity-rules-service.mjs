@@ -23,6 +23,13 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 73, printedPage: '73',
+  section: 'MINE DISPENSER — DROP BEARS BS MODE', headings: ['MINE DISPENSER', 'DROP BEARS', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'mine dispenser',
+  text: 'Mine Dispenser uses the rules and placement effects of Drop Bears in BS Mode. Targetless permits selecting a location without targeting a Trooper. In BS Mode, a mine cannot be placed with an enemy Camouflage Marker in its Trigger Area unless a valid, non-camouflaged enemy is also in that area. A mine fired this way cannot detonate during that Order. Once deployed, it follows Mines rules. The Trigger Area excludes Total Cover from the template blast focus.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 67, printedPage: '67',
   section: 'T2 AMMUNITION — SAVING ROLLS AND CRITICALS', headings: ['T2 AMMUNITION', 'ROLL', 'EFFECTS'],
   structuredBlockTypes: ['ROLL', 'EFFECTS'], canonicalTerm: 't2 ammunition',

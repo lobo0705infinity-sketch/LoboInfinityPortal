@@ -71,6 +71,9 @@ const cases = [
   ['Can elevation provide Partial Cover?', 'DEPENDS', /whole Silhouette/],
   ['Do you get cover on a roof?', 'DEPENDS', /blocks all LoF/],
   ['Can a trooper gain cover from an elevated position?', 'DEPENDS', /cover-denying rules still apply/],
+  ['Can you shoot a mine with mine dispenser underneath an enemy camo marker?', 'DEPENDS', /No if.*only enemy/],
+  ['Can I fire a mine using a Mine Dispenser next to an enemy Camouflage Marker?', 'DEPENDS', /valid, non-camouflaged enemy/],
+  ['May you use a Mine Dispenser near a camouflaged marker?', 'DEPENDS', /does not waive this restriction/],
 ]
 for (const [question, conclusion, detail] of cases) {
   const result = await context.retrieveRulesReference({ question })
@@ -144,6 +147,18 @@ console.log('Rules interaction regressions passed: ' + cases.length + ' correcti
 const { loadProductionRulesCorpus } = await import('../bot/infinity-rules-service.mjs')
 const { buildRulesEvidencePrompt } = await import('../bot/deepseek-rules.mjs')
 const productionCorpus = await loadProductionRulesCorpus({ force: true })
+const mineEvidence = buildRulesEvidencePrompt(productionCorpus, 'Can a named trooper fire a Mine Dispenser near a camo marker with another enemy nearby?')
+assert.match(mineEvidence.text, /cannot be placed with an enemy Camouflage Marker.*unless a valid, non-camouflaged enemy/)
+assert.match(mineEvidence.text, /Do not transfer the Intuitive Attack option/)
+assert.equal(context.verifiedRulesInteraction('Can I fire a mine with a Mine Dispenser near an enemy camo marker if another enemy is nearby?', corpus), null)
+assert.equal(context.verifiedRulesInteraction('Can a TAG fire a mine with a Mine Dispenser near an enemy camo marker?', corpus), null)
+const mineResult = await context.retrieveRulesReference({ question: cases[cases.length - 3][0] })
+assert.equal(mineResult.answerSource, 'VERIFIED_RULES')
+assert.equal(mineResult.deepSeek.certainty, 'EXPLICIT RULES ANSWER')
+assert.deepEqual(Array.from(mineResult.deepSeek.sources, source => source.section), ['Mine Dispenser', 'Drop Bears', 'Mines'])
+const mineDisplay = context.formatRulesDiscordResponse(mineResult).embeds[0].fields.find(field => field.name === 'ANSWER').value
+assert.match(mineDisplay, /Total Cover/)
+assert.match(mineDisplay, /cannot detonate/)
 for (const [question, expected] of [
   ['Can unit cautious move inside enemy zoc, but the enemy is in impersonation?', ['cautious movement', 'impersonation state', 'stealth']],
   ['Can I use Cautious Movement near an IMP-2 marker if it reveals with an ARO?', ['cautious movement', 'impersonation state', 'stealth']],
