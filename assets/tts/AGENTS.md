@@ -16,3 +16,7 @@ These are standing user requirements. Preserve them across revisions without req
 - Rear plaque: a large L/R/V/E on the left, unit name on the upper right, then the unit class, Cavalry where applicable, and weapons below. Example: V | Macedonian Pike / Heavy Pike. Example: E | Alexander's Companions / Medium Cavalry Lance/Javelin.
 - Preserve stout, detailed miniature anatomy and the source art's aspect ratio. Never stretch sprites taller or narrower to fit a rank. Heavy infantry use three ranks of four.
 - The dedicated game tabletop has a 96 x 72 inch playing area (8 x 6 feet), with the battle archive outside it. Store complete battles with map, armies, placements and notes together; preserve current piece positions when archiving an active battle.
+
+## Save-format regression checks
+- Validate field types against the official TTS save schema, not only JSON syntax. TabStates entries have a string `color` label, a numeric RGB ColourState object in `visibleColor`, and an integer `id`. Never put a player-color string such as `Grey` in a ColourState field.
+- Walk nested saved objects and validate numeric RGB structures in all typed color fields before packaging. Keep a regression check for the notebook visibleColor load failure.
