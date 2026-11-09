@@ -49,3 +49,5 @@ Second-release checks: `node scripts/response-details-check.mjs` covers cached d
 Discord application webhook replies and follow-ups are counted under their bot account rather than as separate webhook publishers.
 
 The bot inventory also lists delivery jobs, owners, schedules, channels and map-watcher checkpoint status. Portal maintenance cadence is labeled as declared in source; live Apps Script triggers have not been queried. Map/workshop announcements keep their checkpoint on the Railway persistent volume and wait if previous Discord posts cannot be checked.
+
+`/elo` is available to every Lobo server member. It privately shows your exact Portal ELO and linked Infinity the Meta rating, the Portal top five, and a button to open the leaderboard. The optional `player` input looks up another server member. Rating bands appear on member profiles; `/ratings` remains the server-manager tool for links, sync and diagnostics.

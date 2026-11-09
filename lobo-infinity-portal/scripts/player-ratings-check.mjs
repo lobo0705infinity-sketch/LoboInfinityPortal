@@ -3,12 +3,16 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { calculatePortalElo, campaignEloGames, ratingBand } from '../shared/portal-elo.mjs'
-import { loadRatingSnapshot, loadMetaRatings, matchRatingMembers, syncRatingRoles, createPlayerRatings } from '../bot/player-ratings.mjs'
+import { loadRatingSnapshot, loadMetaRatings, matchRatingMembers, syncRatingRoles, createPlayerRatings, ELO_COMMAND, eloCommandReply } from '../bot/player-ratings.mjs'
 import { createTop40Store } from '../bot/top40-notifications.mjs'
 import { createCampaignGameStore } from '../bot/aurora-game-store.mjs'
 import { AURORA_DISCORD_GUILD_ID } from '../shared/aurora-registration.mjs'
 const g = (id,winner='A',date='2026-01-01') => ({id,player1:'A',player2:'B',winner,date})
 const first = calculatePortalElo([g(1)])
+assert.equal(ELO_COMMAND.defaultMemberPermissions, undefined, 'Everyone can discover /elo')
+const publicReply=eloCommandReply({projection:first,portalPlayer:'A',metaPlayer:{rating:1886.2},name:'@everyone'})
+assert.match(publicReply.content,/1516/);assert.match(publicReply.content,/1886/);assert.doesNotMatch(publicReply.content,/@everyone/);assert.deepEqual(publicReply.allowedMentions.parse,[])
+assert.equal(publicReply.components[0].components[0].url,'https://lobo-infinity-portal.vercel.app/elo')
 assert.equal(first.leaderboard[0].elo,1516);assert.equal(first.leaderboard[1].elo,1484)
 assert.equal(calculatePortalElo([g(1,'Draw')]).leaderboard[0].elo,1500)
 assert.deepEqual(calculatePortalElo([g(2,'B'),g(1)]),calculatePortalElo([g(1),g(2,'B')]))
@@ -64,6 +68,9 @@ try {
   // Discord/API failure must not prevent a valid Portal calculation.
   assert.equal(service.publicProjection().gameCount,1)
   assert.equal(service.summary().status,'attention')
+  let deferred, reply
+  assert.equal(await service.handler({isChatInputCommand:()=>true,commandName:'elo',guildId:AURORA_DISCORD_GUILD_ID,user:{id:'10000000000000001',username:'A'},member:{displayName:'A'},options:{getUser:()=>null},deferReply:async value=>{deferred=value},editReply:async value=>{reply=value}}),true)
+  assert.equal(deferred.ephemeral,true);assert.match(reply.content,/Portal top five/);assert.doesNotMatch(reply.content,/Manage Server is required/)
   failed=true;await service.tick();assert.throws(()=>service.publicProjection(),/unavailable/)
   service.stop()
 } finally {await rm(dir,{recursive:true,force:true})}
