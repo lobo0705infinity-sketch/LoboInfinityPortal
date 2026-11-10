@@ -2,7 +2,7 @@ import type { CanonicalMission } from '../config/missions.ts'
 
 // The fourth beat belongs to the incident, not the mission frame. Keep the
 // objective unresolved here: the actual result selects one of three endings.
-export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of Interest'>,
+export const INCIDENT_CONSEQUENCES: Record<Exclude<CanonicalMission, 'Area of Interest' | 'Cryogenics'>,
   readonly [string, string, string, string]> = {
   'Akial Interference': [
     'The antenna answered with static; neither operator could confirm the interference attempt.',

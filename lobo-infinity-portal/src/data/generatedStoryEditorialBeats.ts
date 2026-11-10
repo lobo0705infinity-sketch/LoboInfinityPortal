@@ -46,7 +46,7 @@ function beat(move: string, aftermath: string, winner: string, draw: string): Ed
   return { move, aftermath, winner, draw }
 }
 
-export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of Interest'>,
+export const INCIDENT_EDITORIAL_BEATS: Record<Exclude<CanonicalMission, 'Area of Interest' | 'Cryogenics'>,
   readonly [EditorialBeat, EditorialBeat, EditorialBeat, EditorialBeat]> = {
   'Akial Interference': [
     beat('split the fire at the aerial to expose the filter controls.',

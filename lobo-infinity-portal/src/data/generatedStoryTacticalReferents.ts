@@ -18,7 +18,7 @@ function referents(advance: string, feint: string, defend: string,
   return { advance, feint, defend, continuation }
 }
 
-export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area of Interest'>,
+export const MISSION_TACTICAL_REFERENTS: Record<Exclude<CanonicalMission, 'Area of Interest' | 'Cryogenics'>,
   MissionTacticalReferents> = {
   'Akial Interference': referents(
     'the public-card display', 'the aerial walkway', 'the filter controls', 'the antenna base'),

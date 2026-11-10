@@ -3,7 +3,7 @@ import type { CanonicalMission } from '../config/missions.ts'
 // Second-half incident actions give the selected gunfighter or close fighter
 // a different way to influence the same mission objective. They do not claim
 // that a scored objective was completed in an actual recorded game.
-export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of Interest'>,
+export const MISSION_ROLE_ALTERNATES: Record<Exclude<CanonicalMission, 'Area of Interest' | 'Cryogenics'>,
   { gunfighting: string; closeCombat: string }> = {
   'Akial Interference': {
     gunfighting: 'kept shots over the antenna approach while the operator read the public Common cards',
