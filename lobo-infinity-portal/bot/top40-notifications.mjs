@@ -231,7 +231,7 @@ export function createTop40Notifications({store=createTop40Store(),registeredPla
     const current=upsets.filter(item=>batch.ids.includes(item.id))
     if(previous || current.length) {
       const content=[
-        '## 🐺 Lobo’s Top 40 | Bracket Bulletin',
+        '## Lobo’s Top 40 | Bracket Bulletin',
         ...current.map(item=>item.line),
         `[View the bracket](${ORIGIN}/event/lobos-top-40/bracket)\n<@&${role.id}>\n-# ${batch.marker}`,
       ].join('\n\n')
