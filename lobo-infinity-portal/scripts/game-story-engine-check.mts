@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { CANONICAL_ARMY_REGISTRY } from '../src/config/armies.ts'
-import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
+import { CANONICAL_MISSIONS as PORTAL_MISSIONS } from '../src/config/missions.ts'
 import { ARMY_STORY_VOICES } from '../src/data/generatedStoryArmies.ts'
 import { AREA_ARMY_METHODS } from '../src/data/generatedStoryAreaArmies.ts'
 import { AREA_INCIDENT_BEATS, INCIDENT_EDITORIAL_BEATS } from '../src/data/generatedStoryEditorialBeats.ts'
@@ -24,6 +24,13 @@ import { loadBattleStory, NO_ELIGIBLE_HERO_BATTLE_STORY,
 import { renderGameStoryTemplate, selectStoryHero, storyTemplateKey } from '../src/services/gameStoryTemplate.ts'
 import type { ArmyIntelligenceList, RecentGame } from '../src/services/api.ts'
 import { assertGameStoryMissionObjective, assertGameStoryQuality } from './game-story-quality.mts'
+
+// Mission selection also includes scenarios without authored story material.
+// Keep full story coverage checks on every scenario the engine supports.
+const CANONICAL_MISSIONS = PORTAL_MISSIONS.filter((mission) => Boolean(SOURCED_STORY_SCENARIOS[mission]))
+assert.equal(PORTAL_MISSIONS.length, 23)
+assert.deepEqual(PORTAL_MISSIONS.filter((mission) => !SOURCED_STORY_SCENARIOS[mission]), ['Cryogenics'])
+assert.equal(composeGameStory('Cryogenics', 'PanOceania', 'Druze Bayram Security', 'PanOceania', 'objective'), null)
 
 const armies = CANONICAL_ARMY_REGISTRY.filter((army) => army.active)
 assert.equal(armies.length, 45)
