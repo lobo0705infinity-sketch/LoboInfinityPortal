@@ -1,0 +1,757 @@
+[
+  {
+    "file": "baggage-cart-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-cart-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-cart-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-tug-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-tug-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-tug-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-tug-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-olive-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-olive-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-olive-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-rust-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-rust-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-rust-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-teal-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-teal-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-teal-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-8.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-10.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-11.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-12.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-13.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-14.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-15.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-roof-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-roof-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-8.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-roof-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-roof-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-roof-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-8.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-10.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-roof-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-8.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-10.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-roof-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-roof-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-roof-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "passenger-bench-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "passenger-bench-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "planted-divider-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "planted-divider-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "planted-divider-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "planted-divider-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-8.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-10.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-roof-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-roof-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-ground-collider-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "customs-inspection-roof-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-ground-collider-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "port-clinic-roof-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-ground-collider-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "fuel-control-roof-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-ground-collider-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "north-security-roof-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-ground-collider-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "meridian-noodles-roof-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-teal-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-olive-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "cargo-rust-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ground-power-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-cart-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "ticket-kiosk-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "passenger-bench-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "planted-divider-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "baggage-tug-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "boarding-control-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-1.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-2.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-3.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-4.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-5.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-6.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-7.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-8.obj",
+    "degenerate_faces_removed": 48,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-9.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-10.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-11.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-12.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-collider-0.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  },
+  {
+    "file": "evening-star-shuttle-ground-collider-hull.obj",
+    "degenerate_faces_removed": 0,
+    "collider_winding_corrected": false
+  }
+]

@@ -1,0 +1,1334 @@
+[
+  {
+    "key": "baggage-cart",
+    "layer": "ground",
+    "file": "baggage-cart-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "baggage-cart",
+    "layer": "ground",
+    "file": "baggage-cart-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "baggage-cart",
+    "layer": "ground",
+    "file": "baggage-cart-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 4696,
+    "face_corners": 14088
+  },
+  {
+    "key": "baggage-tug",
+    "layer": "ground",
+    "file": "baggage-tug-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "baggage-tug",
+    "layer": "ground",
+    "file": "baggage-tug-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "baggage-tug",
+    "layer": "ground",
+    "file": "baggage-tug-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "baggage-tug",
+    "layer": "ground",
+    "file": "baggage-tug-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 3880,
+    "face_corners": 11640
+  },
+  {
+    "key": "cargo-olive",
+    "layer": "ground",
+    "file": "cargo-olive-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-olive",
+    "layer": "ground",
+    "file": "cargo-olive-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-olive",
+    "layer": "ground",
+    "file": "cargo-olive-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1584,
+    "face_corners": 4752
+  },
+  {
+    "key": "cargo-rust",
+    "layer": "ground",
+    "file": "cargo-rust-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-rust",
+    "layer": "ground",
+    "file": "cargo-rust-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-rust",
+    "layer": "ground",
+    "file": "cargo-rust-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1584,
+    "face_corners": 4752
+  },
+  {
+    "key": "cargo-teal",
+    "layer": "ground",
+    "file": "cargo-teal-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-teal",
+    "layer": "ground",
+    "file": "cargo-teal-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "cargo-teal",
+    "layer": "ground",
+    "file": "cargo-teal-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1584,
+    "face_corners": 4752
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5989,
+    "face_corners": 17967
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5999,
+    "face_corners": 17997
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-10.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-11.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-12.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-13.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-14.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-15.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5276,
+    "face_corners": 15828
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "roof",
+    "file": "customs-inspection-roof-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5964,
+    "face_corners": 17892
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "roof",
+    "file": "customs-inspection-roof-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5936,
+    "face_corners": 17808
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5988,
+    "face_corners": 17964
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 4476,
+    "face_corners": 13428
+  },
+  {
+    "key": "fuel-control",
+    "layer": "roof",
+    "file": "fuel-control-roof-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5984,
+    "face_corners": 17952
+  },
+  {
+    "key": "fuel-control",
+    "layer": "roof",
+    "file": "fuel-control-roof-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "fuel-control",
+    "layer": "roof",
+    "file": "fuel-control-roof-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1768,
+    "face_corners": 5304
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 988,
+    "face_corners": 2964
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5988,
+    "face_corners": 17964
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-10.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 2188,
+    "face_corners": 6564
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "roof",
+    "file": "meridian-noodles-roof-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5340,
+    "face_corners": 16020
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5988,
+    "face_corners": 17964
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-10.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1068,
+    "face_corners": 3204
+  },
+  {
+    "key": "north-security",
+    "layer": "roof",
+    "file": "north-security-roof-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5984,
+    "face_corners": 17952
+  },
+  {
+    "key": "north-security",
+    "layer": "roof",
+    "file": "north-security-roof-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "north-security",
+    "layer": "roof",
+    "file": "north-security-roof-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1172,
+    "face_corners": 3516
+  },
+  {
+    "key": "passenger-bench",
+    "layer": "ground",
+    "file": "passenger-bench-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5928,
+    "face_corners": 17784
+  },
+  {
+    "key": "passenger-bench",
+    "layer": "ground",
+    "file": "passenger-bench-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 2048,
+    "face_corners": 6144
+  },
+  {
+    "key": "planted-divider",
+    "layer": "ground",
+    "file": "planted-divider-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "planted-divider",
+    "layer": "ground",
+    "file": "planted-divider-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "planted-divider",
+    "layer": "ground",
+    "file": "planted-divider-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "planted-divider",
+    "layer": "ground",
+    "file": "planted-divider-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1652,
+    "face_corners": 4956
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5988,
+    "face_corners": 17964
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-10.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 3744,
+    "face_corners": 11232
+  },
+  {
+    "key": "port-clinic",
+    "layer": "roof",
+    "file": "port-clinic-roof-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5984,
+    "face_corners": 17952
+  },
+  {
+    "key": "port-clinic",
+    "layer": "roof",
+    "file": "port-clinic-roof-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5936,
+    "face_corners": 17808
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 4444,
+    "face_corners": 13332
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 684,
+    "face_corners": 2052
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 216
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "ground",
+    "file": "customs-inspection-ground-collider-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 180
+  },
+  {
+    "key": "customs-inspection",
+    "layer": "roof",
+    "file": "customs-inspection-roof-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 84
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 216
+  },
+  {
+    "key": "port-clinic",
+    "layer": "ground",
+    "file": "port-clinic-ground-collider-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 156
+  },
+  {
+    "key": "port-clinic",
+    "layer": "roof",
+    "file": "port-clinic-roof-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 84
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 216
+  },
+  {
+    "key": "fuel-control",
+    "layer": "ground",
+    "file": "fuel-control-ground-collider-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 108
+  },
+  {
+    "key": "fuel-control",
+    "layer": "roof",
+    "file": "fuel-control-roof-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 84
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 216
+  },
+  {
+    "key": "north-security",
+    "layer": "ground",
+    "file": "north-security-ground-collider-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 108
+  },
+  {
+    "key": "north-security",
+    "layer": "roof",
+    "file": "north-security-roof-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 96
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 216
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "ground",
+    "file": "meridian-noodles-ground-collider-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 132
+  },
+  {
+    "key": "meridian-noodles",
+    "layer": "roof",
+    "file": "meridian-noodles-roof-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 24
+  },
+  {
+    "key": "cargo-teal",
+    "layer": "ground",
+    "file": "cargo-teal-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 12
+  },
+  {
+    "key": "cargo-olive",
+    "layer": "ground",
+    "file": "cargo-olive-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 12
+  },
+  {
+    "key": "cargo-rust",
+    "layer": "ground",
+    "file": "cargo-rust-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 12
+  },
+  {
+    "key": "ground-power",
+    "layer": "ground",
+    "file": "ground-power-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 24
+  },
+  {
+    "key": "baggage-cart",
+    "layer": "ground",
+    "file": "baggage-cart-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 48
+  },
+  {
+    "key": "ticket-kiosk",
+    "layer": "ground",
+    "file": "ticket-kiosk-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 36
+  },
+  {
+    "key": "passenger-bench",
+    "layer": "ground",
+    "file": "passenger-bench-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 36
+  },
+  {
+    "key": "planted-divider",
+    "layer": "ground",
+    "file": "planted-divider-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 12
+  },
+  {
+    "key": "baggage-tug",
+    "layer": "ground",
+    "file": "baggage-tug-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 60
+  },
+  {
+    "key": "boarding-control",
+    "layer": "ground",
+    "file": "boarding-control-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 156
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-1.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-2.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-3.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-4.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-5.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-6.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-7.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-8.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 5952,
+    "face_corners": 17856
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-9.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-10.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-11.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 6000,
+    "face_corners": 18000
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-12.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": false,
+    "triangles": 1312,
+    "face_corners": 3936
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-collider-0.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 48
+  },
+  {
+    "key": "evening-star-shuttle",
+    "layer": "ground",
+    "file": "evening-star-shuttle-ground-collider-hull.obj",
+    "texture": "meridian-r2-materials.jpg",
+    "physics": true,
+    "triangles": 192
+  }
+]
