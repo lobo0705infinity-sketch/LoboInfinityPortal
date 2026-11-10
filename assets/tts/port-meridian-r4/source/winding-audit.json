@@ -1,0 +1,50 @@
+[
+  {
+    "source": "maintenance-hangar-roof-0-meri.obj",
+    "reversed_components": [
+      {
+        "faces": 48,
+        "old_signed_volume": -257.868556252608,
+        "closed": false,
+        "open_inward_roof": true
+      },
+      {
+        "faces": 460,
+        "old_signed_volume": -3.6606969835164556,
+        "closed": true,
+        "open_inward_roof": false
+      }
+    ],
+    "roof_shell_triangles": 196,
+    "roof_thickness_inches": 0.08
+  },
+  {
+    "source": "maintenance-hangar-roof-physics-0.obj",
+    "reversed_components": [
+      {
+        "faces": 48,
+        "old_signed_volume": -257.868556252608,
+        "closed": false,
+        "open_inward_roof": true
+      }
+    ],
+    "triangles": 156
+  },
+  {
+    "source": "maintenance-hangar-roof-physics-1.obj",
+    "reversed_components": [
+      {
+        "faces": 96,
+        "old_signed_volume": -3.6689350413759985,
+        "closed": true,
+        "open_inward_roof": false
+      }
+    ],
+    "triangles": 236
+  },
+  {
+    "source": "maintenance-hangar-roof-physics-2.obj",
+    "reversed_components": [],
+    "triangles": 120
+  }
+]
