@@ -10,7 +10,9 @@ import narrativeCatalog from '../src/data/gameReviewNarratives.json' with { type
 import { CANONICAL_MISSIONS } from '../src/config/missions.ts'
 import { getGameSides, isDrawGame } from '../src/services/gameResults.ts'
 
-assert.deepEqual(Object.keys(narrativeCatalog).sort(), [...CANONICAL_MISSIONS].sort())
+// Narrative angles are authored separately from the selectable mission list.
+assert.deepEqual(Object.keys(narrativeCatalog).sort(), CANONICAL_MISSIONS.filter((mission) => mission !== 'Cryogenics').sort())
+assert.ok(CANONICAL_MISSIONS.includes('Cryogenics'))
 for (const [mission, angles] of Object.entries(narrativeCatalog)) {
   assert.equal(angles.length, 10, `${mission}: ten narrative angles`)
   assert.equal(new Set(angles.map((row) => row.angle)).size, 10, `${mission}: distinct angles`)
