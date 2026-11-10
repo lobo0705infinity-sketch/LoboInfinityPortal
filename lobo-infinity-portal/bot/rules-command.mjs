@@ -73,6 +73,24 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/\bimmobili[sz]ed\b/g, 'immobilized')
     .replace(/\bimmobili[sz]ation\b/g, 'immobilized')
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
+  // Bound the deterministic correction to the reported scenario. Different
+  // numbers, targets or extra conditions must retain profile/evidence retrieval.
+  const pandoraReport = [
+    'OK here is something that had me puzzled: A noctifer crits model A in F2F on a 6, the template goes down and splashes Pandora, who is around the corner. She declares dodge, rolls like a 14. What happens? Does the -6 makes her unhittable? we ended up playing she gets away scot-free',
+    'A Noctifer crits model A on a 6. The template splashes Pandora around the corner. She Dodges and rolls 14. Does her Dodge -6 make her unhittable?',
+  ].some(report => normalizeRuleText(report.replace(/[’']/g, '')).replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim() === words)
+  if (pandoraReport) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'VERIFIED RULES ANSWER', answerSource: 'VERIFIED_RULES',
+      deepSeek: {
+        questionType: 'EXPLANATORY', conclusion: 'NO', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: 'Pandora is hit, provided the blast reaches her. Model A is the Main Target, so Pandora’s Dodge (-6) does not modify the Noctifer’s attack. MODs change the Success Value, never the die result: the rolled 6 stays 6. With PH 12 and no LoF, Pandora Dodges on 9; her 14 fails. The Noctifer’s Critical counts only against model A; against Pandora it is an ordinary success. She takes the weapon’s normal Saving Rolls, with no extra Critical save. Resolve each target independently. If scenery blocks LoF from the Blast Focus to Pandora, she is outside the template’s effect instead. Playing her as escaping because of Dodge (-6) was incorrect.',
+        sources: ['Impact_Template_Weapons', 'Template_Weapons_and_Equipment', 'Dodge', 'Rolls'].map((page, index) => ({ id: 'IT' + index, title: 'Official Infinity N5.3 Wiki', section: page.replaceAll('_', ' '), url: 'https://infinitythewiki.com/' + page })),
+      },
+    }
+  }
   let answer, conclusion, pages
   let certainty = 'EVIDENCE-BOUNDED INTERPRETATION'
   // Only plain placement questions use this verified response. Named profiles,

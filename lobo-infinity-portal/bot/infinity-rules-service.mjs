@@ -23,6 +23,20 @@ const officialTerms = ['zero pain','discover','camouflaged state','camouflaged m
 const rulesSupplements = Object.freeze([
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 47, printedPage: '47',
+  section: 'IMPACT TEMPLATES — MAIN TARGET MODIFIERS', headings: ['IMPACT TEMPLATE WEAPONS', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'impact template weapons',
+  text: 'IMPACT TEMPLATE WEAPONS\nAll MODs applied to the attacker’s Roll are determined using a valid Main Target as the basis. This Roll is compared separately against each Secondary Target. Each affected enemy resolves its Face to Face Roll independently; one target’s result cannot affect the others. The Main Target and Secondary Targets may Dodge with PH, or PH-3 without LoF to the attacker. Scenery that blocks LoF from the Blast Focus prevents the template from affecting a Trooper behind it.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 44, printedPage: '44',
+  section: 'TEMPLATE WEAPONS — CRITICALS AND SECONDARY TARGETS', headings: ['TEMPLATE WEAPONS AND EQUIPMENT', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'template weapons and equipment',
+  text: 'CRITICAL HITS WITH TEMPLATE WEAPONS\nA Critical with a Template Weapon counts as a Critical only against the Main Target. Against Secondary Targets it is a successful Roll instead of a Critical. Each affected enemy may make a separate Face to Face Roll against a Template Attack that required a Roll to hit.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
   authority: 1, scope: 'core', pdfPage: 73, printedPage: '73',
   section: 'MINE DISPENSER — DROP BEARS BS MODE', headings: ['MINE DISPENSER', 'DROP BEARS', 'EFFECTS'],
   structuredBlockTypes: ['EFFECTS'], canonicalTerm: 'mine dispenser',

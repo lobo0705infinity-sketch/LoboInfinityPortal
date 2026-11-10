@@ -415,3 +415,47 @@ for (const question of [...t2Questions, 'T2 crit with Immunity: what happens?'])
 console.log('T2 regressions passed: exact report and paraphrases, two saves/three Wounds, no misleading YES, exception routing and complete prioritized evidence.')
 
 
+// Impact-template splash: reproduce the actual report before provider/benchmark.
+const pandoraQuestions = [
+  'OK here is something that had me puzzled: A noctifer crits model A in F2F on a 6, the template goes down and splashes Pandora, who is around the corner. She declares dodge, rolls like a 14. What happens? Does the -6 makes her unhittable? we ended up playing she gets away scot-free',
+  'A Noctifer crits model A on a 6. The template splashes Pandora around the corner. She Dodges and rolls 14. Does her Dodge -6 make her unhittable?',
+]
+for (const question of pandoraQuestions) {
+  const before = providerCalls
+  const result = await context.retrieveRulesReference({ question })
+  assert.equal(result.answerSource, 'VERIFIED_RULES')
+  assert.equal(providerCalls, before)
+  assert.match(result.deepSeek.answer, /^Pandora is hit/)
+  assert.match(result.deepSeek.answer, /Dodges on 9; her 14 fails/)
+  assert.match(result.deepSeek.answer, /rolled 6 stays 6/)
+  assert.match(result.deepSeek.answer, /no extra Critical save/)
+  assert.match(result.deepSeek.answer, /scenery blocks LoF from the Blast Focus/)
+  const payload = context.formatRulesDiscordResponse(result)
+  const rendered = payload.embeds[0].fields.find(field => field.name === 'ANSWER').value
+  assert.match(rendered, /Playing her as escaping/)
+  assert.ok(rendered.length <= 1024)
+  assert.match(JSON.stringify(payload), /Impact_Template_Weapons/)
+  assert.match(JSON.stringify(payload), /Template_Weapons_and_Equipment/)
+}
+// Do not apply the fixed numerical answer to changed rolls/targets/exceptions.
+for (const question of [
+  pandoraQuestions[1].replace('rolls 14', 'rolls 8'),
+  pandoraQuestions[1].replace('model A', 'Pandora'),
+  pandoraQuestions[1] + ' What if a scenario grants her +6 PH?',
+  'Does Pandora Dodge a direct template automatically with Dodge -6?',
+]) assert.equal((await context.retrieveRulesReference({ question })).fallback, true, question)
+// The controlling clauses survive a small evidence budget for new phrasings.
+for (const question of [
+  ...pandoraQuestions,
+  'Does Dodge (-6) on a secondary target modify an impact template attack?',
+  'Does a template critical also crit the splash targets?',
+]) {
+  const evidence = buildRulesEvidencePrompt(productionCorpus, question, { maxEvidenceCharacters: 2400 })
+  const { entries } = JSON.parse(evidence.text.split('\n').at(-1))
+  assert.equal(entries[0].section, 'IMPACT TEMPLATES — MAIN TARGET MODIFIERS')
+  assert.ok(entries.some(entry => entry.section === 'TEMPLATE WEAPONS — CRITICALS AND SECONDARY TARGETS'))
+  assert.match(entries[0].text, /All MODs.*Main Target/)
+  assert.match(evidence.text, /never turn a rolled 6 into 0/)
+  assert.match(evidence.text, /her 14 fails/)
+}
+console.log('Impact-template regressions passed: Pandora report, unchanged die, PH-3, ordinary splash hit, blast obstruction, exception routing and prioritized evidence.')
