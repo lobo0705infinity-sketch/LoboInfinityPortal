@@ -1,0 +1,146 @@
+[
+  {
+    "mesh": "maintenance-hangar-ground-0-meri.obj",
+    "source_positions": 17472,
+    "import_vertices": 65864,
+    "triangles": 33120,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "maintenance-hangar-ground-1-meri.obj",
+    "source_positions": 17472,
+    "import_vertices": 69888,
+    "triangles": 34452,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "maintenance-hangar-ground-2-meri.obj",
+    "source_positions": 17376,
+    "import_vertices": 69504,
+    "triangles": 34284,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "maintenance-hangar-ground-3-meri.obj",
+    "source_positions": 17332,
+    "import_vertices": 68516,
+    "triangles": 34196,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "maintenance-hangar-ground-4-meri.obj",
+    "source_positions": 14540,
+    "import_vertices": 45996,
+    "triangles": 24712,
+    "parts": 5,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "maintenance-hangar-roof-0-meri.obj",
+    "source_positions": 5670,
+    "import_vertices": 22266,
+    "triangles": 11108,
+    "parts": 2,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-ground-0-meri.obj",
+    "source_positions": 17384,
+    "import_vertices": 66624,
+    "triangles": 33212,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-ground-1-meri.obj",
+    "source_positions": 17496,
+    "import_vertices": 66456,
+    "triangles": 33348,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-ground-2-meri.obj",
+    "source_positions": 11692,
+    "import_vertices": 40156,
+    "triangles": 20724,
+    "parts": 4,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-roof-0-meri.obj",
+    "source_positions": 5184,
+    "import_vertices": 20736,
+    "triangles": 10152,
+    "parts": 2,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-upper-0-meri.obj",
+    "source_positions": 14440,
+    "import_vertices": 54184,
+    "triangles": 27164,
+    "parts": 5,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "passenger-terminal-upper-roof-0-meri.obj",
+    "source_positions": 8480,
+    "import_vertices": 33480,
+    "triangles": 16656,
+    "parts": 3,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-ground-0-meri.obj",
+    "source_positions": 17498,
+    "import_vertices": 68504,
+    "triangles": 33780,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-ground-1-meri.obj",
+    "source_positions": 17424,
+    "import_vertices": 68568,
+    "triangles": 34260,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-ground-2-meri.obj",
+    "source_positions": 17384,
+    "import_vertices": 68736,
+    "triangles": 33916,
+    "parts": 6,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-ground-3-meri.obj",
+    "source_positions": 17012,
+    "import_vertices": 55324,
+    "triangles": 28992,
+    "parts": 5,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-upper-0-meri.obj",
+    "source_positions": 12832,
+    "import_vertices": 43558,
+    "triangles": 22740,
+    "parts": 4,
+    "geometry_exact": true
+  },
+  {
+    "mesh": "transit-house-upper-roof-0-meri.obj",
+    "source_positions": 8232,
+    "import_vertices": 32592,
+    "triangles": 16164,
+    "parts": 3,
+    "geometry_exact": true
+  }
+]

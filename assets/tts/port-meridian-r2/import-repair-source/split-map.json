@@ -1,0 +1,125 @@
+{
+  "maintenance-hangar-ground-0-meri.obj": [
+    "maintenance-hangar-ground-0-meri-safe-0.obj",
+    "maintenance-hangar-ground-0-meri-safe-1.obj",
+    "maintenance-hangar-ground-0-meri-safe-2.obj",
+    "maintenance-hangar-ground-0-meri-safe-3.obj",
+    "maintenance-hangar-ground-0-meri-safe-4.obj",
+    "maintenance-hangar-ground-0-meri-safe-5.obj"
+  ],
+  "maintenance-hangar-ground-1-meri.obj": [
+    "maintenance-hangar-ground-1-meri-safe-0.obj",
+    "maintenance-hangar-ground-1-meri-safe-1.obj",
+    "maintenance-hangar-ground-1-meri-safe-2.obj",
+    "maintenance-hangar-ground-1-meri-safe-3.obj",
+    "maintenance-hangar-ground-1-meri-safe-4.obj",
+    "maintenance-hangar-ground-1-meri-safe-5.obj"
+  ],
+  "maintenance-hangar-ground-2-meri.obj": [
+    "maintenance-hangar-ground-2-meri-safe-0.obj",
+    "maintenance-hangar-ground-2-meri-safe-1.obj",
+    "maintenance-hangar-ground-2-meri-safe-2.obj",
+    "maintenance-hangar-ground-2-meri-safe-3.obj",
+    "maintenance-hangar-ground-2-meri-safe-4.obj",
+    "maintenance-hangar-ground-2-meri-safe-5.obj"
+  ],
+  "maintenance-hangar-ground-3-meri.obj": [
+    "maintenance-hangar-ground-3-meri-safe-0.obj",
+    "maintenance-hangar-ground-3-meri-safe-1.obj",
+    "maintenance-hangar-ground-3-meri-safe-2.obj",
+    "maintenance-hangar-ground-3-meri-safe-3.obj",
+    "maintenance-hangar-ground-3-meri-safe-4.obj",
+    "maintenance-hangar-ground-3-meri-safe-5.obj"
+  ],
+  "maintenance-hangar-ground-4-meri.obj": [
+    "maintenance-hangar-ground-4-meri-safe-0.obj",
+    "maintenance-hangar-ground-4-meri-safe-1.obj",
+    "maintenance-hangar-ground-4-meri-safe-2.obj",
+    "maintenance-hangar-ground-4-meri-safe-3.obj",
+    "maintenance-hangar-ground-4-meri-safe-4.obj"
+  ],
+  "maintenance-hangar-roof-0-meri.obj": [
+    "maintenance-hangar-roof-0-meri-safe-0.obj",
+    "maintenance-hangar-roof-0-meri-safe-1.obj"
+  ],
+  "passenger-terminal-ground-0-meri.obj": [
+    "passenger-terminal-ground-0-meri-safe-0.obj",
+    "passenger-terminal-ground-0-meri-safe-1.obj",
+    "passenger-terminal-ground-0-meri-safe-2.obj",
+    "passenger-terminal-ground-0-meri-safe-3.obj",
+    "passenger-terminal-ground-0-meri-safe-4.obj",
+    "passenger-terminal-ground-0-meri-safe-5.obj"
+  ],
+  "passenger-terminal-ground-1-meri.obj": [
+    "passenger-terminal-ground-1-meri-safe-0.obj",
+    "passenger-terminal-ground-1-meri-safe-1.obj",
+    "passenger-terminal-ground-1-meri-safe-2.obj",
+    "passenger-terminal-ground-1-meri-safe-3.obj",
+    "passenger-terminal-ground-1-meri-safe-4.obj",
+    "passenger-terminal-ground-1-meri-safe-5.obj"
+  ],
+  "passenger-terminal-ground-2-meri.obj": [
+    "passenger-terminal-ground-2-meri-safe-0.obj",
+    "passenger-terminal-ground-2-meri-safe-1.obj",
+    "passenger-terminal-ground-2-meri-safe-2.obj",
+    "passenger-terminal-ground-2-meri-safe-3.obj"
+  ],
+  "passenger-terminal-roof-0-meri.obj": [
+    "passenger-terminal-roof-0-meri-safe-0.obj",
+    "passenger-terminal-roof-0-meri-safe-1.obj"
+  ],
+  "passenger-terminal-upper-0-meri.obj": [
+    "passenger-terminal-upper-0-meri-safe-0.obj",
+    "passenger-terminal-upper-0-meri-safe-1.obj",
+    "passenger-terminal-upper-0-meri-safe-2.obj",
+    "passenger-terminal-upper-0-meri-safe-3.obj",
+    "passenger-terminal-upper-0-meri-safe-4.obj"
+  ],
+  "passenger-terminal-upper-roof-0-meri.obj": [
+    "passenger-terminal-upper-roof-0-meri-safe-0.obj",
+    "passenger-terminal-upper-roof-0-meri-safe-1.obj",
+    "passenger-terminal-upper-roof-0-meri-safe-2.obj"
+  ],
+  "transit-house-ground-0-meri.obj": [
+    "transit-house-ground-0-meri-safe-0.obj",
+    "transit-house-ground-0-meri-safe-1.obj",
+    "transit-house-ground-0-meri-safe-2.obj",
+    "transit-house-ground-0-meri-safe-3.obj",
+    "transit-house-ground-0-meri-safe-4.obj",
+    "transit-house-ground-0-meri-safe-5.obj"
+  ],
+  "transit-house-ground-1-meri.obj": [
+    "transit-house-ground-1-meri-safe-0.obj",
+    "transit-house-ground-1-meri-safe-1.obj",
+    "transit-house-ground-1-meri-safe-2.obj",
+    "transit-house-ground-1-meri-safe-3.obj",
+    "transit-house-ground-1-meri-safe-4.obj",
+    "transit-house-ground-1-meri-safe-5.obj"
+  ],
+  "transit-house-ground-2-meri.obj": [
+    "transit-house-ground-2-meri-safe-0.obj",
+    "transit-house-ground-2-meri-safe-1.obj",
+    "transit-house-ground-2-meri-safe-2.obj",
+    "transit-house-ground-2-meri-safe-3.obj",
+    "transit-house-ground-2-meri-safe-4.obj",
+    "transit-house-ground-2-meri-safe-5.obj"
+  ],
+  "transit-house-ground-3-meri.obj": [
+    "transit-house-ground-3-meri-safe-0.obj",
+    "transit-house-ground-3-meri-safe-1.obj",
+    "transit-house-ground-3-meri-safe-2.obj",
+    "transit-house-ground-3-meri-safe-3.obj",
+    "transit-house-ground-3-meri-safe-4.obj"
+  ],
+  "transit-house-upper-0-meri.obj": [
+    "transit-house-upper-0-meri-safe-0.obj",
+    "transit-house-upper-0-meri-safe-1.obj",
+    "transit-house-upper-0-meri-safe-2.obj",
+    "transit-house-upper-0-meri-safe-3.obj"
+  ],
+  "transit-house-upper-roof-0-meri.obj": [
+    "transit-house-upper-roof-0-meri-safe-0.obj",
+    "transit-house-upper-roof-0-meri-safe-1.obj",
+    "transit-house-upper-roof-0-meri-safe-2.obj"
+  ]
+}
