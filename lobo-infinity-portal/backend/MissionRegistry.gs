@@ -25,7 +25,8 @@ const CANONICAL_MISSIONS = [
   "Uplink Center",
   "Double Bind",
   "The Dig",
-  "Data Harvest"
+  "Data Harvest",
+  "Cryogenics"
 ];
 
 function getCanonicalMissionName(value) {

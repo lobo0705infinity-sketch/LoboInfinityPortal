@@ -21,6 +21,7 @@ export const CANONICAL_MISSIONS = [
   'Double Bind',
   'The Dig',
   'Data Harvest',
+  'Cryogenics',
 ] as const
 
 export type CanonicalMission = (typeof CANONICAL_MISSIONS)[number]
