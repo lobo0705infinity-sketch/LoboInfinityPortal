@@ -74,13 +74,15 @@ const cases = [
   ['Can you shoot a mine with mine dispenser underneath an enemy camo marker?', 'DEPENDS', /No if.*only enemy/],
   ['Can I fire a mine using a Mine Dispenser next to an enemy Camouflage Marker?', 'DEPENDS', /valid, non-camouflaged enemy/],
   ['May you use a Mine Dispenser near a camouflaged marker?', 'DEPENDS', /does not waive this restriction/],
+  ['When a template weapon like hrl hits a target mid air does the template only expand upward ? Or does it go downward too?', 'INTERPRETATION', /hemisphere \(a dome\)/],
+  ['when a template weapon hits a model in mid air how does the template form or what shape does it make?', 'INTERPRETATION', /direction is an interpretation/],
 ]
 for (const [question, conclusion, detail] of cases) {
   const result = await context.retrieveRulesReference({ question })
   assert.ok(result.deepSeek, question)
   assert.equal(result.deepSeek.conclusion, conclusion, question)
   assert.match(result.deepSeek.answer, detail, question)
-  assert.ok(result.deepSeek.sources.every((item) => item.url.startsWith('https://infinitythewiki.com/')))
+  assert.ok(result.deepSeek.sources.every((item) => ['infinitythewiki.com', 'assets.corvusbelli.net'].includes(new URL(item.url).hostname)))
   const payload = context.formatRulesDiscordResponse(result)
   assert.ok(payload.embeds[0].fields.find((field) => field.name === 'ANSWER').value.length <= 1024)
 }
@@ -459,3 +461,32 @@ for (const question of [
   assert.match(evidence.text, /her 14 fails/)
 }
 console.log('Impact-template regressions passed: Pandora report, unchanged die, PH-3, ordinary splash hit, blast obstruction, exception routing and prioritized evidence.')
+
+// Both reports and close paraphrases must bypass the provider and fit Discord.
+for (const question of [
+  cases.at(-2)[0], cases.at(-1)[0],
+  'What shape does an HRL blast make when the target is airborne?',
+  'Does a circular template expand downward when a target is jumping?',
+]) {
+  const before = providerCalls
+  const result = await context.retrieveRulesReference({ question })
+  assert.equal(providerCalls, before)
+  assert.equal(result.answerSource, 'EVIDENCE_BOUNDED_RULES')
+  assert.equal(result.deepSeek.interpretationRequired, true)
+  assert.match(result.deepSeek.answer, /underside.*base/)
+  assert.match(result.deepSeek.answer, /without a second hemisphere below/)
+  assert.match(result.deepSeek.answer, /rules do not explicitly illustrate/)
+  const payload = context.formatRulesDiscordResponse(result)
+  const field = payload.embeds[0].fields.find(field => field.name === 'ANSWER')
+  assert.match(field.value, /direction is an interpretation/)
+  assert.ok(field.value.length <= 1024 && !field.value.endsWith('…'))
+  assert.equal(result.deepSeek.sources.length, 3)
+}
+for (const question of [
+  'What shape does a Smoke template form in mid air?',
+  'Does an Eclipse template expand downward in mid air?',
+  'What shape does a direct template form when jumping?',
+  'What shape does a template form in mid air when Pandora declares Dodge?',
+]) assert.equal(context.verifiedRulesInteraction(question, corpus), null, question)
+assert.match(await readFile(new URL('bot/deepseek-rules.mjs', root), 'utf8'), /hemisphere \(dome\), not a cylinder or prism/)
+console.log('Airborne templates: both reports, paraphrases, interpretation label, complete Discord output, diagram citation and exception guards passed.')

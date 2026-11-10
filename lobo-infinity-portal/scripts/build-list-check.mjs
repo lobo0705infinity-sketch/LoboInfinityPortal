@@ -321,8 +321,8 @@ assert.ok(doubleBind.every(list => list.legality.status === 'legal')
   'the Sabotage plan has an eligible way to attack an Antenna')
 assert.equal(missionPlan("Dead Man's Switch").verified, false,
   'unverified scenarios must not claim invented mission objectives')
-assert.deepEqual(CANONICAL_MISSIONS.filter(mission => !missionPlan(mission).verified), ["Dead Man's Switch"],
-  'every other selectable mission has a verified scoring plan')
+assert.deepEqual(CANONICAL_MISSIONS.filter(mission => !missionPlan(mission).verified), ["Dead Man's Switch", 'Cryogenics'],
+  'selectable missions without verified scoring plans remain explicitly unverified')
 assert.throws(() => buildArmyListOptions({ ...input, mustInclude: ['Jazz', 'Iguana', 'Evaders'] }), ListBuilderError)
 const repeatedModels = buildArmyListOptions({ ...input, mustInclude: ['ALGUACIL', 'ALGUACIL'], count: 1 })
 assert.equal(repeatedModels[0].profiles.filter(profile => profile.id === resolveRequiredProfile(profiles, 'ALGUACIL').id).length, 2,

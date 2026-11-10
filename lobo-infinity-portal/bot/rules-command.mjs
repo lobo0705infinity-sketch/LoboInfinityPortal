@@ -73,6 +73,28 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/\bimmobili[sz]ed\b/g, 'immobilized')
     .replace(/\bimmobili[sz]ation\b/g, 'immobilized')
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
+  // Keep airborne blast geometry separate from special template exceptions.
+  const airborneTemplate = /\b(?:template|blast|hrl|heavy rocket launcher)\b/.test(words)
+    && /\b(?:mid[ -]?air|airborne|jumping|in the air)\b/.test(words)
+    && /\b(?:shape|form|expand|upward|upwards|downward|downwards|sphere|hemisphere|cylinder|dome)\b/.test(words)
+    && !/\b(?:smoke|eclipse|teardrop|direct template|flamethrower|chain rifle|speculative|mine|critical|crit|dodge)\b/.test(words)
+  if (airborneTemplate) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'EVIDENCE-BOUNDED INTERPRETATION', answerSource: 'EVIDENCE_BOUNDED_RULES',
+      deepSeek: {
+        questionType: 'EXPLANATORY', conclusion: 'INTERPRETATION',
+        certainty: 'EVIDENCE-BOUNDED INTERPRETATION', interpretationRequired: true,
+        answer: 'An HRL’s circular blast forms a hemisphere (a dome), not a cylinder. Its height equals the template’s radius. Center it on the underside of the main target’s base at the chosen point along its movement, including in mid-air. Other troopers are affected if their base or Silhouette touches the blast volume and scenery does not block LoF from the Blast Focus. Airborne interpretation: applying the official dome diagram at that position, the blast extends upward from the target’s base, without a second hemisphere below it. The rules do not explicitly illustrate the airborne case; that direction is an interpretation of the placement rule and diagram.',
+        sources: [
+          { id: 'AT0', title: 'Official Infinity N5.3 Wiki', section: 'Template Weapons and Equipment — Types and Area of Effect', url: 'https://infinitythewiki.com/Template_Weapons_and_Equipment' },
+          { id: 'AT1', title: 'Official Infinity N5.3 Wiki', section: 'Impact Template Weapons — underside of Main Target’s base', url: 'https://infinitythewiki.com/Impact_Template_Weapons' },
+          { id: 'AT2', title: 'Official Corvus Belli diagram', section: 'Template geometry — dome and height', url: 'https://assets.corvusbelli.net/wiki/dual-types-of-templates-1024.jpg' },
+        ],
+      },
+    }
+  }
   // Bound the deterministic correction to the reported scenario. Different
   // numbers, targets or extra conditions must retain profile/evidence retrieval.
   const pandoraReport = [
