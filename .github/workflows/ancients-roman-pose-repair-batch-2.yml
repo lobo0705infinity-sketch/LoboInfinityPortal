@@ -1,0 +1,26 @@
+name: Build Roman pose repair batch 2 assets
+on:
+  push:
+    branches: [ancients-roman-pose-repair-batch-2]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build Roman pose repair batch 2')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow numpy scipy
+      - run: |
+          python tools/ancients-roman-pose-repair-batch-2/fetch.py
+          python tools/ancients-roman-pose-repair-batch-2/build.py
+          mkdir -p assets/tts/ancients-roman-pose-repair-batch-2
+          cp tools/ancients-roman-pose-repair-batch-2/assets/* assets/tts/ancients-roman-pose-repair-batch-2/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/tts/ancients-roman-pose-repair-batch-2
+          git commit -m 'Publish Roman pose repair batch 2 assets'
+          git push
