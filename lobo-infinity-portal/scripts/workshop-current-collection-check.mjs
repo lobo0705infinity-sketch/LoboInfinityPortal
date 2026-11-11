@@ -4,7 +4,9 @@ import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-const release = JSON.parse(readFileSync('public/assets/maps/sirocco-approved-ts46-20261104/release-inventory.json', 'utf8'))
+import current from '../shared/lobo-workshop-current.json' with { type: 'json' }
+
+const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
 assert.equal(loboWorkshopMaps.length,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,34)
@@ -44,9 +46,15 @@ for(const map of loboWorkshopMaps){
   for(const angle of fields.slice(3).map(Number))assert.ok(Math.abs(angle-Math.fround(angle))<.0005,'Native rotation meets the Stage alignment tolerance')
  }
  for(const object of bag.ContainedObjects)assert.ok(ids.has(object.GUID),'Every root has a deployment record')
- const controls=bag.ContainedObjects.find(o=>o.LuaScript?.includes('local universalConfig='))
+ const isPortMeridian = map.slug === 'port-meridian'
+ const controls=bag.ContainedObjects.find(o=>o.LuaScript?.includes(
+  isPortMeridian ? 'LOBO_MERIDIAN_READY=false' : 'local universalConfig='
+ ))
  assert.ok(controls,`${map.slug}: current map controls exist`)
- for(const fn of ['loboUniversalBooty','loboUniversalMetaChemistry','loboUniversalDeployment0','loboUniversalDeployment4','loboUniversalDeployment8'])assert.ok(controls.LuaScript.includes('function '+fn+'('),`${map.slug}: ${fn}`)
+ const actions = isPortMeridian
+  ? ['meridianMission','meridianMyView','meridianPhysical','loboChooseBackground']
+  : ['loboUniversalBooty','loboUniversalMetaChemistry']
+ for(const fn of [...actions,'loboUniversalDeployment0','loboUniversalDeployment4','loboUniversalDeployment8'])assert.ok(controls.LuaScript.includes('function '+fn+'('),`${map.slug}: ${fn}`)
  if(map.guid==='1008da'){
   assert.equal(map.name,'Kestrel Lunar Base');assert.equal(bag.ContainedObjects.length,68)
   assert.equal(bag.ContainedObjects.filter(o=>o.Tags?.includes('building')).length,19)
@@ -69,6 +77,12 @@ for (const section of loboWorkshopMapSections) {
 }
 for (const map of loboWorkshopMaps) {
   if (map.previewKind === 'workshop') continue
+  if (map.previewKind === 'diagram') {
+    assert.equal(map.slug, 'port-meridian')
+    assert.equal(map.overhead, map.diagram)
+    assert.equal(map.angled, map.diagram)
+    continue
+  }
   assert.ok(['tts', 'geometry'].includes(map.previewKind))
   assert.notEqual(map.overhead, map.angled)
   if (map.slug.endsWith('-satellite') && map.previewKind === 'tts') {
@@ -77,9 +91,17 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 25)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 24)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 1)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 1)
+const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
+const meridianBlocks = loboWorkshopMapBySlug.get('last-launch-2')
+assert.equal(portMeridian.name, 'Port Meridian')
+assert.equal(meridianBlocks.name, 'Meridian Blocks')
+assert.equal(meridianBlocks.isCurrent, false)
+assert.notEqual(portMeridian.layoutKey, meridianBlocks.layoutKey)
+assert.equal(resolveLoboWorkshopMapLabel(meridianBlocks.workshopBagName).slug, meridianBlocks.slug)
 assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
