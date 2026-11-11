@@ -22,5 +22,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add assets/tts/ancients-pose-repair-complete
-          git commit -m 'Publish complete Ancients pose repair assets'
+          git commit -m 'Publish complete Ancients pose repair reviewed assets'
           git push

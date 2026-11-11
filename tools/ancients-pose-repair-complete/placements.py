@@ -9,6 +9,7 @@ from slots import candidates
 
 ROOT=Path(__file__).parent
 SOURCE=ROOT/'source'
+NEW_VIEWS_ONLY={'PersianSpear','PersianBow','RomanBow','GothicBow','ScythianHorse','IndianHorse','IndianBow'}
 def filename(url):
     return url.rsplit('/',1)[-1]
 
@@ -94,4 +95,4 @@ if __name__=='__main__':
         assert len({x[0] for x in counts})<4 and len({x[1] for x in counts})<4,(kind,url,counts)
         all_states.append(set(present))
         print(kind,filename(url),len(present),sorted(set(counts)))
-    print('Pattern',pattern(len(slots),all_states,kind.startswith('Persian')))
+    print('Pattern',pattern(len(slots),all_states,kind in NEW_VIEWS_ONLY))

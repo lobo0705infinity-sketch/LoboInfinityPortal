@@ -8,7 +8,7 @@ from PIL import Image
 from scipy import ndimage
 
 from geometry import mesh
-from placements import dimensions, group_sides, learn, pattern
+from placements import NEW_VIEWS_ONLY, dimensions, group_sides, learn, pattern
 
 ROOT = Path(__file__).parent
 SOURCE = ROOT / 'source'
@@ -140,7 +140,7 @@ def build_family(entry):
         model=mesh(SOURCE/filename(url))
         states[url]=group_sides(*model,slots,source_width/width)
     fix_persian=name.startswith('Persian')
-    poses=pattern(len(slots),states.values(),fix_persian)
+    poses=pattern(len(slots),states.values(),name in NEW_VIEWS_ONLY)
     for url,textures in meshes.items():
         source=filename(url)
         _,height=dimensions(textures)
