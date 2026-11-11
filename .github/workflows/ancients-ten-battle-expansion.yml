@@ -1,0 +1,28 @@
+name: Build ten-battle expansion assets
+on:
+  push:
+    branches: [ancients-ten-battle-expansion]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build ten-battle expansion')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/ancients-ten-battle-expansion
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow
+      - run: |
+          gzip -dc tools/ancients-ten-battle-expansion/wave-plan.json.gz > tools/ancients-ten-battle-expansion/wave-plan.json
+          python tools/ancients-ten-battle-expansion/wave_bake.py
+          mkdir -p assets/tts/ancients-ten-battle-expansion
+          cp tools/ancients-ten-battle-expansion/wave-assets/* assets/tts/ancients-ten-battle-expansion/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse assets/tts/ancients-ten-battle-expansion
+          git commit -m 'Publish ten-battle expansion assets'
+          git push
