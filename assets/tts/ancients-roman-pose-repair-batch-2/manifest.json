@@ -1,0 +1,306 @@
+{
+  "models": {
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-2ad87c47bfe71ff4.obj": {
+      "file": "triarii-label-mesh-2ad87c47bfe71ff4.obj",
+      "stats": {
+        "standing": 12,
+        "by_pose": {
+          "0": 4,
+          "1": 4,
+          "2": 4
+        },
+        "triangles": 10778
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-0562025085396ab78330.jpg": "triarii-army-label-0562025085396ab78330.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1e25df62e760b5bc1bac.jpg": "triarii-army-label-1e25df62e760b5bc1bac.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-47a4976fb3a5360894b6.jpg": "triarii-army-label-47a4976fb3a5360894b6.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-77efde75175623736e18.jpg": "triarii-army-label-77efde75175623736e18.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-89ce0c6c3d077be522e7.jpg": "triarii-army-label-89ce0c6c3d077be522e7.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-e9dc97a373457c9d14f9.jpg": "triarii-army-label-e9dc97a373457c9d14f9.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-a2a6650a1e9c5db2.obj": {
+      "file": "triarii-label-mesh-a2a6650a1e9c5db2.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "1": 4,
+          "2": 3,
+          "0": 2
+        },
+        "triangles": 9106
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-286d9ee45174f7ede444.jpg": "triarii-army-label-286d9ee45174f7ede444.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-600c99428d4a1a432b9e.jpg": "triarii-army-label-600c99428d4a1a432b9e.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-6eeb8283f0776f777ae2.jpg": "triarii-army-label-6eeb8283f0776f777ae2.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-876d322200e8d78eaad8.jpg": "triarii-army-label-876d322200e8d78eaad8.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-53ea700e3d8ca7f1.obj": {
+      "file": "triarii-label-mesh-53ea700e3d8ca7f1.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "2": 3,
+          "0": 2,
+          "1": 1
+        },
+        "triangles": 7168
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-286d9ee45174f7ede444.jpg": "triarii-army-label-286d9ee45174f7ede444.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-600c99428d4a1a432b9e.jpg": "triarii-army-label-600c99428d4a1a432b9e.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-6eeb8283f0776f777ae2.jpg": "triarii-army-label-6eeb8283f0776f777ae2.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-876d322200e8d78eaad8.jpg": "triarii-army-label-876d322200e8d78eaad8.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-ed7ba47924d4e32f.obj": {
+      "file": "triarii-label-mesh-ed7ba47924d4e32f.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "2": 3,
+          "1": 3
+        },
+        "triangles": 9641
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-497301549beebd62f6d2.jpg": "triarii-army-label-497301549beebd62f6d2.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-5f89547a4724acaa6a29.jpg": "triarii-army-label-5f89547a4724acaa6a29.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-c4200997bc9e28c5.obj": {
+      "file": "triarii-label-mesh-c4200997bc9e28c5.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "0": 2,
+          "2": 2,
+          "1": 2
+        },
+        "triangles": 8214
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-497301549beebd62f6d2.jpg": "triarii-army-label-497301549beebd62f6d2.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-5f89547a4724acaa6a29.jpg": "triarii-army-label-5f89547a4724acaa6a29.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-8f85843bfa9f6e10.obj": {
+      "file": "gauls-label-mesh-8f85843bfa9f6e10.obj",
+      "stats": {
+        "standing": 12,
+        "by_pose": {
+          "0": 4,
+          "1": 4,
+          "2": 4
+        },
+        "triangles": 8822
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1d27a8a23e59dbcfe9b6.jpg": "gauls-army-label-1d27a8a23e59dbcfe9b6.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-301912c94c3ea1fa22d5.jpg": "gauls-army-label-301912c94c3ea1fa22d5.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-93d03bf6ef323fb11f95.jpg": "gauls-army-label-93d03bf6ef323fb11f95.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-bf2d15af38517af27836.jpg": "gauls-army-label-bf2d15af38517af27836.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c54f7e091c5152f79c79.jpg": "gauls-army-label-c54f7e091c5152f79c79.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-d793b25b2890b1ec.obj": {
+      "file": "gauls-label-mesh-d793b25b2890b1ec.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "2": 4,
+          "1": 3,
+          "0": 2
+        },
+        "triangles": 7253
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1fa48de74d7a84284f3b.jpg": "gauls-army-label-1fa48de74d7a84284f3b.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b5d2a0f3e925186ac471.jpg": "gauls-army-label-b5d2a0f3e925186ac471.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-e48d6116ff6789236f91.jpg": "gauls-army-label-e48d6116ff6789236f91.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-de29d50d601f832f.obj": {
+      "file": "gauls-label-mesh-de29d50d601f832f.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "2": 3,
+          "0": 2,
+          "1": 1
+        },
+        "triangles": 6336
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1fa48de74d7a84284f3b.jpg": "gauls-army-label-1fa48de74d7a84284f3b.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b5d2a0f3e925186ac471.jpg": "gauls-army-label-b5d2a0f3e925186ac471.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-e48d6116ff6789236f91.jpg": "gauls-army-label-e48d6116ff6789236f91.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-85b7e5f254e0c19d.obj": {
+      "file": "gauls-label-mesh-85b7e5f254e0c19d.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "1": 3,
+          "2": 3
+        },
+        "triangles": 8081
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-814193427a4ac97ccaca.jpg": "gauls-army-label-814193427a4ac97ccaca.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-d77af82977c4bcd38272.jpg": "gauls-army-label-d77af82977c4bcd38272.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-cfbde56f69517f6b.obj": {
+      "file": "gauls-label-mesh-cfbde56f69517f6b.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "1": 2,
+          "0": 2,
+          "2": 2
+        },
+        "triangles": 7259
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-814193427a4ac97ccaca.jpg": "gauls-army-label-814193427a4ac97ccaca.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-d77af82977c4bcd38272.jpg": "gauls-army-label-d77af82977c4bcd38272.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-5611c46b2244aa2b.obj": {
+      "file": "veterans-label-mesh-5611c46b2244aa2b.obj",
+      "stats": {
+        "standing": 12,
+        "by_pose": {
+          "0": 4,
+          "1": 4,
+          "2": 4
+        },
+        "triangles": 11018
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-28fe1eaa65089cb2634d.jpg": "veterans-army-label-28fe1eaa65089cb2634d.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-32f9f5bda8ebdf4de2d0.jpg": "veterans-army-label-32f9f5bda8ebdf4de2d0.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-7fbb099b828e5a8dc2ce.jpg": "veterans-army-label-7fbb099b828e5a8dc2ce.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-fabe823ebaed743b7b01.jpg": "veterans-army-label-fabe823ebaed743b7b01.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-7b08a3fc43c0d901.obj": {
+      "file": "veterans-label-mesh-7b08a3fc43c0d901.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "1": 4,
+          "2": 3,
+          "0": 2
+        },
+        "triangles": 8766
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-66a43332f9b0b3d87842.jpg": "veterans-army-label-66a43332f9b0b3d87842.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-9cf029a910df2a839134.jpg": "veterans-army-label-9cf029a910df2a839134.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-f241eed897f4fabe.obj": {
+      "file": "veterans-label-mesh-f241eed897f4fabe.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "2": 3,
+          "0": 2,
+          "1": 1
+        },
+        "triangles": 7860
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-66a43332f9b0b3d87842.jpg": "veterans-army-label-66a43332f9b0b3d87842.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-9cf029a910df2a839134.jpg": "veterans-army-label-9cf029a910df2a839134.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-cfa3eba5efe35cce.obj": {
+      "file": "veterans-label-mesh-cfa3eba5efe35cce.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "1": 3,
+          "2": 3,
+          "0": 3
+        },
+        "triangles": 10009
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-2ab58321feee91fdf24e.jpg": "veterans-army-label-2ab58321feee91fdf24e.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-a6bc367b8cb1dea0a9dc.jpg": "veterans-army-label-a6bc367b8cb1dea0a9dc.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-35881c74da3a83df.obj": {
+      "file": "veterans-label-mesh-35881c74da3a83df.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "1": 2,
+          "2": 2,
+          "0": 2
+        },
+        "triangles": 8720
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-2ab58321feee91fdf24e.jpg": "veterans-army-label-2ab58321feee91fdf24e.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-a6bc367b8cb1dea0a9dc.jpg": "veterans-army-label-a6bc367b8cb1dea0a9dc.png"
+      }
+    }
+  },
+  "sha256": {
+    "gauls-army-label-d77af82977c4bcd38272.png": "760ccbfbd500a841ec8ea0247b56c7cf6f25daf077b2c6baa05b19b7d319df7d",
+    "triarii-army-label-47a4976fb3a5360894b6.png": "f2e5bab820f75d6a88578672e99de54e4c6c0f434beddf5dad3a90d94d40b955",
+    "gauls-army-label-301912c94c3ea1fa22d5.png": "e707c2503776189368e15d75694243f74f9a0613892d38a0d008833b219c9021",
+    "triarii-army-label-5f89547a4724acaa6a29.png": "25e023f51e9df88ba86172f8fd786958159621e03b9a3c5fd56a0cd1eb91db93",
+    "triarii-army-label-e9dc97a373457c9d14f9.png": "755b6cb5679f14a93ba422f19de54e41464202494b3c80f28c418c7d468336c2",
+    "veterans-label-mesh-f241eed897f4fabe.obj": "861c979939b459e1047ca22592a29f44b57730f385c69b42afbddd746571cbbd",
+    "veterans-army-label-2ab58321feee91fdf24e.png": "4b732795be2a97ef3bb712917bb463289553b670b7ad0508393dc54642ddd91e",
+    "gauls-army-label-c54f7e091c5152f79c79.png": "1a210946236cc486ee4f97c5a839550ac210dce9af7239a7a76bfc3713dd196a",
+    "veterans-army-label-a6bc367b8cb1dea0a9dc.png": "6fe504c8887546c79517e70145def0b3172aca654cde8baae294d4325ba81105",
+    "gauls-army-label-e48d6116ff6789236f91.png": "8d1e0833244e4df6401618349595c6dec75c1a137332cb0ffa004d57772e6a12",
+    "triarii-army-label-876d322200e8d78eaad8.png": "ecb5662b3f6f8833f76840c74436fb464315ecab3b4fbe6a750a39284a936ede",
+    "gauls-label-mesh-d793b25b2890b1ec.obj": "a2e2536657236b09ffefcaf6be4fc869deab345899b39d8a0c5d2b2478868794",
+    "gauls-army-label-bf2d15af38517af27836.png": "ac2d8e7c7ef18ec66fc5325cbeeba7feb80143027ab6427a229d3007af742854",
+    "gauls-label-mesh-de29d50d601f832f.obj": "f1e97d8227c3829d41b0444acd6854c7f9764893ce499ecdc91f4937aefc61c1",
+    "veterans-label-mesh-cfa3eba5efe35cce.obj": "129982c52e8162030f8d076a213f3f6d5c7f0d1aa952f4dd2e5b71d01f5a315a",
+    "triarii-army-label-89ce0c6c3d077be522e7.png": "4aacba414a65cc2c3e2b02122c799590e188966c6e73c80e20569d65e4d21f04",
+    "triarii-army-label-6eeb8283f0776f777ae2.png": "342c6c34e93e962de9986fb6c216c7ebe146313fad55d57231f18e0ceaaae008",
+    "veterans-army-label-fabe823ebaed743b7b01.png": "be370c1e95e699790148458b595a6ac0c38b8c2f29bc8a1a0de31fefb1f09c66",
+    "veterans-label-mesh-35881c74da3a83df.obj": "7c36ab4fe1da7bc8fc3e0afee7b1564c4ad658e99149b8b0fbc0ff661016e032",
+    "veterans-label-mesh-5611c46b2244aa2b.obj": "8368de0f51860e2d441119baa4fbc26ef883ce43fe476ca3bdc6e5eb4b89613e",
+    "gauls-army-label-93d03bf6ef323fb11f95.png": "557b83ea5c1827c5f9c7088873f0c028fcac620672b68a46a1ea5eb28517819a",
+    "gauls-label-mesh-85b7e5f254e0c19d.obj": "73f1abc0b982347803fe6134e170a55013615a91270806cfae4d9e5da412ba57",
+    "triarii-label-mesh-ed7ba47924d4e32f.obj": "5abea115a24594cf0ed0e41d51c83e850e87846b521511b59a140f33c7cc8da1",
+    "veterans-army-label-7fbb099b828e5a8dc2ce.png": "5afe022906b843aad11368bf1fdb26ac85ac35ac73c61ee3c4f3384d9a7f88a1",
+    "veterans-army-label-9cf029a910df2a839134.png": "682b30830889a80e7abd914bc82741fe2eb12054fad27cc3c28472a3540d4bf3",
+    "veterans-army-label-28fe1eaa65089cb2634d.png": "e8361349e1ceed213545d1a2d3301880082363b09688ff2899a4d661c53e4b7f",
+    "triarii-label-mesh-2ad87c47bfe71ff4.obj": "cb609ac65029aa354b92954a0a556c5220fec6dd3f2289a9da611a54f3b727cb",
+    "triarii-army-label-1e25df62e760b5bc1bac.png": "02ee65e17af9dcc67d489835b2617aa4608d8a6da0b66cc0fbdda25b0ece9d2e",
+    "triarii-army-label-497301549beebd62f6d2.png": "1a59f9eda4baa5a47ad0706ff16a502775e024d83af529fc8ad888d13c469ac8",
+    "veterans-army-label-66a43332f9b0b3d87842.png": "fd9511a98cb019814bdc371db92a144dabffc3bb90b40ce526e4622801f8df6d",
+    "gauls-army-label-814193427a4ac97ccaca.png": "ad4c6b38504f3d57ccc77dee6367cdbc5b8acd761e0f505a35218ba060cb8254",
+    "triarii-label-mesh-53ea700e3d8ca7f1.obj": "3181ffc50315168527bd96ab9d2a49142497ef9107f67285e16f0ebdebbefd81",
+    "gauls-army-label-1d27a8a23e59dbcfe9b6.png": "f4114db607a656bf63f11c414cca5cefdfad0bcbe4180dea45a0b10f0d072581",
+    "triarii-army-label-600c99428d4a1a432b9e.png": "bc71608be3fd5230871045a2d567adbd6b8da04fa78e4db4e38b3da71d9be01b",
+    "gauls-label-mesh-cfbde56f69517f6b.obj": "474d39e505068fc055cfc0540146e1f2b58c058b5c973dc8e33345909d3b786f",
+    "triarii-army-label-286d9ee45174f7ede444.png": "28cd2939a2ba8b2e6ecd63ae028af6ab306e3c2e8f5150b2baeeacf38d57c4cd",
+    "triarii-label-mesh-a2a6650a1e9c5db2.obj": "3aca2878779ab1cffe52ae29c156efaddf6eb3d1cd98128042e52051baaf922a",
+    "veterans-army-label-32f9f5bda8ebdf4de2d0.png": "0707eb6a8d6dff14d0f801a8f31eae8df469b0f5f29067036ea6fdaa4a98498f",
+    "gauls-army-label-1fa48de74d7a84284f3b.png": "eeb7b2b1cbcaf0127e1361f59fad785d9ec6d19cc3b2c34e18f608ab2b3bb080",
+    "veterans-label-mesh-7b08a3fc43c0d901.obj": "31bcfddf7c59ed6a86eb62c9e7a4760d4c658f50a551cd18db1195cf0cc2f0f6",
+    "triarii-label-mesh-c4200997bc9e28c5.obj": "49ee80648f14c7ffbcb10044f196825db438089f935feb9c1a0ad116da33407a",
+    "triarii-army-label-77efde75175623736e18.png": "9a52dad58a6de86ed6f381b6e2343bb458dfdb773d21b9776be7c5fffb714870",
+    "triarii-army-label-0562025085396ab78330.png": "cec5aeddcb250aa44159fbe34190ff2fba4913899fbca4e4beef86a1a792d8b0",
+    "gauls-army-label-b5d2a0f3e925186ac471.png": "1d0f45e778aee20124723ec384ce49640b3d37b998b55f8b714fa638325b7d7e",
+    "gauls-label-mesh-8f85843bfa9f6e10.obj": "27a7070ffa5300ee605f0272a045e0f394e8566f538d47f76ffcc9d52be42da0"
+  }
+}
