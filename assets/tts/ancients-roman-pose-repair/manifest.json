@@ -1,0 +1,227 @@
+{
+  "models": {
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-162249e2dd609adf.obj": {
+      "file": "hastati-label-mesh-162249e2dd609adf.obj",
+      "stats": {
+        "standing": 12,
+        "by_pose": {
+          "0": 4,
+          "1": 4,
+          "2": 4
+        },
+        "triangles": 10846
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/72357f775cacd971744fef5f117b647f29e25798/assets/tts/ancients-rating-audit/rating-f03fbd03505f56d463ef738a.jpg": "hastati-rating-f03fbd03505f56d463ef738a.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-28b05e0538aeca00cb4d.jpg": "hastati-army-label-28b05e0538aeca00cb4d.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-31f6e69de64f9ca5386f.jpg": "hastati-army-label-31f6e69de64f9ca5386f.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-a673cb8a234c26c925dd.jpg": "hastati-army-label-a673cb8a234c26c925dd.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-aca798e31b8d2921bbe7.jpg": "hastati-army-label-aca798e31b8d2921bbe7.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-bf9c0f678eccadbdc1a0.jpg": "hastati-army-label-bf9c0f678eccadbdc1a0.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c6d1fa2fc0b52417f597.jpg": "hastati-army-label-c6d1fa2fc0b52417f597.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-b7fc48359716e10e.obj": {
+      "file": "hastati-label-mesh-b7fc48359716e10e.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "1": 3,
+          "2": 3
+        },
+        "triangles": 9044
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/72357f775cacd971744fef5f117b647f29e25798/assets/tts/ancients-rating-audit/rating-95527b5e3ebe101b5eb51361.jpg": "hastati-rating-95527b5e3ebe101b5eb51361.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-3b11abcb87df5799b3c7.jpg": "hastati-army-label-3b11abcb87df5799b3c7.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-637709a9a5cfa0c6c25a.jpg": "hastati-army-label-637709a9a5cfa0c6c25a.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-81d8dbbcf839c2a42f82.jpg": "hastati-army-label-81d8dbbcf839c2a42f82.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b40dcf1e5a7771c1eb31.jpg": "hastati-army-label-b40dcf1e5a7771c1eb31.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-6f2c89d9af9ece85.obj": {
+      "file": "hastati-label-mesh-6f2c89d9af9ece85.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "0": 2,
+          "1": 2,
+          "2": 2
+        },
+        "triangles": 7336
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/72357f775cacd971744fef5f117b647f29e25798/assets/tts/ancients-rating-audit/rating-ace3d665bbea25d333ba6016.jpg": "hastati-rating-ace3d665bbea25d333ba6016.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-3b11abcb87df5799b3c7.jpg": "hastati-army-label-3b11abcb87df5799b3c7.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-637709a9a5cfa0c6c25a.jpg": "hastati-army-label-637709a9a5cfa0c6c25a.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-81d8dbbcf839c2a42f82.jpg": "hastati-army-label-81d8dbbcf839c2a42f82.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b40dcf1e5a7771c1eb31.jpg": "hastati-army-label-b40dcf1e5a7771c1eb31.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-85750decc738f31d.obj": {
+      "file": "hastati-label-mesh-85750decc738f31d.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "1": 3,
+          "2": 3
+        },
+        "triangles": 9092
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-8a4f1cfd3a1a64bd8dd9.jpg": "hastati-army-label-8a4f1cfd3a1a64bd8dd9.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c4f7bb4fb6ed70263c85.jpg": "hastati-army-label-c4f7bb4fb6ed70263c85.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-bf4f2c94f4b6c6bd.obj": {
+      "file": "hastati-label-mesh-bf4f2c94f4b6c6bd.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "0": 2,
+          "1": 2,
+          "2": 2
+        },
+        "triangles": 7164
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-8a4f1cfd3a1a64bd8dd9.jpg": "hastati-army-label-8a4f1cfd3a1a64bd8dd9.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c4f7bb4fb6ed70263c85.jpg": "hastati-army-label-c4f7bb4fb6ed70263c85.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-bf18e85c7206055a.obj": {
+      "file": "principes-label-mesh-bf18e85c7206055a.obj",
+      "stats": {
+        "standing": 12,
+        "by_pose": {
+          "0": 4,
+          "1": 4,
+          "2": 4
+        },
+        "triangles": 11002
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-20fa1312f2a148fb7049.jpg": "principes-army-label-20fa1312f2a148fb7049.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-72ab58546137f7162dc0.jpg": "principes-army-label-72ab58546137f7162dc0.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-7615e618299caedf69ca.jpg": "principes-army-label-7615e618299caedf69ca.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b39dc0c373951a7d5096.jpg": "principes-army-label-b39dc0c373951a7d5096.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-be1604980e3840012592.jpg": "principes-army-label-be1604980e3840012592.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c628528da717837b873b.jpg": "principes-army-label-c628528da717837b873b.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-dded38be9c1acd83c449.jpg": "principes-army-label-dded38be9c1acd83c449.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-f0238ceb723400e6.obj": {
+      "file": "principes-label-mesh-f0238ceb723400e6.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "1": 3,
+          "2": 3
+        },
+        "triangles": 9155
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-29227a954a09a03d62cc.jpg": "principes-army-label-29227a954a09a03d62cc.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-4bb5fc1ee3e823c5a977.jpg": "principes-army-label-4bb5fc1ee3e823c5a977.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-699001ab07a040da7bdb.jpg": "principes-army-label-699001ab07a040da7bdb.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-92a095d6675ab38319fb.jpg": "principes-army-label-92a095d6675ab38319fb.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b786c67ec6cda5d43fb0.jpg": "principes-army-label-b786c67ec6cda5d43fb0.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-2746cd82bd9687c4.obj": {
+      "file": "principes-label-mesh-2746cd82bd9687c4.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "0": 2,
+          "1": 2,
+          "2": 2
+        },
+        "triangles": 7378
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-29227a954a09a03d62cc.jpg": "principes-army-label-29227a954a09a03d62cc.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-4bb5fc1ee3e823c5a977.jpg": "principes-army-label-4bb5fc1ee3e823c5a977.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-699001ab07a040da7bdb.jpg": "principes-army-label-699001ab07a040da7bdb.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-92a095d6675ab38319fb.jpg": "principes-army-label-92a095d6675ab38319fb.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b786c67ec6cda5d43fb0.jpg": "principes-army-label-b786c67ec6cda5d43fb0.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-0be3b421934fdd5b.obj": {
+      "file": "principes-label-mesh-0be3b421934fdd5b.obj",
+      "stats": {
+        "standing": 9,
+        "by_pose": {
+          "0": 3,
+          "1": 3,
+          "2": 3
+        },
+        "triangles": 9751
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-025f069daec3a5847d4c.jpg": "principes-army-label-025f069daec3a5847d4c.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b29c37935af130684968.jpg": "principes-army-label-b29c37935af130684968.png"
+      }
+    },
+    "https://cdn.jsdelivr.net/gh/lobo0705infinity-sketch/LoboInfinityPortal@a01d61f407ab19dc3093f1f8050fcc4e0384f947/assets/tts/ancients-plaque-face-repair/label-mesh-24900ffa39e61dba.obj": {
+      "file": "principes-label-mesh-24900ffa39e61dba.obj",
+      "stats": {
+        "standing": 6,
+        "by_pose": {
+          "0": 2,
+          "1": 2,
+          "2": 2
+        },
+        "triangles": 8234
+      },
+      "textures": {
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-025f069daec3a5847d4c.jpg": "principes-army-label-025f069daec3a5847d4c.png",
+        "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-b29c37935af130684968.jpg": "principes-army-label-b29c37935af130684968.png"
+      }
+    }
+  },
+  "sha256": {
+    "hastati-army-label-c6d1fa2fc0b52417f597.png": "3d7b9ecfc3bcb5316ebd0a8d00f6c29880df92b7d91546048e7598ebe4a58ac5",
+    "principes-label-mesh-2746cd82bd9687c4.obj": "e50ae3aafda5c00f71a1112ad1841436f660f050444b54a2c67153dbb1dbebb0",
+    "principes-army-label-c628528da717837b873b.png": "a88ac90357d15b29058b8c772e751778ca4561b0a8200ef202acb52034734d95",
+    "principes-army-label-20fa1312f2a148fb7049.png": "b6743c65b062397fba8032663918451cd06019cf1ed900024f264a29db796e1c",
+    "hastati-army-label-81d8dbbcf839c2a42f82.png": "93fcd129933d575097f6a4ef0cb1069b4194039cd0e95140eff81567ed52fe9d",
+    "hastati-army-label-8a4f1cfd3a1a64bd8dd9.png": "afd810ceaca390f2536991d2189e3f223bf73670f91f513809e513e8d662cf3c",
+    "hastati-army-label-a673cb8a234c26c925dd.png": "2bc558d7568bb7c55b26273f393f7f0a1e7b3b216fd41e997058ad17649172b0",
+    "hastati-army-label-31f6e69de64f9ca5386f.png": "d429086b4815fa306a357b6850920b58349d4624c37bd96839d7cc3ed0c35ebb",
+    "principes-label-mesh-0be3b421934fdd5b.obj": "a7b6aa6fca9e8516643fb1600545a9dc9df138b14239024142731d3e891b0d2c",
+    "principes-army-label-92a095d6675ab38319fb.png": "2c2cb119d990be23289c68702671a1eff877077be68987735a000ee505ead820",
+    "principes-label-mesh-bf18e85c7206055a.obj": "ab5c1cbbcebe7674be5f91832438a375c71f35fef1669fd1e248e09c6f56b4c6",
+    "hastati-army-label-28b05e0538aeca00cb4d.png": "ebcac739f890764a0eb08c56c844132ab433a6af6e687b1d57e81738b31c76f9",
+    "principes-label-mesh-f0238ceb723400e6.obj": "7c33c9e20c9bf9ef9e264d98776f1123651df80df2292274d0722f16f6094e28",
+    "principes-army-label-be1604980e3840012592.png": "33a8903a907844888487ade82adef0858e540bad336085efc45efe7278744b65",
+    "hastati-rating-f03fbd03505f56d463ef738a.png": "ae6d8e3efc2b09695eca284f70ddebe284b4402d87ad1c877dd8da13d858b08c",
+    "hastati-army-label-3b11abcb87df5799b3c7.png": "bc0dd5ce47e0ab685c06514da97e754f4298fed90cad4715f5a9238efc0694ad",
+    "principes-army-label-29227a954a09a03d62cc.png": "7ba7ed88e8b3af61b1577dbecae7a17268a39e21fcd5edefcb94087cd1636512",
+    "principes-army-label-4bb5fc1ee3e823c5a977.png": "a8fdfe06016fa16b7877d6846ab580d0b7a2dd822c262379e66e3e4b165501e2",
+    "hastati-army-label-b40dcf1e5a7771c1eb31.png": "2ca59d4f212f6c7a51e674bc2689a5249a5315bacf2a31cc1d1fa4e73f742d63",
+    "hastati-rating-ace3d665bbea25d333ba6016.png": "e66e33cf0269e5f5d878c1ed075639f93dcfd261faa8c4bde432c25e364f9528",
+    "hastati-label-mesh-6f2c89d9af9ece85.obj": "ae2b0c0c4198495bb00f3e5ea2ee70445ae45d36cdb41e4c705b4b97e99f66c0",
+    "principes-army-label-b39dc0c373951a7d5096.png": "067c0d3acbce576d058d9c9f9704fbdaf94d84e24f7b38c818a349f22083ca7d",
+    "hastati-label-mesh-85750decc738f31d.obj": "98c16bc9875524269935c3c5ccc4ceb3301e659f89a8391a4cc4e1d10e2bcf8f",
+    "principes-army-label-025f069daec3a5847d4c.png": "4c95b9db8db84c0c1be137974571216fbd5dd8eea248c92499dd13edeb611807",
+    "principes-army-label-b29c37935af130684968.png": "8169dd57b07f783e9a8ecfa5412de1ca3e2bf2aa073ded69eb5d1eb5957d9041",
+    "principes-label-mesh-24900ffa39e61dba.obj": "42ec3993a92d5d494919163fbe4533b6b0359dfc4ecb5b5952e63b1775c63f32",
+    "hastati-army-label-637709a9a5cfa0c6c25a.png": "6013742449f75651a1e94a25e9ab394c5a46061d532288c37d46a9c23be2b34a",
+    "hastati-army-label-aca798e31b8d2921bbe7.png": "3ef70bad7bd848ad2ce51ea1170fbf4492bee4f949f9e905786fcbfbc9ef4ceb",
+    "hastati-army-label-bf9c0f678eccadbdc1a0.png": "037bfa7ceb087eb3eeeb260bb93318fead5e82d11637e2986887a7759af85ba0",
+    "hastati-rating-95527b5e3ebe101b5eb51361.png": "e66e33cf0269e5f5d878c1ed075639f93dcfd261faa8c4bde432c25e364f9528",
+    "hastati-label-mesh-162249e2dd609adf.obj": "dece9b628a914505cbfe9dc324405c09434ea8b92f3cfa08ffdff9425f4c2506",
+    "hastati-label-mesh-bf4f2c94f4b6c6bd.obj": "9e7ce1549ea8a76757b202b08d80b0dac2af050a51a292c63c80f4449463669c",
+    "principes-army-label-72ab58546137f7162dc0.png": "98bd08b7b19ba61e9511f85917f06c55b2e23dd63563d76b6024ebec1ba43eb2",
+    "principes-army-label-dded38be9c1acd83c449.png": "a8efd56c26ea600e2bfa7a3c845f1fc80b75e50377ad8ccf785decdb037ee096",
+    "hastati-label-mesh-b7fc48359716e10e.obj": "d54546099002734da5568fc06a95d16001b4c1f598b6e41feb4af67b9cbb1061",
+    "principes-army-label-b786c67ec6cda5d43fb0.png": "047dfc4a4d9c104adf92b329f79a7bcbc3af086f9aff7b6886c9f7e248217d91",
+    "hastati-army-label-c4f7bb4fb6ed70263c85.png": "649540e3e3892f06b5ee9957114ef7a36bf8c88f760b1a91ce11986da32baee1",
+    "principes-army-label-699001ab07a040da7bdb.png": "ea1d8e958dabbf03ddd0f5c844437564d80883eca27271737d072d6bd5ce007d",
+    "principes-army-label-7615e618299caedf69ca.png": "381fdedd0b6067e8c74440e58e74f5f5617dfc76c96d16ffe776494198774b22"
+  }
+}
