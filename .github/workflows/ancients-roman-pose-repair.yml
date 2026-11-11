@@ -1,0 +1,26 @@
+name: Build Roman pose repair assets
+on:
+  push:
+    branches: [ancients-roman-pose-repair]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build Roman pose repair')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow numpy scipy
+      - run: |
+          python tools/ancients-roman-pose-repair/fetch.py
+          python tools/ancients-roman-pose-repair/build.py
+          mkdir -p assets/tts/ancients-roman-pose-repair
+          cp tools/ancients-roman-pose-repair/assets/* assets/tts/ancients-roman-pose-repair/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/tts/ancients-roman-pose-repair
+          git commit -m 'Publish Roman pose repair assets'
+          git push
