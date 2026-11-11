@@ -1,0 +1,27 @@
+name: Build Marathon review assets
+on:
+  push:
+    branches: [ancients-expansion-marathon-review]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build Marathon review')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/ancients-expansion-marathon-review
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow
+      - run: |
+          python tools/ancients-expansion-marathon-review/bake_labels.py
+          mkdir -p assets/tts/ancients-expansion-marathon-review
+          cp tools/ancients-expansion-marathon-review/assets/* assets/tts/ancients-expansion-marathon-review/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse assets/tts/ancients-expansion-marathon-review
+          git commit -m 'Publish Marathon review assets'
+          git push
