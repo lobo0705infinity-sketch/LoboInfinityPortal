@@ -1,0 +1,26 @@
+name: Build complete Ancients pose repair
+on:
+  push:
+    branches: [ancients-pose-repair-complete]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build complete Ancients pose repair')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow numpy scipy
+      - run: |
+          python tools/ancients-pose-repair-complete/fetch.py
+          python tools/ancients-pose-repair-complete/build.py
+          mkdir -p assets/tts/ancients-pose-repair-complete
+          cp tools/ancients-pose-repair-complete/assets/* assets/tts/ancients-pose-repair-complete/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/tts/ancients-pose-repair-complete
+          git commit -m 'Publish complete Ancients pose repair assets'
+          git push
