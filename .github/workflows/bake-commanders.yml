@@ -1,0 +1,22 @@
+name: Bake named commander plaques
+on:
+  push:
+    branches: [ancients-historical-commanders]
+permissions:
+  contents: write
+jobs:
+  bake:
+    if: github.event.head_commit.message == 'Build historical commander plaques'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install Pillow==11.3.0
+      - run: base64 -d commander-plan.json.gz.b64 | gzip -d > /tmp/commander-plan.json
+      - run: python bake_commanders.py /tmp/commander-plan.json assets/tts/ancients-historical-commanders --workers 12
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tts/ancients-historical-commanders
+          git commit -m "Publish historical commander plaques"
+          git push origin HEAD:ancients-historical-commanders
