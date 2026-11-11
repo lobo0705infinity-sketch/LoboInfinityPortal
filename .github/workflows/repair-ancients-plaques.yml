@@ -1,0 +1,21 @@
+name: Repair Ancients plaque faces
+on:
+  push:
+    branches: [ancients-plaque-face-repair]
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: github.event.head_commit.message == 'Build Ancients plaque face repair'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: base64 -d mesh-plan.json.gz.b64 | gzip -d > /tmp/mesh-plan.json
+      - run: python fix_plaque_faces.py /tmp/mesh-plan.json assets/tts/ancients-plaque-face-repair --workers 12
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tts/ancients-plaque-face-repair
+          git commit -m "Publish single-face plaque meshes"
+          git push origin HEAD:ancients-plaque-face-repair
