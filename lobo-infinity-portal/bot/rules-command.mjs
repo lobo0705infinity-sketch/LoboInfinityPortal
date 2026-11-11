@@ -73,6 +73,26 @@ export function verifiedRulesInteraction(question, corpus) {
     .replace(/\bimmobili[sz]ed\b/g, 'immobilized')
     .replace(/\bimmobili[sz]ation\b/g, 'immobilized')
     .replace(/[()?.,]/g, '').replace(/\s+/g, ' ').trim()
+  const dropBearDodge = [
+    /^my trooper declares throw drop bear nearby an enemy the enemy declares dodge both my trooper and the enemy pass their rolls can the enemy dodge to the placement of the drop bear to make it an illegal placement and thus stop the drop bear from being placed at all$/,
+    /^(?:can|may) (?:an? |the )?(?:enemy|reactive trooper|trooper|model) dodge (?:into|onto|to) (?:the |a )?(?:(?:declared |chosen )?(?:spot|space|position|location|placement) (?:of|for) (?:a |the )?(?:thrown )?drop bear|(?:thrown )?drop bear(?:s)? (?:declared |chosen )?(?:spot|space|position|location|placement))(?: (?:and|to) (?:block|prevent|stop) (?:its |the |drop bear )?placement)?$/,
+    /^what happens if (?:an? |the )?(?:enemy|reactive trooper|trooper|model) (?:dodges|ends (?:its|a) dodge) (?:into|onto|on|in) (?:the |a )?(?:declared |chosen )?(?:spot|space|position|location) for (?:a |the )?(?:thrown )?drop bear$/,
+  ].some(pattern => pattern.test(words))
+  if (dropBearDodge) {
+    return {
+      question: String(question).trim(),
+      versions: corpus.manifest.sources.map(source => ({ id: source.id, version: source.version, label: source.id === 'its-season-18' ? 'ITS Season 18' : source.title + ' ' + source.version })),
+      status: 'VERIFIED RULES ANSWER', answerSource: 'VERIFIED_RULES',
+      deepSeek: {
+        conclusion: 'YES', certainty: 'EXPLICIT RULES ANSWER', interpretationRequired: false,
+        answer: 'Yes. A successful Dodge can end on the exact spot declared for a thrown Drop Bear. Dodge movement happens during Effects. Drop Bears in BS Mode are placed during Conclusion. The official FAQ allows the thrower to place the Drop Bear at another legal position if a trooper occupies the declared spot. If there is no legal alternative, the Drop Bear is lost.',
+        sources: [
+          { id: 'DB0', title: 'Official Infinity N5.3 Wiki', section: 'Drop Bears (BS Mode) and placement FAQ', url: 'https://infinitythewiki.com/Drop_Bears#FAQs' },
+          { id: 'DB1', title: 'Official Infinity N5.3 Wiki', section: 'Dodge — Effects', url: 'https://infinitythewiki.com/Dodge' },
+        ],
+      },
+    }
+  }
   // Keep airborne blast geometry separate from special template exceptions.
   const airborneTemplate = /\b(?:template|blast|hrl|heavy rocket launcher)\b/.test(words)
     && /\b(?:mid[ -]?air|airborne|jumping|in the air)\b/.test(words)
