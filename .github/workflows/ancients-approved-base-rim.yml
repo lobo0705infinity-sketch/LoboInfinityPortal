@@ -1,0 +1,29 @@
+name: Build approved Ancients base rims
+on:
+  push:
+    branches: [ancients-approved-base-rim]
+permissions:
+  contents: write
+jobs:
+  build:
+    if: startsWith(github.event.head_commit.message, 'Build approved Ancients base rims')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/ancients-approved-base-rim
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pillow numpy scipy
+      - run: |
+          gzip -dc tools/ancients-approved-base-rim/plan.json.gz > tools/ancients-approved-base-rim/plan.json
+          python tools/ancients-approved-base-rim/fetch.py
+          python tools/ancients-approved-base-rim/build.py
+          mkdir -p assets/tts/ancients-approved-base-rim
+          cp tools/ancients-approved-base-rim/assets/* assets/tts/ancients-approved-base-rim/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --sparse assets/tts/ancients-approved-base-rim
+          git commit -m 'Publish approved Ancients base rim assets'
+          git push
