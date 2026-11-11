@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-04",
-  "download": "/assets/maps/sirocco-approved-ts46-20261104/Lobo-ITS18-Drop-Zone-Maps.zip",
+  "updatedAt": "2026-11-11",
+  "download": "/assets/maps/port-meridian-approved-20261111/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
       "index": 1,
@@ -895,32 +895,32 @@
       "index": 28,
       "id": "3719263238:100ca1",
       "guid": "100ca1",
-      "slug": "last-launch-2",
-      "name": "Meridian Blocks",
-      "workshopName": "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
-      "workshopBagName": "SET_ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+      "slug": "port-meridian",
+      "name": "Port Meridian",
+      "workshopName": "ITS18 Last Launch — Port Meridian",
+      "workshopBagName": "SET_ITS18 Last Launch — Port Meridian",
       "collectionTitle": "ITS Season 18",
       "family": "Objective rooms",
-      "layoutKey": 1002,
+      "layoutKey": 2027,
       "missionSetups": [
         "Last Launch"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 62,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/last-launch-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/last-launch-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/last-launch-2.png",
-      "download": "/assets/maps/seven-map-update-20261102-r1/last-launch-2.json",
+      "objectCount": 99,
+      "sourceNote": "Civilian spaceport for Last Launch. The central Launching Tower and both ID Scanners are included.",
+      "overhead": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
+      "angled": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
+      "diagram": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
+      "download": "/assets/maps/port-meridian-approved-20261111/port-meridian.json",
       "isCurrent": true,
-      "previewKind": "tts",
+      "previewKind": "diagram",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14",
       "labelAliases": [
-        "SET_ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
-        "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
-        "Meridian Blocks"
+        "SET_ITS18 Last Launch — Port Meridian",
+        "ITS18 Last Launch — Port Meridian",
+        "Port Meridian"
       ]
     },
     {
@@ -1342,7 +1342,7 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "approved-sirocco-ts46-20261104",
-  "installer": "/assets/maps/sirocco-approved-ts46-20261104/Lobo-Sirocco-Approved46-Workshop-Update-Installer.zip",
-  "releaseInventory": "/assets/maps/sirocco-approved-ts46-20261104/release-inventory.json"
+  "downloadRevision": "port-meridian-approved-20261111",
+  "installer": "/assets/maps/port-meridian-approved-20261111/Lobo-Infinity-Port-Meridian-Workshop-Installer.zip",
+  "releaseInventory": "/assets/maps/port-meridian-approved-20261111/release-inventory.json"
 }

@@ -381,5 +381,37 @@
       "ITS18 Critical Intervention — Bastion Courtyard — NEW LAYOUT",
       "Bastion Courtyard"
     ]
+  },
+  {
+    "index": 28,
+    "id": "3719263238:100ca1",
+    "guid": "100ca1",
+    "slug": "last-launch-2",
+    "name": "Meridian Blocks",
+    "workshopName": "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+    "workshopBagName": "SET_ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+    "collectionTitle": "ITS Season 18",
+    "family": "Objective rooms",
+    "layoutKey": 1002,
+    "missionSetups": [
+      "Last Launch"
+    ],
+    "exactDuplicateOf": null,
+    "objectCount": 62,
+    "sourceNote": "",
+    "overhead": "/assets/maps/captures-20261015T080142Z/last-launch-2-overhead.webp",
+    "angled": "/assets/maps/captures-20261015T080142Z/last-launch-2-angled.webp",
+    "diagram": "/assets/maps/its18-20261015T064536Z/last-launch-2.png",
+    "download": "/assets/maps/seven-map-update-20261102-r1/last-launch-2.json",
+    "isCurrent": false,
+    "previewKind": "tts",
+    "sourceOverhead": null,
+    "sourceAngled": null,
+    "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14",
+    "labelAliases": [
+      "SET_ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+      "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
+      "Meridian Blocks"
+    ]
   }
 ]
