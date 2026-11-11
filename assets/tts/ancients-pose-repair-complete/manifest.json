@@ -119,11 +119,10 @@
       "stats": {
         "standing": 4,
         "by_pose": {
-          "0": 2,
-          "1": 1,
-          "2": 1
+          "1": 2,
+          "2": 2
         },
-        "triangles": 6466
+        "triangles": 3070
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1e5b2cdabfa8a51c8f5b.jpg": "scythianhorse-army-label-1e5b2cdabfa8a51c8f5b.png",
@@ -136,11 +135,10 @@
       "stats": {
         "standing": 3,
         "by_pose": {
-          "0": 1,
-          "1": 1,
+          "1": 2,
           "2": 1
         },
-        "triangles": 4580
+        "triangles": 2830
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-1beee72d068fafc697fd.jpg": "scythianhorse-army-label-1beee72d068fafc697fd.png",
@@ -153,8 +151,8 @@
       "stats": {
         "standing": 2,
         "by_pose": {
-          "1": 1,
-          "2": 1
+          "2": 1,
+          "1": 1
         },
         "triangles": 2398
       },
@@ -220,11 +218,10 @@
       "stats": {
         "standing": 6,
         "by_pose": {
-          "0": 2,
-          "1": 2,
-          "2": 2
+          "1": 3,
+          "2": 3
         },
-        "triangles": 5242
+        "triangles": 5096
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-47f265a5925670f9b6fc.jpg": "indianbow-army-label-47f265a5925670f9b6fc.png",
@@ -237,11 +234,10 @@
       "stats": {
         "standing": 4,
         "by_pose": {
-          "0": 1,
-          "2": 2,
-          "1": 1
+          "1": 2,
+          "2": 2
         },
-        "triangles": 4280
+        "triangles": 4194
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-a40e562c99a45c5ab9d9.jpg": "indianbow-army-label-a40e562c99a45c5ab9d9.png",
@@ -254,11 +250,10 @@
       "stats": {
         "standing": 3,
         "by_pose": {
-          "0": 1,
-          "2": 1,
-          "1": 1
+          "1": 2,
+          "2": 1
         },
-        "triangles": 3952
+        "triangles": 3866
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-a40e562c99a45c5ab9d9.jpg": "indianbow-army-label-a40e562c99a45c5ab9d9.png",
@@ -271,11 +266,10 @@
       "stats": {
         "standing": 8,
         "by_pose": {
-          "0": 2,
-          "1": 3,
-          "2": 3
+          "1": 4,
+          "2": 4
         },
-        "triangles": 6650
+        "triangles": 5662
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-0772bec6f4d9d91013f5.jpg": "indianhorse-army-label-0772bec6f4d9d91013f5.png",
@@ -288,11 +282,10 @@
       "stats": {
         "standing": 6,
         "by_pose": {
-          "0": 2,
-          "2": 2,
-          "1": 2
+          "1": 3,
+          "2": 3
         },
-        "triangles": 6220
+        "triangles": 5244
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-144793dd145e8a98ec5b.jpg": "indianhorse-army-label-144793dd145e8a98ec5b.png",
@@ -305,11 +298,10 @@
       "stats": {
         "standing": 4,
         "by_pose": {
-          "0": 1,
-          "2": 1,
-          "1": 2
+          "1": 2,
+          "2": 2
         },
-        "triangles": 5332
+        "triangles": 4948
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-144793dd145e8a98ec5b.jpg": "indianhorse-army-label-144793dd145e8a98ec5b.png",
@@ -920,11 +912,10 @@
       "stats": {
         "standing": 4,
         "by_pose": {
-          "0": 2,
-          "1": 1,
-          "2": 1
+          "1": 2,
+          "2": 2
         },
-        "triangles": 2672
+        "triangles": 3658
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-5a3d997caece1eb168d9.png": "romanbow-army-label-5a3d997caece1eb168d9.png"
@@ -936,11 +927,10 @@
       "stats": {
         "standing": 3,
         "by_pose": {
-          "0": 1,
-          "1": 1,
+          "1": 2,
           "2": 1
         },
-        "triangles": 2478
+        "triangles": 2936
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-25c6669847da60b65427.png": "romanbow-army-label-25c6669847da60b65427.png"
@@ -952,10 +942,10 @@
       "stats": {
         "standing": 2,
         "by_pose": {
-          "0": 1,
-          "1": 1
+          "1": 1,
+          "2": 1
         },
-        "triangles": 1756
+        "triangles": 2284
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-25c6669847da60b65427.png": "romanbow-army-label-25c6669847da60b65427.png"
@@ -967,11 +957,10 @@
       "stats": {
         "standing": 4,
         "by_pose": {
-          "0": 2,
-          "1": 1,
-          "2": 1
+          "1": 2,
+          "2": 2
         },
-        "triangles": 2716
+        "triangles": 3746
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-c60f8ab8a11b267163f1.png": "gothicbow-army-label-c60f8ab8a11b267163f1.png"
@@ -983,11 +972,10 @@
       "stats": {
         "standing": 3,
         "by_pose": {
-          "0": 1,
-          "1": 1,
+          "1": 2,
           "2": 1
         },
-        "triangles": 2472
+        "triangles": 2902
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-0e07689b5477a5fe101e.png": "gothicbow-army-label-0e07689b5477a5fe101e.png"
@@ -999,10 +987,10 @@
       "stats": {
         "standing": 2,
         "by_pose": {
-          "0": 1,
-          "1": 1
+          "1": 1,
+          "2": 1
         },
-        "triangles": 1628
+        "triangles": 2228
       },
       "textures": {
         "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/refs/heads/ancients-integrated-plaques/assets/tts/ancients-integrated-plaques/army-label-0e07689b5477a5fe101e.png": "gothicbow-army-label-0e07689b5477a5fe101e.png"
@@ -1043,9 +1031,9 @@
     "carthaginianhorse-label-mesh-dccbbe6ab0fcccc8.obj": "fa9aedafacbc43cca431f1024f0f2e4ab8789f9a62c4b46a94df36e71a8b3568",
     "gothicbow-army-label-0e07689b5477a5fe101e.png": "0c5da22fb833171cd9998d7a22682d938d3e04dbf9957f6876e72f64c24d611a",
     "gothicbow-army-label-c60f8ab8a11b267163f1.png": "8ff1dfa4751de6db17e56213ae95aeb8ae311a478d38dd120a7feb183d519b95",
-    "gothicbow-label-mesh-5f2edb21952e22e0.obj": "bbb6d0045665f341abb3ee0d26a52409c20edd1c2c83b792948d6ee9ad1cb521",
-    "gothicbow-label-mesh-9b08c66ca9adaa4b.obj": "29654b193dad6fa4aee8cc3c41884c4eeada19b66c78a8cfd17c8c3b2c629997",
-    "gothicbow-label-mesh-bccc5d75e0f52686.obj": "dd597093f5b44873efaa2ec5e7b8519011b1877ac778347fb4780d5361bec238",
+    "gothicbow-label-mesh-5f2edb21952e22e0.obj": "b65d4fc30afb2a669bc5b34eb1f974c55eedd1f34456db5a1e04311ee4d7af91",
+    "gothicbow-label-mesh-9b08c66ca9adaa4b.obj": "234938689b953a1dd9dcd83b4642058d3ba60af91b4e0ef383e3107bda9fdb0d",
+    "gothicbow-label-mesh-bccc5d75e0f52686.obj": "77e9fcf8b9338910de9726a771b7bdb7f556f2a1190930bdfed6c3592cecbb79",
     "iberians-army-label-00a4799e256da2a9135f.png": "40124ff08b411580329718c9cc5b03212ead07d4b4c2e7d05514a63d4057680f",
     "iberians-army-label-2c562d9e90a5566a5857.png": "f3738d121dbf165c14cc91748d50a55846ef1f5d09623649be873037039a499d",
     "iberians-army-label-5a618af61e2436a9c82e.png": "07b8e470e2b3163ec29389df84db627e647ebd7222acc33fe5cf45a810fea480",
@@ -1067,16 +1055,16 @@
     "indianbow-army-label-a40e562c99a45c5ab9d9.png": "a412ed4566987c8c5441645abd64c3816d43b29f50dc839c8408228f00322ec5",
     "indianbow-army-label-af6df8978b1392547985.png": "20fa88556dbc57bfb10eb084c8aa57f9699daba725d9d282978ffc428dcfc13c",
     "indianbow-army-label-c50baae8f58b835ee8b1.png": "95ec9c25b2f6ff182b317619c806dae0b296644d2914c77040985405a3c54427",
-    "indianbow-label-mesh-29ace3bb2ce0ca80.obj": "5c6b370cf4aafb78ca58f2165b4e4f0ad473520f5507e038b9768b660a7d7210",
-    "indianbow-label-mesh-4173d2df9d2b6c04.obj": "775f55a2059101105be26d394622c223518571e71e82dc9d387e1cb0e374ae4e",
-    "indianbow-label-mesh-44ac3010aeb9737a.obj": "c7accdddc3a98cca92d0e98338b4ae8db6b8eae9de4616e23af11c8dbbbf2898",
+    "indianbow-label-mesh-29ace3bb2ce0ca80.obj": "198c3e781c57efb1be1b4b6d335c6e1626c80fca369bece5895b80b3ed01691a",
+    "indianbow-label-mesh-4173d2df9d2b6c04.obj": "67b666f3f3b4340f9b6173868564c0860c9d1ff220bffa6e7c00d8eadb9f03d1",
+    "indianbow-label-mesh-44ac3010aeb9737a.obj": "a45cddec08fb76ae19fc1d6765f7c953010a5f926c07a6561a2cf02d8b6c7942",
     "indianhorse-army-label-0772bec6f4d9d91013f5.png": "5de68761c7e6b00dbfcfe289eb5c1146418d249585760ed7e6bd8210a6d89598",
     "indianhorse-army-label-144793dd145e8a98ec5b.png": "24f9b7e4d65b5f480e050104cc514a437c5c257529ae7c266888c3538d262c1b",
     "indianhorse-army-label-1ab942e0a57e4b755aea.png": "bde8330b11ff005c0a6e500fb845d666166e0b0b3af02329d96d586c67769d75",
     "indianhorse-army-label-9ccb921c223f28527ec5.png": "7c1025588a0618e3250d83c2fa1ab616cd54818e97d7bc694de58974eebf8498",
-    "indianhorse-label-mesh-64fe1f94727d7b57.obj": "7ee339d14001966b6c27d93f5d9a7cd5b92615b157b5580ff013df65bc249fe6",
-    "indianhorse-label-mesh-a89c6315d9493dc9.obj": "fa9e14e88c27413935f333a35578df016c40be2c6e7e8eaacdfb5c7b9fd0416f",
-    "indianhorse-label-mesh-b2ee6b9e1fdb4c2d.obj": "cda619b848770200e1d1fc540ede80b749ef5511e7e88c46237591a0337fee3f",
+    "indianhorse-label-mesh-64fe1f94727d7b57.obj": "71278f875e67534459cb82772c2cfbb2248c8242c4a188b177875cb5634be700",
+    "indianhorse-label-mesh-a89c6315d9493dc9.obj": "5b98ca661fe68e6faaae0d384a7957e9fc77a436f1214920de8f22a18549d03a",
+    "indianhorse-label-mesh-b2ee6b9e1fdb4c2d.obj": "1e20339a3c9baf55ff9cae36945ed72720eb0c603aa3a19ae466fbbb4fce15ad",
     "indianspear-army-label-3619ed4dbd8c5fc844df.png": "ff144ac42d9b1a458cb5b2daa54d13ccbbd0af00386cdc777202e83e4e0edfa2",
     "indianspear-army-label-974fefda7243c6148e3b.png": "fd53f84c425fc8e3597b8b70c5bb3a210dc2f72310d800e9520cd3d16cca750b",
     "indianspear-army-label-b8537b357812eaa65b1e.png": "348b6941ac3119ccd08a02d3dd7c254880aeabba04b3456d73b37398c8b399e2",
@@ -1145,9 +1133,9 @@
     "persianspear-rating-f87f04aaf8fc5e0799a17792.png": "3452f7edeb66172e1b31747bb55a5d366afe1fe9add3fd4cec054c2ce3d84daf",
     "romanbow-army-label-25c6669847da60b65427.png": "91b1147b745adfd5a7c706f7a75ba5b6a568997adc60e8d746e988fd4550c988",
     "romanbow-army-label-5a3d997caece1eb168d9.png": "d8889470c8318f57fef7ba893a2ebc1959a049ab8da377c869a961bce067aa1d",
-    "romanbow-label-mesh-4ea9a176b8110ff3.obj": "137478852d1e90efbca709f3a44a13b8639f7837961e307d9f6c8b6062827089",
-    "romanbow-label-mesh-a4ad58f777a04fc8.obj": "d8631f3a8e415c2cdfb652a85c4545b05f373aea639641b88c62d346bfb90987",
-    "romanbow-label-mesh-c7b814b5ab4548a2.obj": "819c445285feba66cd7dbdef4228fd329e35f1c0b70dfd579d2a0b76877ca506",
+    "romanbow-label-mesh-4ea9a176b8110ff3.obj": "1471d28a13a5270bbaf5b490621bf6d231b5783685cefc13a7d799c0265cac00",
+    "romanbow-label-mesh-a4ad58f777a04fc8.obj": "9655aadad0e1a0922ff188da5de100a74e3f0c96d5428f08053517f288df2d9f",
+    "romanbow-label-mesh-c7b814b5ab4548a2.obj": "08055140e2399fb503c1aad3b5e86476d2f0a8222ace92c94529ec31ce67fdf3",
     "romanhorse-army-label-015a64d19f9b88702e6d.png": "1ebcfef157f7071ff832f586f7d39979b970364727e216404db6c2f8c1adfcb2",
     "romanhorse-army-label-0266dec501ecc6be2c6d.png": "a1c176031783d496e835203558db9105214e2fcf9fc5441915119e194a5dd600",
     "romanhorse-army-label-0996b2cdab185724b675.png": "0c38d9bdc2a618c49d29303c7fa122513dfe23c786d9f32c39b3b717f9f18bee",
@@ -1175,9 +1163,9 @@
     "scythianhorse-army-label-1e5b2cdabfa8a51c8f5b.png": "e42f7e7fd1270914af1c6777fa7d0d47c65a891a081ae2b12c74e43002478262",
     "scythianhorse-army-label-40c17dc270434d5d8aaa.png": "eb15588addb30704e87cffd3c211b9b1309fdb520b0f9edfbbd3af1f34a87e2f",
     "scythianhorse-army-label-ab0d49a0bc8021e6d547.png": "5a636d6f5a792406966df45cb18324890730f807717ddef6d24e640c4cb7ec4b",
-    "scythianhorse-label-mesh-45f53d768d6fadfc.obj": "b8c1aa9241b6282963e61acd4e020b8197fe1029ebf142f304c0775c23cafb99",
-    "scythianhorse-label-mesh-cddb814e4f86399c.obj": "91f83691523104eff42949875d9bd5d3e1cc9f31635b69f97f55ab67868881d1",
-    "scythianhorse-label-mesh-f1139d23f69310ae.obj": "2882b74951b9c87e1ca82529ee97ea2a5479fe7f9cddc51ba0f58d259da3fc16",
+    "scythianhorse-label-mesh-45f53d768d6fadfc.obj": "dfef34e3e520113e163f083b190a1dbf98adbb54657b995fdcc7079c72268952",
+    "scythianhorse-label-mesh-cddb814e4f86399c.obj": "b536c455a583877b04e8b7059a9c19fd0d76ab67626872839529e5d13fad0e5e",
+    "scythianhorse-label-mesh-f1139d23f69310ae.obj": "1b0a31bf93b5c7f8f291a9a0c9a20807d8aa4953854dcfd28b58438b31fc9fd5",
     "velites-army-label-10bcf7e3a923547b79b9.png": "2be7bbd9e1ec54efa2e1c13dd35d4456b2e9bf3ed5496753d0dbd52408afbb7a",
     "velites-army-label-13de98c3489b3c5c0fcf.png": "dae20bb2a18c54acf7ccbcb793218ac2a20a1bf78aede8671e2864a91750dc69",
     "velites-army-label-42760ec8bdf8ca491b23.png": "4ff19e009afc651a348ddb83482f621224c07cd9f72a4dc916cf1d4a0b17b1f4",
