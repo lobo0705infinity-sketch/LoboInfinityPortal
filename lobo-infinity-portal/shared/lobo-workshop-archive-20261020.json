@@ -413,5 +413,37 @@
       "ITS18 Last Launch — Meridian Blocks — NEW LAYOUT",
       "Meridian Blocks"
     ]
+  },
+  {
+    "index": 6,
+    "id": "3719263238:1002d9:archive",
+    "guid": "1002d9",
+    "slug": "area-of-interest-2",
+    "name": "Azure Circuit",
+    "workshopName": "ITS18 Area Of Interest — Azure Circuit — REVISED",
+    "workshopBagName": "SET_ITS18 Area Of Interest — Azure Circuit — REVISED",
+    "collectionTitle": "ITS Season 18",
+    "family": "Diagonal deployment",
+    "layoutKey": 7,
+    "missionSetups": [
+      "Area of Interest"
+    ],
+    "exactDuplicateOf": null,
+    "objectCount": 76,
+    "sourceNote": "",
+    "overhead": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-overhead.webp",
+    "angled": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-angled.webp",
+    "diagram": "/assets/maps/its18-20261015T064536Z/area-of-interest-2.png",
+    "download": "/assets/maps/seven-map-update-20261102-r1/area-of-interest-2.json",
+    "isCurrent": false,
+    "previewKind": "tts",
+    "sourceOverhead": "/assets/maps/07-normal-3-irl-tourney-overhead.jpg",
+    "sourceAngled": "/assets/maps/07-normal-3-irl-tourney-angled.jpg",
+    "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
+    "labelAliases": [
+      "SET_ITS18 Area Of Interest — Azure Circuit — REVISED",
+      "ITS18 Area Of Interest — Azure Circuit — REVISED",
+      "Azure Circuit"
+    ]
   }
 ]

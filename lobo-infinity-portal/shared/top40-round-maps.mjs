@@ -56,6 +56,19 @@ export const TOP40_ROUND_MAPS = [
     "round": 4
   },
   {
+    "key": "winners-5",
+    "mission": "Area of Interest",
+    "name": "Saltwick Floodgate",
+    "workshopLabel": "Lobo's Top 40 Winners Round 5 Map",
+    "href": "/event/lobos-top-40/maps/winners-5",
+    "download": "/assets/maps/saltwick-floodgate-20261112/winners-round-5.json",
+    "angled": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+    "overhead": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+    "generalHref": "/maps/saltwick-floodgate",
+    "bracket": "Winners",
+    "round": 5
+  },
+  {
     "key": "losers-1",
     "mission": "Annihilation",
     "name": "Canopy Blacksite",

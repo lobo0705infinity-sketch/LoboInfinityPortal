@@ -9,7 +9,7 @@ import current from '../shared/lobo-workshop-current.json' with { type: 'json' }
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
 assert.equal(loboWorkshopMaps.length,40)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,34)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,35)
 const missions=new Map()
 for(const map of loboWorkshopMaps){
  assert.equal(map.isCurrent,true)
@@ -78,7 +78,7 @@ for (const section of loboWorkshopMapSections) {
 for (const map of loboWorkshopMaps) {
   if (map.previewKind === 'workshop') continue
   if (map.previewKind === 'diagram') {
-    assert.equal(map.slug, 'port-meridian')
+    assert.ok(['port-meridian', 'saltwick-floodgate'].includes(map.slug))
     assert.equal(map.overhead, map.diagram)
     assert.equal(map.angled, map.diagram)
     continue
@@ -91,10 +91,10 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 24)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 23)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 1)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 1)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 2)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
 const meridianBlocks = loboWorkshopMapBySlug.get('last-launch-2')
 assert.equal(portMeridian.name, 'Port Meridian')
@@ -102,10 +102,10 @@ assert.equal(meridianBlocks.name, 'Meridian Blocks')
 assert.equal(meridianBlocks.isCurrent, false)
 assert.notEqual(portMeridian.layoutKey, meridianBlocks.layoutKey)
 assert.equal(resolveLoboWorkshopMapLabel(meridianBlocks.workshopBagName).slug, meridianBlocks.slug)
-assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 2)
+assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 1)
 for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
 const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
-const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit')
+const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit' && map.layoutKey === azure.layoutKey)
 const ratings = buildMapRatings([{ id: 1, mapSlug: legacyAzure.slug, mapRating: 5 }, { id: 2, mapSlug: azure.slug, mapRating: 3 }])
 assert.deepEqual(ratings.get(azure.layoutKey), { average: 4, count: 2, rank: 1 })
 for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-satellite'))) {

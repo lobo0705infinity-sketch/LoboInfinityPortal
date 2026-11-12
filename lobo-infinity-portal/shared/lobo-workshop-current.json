@@ -1,6 +1,6 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-11",
+  "updatedAt": "2026-11-12",
   "download": "/assets/maps/port-meridian-approved-20261111/Lobo-ITS18-Drop-Zone-Maps.zip",
   "maps": [
     {
@@ -168,32 +168,30 @@
       "index": 6,
       "id": "3719263238:1002d9",
       "guid": "1002d9",
-      "slug": "area-of-interest-2",
-      "name": "Azure Circuit",
-      "workshopName": "ITS18 Area Of Interest — Azure Circuit — REVISED",
-      "workshopBagName": "SET_ITS18 Area Of Interest — Azure Circuit — REVISED",
+      "slug": "saltwick-floodgate",
+      "name": "Saltwick Floodgate",
+      "workshopName": "ITS18 Area Of Interest — Saltwick Floodgate",
+      "workshopBagName": "SET_ITS18 Area Of Interest — Saltwick Floodgate",
       "collectionTitle": "ITS Season 18",
       "family": "Diagonal deployment",
-      "layoutKey": 7,
+      "layoutKey": 2028,
       "missionSetups": [
         "Area of Interest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 76,
-      "sourceNote": "",
-      "overhead": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-overhead.webp",
-      "angled": "/assets/maps/captures-20261015T080142Z/area-of-interest-2-angled.webp",
-      "diagram": "/assets/maps/its18-20261015T064536Z/area-of-interest-2.png",
-      "download": "/assets/maps/seven-map-update-20261102-r1/area-of-interest-2.json",
+      "objectCount": 53,
+      "sourceNote": "Approved road-and-slipway layout.",
+      "overhead": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+      "angled": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+      "diagram": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+      "download": "/assets/maps/saltwick-floodgate-20261112/area-of-interest.json",
       "isCurrent": true,
-      "previewKind": "tts",
-      "sourceOverhead": "/assets/maps/07-normal-3-irl-tourney-overhead.jpg",
-      "sourceAngled": "/assets/maps/07-normal-3-irl-tourney-angled.jpg",
+      "previewKind": "diagram",
+      "sourceOverhead": null,
+      "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
       "labelAliases": [
-        "SET_ITS18 Area Of Interest — Azure Circuit — REVISED",
-        "ITS18 Area Of Interest — Azure Circuit — REVISED",
-        "Azure Circuit"
+        "Saltwick Floodgate"
       ]
     },
     {
@@ -1344,5 +1342,5 @@
   "captureDate": "2026-10-20",
   "downloadRevision": "port-meridian-approved-20261111",
   "installer": "/assets/maps/port-meridian-approved-20261111/Lobo-Infinity-Port-Meridian-Workshop-Installer.zip",
-  "releaseInventory": "/assets/maps/port-meridian-approved-20261111/release-inventory.json"
+  "releaseInventory": "/assets/maps/saltwick-floodgate-20261112/release-inventory.json"
 }
