@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://lobo-infinity-portal.vercel.app/sitemap.xml
