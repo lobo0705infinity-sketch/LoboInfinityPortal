@@ -1,0 +1,21 @@
+MEGIDDO — 15th century BC
+
+SETTING
+Thutmose III led his army through the narrow Aruna Pass. The Egyptian account records a field victory over the coalition led by the ruler of Kadesh, followed by the siege of Megiddo. This scenario begins as the Egyptian vanguard emerges. The table, orders of battle, command wings, reinforcement timing and objectives are playtest interpretations.
+
+FORCES
+Egypt: 10 spear stands, 6 formed bow stands, 6 bow chariots, 3 commanders.
+Coalition: 10 spear stands, 4 bow skirmish stands, 6 bow chariots, 3 commanders.
+The Egyptian eight-stand vanguard begins clear of the exit. The rest of the army is staged behind it. Hold the staged units until their arrival described below.
+Coalition forces start on the plain and near camp. Before Turn 1, the Coalition may shift up to six stands into an exit screen (z=-5, x=-10 to +10), respecting normal footprint spacing.
+
+PLAY
+Six turns. Egypt takes the first turn. Egypt may move three staged stands on Turn 2 and up to six more per turn from Turn 3 onward. Release stands from front to back, keeping adjacent commanders eligible to follow their formation. Unreleased stands cannot move or fight and may be kept off the mat by agreement. Apply normal Clash of Empires rules for movement, combat and morale. Bows have a 4-inch range.
+The Army Commander bases represent Thutmose III and the Prince of Kadesh. Wing names are fictional designations. Commands have Normal and Wounded states. Troops have Full, Disordered and Shaken states. Each chariot base has one complete chariot and team.
+
+TERRAIN AND OBJECTIVES
+The 96 by 72 inch table represents the Aruna exit, the open plain and the coalition camp. Play the sculpted slopes and wooded shoulders as Broken Ground, road and plain as Good Ground. The four tents are scenic. The pass is approximately 13 inches wide and holds a three-stand column with room for spacing.
+Score after Turn 6. Camp (x=22, z=-27; 3 VP), plain junction (x=8, z=0; 2 VP) and Aruna exit (x=0, z=15; 1 VP). Control an objective by having a combat stand in Good Order within 4 inches of its center and no opposing combat stand in Good Order within 4 inches. Ignore commanders and skirmishers. Highest score wins; equal scores draw.
+
+HISTORICAL REFERENCES
+National Gallery of Art, The Quest for Immortality, Thutmose III: https://www.nga.gov/content/dam/ngaweb/research/publications/pdfs/quest-for-immortality.pdf
