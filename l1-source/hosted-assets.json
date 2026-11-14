@@ -1,0 +1,422 @@
+[
+  {
+    "file": "fe0002-deployment.jpg",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/fe0002-deployment.jpg",
+    "sha256": "5e888d23916cf50e12c3d41b0ebd044027d63a507faf9f76124552980ac54860",
+    "bytes": 1259862
+  },
+  {
+    "file": "field.jpg",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/field.jpg",
+    "sha256": "6e14d3134ce15af7cb229126403008826eccd50bfe9a05b0c3f7cadb034d5a13",
+    "bytes": 4103262
+  },
+  {
+    "file": "field.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/field.obj",
+    "sha256": "1725069c14288cf335ec853c6e442a7ded8d3307f40974dacbba538dc89f8b16",
+    "bytes": 795507
+  },
+  {
+    "file": "lagash-cart-0-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-0-0.obj",
+    "sha256": "a706ae18e2405c796016429793a6cc211e25acd3395d4ed4f1cf479670cbce6d",
+    "bytes": 151414
+  },
+  {
+    "file": "lagash-cart-0-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-0-1.obj",
+    "sha256": "88a23d219e62c5cf26832f549c0cb5a0f638c0c6b225c5b1436b3f2663b2b6b9",
+    "bytes": 150104
+  },
+  {
+    "file": "lagash-cart-0-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-0-2.obj",
+    "sha256": "90692fe26ed00ef2c01ffbea478a7ecc217f520c24c41310662cb985c78bb262",
+    "bytes": 120476
+  },
+  {
+    "file": "lagash-cart-1-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-1-0.obj",
+    "sha256": "be6fcd59d0475c9e319903e2bd1d535db100574bb6b3e5f22fa2d7d6cf021482",
+    "bytes": 155268
+  },
+  {
+    "file": "lagash-cart-1-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-1-1.obj",
+    "sha256": "df8f5aca465e125d7ea0be1cc930e68d35cb11c390a9d140dc015d56e333f7b5",
+    "bytes": 151608
+  },
+  {
+    "file": "lagash-cart-1-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-1-2.obj",
+    "sha256": "e399637b1e7f9bde146b527c2cbfc30b21decbfb87a9d461a2ce2a47735c7fca",
+    "bytes": 120206
+  },
+  {
+    "file": "lagash-cart-2-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-2-0.obj",
+    "sha256": "c9748985303b29bebd1f1437fb5a6a8c43d2b2ec521fcf2a0b03ba6a64c2fe69",
+    "bytes": 155294
+  },
+  {
+    "file": "lagash-cart-2-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-2-1.obj",
+    "sha256": "ba00f101313a545235a20af199f507b2c380304d3b73527f0a592c163af144fd",
+    "bytes": 155610
+  },
+  {
+    "file": "lagash-cart-2-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-2-2.obj",
+    "sha256": "4c2b4509d4133d545ba4a42a0d996b56a911299c858bc67e47cebd5717b5ec97",
+    "bytes": 127054
+  },
+  {
+    "file": "lagash-cart-state-0.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-state-0.png",
+    "sha256": "df5780b7eafc30235722786d8f8cace616e96d377c359ff223301175a82084a3",
+    "bytes": 2935454
+  },
+  {
+    "file": "lagash-cart-state-1.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-state-1.png",
+    "sha256": "d263dbcf7163b9abce79edc97ace3e7f795d2c894543f1d345041bf72712d476",
+    "bytes": 3636396
+  },
+  {
+    "file": "lagash-cart-state-2.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-cart-state-2.png",
+    "sha256": "a64407504438f3d65ae01cb66c0ae6b2c7dec15993894d80c0e30200a0102d28",
+    "bytes": 2891007
+  },
+  {
+    "file": "lagash-command-army-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-army-0.obj",
+    "sha256": "355737312ad0aae4d27539fae55ea271584327e8db637a1fa6b3d23a873cc9e5",
+    "bytes": 294258
+  },
+  {
+    "file": "lagash-command-army-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-army-1.obj",
+    "sha256": "2af8ebc6b7b014a69fe0981223b090ccae365e2b26505374e7dd74235478c232",
+    "bytes": 288754
+  },
+  {
+    "file": "lagash-command-army-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-army-wounded.png",
+    "sha256": "09a322a156325b1b36bb80032a0b32ed73ffc2b6dd310e409dd265b029300d3c",
+    "bytes": 2874061
+  },
+  {
+    "file": "lagash-command-army.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-army.png",
+    "sha256": "6c68b716b7b9a3e0f8749506b5eeaf9540b3fe183e031901a4a2caff3bf35c87",
+    "bytes": 2927578
+  },
+  {
+    "file": "lagash-command-left-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-left-0.obj",
+    "sha256": "b3ffda80b2315ba4c4caa8bfe0250891655c6d937befc29acaac943356785d20",
+    "bytes": 202072
+  },
+  {
+    "file": "lagash-command-left-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-left-1.obj",
+    "sha256": "d7b75bae975ec67e121c03d2652777e5269dce206c2173c0a440e3b53484a463",
+    "bytes": 196228
+  },
+  {
+    "file": "lagash-command-left-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-left-wounded.png",
+    "sha256": "ea28875c6647a8fc5a705ee5a59139195bd73acc45c9a90faab9e09ceef6999b",
+    "bytes": 2876092
+  },
+  {
+    "file": "lagash-command-left.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-left.png",
+    "sha256": "219d4ace4689f1b8f8b139cd59f08da704d1cf19d3c7b0a04c40787c5919d8c3",
+    "bytes": 2929813
+  },
+  {
+    "file": "lagash-command-right-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-right-0.obj",
+    "sha256": "b3ffda80b2315ba4c4caa8bfe0250891655c6d937befc29acaac943356785d20",
+    "bytes": 202072
+  },
+  {
+    "file": "lagash-command-right-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-right-1.obj",
+    "sha256": "d7b75bae975ec67e121c03d2652777e5269dce206c2173c0a440e3b53484a463",
+    "bytes": 196228
+  },
+  {
+    "file": "lagash-command-right-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-right-wounded.png",
+    "sha256": "4a128209ff9094ece73fe5638580bd96dadf71801c89a7c18398bb2188c3ccb3",
+    "bytes": 2877081
+  },
+  {
+    "file": "lagash-command-right.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-command-right.png",
+    "sha256": "d2b9e4ef4e3e4c01d42ff7f9b6db46f28dfe08e091b81241b495aaf2094918e5",
+    "bytes": 2930769
+  },
+  {
+    "file": "lagash-guard-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-guard-0.obj",
+    "sha256": "718f5dde215bdd6cef239d2a2a66b4d7619cb5f87aa641d64d311989c55d0fe0",
+    "bytes": 1207772
+  },
+  {
+    "file": "lagash-guard-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-guard-1.obj",
+    "sha256": "db29863a85d59e7485eb937b28beff39fae2f7cb5899bb328a334007fe9836d4",
+    "bytes": 1053476
+  },
+  {
+    "file": "lagash-guard-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-guard-2.obj",
+    "sha256": "3225fbee18419175c3feea0dc8938cc70f5eff9fe2f070f52da3ed4e28e2cb09",
+    "bytes": 901657
+  },
+  {
+    "file": "lagash-guard.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-guard.png",
+    "sha256": "64e7a7708807cd6d2fd88710f8f3bbc35bb5bf224bf080204096f10662195ce1",
+    "bytes": 2125272
+  },
+  {
+    "file": "lagash-levy-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-levy-0.obj",
+    "sha256": "426345000fb1ac93165ecb70ed7b23b1d8f99a5dc171c52293236e35f9b5368a",
+    "bytes": 1181312
+  },
+  {
+    "file": "lagash-levy-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-levy-1.obj",
+    "sha256": "cc9fa5c384944d2b4f104efd36157606e39b14944106ebbcc5fbc77ca20514ca",
+    "bytes": 1029951
+  },
+  {
+    "file": "lagash-levy-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-levy-2.obj",
+    "sha256": "107503b6c639c17b8eebcc4d2ec6ebbacba78c450dfb877808e7ad6d5cf1cd8f",
+    "bytes": 881692
+  },
+  {
+    "file": "lagash-levy.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/lagash-levy.png",
+    "sha256": "30a49bb6c20dbe48f095415752e87c0a0c3e4ecfec06fe938d6e9e369a7b177a",
+    "bytes": 2074746
+  },
+  {
+    "file": "palms.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/palms.obj",
+    "sha256": "01134199f7462047f73a5f5a63777690776e7e2052445eb20e8d9c83a3bfafbe",
+    "bytes": 138172
+  },
+  {
+    "file": "stand-round.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/stand-round.obj",
+    "sha256": "05debed920762ae4f1f39ab5d5c8d11b8cafcdc038d7968c00341b98db7a7b5b",
+    "bytes": 28688
+  },
+  {
+    "file": "stand-square.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/stand-square.obj",
+    "sha256": "32b45c9baedd7dbe3efea5d9da3fc00bc1251bfaa9d90b9f79be6dec05a9490f",
+    "bytes": 1468
+  },
+  {
+    "file": "umma-cart-0-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-0-0.obj",
+    "sha256": "a706ae18e2405c796016429793a6cc211e25acd3395d4ed4f1cf479670cbce6d",
+    "bytes": 151414
+  },
+  {
+    "file": "umma-cart-0-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-0-1.obj",
+    "sha256": "88a23d219e62c5cf26832f549c0cb5a0f638c0c6b225c5b1436b3f2663b2b6b9",
+    "bytes": 150104
+  },
+  {
+    "file": "umma-cart-0-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-0-2.obj",
+    "sha256": "90692fe26ed00ef2c01ffbea478a7ecc217f520c24c41310662cb985c78bb262",
+    "bytes": 120476
+  },
+  {
+    "file": "umma-cart-1-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-1-0.obj",
+    "sha256": "be6fcd59d0475c9e319903e2bd1d535db100574bb6b3e5f22fa2d7d6cf021482",
+    "bytes": 155268
+  },
+  {
+    "file": "umma-cart-1-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-1-1.obj",
+    "sha256": "df8f5aca465e125d7ea0be1cc930e68d35cb11c390a9d140dc015d56e333f7b5",
+    "bytes": 151608
+  },
+  {
+    "file": "umma-cart-1-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-1-2.obj",
+    "sha256": "e399637b1e7f9bde146b527c2cbfc30b21decbfb87a9d461a2ce2a47735c7fca",
+    "bytes": 120206
+  },
+  {
+    "file": "umma-cart-2-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-2-0.obj",
+    "sha256": "c9748985303b29bebd1f1437fb5a6a8c43d2b2ec521fcf2a0b03ba6a64c2fe69",
+    "bytes": 155294
+  },
+  {
+    "file": "umma-cart-2-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-2-1.obj",
+    "sha256": "ba00f101313a545235a20af199f507b2c380304d3b73527f0a592c163af144fd",
+    "bytes": 155610
+  },
+  {
+    "file": "umma-cart-2-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-2-2.obj",
+    "sha256": "4c2b4509d4133d545ba4a42a0d996b56a911299c858bc67e47cebd5717b5ec97",
+    "bytes": 127054
+  },
+  {
+    "file": "umma-cart-state-0.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-state-0.png",
+    "sha256": "6a5c5405f90ad2f0d676ff7c8322ee4bde38fe6d2a14291f1f9e41ee8ab95ba9",
+    "bytes": 2935528
+  },
+  {
+    "file": "umma-cart-state-1.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-state-1.png",
+    "sha256": "2d82cbc23d8e2097b2d71815906fbf82f5295624edf322a83151e496a6e1b7fa",
+    "bytes": 3636460
+  },
+  {
+    "file": "umma-cart-state-2.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-cart-state-2.png",
+    "sha256": "9b28bac629d0fd911edd890f356773fe6e007e8baa25e2c9bb4c202546e0bb80",
+    "bytes": 2891065
+  },
+  {
+    "file": "umma-command-army-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-army-0.obj",
+    "sha256": "990004701cec94f4d898890b62cbf53e520fe4f270fb7684eb5f0e8d1687c29b",
+    "bytes": 287338
+  },
+  {
+    "file": "umma-command-army-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-army-1.obj",
+    "sha256": "58cd048a649a1447d83c134ebeb11c839ff424607c7797dd95bc508f9d21441a",
+    "bytes": 285496
+  },
+  {
+    "file": "umma-command-army-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-army-wounded.png",
+    "sha256": "a02734216d1795729b6f9337b6097f69027e51c940246abf2aac189a4c6a22d3",
+    "bytes": 2971470
+  },
+  {
+    "file": "umma-command-army.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-army.png",
+    "sha256": "3f7e1cbe411a6d94b174ad2acb942b318f218fcb50e73beb55aa4219d6864899",
+    "bytes": 3017050
+  },
+  {
+    "file": "umma-command-left-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-left-0.obj",
+    "sha256": "e58488dc258220a56b84d04a175b827019a54da737821ca22c86317c6e556eb1",
+    "bytes": 193216
+  },
+  {
+    "file": "umma-command-left-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-left-1.obj",
+    "sha256": "3de1375c7ecdccc4936d881ab15ab5b80b96b74cf7a6f5f959ece8acc711fd0e",
+    "bytes": 190324
+  },
+  {
+    "file": "umma-command-left-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-left-wounded.png",
+    "sha256": "a07e859fe4773c975e1083a6c604225897c972a9b4dcd87cf1ea13602d8e959b",
+    "bytes": 2973356
+  },
+  {
+    "file": "umma-command-left.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-left.png",
+    "sha256": "4f06765083dd44c2ba26ba0f94f7940b0c88a11e6ec55f20dee643d469419a2d",
+    "bytes": 3019057
+  },
+  {
+    "file": "umma-command-right-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-right-0.obj",
+    "sha256": "e58488dc258220a56b84d04a175b827019a54da737821ca22c86317c6e556eb1",
+    "bytes": 193216
+  },
+  {
+    "file": "umma-command-right-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-right-1.obj",
+    "sha256": "3de1375c7ecdccc4936d881ab15ab5b80b96b74cf7a6f5f959ece8acc711fd0e",
+    "bytes": 190324
+  },
+  {
+    "file": "umma-command-right-wounded.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-right-wounded.png",
+    "sha256": "2d8310b9f06525789e4e54405a6715f7eea889450e0b3998f22649f5ce620970",
+    "bytes": 2975183
+  },
+  {
+    "file": "umma-command-right.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-command-right.png",
+    "sha256": "58dc3b61cea1563dd52f073631d72e3bff5125ca81ea1552b06a62806cfa9ef3",
+    "bytes": 3020837
+  },
+  {
+    "file": "umma-slingers-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-slingers-0.obj",
+    "sha256": "70594173da822d16a79a9c6511962e208eb138c04534866bc8c25cc4952c5f0c",
+    "bytes": 473874
+  },
+  {
+    "file": "umma-slingers-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-slingers-1.obj",
+    "sha256": "3199265d11458303a4300564f9abe50cbe7f9b8a2d7132a8db3e421eb0c8f1f9",
+    "bytes": 417970
+  },
+  {
+    "file": "umma-slingers-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-slingers-2.obj",
+    "sha256": "1c70faf628a7801488836740d3555f0411bda3c77da368bad9fb9613a35a9cd9",
+    "bytes": 351016
+  },
+  {
+    "file": "umma-slingers.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-slingers.png",
+    "sha256": "468f48792b920933fdafb4f0ad26dbc04d33140d4f4cab2851d459c972e624a1",
+    "bytes": 3198863
+  },
+  {
+    "file": "umma-spears-0.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-spears-0.obj",
+    "sha256": "ffcf1c43ab10aff5e938aec0611ab303873ec5ecf7e7988a2e25e528359f2c6a",
+    "bytes": 1142944
+  },
+  {
+    "file": "umma-spears-1.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-spears-1.obj",
+    "sha256": "469b9c49c4643be1b16bf74cd890f149bfeb3bbb326cfeba88bf98d666ce23b0",
+    "bytes": 988432
+  },
+  {
+    "file": "umma-spears-2.obj",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-spears-2.obj",
+    "sha256": "0e0b6c07c8e5dd7597f33be81f0e8ef3d3345484c87ec0eee0c43fae2f3d6d2b",
+    "bytes": 836682
+  },
+  {
+    "file": "umma-spears.png",
+    "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/ebab11ee1d43230bc78bc14ef2729b7de3d68511/l1/umma-spears.png",
+    "sha256": "4534e40ba453d51f71a8bd891c068ca3a119583426cd066d9ec4d52d668ce838",
+    "bytes": 2192107
+  }
+]

@@ -1,0 +1,266 @@
+{
+  "lagash-guard": {
+    "meshes": [
+      "lagash-guard-0.obj",
+      "lagash-guard-1.obj",
+      "lagash-guard-2.obj"
+    ],
+    "textures": [
+      "lagash-guard.png",
+      "lagash-guard.png",
+      "lagash-guard.png"
+    ],
+    "figures": 12,
+    "command": false,
+    "title": "SPEAR GUARD",
+    "role": "",
+    "source": "lagash-guard",
+    "scale_factor": 1
+  },
+  "lagash-levy": {
+    "meshes": [
+      "lagash-levy-0.obj",
+      "lagash-levy-1.obj",
+      "lagash-levy-2.obj"
+    ],
+    "textures": [
+      "lagash-levy.png",
+      "lagash-levy.png",
+      "lagash-levy.png"
+    ],
+    "figures": 12,
+    "command": false,
+    "title": "LEVY SPEARMEN",
+    "role": "",
+    "source": "lagash-levy",
+    "scale_factor": 0.8960292580982238
+  },
+  "umma-spears": {
+    "meshes": [
+      "umma-spears-0.obj",
+      "umma-spears-1.obj",
+      "umma-spears-2.obj"
+    ],
+    "textures": [
+      "umma-spears.png",
+      "umma-spears.png",
+      "umma-spears.png"
+    ],
+    "figures": 12,
+    "command": false,
+    "title": "UMMA SPEARMEN",
+    "role": "",
+    "source": "umma-spears",
+    "scale_factor": 1
+  },
+  "umma-slingers": {
+    "meshes": [
+      "umma-slingers-0.obj",
+      "umma-slingers-1.obj",
+      "umma-slingers-2.obj"
+    ],
+    "textures": [
+      "umma-slingers.png",
+      "umma-slingers.png",
+      "umma-slingers.png"
+    ],
+    "figures": 4,
+    "command": false,
+    "title": "SLINGERS",
+    "role": "",
+    "source": "umma-slingers",
+    "scale_factor": 1
+  },
+  "lagash-command-army": {
+    "meshes": [
+      "lagash-command-army-0.obj",
+      "lagash-command-army-1.obj"
+    ],
+    "textures": [
+      "lagash-command-army.png",
+      "lagash-command-army-wounded.png"
+    ],
+    "figures": 3,
+    "command": true,
+    "title": "EANNATUM",
+    "role": "Army Commander",
+    "source": "lagash-command",
+    "scale_factor": 1
+  },
+  "lagash-command-left": {
+    "meshes": [
+      "lagash-command-left-0.obj",
+      "lagash-command-left-1.obj"
+    ],
+    "textures": [
+      "lagash-command-left.png",
+      "lagash-command-left-wounded.png"
+    ],
+    "figures": 2,
+    "command": true,
+    "title": "LAGASH LEFT",
+    "role": "Wing Commander",
+    "source": "lagash-command",
+    "scale_factor": 1
+  },
+  "lagash-command-right": {
+    "meshes": [
+      "lagash-command-right-0.obj",
+      "lagash-command-right-1.obj"
+    ],
+    "textures": [
+      "lagash-command-right.png",
+      "lagash-command-right-wounded.png"
+    ],
+    "figures": 2,
+    "command": true,
+    "title": "LAGASH RIGHT",
+    "role": "Wing Commander",
+    "source": "lagash-command",
+    "scale_factor": 1
+  },
+  "umma-command-army": {
+    "meshes": [
+      "umma-command-army-0.obj",
+      "umma-command-army-1.obj"
+    ],
+    "textures": [
+      "umma-command-army.png",
+      "umma-command-army-wounded.png"
+    ],
+    "figures": 3,
+    "command": true,
+    "title": "USH",
+    "role": "Army Commander",
+    "source": "umma-command",
+    "scale_factor": 1
+  },
+  "umma-command-left": {
+    "meshes": [
+      "umma-command-left-0.obj",
+      "umma-command-left-1.obj"
+    ],
+    "textures": [
+      "umma-command-left.png",
+      "umma-command-left-wounded.png"
+    ],
+    "figures": 2,
+    "command": true,
+    "title": "UMMA LEFT",
+    "role": "Wing Commander",
+    "source": "umma-command",
+    "scale_factor": 1
+  },
+  "umma-command-right": {
+    "meshes": [
+      "umma-command-right-0.obj",
+      "umma-command-right-1.obj"
+    ],
+    "textures": [
+      "umma-command-right.png",
+      "umma-command-right-wounded.png"
+    ],
+    "figures": 2,
+    "command": true,
+    "title": "UMMA RIGHT",
+    "role": "Wing Commander",
+    "source": "umma-command",
+    "scale_factor": 1
+  },
+  "lagash-cart-0": {
+    "meshes": [
+      "lagash-cart-0-0.obj",
+      "lagash-cart-0-1.obj",
+      "lagash-cart-0-2.obj"
+    ],
+    "textures": [
+      "lagash-cart-state-0.png",
+      "lagash-cart-state-1.png",
+      "lagash-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 0
+  },
+  "lagash-cart-1": {
+    "meshes": [
+      "lagash-cart-1-0.obj",
+      "lagash-cart-1-1.obj",
+      "lagash-cart-1-2.obj"
+    ],
+    "textures": [
+      "lagash-cart-state-0.png",
+      "lagash-cart-state-1.png",
+      "lagash-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 1
+  },
+  "lagash-cart-2": {
+    "meshes": [
+      "lagash-cart-2-0.obj",
+      "lagash-cart-2-1.obj",
+      "lagash-cart-2-2.obj"
+    ],
+    "textures": [
+      "lagash-cart-state-0.png",
+      "lagash-cart-state-1.png",
+      "lagash-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 2
+  },
+  "umma-cart-0": {
+    "meshes": [
+      "umma-cart-0-0.obj",
+      "umma-cart-0-1.obj",
+      "umma-cart-0-2.obj"
+    ],
+    "textures": [
+      "umma-cart-state-0.png",
+      "umma-cart-state-1.png",
+      "umma-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 0
+  },
+  "umma-cart-1": {
+    "meshes": [
+      "umma-cart-1-0.obj",
+      "umma-cart-1-1.obj",
+      "umma-cart-1-2.obj"
+    ],
+    "textures": [
+      "umma-cart-state-0.png",
+      "umma-cart-state-1.png",
+      "umma-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 1
+  },
+  "umma-cart-2": {
+    "meshes": [
+      "umma-cart-2-0.obj",
+      "umma-cart-2-1.obj",
+      "umma-cart-2-2.obj"
+    ],
+    "textures": [
+      "umma-cart-state-0.png",
+      "umma-cart-state-1.png",
+      "umma-cart-state-2.png"
+    ],
+    "figures": 1,
+    "command": false,
+    "cart": true,
+    "variant": 2
+  }
+}
