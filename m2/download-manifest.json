@@ -1,0 +1,353 @@
+{
+  "release": "Clash of Empires Full Collection R10, Megiddo R2",
+  "assets": [
+    {
+      "path": "m2/coalition-bows-0.obj",
+      "sha": "cad87f91a6a788f6cd184baa1acd109209fe1a0c",
+      "size": 640894,
+      "sha256": "43c58e630c3e9ccc7096f182df50cba13426cd06587ec1200cb4661bea0f6cfa"
+    },
+    {
+      "path": "m2/coalition-bows-1.obj",
+      "sha": "aa252569593082d613349256a8b72964baa4e01c",
+      "size": 583434,
+      "sha256": "3ad086419d4c78de851fd1ac762257388f26cd0e54c6b7402f192eceeb82fafc"
+    },
+    {
+      "path": "m2/coalition-bows-2.obj",
+      "sha": "9d7727877d110a993f0100054383cab209f6e220",
+      "size": 514310,
+      "sha256": "dbdae8a8942a5eedfb3f578909c04b9286b3d14f841287dcd655bec76c95faf0"
+    },
+    {
+      "path": "m2/coalition-bows.jpg",
+      "sha": "bcf7d8661619d937fc4dbeaf58e7d465c484a5d3",
+      "size": 396945,
+      "sha256": "dbbffcfbc936aa37915b6375a4f21ea4e625a8e12e7758129a19d831aea9d666"
+    },
+    {
+      "path": "m2/coalition-chariot-0.jpg",
+      "sha": "e25a7db5fd967967c011a7f94f5244fdd55b26a0",
+      "size": 384238,
+      "sha256": "62fa23b40f61722201eeeb45d2541b8f66787e43cf29edc38bc7dc311bed6859"
+    },
+    {
+      "path": "m2/coalition-chariot-0.obj",
+      "sha": "991dec75328482e8bdc5de5c17d53f2e54a07c5e",
+      "size": 330676,
+      "sha256": "14ec4687b4a02f4e13ac8e828a0c954de8ec079cb64be1cddde75ffb48cf2f44"
+    },
+    {
+      "path": "m2/coalition-chariot-1.jpg",
+      "sha": "3cc03c9f5d6ea1098f4fb48270279da7de9f3f4f",
+      "size": 385570,
+      "sha256": "678c8d2d0fd231a2e7418614cb7055b6c39008d549bea7c5e61c32b3a5a722ae"
+    },
+    {
+      "path": "m2/coalition-chariot-1.obj",
+      "sha": "32b28477ae1894fb0e85e26fd23e6697f2ef9d8c",
+      "size": 320420,
+      "sha256": "20e57f87e37f8fb5f3ff798d9a209dc275d70724fc3140dc475c79bdaf9c41cd"
+    },
+    {
+      "path": "m2/coalition-chariot-2.jpg",
+      "sha": "ad1d34f3a00118451996daec9e2a67e6d6f57d08",
+      "size": 380845,
+      "sha256": "63cd754d645583a10aa3aa561c1807abcea192d53494a740f949585a88c55c8c"
+    },
+    {
+      "path": "m2/coalition-chariot-2.obj",
+      "sha": "32b28477ae1894fb0e85e26fd23e6697f2ef9d8c",
+      "size": 320420,
+      "sha256": "20e57f87e37f8fb5f3ff798d9a209dc275d70724fc3140dc475c79bdaf9c41cd"
+    },
+    {
+      "path": "m2/coalition-command-army-0.jpg",
+      "sha": "1684aee93237036cfa120ba25f372f85ae51b649",
+      "size": 341910,
+      "sha256": "082e21d5d20189f2d6a17608c7b233d4059a45d32417d98ca0bf96cf75a4bf01"
+    },
+    {
+      "path": "m2/coalition-command-army-0.obj",
+      "sha": "b98edfd5bf6fbc908f64895b8c5ed90efd8ef15c",
+      "size": 392326,
+      "sha256": "119efc6f2e66562722779526bf091a4b189df9dd9776b3257af65c632c3ba2b4"
+    },
+    {
+      "path": "m2/coalition-command-army-1.jpg",
+      "sha": "a34f7d841ec3f9a0c58d3135b5ef7e22342a102e",
+      "size": 341736,
+      "sha256": "1e132c0de6558fbdee043b66fd4e3eead2f8f9219e88d0584413bc802d6251b2"
+    },
+    {
+      "path": "m2/coalition-command-army-1.obj",
+      "sha": "0f326d93391898cfcf67b28c1d2a63f460a322c8",
+      "size": 397110,
+      "sha256": "44a865e1839eb876331d675ef6ca3089bc3ed15673c336f93fe876a5af5c7865"
+    },
+    {
+      "path": "m2/coalition-command-left-0.jpg",
+      "sha": "2dd2a2346aa367957d19090d153f82cf16e03c17",
+      "size": 341292,
+      "sha256": "86affb8f8430f472fa2e735872966e61b800c5b7d94e6576778a0ab9f7c0a030"
+    },
+    {
+      "path": "m2/coalition-command-left-0.obj",
+      "sha": "72768648281cb3c66e01435667eea0ecf06ca08c",
+      "size": 212448,
+      "sha256": "2d2c4c2494d029ecd9aff13341e50d1dabba249e67807d9803f0cd4aec68de70"
+    },
+    {
+      "path": "m2/coalition-command-left-1.jpg",
+      "sha": "3bdd33ba550fb6eaa68d8d780825d7d2220fdcf6",
+      "size": 340941,
+      "sha256": "b29c575f32848d244a7c0f9c2f31bb3a84028c311deacb1ef6691133393d3e1e"
+    },
+    {
+      "path": "m2/coalition-command-left-1.obj",
+      "sha": "b9bb9e12aa06ed6e0c923709d1547457823db7fa",
+      "size": 213748,
+      "sha256": "1757cfe7f07dc9ab5f0a4f86a4ca55de99a40c6ffe1a8e65a312dcbc0d9526c8"
+    },
+    {
+      "path": "m2/coalition-command-right-0.jpg",
+      "sha": "8ab8f710d18d64231d7cf95d0b439136b3642330",
+      "size": 343973,
+      "sha256": "e3f8372ede37d66331ca3b50dd0a5845aef8f1df7fb3c5841955a1e31046bb5f"
+    },
+    {
+      "path": "m2/coalition-command-right-0.obj",
+      "sha": "72768648281cb3c66e01435667eea0ecf06ca08c",
+      "size": 212448,
+      "sha256": "2d2c4c2494d029ecd9aff13341e50d1dabba249e67807d9803f0cd4aec68de70"
+    },
+    {
+      "path": "m2/coalition-command-right-1.jpg",
+      "sha": "f00ee7d020e960b51d9ea57343e7433264c29766",
+      "size": 343709,
+      "sha256": "27af523d3f355c4bea23f1fc1b3048d8b3a177fc4b319802be55331553ae95fd"
+    },
+    {
+      "path": "m2/coalition-command-right-1.obj",
+      "sha": "b9bb9e12aa06ed6e0c923709d1547457823db7fa",
+      "size": 213748,
+      "sha256": "1757cfe7f07dc9ab5f0a4f86a4ca55de99a40c6ffe1a8e65a312dcbc0d9526c8"
+    },
+    {
+      "path": "m2/coalition-spears-0.obj",
+      "sha": "fd20eaa88530a890373aace59e69970eb9a81f1b",
+      "size": 1533388,
+      "sha256": "fa637bc1acc7b4cf1b5c71ff2799f4a774a840e6e3698b3c2431fccb12985799"
+    },
+    {
+      "path": "m2/coalition-spears-1.obj",
+      "sha": "63d227a2706943f1468b45f1d5aa1a0b31eedc83",
+      "size": 1338472,
+      "sha256": "3771715ecb3ccc0e5db93b186d261550217b98084304e370385cd5714c8e7ec0"
+    },
+    {
+      "path": "m2/coalition-spears-2.obj",
+      "sha": "754e5f9c9e5476f5b3077c26fc9a36c1afc9d22b",
+      "size": 1158836,
+      "sha256": "e07943b05d758e9cea92246f2cb06910967366e58be416db35bb715e1990b4e5"
+    },
+    {
+      "path": "m2/coalition-spears.jpg",
+      "sha": "06a51d6625ad1d4815b98256b6dfd937a81c760d",
+      "size": 382023,
+      "sha256": "cf8329109dd3b91ec90c2bf328a5339de513600a979b49bb78c07919cd763741"
+    },
+    {
+      "path": "m2/egypt-bows-0.obj",
+      "sha": "0d74bc3c7667ba5a0332022c5d2228e579af675d",
+      "size": 800530,
+      "sha256": "c5a66623a96155713ad2b892e2e24fda8d81a68444dffe456fddd8aa7b01509a"
+    },
+    {
+      "path": "m2/egypt-bows-1.obj",
+      "sha": "17d4e8427f325759a4bb218eaaeb8b5d5e11eccb",
+      "size": 683461,
+      "sha256": "d1a94272447d27a0b4daf7c52f8df1bf859c003d2c3183023e4368e36f0c9ac5"
+    },
+    {
+      "path": "m2/egypt-bows-2.obj",
+      "sha": "2ee07afa7f33e9ea9b0b3265a2f589da04ba687e",
+      "size": 622066,
+      "sha256": "5e175603dc850ec54a20ce765203c8a5095ebf88b6882b4d2cc86fbc214cc955"
+    },
+    {
+      "path": "m2/egypt-bows.jpg",
+      "sha": "d564f6366e1257cb3a0865530457fec4719a78fd",
+      "size": 390981,
+      "sha256": "1db334aebbc5715f4738356c0a68e6ed634625255b07495b27faf7a32701f062"
+    },
+    {
+      "path": "m2/egypt-chariot-0.jpg",
+      "sha": "bbf7b9d28e1b1f420b692f49bc11314e7917f1f8",
+      "size": 386705,
+      "sha256": "12b419f4ed21859acfe8fb05726dbc04882e3556aee7ee73d5174e1552ea899e"
+    },
+    {
+      "path": "m2/egypt-chariot-0.obj",
+      "sha": "4e495f8d608daca0a5de7d3ef1c23906281815d8",
+      "size": 306798,
+      "sha256": "b5dee63c5d01e0db29c13d8afc41931f556e1d4a435d060446d14c4bdc628087"
+    },
+    {
+      "path": "m2/egypt-chariot-1.jpg",
+      "sha": "6d8c5bf8fdda0278316b8b3fd10e5f9e2b43d7eb",
+      "size": 388160,
+      "sha256": "8e495675ec9e84790fef556f74d0df99a7ef6e9127da28177cdb6fb866e38654"
+    },
+    {
+      "path": "m2/egypt-chariot-1.obj",
+      "sha": "f79868ad9f3b97e36dad912f5230cd83005893dd",
+      "size": 308738,
+      "sha256": "adb87558ee0ae80b6df5b70ba81beac010b4afd7c6c6c137eb06db00e2ef6313"
+    },
+    {
+      "path": "m2/egypt-chariot-2.jpg",
+      "sha": "d1c597aa79d5c4f231305f6bbe8b4b2955bdcd2f",
+      "size": 382997,
+      "sha256": "6f2e36164bc29d05a4e669a8f0b6f4ec9c9e49f4c6c3a90aa8cb2e6fdb3d46ed"
+    },
+    {
+      "path": "m2/egypt-chariot-2.obj",
+      "sha": "f79868ad9f3b97e36dad912f5230cd83005893dd",
+      "size": 308738,
+      "sha256": "adb87558ee0ae80b6df5b70ba81beac010b4afd7c6c6c137eb06db00e2ef6313"
+    },
+    {
+      "path": "m2/egypt-command-army-0.jpg",
+      "sha": "70cfc85292da61fafa1e12fe7ffbc72e35c31047",
+      "size": 339265,
+      "sha256": "9d1fae334fc5d65b8aa94c8b75ae25b66e9facfff171ccb4e323e2b4ba282f74"
+    },
+    {
+      "path": "m2/egypt-command-army-0.obj",
+      "sha": "64194622bad6bb4ae084be41585e2fded650c46d",
+      "size": 363366,
+      "sha256": "f5ecf5d03ee0da7259438aa78f83d5489ad3623d7bd4541db8fc47991ee7ef43"
+    },
+    {
+      "path": "m2/egypt-command-army-1.jpg",
+      "sha": "bbd085124e26ea0dc84e12aada639c0c47f8043c",
+      "size": 338984,
+      "sha256": "02d445f7567b4457b99ee5b2929abf86ac1201ed569b8c7c8cff0eb034625800"
+    },
+    {
+      "path": "m2/egypt-command-army-1.obj",
+      "sha": "18142a692ec4d5005361e17474d95920396c23fd",
+      "size": 364706,
+      "sha256": "0dbb4317847e8417098ef3b90cb0dbe9a0b9cd580b20035002825250ff0dd509"
+    },
+    {
+      "path": "m2/egypt-command-left-0.jpg",
+      "sha": "28fe136606c8416baec650a52ab49f21f02ed7eb",
+      "size": 342169,
+      "sha256": "deeefdcaaafa93ba20b2a1b472e4872a05fd3b1d98a1f6715fec6095e7e76a49"
+    },
+    {
+      "path": "m2/egypt-command-left-0.obj",
+      "sha": "69f811038d0b98a7776a4ee8953e0cd5b6004156",
+      "size": 199304,
+      "sha256": "590883da3ad7687f8f14d74a144db8b68fef66755c0b69bc417ab0554d5eea9d"
+    },
+    {
+      "path": "m2/egypt-command-left-1.jpg",
+      "sha": "682b46314faeb6346c5d179086fdb9a29329a3ea",
+      "size": 342382,
+      "sha256": "d30865955f528885523d8aab70f7ffbcb7f2a809f4d172b6d64ecdc0d533fca8"
+    },
+    {
+      "path": "m2/egypt-command-left-1.obj",
+      "sha": "6cf904017729b239707687eb2f7ddc8863025209",
+      "size": 199304,
+      "sha256": "98dc1499c7cdb70e26ccc92c31cc27af5ca92df1ade99410be410f605a517080"
+    },
+    {
+      "path": "m2/egypt-command-right-0.jpg",
+      "sha": "ad7ffb805de965587cf9e1c75974927a63bd7d9d",
+      "size": 344179,
+      "sha256": "18e6173a3aa3751e0081c545c2171cab037d8fbbeb556380280045346529beda"
+    },
+    {
+      "path": "m2/egypt-command-right-0.obj",
+      "sha": "69f811038d0b98a7776a4ee8953e0cd5b6004156",
+      "size": 199304,
+      "sha256": "590883da3ad7687f8f14d74a144db8b68fef66755c0b69bc417ab0554d5eea9d"
+    },
+    {
+      "path": "m2/egypt-command-right-1.jpg",
+      "sha": "a71bf2a5cb68dd97df632813a44645c571421b4b",
+      "size": 344363,
+      "sha256": "62efcde0006e70b54c1b4b8a2959b6df7ac723d408e4ef89c69b8f192c1661c1"
+    },
+    {
+      "path": "m2/egypt-command-right-1.obj",
+      "sha": "6cf904017729b239707687eb2f7ddc8863025209",
+      "size": 199304,
+      "sha256": "98dc1499c7cdb70e26ccc92c31cc27af5ca92df1ade99410be410f605a517080"
+    },
+    {
+      "path": "m2/egypt-spears-0.obj",
+      "sha": "c78481855b513ad9bff6c736b749854891ae6a0f",
+      "size": 1316976,
+      "sha256": "c4128e4b186835c69222374cec1dbd5165c0becf865fa9783d556267ae0d7c06"
+    },
+    {
+      "path": "m2/egypt-spears-1.obj",
+      "sha": "ccc33fd8c5f18b276340fd99f0011c08a24d30fc",
+      "size": 1135289,
+      "sha256": "02ce5615dff0a135feaf9e7618ee054316feeddf1a82d87b7de553842a7bd3a2"
+    },
+    {
+      "path": "m2/egypt-spears-2.obj",
+      "sha": "eb621fa60fc2dc325c8bdc563ec9c0ec8480f0fe",
+      "size": 970748,
+      "sha256": "1eb0c4363c051be9767c457ee9b4598c4f419fd2daf8f31da60c693be556cf2f"
+    },
+    {
+      "path": "m2/egypt-spears.jpg",
+      "sha": "c9416e1e881adc0faffe2c7bdcabdb42136587fa",
+      "size": 379989,
+      "sha256": "78c8d3feb2382d7f27876f60f89834d5a4b7953ea56983aad8b599b55d5c2de4"
+    },
+    {
+      "path": "m2/fe0092-deployment.jpg",
+      "sha": "7d07f7a31659910ac2af0efaf076664b5c05a0a6",
+      "size": 650510,
+      "sha256": "68d6cc64cddb52c30c4806d9ab4ce777a625f2a826ee9dc165169d38ccb9215e"
+    },
+    {
+      "path": "m2/field.jpg",
+      "sha": "9c6539c7502ef3fc6c7e9431be897871924d656f",
+      "size": 786799,
+      "sha256": "e30bfd708de0cf5b71632f3a33df1cf4f099e944495e0b111e1d436ab61abe6f"
+    },
+    {
+      "path": "m2/field.obj",
+      "sha": "faaa770a877e4ce22b6dafcef6ef7bcc0227c015",
+      "size": 795333,
+      "sha256": "14abc0ab1d2aade7876e2a5bbfd98d216663a42ba5fbcd712e9cdff21e9d2ffe"
+    },
+    {
+      "path": "m2/palms.obj",
+      "sha": "e25fe7913f73350fd57f16c69c85b3092b3c4e96",
+      "size": 109148,
+      "sha256": "9e00ba0bfc6e3bedd853accde545e8f08a77d2c1453ed89119857b7ce88bf634"
+    },
+    {
+      "path": "m2/stand-round.obj",
+      "sha": "c0337e844e61445efdf247d008390f180c24f1d5",
+      "size": 28688,
+      "sha256": "05debed920762ae4f1f39ab5d5c8d11b8cafcdc038d7968c00341b98db7a7b5b"
+    },
+    {
+      "path": "m2/stand-square.obj",
+      "sha": "87cac710cd300d97806fdd9a2302f53d02cd4fd1",
+      "size": 1468,
+      "sha256": "32b45c9baedd7dbe3efea5d9da3fc00bc1251bfaa9d90b9f79be6dec05a9490f"
+    }
+  ]
+}
