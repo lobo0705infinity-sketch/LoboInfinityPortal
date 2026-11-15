@@ -97,7 +97,7 @@ function TerritoryVideoGallery() {
     <div className="aurora-territory-video-grid">{published.map(territory => {
       const video = AURORA_TERRITORY_VIDEOS[territory.id]
       return <Link className="aurora-territory-video-card" key={territory.id} to={`${AURORA_PATH}/territories/${territory.id}`}>
-        <TerritoryVideoThumbnail videoId={video.videoId} />
+        <TerritoryVideoThumbnail videoId={video.videoId} src={video.thumbnailUrl} />
         <span><strong>{territory.name}</strong><small>Watch guide &amp; read current rules →</small></span>
       </Link>
     })}</div>

@@ -17,7 +17,8 @@ const expected = {
 }
 assert.deepEqual(Object.keys(expected).sort(), AURORA_TERRITORIES.map(territory => territory.id).sort(), 'Every province has a published guide')
 const pdfPath = '/guides/aurora-vii-territory-special-rules-20261115-korin-tags.pdf'
-const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.png': 'image/png', '.pdf': 'application/pdf' }
+const korinVideoPath = 'https://resource2.heygen.ai/aws_pacific/avatar_tmp/fede862a51d0484eb83f7df0cad95ce6/vfaac0058c8684cc695f40960a9f59412/caption_2b47914d04944c52a9ff6a83bd70a4d2.mp4'
+const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.png': 'image/png', '.pdf': 'application/pdf', '.mp4': 'video/mp4' }
 const server = createServer(async (req, res) => {
   if (req.url.startsWith('/api/aurora-campaign')) return res.end(JSON.stringify({ revision: 'test', publishedAt: '2026-10-28T00:00:00Z', state: emptyAuroraState() }))
   if (req.url.startsWith('/api/aurora-activity')) return res.end(JSON.stringify({ turn: 0, games: [], totals: [] }))
@@ -54,7 +55,7 @@ try {
     await page.getByRole('heading', { name: 'Territory video guides', exact: true }).waitFor()
     assert.equal(await page.locator('.aurora-territory-video-card').count(), 12)
     await page.locator('.aurora-territory-video-card img').evaluateAll(nodes => Promise.all(nodes.map(node => { node.loading = 'eager'; return node.decode() })))
-    assert.equal(await page.locator('iframe').count(), 0)
+    assert.equal(await page.locator('iframe, video').count(), 0)
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Gallery fits ${width}px`)
     assert.equal(await page.locator('.aurora-territory-video-card').first().evaluate(node => getComputedStyle(node.parentElement).display), 'grid')
   }
@@ -63,14 +64,26 @@ try {
     await page.goto(origin + '/campaign/aurora-vii/territories/' + territory.id)
     await page.locator('.aurora-battlefield-rules').waitFor()
     assert.equal(await page.locator('.aurora-territory-video').count(), expected[territory.id] ? 1 : 0)
-    assert.equal(await page.locator('iframe').count(), 0)
+    assert.equal(await page.locator('iframe, video').count(), 0)
     if (expected[territory.id]) {
       const video = page.locator('.aurora-territory-video')
-      assert.equal(await video.getByRole('link', { name: 'Watch on YouTube ↗' }).getAttribute('href'), `https://www.youtube.com/watch?v=${expected[territory.id]}`)
-      assert.match(await video.locator('img').getAttribute('src'), new RegExp(`/vi/${expected[territory.id]}/`))
+      if (territory.id === 'korin-range') {
+        assert.equal(await video.getByRole('link', { name: 'Open video ↗' }).getAttribute('href'), korinVideoPath)
+        assert.match(await video.locator('img').getAttribute('src'), /korin-range-high-pass\.webp$/)
+      } else {
+        assert.equal(await video.getByRole('link', { name: 'Watch on YouTube ↗' }).getAttribute('href'), `https://www.youtube.com/watch?v=${expected[territory.id]}`)
+        assert.match(await video.locator('img').getAttribute('src'), new RegExp(`/vi/${expected[territory.id]}/`))
+      }
     }
   }
   assert.equal(embeds.length, 0, 'No player requests before a visitor chooses playback')
+  await page.goto(origin + '/campaign/aurora-vii/territories/korin-range')
+  await page.getByRole('button', { name: 'Play Korin Range video guide' }).click()
+  assert.equal(await page.locator('video').getAttribute('src'), korinVideoPath)
+  assert.equal(await page.locator('iframe').count(), 0)
+  assert.equal(await page.locator('video').getAttribute('controls'), '')
+  await page.getByRole('button', { name: 'Close player' }).click()
+  assert.equal(await page.locator('video').count(), 0)
   await page.route('https://i.ytimg.com/vi/1bz2C1y7ce0/maxresdefault.jpg*', route => route.fulfill({ status: 404, body: '' }))
   await page.goto(origin + '/campaign/aurora-vii/territories/iron-corridor')
   const poster = page.locator('.aurora-video-poster img')
