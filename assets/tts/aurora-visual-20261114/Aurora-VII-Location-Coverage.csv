@@ -1,0 +1,25 @@
+Territory,Location,Missions,Building instances,Building states,Wall panels across states,Texture atlas
+VERDE WILDS,Greenwood River Crossing,Frontline + Supremacy,10,20,60,greenwood-river.png
+VERDE WILDS,Greenwood Station Jungle Outpost,Frontline + Supremacy,10,20,50,greenwood-station.png
+ECHO SHORES,Freeport Echo,Frontline + Supremacy,36,82,246,freeport-echo.png
+ECHO SHORES,Dockside Operations,Frontline + Supremacy,18,40,120,dockside.png
+HARMONY PROVINCE,Courtyard District,Frontline + Supremacy,32,72,216,courtyard.png
+HARMONY PROVINCE,Civic Gardens,Frontline + Supremacy,28,62,168,civic-gardens.png
+EMBER HIGHLANDS,Red Mesa Settlement,Frontline + Supremacy,24,53,159,red-mesa.png
+EMBER HIGHLANDS,Geothermal Works,Frontline + Supremacy,10,24,54,geothermal.png
+CRYSTAL FRONTIER,Faultline Works,Frontline + Supremacy,16,32,96,faultline.png
+CRYSTAL FRONTIER,Rift Research Station,Frontline + Supremacy,18,36,108,rift-research.png
+IRON CORRIDOR,Iron Junction Freight Yard,Frontline + Supremacy,16,32,96,iron-junction.png
+IRON CORRIDOR,Transit & Maintenance Hub,Frontline + Supremacy,16,32,84,transit-hub.png
+KORIN RANGE,Research Valley,Frontline + Supremacy,22,44,108,research-valley.png
+KORIN RANGE,High Pass,Frontline + Supremacy,4,8,24,high-pass.png
+SULFUR BASIN,Helios Refinery,Frontline + Supremacy,16,32,96,helios-refinery.png
+SULFUR BASIN,Helios Extraction Fields,Frontline + Supremacy,4,8,24,helios-fields.png
+NOVA PROSPECT,Orbital Logistics District,Frontline + Supremacy,40,92,194,orbital-logistics.png
+NOVA PROSPECT,Administrative District,Frontline + Supremacy,38,86,120,nova-admin.png
+NORTHWARD EXPANSE,New Al-Medina Research Network,Frontline + Supremacy,24,52,152,al-medina.png
+NORTHWARD EXPANSE,Northern Survey Frontier,Frontline + Supremacy,18,36,40,survey-frontier.png
+FROSTREACH WASTES,Polar Expedition Zone,Frontline + Supremacy,12,24,28,polar-expedition.png
+FROSTREACH WASTES,Frosthold Wastes,Frontline + Supremacy,36,72,92,frosthold.png
+AZURE COAST,Tidal Infrastructure,Frontline + Supremacy,20,40,120,tidal.png
+AZURE COAST,Coastal Access,Frontline + Supremacy,24,48,144,coastal-access.png

@@ -1,0 +1,434 @@
+[
+  {
+    "territory": "VERDE WILDS",
+    "location": "Greenwood River Crossing",
+    "mission": "Frontline",
+    "buildings": 5,
+    "states": 10,
+    "new_panels": 30,
+    "atlas": "greenwood-river.png"
+  },
+  {
+    "territory": "VERDE WILDS",
+    "location": "Greenwood Station Jungle Outpost",
+    "mission": "Frontline",
+    "buildings": 5,
+    "states": 10,
+    "new_panels": 25,
+    "atlas": "greenwood-station.png"
+  },
+  {
+    "territory": "VERDE WILDS",
+    "location": "Greenwood River Crossing",
+    "mission": "Supremacy",
+    "buildings": 5,
+    "states": 10,
+    "new_panels": 30,
+    "atlas": "greenwood-river.png"
+  },
+  {
+    "territory": "VERDE WILDS",
+    "location": "Greenwood Station Jungle Outpost",
+    "mission": "Supremacy",
+    "buildings": 5,
+    "states": 10,
+    "new_panels": 25,
+    "atlas": "greenwood-station.png"
+  },
+  {
+    "territory": "ECHO SHORES",
+    "location": "Freeport Echo",
+    "mission": "Frontline",
+    "buildings": 18,
+    "states": 41,
+    "new_panels": 123,
+    "atlas": "freeport-echo.png"
+  },
+  {
+    "territory": "ECHO SHORES",
+    "location": "Freeport Echo",
+    "mission": "Supremacy",
+    "buildings": 18,
+    "states": 41,
+    "new_panels": 123,
+    "atlas": "freeport-echo.png"
+  },
+  {
+    "territory": "ECHO SHORES",
+    "location": "Dockside Operations",
+    "mission": "Supremacy",
+    "buildings": 9,
+    "states": 20,
+    "new_panels": 60,
+    "atlas": "dockside.png"
+  },
+  {
+    "territory": "ECHO SHORES",
+    "location": "Dockside Operations",
+    "mission": "Frontline",
+    "buildings": 9,
+    "states": 20,
+    "new_panels": 60,
+    "atlas": "dockside.png"
+  },
+  {
+    "territory": "HARMONY PROVINCE",
+    "location": "Courtyard District",
+    "mission": "Supremacy",
+    "buildings": 16,
+    "states": 36,
+    "new_panels": 108,
+    "atlas": "courtyard.png"
+  },
+  {
+    "territory": "HARMONY PROVINCE",
+    "location": "Courtyard District",
+    "mission": "Frontline",
+    "buildings": 16,
+    "states": 36,
+    "new_panels": 108,
+    "atlas": "courtyard.png"
+  },
+  {
+    "territory": "HARMONY PROVINCE",
+    "location": "Civic Gardens",
+    "mission": "Frontline",
+    "buildings": 14,
+    "states": 31,
+    "new_panels": 84,
+    "atlas": "civic-gardens.png"
+  },
+  {
+    "territory": "HARMONY PROVINCE",
+    "location": "Civic Gardens",
+    "mission": "Supremacy",
+    "buildings": 14,
+    "states": 31,
+    "new_panels": 84,
+    "atlas": "civic-gardens.png"
+  },
+  {
+    "territory": "EMBER HIGHLANDS",
+    "location": "Red Mesa Settlement",
+    "mission": "Frontline",
+    "buildings": 12,
+    "states": 27,
+    "new_panels": 81,
+    "atlas": "red-mesa.png"
+  },
+  {
+    "territory": "EMBER HIGHLANDS",
+    "location": "Red Mesa Settlement",
+    "mission": "Supremacy",
+    "buildings": 12,
+    "states": 26,
+    "new_panels": 78,
+    "atlas": "red-mesa.png"
+  },
+  {
+    "territory": "EMBER HIGHLANDS",
+    "location": "Geothermal Works",
+    "mission": "Frontline",
+    "buildings": 5,
+    "states": 12,
+    "new_panels": 27,
+    "atlas": "geothermal.png"
+  },
+  {
+    "territory": "EMBER HIGHLANDS",
+    "location": "Geothermal Works",
+    "mission": "Supremacy",
+    "buildings": 5,
+    "states": 12,
+    "new_panels": 27,
+    "atlas": "geothermal.png"
+  },
+  {
+    "territory": "CRYSTAL FRONTIER",
+    "location": "Faultline Works",
+    "mission": "Frontline",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "faultline.png"
+  },
+  {
+    "territory": "CRYSTAL FRONTIER",
+    "location": "Faultline Works",
+    "mission": "Supremacy",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "faultline.png"
+  },
+  {
+    "territory": "CRYSTAL FRONTIER",
+    "location": "Rift Research Station",
+    "mission": "Frontline",
+    "buildings": 9,
+    "states": 18,
+    "new_panels": 54,
+    "atlas": "rift-research.png"
+  },
+  {
+    "territory": "CRYSTAL FRONTIER",
+    "location": "Rift Research Station",
+    "mission": "Supremacy",
+    "buildings": 9,
+    "states": 18,
+    "new_panels": 54,
+    "atlas": "rift-research.png"
+  },
+  {
+    "territory": "IRON CORRIDOR",
+    "location": "Iron Junction Freight Yard",
+    "mission": "Frontline",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "iron-junction.png"
+  },
+  {
+    "territory": "IRON CORRIDOR",
+    "location": "Iron Junction Freight Yard",
+    "mission": "Supremacy",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "iron-junction.png"
+  },
+  {
+    "territory": "IRON CORRIDOR",
+    "location": "Transit & Maintenance Hub",
+    "mission": "Frontline",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 42,
+    "atlas": "transit-hub.png"
+  },
+  {
+    "territory": "IRON CORRIDOR",
+    "location": "Transit & Maintenance Hub",
+    "mission": "Supremacy",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 42,
+    "atlas": "transit-hub.png"
+  },
+  {
+    "territory": "KORIN RANGE",
+    "location": "Research Valley",
+    "mission": "Frontline",
+    "buildings": 11,
+    "states": 22,
+    "new_panels": 54,
+    "atlas": "research-valley.png"
+  },
+  {
+    "territory": "KORIN RANGE",
+    "location": "Research Valley",
+    "mission": "Supremacy",
+    "buildings": 11,
+    "states": 22,
+    "new_panels": 54,
+    "atlas": "research-valley.png"
+  },
+  {
+    "territory": "KORIN RANGE",
+    "location": "High Pass",
+    "mission": "Frontline",
+    "buildings": 2,
+    "states": 4,
+    "new_panels": 12,
+    "atlas": "high-pass.png"
+  },
+  {
+    "territory": "KORIN RANGE",
+    "location": "High Pass",
+    "mission": "Supremacy",
+    "buildings": 2,
+    "states": 4,
+    "new_panels": 12,
+    "atlas": "high-pass.png"
+  },
+  {
+    "territory": "SULFUR BASIN",
+    "location": "Helios Refinery",
+    "mission": "Supremacy",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "helios-refinery.png"
+  },
+  {
+    "territory": "SULFUR BASIN",
+    "location": "Helios Extraction Fields",
+    "mission": "Frontline",
+    "buildings": 2,
+    "states": 4,
+    "new_panels": 12,
+    "atlas": "helios-fields.png"
+  },
+  {
+    "territory": "SULFUR BASIN",
+    "location": "Helios Extraction Fields",
+    "mission": "Supremacy",
+    "buildings": 2,
+    "states": 4,
+    "new_panels": 12,
+    "atlas": "helios-fields.png"
+  },
+  {
+    "territory": "SULFUR BASIN",
+    "location": "Helios Refinery",
+    "mission": "Frontline",
+    "buildings": 8,
+    "states": 16,
+    "new_panels": 48,
+    "atlas": "helios-refinery.png"
+  },
+  {
+    "territory": "NOVA PROSPECT",
+    "location": "Orbital Logistics District",
+    "mission": "Frontline",
+    "buildings": 20,
+    "states": 46,
+    "new_panels": 97,
+    "atlas": "orbital-logistics.png"
+  },
+  {
+    "territory": "NOVA PROSPECT",
+    "location": "Orbital Logistics District",
+    "mission": "Supremacy",
+    "buildings": 20,
+    "states": 46,
+    "new_panels": 97,
+    "atlas": "orbital-logistics.png"
+  },
+  {
+    "territory": "NOVA PROSPECT",
+    "location": "Administrative District",
+    "mission": "Supremacy",
+    "buildings": 19,
+    "states": 43,
+    "new_panels": 60,
+    "atlas": "nova-admin.png"
+  },
+  {
+    "territory": "NOVA PROSPECT",
+    "location": "Administrative District",
+    "mission": "Frontline",
+    "buildings": 19,
+    "states": 43,
+    "new_panels": 60,
+    "atlas": "nova-admin.png"
+  },
+  {
+    "territory": "NORTHWARD EXPANSE",
+    "location": "New Al-Medina Research Network",
+    "mission": "Frontline",
+    "buildings": 12,
+    "states": 26,
+    "new_panels": 76,
+    "atlas": "al-medina.png"
+  },
+  {
+    "territory": "NORTHWARD EXPANSE",
+    "location": "New Al-Medina Research Network",
+    "mission": "Supremacy",
+    "buildings": 12,
+    "states": 26,
+    "new_panels": 76,
+    "atlas": "al-medina.png"
+  },
+  {
+    "territory": "NORTHWARD EXPANSE",
+    "location": "Northern Survey Frontier",
+    "mission": "Frontline",
+    "buildings": 9,
+    "states": 18,
+    "new_panels": 20,
+    "atlas": "survey-frontier.png"
+  },
+  {
+    "territory": "NORTHWARD EXPANSE",
+    "location": "Northern Survey Frontier",
+    "mission": "Supremacy",
+    "buildings": 9,
+    "states": 18,
+    "new_panels": 20,
+    "atlas": "survey-frontier.png"
+  },
+  {
+    "territory": "FROSTREACH WASTES",
+    "location": "Polar Expedition Zone",
+    "mission": "Frontline",
+    "buildings": 6,
+    "states": 12,
+    "new_panels": 14,
+    "atlas": "polar-expedition.png"
+  },
+  {
+    "territory": "FROSTREACH WASTES",
+    "location": "Polar Expedition Zone",
+    "mission": "Supremacy",
+    "buildings": 6,
+    "states": 12,
+    "new_panels": 14,
+    "atlas": "polar-expedition.png"
+  },
+  {
+    "territory": "FROSTREACH WASTES",
+    "location": "Frosthold Wastes",
+    "mission": "Frontline",
+    "buildings": 18,
+    "states": 36,
+    "new_panels": 46,
+    "atlas": "frosthold.png"
+  },
+  {
+    "territory": "FROSTREACH WASTES",
+    "location": "Frosthold Wastes",
+    "mission": "Supremacy",
+    "buildings": 18,
+    "states": 36,
+    "new_panels": 46,
+    "atlas": "frosthold.png"
+  },
+  {
+    "territory": "AZURE COAST",
+    "location": "Tidal Infrastructure",
+    "mission": "Frontline",
+    "buildings": 10,
+    "states": 20,
+    "new_panels": 60,
+    "atlas": "tidal.png"
+  },
+  {
+    "territory": "AZURE COAST",
+    "location": "Coastal Access",
+    "mission": "Frontline",
+    "buildings": 12,
+    "states": 24,
+    "new_panels": 72,
+    "atlas": "coastal-access.png"
+  },
+  {
+    "territory": "AZURE COAST",
+    "location": "Tidal Infrastructure",
+    "mission": "Supremacy",
+    "buildings": 10,
+    "states": 20,
+    "new_panels": 60,
+    "atlas": "tidal.png"
+  },
+  {
+    "territory": "AZURE COAST",
+    "location": "Coastal Access",
+    "mission": "Supremacy",
+    "buildings": 12,
+    "states": 24,
+    "new_panels": 72,
+    "atlas": "coastal-access.png"
+  }
+]

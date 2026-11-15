@@ -1,0 +1,31 @@
+{
+  "locations": 24,
+  "mission_setups": 48,
+  "building_instances": 492,
+  "building_states": 1047,
+  "unique_new_meshes": 472,
+  "new_wall_panels_across_states": 2599,
+  "new_triangles_across_unique_meshes": 2376,
+  "max_expanded_vertices": 24697,
+  "max_position_vertices": 23685,
+  "decoded_texture_files": 147,
+  "typed_colors_checked": 22767,
+  "nested_objects_checked": 15010,
+  "asset_url_fields_checked": 39519,
+  "changed_fields": {
+    "SaveName": 1,
+    "DiffuseURL": 4515,
+    "ImageURL": 71,
+    "ImageSecondaryURL": 52,
+    "r": 1029,
+    "g": 1029,
+    "b": 883,
+    "MeshURL": 1047
+  },
+  "original_geometry_preserved": true,
+  "colliders_transforms_states_scripts_preserved": true,
+  "live_tts_import_tested": false,
+  "fresh_cache_tested": false,
+  "multiplayer_tested": false,
+  "steam_publication_observed": false
+}
