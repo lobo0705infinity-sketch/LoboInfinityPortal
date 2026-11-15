@@ -1,0 +1,19 @@
+{
+  "archive": "Lobo-Infinity-All-104-Map-Names-Installer.zip",
+  "bytes": 6325088,
+  "sha256": "e244efd3cf2e6bd1b4249e0a917b1299bc895d3f0322abb4376c9dad20c78101",
+  "save_sha256": "9105c79d772b40491d69e07e572216578c5f04b68c1575b8142dda47ce1589ef",
+  "validation": {
+    "all_passed": true,
+    "map_setups": 104,
+    "named_controllers": 162,
+    "broker_variants": 8,
+    "unique_map_names": 61,
+    "broker_name_lifecycle_runs": 488,
+    "typed_colors_checked": 15024,
+    "modified_fields": 163,
+    "other_save_fields_unchanged": true,
+    "live_tts_tested": false
+  },
+  "asset_count": 8519
+}
