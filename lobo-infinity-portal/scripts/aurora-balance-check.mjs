@@ -86,15 +86,17 @@ const fixture = (balanced = true) => {
   f.turn.startVP.PanOceania=1
   assert.equal(resolveOperations(f.ledger,2).doctrines.find(d=>d.faction==='JSA').eligible,true,'JSA still qualifies by capturing from a faction ahead at Turn start')
 }
-// Objective enforcement: activation, activity, one completion per Turn; historical awards unchanged.
+// State objectives can use earlier progress without a current game; timing and award limits still apply.
 {
   const f=fixture()
-  f.act('assign-objective',{faction:'Ariadna',title:'Two victories',requirement:'Two counted victories'})
+  f.start.territories.slice(0,3).forEach(t=>{t.controller='Ariadna'})
+  f.act('assign-objective',{faction:'Ariadna',title:'Frontier Empire',requirement:'Control at least 3 territories at Turn end'})
   assert.throws(()=>f.act('assign-objective',{faction:'Ariadna',title:'Second',requirement:'Anything'}),/one active/)
   f.turn.phase='open';assert.throws(()=>f.act('assign-objective',{faction:'JSA',title:'Late',requirement:'Anything'}),/before choices/)
   f.turn.phase='closed';const id=f.ledger.operations.objectives[0].id
-  assert.throws(()=>f.act('objective',{id,approve:true,evidence:'Claim'}),/at least one counted/)
-  f.ledger.games.push(game('a'));f.act('objective',{id,approve:true,evidence:'Verified requirement and counted reports'})
+  assert.equal(f.ledger.games.length,0)
+  f.act('objective',{id,approve:true,evidence:'Three territories captured in prior Turns remain controlled at resolution'})
+  assert.equal(f.ledger.operations.objectives[0].status,'completed')
   f.ledger.operations.objectives.push({id:'legacy-carry',faction:'Ariadna',status:'assigned',assignedTurn:1})
   assert.throws(()=>f.act('objective',{id:'legacy-carry',approve:true,evidence:'Second claim'}),/Only one/)
 }
@@ -138,7 +140,7 @@ const fixture = (balanced = true) => {
   assert.equal(writes, 1)
   await assert.rejects(saveAuroraPublication({ expectedRevision: saved.revision, state: { ...revised, turn: 4, tiePriority: [...revised.tiePriority].reverse() } }, { getObject, putObject }), /remain fixed/)
 }
-// Objective withdrawal allows a prospective replacement; excluded reports cannot prove a claim.
+// Objective withdrawal allows a prospective replacement; valid cap-excluded reports can prove a claim.
 {
   const f = fixture()
   f.act('assign-objective', { faction: 'Ariadna', title: 'Replace me', requirement: 'Old target' })
@@ -149,6 +151,8 @@ const fixture = (balanced = true) => {
   const excluded = contributions.find(c => c.side === 'A' && !c.counted)
   f.ledger.claims.push({ id:'claim', gameId:excluded.gameId, faction:'Ariadna', turn:2, status:'approved' })
   f.turn.phase = 'closed'
-  assert.throws(() => f.act('objective', { id:f.ledger.operations.objectives.at(-1).id, approve:true, claimId:'claim', evidence:'Excluded report' }), /counted result/)
+  assert.doesNotThrow(() => f.act('objective', { id:f.ledger.operations.objectives.at(-1).id, approve:true, claimId:'claim', evidence:'Confirmed game meets the written requirement; TP excluded only by cap' }))
+  assert.equal(f.ledger.operations.objectives.at(-1).status,'completed')
+  assert.equal(f.ledger.operations.awards.find(a=>a.category==='objective').vp,2)
 }
 console.log('PASS: best-five/two-player selection, 20-win stress case, per-side inclusion, corrections, location/Turn isolation, approval gates, version freeze, Tohaa/CA/Narrative participation, active defence, tied challengers, faction-specific Doctrines, objective limits, durable public/private consistency.')

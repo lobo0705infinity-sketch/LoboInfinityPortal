@@ -26,7 +26,7 @@ Order results by TP descending, OP descending, earlier original submission times
 
 Counted TP and the OP from those same results feed Influence, support conversions, Infiltration comparisons, Narrative scoring and all campaign TP/OP tie-break totals. Apply separately earned support or Narrative bonuses afterwards; they do not occupy a result slot, create OP, or satisfy a requirement to play. For a campaign-end TP/OP tie-break, add each Turn's official counted totals under that Turn's own revision; do not retrospectively cap older Turns.
 
-All legitimate games remain in battle history and personal performance statistics. Opponents remain free to replay one another; the caps still apply. Only counted results can supply game-based Secret Objective evidence under the amendment. An employer still cannot claim hired players' victories as its own.
+All legitimate games remain in battle history and personal performance statistics. Opponents remain free to replay one another; the caps still apply. Any valid game can supply game-based Secret Objective evidence under its written conditions, whether or not its TP/OP are selected by the scoring cap. An employer still cannot claim hired players' victories as its own.
 
 ### Worked example
 
@@ -45,7 +45,6 @@ A alone cannot fill all five slots. Twenty perfect wins from A still contribute 
 - **Combined Army:** at least one of its own counted target games is required before an Infiltration can succeed. The existing comparison and complete-tie failure rules remain.
 - **Narrative winner:** at least one of the faction's own counted Narrative games is required. Bonus-only factions are ineligible; determine the winner among eligible factions.
 - **Successful defence:** the controller must earn at least one of its own counted TP at that territory. Another faction's activity does not make a passive hold an active defence.
-- **Secret Objective:** a faction must play at least one of its own counted games that Turn. Where the requirement concerns a specific territory, its own relevant target participation must be verified as part of objective evidence.
 
 These gates distinguish a successful operation from an outcome that happened without that faction participating. They do not require Tohaa to prove its support was the decisive point: that would punish useful cooperation whenever the beneficiary won comfortably.
 
@@ -65,24 +64,15 @@ Keep each faction's existing Doctrine condition and the limits of one Doctrine V
 
 A Doctrine being unavailable in a particular Turn is not automatically a design defect: circumstances are part of its identity. Review whether the vulnerability schedule repeatedly denies a faction any realistic opportunity across the campaign. Address a persistent problem through the calendar or an individually discussed revision to that faction's Doctrine. No replacement wording or guaranteed every-Turn scoring route is introduced by this draft.
 
-## 5. Standardize Secret Objective effort
+## 5. Secret Objectives follow their written conditions
 
-One active objective per faction; lock it before the Turn opens and before games. At most one completion per Turn, worth two VP, with the existing six-VP campaign maximum. Never assign an objective after seeing results. Older uncompleted objectives that are impossible under the new schedule or cap should be withdrawn with a recorded reason and replaced before play, without a VP penalty.
+One active objective per faction; assign before games. At most one completion per Turn, worth two VP, with the existing six-VP campaign maximum. Never assign an objective after seeing results or change its requirements after play begins.
 
-Use these assignment standards, keeping each faction's actual objective private:
+There is no additional blanket requirement to play a game in the active Turn. Objectives expressly checking existing holdings or Infiltrations can qualify through earlier progress. Any valid game can fulfil a game-based objective according to its written conditions, even when that result is excluded by the scoring cap. Later changes to the counted pool do not invalidate otherwise valid objective evidence. An employer cannot claim hired players' victories as its own.
 
-| Objective type | Assignment standard |
-|---|---|
-| Battle performance | At most two counted wins; a diversity requirement may ask for two different opposing factions, not four |
-| Territory operation | One named Vulnerable target, a specified capture/active-defence result, and at least five own counted TP there |
-| Specialist operation | One legal declared target, the faction's normal successful-operation requirement and a concrete additional task feasible within two counted games |
-| State objective | A reachable end-of-Turn state plus relevant own participation; no award solely for an inherited holding or somebody else's action |
+An objective requiring a successful Hidden Hand operation still requires that operation to succeed, including the proposed five own counted target TP threshold. This is the Hidden Hand condition, not a separate objective-participation rule.
 
-The proposed revision to a four-opposing-faction victory objective is **two counted victories against two different opposing factions in one Turn**, still two VP. Do not revise it after the faction has begun playing that Turn.
-
-Two wins and a territory capture are not statistically identical. Before assignment, the GM must check the actual vulnerable map, available opponents and active roster. Never assign an objective with no legal target. After resolution, record attempts, completions and games required by objective family; use that evidence to adjust the next campaign's pool rather than guessing that equal VP means equal difficulty.
-
-The software enforces activation timing, one active assignment, one completion, participation and the six-VP cap. It still relies on commissioner review for the substantive objective condition.
+The software enforces assignment timing, one active assignment, one completion and the six-VP cap. The commissioner reviews the actual requirement and evidence. No assigned objective has been rewritten. The earlier idea to reduce a four-opposing-faction victory requirement to two valid victories against different factions remains a discussion-only suggestion.
 
 ## 6. Optional review of past vulnerability selections
 
@@ -106,4 +96,4 @@ Do not add an undisclosed handicap for Lobo or any other player. Apply caps and 
 
 The draft adds automated scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, preservation of faction-specific Doctrine conditions, objective limits, frozen legacy rules and consistency between live totals and private resolution.
 
-Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and the current Turn briefing, reissue affected objective wording before play, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.
+Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and the current Turn briefing, retain the written objective conditions, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.

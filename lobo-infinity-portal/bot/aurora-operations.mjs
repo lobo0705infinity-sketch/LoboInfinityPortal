@@ -216,13 +216,8 @@ export function mutateOperations(ledger, input, players, publication, now = new 
         if (!claim || claim.status !== 'approved' || factionName(claim.faction) !== objective.faction || claim.turn !== n || ops.objectives.some(o => o.claimId === input.claimId)) fail('Choose an approved, unused claim from this faction and Turn.')
       }
       if (input.approve === true) {
-        if (turn.start.rulesRevision === BALANCED_RULES && input.claimId) {
-          const claim = ledger.claims.find(c => c.id === input.claimId)
-          if (!campaignContributions(turnGames(ledger, n), n, BALANCED_RULES).some(c => c.counted && c.faction === objective.faction && c.gameId === claim.gameId)) fail('Objective game evidence must come from a counted result for this faction.')
-        }
         if (turn.start.rulesRevision === BALANCED_RULES) {
           if (ops.awards.some(a => a.faction === objective.faction && a.category === 'objective' && a.turn === n)) fail('Only one Secret Objective may score per faction per Turn.')
-          if (!campaignContributions(turnGames(ledger, n), n, BALANCED_RULES).some(c => c.counted && c.faction === objective.faction)) fail('Objective completion requires at least one counted game by the faction this Turn.')
         }
         const already = ops.awards.filter(a => a.faction === objective.faction && a.category === 'objective').reduce((s, a) => s + a.vp, 0)
         if (already + 2 > 6) fail('This faction has reached the six-VP Secret Objective limit.')
