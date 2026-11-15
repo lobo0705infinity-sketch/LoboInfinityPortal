@@ -1,0 +1,82 @@
+[
+  {
+    "profile": "M12",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/d9b10e28e7e1a24aaec8.jpg",
+    "repaired_file": "restored-atlas-5c1872279c0d916f2dab.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-05-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "7ccf3418ca621ffd56c3e0fa06a9af6bd490f920d0a7c5b5f57336a8f3e178fc"
+  },
+  {
+    "profile": "M13",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/8ebf956094a73d6cb409.jpg",
+    "repaired_file": "restored-atlas-bbf3d6dc660d2c0c1bb9.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-06-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "ef0291a81b5932032a01e8d98c0bbddb4132a8f7cab41f5018119da67a08c0d7"
+  },
+  {
+    "profile": "P01",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/f22c7c13050fc539c44d.jpg",
+    "repaired_file": "restored-atlas-4e6dbc0bbe47d92d1371.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-07-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "19c067b40e16bc901edbfa735f34779aaa377f29e59747bbf6076751301012e7"
+  },
+  {
+    "profile": "P02",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/08457b727fecd55d2733.jpg",
+    "repaired_file": "restored-atlas-43eacc19ec4a3eb65d6c.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-07-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "0a4a9eeb00fe5e62c3e986b0f0f2eeb76e12a1ada7c87b65a547eea3dbe8bd0c"
+  },
+  {
+    "profile": "P03",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/894e801d07e8d9d1bc30.jpg",
+    "repaired_file": "restored-atlas-03da309e377897f43041.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-07-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "55d8cf41f9aa1e6b3bce4e18223c6a35519fb223a6e6a23085e910ced5e1ba96"
+  },
+  {
+    "profile": "P04",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/9ad9d08e2a9d5b903676.jpg",
+    "repaired_file": "restored-atlas-7c344267305cc5554aeb.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-08-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "a0a951c00befc063dc8db397706f341c349179ef670836b6e8139b8207897bb5"
+  },
+  {
+    "profile": "P05",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/cc33cd0d8d3220a330e0.jpg",
+    "repaired_file": "restored-atlas-925c7612b48d833aed7f.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-08-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "d46d6c1a7d05c667271cf5a7beec9b49e4b3030393b0d4ba5d573d0225a6aa21"
+  },
+  {
+    "profile": "P06",
+    "original_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/3c0ab16acee17ecc5f32b089addf602732b27a21/assets/tts/ancients-approved-base-rim/fe20ac87263aa694cb1c.jpg",
+    "repaired_file": "restored-atlas-0287de75925f7501ed0a.png",
+    "source_casualty_url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/049c7a7692318ee03004ac4e789eef06b266e5c3/assets/tts/ancients-casualties-r1/cas-02-material.jpg",
+    "source_discovered_in": "Lobo-Ancients-Workshop-R23-Installer.zip / Source/build_r15.py",
+    "current_pixels_preserved_exactly": true,
+    "original_casualty_pixels_restored_exactly": true,
+    "sha256": "b6b3436985562fda93bd8f3885cc2e551d02f016f1f989fe49b19851716d4d02"
+  }
+]
