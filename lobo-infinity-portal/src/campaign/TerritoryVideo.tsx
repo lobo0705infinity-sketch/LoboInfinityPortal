@@ -12,6 +12,7 @@ export default function TerritoryVideo({ territoryId, territoryName }: { territo
   return <section className="aurora-territory-video panel" aria-labelledby={`video-${territoryId}`}>
     <p className="eyebrow">Territory briefing</p>
     <h2 id={`video-${territoryId}`}>Watch the {territoryName} guide</h2>
+    {video.rulesUpdate ? <p className="aurora-muted">{video.rulesUpdate}</p> : null}
     <div className="aurora-video-frame">
       {playing ? <iframe
         src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0`}
@@ -28,3 +29,4 @@ export default function TerritoryVideo({ territoryId, territoryName }: { territo
     <p className="aurora-muted">Use the written battlefield rules below for the current rules and owner advantage.</p>
   </section>
 }
+

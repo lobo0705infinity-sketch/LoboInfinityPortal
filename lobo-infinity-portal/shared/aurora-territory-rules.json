@@ -9,9 +9,9 @@
   },
   "Korin Range": {
     "title": "Mountain Country",
-    "description": "Pale fractured mountains, steep research valleys and exposed high passes define Korin Range. Trails and buildings offer reliable routes through otherwise difficult ground. Mountain-trained troops retain their mobility, while the territory's restrictions keep TAGs out of these battles.",
-    "effect": "All terrain is Mountain Difficult Terrain, except agreed trails, clearings and buildings.\n\nTAGs cannot be included.",
-    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply.",
+    "description": "Pale fractured mountains, steep research valleys and exposed high passes define Korin Range. Trails and buildings offer reliable routes through otherwise difficult ground. Mountain-trained troops retain their mobility. Only TAGs with Terrain (Mountain) or Terrain (Total) on their Troop Profile may fight here.",
+    "effect": "All terrain is Mountain Difficult Terrain, except agreed trails, clearings and buildings.\n\nTAGs may be included only if their Troop Profile has Terrain (Mountain) or Terrain (Total).",
+    "details": "Both players use the battlefield rule. Only the controlling faction receives the owner advantage. Normal points, SWC and availability apply. Check TAG eligibility when building the Army List; the Mountain Guides owner advantage does not make an otherwise ineligible TAG legal.",
     "ownerTitle": "Mountain Guides",
     "owner": "Before deployment, choose three friendly troopers. They gain Terrain (Mountain) for the game."
   },

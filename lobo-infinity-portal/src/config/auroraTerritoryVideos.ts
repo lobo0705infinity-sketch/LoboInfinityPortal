@@ -1,7 +1,7 @@
 // All twelve published Aurora VII province guides.
-export const AURORA_TERRITORY_VIDEOS: Record<string, { videoId: string; title: string }> = {
+export const AURORA_TERRITORY_VIDEOS: Record<string, { videoId: string; title: string; rulesUpdate?: string }> = {
   'nova-prospect': { videoId: 'hPJqowEY2ag', title: 'Nova Prospect Province Guide' },
-  'korin-range': { videoId: 'XGDKjDwFM8Q', title: 'No TAGs Allowed: Korin Range' },
+  'korin-range': { videoId: 'XGDKjDwFM8Q', title: 'Korin Range Province Guide (earlier rules)', rulesUpdate: 'Updated 15 November 2026: this video predates the TAG rule change. TAGs are now allowed only if their Troop Profile has Terrain (Mountain) or Terrain (Total).' },
   'crystal-frontier': { videoId: 'hLn39ozOR28', title: 'Hacking Range Cut: Crystal Frontier' },
   'echo-shores': { videoId: 'xU0885BtA84', title: 'Echo Shores: Black-Market Arsenal' },
   'harmony-province': { videoId: 'abxV520l70E', title: 'Security & Camouflage: Harmony Province' },
@@ -14,5 +14,6 @@ export const AURORA_TERRITORY_VIDEOS: Record<string, { videoId: string; title: s
   'iron-corridor': { videoId: '1bz2C1y7ce0', title: 'Reinforced Cover: Iron Corridor' },
 }
 
-export const AURORA_RULES_REVISION = '30 October 2026'
-export const AURORA_SPECIAL_RULES_PDF_URL = '/guides/aurora-vii-territory-special-rules-20261030-aerial.pdf'
+export const AURORA_RULES_REVISION = '15 November 2026'
+export const AURORA_SPECIAL_RULES_PDF_URL = '/guides/aurora-vii-territory-special-rules-20261115-korin-tags.pdf'
+
