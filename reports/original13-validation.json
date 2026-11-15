@@ -1,0 +1,178 @@
+{
+  "scope": "13 battles / 16 layouts",
+  "collection_bags": 37,
+  "unchanged_bags": 21,
+  "model_identities": 191,
+  "model_states": 517,
+  "max_vertices": 13544,
+  "max_triangles": 13840,
+  "layouts": [
+    {
+      "battle": "Granicus \u2014 Arrian strengths",
+      "stands": 85,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 7.771561172376096e-16,
+      "minimum_base_edge_clearance_inches": 0.011999999999999955,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Granicus \u2014 reduced Persians",
+      "stands": 60,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 7.771561172376096e-16,
+      "minimum_base_edge_clearance_inches": 0.011999999999999955,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Zama \u2014 202 BC \u2014 Terrain-rich",
+      "stands": 81,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 8.881784197001252e-16,
+      "minimum_base_edge_clearance_inches": 0.0119999999999999,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Gaugamela \u2014 331 BC \u2014 Terrain-rich",
+      "stands": 116,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 8.881784197001252e-16,
+      "minimum_base_edge_clearance_inches": 0.011999999999999567,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Hydaspes \u2014 326 BC",
+      "stands": 86,
+      "commanders": 6,
+      "reserve_stands": 15,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 5.551115123125783e-16,
+      "minimum_base_edge_clearance_inches": 0.0119999999999999,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Issus \u2014 333 BC",
+      "stands": 107,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 1.7763568394002505e-15,
+      "minimum_base_edge_clearance_inches": 0.011999999999998012,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Cannae \u2014 216 BC",
+      "stands": 132,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 6.661338147750939e-16,
+      "minimum_base_edge_clearance_inches": 0.011999999999999622,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Zama \u2014 202 BC \u2014 Historical open ground",
+      "stands": 81,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 8.326672684688674e-17,
+      "minimum_base_edge_clearance_inches": 0.011999999999999983,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Gaugamela \u2014 331 BC \u2014 Historical open ground",
+      "stands": 116,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 3185,
+      "terrain_error_inches": 8.326672684688674e-17,
+      "minimum_base_edge_clearance_inches": 0.011999999999999983,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Trebia \u2014 218 BC",
+      "stands": 74,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 9744,
+      "terrain_error_inches": 1.5855504409412191e-09,
+      "minimum_base_edge_clearance_inches": 0.011999999999999622,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Cynoscephalae \u2014 197 BC",
+      "stands": 62,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 9744,
+      "terrain_error_inches": 3.069697829261031e-10,
+      "minimum_base_edge_clearance_inches": 0.011999999999999789,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Raphia \u2014 217 BC",
+      "stands": 85,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 9744,
+      "terrain_error_inches": 9.842504589130385e-11,
+      "minimum_base_edge_clearance_inches": 0.011999999999999955,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Magnesia \u2014 190 BC",
+      "stands": 73,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 9744,
+      "terrain_error_inches": 1.5855504409412191e-09,
+      "minimum_base_edge_clearance_inches": 0.011999999999999622,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Adrianople \u2014 AD 378",
+      "stands": 60,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 9744,
+      "terrain_error_inches": 8.051503908035329e-11,
+      "minimum_base_edge_clearance_inches": 0.0119999999999999,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Pharsalus \u2014 48 BC",
+      "stands": 82,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 475,
+      "terrain_error_inches": 5.551115123125783e-17,
+      "minimum_base_edge_clearance_inches": 0.011999999999999955,
+      "base_overlaps": 0
+    },
+    {
+      "battle": "Teutoburg Forest \u2014 AD 9",
+      "stands": 59,
+      "commanders": 6,
+      "reserve_stands": 0,
+      "ground_vertices": 475,
+      "terrain_error_inches": 4.440892098500626e-16,
+      "minimum_base_edge_clearance_inches": 0.011999999999999789,
+      "base_overlaps": 0
+    }
+  ],
+  "limits": [
+    "Static geometry and serialized-save validation. No live Tabletop Simulator or Windows installer test."
+  ],
+  "stands": 1359,
+  "commanders": 96,
+  "reserve_stands": 15,
+  "passed": true
+}
