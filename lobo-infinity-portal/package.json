@@ -231,12 +231,14 @@
     "test:matchup-workbench": "node scripts/matchup-workbench-check.mjs",
     "test:workshop-current-collection": "node --experimental-strip-types scripts/workshop-current-collection-check.mjs",
     "test:top-40-branding": "node scripts/top-40-branding-check.mjs",
-    "test:aurora-operations": "node scripts/aurora-operations-check.mjs",
+    "test:aurora-operations": "node scripts/aurora-operations-check.mjs && npm run test:aurora-balance",
     "test:aurora-operations:browser": "node scripts/aurora-operations-browser-check.mjs",
     "test:aurora-reporting-practice:browser": "node scripts/aurora-reporting-practice-browser-check.mjs",
     "test:top-40-launch-completion": "node --experimental-strip-types scripts/top-40-launch-completion-check.mjs",
     "test:list-exchange": "node scripts/list-exchange-check.mjs",
-    "test:player-ratings": "node scripts/player-ratings-check.mjs"
+    "test:player-ratings": "node scripts/player-ratings-check.mjs",
+    "test:aurora-balance": "node scripts/aurora-balance-check.mjs",
+    "test:aurora-balance:browser": "CAMPAIGN_TEST_BALANCE=1 node scripts/aurora-operations-browser-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",

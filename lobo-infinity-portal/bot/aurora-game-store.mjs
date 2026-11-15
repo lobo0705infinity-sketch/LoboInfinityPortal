@@ -1,7 +1,7 @@
 import { mkdir,readFile,open,rename } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { campaignTotals,validateCampaignGame,campaignText } from '../shared/aurora-games.mjs'
+import { campaignTotals,campaignContributions,campaignRulesForTurn,validateCampaignGame,campaignText } from '../shared/aurora-games.mjs'
 import { operationsView, mutateOperations, guardCampaignGame, validOperations } from './aurora-operations.mjs'
 const fail=message=>{throw Error(message)}
 export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeReset=false}={}) {
@@ -28,13 +28,21 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
     resetPractice:()=>run(async()=>{if(!allowPracticeReset)fail('Only a practice ledger can be reset.');await write({version:1,games:[],claims:[],turns:{}})}),
     operations:()=>run(async()=>operationsView(await read())),
     operate:(input,players,publication)=>run(async()=>{const s=await read();const result=mutateOperations(s,input,players,publication,now());await write(s);return result}),
-    view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn),reporting:s.operations?{turn:publication.turn,phase:s.operations.turns[publication.turn]?.phase||'unprepared'}:null}}),
-    totals:turn=>run(async()=>campaignTotals((await read()).games,turn)),
+    view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn,campaignRulesForTurn(s,publication.turn)),reporting:s.operations?{turn:publication.turn,phase:s.operations.turns[publication.turn]?.phase||'unprepared'}:null}}),
+    totals:turn=>run(async()=>{const s=await read();return campaignTotals(s.games,turn,campaignRulesForTurn(s,turn))}),
     listExchangeReports: codes => run(async () => (await read()).games.filter(g => codes.includes(g.listExchangeCode)).map(g => ({
       code: g.listExchangeCode, id: `aurora:${g.id}`, players: [g.playerA.name, g.playerB.name], playerIds: [g.playerA.id, g.playerB.id],
       submittedAt: Date.parse(g.createdAt), accepted: g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved),
     }))),
-    activity:turn=>run(async()=>{const s=await read(),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved));return {turn,totals:campaignTotals(games,turn),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB}))}}),
+    activity:turn=>run(async()=>{
+      const s=await read(),rulesRevision=campaignRulesForTurn(s,turn),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved))
+      const contributions=campaignContributions(games,turn,rulesRevision),bySide=new Map(contributions.map(c=>[`${c.gameId}:${c.side}`,c]))
+      return {turn,rulesRevision,totals:campaignTotals(games,turn,rulesRevision),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({
+        id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB,
+        countedA:bySide.get(`${id}:A`).counted,countedB:bySide.get(`${id}:B`).counted,
+        countingReasonA:bySide.get(`${id}:A`).reason,countingReasonB:bySide.get(`${id}:B`).reason,
+      }))}
+    }),
     submit:(input,player,opponent,publication)=>run(async()=>{
       const s=await read();if(!player||!opponent||player.userId===opponent.userId)fail('Choose another registered campaign player.')
       if (input.listExchangeCode && s.games.some(g => g.listExchangeCode === String(input.listExchangeCode).trim().toUpperCase())) fail('Choose a new LLH game code; this exchange is already attached to a campaign report.')

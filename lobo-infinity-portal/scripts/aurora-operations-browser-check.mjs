@@ -14,7 +14,9 @@ import { createCampaignGameService } from '../bot/aurora-game-service.mjs'
 const directory = await mkdtemp(join(tmpdir(), 'aurora-ops-browser-')), store = createCampaignGameStore(join(directory, 'games.json'))
 const players = AURORA_REGISTRATION_FACTIONS.map((f, i) => ({ userId: String(100000000000000000n + BigInt(i)), name: f.name + ' commander', faction: f.id }))
 const person = f => players.find(p => factionName(p.faction) === f)
+const balanced = process.env.CAMPAIGN_TEST_BALANCE === '1'
 let state = emptyAuroraState(), publicationCount = 0, captured = null
+if (balanced) { state.rulesRevision = '2026-11-balance'; state.tiePriority = [...AURORA_FACTIONS] }
 state.turn = 1; state.deadline = '2026-12-01T23:59:00-05:00'; state.territories.forEach((t, i) => { t.controller = AURORA_CONQUEST_FACTIONS[i % 8]; t.vulnerable = i < 4 })
 for (const f of AURORA_FACTIONS) await store.operate({ action: 'representatives', revision: (await store.operations()).revision, turn: 0, faction: f, commander: person(f).userId, reason: 'Fixture representative' }, players, state)
 const service = createCampaignGameService({ store, registrations: { player: async id => players.find(p => p.userId === id), players: async () => players }, identity: () => null, notify: async () => {}, fetchObject: async url => ({ ok: true, json: async () => url.includes('verify-admin') ? { authorized: true } : { state } }) })
@@ -44,7 +46,7 @@ try {
   })
   await page.addInitScript(() => localStorage.setItem('lobo-session-token', 'fixture-commissioner-token'))
   await page.goto(`${root}/commissioner/aurora-vii`)
-  await page.getByRole('heading', { name: 'Campaign operations', exact: true }).waitFor()
+  await page.getByRole('heading', { name: 'Campaign operations', exact: true }).waitFor({timeout:10000}).catch(async error => { console.log('Page errors:',errors); console.log('Page text:',(await page.locator('body').innerText()).slice(0,5000)); throw error })
   await expect(page.getByText('Turn not prepared', { exact: true })).toBeVisible()
   async function save(title, fields = {}) {
     console.log('Checking:', title)
@@ -63,6 +65,18 @@ try {
   await save('Lock decisions & open games'); await expect(page.getByText('Games open · choices locked', { exact: true })).toBeVisible()
   const game = await store.submit({ turn: 1, date: new Date().toISOString().slice(0, 10), kind: 'territory', location: 'nova-prospect', mission: 'Claim the Frontier', opA: 7, opB: 6 }, person('Yu Jing'), person('PanOceania'), state)
   await store.act({ id: game.id, revision: game.revision, action: 'confirm' }, person('PanOceania').userId, false)
+  if (balanced) {
+    for (const opA of [8,9]) {
+      const extra = await store.submit({ turn:1, date:new Date().toISOString().slice(0,10), kind:'territory', location:'nova-prospect', mission:'Claim the Frontier', opA, opB:6 },person('Yu Jing'),person('PanOceania'),state)
+      await store.act({id:extra.id,revision:extra.revision,action:'approve',reason:'Separate completed fixture game'},null,true)
+    }
+    const activity=await store.activity(1)
+    assert.equal(activity.games.filter(g=>g.countedA).length,2)
+    assert.equal(activity.totals.find(r=>r.faction==='Yu Jing').tp,10)
+    await page.getByRole('button',{name:'Reload private ledger',exact:true}).click()
+    await page.getByText('Which results count',{exact:true}).click()
+    await expect(page.getByText('Player limit: two results at this location').first()).toBeVisible()
+  }
   await save('Close campaign reporting'); await expect(page.getByText('Reporting closed · review results', { exact: true })).toBeVisible()
   const commit = page.getByRole('group', { name: 'Commit reviewed Turn resolution', exact: true })
   await commit.locator('input[value="Yu Jing"]').check(); await save('Commit reviewed Turn resolution')
@@ -74,12 +88,22 @@ try {
   const consent = page.getByRole('checkbox', { name: /I confirm all content here/ }); await consent.check()
   await page.getByRole('button', { name: 'Publish approved public state', exact: true }).click()
   await expect(page.getByText('The approved public campaign state is now published.', { exact: true })).toBeVisible()
-  assert.equal(publicationCount, 1); assert.equal(state.territories[0].controller, 'Yu Jing'); assert.equal(state.standings.find(s => s.faction === 'Tohaa').vp, 2)
+  assert.equal(publicationCount, 1); assert.equal(state.territories[0].controller, 'Yu Jing'); assert.equal(state.standings.find(s => s.faction === 'Tohaa').vp, balanced ? 0 : 2)
   for (const secret of ['PRIVATE_SENTINEL', 'commanders', 'credits', 'offers', 'messageUrl']) assert(!JSON.stringify(captured).includes(secret))
   await page.setViewportSize({ width: 390, height: 844 }); assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Commissioner phone layout fits')
   await page.getByRole('heading', {name:'Campaign operations',exact:true}).scrollIntoViewIfNeeded()
   await page.screenshot({ path: join(directory, 'commissioner-mobile.png'), fullPage: false })
   await page.goto(`${root}/campaign/aurora-vii/map`); await page.getByRole('combobox', {name:'Choose a territory'}).selectOption('nova-prospect'); await expect(page.locator('.aurora-facts').getByText('Yu Jing', {exact:true})).toBeVisible()
+  if (balanced) {
+    await page.goto(`${root}/campaign/aurora-vii/rules`)
+    await expect(page.getByText('November balance amendment applies to this Turn.',{exact:true})).toBeVisible()
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Rules phone layout fits')
+    await page.goto(`${root}/campaign/aurora-vii/standings`)
+    await page.getByText('3 confirmed games this Turn.',{exact:true}).waitFor()
+    await page.locator('.aurora-battle-row').first().locator('summary').click()
+    await expect(page.getByText(/Each player’s side is selected independently/)).toBeVisible()
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Results phone layout fits')
+  }
   assert.deepEqual(errors, [])
   console.log('PASS: real private ledger/service, commissioner authentication fixture, DM recording, Credit reserve, lock/open/close, reviewed commit, Doctrine award, public draft transfer, allowlisted publication and mobile layout. No production data or messages. Screenshots:', directory)
 } finally { await browser.close(); await new Promise(r => server.close(r)); await rm(join(directory, 'games.json'), { force: true }) }

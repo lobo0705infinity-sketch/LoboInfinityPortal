@@ -1,6 +1,6 @@
 import { AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
 import { AURORA_DOCTRINES } from '../shared/aurora-public.mjs'
-import { ARIADNA_BRIEFING, ARIADNA_BRIEFING_MARKER } from './aurora-ariadna-briefing.mjs'
+import { ARIADNA_BRIEFING, ARIADNA_BRIEFING_MARKER, AURORA_RULES_NOTICE } from './aurora-ariadna-briefing.mjs'
 
 const welcome = name => `Welcome to ${name}’s campaign headquarters. Use this channel to coordinate games, discuss targets, share lists, and keep our plans within the faction.`
 const conquest = `• Every **Tournament Point generates 1 Influence** in the territory where that game was reported.
@@ -99,13 +99,13 @@ We fight to become the contractors a client cannot afford to do without: capable
 NA2 follows **Contract Warfare**, rather than territorial Conquest:
 
 • We generate **no territorial Influence**.
-• Eligible Conquest factions may privately offer a Contract naming an Employer and one Vulnerable Territory. NA2 accepts **one Contract**.
-• To succeed, our faction must finish above **every non-Employer faction** in that territory by total TP. OP breaks TP ties; a complete tie fails.
-• The Employer’s totals are ignored when checking our performance.
-• Success awards **NA2 +2 Campaign VP** and the Employer **+1 Campaign VP**. Each Employer can benefit from only one successful NA2 Contract during the campaign.
+• Conquest factions, Tohaa and Combined Army may offer a private Contract naming one Vulnerable Territory and an affordable Credit bid. NA2 accepts **at most one Contract per Turn**.
+• Every complete **2 NA2 territorial TP** at the contracted target supplies **+1 support** to the Employer's operation, even if the Contract fails. Our OP does not transfer.
+• Success requires **at least 5 own target TP** (3 with Operational Preparation) **and the Employer's declared outcome**. We do not have to outscore every other faction.
+• Success awards **NA2 +2 Campaign VP** and the agreed Credit payment. The Employer gains **no extra Contract VP**. Repeat Employers are allowed. Failed bids return to the Employer; approved Insurance follows its separate rule.
 
 **Our approach**
-Agree on the accepted Contract before committing our games. Concentrate our effort in the contracted territory and track every non-Employer competitor. Beating the Employer is not the success condition.
+Agree on the accepted Contract before committing our games. Concentrate our effort in the contracted territory, meet our own TP threshold, and help the Employer achieve its declared outcome. Purchases use start-of-Turn Credits; payment earned at resolution becomes available next Turn. Use the current private guide for bids and service costs.
 
 Confirm eligibility and our private selection with the GM. Keep the accepted Contract and its Employer private until resolution.
 
@@ -205,7 +205,9 @@ Narrative Mission games contribute to a **separate faction total**, not territor
 
 ${confidential}
 
-**Secure our foothold. Defend our gains. Advance the State Empire.**`
+**Secure our foothold. Defend our gains. Advance the State Empire.**
+
+${AURORA_RULES_NOTICE}`
 
 export const AURORA_FACTION_BRIEFINGS = AURORA_REGISTRATION_FACTIONS
   // Publish only commissioner-approved briefing content. New factions may register
@@ -244,6 +246,7 @@ ${confidential}
 
 **${profile.motto}**`
   }
+  if (!['ariadna', 'yu-jing'].includes(faction.id)) content += '\n\n' + AURORA_RULES_NOTICE
   return { ...faction, content, color,
     marker: faction.id === 'ariadna' ? ARIADNA_BRIEFING_MARKER : `Aurora VII · ${faction.name} faction briefing · ${faction.id === 'aleph' ? 'v2' : 'v1'}`,
     path: `/data/aurora-vii-${faction.id}-briefing${faction.id === 'aleph' ? '-v2' : ''}.json`,

@@ -8,7 +8,7 @@ export default async function handler(request, response) {
     if (!upstream.ok) throw Error('Unavailable')
     const data = await upstream.json()
     if (!Number.isInteger(data.turn) || !Array.isArray(data.games) || !Array.isArray(data.totals)) throw Error('Invalid activity')
-    const publicActivity = {turn:data.turn, totals:data.totals.map(({location,faction,tp,op})=>({location,faction,tp,op})), games:data.games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB}))}
+    const publicActivity = {turn:data.turn, rulesRevision:data.rulesRevision === '2026-11-balance' ? data.rulesRevision : 'legacy', totals:data.totals.map(({location,faction,tp,op})=>({location,faction,tp,op})), games:data.games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB,countedA,countedB,countingReasonA,countingReasonB})=>({id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB,...(typeof countedA === 'boolean' && typeof countedB === 'boolean' ? {countedA,countedB,countingReasonA:String(countingReasonA || '').slice(0,100),countingReasonB:String(countingReasonB || '').slice(0,100)} : {})}))}
     const manual = new URL(request.url || '/api/aurora-activity', 'https://lobo-infinity-portal.vercel.app').searchParams.get('refresh') === '1'
     if (!manual) {
       response.setHeader('cache-control', 'public, max-age=0, must-revalidate')

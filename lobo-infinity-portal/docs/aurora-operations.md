@@ -30,3 +30,11 @@ Private operations are an additive, versioned section of the existing `/data/aur
 The public bulletin remains a separate allowlisted publication. Committing private resolution does not itself publish. A publication failure leaves the private outcome durable and the load/publish step retryable without duplicate awards. The normal Railway volume backup procedure must continue to cover the whole game ledger.
 
 Validation: `npm run test:aurora-operations`, existing game/registration/publication checks, TypeScript, production build, and the isolated commissioner browser rehearsal. Tests use temporary ledgers and simulated identities; no production records or messages are created.
+
+## November balance amendment (opt-in)
+
+See [the complete amendment and rollout plan](aurora-balance-amendment-20261115.md). Missing `rulesRevision` means legacy rules. To adopt, publish `2026-11-balance` and the publicly drawn eleven-faction `tiePriority` for a new Turn before preparing it. The prepared public state is authoritative for scoring, including live totals. Public per-side counting labels disclose no private IDs or decisions. New rules do not rewrite previously prepared Turns.
+
+Under the amendment, only the best five results per faction/location count, with at most two per registered player. The same counted pool supplies own OP, support conversions, specialist thresholds and Narrative scoring. Tohaa requires five own counted target TP; CA and Narrative require an own counted game; an active defence requires the owner's own TP. A complete territorial tie retains the incumbent only if among the leaders; otherwise the published priority decides. A common Doctrine alternative requires control plus eight own counted target TP. Objectives lock before play, one active and one completion per Turn, with own participation and the existing six-VP cap. Full objective evidence remains a GM judgment.
+
+The broader calendar, objective-effort, next-campaign setup and terrain proposals are documented procedures, not silently enabled rule changes. Run `npm run test:aurora-balance` alongside the existing checks before adoption.

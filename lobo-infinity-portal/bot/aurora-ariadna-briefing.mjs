@@ -1,5 +1,6 @@
 import { createFactionBriefingPublisher } from './aurora-faction-briefing-publisher.mjs'
 
+export const AURORA_RULES_NOTICE = '**Rules revision:** check the announced Turn at https://lobo-infinity-portal.vercel.app/campaign/aurora-vii/rules#balance-amendment. An adopted amendment overrides the affected scoring paragraphs above; existing Turns retain their published rules.'
 export const ARIADNA_BRIEFING_MARKER = 'Aurora VII · Ariadna faction briefing · v1'
 export const ARIADNA_BRIEFING = `## 🐺 ARIADNA — FACTION BRIEFING
 **Aurora VII: Race for the Gate**
@@ -34,7 +35,9 @@ Discuss targets, match scheduling, and any GM-issued Secret Objective in this ch
 
 **Before each game:** confirm the mission, Campaign Location, and current Event rules. Afterwards, report the result accurately.
 
-**Protect our people. Hold the frontier.**`
+**Protect our people. Hold the frontier.**
+
+${AURORA_RULES_NOTICE}`
 
 export function createAriadnaBriefingPublisher({ path = '/data/aurora-vii-ariadna-briefing.json' } = {}) {
   return createFactionBriefingPublisher({ path, factionId: 'ariadna', marker: ARIADNA_BRIEFING_MARKER, content: ARIADNA_BRIEFING })
