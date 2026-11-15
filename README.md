@@ -49,3 +49,9 @@ New model and terrain URLs are pinned to an immutable public GitHub commit. The 
 **Live Tabletop Simulator behavior and Windows installation have not been tested in this workspace.** Static checks and renders do not verify TTS importer behavior, runtime physics, load times or the Steam Workshop upload. The existing scenario rosters, rules and briefings were retained; this was a model, label, layout and terrain audit, not a new historical-source audit.
 
 To update Steam Workshop: install, load the R12 save, then use **Update Workshop** on the existing entry. GitHub publication alone does not update Steam Workshop.
+
+## Published asset verification
+
+All **836 referenced public assets** returned HTTP 200 and matched their local SHA-256 hashes, including **791 new asset paths**.
+
+Asset commit: [00ae124dd0d398b08fb16081ceb2cceada654f1e](https://github.com/lobo0705infinity-sketch/LoboInfinityPortal/commit/00ae124dd0d398b08fb16081ceb2cceada654f1e).

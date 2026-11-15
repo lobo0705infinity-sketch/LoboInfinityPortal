@@ -1,0 +1,10 @@
+{
+  "scope": "Every mesh, collider and image referenced by the 16 revised layouts",
+  "passed": true,
+  "asset_count": 836,
+  "new_asset_count": 791,
+  "elapsed_seconds": 139.2,
+  "asset_commit": "00ae124dd0d398b08fb16081ceb2cceada654f1e",
+  "failures": 0,
+  "save_sha256": "fbb3ce27a7e8997c14cca27be1c021cfffa9ae41fcf89fec0c89146d15852392"
+}
