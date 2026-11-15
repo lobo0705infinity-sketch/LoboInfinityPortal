@@ -151,11 +151,4 @@ const fixture = (balanced = true) => {
   f.turn.phase = 'closed'
   assert.throws(() => f.act('objective', { id:f.ledger.operations.objectives.at(-1).id, approve:true, claimId:'claim', evidence:'Excluded report' }), /counted result/)
 }
-// The proposed next-campaign calendar gives every territory exactly one slot in each half.
-{
-  const amendment = await readFile(new URL('../docs/aurora-balance-amendment-20261115.md', import.meta.url),'utf8')
-  const rows = amendment.split('\n').filter(line => /^\| [1-6] \|/.test(line)).map(line => line.split('|').slice(2,-1).map(s=>s.trim()))
-  assert.equal(rows.length,6)
-  for (const half of [rows.slice(0,3),rows.slice(3)]) { assert.equal(half.flat().length,12); assert.equal(new Set(half.flat()).size,12) }
-}
 console.log('PASS: best-five/two-player selection, 20-win stress case, per-side inclusion, corrections, location/Turn isolation, approval gates, version freeze, Tohaa/CA/Narrative participation, active defence, tied challengers, faction-specific Doctrines, objective limits, durable public/private consistency.')

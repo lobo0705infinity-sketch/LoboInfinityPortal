@@ -2,7 +2,13 @@
 
 Prepared 15 November 2026. Status: draft; no live campaign activation and no retrospective scoring changes.
 
-This package addresses concentration of results, passive scoring, territorial ties, doctrine access, objective workload, calendar discretion, starting positions and battlefield asymmetry. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
+This package addresses concentration of results, passive scoring, territorial ties and objective workload. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
+
+## Campaign design retained
+
+All territories start uncontrolled. There are no starting territory packages and no starting-package compensation points.
+
+Faction-specific Doctrines and distinct territory-owner advantages remain. Harmony retains its restriction on Camouflaged State and +3 Discover. Ember retains its Super-Jump restriction. The approved Korin TAG eligibility rule remains: Terrain (Mountain) or Terrain (Total) is required. This scoring amendment does not redesign territory rules or bonuses.
 
 ## Adoption and authority
 
@@ -10,7 +16,7 @@ Choose the first affected Turn, announce the amendment to all factions before it
 
 Do not change an active Turn's rules in response to its results. Publication rejects same-Turn activation, and operations rejects a different revision or priority between preparation and opening games. The selected revision and faction tie priority remain fixed after adoption. No messages are sent by this change.
 
-The scoring and participation provisions below are implemented in the draft portal code. Calendar publication, objective difficulty review and the separate next-campaign provisions are commissioner procedures: they are not automatic calculations or a claim that existing games have been rebalanced.
+The scoring and participation provisions below are implemented in the draft portal code. Objective difficulty review and the optional past-exposure review are commissioner procedures: they are not automatic calculations or a claim that existing games have been rebalanced.
 
 ## 1. Count five faction results, at most two per player
 
@@ -78,49 +84,13 @@ Two wins and a territory capture are not statistically identical. Before assignm
 
 The software enforces activation timing, one active assignment, one completion, participation and the six-VP cap. It still relies on commissioner review for the substantive objective condition.
 
-## 6. Optional discussion: publish a vulnerability calendar
+## 6. Optional review of past vulnerability selections
 
-Sections 6–8 are additional design ideas for discussion, not adopted campaign rules or implemented scoring changes.
+Retain Turn-by-Turn announcements of the four Vulnerable Territories. Reducing surprise is not a fairness goal in itself; adapting to newly announced fronts is part of the campaign's strategic character. A full public calendar is not proposed for adoption.
 
-For the ongoing campaign, publish every remaining Turn's four Vulnerable Territories before the first amended Turn. Alongside it, show each territory's previous and planned exposure count. Give the least-exposed territories priority when filling uncommitted slots. Honor already-earned calendar privileges, record their public effect when exercisable, and explain any resulting exception. If too few Turns remain to equalize exposure, say so; do not claim the past has been repaired.
+If the GM wants to review access to territory contests, keep a record of which territories have already been Vulnerable and why. Use it to check for repeated protection or exposure, accounting for earned rewards and the narrative. The record can support review of completed Turns without revealing future selections. Different exposure counts alone do not prove unfairness, and this review creates no new fixed rotation or equal-exposure requirement.
 
-For a fresh six-Turn campaign, each territory is vulnerable once in Turns 1–3 and once in Turns 4–6. There are exactly 24 slots: twelve territories, twice each. One legal base calendar is:
-
-| Turn | Territory 1 | Territory 2 | Territory 3 | Territory 4 |
-|---:|---|---|---|---|
-| 1 | Nova Prospect | Echo Shores | Harmony Province | Ember Highlands |
-| 2 | Korin Range | Verde Wilds | Sulfur Basin | Northward Expanse |
-| 3 | Crystal Frontier | Azure Coast | Frostreach Wastes | Iron Corridor |
-| 4 | Nova Prospect | Verde Wilds | Frostreach Wastes | Iron Corridor |
-| 5 | Korin Range | Azure Coast | Harmony Province | Northward Expanse |
-| 6 | Crystal Frontier | Echo Shores | Ember Highlands | Sulfur Basin |
-
-This is a tested example, not an invented replacement for the ongoing campaign's history or announced targets. Draw or choose the actual calendar before factions choose starting packages. For the next campaign, replace rewards that alter vulnerability with a clearly described narrative/story choice; the normal Narrative VP award remains. This prevents a late story reward from overriding guaranteed exposure. Existing earned rewards are not revoked.
-
-A fixed calendar reduces GM discretion and makes planning easier. It also removes some surprise; current Events and story developments can supply that uncertainty without determining whose holdings can be attacked.
-
-## 7. Optional discussion: starting-package compensation
-
-For the next campaign only, retain the eight thematic starting packages and random choice order. A faction assigned a package worth two printed VP receives one fixed **setup compensation VP at campaign end**. Record the recipient at setup; the point is not attached to the territory and does not transfer with ownership. Three-VP packages receive none. This compensation is excluded from mid-campaign earned-VP comparisons, including JSA's Doctrine.
-
-That equalizes starting nominal value at three without changing territory values, creating extra units or rewriting current scores. It does not claim all packages have identical defendability or battlefield advantages. Do not issue retrospective compensation to the ongoing campaign.
-
-This is a proposed next-campaign rule; the draft engine does not automatically grant setup compensation to existing factions.
-
-## 8. Optional discussion: owner advantages and territory restrictions
-
-Keep the approved Korin eligibility rule: only TAGs with Terrain (Mountain) or Terrain (Total) may enter. The separate Korin map/video work remains authoritative; this amendment does not revert it.
-
-For a separate next-campaign terrain revision, trial these exact changes:
-
-- **Owner advantage:** replace the twelve unequal owner advantages with one common benefit: once per battle, reroll one failed, non-Face-to-Face WIP roll to interact with a mission objective. The new result stands; it cannot be rerolled again. A faction benefits only while it is the Turn-start controller. No transfer through support or a contract.
-- **Harmony:** retain +3 Discover; remove the blanket prohibition on entering Camouflaged State. Marker restrictions written in the mission itself still apply.
-- **Ember:** remove the blanket suppression of Super-Jump. Use the actual terrain, height and ordinary movement rules to define the battlefield challenge.
-- **Other territory effects:** retain their written rules for the first test pass. Test LoF, Hacking, water and toxic effects with armies that rely on the affected mechanics before deciding another revision. A symmetric rule can still have asymmetric army impact.
-
-Do not activate these terrain changes midway through an announced Turn. The owner reroll is simpler and consistent, but can still vary in value with mission and army; the test is practical play, not an assertion of perfect equality. Record side, initiative, faction, terrain traits, owner benefit used and OP margin in paired test games, reversing roles where feasible. Use those results to decide which effects need a further adjustment. This workstream needs a new territory sheet and corresponding video updates; no existing terrain files are changed in this scoring patch.
-
-## 9. Make capped scoring transparent
+## 7. Make capped scoring transparent
 
 The existing TP formula is straightforward. This section proposes visibility into which results the new caps select; it is not a finding that the current TP formula is confusing.
 
@@ -136,4 +106,4 @@ Do not add an undisclosed handicap for Lobo or any other player. Apply caps and 
 
 The draft adds automated scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, preservation of faction-specific Doctrine conditions, objective limits, frozen legacy rules and consistency between live totals and private resolution.
 
-Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and calendar, reissue affected objective wording before play, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.
+Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and the current Turn briefing, reissue affected objective wording before play, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.
