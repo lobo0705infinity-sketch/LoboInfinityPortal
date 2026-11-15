@@ -26,11 +26,47 @@ export function validateCampaignGame(input,state,today) {
   if(photos.split(/\s+/).filter(Boolean).some(v=>{try{const u=new URL(v);return u.protocol!=='https:'||Boolean(u.username||u.password)}catch{return true}})) throw Error('Photo links must be HTTPS links separated by spaces or new lines.')
   return {turn:state.turn,date,kind,location,mission,opA:input.opA,opB:input.opB,...campaignScore(input.opA,input.opB),map:campaignText(input.map||'',200,'map'),notes:campaignText(input.notes||'',3000,'battle notes'),armyA:campaignText(input.armyA||'',4000,'army code'),armyB:campaignText(input.armyB||'',4000,'army code'),photos,listExchangeCode}
 }
-export function campaignTotals(games,turn) {
-  const rows=new Map()
-  for(const g of games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved))) for(const side of ['A','B']) {
-    const faction=factionName(g[`player${side}`].faction),key=`${g.location}:${faction}`,row=rows.get(key)||{location:g.location,faction,tp:0,op:0}
-    row.tp+=g[`tp${side}`];row.op+=g[`op${side}`];rows.set(key,row)
+export const BALANCED_RULES = '2026-11-balance'
+export const LEGACY_RULES = 'legacy'
+export const confirmedCampaignGame = g => g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved)
+export function campaignContributions(games, turn, rulesRevision = LEGACY_RULES) {
+  const contributions = games.filter(g => g.turn === turn && confirmedCampaignGame(g)).flatMap(g => ['A', 'B'].map(side => ({
+    gameId: g.id, side, location: g.location, faction: factionName(g[`player${side}`].faction),
+    playerId: g[`player${side}`].id, tp: g[`tp${side}`], op: g[`op${side}`],
+    submittedAt: g.createdAt || '', counted: true, reason: 'Counted',
+  })))
+  if (rulesRevision !== BALANCED_RULES) return contributions
+  const groups = new Map()
+  for (const row of contributions) {
+    if (!row.playerId) throw Error('A counted campaign result requires a stable registered player identity.')
+    const key = `${row.location}:${row.faction}`
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push(row)
+  }
+  const lexical = (a, b) => a < b ? -1 : a > b ? 1 : 0
+  for (const rows of groups.values()) {
+    rows.sort((a, b) => b.tp - a.tp || b.op - a.op || lexical(a.submittedAt, b.submittedAt) || lexical(a.gameId, b.gameId) || lexical(a.side, b.side))
+    const players = new Map()
+    let counted = 0
+    for (const row of rows) {
+      const personal = players.get(row.playerId) || 0
+      row.counted = personal < 2 && counted < 5
+      row.reason = personal >= 2 ? 'Player limit: two results at this location' : counted >= 5 ? 'Faction limit: five results at this location' : 'Counted'
+      if (row.counted) { players.set(row.playerId, personal + 1); counted++ }
+    }
+  }
+  return contributions
+}
+export function campaignTotals(games, turn, rulesRevision = LEGACY_RULES) {
+  const rows = new Map()
+  for (const c of campaignContributions(games, turn, rulesRevision)) {
+    const key = `${c.location}:${c.faction}`, row = rows.get(key) || { location: c.location, faction: c.faction, tp: 0, op: 0 }
+    if (c.counted) { row.tp += c.tp; row.op += c.op }
+    rows.set(key, row)
   }
   return [...rows.values()]
+}
+// Prepared Turns always use their frozen publication, including an absent legacy revision.
+export function campaignRulesForTurn(ledger, turn) {
+  return (ledger.operations?.turns[turn]?.start || ledger.turns?.[turn])?.rulesRevision || LEGACY_RULES
 }

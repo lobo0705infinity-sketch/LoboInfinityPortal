@@ -2,13 +2,13 @@ import { get, put, BlobPreconditionFailedError } from '@vercel/blob'
 import { randomUUID } from 'node:crypto'
 import { verifyCommissionerSession } from './featured-report.mjs'
 import { readPublicDataset } from './_lib/public-snapshot.mjs'
-import { emptyAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
+import { initialAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
 
 const pathname = 'portal-config/aurora-vii-public.json'
 
 async function readStoredPublication(getObject = get) {
   const blob = await getObject(pathname, { access: 'public', useCache: false })
-  if (!blob) return { publication: { revision: '', publishedAt: '', state: emptyAuroraState() }, etag: null }
+  if (!blob) return { publication: { revision: '', publishedAt: '', state: initialAuroraState() }, etag: null }
   const data = await new Response(blob.stream).json()
   if (typeof data.revision !== 'string' || typeof data.publishedAt !== 'string') throw new Error('Invalid campaign publication.')
   return { publication: { revision: data.revision, publishedAt: data.publishedAt, state: validateAuroraPublicState(data.state) }, etag: blob.blob?.etag }
@@ -29,6 +29,8 @@ export async function saveAuroraPublication(body, { getObject = get, putObject =
   }
   const { publication: previous, etag } = await readStoredPublication(getObject)
   if (body.expectedRevision !== previous.revision) { const error = new Error('The campaign changed. Reload before publishing.'); error.code = 'REVISION_CONFLICT'; throw error }
+  if (previous.state.turn > 0 && ((state.rulesRevision || 'legacy') !== (previous.state.rulesRevision || 'legacy') || JSON.stringify(state.tiePriority || []) !== JSON.stringify(previous.state.tiePriority || [])) && state.turn <= previous.state.turn) throw new Error('Announce rules changes only for a later Turn, before preparing it or playing games.')
+  if (previous.state.rulesRevision === '2026-11-balance' && (state.rulesRevision !== previous.state.rulesRevision || JSON.stringify(state.tiePriority) !== JSON.stringify(previous.state.tiePriority))) throw new Error('The adopted balance revision and drawn tie priority remain fixed for the campaign.')
   const publishedAt = now().toISOString()
   const publication = { revision: randomUUID(), publishedAt, state }
   try {

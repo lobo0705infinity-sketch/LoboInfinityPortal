@@ -21,6 +21,7 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
     {live.error ? <p role="alert">{live.error} {live.data ? 'The results below are from the last successful check.' : 'Live totals are unavailable; they are not assumed to be zero.'}</p> : null}
     {!live.data && !live.error ? <p role="status">Loading confirmed campaign results…</p> : live.data ? <>
       <p><strong>{games.length} confirmed {games.length === 1 ? 'game' : 'games'}{state.turn ? ' this Turn' : ' before campaign start'}.</strong></p>
+      {live.data.rulesRevision === '2026-11-balance' ? <p>Campaign totals use each faction’s best five results at each location, with at most two per player. All confirmed games remain in battle history. Each player’s side is selected independently.</p> : null}
       {(['territory', 'narrative'] as const).map(kind => {
         const totals = rows.filter(r => (r.location === 'narrative') === (kind === 'narrative'))
         return totals.length ? <div key={kind}><h3>{kind === 'narrative' ? 'Narrative Mission totals' : 'Territory battle totals'}</h3>
@@ -30,6 +31,7 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
       {games.length ? <><h3>Confirmed battle history</h3><div className="aurora-public-battles">{games.map(g => <details className="aurora-battle-row" id={`battle-${g.id}`} key={g.id}>
         <summary><span><strong>{g.playerA.name} vs {g.playerB.name}</strong><small>{locationName(g.location)} · {g.date}</small></span><span className="aurora-battle-score">{g.opA}–{g.opB}<small>OP</small></span></summary>
         <div className="aurora-battle-details"><p>{factionName(g.playerA.faction)} vs {factionName(g.playerB.faction)} · {g.mission}</p><p><strong>{g.opA}–{g.opB} OP · {g.tpA}–{g.tpB} TP</strong></p>
+        {live.data?.rulesRevision === '2026-11-balance' ? <p>{g.playerA.name}: {g.countingReasonA} · {g.playerB.name}: {g.countingReasonB}</p> : null}
         <Link to={`/campaign/aurora-vii/${g.location === 'narrative' ? 'missions' : `territories/${g.location}`}`}>View Campaign Location →</Link>
         <p><Link to={`/campaign/aurora-vii/games?game=${g.id}`}>Players: review or request a correction →</Link></p></div>
       </details>)}</div></> : <p className="aurora-results-empty">{state.turn ? 'Play a game, record both scores, and confirm the result. Your campaign’s battle history and totals will appear here.' : 'Confirmed games and standings will appear here when the campaign begins.'}</p>}

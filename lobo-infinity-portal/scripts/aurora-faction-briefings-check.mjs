@@ -47,7 +47,9 @@ try {
   assert(nomads.includes('Disrupt the Powers') && nomads.includes('Turn start') && nomads.includes('Every faction tied'))
   assert(nomads.includes('We must **capture**') && nomads.includes('Campaign VP or the number of games'))
   const na2 = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'na2').content
-  assert(na2.includes('every non-Employer faction') && na2.includes('Employer’s totals are ignored'))
+  assert(na2.includes('at least 5 own target TP') && na2.includes('no extra Contract VP') && na2.includes('Repeat Employers are allowed'))
+  assert(!na2.includes('Employer **+1 Campaign VP**'))
+  assert(AURORA_FACTION_BRIEFINGS.every(f => f.content.includes('rules#balance-amendment')))
   const tohaa = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'tohaa').content
   assert(tohaa.includes('complete 5 Tohaa TP') && tohaa.includes('Remainder TP does not carry over'))
   const ca = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'combined-army').content

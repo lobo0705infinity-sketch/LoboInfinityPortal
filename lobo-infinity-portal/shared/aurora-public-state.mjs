@@ -1,9 +1,16 @@
 import { AURORA_CONQUEST_FACTIONS, AURORA_FACTIONS, AURORA_TERRITORIES } from './aurora-public.mjs'
+import { AURORA_RULES_ADOPTION } from './aurora-rules-adoption.mjs'
 
 export function emptyAuroraState() {
   return { schemaVersion: 1, eventId: '', turn: 0, deadline: '', reportUrl: '', campaignEvent: null, narrativeMission: null,
     territories: AURORA_TERRITORIES.map(item => ({ id: item.id, controller: '', vulnerable: false, ruin: false, infiltrated: false })),
     standings: [], totals: [], story: [] }
+}
+
+// Only a campaign with no stored publication receives the adopted defaults.
+// Existing publications and prepared Turns keep their recorded rules revision.
+export function initialAuroraState() {
+  return { ...emptyAuroraState(), rulesRevision: AURORA_RULES_ADOPTION.rulesRevision, tiePriority: [...AURORA_RULES_ADOPTION.tiePriority] }
 }
 
 function record(value, keys, label) {
@@ -28,8 +35,14 @@ function url(value, label) {
 
 // Reject unsupported fields before storage; private records never reach public Blob.
 export function validateAuroraPublicState(raw) {
-  const value = record(raw, ['schemaVersion', 'eventId', 'turn', 'deadline', 'reportUrl', 'campaignEvent', 'narrativeMission', 'territories', 'standings', 'totals', 'story'], 'Campaign publication')
+  const value = record(raw, ['schemaVersion', 'eventId', 'turn', 'deadline', 'reportUrl', 'campaignEvent', 'narrativeMission', 'territories', 'standings', 'totals', 'story', 'rulesRevision', 'tiePriority'], 'Campaign publication')
   if (value.schemaVersion !== 1) throw new Error('Unsupported campaign version.')
+  const rulesRevision = value.rulesRevision || 'legacy'
+  if (!['legacy', '2026-11-balance'].includes(rulesRevision)) throw new Error('Unknown campaign rules revision.')
+  const tiePriority = value.tiePriority || []
+  if (!Array.isArray(tiePriority) || tiePriority.length && (tiePriority.length !== AURORA_FACTIONS.length || new Set(tiePriority).size !== AURORA_FACTIONS.length || tiePriority.some(f => !AURORA_FACTIONS.includes(f)))) throw new Error('Publish each faction exactly once in the drawn tie priority.')
+  if (rulesRevision === '2026-11-balance' && tiePriority.length !== AURORA_FACTIONS.length) throw new Error('The balance amendment requires a published tie priority before games.')
+  const revisionFields = value.rulesRevision ? { rulesRevision, tiePriority: [...tiePriority] } : {}
   const turn = number(value.turn, 6, 'Campaign Turn')
   const eventId = text(value.eventId, 120, 'campaign event')
   if (eventId && !/^event-[a-z0-9-]+$/.test(eventId)) throw new Error('Invalid campaign event.')
@@ -78,5 +91,5 @@ export function validateAuroraPublicState(raw) {
     if (!narrativeMission.title || !narrativeMission.briefing) throw new Error('A Narrative Mission requires a current player-facing title and briefing.')
   }
   if (turn === 0 && (campaignEvent || narrativeMission || totals.length)) throw new Error('Current Turn material requires an active Campaign Turn.')
-  return { schemaVersion: 1, eventId, turn, deadline, reportUrl: url(value.reportUrl, 'reporting link'), campaignEvent, narrativeMission, territories, standings, totals, story: story.sort((a, b) => a.turn - b.turn) }
+  return { schemaVersion: 1, ...revisionFields, eventId, turn, deadline, reportUrl: url(value.reportUrl, 'reporting link'), campaignEvent, narrativeMission, territories, standings, totals, story: story.sort((a, b) => a.turn - b.turn) }
 }
