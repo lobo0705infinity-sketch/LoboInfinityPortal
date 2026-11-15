@@ -103,10 +103,8 @@ export function resolveOperations(ledger, turnNumber) {
     if (d.faction === 'JSA') eligible = captures.some(c => c.before && turn.startVP[c.before] > turn.startVP.JSA)
     if (d.faction === 'O-12') eligible = successes.length > 0 && new Set(control.map(c => c.after).filter(Boolean)).size >= 3
     if (d.faction === 'ALEPH') eligible = maxTP > 0 && (balanced ? won : control).some(c => c.after === 'ALEPH' && locationTP(c.location) === maxTP)
-    const fallback = balanced && won.some(c => c.after === d.faction && earned(c.location, d.faction).tp >= 8)
-    eligible ||= fallback
     const scored = ops.awards.filter(a => a.faction === d.faction && a.category === 'doctrine').length
-    return { ...d, requirement: balanced ? `${d.requirement} Alternatively, control a Vulnerable Territory where your faction earned at least 8 counted TP this Turn.` : d.requirement, eligible, scored, canAward: eligible && scored < 3 && !ops.awards.some(a => a.category === 'doctrine' && a.faction === d.faction && a.turn === turnNumber) }
+    return { ...d, eligible, scored, canAward: eligible && scored < 3 && !ops.awards.some(a => a.category === 'doctrine' && a.faction === d.faction && a.turn === turnNumber) }
   })
   const awards = []
   if (hiddenHand?.success) awards.push({ faction: 'Tohaa', vp: 2, category: 'hidden-hand', source: `hidden-hand:${turnNumber}`, reason: 'Hidden Hand outcome achieved' })

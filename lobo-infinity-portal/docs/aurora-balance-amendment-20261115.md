@@ -2,7 +2,7 @@
 
 Prepared 15 November 2026. Status: draft; no live campaign activation and no retrospective scoring changes.
 
-This package addresses concentration of results, passive scoring, territorial ties, inaccessible doctrines, objective workload, calendar discretion, starting positions and battlefield asymmetry. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
+This package addresses concentration of results, passive scoring, territorial ties, doctrine access, objective workload, calendar discretion, starting positions and battlefield asymmetry. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
 
 ## Adoption and authority
 
@@ -53,15 +53,11 @@ Example: Ariadna and Yu Jing each have 10 Influence and 16 OP, while incumbent P
 
 Narrative complete ties remain unresolved. Infiltration complete ties still fail.
 
-## 4. Give every Conquest faction an attainable Doctrine route
+## 4. Retain faction-specific Doctrines
 
-Keep the current faction doctrines, with this common alternative:
+Keep each faction's existing Doctrine condition and the limits of one Doctrine VP per Turn and three for the campaign. The proposed common eight-TP-and-control alternative has been withdrawn. It is removed from the scoring engine and public rules.
 
-> Control a Vulnerable Territory at Turn end where your faction earned at least eight counted territorial TP during the Turn.
-
-Either the original condition or this alternative earns the same one VP. They never stack. The limits remain one Doctrine VP per faction per Turn and three for the campaign. Own TP is required; support cannot supply the eight-TP threshold.
-
-This offers an option when a faction's usual target is unavailable or when JSA has nobody ahead of it in earned VP. It retains easier thematic opportunities where they arise; it is a floor on access, not proof that every doctrine has identical difficulty.
+A Doctrine being unavailable in a particular Turn is not automatically a design defect: circumstances are part of its identity. Review whether the vulnerability schedule repeatedly denies a faction any realistic opportunity across the campaign. Address a persistent problem through the calendar or an individually discussed revision to that faction's Doctrine. No replacement wording or guaranteed every-Turn scoring route is introduced by this draft.
 
 ## 5. Standardize Secret Objective effort
 
@@ -82,7 +78,9 @@ Two wins and a territory capture are not statistically identical. Before assignm
 
 The software enforces activation timing, one active assignment, one completion, participation and the six-VP cap. It still relies on commissioner review for the substantive objective condition.
 
-## 6. Publish the remaining vulnerability calendar
+## 6. Optional discussion: publish a vulnerability calendar
+
+Sections 6–8 are additional design ideas for discussion, not adopted campaign rules or implemented scoring changes.
 
 For the ongoing campaign, publish every remaining Turn's four Vulnerable Territories before the first amended Turn. Alongside it, show each territory's previous and planned exposure count. Give the least-exposed territories priority when filling uncommitted slots. Honor already-earned calendar privileges, record their public effect when exercisable, and explain any resulting exception. If too few Turns remain to equalize exposure, say so; do not claim the past has been repaired.
 
@@ -101,7 +99,7 @@ This is a tested example, not an invented replacement for the ongoing campaign's
 
 A fixed calendar reduces GM discretion and makes planning easier. It also removes some surprise; current Events and story developments can supply that uncertainty without determining whose holdings can be attacked.
 
-## 7. Equalize new-campaign starting value
+## 7. Optional discussion: starting-package compensation
 
 For the next campaign only, retain the eight thematic starting packages and random choice order. A faction assigned a package worth two printed VP receives one fixed **setup compensation VP at campaign end**. Record the recipient at setup; the point is not attached to the territory and does not transfer with ownership. Three-VP packages receive none. This compensation is excluded from mid-campaign earned-VP comparisons, including JSA's Doctrine.
 
@@ -109,7 +107,7 @@ That equalizes starting nominal value at three without changing territory values
 
 This is a proposed next-campaign rule; the draft engine does not automatically grant setup compensation to existing factions.
 
-## 8. Reduce battlefield imbalance without erasing each territory
+## 8. Optional discussion: owner advantages and territory restrictions
 
 Keep the approved Korin eligibility rule: only TAGs with Terrain (Mountain) or Terrain (Total) may enter. The separate Korin map/video work remains authoritative; this amendment does not revert it.
 
@@ -122,7 +120,9 @@ For a separate next-campaign terrain revision, trial these exact changes:
 
 Do not activate these terrain changes midway through an announced Turn. The owner reroll is simpler and consistent, but can still vary in value with mission and army; the test is practical play, not an assertion of perfect equality. Record side, initiative, faction, terrain traits, owner benefit used and OP margin in paired test games, reversing roles where feasible. Use those results to decide which effects need a further adjustment. This workstream needs a new territory sheet and corresponding video updates; no existing terrain files are changed in this scoring patch.
 
-## 9. Make the rules and decisions auditable
+## 9. Make capped scoring transparent
+
+The existing TP formula is straightforward. This section proposes visibility into which results the new caps select; it is not a finding that the current TP formula is confusing.
 
 The live TP schedule is authoritative: win 4, draw 2, loss 0; add one for at least five OP, and add one to a loser whose OP deficit is at most two. The older 3/1/0 fallback does not apply to this schedule. An 8–6 result is 5–2 TP.
 
@@ -134,6 +134,6 @@ Do not add an undisclosed handicap for Lobo or any other player. Apply caps and 
 
 ## Validation and rollout
 
-The draft adds automated scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, the common Doctrine route, objective limits, frozen legacy rules and consistency between live totals and private resolution.
+The draft adds automated scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, preservation of faction-specific Doctrine conditions, objective limits, frozen legacy rules and consistency between live totals and private resolution.
 
 Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and calendar, reissue affected objective wording before play, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.

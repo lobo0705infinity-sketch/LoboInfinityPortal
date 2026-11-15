@@ -82,7 +82,9 @@ const fixture = (balanced = true) => {
   f.start.territories[0].controller='PanOceania';f.ledger.games=[game('tohaa',10,'nova-prospect','Tohaa')]
   assert.equal(resolveOperations(f.ledger,2).doctrines.find(d=>d.faction==='PanOceania').eligible,false)
   f.ledger.games=[game('jsa1',4,'nova-prospect','JSA'),game('jsa2',4,'nova-prospect','JSA')]
-  assert.equal(resolveOperations(f.ledger,2).doctrines.find(d=>d.faction==='JSA').eligible,true,'Eight-TP fallback works when all VP are tied')
+  assert.equal(resolveOperations(f.ledger,2).doctrines.find(d=>d.faction==='JSA').eligible,false,'Eight TP alone cannot replace the faction-specific Doctrine')
+  f.turn.startVP.PanOceania=1
+  assert.equal(resolveOperations(f.ledger,2).doctrines.find(d=>d.faction==='JSA').eligible,true,'JSA still qualifies by capturing from a faction ahead at Turn start')
 }
 // Objective enforcement: activation, activity, one completion per Turn; historical awards unchanged.
 {
@@ -156,4 +158,4 @@ const fixture = (balanced = true) => {
   assert.equal(rows.length,6)
   for (const half of [rows.slice(0,3),rows.slice(3)]) { assert.equal(half.flat().length,12); assert.equal(new Set(half.flat()).size,12) }
 }
-console.log('PASS: best-five/two-player selection, 20-win stress case, per-side inclusion, corrections, location/Turn isolation, approval gates, version freeze, Tohaa/CA/Narrative participation, active defence, tied challengers, Doctrine fallback, objective limits, durable public/private consistency.')
+console.log('PASS: best-five/two-player selection, 20-win stress case, per-side inclusion, corrections, location/Turn isolation, approval gates, version freeze, Tohaa/CA/Narrative participation, active defence, tied challengers, faction-specific Doctrines, objective limits, durable public/private consistency.')
