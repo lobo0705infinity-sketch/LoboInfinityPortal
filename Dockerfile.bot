@@ -18,6 +18,7 @@ RUN node scripts/grouped-commands-check.mjs
 RUN npm run test:list-exchange
 RUN npm run test:matchup-workbench
 RUN npm run test:aurora-operations
+RUN npm run test:aurora-balance
 RUN npm run test:aurora-games
 RUN npm run test:aurora-registration
 RUN node scripts/aurora-faction-channels-check.mjs

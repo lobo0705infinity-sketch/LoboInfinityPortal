@@ -5,7 +5,7 @@ import { resolve, extname, join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { chromium } from 'playwright'
 import { expect } from 'playwright/test'
-import { emptyAuroraState } from '../shared/aurora-public-state.mjs'
+import { emptyAuroraState, initialAuroraState } from '../shared/aurora-public-state.mjs'
 import { AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
 import { AURORA_FACTIONS, AURORA_CONQUEST_FACTIONS } from '../shared/aurora-public.mjs'
 import { factionName } from '../shared/aurora-games.mjs'
@@ -96,13 +96,20 @@ try {
   await page.goto(`${root}/campaign/aurora-vii/map`); await page.getByRole('combobox', {name:'Choose a territory'}).selectOption('nova-prospect'); await expect(page.locator('.aurora-facts').getByText('Yu Jing', {exact:true})).toBeVisible()
   if (balanced) {
     await page.goto(`${root}/campaign/aurora-vii/rules`)
-    await expect(page.getByText('November balance amendment applies to this Turn.',{exact:true})).toBeVisible()
+    await expect(page.getByText('Adopted scoring rules · Turn 1',{exact:true})).toBeVisible()
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Rules phone layout fits')
     await page.goto(`${root}/campaign/aurora-vii/standings`)
     await page.getByText('3 confirmed games this Turn.',{exact:true}).waitFor()
     await page.locator('.aurora-battle-row').first().locator('summary').click()
     await expect(page.getByText(/Each player’s side is selected independently/)).toBeVisible()
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Results phone layout fits')
+    state = initialAuroraState()
+    await page.goto(`${root}/campaign/aurora-vii/rules`)
+    await expect(page.getByText('Scoring amendment adopted · effective from Turn 1',{exact:true})).toBeVisible()
+    await expect(page.getByText(state.tiePriority.join(' → '), { exact: false })).toBeVisible()
+    await page.goto(`${root}/commissioner/aurora-vii`)
+    await expect(page.getByLabel('Campaign rules revision', {exact:true})).toBeDisabled()
+    await expect(page.getByLabel('Published faction tie priority · first to last', {exact:true})).not.toBeEditable()
   }
   assert.deepEqual(errors, [])
   console.log('PASS: real private ledger/service, commissioner authentication fixture, DM recording, Credit reserve, lock/open/close, reviewed commit, Doctrine award, public draft transfer, allowlisted publication and mobile layout. No production data or messages. Screenshots:', directory)

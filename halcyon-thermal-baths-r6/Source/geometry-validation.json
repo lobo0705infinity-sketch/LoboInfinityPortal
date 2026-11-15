@@ -1,0 +1,98 @@
+{
+  "result": "PASS",
+  "states": [
+    {
+      "state": "intake-clinic-1.obj",
+      "convex_parts": 178,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "intake-clinic-2.obj",
+      "convex_parts": 300,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "intake-clinic-3.obj",
+      "convex_parts": 307,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "laundry-vault-1.obj",
+      "convex_parts": 134,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "laundry-vault-2.obj",
+      "convex_parts": 330,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "recovery-lodge-1.obj",
+      "convex_parts": 160,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    },
+    {
+      "state": "recovery-lodge-2.obj",
+      "convex_parts": 165,
+      "entry_clear_at_heights": [
+        0.55,
+        0.9,
+        1.3,
+        1.8,
+        2.3
+      ],
+      "pivot_unchanged": true
+    }
+  ],
+  "additional_checks": [
+    "Stair-blocked clinic door is solid in all three states",
+    "Both laundry end caps have solid collision",
+    "All compound collider components closed and convex with fewer than 255 triangles",
+    "Mesh pivots identical to existing assets"
+  ],
+  "limitations": [
+    "Software geometry and rendering checks; live TTS loading and movement not tested"
+  ]
+}

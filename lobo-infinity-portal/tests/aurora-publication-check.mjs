@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { BlobPreconditionFailedError } from '@vercel/blob'
 import { readFile, readdir } from 'node:fs/promises'
 import { AURORA_TERRITORIES, AURORA_TURNS, AURORA_FACTIONS } from '../shared/aurora-public.mjs'
-import { emptyAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
+import { emptyAuroraState, initialAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
 import handler, { saveAuroraPublication } from '../api/aurora-campaign.mjs'
 
 assert.equal(AURORA_TERRITORIES.length, 12)
@@ -17,7 +17,7 @@ assert.equal(campaignAssets.length, 27)
 assert.ok(campaignAssets.includes('frontier-gate.webp'))
 assert.ok(campaignAssets.includes('battle-archive.webp'))
 assert.deepEqual(validateAuroraPublicState(emptyAuroraState()), emptyAuroraState())
-const active = emptyAuroraState()
+const active = initialAuroraState()
 active.turn = 1
 active.deadline = '2026-11-15T23:59:00-05:00'
 active.territories.slice(0, 4).forEach(item => { item.vulnerable = true })

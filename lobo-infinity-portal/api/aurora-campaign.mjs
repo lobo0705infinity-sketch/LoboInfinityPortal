@@ -2,13 +2,13 @@ import { get, put, BlobPreconditionFailedError } from '@vercel/blob'
 import { randomUUID } from 'node:crypto'
 import { verifyCommissionerSession } from './featured-report.mjs'
 import { readPublicDataset } from './_lib/public-snapshot.mjs'
-import { emptyAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
+import { initialAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
 
 const pathname = 'portal-config/aurora-vii-public.json'
 
 async function readStoredPublication(getObject = get) {
   const blob = await getObject(pathname, { access: 'public', useCache: false })
-  if (!blob) return { publication: { revision: '', publishedAt: '', state: emptyAuroraState() }, etag: null }
+  if (!blob) return { publication: { revision: '', publishedAt: '', state: initialAuroraState() }, etag: null }
   const data = await new Response(blob.stream).json()
   if (typeof data.revision !== 'string' || typeof data.publishedAt !== 'string') throw new Error('Invalid campaign publication.')
   return { publication: { revision: data.revision, publishedAt: data.publishedAt, state: validateAuroraPublicState(data.state) }, etag: blob.blob?.etag }

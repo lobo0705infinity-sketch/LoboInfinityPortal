@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { campaignContributions, campaignTotals, campaignRulesForTurn, BALANCED_RULES, campaignScore } from '../shared/aurora-games.mjs'
 import { AURORA_FACTIONS } from '../shared/aurora-public.mjs'
-import { emptyAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
+import { emptyAuroraState, initialAuroraState, validateAuroraPublicState } from '../shared/aurora-public-state.mjs'
+import { AURORA_RULES_ADOPTION } from '../shared/aurora-rules-adoption.mjs'
 import { emptyOperations, resolveOperations, mutateOperations } from '../bot/aurora-operations.mjs'
 import { createCampaignGameStore } from '../bot/aurora-game-store.mjs'
 
@@ -21,6 +23,30 @@ const fixture = (balanced = true) => {
   ledger.operations.turns[2] = { start, phase: 'choices', offers: [], narrativeBonuses: [], startVP: Object.fromEntries(AURORA_FACTIONS.map(f => [f, 0])), startCredits: {} }
   const act = (action, values = {}) => mutateOperations(ledger, { revision: ledger.operations.revision, turn: 2, action, reason: 'Balance test', ...values }, [], start)
   return { ledger, start, turn: ledger.operations.turns[2], act }
+}
+// Adoption is visible before Turn 1; historical publications are never upgraded on read.
+{
+  const { readAuroraPublication, saveAuroraPublication } = await import('../api/aurora-campaign.mjs')
+  const first = await readAuroraPublication(async () => null)
+  assert.deepEqual(first.state, initialAuroraState())
+  assert.equal(first.state.turn, 0)
+  assert.equal(first.state.rulesRevision, BALANCED_RULES)
+  assert.equal(first.state.territories.every(t => !t.controller && !t.vulnerable), true)
+  const digest = faction => createHash('sha256').update(`${AURORA_RULES_ADOPTION.drawSeed}\n${faction}`).digest('hex')
+  assert.deepEqual([...AURORA_RULES_ADOPTION.tiePriority], [...AURORA_FACTIONS].sort((a,b) => digest(a).localeCompare(digest(b))))
+  first.state.tiePriority.reverse()
+  assert.deepEqual(initialAuroraState().tiePriority, [...AURORA_RULES_ADOPTION.tiePriority], 'Callers cannot mutate the fixed draw')
+  const legacy = { revision: 'legacy', publishedAt: '', state: fixture(false).start }
+  const stored = await readAuroraPublication(async () => ({ stream: new Response(JSON.stringify(legacy)).body }))
+  assert.deepEqual(stored, legacy)
+  const start = initialAuroraState(); start.turn = 1; start.territories.slice(0,4).forEach(t => { t.vulnerable = true })
+  let writes = 0
+  const getObject = async () => null, putObject = async () => { writes++ }
+  await saveAuroraPublication({ expectedRevision: '', state: start }, { getObject, putObject })
+  assert.equal(writes, 1)
+  await assert.rejects(saveAuroraPublication({ expectedRevision: '', state: { ...start, rulesRevision: 'legacy' } }, { getObject, putObject }), /remain fixed/)
+  await assert.rejects(saveAuroraPublication({ expectedRevision: '', state: { ...start, tiePriority: [...start.tiePriority].reverse() } }, { getObject, putObject }), /remain fixed/)
+  assert.equal(writes, 1)
 }
 // Stable identities and optimal best-five selection, independent of submission array order.
 {

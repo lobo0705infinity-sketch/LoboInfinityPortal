@@ -1,8 +1,8 @@
-# Aurora VII — balance amendment for review
+# Aurora VII — adopted scoring amendment
 
-Prepared 15 November 2026. Status: draft; no live campaign activation and no retrospective scoring changes.
+Adopted 15 November 2026. Effective from Turn 1 in the portal. At adoption, the portal had no published Turn and no recorded campaign games. Existing stored publications and prepared Turns, if any, retain their original revision; there are no retrospective scoring changes.
 
-This package addresses concentration of results, passive scoring, territorial ties and objective workload. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
+This amendment bounds scoring contributions, adds the Hidden Hand threshold, resolves territorial ties and makes counted results visible. It preserves faction identities and the separate territorial and Narrative contests. It does not promise equal outcomes between players of different skill.
 
 ## Campaign design retained
 
@@ -12,11 +12,11 @@ Faction-specific Doctrines and distinct territory-owner advantages remain. Harmo
 
 ## Adoption and authority
 
-Choose the first affected Turn, announce the amendment to all factions before its decisions or games, and record `2026-11-balance` in that Turn's public briefing. The portal snapshots the revision when operations are prepared. Previously prepared Turns retain their original rules, including completed awards. Existing PDFs and faction briefs need an amendment notice naming that effective Turn; the amendment takes precedence only on the subjects it changes.
+The public Player Rules announce revision `2026-11-balance` before Turn 1. New campaign publications start with this revision and the fixed tie priority below. Include the amendment in every Turn briefing before decisions or games. The portal snapshots the revision when operations are prepared. Previously prepared Turns retain their original rules, including completed awards. The public Player Rules are the amendment notice. This amendment takes precedence over older PDFs and faction briefs only on the subjects it changes.
 
 Do not change an active Turn's rules in response to its results. Publication rejects same-Turn activation, and operations rejects a different revision or priority between preparation and opening games. The selected revision and faction tie priority remain fixed after adoption. No messages are sent by this change.
 
-The scoring and participation provisions below are implemented in the draft portal code. Objective difficulty review and the optional past-exposure review are commissioner procedures: they are not automatic calculations or a claim that existing games have been rebalanced.
+The scoring provisions below are enforced by the portal. Secret Objective requirements, territory rules, faction Doctrines and Turn-by-Turn vulnerability announcements are retained.
 
 ## 1. Count five faction results, at most two per player
 
@@ -52,7 +52,13 @@ These gates distinguish a successful operation from an outcome that happened wit
 
 Compare Influence, then the faction's own counted OP. If all Influence is zero, retain the controller. With a positive tied leading score, retain the incumbent only if it is one of the tied leaders. Otherwise the tied faction appearing first in the public faction priority takes control.
 
-Use the campaign's previously published random priority order if one exists. Otherwise draw all eleven factions once in public before the first amended Turn and publish the order. Do not let the GM choose the order or redraw it after seeing results. The portal requires every faction exactly once and locks the order after adoption.
+The priority was drawn once on 15 November 2026 before any portal Turn or games and is published with this amendment:
+
+**ALEPH → Haqqislam → Nomads → Yu Jing → Tohaa → NA2 → JSA → Ariadna → PanOceania → O-12 → Combined Army.**
+
+Only factions eligible for territorial control can win a territorial tie. The full eleven-faction ordering is retained for the fixed public record. Do not redraw or reorder it after seeing results. The portal validates and locks the order.
+
+Draw record: the system generated one random 256-bit seed, `fadf3f2e584aff403f79a0469e42b56a30d986e67919ceb99d1c8b02b75af013`. Sort the hexadecimal SHA-256 digest of `seed + newline + canonical faction name` in ascending order. The seed and result are committed in `shared/aurora-rules-adoption.mjs`; the release test reproduces the order.
 
 Example: Ariadna and Yu Jing each have 10 Influence and 16 OP, while incumbent PanOceania has zero. PanOceania cannot retain the territory through this tie. The published priority selects between Ariadna and Yu Jing. If PanOceania also has 10/16, it retains as a tied leader.
 
@@ -62,7 +68,7 @@ Narrative complete ties remain unresolved. Infiltration complete ties still fail
 
 Keep each faction's existing Doctrine condition and the limits of one Doctrine VP per Turn and three for the campaign. The proposed common eight-TP-and-control alternative has been withdrawn. It is removed from the scoring engine and public rules.
 
-A Doctrine being unavailable in a particular Turn is not automatically a design defect: circumstances are part of its identity. Review whether the vulnerability schedule repeatedly denies a faction any realistic opportunity across the campaign. Address a persistent problem through the calendar or an individually discussed revision to that faction's Doctrine. No replacement wording or guaranteed every-Turn scoring route is introduced by this draft.
+A Doctrine being unavailable in a particular Turn is not automatically a design defect: circumstances are part of its identity. Review whether the vulnerability schedule repeatedly denies a faction any realistic opportunity across the campaign. Address a persistent problem through the calendar or an individually discussed revision to that faction's Doctrine. No replacement wording or guaranteed every-Turn scoring route is introduced.
 
 ## 5. Secret Objectives follow their written conditions
 
@@ -70,30 +76,28 @@ One active objective per faction; assign before games. At most one completion pe
 
 There is no additional blanket requirement to play a game in the active Turn. Objectives expressly checking existing holdings or Infiltrations can qualify through earlier progress. Any valid game can fulfil a game-based objective according to its written conditions, even when that result is excluded by the scoring cap. Later changes to the counted pool do not invalidate otherwise valid objective evidence. An employer cannot claim hired players' victories as its own.
 
-An objective requiring a successful Hidden Hand operation still requires that operation to succeed, including the proposed five own counted target TP threshold. This is the Hidden Hand condition, not a separate objective-participation rule.
+An objective requiring a successful Hidden Hand operation still requires that operation to succeed, including the five own counted target TP threshold. This is the Hidden Hand condition, not a separate objective-participation rule.
 
-The software enforces assignment timing, one active assignment, one completion and the six-VP cap. The commissioner reviews the actual requirement and evidence. No assigned objective has been rewritten. The earlier idea to reduce a four-opposing-faction victory requirement to two valid victories against different factions remains a discussion-only suggestion.
+The software enforces assignment timing, one active assignment, one completion and the six-VP cap. The commissioner reviews the actual requirement and evidence. No assigned objective has been rewritten.
 
-## 6. Optional review of past vulnerability selections
+## 6. Vulnerability announcements
 
-Retain Turn-by-Turn announcements of the four Vulnerable Territories. Reducing surprise is not a fairness goal in itself; adapting to newly announced fronts is part of the campaign's strategic character. A full public calendar is not proposed for adoption.
-
-If the GM wants to review access to territory contests, keep a record of which territories have already been Vulnerable and why. Use it to check for repeated protection or exposure, accounting for earned rewards and the narrative. The record can support review of completed Turns without revealing future selections. Different exposure counts alone do not prove unfairness, and this review creates no new fixed rotation or equal-exposure requirement.
+Continue announcing the four Vulnerable Territories Turn by Turn. This amendment introduces no advance calendar, fixed rotation or equal-exposure requirement.
 
 ## 7. Make capped scoring transparent
 
-The existing TP formula is straightforward. This section proposes visibility into which results the new caps select; it is not a finding that the current TP formula is confusing.
+The existing TP formula is straightforward. The portal shows which results the caps select; it is not a finding that the current TP formula is confusing.
 
 The live TP schedule is authoritative: win 4, draw 2, loss 0; add one for at least five OP, and add one to a loser whose OP deficit is at most two. The older 3/1/0 fallback does not apply to this schedule. An 8–6 result is 5–2 TP.
 
 Publish the exact reporting deadline and timezone. Extensions must be announced before the deadline. A later administrative approval may accept a documented timely game/report affected by an outage or correct an existing report; it is not permission to play a new game after close. Record the reason and apply the same standard to every faction. The portal retains explicit commissioner approval for late records; factual eligibility still needs review.
 
-Show the rules revision, raw battle history, each side's counted/excluded reason, counted faction totals, and the resolved public outcome. Keep hidden targets, contracts and objective details private. At Turn end, report active players, retained players from the preceding Turn, faction scoring slots filled and the largest individual's share of counted TP. Label a player with no report as inactive in that period, not permanently lost, and compare equal-length periods.
+Show the rules revision, raw battle history, each side's counted/excluded reason, counted faction totals, and the resolved public outcome. Keep hidden targets, contracts and objective details private.
 
 Do not add an undisclosed handicap for Lobo or any other player. Apply caps and eligibility rules uniformly. Strong play should matter; extra availability should have a bounded campaign effect.
 
 ## Validation and rollout
 
-The draft adds automated scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, preservation of faction-specific Doctrine conditions, objective limits, frozen legacy rules and consistency between live totals and private resolution.
+Automated checks cover scenarios for capped selection, replacement after correction/rejection, twenty perfect wins by one player, independent sides of a report, location/Turn separation, late/duplicate gates, the participation checks, territorial ties, preservation of faction-specific Doctrine conditions, objective limits, frozen legacy rules and consistency between live totals and private resolution.
 
-Deployment order is backend first, then frontend. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign before publishing the effective Turn. Publish the final amendment notice and the current Turn briefing, retain the written objective conditions, and then open the new Turn. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs have not been rewritten or sent by this draft; they need the effective-Turn amendment notice at adoption.
+Deploy the backend and frontend from the same reviewed release and verify both before opening campaign play. Run the existing Aurora game, operations, registration and publication checks, plus the new balance checks. Verify the amendment in an isolated practice campaign. The live portal publishes the adopted rules before Turn 1; publish that Turn's normal territory and mission briefing, retain the written objective conditions, and then open play. The stored briefing source now links to the active revision, and its obsolete NA2 rules are corrected to match the October guide. Existing Discord messages and guide PDFs are not rewritten by this release. The portal Player Rules provide the adopted amendment and its effective Turn.

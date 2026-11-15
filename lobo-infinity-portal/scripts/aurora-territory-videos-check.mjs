@@ -17,7 +17,7 @@ const expected = {
 }
 assert.deepEqual(Object.keys(expected).sort(), AURORA_TERRITORIES.map(territory => territory.id).sort(), 'Every province has a published guide')
 const pdfPath = '/guides/aurora-vii-territory-special-rules-20261115-korin-tags.pdf'
-const korinVideoPath = 'https://resource2.heygen.ai/aws_pacific/avatar_tmp/fede862a51d0484eb83f7df0cad95ce6/vfaac0058c8684cc695f40960a9f59412/caption_2b47914d04944c52a9ff6a83bd70a4d2.mp4'
+const korinVideoPath = 'https://resource2.heygen.ai/aws_pacific/avatar_tmp/fede862a51d0484eb83f7df0cad95ce6/v02125e78deb4452c9161f62189e8373a/caption_48927acb49d84dbabba6bd51b0ae6198.mp4'
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.png': 'image/png', '.pdf': 'application/pdf', '.mp4': 'video/mp4' }
 const server = createServer(async (req, res) => {
   if (req.url.startsWith('/api/aurora-campaign')) return res.end(JSON.stringify({ revision: 'test', publishedAt: '2026-10-28T00:00:00Z', state: emptyAuroraState() }))

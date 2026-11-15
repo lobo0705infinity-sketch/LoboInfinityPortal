@@ -1,9 +1,16 @@
 import { AURORA_CONQUEST_FACTIONS, AURORA_FACTIONS, AURORA_TERRITORIES } from './aurora-public.mjs'
+import { AURORA_RULES_ADOPTION } from './aurora-rules-adoption.mjs'
 
 export function emptyAuroraState() {
   return { schemaVersion: 1, eventId: '', turn: 0, deadline: '', reportUrl: '', campaignEvent: null, narrativeMission: null,
     territories: AURORA_TERRITORIES.map(item => ({ id: item.id, controller: '', vulnerable: false, ruin: false, infiltrated: false })),
     standings: [], totals: [], story: [] }
+}
+
+// Only a campaign with no stored publication receives the adopted defaults.
+// Existing publications and prepared Turns keep their recorded rules revision.
+export function initialAuroraState() {
+  return { ...emptyAuroraState(), rulesRevision: AURORA_RULES_ADOPTION.rulesRevision, tiePriority: [...AURORA_RULES_ADOPTION.tiePriority] }
 }
 
 function record(value, keys, label) {
