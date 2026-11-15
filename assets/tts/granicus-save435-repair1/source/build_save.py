@@ -51,8 +51,9 @@ for o in bag['ContainedObjects']:
  slot=packed[packed['_guidSlots'][o['GUID']]]
  for key,field in [('mesh','MeshURL'),('texture','DiffuseURL'),('collider','ColliderURL')]:assert slot['assets'][key]==o['CustomMesh'][field]
 assert data['LuaScript']==original['LuaScript'] and data['TabStates']==original['TabStates']
-for t in data['TabStates']:
- assert isinstance(t['color'],str) and isinstance(t['visibleColor'],int) and isinstance(t['id'],int)
+for t in (data['TabStates'].values() if isinstance(data['TabStates'],dict) else data['TabStates']):
+ assert isinstance(t['color'],str) and isinstance(t['id'],int)
+ assert all(isinstance(t['visibleColor'][k],(int,float)) for k in ['r','g','b'])
 out=R/'installer';out.mkdir(exist_ok=True)
 save=out/'Clash-of-Empires-Granicus-Arrian-435.json';save.write_text(json.dumps(data,ensure_ascii=False,indent=2))
 validation={'source_file':'TS_Save_435.json','source_sha256':SOURCE_SHA,'save_sha256':hashlib.sha256(save.read_bytes()).hexdigest(),'asset_commit':commit,'battle':bag['Nickname'],'battle_guid':bag['GUID'],'stands':85,'troop_stands':79,'commanders':6,'states_checked':len(changes),'flat_label_scripts_removed':len(changes),'repaired_mesh_instances':sum(x.get('mesh_repaired',False) for x in changes),'restored_atlas_instances':sum(x.get('atlas_repaired',False) for x in changes),'unique_repaired_meshes':len(meshes),'unique_restored_atlases':len(atlases),'other_36_bags_unchanged':True,'roster_stats_deployment_and_global_rules_unchanged':True,'packed_deployment_asset_map_matches':True,'standing_label_geometry_and_pixels_preserved':True,'document_diffs_whitelisted':True,'changed_fields':len(diff),'live_TTS_tested':False,'Windows_installer_executed':False,'multiplayer_fresh_cache_tested':False}

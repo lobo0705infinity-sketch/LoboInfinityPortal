@@ -1,8 +1,8 @@
 """Reassemble damaged texture atlases from existing pixels, without redrawing/resizing artwork."""
 from pathlib import Path
-import zipfile,json,io,hashlib,numpy as np
+import json,io,hashlib,numpy as np
 from PIL import Image
-R=Path(__file__).resolve().parent;out=R/'repaired-assets';refs=json.loads((R/'original-casualty-state-references.json').read_text());cache={x['url']:x for x in json.loads((R/'old-cache-manifest.json').read_text())['items']};b=json.loads((R/'battle-original.json').read_text());z=zipfile.ZipFile(R/'recovered/Lobo-Ancients-Workshop-R23-Installer.zip');done={};report=[]
+R=Path(__file__).resolve().parent;out=R/'repaired-assets';refs=json.loads((R/'original-casualty-state-references.json').read_text());b=json.loads((R/'battle-original.json').read_text());done={};report=[]
 for o in b['ContainedObjects']:
  m=json.loads(o.get('GMNotes') or '{}');profile=m.get('profile')
  if profile not in refs:continue
