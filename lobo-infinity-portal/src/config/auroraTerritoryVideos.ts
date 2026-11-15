@@ -1,7 +1,7 @@
 // All twelve published Aurora VII province guides.
 export const AURORA_TERRITORY_VIDEOS: Record<string, { videoId: string; title: string; rulesUpdate?: string; fileUrl?: string; thumbnailUrl?: string }> = {
   'nova-prospect': { videoId: 'hPJqowEY2ag', title: 'Nova Prospect Province Guide' },
-  'korin-range': { videoId: 'XGDKjDwFM8Q', title: 'Korin Range Province Guide — 15 November 2026', fileUrl: 'https://resource2.heygen.ai/aws_pacific/avatar_tmp/fede862a51d0484eb83f7df0cad95ce6/vfaac0058c8684cc695f40960a9f59412/caption_2b47914d04944c52a9ff6a83bd70a4d2.mp4', thumbnailUrl: '/assets/aurora-vii/current-maps-20261030/korin-range-high-pass.webp', rulesUpdate: 'Video updated 15 November 2026.' },
+  'korin-range': { videoId: 'XGDKjDwFM8Q', title: 'Korin Range Province Guide — 15 November 2026', fileUrl: 'https://resource2.heygen.ai/aws_pacific/avatar_tmp/fede862a51d0484eb83f7df0cad95ce6/v02125e78deb4452c9161f62189e8373a/caption_48927acb49d84dbabba6bd51b0ae6198.mp4', thumbnailUrl: '/assets/aurora-vii/current-maps-20261030/korin-range-high-pass.webp', rulesUpdate: 'Video updated 15 November 2026.' },
   'crystal-frontier': { videoId: 'hLn39ozOR28', title: 'Hacking Range Cut: Crystal Frontier' },
   'echo-shores': { videoId: 'xU0885BtA84', title: 'Echo Shores: Black-Market Arsenal' },
   'harmony-province': { videoId: 'abxV520l70E', title: 'Security & Camouflage: Harmony Province' },
