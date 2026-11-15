@@ -108,8 +108,8 @@ try {
     await expect(page.getByText('Scoring amendment adopted · effective from Turn 1',{exact:true})).toBeVisible()
     await expect(page.getByText(state.tiePriority.join(' → '), { exact: false })).toBeVisible()
     await page.goto(`${root}/commissioner/aurora-vii`)
-    await expect(page.getByLabel('Campaign rules revision', {exact:true})).toBeDisabled()
-    await expect(page.getByLabel('Published faction tie priority · first to last', {exact:true})).not.toBeEditable()
+    await expect(page.getByRole('combobox', {name:/Campaign rules revision/})).toBeDisabled()
+    await expect(page.getByRole('textbox', {name:/Published faction tie priority/})).not.toBeEditable()
   }
   assert.deepEqual(errors, [])
   console.log('PASS: real private ledger/service, commissioner authentication fixture, DM recording, Credit reserve, lock/open/close, reviewed commit, Doctrine award, public draft transfer, allowlisted publication and mobile layout. No production data or messages. Screenshots:', directory)
