@@ -12,7 +12,6 @@ export default function TerritoryVideo({ territoryId, territoryName }: { territo
   return <section className="aurora-territory-video panel" aria-labelledby={`video-${territoryId}`}>
     <p className="eyebrow">Territory briefing</p>
     <h2 id={`video-${territoryId}`}>Watch the {territoryName} guide</h2>
-    {video.rulesUpdate ? <p className="aurora-muted">{video.rulesUpdate}</p> : null}
     <div className="aurora-video-frame">
       {playing ? video.fileUrl ? <video
         src={video.fileUrl}

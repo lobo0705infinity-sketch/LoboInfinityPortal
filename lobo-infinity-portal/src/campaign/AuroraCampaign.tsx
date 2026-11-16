@@ -1,3 +1,4 @@
+import AuroraRulebook, { RuleChapter, useRuleSearch } from './AuroraRulebook'
 import AuroraFactionDecisions from './AuroraFactionDecisions'
 import { projectedStandings, ownerAdvantageStatus } from '../../shared/aurora-campaign-policy.mjs'
 import CompactArtwork from '../components/CompactArtwork'
@@ -5,7 +6,7 @@ import TerritoryVideo from './TerritoryVideo'
 import AuroraPlayerGuide, { AuroraGuideLink } from './AuroraPlayerGuide'
 import CampaignStatus from './CampaignStatus'
 import TerritoryVideoThumbnail from './TerritoryVideoThumbnail'
-import { AURORA_TERRITORY_VIDEOS, AURORA_RULES_REVISION, AURORA_SPECIAL_RULES_PDF_URL } from '../config/auroraTerritoryVideos'
+import { AURORA_TERRITORY_VIDEOS, AURORA_SPECIAL_RULES_PDF_URL } from '../config/auroraTerritoryVideos'
 import { auroraMapRegions } from '../../shared/aurora-map-catalog.mjs'
 import TerritoryBattlefieldRules from './TerritoryBattlefieldRules'
 import { useState, type ReactNode } from 'react'
@@ -171,22 +172,7 @@ function CampaignMissions({ state }: { state: AuroraPublicState }) {
       {state.narrativeMission ? <Panel title="Current Narrative Mission"><h3>{state.narrativeMission.title}</h3><p>The winning faction earns the Campaign VP award and special reward announced for this mission.</p><Paragraphs text={state.narrativeMission.briefing}/>{state.narrativeMission.reward ? <p><strong>Announced reward:</strong> {state.narrativeMission.reward}</p> : null}{state.narrativeMission.sheetUrl ? <a href={state.narrativeMission.sheetUrl} target="_blank" rel="noopener noreferrer">Open the current mission sheet ↗</a> : <p>The mission sheet has not been published.</p>}</Panel> : null}
       <p className="aurora-muted">Narrative Mission TP and OP count only toward the Narrative Mission. They do not generate territorial Influence or count toward NA2 Contracts, Tohaa Hidden Hand TP, or CA Infiltration.</p>
     </>}
-    <p><AuroraGuideLink>First campaign game? Watch the guide</AuroraGuideLink></p>
-    <CampaignLocationRules/>
-    <CampaignScoringRevision state={state}/>
-    <CampaignPreparationRules/>
-    <section id="battlefield-rules" className="panel aurora-panel">
-      <p className="eyebrow">12 territories · Rules updated {AURORA_RULES_REVISION}</p>
-      <h2>Battlefield rules &amp; owner advantages</h2>
-      <p>Each territory changes how its battles are fought. Both players use its battlefield rules. Only the Turn-start controller receives an active owner advantage; from Turn 3, check the published selection. Check the territory before choosing army lists. Normal points, SWC and availability apply.</p>
-      <p>These rules apply to all territorial missions at every Workshop location in that territory. Narrative games use their mission sheet and current Event; territory rules apply only when the sheet expressly says so.</p>
-      <p><a href={AURORA_SPECIAL_RULES_PDF_URL} target="_blank" rel="noopener noreferrer">Download all territory special rules (PDF) ↗</a></p>
-      {auroraMapRegions.map(region => <details className="aurora-battlefield-entry" key={region.id}>
-        <summary>{region.name} · {region.rule.title}</summary>
-        <TerritoryBattlefieldRules region={region} state={state}/>
-        <p><Link to={`${AURORA_PATH}/territories/${region.id}`}>Explore {region.name} and its terrain →</Link></p>
-      </details>)}
-    </section>
+    <div className="aurora-mission-rule-links"><h2>Before your game</h2><p><AuroraGuideLink>First campaign game? Watch the guide</AuroraGuideLink></p><p><Link to={`${AURORA_PATH}/rules#choose-location`}>Choose a battlefield →</Link> · <Link to={`${AURORA_PATH}/rules#game-scoring`}>Scoring &amp; reporting →</Link> · <Link to={`${AURORA_PATH}/rules#battlefield-rules`}>Territory rules →</Link></p></div>
     <details className="aurora-info-section"><summary>Public ordinary mission rotation</summary><p>From the Player Guide. Narrative Missions, rewards and Campaign Events are released at Turn start.</p><div className="aurora-rotation">{AURORA_TURNS.map(item => <article key={item.turn}><h3>Turn {item.turn} · {item.title}</h3>{item.missions.map((mission: { name: string; reference: string }) => <p key={mission.name}>{mission.reference}</p>)}</article>)}</div></details>
   </>
 }
@@ -208,10 +194,10 @@ function CampaignStory({ state }: { state: AuroraPublicState }) {
   </>
 }
 
-function CampaignScoringRevision({ state }: { state: AuroraPublicState }) {
+function CampaignScoringRules({ state }: { state: AuroraPublicState }) {
   return (
-    <section id="balance-amendment" className="panel aurora-panel"><h2>Campaign scoring revision</h2>
-      {state.rulesRevision === '2026-11-balance' ? <><p><strong>{state.turn ? `Adopted scoring rules · Turn ${state.turn}` : 'Scoring amendment adopted · effective from Turn 1'}</strong> Each faction counts its best five confirmed results at each location, including the Narrative Mission, with at most two from any one player. Rank by TP, then OP, then earlier submission, then report ID. Each side of a battle is selected independently. Submit one report per battle for both players; the opponent confirms it.</p><p>Only counted TP and OP generate campaign Influence, support and specialist comparisons. Any valid game can supply Secret Objective evidence under its written conditions. Bonuses are added afterwards. Extra games remain in history and personal statistics. A stronger result can replace an earlier counted result.</p><p>Tohaa must earn at least five counted TP at its chosen target as well as achieve its declared outcome. CA must play at least one counted target game; a Narrative winner must play at least one counted Narrative game. A successful defence requires the controller’s own counted territorial TP.</p><p>On a complete territorial tie, the incumbent retains control only if among the tied leaders. Otherwise the first tied faction in the published priority gains control. No Influence still means no control change. Narrative and Infiltration ties retain their existing rules.</p><p>One active Secret Objective per faction, assigned before games, at most one completion per Turn and six objective VP for the campaign. Objectives follow their written conditions; there is no additional participation requirement.</p><p><strong>Published tie priority:</strong> {state.tiePriority?.join(' → ')}</p><p>The priority was drawn once before play and remains fixed throughout the campaign. This amendment takes precedence over older guide wording on these scoring rules; territory rules and faction Doctrines are unchanged.</p></> : <p>This Turn uses the original campaign rules. A balance amendment must be announced before a future Turn begins; it never recalculates completed Turns.</p>}
+    <section id="balance-amendment" className="panel aurora-panel">
+      {state.rulesRevision === '2026-11-balance' ? <><p>Each faction counts its best five confirmed results at each location, including the Narrative Mission, with at most two from any one player. Rank by TP, then OP, then earlier submission, then report ID. Each side of a battle is selected independently. Submit one report per battle for both players; the opponent confirms it.</p><p>Only counted TP and OP generate campaign Influence, support and specialist comparisons. Any valid game can supply Secret Objective evidence under its written conditions. Bonuses are added afterwards. Extra games remain in history and personal statistics. A stronger result can replace an earlier counted result.</p><p>Tohaa must earn at least five counted TP at its chosen target as well as achieve its declared outcome. CA must play at least one counted target game; a Narrative winner must play at least one counted Narrative game. A successful defence requires the controller’s own counted territorial TP.</p><p>On a complete territorial tie, the incumbent retains control only if among the tied leaders. Otherwise the first tied faction in the published priority gains control. No Influence still means no control change. Narrative and Infiltration ties retain their existing rules.</p><p>One active Secret Objective per faction, assigned before games, at most one completion per Turn and six objective VP for the campaign. Objectives follow their written conditions; there is no additional participation requirement.</p><p><strong>Published tie priority:</strong> {state.tiePriority?.join(' → ')}</p><p>The priority is drawn before play and remains fixed throughout the campaign.</p></> : <p>Scoring details will appear when the campaign briefing loads. The mission briefing confirms which results count for the Turn.</p>}
     </section>
   )
 }
@@ -219,24 +205,25 @@ function CampaignScoringRevision({ state }: { state: AuroraPublicState }) {
 function CampaignRules({ state }: { state: AuroraPublicState }) {
   const balanced = state.rulesRevision === '2026-11-balance'
   const example = campaignScore(8, 6)
-  return <>
-    <Panel title="New to Aurora VII?"><p><AuroraGuideLink/> · A short walkthrough from faction planning to a confirmed result.</p></Panel>
-    <CampaignLocationRules/>
-    <CampaignScoringRevision state={state}/>
-    <CampaignPreparationRules/>
-    <section id="battlefield-rules" className="panel aurora-panel">
-      <p className="eyebrow">12 territories · Rules updated {AURORA_RULES_REVISION}</p>
-      <h2>Battlefield rules &amp; owner advantages</h2>
-      <p>Each territory changes how its battles are fought. Both players use its battlefield rules. Only the Turn-start controller receives an active owner advantage; from Turn 3, check the published selection. Check the territory before choosing army lists. Normal points, SWC and availability apply.</p>
-      <p>These rules apply to all territorial missions at every Workshop location in that territory. Narrative games use their mission sheet and current Event; territory rules apply only when the sheet expressly says so.</p>
-      <p><a href={AURORA_SPECIAL_RULES_PDF_URL} target="_blank" rel="noopener noreferrer">Download all territory special rules (PDF) ↗</a></p>
-      {auroraMapRegions.map(region => <details className="aurora-battlefield-entry" key={region.id}>
-        <summary>{region.name} · {region.rule.title}</summary>
-        <TerritoryBattlefieldRules region={region} state={state}/>
-        <p><Link to={`${AURORA_PATH}/territories/${region.id}`}>Explore {region.name} and its terrain →</Link></p>
-      </details>)}
-    </section>
-    <Panel title="Game scores & Tournament Points">
+  return <AuroraRulebook>
+    <RuleChapter id="start-here" title="Start here" description="Your first campaign game, in four steps.">
+      <ol className="aurora-rulebook-steps">
+        <li><div><strong>Join a faction.</strong><Link to={`${AURORA_PATH}/register`}>Register for Aurora VII</Link>, then coordinate with your Commander in your private faction channel.</div></li>
+        <li><div><strong>Find an opponent from another faction.</strong>Agree on a Vulnerable Territory or the active Narrative Mission. If you disagree, use blind Command Token bidding.</div></li>
+        <li><div><strong>Read the briefing and play.</strong>Check the location’s battlefield rules and owner advantage before choosing lists. Use the Turn’s mission briefing.</div></li>
+        <li><div><strong>Report once. Confirm together.</strong>One player submits both scores and shares the verification link. The opponent confirms or requests a correction before the deadline.</div></li>
+      </ol>
+      <p className="aurora-rulebook-callout"><strong>The goal:</strong> finish Turn 6 with the most Campaign VP. Your faction’s path, territory control, Narrative Missions, Doctrines, and Secret Objectives determine how you earn it.</p>
+    <h4>Campaign structure</h4><ul>
+      <li>12 weeks, divided into six Campaign Turns of two weeks each. All twelve territories start uncontrolled; all factions start at zero earned Campaign VP.</li>
+      <li>The GM announces four Vulnerable Territories, two ordinary missions, one Narrative Mission, and the current Campaign Event at Turn start.</li>
+      <li>Only Vulnerable Territories can change ownership that Turn.</li>
+      <li>Play Infinity normally and report the result with either the chosen Vulnerable Territory or the Narrative Mission as Campaign Location.</li>
+      <li>The faction with the most Campaign VP after Turn 6 wins.</li>
+    </ul>
+    </RuleChapter>
+    <RuleChapter id="choose-location" title="Choose a battlefield" description="Agreement, blind Command Token bids, and mission selection."><CampaignLocationRules/></RuleChapter>
+    <RuleChapter id="game-scoring" title="Scores &amp; reporting" description="Turn Objective Points into TP and get your result confirmed.">
       <p>Enter each player’s Objective Points (OP), from 0 to 10. The form determines the result and calculates Tournament Points (TP) automatically.</p>
       <div className="table-wrapper"><table><thead><tr><th scope="col">Condition</th><th scope="col">TP earned</th></tr></thead><tbody>
         <tr><td>Win (higher OP)</td><td>4 TP</td></tr><tr><td>Draw (equal OP)</td><td>2 TP each</td></tr><tr><td>Loss (lower OP)</td><td>0 TP</td></tr>
@@ -244,9 +231,28 @@ function CampaignRules({ state }: { state: AuroraPublicState }) {
       </tbody></table></div>
       <p><strong>Example: 8–6 OP gives {example.tpA}–{example.tpB} TP.</strong> The winner earns 4 + 1 for reaching 5 OP. The loser earns 1 for reaching 5 OP and 1 for losing by two.</p>
       <p>Campaign opponents must belong to different factions. Same-faction games are prohibited for both Territory Battles and Narrative Missions. One submission covers both players. Review the scores, submit, then share the verification link. The opponent confirms or requests a correction. Only timely, confirmed or commissioner-approved results are eligible for the scoring pool. Late reports do not count and cannot be approved. Possible duplicates require review.</p>
-    </Panel>
-    <section id="faction-commanders" className="panel aurora-panel">
-      <h2>Faction Commanders & deputies</h2>
+    </RuleChapter>
+    <RuleChapter id="counted-results" title="Which results count" description="Scoring caps, Influence, participation requirements, and tie priority."><CampaignScoringRules state={state}/></RuleChapter>
+    <RuleChapter id="battlefield-rules" title="Territory rules" description="Battlefield conditions and owner advantages for all twelve territories.">
+      <p className="eyebrow">12 territories · Battlefield reference</p>
+
+      <p>Each territory changes how its battles are fought. Both players use its battlefield rules. Only the Turn-start controller receives an active owner advantage; from Turn 3, check the published selection. Check the territory before choosing army lists. Normal points, SWC and availability apply.</p>
+      <p>These rules apply to all territorial missions at every Workshop location in that territory. Narrative games use their mission sheet and current Event; territory rules apply only when the sheet expressly says so.</p>
+      <p><a href={AURORA_SPECIAL_RULES_PDF_URL} target="_blank" rel="noopener noreferrer">Download all territory special rules (PDF) ↗</a></p>
+      <RuleTerritories state={state}/>
+    </RuleChapter>
+    <RuleChapter id="faction-paths" title="Four ways to fight" description="Conquest, NA2 contracts, Tohaa support, and Combined Army Infiltration."><div className="aurora-rules-grid">
+      <article><h3>Conquest · Human Sphere powers</h3><p>PanOceania, Yu Jing, Ariadna, Haqqislam, Nomads, JSA, ALEPH, and O-12 generate territorial Influence: <strong>1 TP = 1 Influence</strong>. Add applicable Tohaa and NA2 support before resolving control. Most Influence controls the territory at Turn end; tied Influence uses the faction’s own OP. {balanced ? 'A complete tie retains the controller only if it is among the leaders; otherwise published faction priority decides.' : 'A complete tie retains the current controller.'} At the end of Turn 6, score the printed VP of controlled territories.</p></article>
+      <article><h3>NA2 · Contract Warfare</h3><p>NA2 works through private mercenary contracts rather than claiming territory. Conquest factions, Tohaa, and Combined Army can hire NA2 to support their operations. A Tohaa contract requires a successful Hidden Hand operation, including Tohaa’s five own counted target TP, as well as NA2’s contract threshold. Discuss hiring with your Faction Commander and use your individual faction guide for the full rules.</p></article>
+      <article><h3>Tohaa · The Hidden Hand</h3><p>Tohaa privately selects a Vulnerable Territory, INSTALL or PRESERVE, and a supported Conquest faction. INSTALL means that faction gains a territory it did not control at Turn start, including an uncontrolled territory; PRESERVE means the existing controller retains it. Every complete 5 Tohaa TP there grants +1 Influence to the beneficiary before control resolves. Remainders do not carry forward. {balanced ? 'If the declared outcome occurs and Tohaa earns at least five counted TP at that target, Tohaa gains +2 VP.' : 'If the declared outcome occurs, Tohaa gains +2 VP.'}</p></article>
+      <article><h3>Combined Army · Infiltration</h3><p>CA privately selects a Vulnerable Territory not already Infiltrated. It generates no territorial Influence and must outperform every opposing faction by comparison TP, then its own OP. A complete tie fails. Success grants +2 VP and a permanent operational foothold; normal territorial control remains unchanged. Consult your individual faction guide when hiring NA2 to support an Infiltration operation.</p></article>
+    </div></RuleChapter>
+    <RuleChapter id="faction-doctrines" title="Faction Doctrines" description="Earn Campaign VP by fulfilling your faction’s distinctive goal."><p>A capture means gaining control of a territory your faction did not control at Turn start, including an uncontrolled territory. Requirements expressly naming a previous controller still require that controller. ALEPH uses its own control-and-highest-combined-counted-TP condition, without an added active-defense requirement.</p><p>A successful Doctrine gives +1 Campaign VP, at most once per Turn and at most three times during the campaign.</p>{AURORA_DOCTRINES.map(item => <article key={item.faction}><h4>{item.faction} · {item.name}</h4><p>{item.requirement}</p></article>)}<p>For Nomads, every faction tied for most territories at Turn start counts as a territorial leader. For ALEPH, any territory tied for highest combined earned territorial TP can qualify. Narrative TP is excluded.</p></RuleChapter>
+    <RuleChapter id="narrative-objectives" title="Narrative & secret objectives" description="Story missions, private objectives, rewards, and Precursor Ruins."><p>All factions can play the Narrative Mission. Its TP and OP are counted separately and do not contribute to territorial Influence, NA2 contract thresholds, Tohaa support, or CA Infiltration. Highest Narrative TP wins; OP breaks ties. If both remain tied, the Narrative Mission is unresolved.</p><p>The winning faction earns +1 Campaign VP and the announced special reward in Turns 1–5. Turn 6 awards +2 VP and no additional special reward. Check the current mission sheet for the exact award and how the reward works.</p><p>Secret Objectives begin in Turn 2, are assigned before the global opening of games, and apply only to their assigned Turn. Incomplete objectives expire and require explicit pre-play reissue. Completed objectives cannot be awarded again. Completed Secret Objectives give +2 Campaign VP, capped at 6 objective VP per faction. Your own objective is private; the GM-only objective table is not published. An employer cannot count NA2’s victories as its own victories.</p><p>A discovered Precursor Ruin is a permanent territory tag with no inherent VP, TP, OP, Influence, or battlefield bonus. It matters only when another rule specifically refers to it.</p></RuleChapter>
+    <RuleChapter id="faction-briefings" title="Faction briefings" description="Planning advice, mid-turn dispatches, and the aftermath of each Turn."><p>Use your private faction briefing for this Turn’s one-game recommendation, actual scoring requirements, hiring advice and progress tracker. Narrative flavour is labelled separately from strategic recommendations and rules.</p><p>A mid-turn faction dispatch reviews confirmed progress and recommends where the next games will help. It does not change locked contracts or specialist selections. After resolution, a private faction debrief explains results and a separate public report can recognize verified player contributions and territorial changes. Recognition adds no points.</p></RuleChapter>
+    <RuleChapter id="public-private" title="What stays private" description="Know what you can share and what belongs in your faction channel."><p>Public: announced map state, printed VP values, controllers, Vulnerable Territories, the current Campaign Event, current Narrative Mission, reported battles, and publicly released discoveries and story.</p><p>Private: faction objectives and strategy, treasuries, bids, accepted contract terms, purchases, Tohaa choices, CA targets, and faction-specific GM briefings. Hidden operations remain private unless the GM releases them. Future Events, Narrative Missions, rewards, and story chapters are not published in advance. Share only your own faction’s files; the combined GM tracking workbook and master pack contain other factions’ private material.</p></RuleChapter>
+    <RuleChapter id="faction-commanders" title="Faction command" description="Commanders, deputies, private decisions, and deadlines.">
+
       <p>Each faction selects one Commander and one deputy before the campaign and tells the GM who holds each role. Discuss decisions together first. <strong>If consensus is not reached by the GM’s decision deadline, the Commander makes the final call.</strong> The deputy acts when the Commander is unavailable.</p>
       <ul>
         <li>The Commander coordinates recommended targets and submits one official set of faction decisions to the GM.</li>
@@ -256,25 +262,21 @@ function CampaignRules({ state }: { state: AuroraPublicState }) {
         <li>The GM interprets rules and confirms scoring. If both Commander and deputy are unavailable, contact the GM before the decision deadline.</li>
       </ul>
       <p>Discuss plans in your private faction channel. The Commander or deputy sends the official decision directly to Lobo by Discord DM, including the Turn, faction, decision and any target, beneficiary or Credit amount. Send anything secret this way: contract offers and acceptance, spending, Hidden Hand choices, Infiltration targets and Secret Objective claims. Lobo records and reviews these privately; only approved public outcomes appear here.</p>
-    </section>
-    <details className="aurora-info-section"><summary>Campaign structure</summary><ul>
-      <li>12 weeks, divided into six Campaign Turns of two weeks each. All twelve territories start uncontrolled; all factions start at zero earned Campaign VP.</li>
-      <li>The GM announces four Vulnerable Territories, two ordinary missions, one Narrative Mission, and the current Campaign Event at Turn start.</li>
-      <li>Only Vulnerable Territories can change ownership that Turn.</li>
-      <li>Play Infinity normally and report the result with either the chosen Vulnerable Territory or the Narrative Mission as Campaign Location.</li>
-      <li>The faction with the most Campaign VP after Turn 6 wins.</li>
-    </ul></details>
-    <details className="aurora-info-section"><summary>Four ways to fight</summary><div className="aurora-rules-grid">
-      <article><h3>Conquest · Human Sphere powers</h3><p>PanOceania, Yu Jing, Ariadna, Haqqislam, Nomads, JSA, ALEPH, and O-12 generate territorial Influence: <strong>1 TP = 1 Influence</strong>. Add applicable Tohaa and NA2 support before resolving control. Most Influence controls the territory at Turn end; tied Influence uses the faction’s own OP. {balanced ? 'A complete tie retains the controller only if it is among the leaders; otherwise published faction priority decides.' : 'A complete tie retains the current controller.'} At the end of Turn 6, score the printed VP of controlled territories.</p></article>
-      <article><h3>NA2 · Contract Warfare</h3><p>NA2 works through private mercenary contracts rather than claiming territory. Conquest factions, Tohaa, and Combined Army can hire NA2 to support their operations. A Tohaa contract requires a successful Hidden Hand operation, including Tohaa’s five own counted target TP, as well as NA2’s contract threshold. Discuss hiring with your Faction Commander and use your individual faction guide for the full rules.</p></article>
-      <article><h3>Tohaa · The Hidden Hand</h3><p>Tohaa privately selects a Vulnerable Territory, INSTALL or PRESERVE, and a supported Conquest faction. INSTALL means that faction gains a territory it did not control at Turn start, including an uncontrolled territory; PRESERVE means the existing controller retains it. Every complete 5 Tohaa TP there grants +1 Influence to the beneficiary before control resolves. Remainders do not carry forward. {balanced ? 'If the declared outcome occurs and Tohaa earns at least five counted TP at that target, Tohaa gains +2 VP.' : 'If the declared outcome occurs, Tohaa gains +2 VP.'}</p></article>
-      <article><h3>Combined Army · Infiltration</h3><p>CA privately selects a Vulnerable Territory not already Infiltrated. It generates no territorial Influence and must outperform every opposing faction by comparison TP, then its own OP. A complete tie fails. Success grants +2 VP and a permanent operational foothold; normal territorial control remains unchanged. Consult your individual faction guide when hiring NA2 to support an Infiltration operation.</p></article>
-    </div></details>
-    <details className="aurora-info-section"><summary>Faction Doctrines</summary><p>A capture means gaining control of a territory your faction did not control at Turn start, including an uncontrolled territory. Requirements expressly naming a previous controller still require that controller. ALEPH uses its own control-and-highest-combined-counted-TP condition, without an added active-defense requirement.</p><p>A successful Doctrine gives +1 Campaign VP, at most once per Turn and at most three times during the campaign.</p>{AURORA_DOCTRINES.map(item => <details key={item.faction}><summary>{item.faction} · {item.name}</summary><p>{item.requirement}</p></details>)}<p>For Nomads, every faction tied for most territories at Turn start counts as a territorial leader. For ALEPH, any territory tied for highest combined earned territorial TP can qualify. Narrative TP is excluded.</p></details>
-    <details className="aurora-info-section"><summary>Narrative scoring, objectives, and Ruins</summary><p>All factions can play the Narrative Mission. Its TP and OP are counted separately and do not contribute to territorial Influence, NA2 contract thresholds, Tohaa support, or CA Infiltration. Highest Narrative TP wins; OP breaks ties. If both remain tied, the Narrative Mission is unresolved.</p><p>The winning faction earns +1 Campaign VP and the announced special reward in Turns 1–5. Turn 6 awards +2 VP and no additional special reward. Check the current mission sheet for the exact award and how the reward works.</p><p>Secret Objectives begin in Turn 2, are assigned before the global opening of games, and apply only to their assigned Turn. Incomplete objectives expire and require explicit pre-play reissue. Completed objectives cannot be awarded again. Completed Secret Objectives give +2 Campaign VP, capped at 6 objective VP per faction. Your own objective is private; the GM-only objective table is not published. An employer cannot count NA2’s victories as its own victories.</p><p>A discovered Precursor Ruin is a permanent territory tag with no inherent VP, TP, OP, Influence, or battlefield bonus. It matters only when another rule specifically refers to it.</p></details>
-    <details className="aurora-info-section"><summary>Faction briefings and campaign updates</summary><p>Use your private faction briefing for this Turn’s one-game recommendation, actual scoring requirements, hiring advice and progress tracker. Narrative flavour is labelled separately from strategic recommendations and rules.</p><p>A mid-turn faction dispatch reviews confirmed progress and recommends where the next games will help. It does not change locked contracts or specialist selections. After resolution, a private faction debrief explains results and a separate public report can recognize verified player contributions and territorial changes. Recognition adds no points.</p></details>
-    <details className="aurora-info-section"><summary>Public and private information</summary><p>Public: announced map state, printed VP values, controllers, Vulnerable Territories, the current Campaign Event, current Narrative Mission, reported battles, and publicly released discoveries and story.</p><p>Private: faction objectives and strategy, treasuries, bids, accepted contract terms, purchases, Tohaa choices, CA targets, and faction-specific GM briefings. Hidden operations remain private unless the GM releases them. Future Events, Narrative Missions, rewards, and story chapters are not published in advance. Share only your own faction’s files; the combined GM tracking workbook and master pack contain other factions’ private material.</p></details>
-  </>
+    </RuleChapter>
+    <RuleChapter id="turn-preparation" title="Turn preparation & victory" description="Choices for Turns 3–6, owner advantages, and the final campaign tie-break."><CampaignPreparationRules/></RuleChapter>
+  </AuroraRulebook>
+}
+
+function RuleTerritories({ state }: { state: AuroraPublicState }) {
+  const query = useRuleSearch()
+  const matching = auroraMapRegions.filter(region => !query || JSON.stringify(region).toLocaleLowerCase().includes(query))
+  // A category search such as “territory rules” should still expose the full reference.
+  const regions = matching.length ? matching : auroraMapRegions
+  return <>{regions.map(region => <details className="aurora-battlefield-entry" key={`${region.id}:${query}`} open={Boolean(query)}>
+    <summary>{region.name} · {region.rule.title}</summary>
+    <TerritoryBattlefieldRules region={region} state={state}/>
+    <p><Link to={`${AURORA_PATH}/territories/${region.id}`}>Explore {region.name} and its terrain →</Link></p>
+  </details>)}</>
 }
 
 
@@ -284,13 +286,13 @@ function MissionReference({ mission, catalog }: { mission: string; catalog?: Mis
 }
 
 function CampaignPreparationRules() { return <>
-    <section className="panel aurora-panel" id="turn-three-rules"><h2>Preparation rules · effective from Turn 3</h2>
+    <section className="panel aurora-panel" id="turn-three-rules"><h2>Preparing for Turns 3–6</h2>
       <p><strong>Trailing-faction nomination:</strong> among the eight Conquest factions, lowest projected VP (earned VP plus current territory value) nominates one territory for a remaining slot. Fewer previous nominations breaks a tie, then a recorded random draw. Each offer lasts 24 hours; no response passes it to the next faction. Existing mandatory and exclusion rewards take priority. Four mandatory selections mean no nomination and no usage recorded. All four territories are published together.</p>
       <p><strong>Choice after a failed objective:</strong> all eleven factions receive two eligible, comparably difficult options after failing an assigned objective in the preceding Turn. Choose one privately before the global opening of games. Completed objectives cannot return; a failed one may be reissued. Only the selected option is active. Missing the deadline selects the GM’s designated default. If only one eligible option remains, it is assigned normally. The reward remains 2 VP, capped at 6 for the campaign; valid cap-excluded games can still satisfy written objective conditions.</p>
       <p><strong>Owner advantages:</strong> a Conquest faction owning one or two vulnerable territories receives their advantages automatically. If it owns three or four, it chooses up to two. Missing the deadline selects the two highest-value eligible territories, then alphabetical name. General battlefield rules always apply. Ownership is fixed at Turn start; support and employment do not transfer advantages. Selections are published before games.</p>
       <p><Link to={`${AURORA_PATH}/decisions`}>Open private faction decisions →</Link></p>
       <p>Resolve the previous Turn → nomination → publish four vulnerable territories → lock owner advantages, objectives and operations → begin games. These mechanics do not change the TP formula.</p>
     </section>
-    <section className="panel aurora-panel"><h2>Final campaign ties</h2><p>After every Turn 6 award, compare Campaign VP, then cumulative official counted TP, then the OP from those counted results, then the published faction priority. Include territorial and Narrative results under each Turn’s recorded revision; exclude support conversions and bonus Narrative TP. The final campaign winner receives the Gate decision.</p><p><a href="/guides/aurora-vii-player-guide-current.pdf" target="_blank" rel="noopener noreferrer">Download the consolidated Player Guide ↗</a></p></section>
+    <section className="panel aurora-panel"><h2>Final campaign ties</h2><p>After every Turn 6 award, compare Campaign VP, then cumulative official counted TP, then the OP from those counted results, then the published faction priority. Include official counted territorial and Narrative results; exclude support conversions and bonus Narrative TP. The final campaign winner receives the Gate decision.</p><p><a href="/guides/aurora-vii-player-guide-current.pdf" target="_blank" rel="noopener noreferrer">Download the Player Guide (PDF) ↗</a></p></section>
   </>
 }
