@@ -124,7 +124,7 @@ const fixture = (balanced = true) => {
   f.act('objective',{id,approve:true,evidence:'Three territories captured in prior Turns remain controlled at resolution'})
   assert.equal(f.ledger.operations.objectives[0].status,'completed')
   f.ledger.operations.objectives.push({id:'legacy-carry',faction:'Ariadna',status:'assigned',assignedTurn:1})
-  assert.throws(()=>f.act('objective',{id:'legacy-carry',approve:true,evidence:'Second claim'}),/Only one/)
+  assert.throws(()=>f.act('objective',{id:'legacy-carry',approve:true,evidence:'Second claim'}),/active assigned/)
 }
 // Version declarations are explicit and frozen at preparation.
 {

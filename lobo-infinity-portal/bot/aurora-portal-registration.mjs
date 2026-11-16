@@ -78,7 +78,7 @@ export function createPortalRegistration({ clientId, secret = process.env.DISCOR
       const raw = await body(request)
       const login = action === 'login'
       const input = login ? null : validate(raw)
-      const returnPath = login && /^\/campaign\/aurora-vii\/(submit|games)(\?game=[a-f0-9-]{36})?$/.test(raw.returnPath || '') ? raw.returnPath : '/campaign/aurora-vii/submit'
+      const returnPath = login && /^\/campaign\/aurora-vii\/(submit|games|decisions)(\?game=[a-f0-9-]{36})?$/.test(raw.returnPath || '') ? raw.returnPath : '/campaign/aurora-vii/submit'
       if (identity && !login) return json(200, { registration: project(await register({ ...input, userId: identity.id })) })
       if (action === 'register') return json(401, { error: 'Confirm your Discord account before registering.' })
       const counts = await summary()

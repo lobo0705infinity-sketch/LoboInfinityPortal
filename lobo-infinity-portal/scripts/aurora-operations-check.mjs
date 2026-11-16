@@ -102,8 +102,7 @@ function defaults(f) { f.act('hidden-hand', { location: loc(0), beneficiary: 'Pa
     assert.throws(() => f.act('objective', { id, approve: true, evidence: 'Repeat' }), /active assigned/)
   }
   assert.equal(operationsView(f.ledger).vp.PanOceania, 6)
-  f.act('assign-objective', { faction: 'PanOceania', title: 'Fourth', requirement: 'Requirement' })
-  assert.throws(() => f.act('objective', { id: f.ledger.operations.objectives.at(-1).id, approve: true, evidence: 'Evidence' }), /six-VP/)
+  assert.throws(() => f.act('assign-objective', { faction: 'PanOceania', title: 'Fourth', requirement: 'Requirement' }), /VP cap/)
   f.ledger.operations.awards.push(...[1, 2, 3].map(i => ({ faction: 'Ariadna', vp: 1, category: 'doctrine', turn: i, source: 'test' + i })))
   assert.equal(resolutionPreview(f.ledger, 2).doctrines.find(d => d.faction === 'Ariadna').canAward, false)
 }

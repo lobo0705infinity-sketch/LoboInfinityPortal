@@ -1,11 +1,11 @@
 import { AURORA_REGISTRATION_FACTIONS } from '../shared/aurora-registration.mjs'
 import { AURORA_DOCTRINES } from '../shared/aurora-public.mjs'
-import { ARIADNA_BRIEFING, ARIADNA_BRIEFING_MARKER, AURORA_RULES_NOTICE } from './aurora-ariadna-briefing.mjs'
+import { ARIADNA_BRIEFING, ARIADNA_BRIEFING_MARKER, AURORA_RULES_NOTICE, AURORA_CURRENT_PROCEDURES } from './aurora-ariadna-briefing.mjs'
 
 const welcome = name => `Welcome to ${name}’s campaign headquarters. Use this channel to coordinate games, discuss targets, share lists, and keep our plans within the faction.`
-const conquest = `• Every **Tournament Point generates 1 Influence** in the territory where that game was reported.
+const conquest = `• Every **counted Tournament Point generates 1 Influence** in the territory where that game was reported.
 • Only the Turn’s announced **Vulnerable Territories** can change hands.
-• Highest faction Influence controls the territory at Turn end. **Objective Points break ties**; a complete tie preserves the current controller.
+• Highest faction Influence controls the territory at Turn end. **Counted Objective Points break ties**; a positive complete tie preserves the controller only if it is among the leaders. Otherwise the published faction priority selects between the leaders. Zero Influence leaves control unchanged.
 • Territories held **at the end of Turn 6** award their printed Campaign VP.`
 const narrative = `Narrative Mission games contribute to a **separate faction total**, not territorial Influence. Decide together how much effort to commit to each contest.`
 const confidential = `**Keep our plans here**
@@ -100,9 +100,9 @@ NA2 follows **Contract Warfare**, rather than territorial Conquest:
 
 • We generate **no territorial Influence**.
 • Conquest factions, Tohaa and Combined Army may offer a private Contract naming one Vulnerable Territory and an affordable Credit bid. NA2 accepts **at most one Contract per Turn**.
-• Every complete **2 NA2 territorial TP** at the contracted target supplies **+1 support** to the Employer's operation, even if the Contract fails. Our OP does not transfer.
+• Every complete **2 counted NA2 territorial TP** at the contracted target supplies **+1 support** to the Employer's operation, even if the Contract fails. Our OP does not transfer.
 • Success requires **at least 5 own target TP** (3 with Operational Preparation) **and the Employer's declared outcome**. We do not have to outscore every other faction.
-• Success awards **NA2 +2 Campaign VP** and the agreed Credit payment. The Employer gains **no extra Contract VP**. Repeat Employers are allowed. Failed bids return to the Employer; approved Insurance follows its separate rule.
+• Success awards **NA2 +2 Campaign VP** and the agreed Credit payment. A Tohaa employer must complete Hidden Hand, including five own counted target TP, for its contract to succeed. The Employer gains **no extra Contract VP**. Repeat Employers are allowed. Failed bids return to the Employer; approved Insurance follows its separate rule.
 
 **Our approach**
 Agree on the accepted Contract before committing our games. Concentrate our effort in the contracted territory, meet our own TP threshold, and help the Employer achieve its declared outcome. Purchases use start-of-Turn Credits; payment earned at resolution becomes available next Turn. Use the current private guide for bids and service costs.
@@ -129,9 +129,9 @@ Our influence need not look like occupation. The other factions may see the resu
 Tohaa follows **The Hidden Hand**:
 
 • Privately select **one Vulnerable Territory**, a Desired Outcome of **INSTALL or PRESERVE**, and a supported Conquest faction. Confirm the declaration with the GM.
-• Every **complete 5 Tohaa TP** in that territory gives **+1 Influence** to the supported faction before control resolves.
+• Every **complete 5 counted Tohaa TP** in that territory gives **+1 Influence** to the supported faction before control resolves.
 • Remainder TP does not carry over. We do not convert our TP into ordinary territorial Influence at 1:1.
-• If our declared Desired Outcome occurs, Tohaa earns **+2 Campaign VP**.
+• If our declared Desired Outcome occurs and Tohaa earns **at least five own counted TP at the target**, Tohaa earns **+2 Campaign VP**. INSTALL may target an uncontrolled territory or a different controller; PRESERVE requires the beneficiary to own it at Turn start.
 
 **Our approach**
 Choose a supported faction and an outcome that our games can realistically help produce. Coordinate enough games in the selected territory to reach complete five-TP thresholds, then assess the wider Influence contest.
@@ -159,9 +159,9 @@ The Combined Army follows **Infiltration**:
 
 • We generate **no territorial Influence**.
 • Privately choose **one Vulnerable Territory that is not already Infiltrated** and confirm it with the GM.
-• To succeed, our faction must finish above **every opposing faction** in that territory by total TP. OP breaks TP ties; a complete tie fails.
+• To succeed, our faction must finish above **every opposing faction** in that territory by counted target TP plus any hired NA2 comparison support. Our own counted OP breaks TP ties; a complete tie fails.
 • Success awards **+2 Campaign VP** and permanent **Infiltrated** status, unless a specific story effect removes it.
-• Infiltration **does not change normal territorial ownership**.
+• At least one own counted target game is required. Hired NA2 is excluded as a rival in that comparison. Infiltration **does not change normal territorial ownership**.
 
 **Our approach**
 Concentrate our games in the selected target and track all competing faction totals. A battlefield win contributes to the operation, but success is decided by the faction’s combined Turn performance.
@@ -176,7 +176,7 @@ ${confidential}
 **Establish the foothold. Gather intelligence. Complete the operation.**`,
 }
 
-export const YU_JING_BRIEFING = `## 🐉 YU JING — FACTION BRIEFING
+const YU_JING_BRIEFING_BASE = `## 🐉 YU JING — FACTION BRIEFING
 **Aurora VII: Race for the Gate**
 
 Welcome to Yu Jing’s campaign headquarters. Use this channel to coordinate games, discuss targets, share lists, and keep our plans within the faction.
@@ -216,7 +216,7 @@ export const AURORA_FACTION_BRIEFINGS = AURORA_REGISTRATION_FACTIONS
   .map(faction => {
   let content, color = 0x71854a
   if (faction.id === 'ariadna') content = ARIADNA_BRIEFING
-  else if (faction.id === 'yu-jing') { content = YU_JING_BRIEFING; color = 0xe2a34a }
+  else if (faction.id === 'yu-jing') { content = YU_JING_BRIEFING_BASE; color = 0xe2a34a }
   else if (special[faction.id]) content = special[faction.id]
   else {
     const profile = profiles[faction.id], doctrine = AURORA_DOCTRINES.find(item => item.faction === faction.name)
@@ -246,9 +246,12 @@ ${confidential}
 
 **${profile.motto}**`
   }
+  if (faction.id !== 'ariadna') content = content.replace('**Why we’re here**', AURORA_CURRENT_PROCEDURES + '**Why we’re here**')
   if (!['ariadna', 'yu-jing'].includes(faction.id)) content += '\n\n' + AURORA_RULES_NOTICE
   return { ...faction, content, color,
     marker: faction.id === 'ariadna' ? ARIADNA_BRIEFING_MARKER : `Aurora VII · ${faction.name} faction briefing · ${faction.id === 'aleph' ? 'v2' : 'v1'}`,
     path: `/data/aurora-vii-${faction.id}-briefing${faction.id === 'aleph' ? '-v2' : ''}.json`,
   }
 })
+
+export const YU_JING_BRIEFING = AURORA_FACTION_BRIEFINGS.find(f => f.id === 'yu-jing').content

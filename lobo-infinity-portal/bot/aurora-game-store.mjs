@@ -2,6 +2,8 @@ import { mkdir,readFile,open,rename } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { campaignTotals,campaignContributions,campaignRulesForTurn,validateCampaignGame,campaignText } from '../shared/aurora-games.mjs'
+import { hasCampaignCorrections } from '../shared/aurora-campaign-policy.mjs'
+import { advancePreparation, factionPreparationView, validatePreparedPublication } from './aurora-turn-preparation.mjs'
 import { operationsView, mutateOperations, guardCampaignGame, validOperations } from './aurora-operations.mjs'
 const fail=message=>{throw Error(message)}
 export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeReset=false}={}) {
@@ -22,11 +24,22 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
   const audit=(record,action,actor,detail='')=>{record.history.push({at:now().toISOString(),action,actor,detail});record.revision++}
   const duplicate=(s,g)=>s.games.find(v=>v.id!==g.id&&v.status!=='rejected'&&v.turn===g.turn&&v.date===g.date&&v.location===g.location&&v.mission===g.mission&&[v.playerA.id,v.playerB.id].sort().join()===[g.playerA.id,g.playerB.id].sort().join())
   function setDuplicate(s,g){const d=duplicate(s,g);if(d){g.duplicateOf=d.id;g.duplicateApproved=false}else{delete g.duplicateOf;delete g.duplicateApproved}}
-  const confirmedStatus=g=>g.late&&!g.lateApproved?'awaiting_late_approval':g.duplicateOf&&!g.duplicateApproved?'awaiting_duplicate_review':'confirmed'
+  const confirmedStatus=g=>g.late&&(g.strictDeadline||!g.lateApproved)?'awaiting_late_approval':g.duplicateOf&&!g.duplicateApproved?'awaiting_duplicate_review':'confirmed'
   return {
-    ratingGames:()=>run(async()=>(await read()).games.filter(g=>g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved)).map(g=>({id:g.id,date:g.date,playerA:{id:g.playerA.id,name:g.playerA.name},playerB:{id:g.playerB.id,name:g.playerB.name},opA:g.opA,opB:g.opB,status:g.status,late:g.late,lateApproved:g.lateApproved,duplicateOf:g.duplicateOf,duplicateApproved:g.duplicateApproved}))),
+    ratingGames:()=>run(async()=>(await read()).games.filter(g=>g.status==='confirmed'&&(!g.late||!g.strictDeadline&&g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved)).map(g=>({id:g.id,date:g.date,playerA:{id:g.playerA.id,name:g.playerA.name},playerB:{id:g.playerB.id,name:g.playerB.name},opA:g.opA,opB:g.opB,status:g.status,late:g.late,lateApproved:g.lateApproved,duplicateOf:g.duplicateOf,duplicateApproved:g.duplicateApproved}))),
     resetPractice:()=>run(async()=>{if(!allowPracticeReset)fail('Only a practice ledger can be reset.');await write({version:1,games:[],claims:[],turns:{}})}),
-    operations:()=>run(async()=>operationsView(await read())),
+    operations:()=>run(async()=>{const s=await read();if(s.operations&&advancePreparation(s.operations,now()))await write(s);return operationsView(s)}),
+    decisions:player=>run(async()=>{const s=await read();if(s.operations&&advancePreparation(s.operations,now()))await write(s);return factionPreparationView(s,player)}),
+    choose:(input,player,players,publication)=>run(async()=>{
+      const s=await read();if(s.operations&&advancePreparation(s.operations,now()))await write(s)
+      const view=factionPreparationView(s,player)
+      if(!view.canChoose||!['nominate','select-objective','select-owner-advantages'].includes(input.action))fail('Only the registered faction Commander or deputy can submit these choices.')
+      const values={action:input.action,turn:input.turn,revision:input.revision,territory:input.territory,territories:input.territories,index:input.index,faction:view.faction,reason:'Faction representative submitted through the private portal'}
+      mutateOperations(s,values,players,publication,now())
+      s.operations.journal.at(-1).actor=player.userId
+      await write(s);return factionPreparationView(s,player)
+    }),
+    validatePublication:state=>run(async()=>{validatePreparedPublication(await read(),state);return {valid:true}}),
     operate:(input,players,publication)=>run(async()=>{const s=await read();const result=mutateOperations(s,input,players,publication,now());await write(s);return result}),
     view:(userId,admin,publication)=>run(async()=>{const s=await read();if(publication.turn&&JSON.stringify(s.turns[publication.turn])!==JSON.stringify(publication)){s.turns[publication.turn]=publication;await write(s)}return {games:s.games.filter(g=>admin||g.playerA.id===userId||g.playerB.id===userId),claims:s.claims.filter(c=>admin||c.userId===userId),turns:Object.values(s.turns),totals:campaignTotals(s.games,publication.turn,campaignRulesForTurn(s,publication.turn)),reporting:s.operations?{turn:publication.turn,phase:s.operations.turns[publication.turn]?.phase||'unprepared'}:null}}),
     totals:turn=>run(async()=>{const s=await read();return campaignTotals(s.games,turn,campaignRulesForTurn(s,turn))}),
@@ -35,7 +48,7 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
       submittedAt: Date.parse(g.createdAt), accepted: g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved),
     }))),
     activity:turn=>run(async()=>{
-      const s=await read(),rulesRevision=campaignRulesForTurn(s,turn),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved))
+      const s=await read(),rulesRevision=campaignRulesForTurn(s,turn),games=s.games.filter(g=>g.turn===turn&&g.status==='confirmed'&&(!g.late||!g.strictDeadline&&g.lateApproved)&&(!g.duplicateOf||g.duplicateApproved))
       const contributions=campaignContributions(games,turn,rulesRevision),bySide=new Map(contributions.map(c=>[`${c.gameId}:${c.side}`,c]))
       return {turn,rulesRevision,totals:campaignTotals(games,turn,rulesRevision),games:games.map(({id,turn,date,location,mission,playerA,playerB,opA,opB,tpA,tpB})=>({
         id,turn,date,location,mission,playerA:{name:playerA.name,faction:playerA.faction},playerB:{name:playerB.name,faction:playerB.faction},opA,opB,tpA,tpB,
@@ -49,9 +62,10 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
       guardCampaignGame(s,input.turn,'submit')
       if(player.faction===opponent.faction)fail('Choose an opponent from a different campaign faction. Same-faction games are prohibited.')
       if(publication.turn)s.turns[publication.turn]=publication
-      const state=input.turn===publication.turn?publication:s.turns[input.turn];if(!state)fail('This Turn has not been announced.')
+      const state=s.operations?.turns[input.turn]?.start||(input.turn===publication.turn?publication:s.turns[input.turn]);if(!state)fail('This Turn has not been announced.')
       const late=input.turn!==publication.turn||Boolean(state.deadline&&now().getTime()>Date.parse(state.deadline)),project=p=>({id:p.userId,name:p.name,faction:p.faction})
-      const g={...validateCampaignGame(input,state,today()),id:randomUUID(),playerA:project(player),playerB:project(opponent),status:'awaiting_confirmation',revision:1,late,lateApproved:false,createdAt:now().toISOString(),history:[],notification:'pending'}
+      if(late&&hasCampaignCorrections(state))fail('This report is late. Late reports do not count and cannot be approved.')
+      const g={strictDeadline:hasCampaignCorrections(state),...validateCampaignGame(input,state,today()),id:randomUUID(),playerA:project(player),playerB:project(opponent),status:'awaiting_confirmation',revision:1,late,lateApproved:false,createdAt:now().toISOString(),history:[],notification:'pending'}
       setDuplicate(s,g);s.games.push(g);await write(s);return g
     }),
     act:(input,userId,admin)=>run(async()=>{
@@ -71,8 +85,8 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
       }else{
         if(!admin)fail('Commissioner access is required.')
         reason=campaignText(input.reason,2000,'commissioner explanation',true)
-        if(input.action==='approve-late'){if(!g.late)fail('This game is not late.');g.lateApproved=true;if(g.status==='awaiting_late_approval')g.status=g.opponentConfirmed?confirmedStatus(g):'awaiting_confirmation'}
-        else if(input.action==='approve'){g.status='confirmed';g.duplicateApproved=true;if(g.late)g.lateApproved=true}
+        if(input.action==='approve-late'){if(g.strictDeadline)fail('This report is late. Late reports cannot be approved.');if(!g.late)fail('This game is not late.');g.lateApproved=true;if(g.status==='awaiting_late_approval')g.status=g.opponentConfirmed?confirmedStatus(g):'awaiting_confirmation'}
+        else if(input.action==='approve'){if(g.late&&g.strictDeadline)fail('This report is late. Late reports cannot be approved.');g.status='confirmed';g.duplicateApproved=true;if(g.late)g.lateApproved=true}
         else if(input.action==='reject')g.status='rejected'
         else if(input.action==='correct'){
           const old={opA:g.opA,opB:g.opB,date:g.date,location:g.location,mission:g.mission}
@@ -83,7 +97,7 @@ export function createCampaignGameStore(path,{now=()=>new Date(),allowPracticeRe
       audit(g,input.action,admin?'commissioner':userId,reason);await write(s);return g
     }),
     claim:(input,player)=>run(async()=>{
-      const s=await read(),g=s.games.find(g=>g.id===input.id);if(!g||![g.playerA.id,g.playerB.id].includes(player.userId)||g.status==='rejected')fail('Choose one of your accepted campaign games.')
+      const s=await read(),g=s.games.find(g=>g.id===input.id);if(!g||![g.playerA.id,g.playerB.id].includes(player.userId)||g.status==='rejected'||g.late&&g.strictDeadline)fail('Choose one of your accepted campaign games.')
       const objective=campaignText(input.objective,200,'private objective',true),explanation=campaignText(input.explanation,4000,'private explanation',true)
       if(s.claims.some(c=>c.gameId===g.id&&c.userId===player.userId&&c.objective===objective&&c.status!=='rejected'))fail('You already submitted this claim.')
       const c={id:randomUUID(),gameId:g.id,turn:g.turn,userId:player.userId,name:player.name,faction:g.playerA.id===player.userId?g.playerA.faction:g.playerB.faction,objective,explanation,status:'pending',revision:1,history:[]}

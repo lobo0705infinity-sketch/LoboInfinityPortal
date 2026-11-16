@@ -51,7 +51,7 @@ try {
   assert(!na2.includes('Employer **+1 Campaign VP**'))
   assert(AURORA_FACTION_BRIEFINGS.every(f => f.content.includes('rules#balance-amendment')))
   const tohaa = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'tohaa').content
-  assert(tohaa.includes('complete 5 Tohaa TP') && tohaa.includes('Remainder TP does not carry over'))
+  assert(tohaa.includes('complete 5 counted Tohaa TP') && tohaa.includes('Remainder TP does not carry over'))
   const ca = AURORA_FACTION_BRIEFINGS.find(item => item.id === 'combined-army').content
   assert(ca.includes('does not change normal territorial ownership') && ca.includes('not already Infiltrated'))
   console.log('PASS: eleven faction-specific briefings, exact channel/server routing, Conquest doctrines, three special scoring systems, no future reveals, embed limits, approved Ariadna reuse, no mentions, verified pins and restart idempotence.')
