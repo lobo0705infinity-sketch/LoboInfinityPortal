@@ -19,7 +19,7 @@ export default function TerritoryBattlefieldRules({ region, state }: { region: A
       <p><a href="/guides/lobo-frostreach-r24-maps-installer.zip">Download Frosthold and Polar TTS maps with three blizzard templates each</a></p>
     </figure> : null}
     <div className="aurora-owner-advantage">
-      <h3>Territory owner advantage</h3>{state ? <p className="aurora-owner-status"><strong>{ownerAdvantageStatus(state, region.id) === 'pending' ? 'Owner advantage selection pending' : `Owner advantage ${ownerAdvantageStatus(state, region.id)}`}</strong> · Turn {state.turn || 'not opened'}</p> : <p>From Turn 3, check the campaign map’s published owner-advantage selection before applying this benefit.</p>}
+      <h3>Territory owner advantage</h3>{state?.turn ? <p className="aurora-owner-status"><strong>{ownerAdvantageStatus(state, region.id) === 'pending' ? 'Owner advantage selection pending' : `Owner advantage ${ownerAdvantageStatus(state, region.id)}`}</strong> · Turn {state.turn}</p> : <p>Only the Turn-start controller receives this benefit. From Turn 3, check the published owner-advantage selection.</p>}
       {state?.ownerAdvantages?.owners[region.id] ? <p>Turn-start owner: {state.ownerAdvantages.owners[region.id]}. Only that faction’s registered players receive an active benefit.</p> : null}
       <p><strong>{rule.ownerTitle}</strong></p>
       <p>{rule.owner}</p>

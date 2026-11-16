@@ -1,5 +1,6 @@
 import { Children, createContext, isValidElement, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import AuroraArtwork from './AuroraArtwork'
 import './AuroraRulebook.css'
 
 const BASE = '/campaign/aurora-vii'
@@ -59,10 +60,11 @@ export default function AuroraRulebook({ children }: { children: ReactNode }) {
 
   return <div className="aurora-rulebook" ref={root}>
     <header className="aurora-rulebook-intro">
-      <div><p className="aurora-rulebook-kicker">Aurora VII / Field guide</p><h2>The campaign rules.<br/><span>Your next move.</span></h2><p>Learn the essentials, plan with your faction, and find the rule you need before your next battle.</p>
+      <div><p className="aurora-rulebook-kicker">Aurora VII / Field guide</p><h2>Campaign rules</h2><p>Start with the essentials, or search for a rule.</p>
         <div className="aurora-rulebook-actions"><Link className="aurora-primary" to={`${BASE}/guide`}>Watch the player guide <span aria-hidden="true">↗</span></Link><a href="/guides/aurora-vii-player-guide-current.pdf" target="_blank" rel="noopener noreferrer">Player guide PDF ↗</a></div>
+        <p className="aurora-rulebook-format">12 weeks · 6 Turns · 11 factions · 12 territories</p>
       </div>
-      <dl className="aurora-rulebook-facts"><div><dt>Campaign length</dt><dd>12 <span>weeks</span></dd></div><div><dt>Two weeks each</dt><dd>6 <span>Turns</span></dd></div><div><dt>Choose your side</dt><dd>11 <span>factions</span></dd></div><div><dt>Shape the frontier</dt><dd>12 <span>territories</span></dd></div></dl>
+      <AuroraArtwork/>
     </header>
     <label className="aurora-rulebook-mobile-jump">Jump to a section<select value={chapters.some(chapter => `#${chapter.id}` === hash) ? hash.slice(1) : ''} onChange={event => { setQuery(''); setExpanded(current => new Set(current).add(event.target.value)); window.location.hash = event.target.value }}><option value="" disabled>Choose a rule topic</option>{chapters.map(chapter => <option key={chapter.id} value={chapter.id}>{chapter.title}</option>)}</select></label>
     <div className="aurora-rulebook-layout">

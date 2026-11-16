@@ -12,6 +12,13 @@ export function AuroraGuideLink({ children = 'Watch the player guide' }: { child
   return <Link to={AURORA_GUIDE_PATH}>{children} →</Link>
 }
 
+export function AuroraGuidePreview() {
+  return <section className="aurora-guide-preview" aria-labelledby="guide-preview-title">
+    <Link className="aurora-guide-preview-image" to={AURORA_GUIDE_PATH} aria-label="Open the 3-minute player guide"><TerritoryVideoThumbnail videoId={AURORA_GUIDE_ID}/><span aria-hidden="true">▶ 3:12</span></Link>
+    <div><p className="eyebrow">Your first game</p><h2 id="guide-preview-title">Plan. Play. Report.</h2><p>From your faction briefing to a confirmed result, the player guide walks you through one campaign game.</p><AuroraGuideLink/><p className="aurora-muted"><Link to="/campaign/aurora-vii/rules#faction-commanders">Choose your Commander and deputy →</Link></p></div>
+  </section>
+}
+
 export default function AuroraPlayerGuide() {
   const [playing, setPlaying] = useState(false)
   return <section id="player-guide" className="panel aurora-panel aurora-player-guide" aria-labelledby="player-guide-title">
@@ -31,7 +38,7 @@ export default function AuroraPlayerGuide() {
         <li><Link to="/campaign/aurora-vii/submit">Submit one result for both players</Link>, share the verification link, and submit before the announced deadline. Opponent confirmation verifies the report; the scoring caps select which verified results count.</li>
       </ol>
     </div></div>
-    <p className="aurora-muted">The Influence example follows a Conquest faction. NA2, Tohaa, and Combined Army use specialist scoring and support rules: check your faction briefing. Keep secret objectives and private plans in your faction channel.</p>
-    <p className="aurora-muted">The video uses a worked example. The current Turn briefing and written rules determine available territories, missions, events, and rewards. <Link to="/campaign/aurora-vii/rules">Read the Player Rules →</Link></p>
+    <p className="aurora-muted">The video follows a Conquest faction. NA2, Tohaa, and Combined Army use their own scoring paths; check your private faction briefing.</p>
+    <p className="aurora-muted">Use the Turn briefing and <Link to="/campaign/aurora-vii/rules">Player Rules</Link> for available battlefields, missions, events, and rewards. Keep objectives and plans in your private faction channel.</p>
   </section>
 }

@@ -32,7 +32,7 @@ export default function TerritoryVideo({ territoryId, territoryName }: { territo
       </button>}
     </div>
     <p className="aurora-video-links"><a href={video.fileUrl || youtubeWatchUrl(video.videoId)} target="_blank" rel="noopener noreferrer">{video.fileUrl ? 'Open video ↗' : 'Watch on YouTube ↗'}</a>{playing ? <button type="button" onClick={() => setPlaying(false)}>Close player</button> : null}</p>
-    <p className="aurora-muted">Use the written battlefield rules below for the current rules and owner advantage.</p>
+    <p className="aurora-muted">Use the written battlefield rules on this page for the rules and owner advantage.</p>
   </section>
 }
 

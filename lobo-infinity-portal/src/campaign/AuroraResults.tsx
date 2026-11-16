@@ -20,8 +20,8 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
 
     {live.error ? <p role="alert">{live.error} {live.data ? 'The results below are from the last successful check.' : 'Live totals are unavailable; they are not assumed to be zero.'}</p> : null}
     {!live.data && !live.error ? <p role="status">Loading confirmed campaign results…</p> : live.data ? <>
-      <p><strong>{games.length} confirmed {games.length === 1 ? 'game' : 'games'}{state.turn ? ' this Turn' : ' before campaign start'}.</strong></p>
-      {live.data.rulesRevision === '2026-11-balance' ? <p>Campaign totals use each faction’s best five results at each location, with at most two per player. All confirmed games remain in battle history. Each player’s side is selected independently.</p> : null}
+      {state.turn || games.length ? <p><strong>{games.length} confirmed {games.length === 1 ? 'game' : 'games'}{state.turn ? ' this Turn' : ' before campaign start'}.</strong></p> : null}
+      {games.length && live.data.rulesRevision === '2026-11-balance' ? <p>Totals use each faction’s best five results per location, with at most two per player. Each side is selected independently; all confirmed games remain in history.</p> : null}
       {(['territory', 'narrative'] as const).map(kind => {
         const totals = rows.filter(r => (r.location === 'narrative') === (kind === 'narrative'))
         return totals.length ? <div key={kind}><h3>{kind === 'narrative' ? 'Narrative Mission totals' : 'Territory battle totals'}</h3>
@@ -37,7 +37,8 @@ export default function AuroraResults({ state }: { state: AuroraPublicState }) {
       </details>)}</div></> : <p className="aurora-results-empty">{state.turn ? 'Play a game, record both scores, and confirm the result. Your campaign’s battle history and totals will appear here.' : 'Confirmed games and standings will appear here when the campaign begins.'}</p>}
     </> : null}
     {games.length ? <p className="aurora-muted">Live TP/OP progress · Campaign VP and control are resolved by Lobo. Narrative totals stay separate.</p> : null}
-    <details className="aurora-info-section"><summary>Results information & refresh</summary><p>Only confirmed or commissioner-approved results count. Late and possible duplicate games also need Lobo’s approval.</p>{live.updated ? <p>Checked at {live.updated} · Refreshes every five minutes. Public results may be cached for up to one minute.</p> : null}<button type="button" onClick={live.reload}>Refresh live results</button></details>
+    {!state.turn && !games.length ? <p><Link to="/campaign/aurora-vii/register">Register for the campaign →</Link> · <Link to="/campaign/aurora-vii/rules#game-scoring">How scoring works →</Link></p> : null}
+    <details className="aurora-info-section"><summary>About results & refresh</summary><p>Only timely, confirmed or commissioner-approved reports enter the scoring pool. Late reports do not count and cannot be approved. Possible duplicates require Lobo’s review.</p>{live.updated ? <p>Checked at {live.updated}. Refreshes every five minutes.</p> : null}<button type="button" onClick={live.reload}>Refresh live results</button></details>
     {state.totals.length ? <details><summary>GM-published results reference</summary><p>This is a separately published checkpoint, not additional games. It is not added to the live totals above.</p><ul>{state.totals.map(r => <li key={`${r.location}:${r.faction}`}>{locationName(r.location)} · {r.faction}: {r.tp} TP · {r.op} OP</li>)}</ul></details> : null}
   </section>
 }
