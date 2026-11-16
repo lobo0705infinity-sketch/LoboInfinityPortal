@@ -1,4 +1,6 @@
 // Commissioner-only rules engine. Never import this module into a client bundle.
+import { hasCampaignCorrections, hasTurnThreeRules } from '../shared/aurora-campaign-policy.mjs'
+import { mutatePreparation, mutateTurnChoices, preparationPatch, expireObjectives, objectiveCompleted, objectiveCapReached, failedPreviousObjective, lockObjectiveChoices, validatePreparedPublication } from './aurora-turn-preparation.mjs'
 import { randomUUID, createHash } from 'node:crypto'
 import { AURORA_FACTIONS as FACTIONS, AURORA_CONQUEST_FACTIONS as CONQUEST, AURORA_TERRITORIES, AURORA_DOCTRINES } from '../shared/aurora-public.mjs'
 import { campaignTotals, campaignContributions, BALANCED_RULES, campaignText, factionName } from '../shared/aurora-games.mjs'
@@ -10,7 +12,7 @@ const text = (value, label, max = 2000) => campaignText(value, max, label, true)
 const copy = value => structuredClone(value)
 const fingerprint = value => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 const serviceCosts = { preparation: 2, dossier: 1, insurance: 2, logistics: 2 }
-const confirmed = g => g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved)
+const confirmed = g => g.status === 'confirmed' && (!g.late || !g.strictDeadline && g.lateApproved) && (!g.duplicateOf || g.duplicateApproved)
 export const emptyOperations = () => ({ version: 1, revision: 0, commanders: {}, turns: {}, awards: [], objectives: [], journal: [], credits: Object.fromEntries(FACTIONS.map(f => [f, f === 'NA2' ? 0 : 6])) })
 export function validOperations(ops) {
   return Boolean(ops && ops.version === 1 && Number.isSafeInteger(ops.revision) && ops.revision >= 0
@@ -49,7 +51,7 @@ function uniqueLeader(rows) { const sorted = addRank(rows); return sorted[0]?.tp
 export function resolveOperations(ledger, turnNumber) {
   const ops = ledger.operations || emptyOperations(), turn = getTurn(ops, turnNumber)
   const balanced = turn.start.rulesRevision === BALANCED_RULES
-  const games = turnGames(ledger, turnNumber).filter(confirmed), contributions = campaignContributions(games, turnNumber, turn.start.rulesRevision)
+  const games = turnGames(ledger, turnNumber).filter(g => confirmed(g) && (!hasCampaignCorrections(turn.start) || !g.late)), contributions = campaignContributions(games, turnNumber, turn.start.rulesRevision)
   const totals = campaignTotals(games, turnNumber, turn.start.rulesRevision)
   const played = (location, f) => contributions.some(c => c.location === location && c.faction === f && c.counted)
   if (balanced && (turn.start.tiePriority?.length !== FACTIONS.length || new Set(turn.start.tiePriority).size !== FACTIONS.length || turn.start.tiePriority.some(f => !FACTIONS.includes(f)))) fail('The balance amendment requires the published faction tie priority.')
@@ -102,7 +104,7 @@ export function resolveOperations(ledger, turnNumber) {
     if (d.faction === 'Nomads') eligible = captures.some(c => c.before && startCount[c.before] === most)
     if (d.faction === 'JSA') eligible = captures.some(c => c.before && turn.startVP[c.before] > turn.startVP.JSA)
     if (d.faction === 'O-12') eligible = successes.length > 0 && new Set(control.map(c => c.after).filter(Boolean)).size >= 3
-    if (d.faction === 'ALEPH') eligible = maxTP > 0 && (balanced ? won : control).some(c => c.after === 'ALEPH' && locationTP(c.location) === maxTP)
+    if (d.faction === 'ALEPH') eligible = maxTP > 0 && control.some(c => c.after === 'ALEPH' && locationTP(c.location) === maxTP)
     const scored = ops.awards.filter(a => a.faction === d.faction && a.category === 'doctrine').length
     return { ...d, eligible, scored, canAward: eligible && scored < 3 && !ops.awards.some(a => a.category === 'doctrine' && a.faction === d.faction && a.turn === turnNumber) }
   })
@@ -119,7 +121,7 @@ export function resolveOperations(ledger, turnNumber) {
 export function operationsView(ledger) {
   const ops = ledger.operations || emptyOperations()
   const current = Object.values(ops.turns).at(-1)
-  return { ...copy(ops), vp: campaignVP(ops), preview: current && current.phase !== 'resolved' ? resolutionPreview(ledger, current.start.turn) : null }
+  return { ...copy(ops), preparations: Object.fromEntries(Object.entries(ops.preparations || {}).map(([n, p]) => [n, { ...copy(p), publicPatch: preparationPatch(ops, +n) }])), vp: campaignVP(ops), preview: current && current.phase !== 'resolved' ? resolutionPreview(ledger, current.start.turn) : null }
 }
 
 export function mutateOperations(ledger, input, players, publication, now = new Date()) {
@@ -127,7 +129,9 @@ export function mutateOperations(ledger, input, players, publication, now = new 
   if (input.revision !== ops.revision) fail('This campaign ledger changed. Reload before saving.')
   const at = now.toISOString(), action = input.action, reason = text(input.reason, 'commissioner explanation')
   const n = integer(input.turn ?? publication.turn, 0, 6, 'Campaign Turn')
-  if (action === 'representatives') {
+  if (mutatePreparation(ops, { ...input, turn: n }, publication, now)) {
+    // Preparation precedes the next public Turn announcement.
+  } else if (action === 'representatives') {
     const f = faction(input.faction), commander = text(input.commander, 'Commander Discord ID', 30), deputy = campaignText(input.deputy || '', 30, 'deputy Discord ID')
     if (commander === deputy || ![commander, deputy].filter(Boolean).every(id => players.some(p => p.userId === id && factionName(p.faction) === f))) fail('Choose distinct registered players from this faction.')
     ops.commanders[f] = { commander, deputy, at }
@@ -139,16 +143,20 @@ export function mutateOperations(ledger, input, players, publication, now = new 
     if (n > 1 && ops.turns[n - 1]?.phase !== 'resolved') fail('This campaign requires the previous Turn to be resolved first.')
     if (publication.territories.filter(t => t.vulnerable).length !== 4 || !publication.deadline || !Number.isFinite(Date.parse(publication.deadline))) fail('This Turn requires four Vulnerable Territories and a deadline.')
     if (!Object.keys(ops.turns).length) for (const s of publication.standings) if (s.vp) award(ops, 0, s.faction, s.vp, 'opening', `opening:${s.faction}`, 'Opening published balance', at)
+    if (hasTurnThreeRules(publication)) validatePreparedPublication(ledger, publication)
     ops.turns[n] = { phase: 'choices', start: copy(publication), startVP: campaignVP(ops), startCredits: copy(ops.credits), offers: [], accepted: '', service: null, tohaa: null, ca: null, narrativeBonuses: [], preparedAt: at }
   } else {
     const turn = getTurn(ops, n)
     if (turn.phase === 'resolved' && action !== 'adjustment') fail('This Turn is resolved and its ledger is locked.')
-    if (action === 'hidden-hand') {
+    if (['offer-objectives', 'select-objective', 'select-owner-advantages', 'lock-owner-advantages'].includes(action)) {
+      if (turnGames(ledger, n).length) fail('This Turn already has games; preparation choices cannot change.')
+      mutateTurnChoices(ops, turn, input, now)
+    } else if (action === 'hidden-hand') {
       editable(turn); if (turn.offers.some(o => o.employer === 'Tohaa')) fail('This selection is committed by an offer; withdraw that offer first.')
       const location = target(turn, input.location), beneficiary = faction(input.beneficiary), outcome = input.outcome
       if (!CONQUEST.includes(beneficiary) || !['INSTALL', 'PRESERVE'].includes(outcome)) fail('Choose a Conquest beneficiary and INSTALL or PRESERVE.')
       const controller = turn.start.territories.find(t => t.id === location).controller
-      if (outcome === 'PRESERVE' ? controller !== beneficiary : !controller || controller === beneficiary) fail('This desired outcome is incompatible with the starting controller.')
+      if (outcome === 'PRESERVE' ? controller !== beneficiary : controller === beneficiary) fail('This desired outcome is incompatible with the starting controller.')
       turn.tohaa = { location, beneficiary, outcome, ...evidence(input, ops, 'Tohaa', players) }
     } else if (action === 'infiltration') {
       editable(turn); if (turn.offers.some(o => o.employer === 'Combined Army')) fail('This target is committed by an offer; withdraw that offer first.')
@@ -180,9 +188,16 @@ export function mutateOperations(ledger, input, players, publication, now = new 
       turn.service = { kind: input.kind, cost, location, ...evidence(input, ops, 'NA2', players) }; ops.credits.NA2 -= cost
     } else if (action === 'begin') {
       editable(turn)
+      if ((publication.campaignRevision || '') !== (turn.start.campaignRevision || '')) fail('This Turn’s campaign policy changed after preparation.')
       if ((publication.rulesRevision || 'legacy') !== (turn.start.rulesRevision || 'legacy') || JSON.stringify(publication.tiePriority || []) !== JSON.stringify(turn.start.tiePriority || []) || publication.turn !== n || JSON.stringify(publication.territories) !== JSON.stringify(turn.start.territories) || publication.deadline !== turn.start.deadline) fail('This Turn’s public territory state or deadline changed after preparation. Restore the prepared state before opening games.')
       if (turnGames(ledger, n).length) fail('This Turn already has game records; choices cannot be locked retrospectively.')
       if ((!turn.tohaa && !turn.waived?.includes('Tohaa')) || (!turn.ca && !turn.waived?.includes('Combined Army'))) fail('This Turn requires recorded Tohaa and CA selections, or explicit commissioner waivers, before games begin.')
+      if (hasTurnThreeRules(turn.start)) {
+        if (!turn.ownerAdvantages || JSON.stringify(publication.ownerAdvantages) !== JSON.stringify(turn.ownerAdvantages)) fail('Lock and publish owner-advantage selections before opening games.')
+        if (publication.selectionDeadline !== turn.start.selectionDeadline) fail('The selection deadline changed after preparation.')
+        lockObjectiveChoices(ops, turn, now)
+        turn.start.ownerAdvantages = copy(turn.ownerAdvantages)
+      }
       turn.phase = 'open'; turn.lockedAt = at
       if (turn.service?.kind === 'dossier') turn.dossier = { location: turn.service.location, tohaa: turn.tohaa?.location === turn.service.location, ca: turn.ca?.location === turn.service.location }
     } else if (action === 'waive-selection') {
@@ -191,26 +206,30 @@ export function mutateOperations(ledger, input, players, publication, now = new 
       turn.waived = [...new Set([...(turn.waived || []), input.faction])]
     } else if (action === 'close') {
       if (turn.phase !== 'open') fail('This Turn is not open for reporting.'); turn.phase = 'closed'; turn.closedAt = at
+      for (const objective of ops.objectives.filter(o => o.assignedTurn === n && o.status === 'assigned')) Object.assign(objective, { status: 'review', closedAt: at })
     } else if (action === 'reopen') {
       if (turn.phase !== 'closed') fail('This Turn is not closed.'); turn.phase = 'open'
     } else if (action === 'withdraw-objective') {
       editable(turn)
       const objective = ops.objectives.find(o => o.id === input.id && o.status === 'assigned')
-      if (!objective) fail('Choose an active assigned objective.')
+      if (!objective || objective.assignedTurn !== n) fail('Choose an active assigned objective for this Turn.')
+      if (objective.choiceSource) fail('The faction’s selected objective is locked; it cannot be withdrawn.')
       Object.assign(objective, { status: 'withdrawn', withdrawnTurn: n, reason })
     } else if (action === 'assign-objective') {
       if (n < 2) fail('Secret Objectives begin in Turn 2.')
       const balanced = turn.start.rulesRevision === BALANCED_RULES
       if (balanced && (turn.phase !== 'choices' || turnGames(ledger, n).length)) fail('Assign objectives before choices lock and before any games in this Turn.')
-      if (balanced && ops.objectives.some(o => o.faction === input.faction && o.status === 'assigned')) fail('Each faction may have only one active Secret Objective.')
+      if (objectiveCapReached(ops, input.faction)) fail('This faction has reached the Secret Objective VP cap.')
+      if (hasTurnThreeRules(turn.start) && failedPreviousObjective(ops, n, input.faction)) fail('Offer the failed-objective choice instead of assigning one directly.')
+      if (balanced && ops.objectives.some(o => o.faction === input.faction && o.assignedTurn === n && ['assigned', 'review'].includes(o.status))) fail('Each faction may have only one active Secret Objective.')
       if (balanced && ops.awards.some(a => a.faction === input.faction && a.category === 'objective' && a.turn === n)) fail('Only one Secret Objective may score per faction per Turn.')
       const f = faction(input.faction), title = text(input.title, 'objective title', 200), requirement = text(input.requirement, 'objective requirement', 4000)
-      if (ops.objectives.some(o => o.faction === f && o.title === title && !['rejected', 'withdrawn'].includes(o.status))) fail('This objective is already assigned to the faction.')
+      if (objectiveCompleted(ops, f, title) || ops.objectives.some(o => o.faction === f && o.assignedTurn === n && o.title === title && !['rejected', 'withdrawn', 'expired'].includes(o.status))) fail('This objective is already assigned to the faction.')
       ops.objectives.push({ id: randomUUID(), faction: f, title, requirement, assignedTurn: n, status: 'assigned', at })
     } else if (action === 'objective') {
       if (turn.phase !== 'closed') fail('Close reporting before awarding objectives.')
       const objective = ops.objectives.find(o => o.id === input.id)
-      if (!objective || objective.status !== 'assigned' || objective.assignedTurn > n) fail('Choose an active assigned objective.')
+      if (!objective || !['assigned', 'review'].includes(objective.status) || objective.assignedTurn !== n) fail('Choose an active assigned objective.')
       if (input.claimId) {
         const claim = ledger.claims.find(c => c.id === input.claimId)
         if (!claim || claim.status !== 'approved' || factionName(claim.faction) !== objective.faction || claim.turn !== n || ops.objectives.some(o => o.claimId === input.claimId)) fail('Choose an approved, unused claim from this faction and Turn.')
@@ -231,9 +250,9 @@ export function mutateOperations(ledger, input, players, publication, now = new 
       turn.narrativeBonuses.push({ faction: f, source, tp, reason })
     } else if (action === 'adjustment') {
       if (!['closed', 'resolved'].includes(turn.phase)) fail('Close reporting before recording a VP adjustment.')
-      if (Object.keys(ops.turns).some(key => Number(key) > n)) fail('This Turn has a successor. Record the explained correction in the latest Turn instead.')
+      if (Object.keys(ops.turns).some(key => Number(key) > n) || Object.keys(ops.preparations || {}).some(key => Number(key) > n)) fail('This Turn has a successor. Record the explained correction in the latest Turn instead.')
       award(ops, n, faction(input.faction), integer(input.vp, -100, 100, 'VP adjustment'), 'adjustment', `adjustment:${randomUUID()}`, reason, at)
-      if (turn.resolution) turn.resolution.publicPatch.standings = FACTIONS.map(f => ({ faction: f, vp: campaignVP(ops)[f] }))
+      if (turn.resolution) { turn.resolution.publicPatch.standings = FACTIONS.map(f => ({ faction: f, vp: campaignVP(ops)[f] })); if (n === 6) turn.resolution.publicPatch.finalStandings = finalCampaignStandings(ledger) }
     } else if (action === 'resolve') {
       if (turn.phase !== 'closed') fail('Close reporting before resolving the Turn.')
       const result = resolveOperations(ledger, n)
@@ -244,8 +263,10 @@ export function mutateOperations(ledger, input, players, publication, now = new 
       for (const f of selected) result.awards.push({ faction: f, vp: 1, category: 'doctrine', source: `doctrine:${n}:${f}`, reason: 'Commissioner approved Doctrine completion' })
       for (const a of result.awards) award(ops, n, a.faction, a.vp, a.category, a.source, a.reason, at)
       if (result.contract) { if (result.contract.success) ops.credits.NA2 += result.contract.bid; else ops.credits[result.contract.employer] += result.contract.bid }
+      expireObjectives(ops, n, at)
       const publicPatch = { territories: copy(result.territories), standings: FACTIONS.map(f => ({ faction: f, vp: campaignVP(ops)[f] })) }
       turn.phase = 'resolved'; turn.resolution = { ...result, at, reason, publicPatch }; turn.resolvedAt = at
+      if (n === 6) publicPatch.finalStandings = finalCampaignStandings(ledger)
     } else fail('Choose a valid campaign operation.')
   }
   ops.revision++
@@ -263,4 +284,14 @@ export function guardCampaignGame(ledger, turn, mutation) {
   if (phase === 'resolved') fail('This Turn is resolved; game records are locked. Contact Lobo.')
   if (mutation === 'submit' && ledger.operations && !phase) fail('This Turn has not been prepared for campaign reporting. Contact Lobo.')
   if (mutation === 'submit' && phase && phase !== 'open') fail('This Turn is not open for campaign reporting.')
+}
+
+export function finalCampaignStandings(ledger) {
+  const ops = ledger.operations, priority = ops.turns[6]?.start.tiePriority || FACTIONS
+  const rows = FACTIONS.map(faction => ({ faction, vp: campaignVP(ops)[faction], tp: 0, op: 0 }))
+  for (const [n, turn] of Object.entries(ops.turns)) {
+    const games = turnGames(ledger, +n).filter(g => confirmed(g) && (!hasCampaignCorrections(turn.start) || !g.late))
+    for (const total of campaignTotals(games, +n, turn.start.rulesRevision)) { const row = rows.find(r => r.faction === total.faction); row.tp += total.tp; row.op += total.op }
+  }
+  return rows.sort((a, b) => b.vp - a.vp || b.tp - a.tp || b.op - a.op || priority.indexOf(a.faction) - priority.indexOf(b.faction)).map((row, i) => ({ ...row, rank: i + 1 }))
 }

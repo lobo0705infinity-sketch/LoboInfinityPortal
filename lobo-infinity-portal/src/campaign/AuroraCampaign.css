@@ -295,3 +295,11 @@
 .aurora-practice-controls select { box-sizing: border-box; width: 100%; min-height: 44px; padding: .75rem; border: 1px solid #52677a; border-radius: 8px; color: #edf4fa; background: #132231; font: inherit; }
 .aurora-focused-nav { flex-wrap: wrap; gap: .5rem 1rem; }
 .aurora-focused-nav > div { flex-wrap: wrap; column-gap: clamp(12px, 2vw, 24px); }
+
+.aurora-private-decisions form { margin: 1.5rem 0; }
+.aurora-private-decisions fieldset, .aurora-preparation-admin fieldset { min-width: 0; border: 1px solid #536378; border-radius: 8px; padding: 1rem; }
+.aurora-private-decisions label, .aurora-preparation-admin label { display: block; margin: .65rem 0; }
+.aurora-private-decisions select, .aurora-preparation-admin textarea, .aurora-preparation-admin input:not([type=checkbox]), .aurora-preparation-admin select { max-width: 100%; }
+.aurora-objective-option { padding: .85rem; border: 1px solid #536378; border-radius: 6px; }
+.aurora-objective-option span { display: block; margin-top: .5rem; }
+.aurora-owner-status { border-left: 3px solid #66c5cd; padding-left: .75rem; }

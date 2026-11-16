@@ -18,7 +18,7 @@ export async function readAuroraPublication(getObject = get) {
   return (await readStoredPublication(getObject)).publication
 }
 
-export async function saveAuroraPublication(body, { getObject = get, putObject = put, readEvents = () => readPublicDataset('events'), now = () => new Date() } = {}) {
+export async function saveAuroraPublication(body, { getObject = get, putObject = put, readEvents = () => readPublicDataset('events'), now = () => new Date(), validatePrepared = async () => {} } = {}) {
   if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).sort().join(',') !== 'expectedRevision,state') throw new Error('Submit only approved public campaign state and its revision.')
   if (JSON.stringify(body).length > 150000) throw new Error('Campaign publication is too large.')
   if (typeof body.expectedRevision !== 'string') throw new Error('A publication revision is required.')
@@ -31,6 +31,10 @@ export async function saveAuroraPublication(body, { getObject = get, putObject =
   if (body.expectedRevision !== previous.revision) { const error = new Error('The campaign changed. Reload before publishing.'); error.code = 'REVISION_CONFLICT'; throw error }
   if (previous.state.turn > 0 && ((state.rulesRevision || 'legacy') !== (previous.state.rulesRevision || 'legacy') || JSON.stringify(state.tiePriority || []) !== JSON.stringify(previous.state.tiePriority || [])) && state.turn <= previous.state.turn) throw new Error('Announce rules changes only for a later Turn, before preparing it or playing games.')
   if (previous.state.rulesRevision === '2026-11-balance' && (state.rulesRevision !== previous.state.rulesRevision || JSON.stringify(state.tiePriority) !== JSON.stringify(previous.state.tiePriority))) throw new Error('The adopted balance revision and drawn tie priority remain fixed for the campaign.')
+  if (previous.state.turn > 0 && state.campaignRevision !== previous.state.campaignRevision && state.turn <= previous.state.turn) throw new Error('Announce campaign policy changes only for a later Turn before preparation.')
+  if (previous.state.campaignRevision && state.campaignRevision !== previous.state.campaignRevision) throw new Error('The adopted campaign preparation revision remains fixed.')
+  if (state.campaignRevision && previous.state.turn === 0 && state.turn <= 1 && state.territories.some(t => t.controller)) throw new Error('All territories begin uncontrolled; publish a neutral opening.')
+  if (state.campaignRevision && state.turn > 0) await validatePrepared(state)
   const publishedAt = now().toISOString()
   const publication = { revision: randomUUID(), publishedAt, state }
   try {
@@ -59,6 +63,9 @@ export default async function handler(request, response) {
   let body
   try { body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body }
   catch { return response.status(400).json({ error: 'Invalid public campaign publication.' }) }
-  try { return response.status(200).json(await saveAuroraPublication(body)) }
+  try { return response.status(200).json(await saveAuroraPublication(body, { validatePrepared: async state => {
+    const r = await fetch('https://loboinfinityportal-production.up.railway.app/aurora-vii/games?action=validate-publication', { method: 'POST', headers: { authorization: request.headers.authorization, origin: 'https://lobo-infinity-portal.vercel.app', 'content-type': 'application/json' }, body: JSON.stringify(state), signal: AbortSignal.timeout(20000) })
+    const result = await r.json(); if (!r.ok || result.valid !== true) throw new Error(result.error || 'Campaign preparation could not be verified.')
+  } })) }
   catch (error) { return response.status(error.code === 'REVISION_CONFLICT' ? 409 : 400).json({ error: error.message || 'Campaign publication failed.' }) }
 }

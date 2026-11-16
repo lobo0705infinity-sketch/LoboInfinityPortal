@@ -28,7 +28,7 @@ export function validateCampaignGame(input,state,today) {
 }
 export const BALANCED_RULES = '2026-11-balance'
 export const LEGACY_RULES = 'legacy'
-export const confirmedCampaignGame = g => g.status === 'confirmed' && (!g.late || g.lateApproved) && (!g.duplicateOf || g.duplicateApproved)
+export const confirmedCampaignGame = g => g.status === 'confirmed' && (!g.late || !g.strictDeadline && g.lateApproved) && (!g.duplicateOf || g.duplicateApproved)
 export function campaignContributions(games, turn, rulesRevision = LEGACY_RULES) {
   const contributions = games.filter(g => g.turn === turn && confirmedCampaignGame(g)).flatMap(g => ['A', 'B'].map(side => ({
     gameId: g.id, side, location: g.location, faction: factionName(g[`player${side}`].faction),

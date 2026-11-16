@@ -14,22 +14,25 @@ export function createCampaignGameService({registrations,identity,notify,store=c
     try{
       if(!['GET','POST'].includes(request.method))return json(405,{error:'Method not allowed.'})
       if(action==='totals'&&request.method==='GET'){const s=await publication();return json(200,await store.activity(s.turn))}
-      const adminActions=['admin','admin-action','review-claim','operations','operate',...PRACTICE_ACTIONS]
+      const adminActions=['admin','admin-action','review-claim','operations','operate','validate-publication',...PRACTICE_ACTIONS]
       const isAdmin=adminActions.includes(action)?await admin(request):false,account=identity(request)
       if(adminActions.includes(action)&&!isAdmin)return json(403,{error:'Commissioner access is required.'})
       if(practice&&request.method==='GET')return action==='practice-mine'?json(200,await reportingPractice(practiceStore,action,practiceRole)):json(405,{error:'Use POST for practice changes.'})
       const player=!practice&&account?await registrations.player(account.id):null
       if(!isAdmin&&!player)return json(401,{error:'Sign in with the Discord account used for your campaign registration.',signedIn:Boolean(account)})
       if(request.method==='GET'){
+        if(action==='decisions')return json(200,await store.decisions(player))
         if(action==='operations')return json(200,{operations:await store.operations(),players:(await registrations.players()).map(p=>({id:p.userId,name:p.name,faction:p.faction}))})
         if(!['mine','admin'].includes(action))return json(404,{error:'Not found.'})
         const [s,players]=await Promise.all([publication(),registrations.players()]),view=await store.view(account?.id,isAdmin,s)
         return json(200,{...view,state:s,player:player?{id:player.userId,name:player.name,faction:player.faction}:null,players:players.map(p=>({id:p.userId,name:p.name,faction:p.faction}))})
       }
       if(request.headers.origin!==PORTAL_ORIGIN||!String(request.headers['content-type']||'').startsWith('application/json'))return json(403,{error:'Use the campaign form on the Lobo Portal.'})
-      let raw='';for await(const chunk of request){raw+=chunk;if(Buffer.byteLength(raw)>20000)return json(413,{error:'Submission is too large.'})}
+      let raw='';for await(const chunk of request){raw+=chunk;if(Buffer.byteLength(raw)>(action==='validate-publication'?150000:20000))return json(413,{error:'Submission is too large.'})}
       let input;try{input=JSON.parse(raw);if(!input||typeof input!=='object'||Array.isArray(input))throw Error()}catch{return json(400,{error:'Enter a valid game request.'})}
       if(practice)return action!=='practice-mine'?json(200,await reportingPractice(practiceStore,action,practiceRole,input)):json(405,{error:'Use GET to load practice games.'})
+      if(action==='validate-publication'&&isAdmin)return json(200,await store.validatePublication(validateAuroraPublicState(input)))
+      if(action==='choose'){const [s,players]=await Promise.all([publication(),registrations.players()]);return json(200,await store.choose(input,player,players,s))}
       if(action==='operate'&&isAdmin){const [s,players]=await Promise.all([publication(),registrations.players()]);return json(200,{operations:await store.operate(input,players,s)})}
       if(action==='submit'){const s=await publication(),opponent=await registrations.player(String(input.opponent||'')),game=await store.submit(input,player,opponent,s);await deliver();return json(200,{game,verificationUrl:`${PORTAL_ORIGIN}/campaign/aurora-vii/games?game=${game.id}`})}
       if(['act','admin-action'].includes(action)){const game=await store.act(input,account?.id,isAdmin);if(input.action==='correct')await deliver();return json(200,{game})}

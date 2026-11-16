@@ -28,7 +28,7 @@ export default function AuroraPlayerGuide() {
         <li><Link to="/campaign/aurora-vii/missions">Check the current Turn briefing</Link>, then agree on a Vulnerable Territory or the Narrative Mission. <Link to="/campaign/aurora-vii/rules#campaign-location-selection">Use blind bidding if needed.</Link></li>
         <li><Link to="/campaign/aurora-vii/map">Check ownership on the map</Link> and read the chosen territory’s current rules before finalizing your army.</li>
         <li>Confirm the mission and Campaign Event with your opponent, then play.</li>
-        <li><Link to="/campaign/aurora-vii/submit">Submit one result for both players</Link>, share the verification link, and confirm before the announced deadline.</li>
+        <li><Link to="/campaign/aurora-vii/submit">Submit one result for both players</Link>, share the verification link, and submit before the announced deadline. Opponent confirmation verifies the report; the scoring caps select which verified results count.</li>
       </ol>
     </div></div>
     <p className="aurora-muted">The Influence example follows a Conquest faction. NA2, Tohaa, and Combined Army use specialist scoring and support rules: check your faction briefing. Keep secret objectives and private plans in your faction channel.</p>

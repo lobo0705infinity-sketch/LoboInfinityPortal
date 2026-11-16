@@ -43,16 +43,6 @@
       "permanent": true
     },
     {
-      "source": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
-      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
-      "permanent": true
-    },
-    {
-      "source": "/guides/aurora-vii-territory-terrain-guide-20261021.pdf",
-      "destination": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
-      "permanent": true
-    },
-    {
       "source": "/event/event-lobo-s-american-top-40",
       "destination": "/event/lobos-top-40",
       "permanent": true
@@ -81,6 +71,51 @@
       "source": "/rivalries",
       "destination": "/compare",
       "permanent": true
+    },
+    {
+      "source": "/guides/aurora-vii-terrain-guide-20261029-blizzard.pdf",
+      "destination": "/guides/aurora-vii-terrain-guide-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-terrain-guide-current-maps-20261030.pdf",
+      "destination": "/guides/aurora-vii-terrain-guide-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-special-rules-20261028.pdf",
+      "destination": "/guides/aurora-vii-special-rules-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-special-rules-20261029-blizzard.pdf",
+      "destination": "/guides/aurora-vii-special-rules-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-special-rules-20261030-aerial.pdf",
+      "destination": "/guides/aurora-vii-special-rules-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-special-rules-20261115-korin-tags.pdf",
+      "destination": "/guides/aurora-vii-special-rules-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-terrain-guide-20261021.pdf",
+      "destination": "/guides/aurora-vii-terrain-guide-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021-r2.pdf",
+      "destination": "/guides/aurora-vii-terrain-guide-current.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/guides/aurora-vii-territory-terrain-guide-concepts-20261021.pdf",
+      "destination": "/guides/aurora-vii-terrain-guide-current.pdf",
+      "permanent": false
     }
   ],
   "rewrites": [

@@ -8,6 +8,6 @@ export default function CampaignLocationRules() {
       <li><strong>Different bids:</strong> The higher bidder loses the number of Command Tokens they bid and chooses the location. The lower bidder keeps their Command Tokens.</li>
       <li><strong>Equal bids:</strong> Both players lose the number of Command Tokens they bid, then roll off. The winner of the die roll chooses the location.</li>
     </ol>
-    <p>For a territory battle, then make a separate Face-to-Face die roll; the winner chooses one of the Turn’s two ordinary missions. For a Narrative game, use the active Narrative Mission sheet.</p>
+    <p>For a territory battle, then make a separate d20 roll-off, rerolling ties; the higher result chooses one of the Turn’s two ordinary missions. This uses no Attribute or Critical result and is separate from initiative. For a Narrative game, use the active Narrative Mission sheet.</p>
   </section>
 }

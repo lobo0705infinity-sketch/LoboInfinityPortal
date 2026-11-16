@@ -1,3 +1,4 @@
+import AuroraPreparationAdmin, { type Preparation, type ObjectiveOffer } from './AuroraPreparationAdmin'
 import { useEffect, useState, type ReactNode } from 'react'
 import { AURORA_FACTIONS, AURORA_TERRITORIES } from '../../shared/aurora-public.mjs'
 import { factionName } from '../../shared/aurora-games.mjs'
@@ -7,7 +8,7 @@ import type { AuroraPublicState } from './auroraTypes'
 type Player = { id: string; name: string; faction: string }
 type Receipt = { sender: string; messageUrl: string; note: string }
 type Offer = Receipt & { id: string; employer: string; location: string; bid: number }
-type PublicOutcome = Pick<AuroraPublicState, 'territories' | 'standings'>
+type PublicOutcome = Partial<AuroraPublicState>
 type Preview = {
   rulesRevision?: string; contributions?: Array<{ gameId: string; side: string; faction: string; location: string; tp: number; op: number; counted: boolean; reason: string }>;
   turn: number; previewHash: string; territories: AuroraPublicState['territories'];
@@ -21,6 +22,7 @@ type Preview = {
   unresolved: Array<{ id: string; status: string }>;
 }
 type Turn = {
+  ownerAdvantages?: AuroraPublicState['ownerAdvantages']; ownerChoices?: Record<string, { territories: string[] }>; objectiveOffers?: Record<string, ObjectiveOffer>;
   phase: 'choices' | 'open' | 'closed' | 'resolved'; start: AuroraPublicState;
   startCredits: Record<string, number>; offers: Offer[]; accepted: string;
   tohaa: (Receipt & { location: string; beneficiary: string; outcome: string }) | null;
@@ -31,6 +33,7 @@ type Turn = {
   resolution?: Preview & { at: string; publicPatch: PublicOutcome };
 }
 type Ops = {
+  preparations: Record<string, Preparation>;
   revision: number; commanders: Record<string, { commander: string; deputy: string }>;
   turns: Record<string, Turn>; credits: Record<string, number>; vp: Record<string, number>;
   awards: Array<{ id: string; turn: number; faction: string; vp: number; category: string; reason: string; at: string }>;
@@ -38,7 +41,7 @@ type Ops = {
   journal: Array<{ id: string; at: string; turn: number; action: string; reason: string }>;
   preview: Preview | null;
 }
-type Values = Record<string, string | number | boolean | string[]>
+type Values = Record<string, unknown>
 type Mutate = (action: string, values: Values) => Promise<boolean>
 const locationName = (id: string) => AURORA_TERRITORIES.find(t => t.id === id)?.name || id
 const phases = { choices: 'Collecting private decisions', open: 'Games open · choices locked', closed: 'Reporting closed · review results', resolved: 'Resolved · records locked' }
@@ -65,7 +68,7 @@ export default function AuroraOperations({ state, onLoadOutcome }: { state: Auro
     if (!ops || busy) return false
     setBusy(true); setError(''); setMessage('')
     try {
-      const value = await request('operate', undefined, { ...values, action, turn: turnNumber, revision: ops.revision })
+      const value = await request('operate', undefined, { ...values, action, turn: values.turn ?? turnNumber, revision: ops.revision })
       setOps(value.operations); setMessage('Saved to the private campaign ledger.'); return true
     } catch (e) { setError((e as Error).message); return false }
     finally { setBusy(false) }
@@ -79,7 +82,7 @@ export default function AuroraOperations({ state, onLoadOutcome }: { state: Auro
     <button type="button" disabled={busy} onClick={() => setRefresh(n => n + 1)}>Reload private ledger</button>
     {error ? <p role="alert">{error}</p> : null}{message ? <p role="status">{message}</p> : null}
     {!ops ? <p>Loading commissioner records…</p> : <>
-      <label>Operations Turn<select aria-label="Operations Turn" value={turnNumber} onChange={e => setTurnNumber(Number(e.target.value))}><option value={0}>Before campaign start</option>{[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n} disabled={n !== state.turn && !ops.turns[n]}>Turn {n}</option>)}</select></label>
+      <label>Operations Turn<select aria-label="Operations Turn" value={turnNumber} onChange={e => setTurnNumber(Number(e.target.value))}><option value={0}>Before campaign start</option>{[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n} disabled={n !== state.turn && !ops.turns[n] && !ops.preparations[n] && ops.turns[n - 1]?.phase !== 'resolved'}>Turn {n}</option>)}</select></label>
       <p><strong>{turn ? phases[turn.phase] : turnNumber ? 'Turn not prepared' : 'Register representatives before Turn 1'}</strong></p>
       <details><summary>Commanders & deputies</summary>
         <div className="table-wrapper"><table><thead><tr><th>Faction</th><th>Commander</th><th>Deputy</th></tr></thead><tbody>{AURORA_FACTIONS.map(f => <tr key={f}><td>{f}</td><td>{playerName(ops.commanders[f]?.commander)}</td><td>{playerName(ops.commanders[f]?.deputy)}</td></tr>)}</tbody></table></div>
@@ -90,6 +93,7 @@ export default function AuroraOperations({ state, onLoadOutcome }: { state: Auro
         <div className="table-wrapper"><table><thead><tr><th>Faction</th><th>Campaign VP</th><th>Available Credits</th><th>Reserved</th></tr></thead><tbody>{AURORA_FACTIONS.map(f => { const reserved = turn && turn.phase !== 'resolved' ? turn.offers.find(o => o.id === turn.accepted && o.employer === f)?.bid || 0 : 0; return <tr key={f}><td>{f}</td><td>{ops.vp[f]}</td><td>{ops.credits[f]}</td><td>{reserved}</td></tr> })}</tbody></table></div>
         <p>Credits stay private and have no final VP value. Contract income is available for spending from the next Turn.</p>
       </details>
+      {turnNumber >= 3 ? <AuroraPreparationAdmin preparations={ops.preparations} turn={turn} number={turnNumber} previousResolved={ops.turns[turnNumber - 1]?.phase === 'resolved'} busy={busy} mutate={mutate} onLoad={onLoadOutcome}/> : null}
       {!turn && turnNumber === state.turn && state.turn > 0 ? <OperationForm title="Prepare announced Turn" action="prepare" mutate={mutate} disabled={busy}><p>Save the announced territory state, starting VP, deadline and treasury balances before collecting choices. Previous Turns must be resolved first.</p></OperationForm> : null}
       {turn ? <div key={`${turnNumber}:${ops.revision}`}>
         <details open={turn.phase === 'choices'}><summary>Private faction decisions</summary>
@@ -111,8 +115,8 @@ export default function AuroraOperations({ state, onLoadOutcome }: { state: Auro
         <details><summary>Secret Objectives & other awards</summary>
           <p>Record assignments privately. Each completed objective awards 2 VP, from Turn 2 onward, up to 6 VP per faction. Review evidence after closing reporting. Portal claims remain available in the game review panel below; direct DMs are also accepted.</p>
           {turn.phase === 'choices' && ops.objectives.some(o => o.status === 'assigned') ? <OperationForm title="Withdraw an uncompleted objective" action="withdraw-objective" mutate={mutate} disabled={busy}><label>Objective to replace before play<select name="id">{ops.objectives.filter(o => o.status === 'assigned').map(o => <option value={o.id} key={o.id}>{o.faction} · {o.title}</option>)}</select></label><p>No VP penalty. Record the reason, then assign its replacement before opening games.</p></OperationForm> : null}
-          <OperationForm title="Assign Secret Objective" action="assign-objective" mutate={mutate} disabled={busy || turn.phase === 'resolved' || turnNumber < 2 || (turn.start.rulesRevision === '2026-11-balance' && turn.phase !== 'choices')}><FactionField/><p>One active objective per faction. Assign before games and preserve its exact written conditions. Any valid game may provide evidence even if excluded by the scoring cap. Existing holdings or Infiltrations qualify where the objective expressly allows them.</p><label>Objective title<input name="title" required maxLength={200}/></label><label>Completion requirement<textarea name="requirement" required maxLength={4000}/></label></OperationForm>
-          {ops.objectives.map(o => <article key={o.id} className="aurora-game-review"><h4>{o.faction} · {o.title}</h4><p>{o.requirement}</p><p>Assigned Turn {o.assignedTurn} · {o.status}</p>{o.reason ? <p>{o.reason}</p> : null}{o.status === 'assigned' && o.assignedTurn <= turnNumber ? <OperationForm title={`Review ${o.title}`} action="objective" values={{ id: o.id }} mutate={mutate} disabled={busy || turn.phase !== 'closed'}><label>Decision<select aria-label="Decision" name="approve"><option value="true">Approve · award 2 VP</option><option value="false">Reject</option></select></label><label>Private evidence / DM reference<textarea name="evidence" required maxLength={4000}/></label><label>Approved portal claim ID (optional)<input name="claimId" maxLength={80}/></label></OperationForm> : null}</article>)}
+          <OperationForm title="Assign Secret Objective" action="assign-objective" mutate={mutate} disabled={busy || turn.phase === 'resolved' || turnNumber < 2 || (turn.start.rulesRevision === '2026-11-balance' && turn.phase !== 'choices')}><FactionField/><p>One active objective per faction for this Turn only. Assign before the global opening of games and preserve its exact written conditions. Any valid game may provide evidence even if excluded by the scoring cap. Existing holdings or Infiltrations qualify where the objective expressly allows them.</p><label>Objective title<input name="title" required maxLength={200}/></label><label>Completion requirement<textarea name="requirement" required maxLength={4000}/></label></OperationForm>
+          {ops.objectives.map(o => <article key={o.id} className="aurora-game-review"><h4>{o.faction} · {o.title}</h4><p>{o.requirement}</p><p>Assigned Turn {o.assignedTurn} · {o.status}</p>{o.reason ? <p>{o.reason}</p> : null}{['assigned', 'review'].includes(o.status) && o.assignedTurn === turnNumber ? <OperationForm title={`Review ${o.title}`} action="objective" values={{ id: o.id }} mutate={mutate} disabled={busy || turn.phase !== 'closed'}><label>Decision<select aria-label="Decision" name="approve"><option value="true">Approve · award 2 VP</option><option value="false">Reject</option></select></label><label>Private evidence / DM reference<textarea name="evidence" required maxLength={4000}/></label><label>Approved portal claim ID (optional)<input name="claimId" maxLength={80}/></label></OperationForm> : null}</article>)}
           <OperationForm title="Record Narrative TP reward" action="narrative-bonus" mutate={mutate} disabled={busy || locked}><FactionField/><label>Unique reward reference<input name="source" required maxLength={200}/></label><label>Narrative TP<input name="tp" type="number" min={1} max={10} required/></label><p>Use for an earned narrative reward expended before games. It never changes territorial totals.</p></OperationForm>
           {turn.narrativeBonuses.map(b => <p key={b.source}>{b.faction} · +{b.tp} Narrative TP · {b.source}</p>)}
           <OperationForm title="Record explained VP adjustment" action="adjustment" mutate={mutate} disabled={busy || !['closed', 'resolved'].includes(turn.phase)}><FactionField/><label>VP change<input name="vp" type="number" min={-100} max={100} required/></label><p>Use for a documented GM ruling or correction. This creates a permanent ledger entry; it does not replace Doctrine or Secret Objective approval.</p></OperationForm>

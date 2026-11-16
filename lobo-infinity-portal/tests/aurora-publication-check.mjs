@@ -48,6 +48,8 @@ await assert.rejects(saveAuroraPublication({ expectedRevision: publication.revis
 assert.equal(writes, 1, 'Rejected or stale publications must never write')
 await assert.rejects(saveAuroraPublication({ expectedRevision: publication.revision, state: active }, { getObject, putObject: async (_path, _data, options) => { assert.equal(options.ifMatch, 'current-etag'); throw new BlobPreconditionFailedError() } }), error => error.code === 'REVISION_CONFLICT')
 await assert.rejects(saveAuroraPublication({ expectedRevision: publication.revision, state: { ...active, eventId: 'event-current-league' } }, { getObject, putObject, readEvents: async () => [{ id: 'event-current-league', type: 'League' }] }), /Narrative Campaign/)
+const older = structuredClone(publication); delete older.state.campaignRevision
+await assert.rejects(saveAuroraPublication({ expectedRevision: older.revision, state: active }, { getObject: async () => ({stream: new Response(JSON.stringify(older)).body, blob: {etag: 'old'}}), putObject }), /only for a later Turn/)
 let status
 const response = { setHeader() {}, status(code) { status = code; return this }, json(value) { return value } }
 await handler({ method: 'POST', headers: {}, body: { state: active } }, response)
