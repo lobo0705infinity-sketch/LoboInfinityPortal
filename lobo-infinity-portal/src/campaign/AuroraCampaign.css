@@ -311,8 +311,8 @@
 .aurora-overview-actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px 24px; margin-top:20px; }
 .aurora-overview-actions a { min-height:44px; display:inline-flex; align-items:center; }
 .aurora-guide-preview { display:grid; grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr); gap:32px; align-items:center; padding:28px 0; border-block:1px solid #2a3a43; }
-.aurora-guide-preview-image { display:block; position:relative; border-radius:8px; overflow:hidden; }
-.aurora-guide-preview-image img { display:block; width:100%; aspect-ratio:16/9; object-fit:cover; }
+.aurora-guide-preview-image { display:block; position:relative; width:100%; aspect-ratio:16/9; border-radius:8px; overflow:hidden; }
+.aurora-guide-preview-image img { display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; }
 .aurora-guide-preview-image > span { position:absolute; bottom:12px; right:12px; padding:8px 12px; border-radius:5px; background:#0b1726e8; color:#fff; font-size:.85rem; }
 .aurora-guide-preview h2 { margin:8px 0 12px; font-size:1.6rem; }
 .aurora-guide-preview p { max-width:52ch; line-height:1.7; color:#c0cbd4; }
