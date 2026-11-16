@@ -188,6 +188,7 @@ export function mutateOperations(ledger, input, players, publication, now = new 
       turn.service = { kind: input.kind, cost, location, ...evidence(input, ops, 'NA2', players) }; ops.credits.NA2 -= cost
     } else if (action === 'begin') {
       editable(turn)
+      if ((publication.campaignRevision || '') !== (turn.start.campaignRevision || '')) fail('This Turn’s campaign policy changed after preparation.')
       if ((publication.rulesRevision || 'legacy') !== (turn.start.rulesRevision || 'legacy') || JSON.stringify(publication.tiePriority || []) !== JSON.stringify(turn.start.tiePriority || []) || publication.turn !== n || JSON.stringify(publication.territories) !== JSON.stringify(turn.start.territories) || publication.deadline !== turn.start.deadline) fail('This Turn’s public territory state or deadline changed after preparation. Restore the prepared state before opening games.')
       if (turnGames(ledger, n).length) fail('This Turn already has game records; choices cannot be locked retrospectively.')
       if ((!turn.tohaa && !turn.waived?.includes('Tohaa')) || (!turn.ca && !turn.waived?.includes('Combined Army'))) fail('This Turn requires recorded Tohaa and CA selections, or explicit commissioner waivers, before games begin.')
