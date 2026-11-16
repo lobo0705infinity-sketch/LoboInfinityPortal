@@ -345,7 +345,7 @@ function BattleReport({ armyLists, game, intelligenceLists, stream }: { armyList
               <Fact label="Mission" value={mission
                 ? <Link to={`/missions/${encodeURIComponent(mission)}`}>Explore {mission} mission results</Link>
                 : 'Mission not recorded'} />
-              {workshopMap ? <Fact label="Workshop Map" value={<Link to={`/maps/${workshopMap.slug}`}>{workshopMap.name} · Save {String(workshopMap.index).padStart(2, '0')}</Link>} /> : null}
+              {workshopMap ? <Fact label="Workshop Map" value={workshopMap.portalHidden ? workshopMap.name : <Link to={`/maps/${workshopMap.slug}`}>{workshopMap.name} · Save {String(workshopMap.index).padStart(2, '0')}</Link>} /> : null}
               {workshopMap && mappedGame.mapRating ? <Fact label="Map Rating" value={`${mappedGame.mapRating} / 5`} /> : null}
             </dl>
           </BattleCard>

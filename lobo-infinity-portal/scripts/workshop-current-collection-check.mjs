@@ -5,11 +5,13 @@ import { fileURLToPath } from 'node:url'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
 import current from '../shared/lobo-workshop-current.json' with { type: 'json' }
+import communityArchive from '../shared/lobo-workshop-community-archive-20261116.json' with { type: 'json' }
+import { describePublicSearchPage } from '../shared/public-search-content.mjs'
 
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
-assert.equal(loboWorkshopMaps.length,40)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,40)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,35)
+assert.equal(loboWorkshopMaps.length,19)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,19)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,19)
 const missions=new Map()
 for(const map of loboWorkshopMaps){
  assert.equal(map.isCurrent,true)
@@ -17,14 +19,12 @@ for(const map of loboWorkshopMaps){
  const mission=map.missionSetups[0];missions.set(mission,[...(missions.get(mission)||[]),map.layoutKey])
  assert.equal(resolveLoboWorkshopMapLabel(map.workshopBagName)?.id,map.id)
  if (map.previewKind === 'workshop') {
-  assert.equal(map.slug, 'meridian-exchange')
-  assert.equal(mission, 'Critical Intervention')
-  assert.equal(map.download, undefined)
+  assert.ok(['meridian-exchange', 'vanta-customs-yard', 'veyra-gate'].includes(map.slug))
   assert.ok(!map.overhead && !map.angled && !map.diagram)
-  continue
+  if (!map.download) continue
  }
- for(const url of [map.overhead,map.angled,map.diagram,map.download]){
-  assert.ok(url?.startsWith('/assets/maps/'));assert.ok(existsSync(fileURLToPath(new URL('../public'+url,import.meta.url))),url)
+ for(const url of [map.overhead,map.angled,map.diagram,map.download].filter(Boolean)){
+  assert.ok(url.startsWith('/assets/maps/'));assert.ok(existsSync(fileURLToPath(new URL('../public'+url,import.meta.url))),url)
  }
  const bytes=readFileSync('public'+map.download)
  const expected=release.maps.find(item=>item.kind==='general'&&item.guid===map.guid)
@@ -46,9 +46,9 @@ for(const map of loboWorkshopMaps){
   for(const angle of fields.slice(3).map(Number))assert.ok(Math.abs(angle-Math.fround(angle))<.0005,'Native rotation meets the Stage alignment tolerance')
  }
  for(const object of bag.ContainedObjects)assert.ok(ids.has(object.GUID),'Every root has a deployment record')
- const isPortMeridian = map.slug === 'port-meridian'
+ const isPortMeridian = ['port-meridian', 'veyra-gate'].includes(map.slug)
  const controls=bag.ContainedObjects.find(o=>o.LuaScript?.includes(
-  isPortMeridian ? 'LOBO_MERIDIAN_READY=false' : 'local universalConfig='
+  isPortMeridian ? 'function meridianMission(' : 'local universalConfig='
  ))
  assert.ok(controls,`${map.slug}: current map controls exist`)
  const actions = isPortMeridian
@@ -64,15 +64,15 @@ for(const map of loboWorkshopMaps){
   assert.equal(bag.ContainedObjects.filter(o=>o.Nickname?.startsWith('Data-Harvester ')).length,0)
  }
 }
-assert.equal(missions.size, 20)
-for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 2, `${mission} has two distinct layouts`)
+assert.equal(missions.size, 18)
+for (const [mission, keys] of missions) assert.equal(new Set(keys).size, mission === 'Superiority' ? 2 : 1, `${mission} has its retained layouts`)
 const grouped = loboWorkshopMapSections.flatMap(section => section.layouts.flatMap(layout => layout.saves.map(map => map.id)))
-assert.equal(grouped.length, 40)
-assert.equal(new Set(grouped).size, 40)
-assert.equal(loboWorkshopMapSections.length, 20)
+assert.equal(grouped.length, 19)
+assert.equal(new Set(grouped).size, 19)
+assert.equal(loboWorkshopMapSections.length, 18)
 assert.deepEqual(loboWorkshopMapSections.map(section => section.title), [...missions.keys()].sort((a, b) => a.localeCompare(b)))
 for (const section of loboWorkshopMapSections) {
-  assert.equal(section.layouts.length, 2)
+  assert.equal(section.layouts.length, section.title === 'Superiority' ? 2 : 1)
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
@@ -91,9 +91,9 @@ for (const map of loboWorkshopMaps) {
     assert.notEqual(map.angled, map.diagram)
   }
 }
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 23)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 0)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 1)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 3)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 2)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
 const meridianBlocks = loboWorkshopMapBySlug.get('last-launch-2')
@@ -102,12 +102,22 @@ assert.equal(meridianBlocks.name, 'Meridian Blocks')
 assert.equal(meridianBlocks.isCurrent, false)
 assert.notEqual(portMeridian.layoutKey, meridianBlocks.layoutKey)
 assert.equal(resolveLoboWorkshopMapLabel(meridianBlocks.workshopBagName).slug, meridianBlocks.slug)
-assert.equal(loboWorkshopMaps.filter(map => map.name === 'Azure Circuit').length, 1)
-for (const legacy of archivedLoboWorkshopMaps) assert.equal(loboWorkshopMapBySlug.get(legacy.slug)?.id, legacy.id)
-const azure = loboWorkshopMaps.find(map => map.name === 'Azure Circuit')
-const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit' && map.layoutKey === azure.layoutKey)
+assert.equal(communityArchive.hiddenNames.length, 16)
+const archivedSetups = communityArchive.maps.filter(map => map.portalHidden)
+assert.equal(archivedSetups.length, 21)
+for (const map of archivedSetups) {
+  assert.ok(!loboWorkshopMaps.some(active => active.guid === map.guid))
+  assert.equal(loboWorkshopMapBySlug.get(map.slug).portalHidden, true)
+  assert.equal(describePublicSearchPage(`/maps/${map.slug}`), null)
+}
+for (const name of communityArchive.hiddenNames) {
+  assert.ok(!loboWorkshopMaps.some(map => map.name === name))
+}
+const azure = archivedLoboWorkshopMaps.find(map => map.slug === 'akial-interference-2')
+const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit' && map.layoutKey === azure.layoutKey && map.slug !== azure.slug)
 const ratings = buildMapRatings([{ id: 1, mapSlug: legacyAzure.slug, mapRating: 5 }, { id: 2, mapSlug: azure.slug, mapRating: 3 }])
 assert.deepEqual(ratings.get(azure.layoutKey), { average: 4, count: 2, rank: 1 })
+assert.ok(!missions.has('Akial Interference') && !missions.has('Evacuation'))
 for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-satellite'))) {
   const prior = loboWorkshopMapBySlug.get(replacement.slug.replace(/-satellite$/, ''))
   assert.equal(prior.isCurrent, false)

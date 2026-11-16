@@ -1,5 +1,6 @@
 import current from './lobo-workshop-current.json' with { type: 'json' }
 import retired from './lobo-workshop-archive-20261020.json' with { type: 'json' }
+import communityArchive from './lobo-workshop-community-archive-20261116.json' with { type: 'json' }
 import {
   loboWorkshopMaps as legacyMaps,
   resolveLoboWorkshopMapLabel as resolveLegacyLabel,
@@ -10,12 +11,14 @@ export const LOBO_WORKSHOP_UPDATED_AT = current.updatedAt
 export const LOBO_WORKSHOP_DOWNLOAD_URL = current.download
 export const LOBO_WORKSHOP_INSTALLER_URL = current.installer
 export const loboWorkshopMaps = current.maps
+const hiddenNames = new Set(communityArchive.hiddenNames)
 
 // Preserve old report links and terrain ratings outside the current browser.
 export const archivedLoboWorkshopMaps = [
   ...legacyMaps.map(map => ({ ...map, isCurrent: false, previewKind: 'source' })),
   ...retired,
-]
+  ...communityArchive.maps,
+].map(map => ({ ...map, portalHidden: hiddenNames.has(map.name) || map.portalHidden === true }))
 export const loboWorkshopMapBySlug = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].map(map => [map.slug, map]))
 const normalize = value => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
 const currentByLabel = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].flatMap(map =>
@@ -27,7 +30,7 @@ const missionNames = [...new Set(loboWorkshopMaps.flatMap(map => map.missionSetu
 export const loboWorkshopMapSections = missionNames.map(title => ({
   id: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
   title,
-  description: `Two terrain setups for ${title}.`,
+  description: `${loboWorkshopMaps.filter(map => map.missionSetups.includes(title)).length} ${loboWorkshopMaps.filter(map => map.missionSetups.includes(title)).length === 1 ? 'terrain setup' : 'terrain setups'} for ${title}.`,
   eventUrl: null,
   layouts: loboWorkshopMaps.filter(map => map.missionSetups.includes(title))
     .map(map => ({ layoutKey: map.layoutKey, name: map.name, saves: [map] })),

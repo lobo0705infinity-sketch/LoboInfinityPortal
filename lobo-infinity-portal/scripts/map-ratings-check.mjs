@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import vm from 'node:vm'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
-import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
+import { loboWorkshopMaps, loboWorkshopMapBySlug } from '../shared/lobo-workshop-maps.mjs'
 import { loboWorkshopMapSections } from '../shared/lobo-workshop-maps-legacy.mjs'
 
 const source = (file) => readFileSync(new URL(`../backend/${file}`, import.meta.url), 'utf8')
@@ -121,9 +121,11 @@ for (let pass = 0; pass < 2; pass += 1) {
   }
 }
 
-const repeatedLayout = loboWorkshopMaps.find((candidate) =>
-  loboWorkshopMaps.filter((map) => map.layoutKey === candidate.layoutKey).length >= 2)
-const sameLayout = loboWorkshopMaps.filter((map) => map.layoutKey === repeatedLayout?.layoutKey)
+// Historical reports retain shared terrain ratings after catalogue retirement.
+const ratingMaps = [...loboWorkshopMapBySlug.values()]
+const repeatedLayout = ratingMaps.find((candidate) =>
+  ratingMaps.filter((map) => map.layoutKey === candidate.layoutKey).length >= 2)
+const sameLayout = ratingMaps.filter((map) => map.layoutKey === repeatedLayout?.layoutKey)
 assert.ok(sameLayout.length >= 2, 'fixture includes a terrain layout with two saves')
 const otherMap = loboWorkshopMaps.find((map) => map.layoutKey !== sameLayout[0].layoutKey)
 const ratings = buildMapRatings([

@@ -22,7 +22,12 @@ assert.equal(publicDatasetForPath('/commissioner'), null)
 assert.equal(describePublicSearchPage('/hall-of-fame'), null)
 assert.equal(describePublicSearchPage('/rivalries'), null)
 const maps = describePublicSearchPage('/maps')
-assert.equal(maps.links.filter(link => link.href.startsWith('/maps/')).length, 41)
+assert.equal(maps.links.filter(link => link.href.startsWith('/maps/')).length, 20)
+assert.match(maps.intro, /19 setups for 18 ITS Season 18 missions across 19 terrain layouts/)
+for (const slug of ['akial-interference-1', 'akial-interference-2', 'evacuation-1', 'evacuation-2-satellite']) {
+  assert.equal(describePublicSearchPage('/maps/' + slug), null)
+  assert.ok(!maps.links.some(link => link.href === '/maps/' + slug))
+}
 const table = describePublicSearchPage('/maps/05-objective-room-2-blockfort')
 assert.match(table.title, /Quadrant Bastion/)
 assert.match(table.intro, /Objective Room - 2 Blockfort/)

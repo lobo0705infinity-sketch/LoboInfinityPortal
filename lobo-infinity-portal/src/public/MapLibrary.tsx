@@ -87,7 +87,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         <div aria-label="Filter by named mission setup" className="lobo-maps-filters" role="group">
           {['All missions', ...missionOptions].map((option) => <button aria-pressed={mission === option} key={option} onClick={() => setMission(option)} type="button">{option}</button>)}
         </div>
-        <p className="lobo-maps-filter-note">Each mission has two different terrain layouts. {loboWorkshopMaps.length} setups use {layoutCount} layouts. Previews show TTS screenshots or rendered terrain geometry. Inspect the loaded table before play; gameplay testing remains in progress.</p>
+        <p className="lobo-maps-filter-note">{loboWorkshopMaps.length} setups cover {missionCount} missions across {layoutCount} layouts. Previews show TTS screenshots or rendered terrain geometry. Inspect the loaded table before play; gameplay testing remains in progress.</p>
         <p className="lobo-maps-filter-note">Ratings average 1–5 scores from submitted games. Setups using the same terrain share one rating.</p>
       </div>
       <nav aria-label="Missions" className="lobo-map-section-nav">
@@ -108,16 +108,17 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
         })}</div>
       </section> : null) : <p className="lobo-maps-empty">No maps match that search. Try another name or mission.</p>}
     </section>
-    <p className="lobo-maps-source-note">Browse {missionCount} missions alphabetically, with two setups per mission. Previews are labeled as TTS screenshots, rendered terrain geometry or setup diagrams. Historical map pages remain available through existing game links.</p>
+    <p className="lobo-maps-source-note">Browse {missionCount} missions alphabetically. Previews are labeled as TTS screenshots, rendered terrain geometry or setup diagrams.</p>
   </main>
 }
 
 function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | undefined; games: PublicGame[]; ratings: Map<number, MapRating>; ratingsStatus: RatingsStatus }) {
-  if (!map) return <main className="portal-shell lobo-maps-page"><section className="lobo-maps-empty"><h1>Map not found</h1><p>This table is not in the current Lobo Workshop collection.</p><Link to="/maps">Browse all maps</Link></section></main>
+  if (!map || map.portalHidden) return <main className="portal-shell lobo-maps-page"><section className="lobo-maps-empty"><h1>Map not found</h1><p>This table is not in the active portal catalogue.</p><Link to="/maps">Browse all maps</Link></section></main>
 
-  const next = loboWorkshopMaps[map.index % loboWorkshopMaps.length]
-  const previous = loboWorkshopMaps[(map.index - 2 + loboWorkshopMaps.length) % loboWorkshopMaps.length]
-  const relatedMaps = map.isCurrent === false ? archivedLoboWorkshopMaps : loboWorkshopMaps
+  const position = loboWorkshopMaps.findIndex(item => item.id === map.id)
+  const next = loboWorkshopMaps[(position + 1) % loboWorkshopMaps.length]
+  const previous = loboWorkshopMaps[(position - 1 + loboWorkshopMaps.length) % loboWorkshopMaps.length]
+  const relatedMaps = (map.isCurrent === false ? archivedLoboWorkshopMaps : loboWorkshopMaps).filter(item => !item.portalHidden)
   const variants = relatedMaps.filter((item) => item.layoutKey === map.layoutKey && item.id !== map.id)
   const exactMatch = map.exactDuplicateOf
     ? relatedMaps.find((item) => item.index === map.exactDuplicateOf)
@@ -125,7 +126,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
   const reports = games.filter((game) => loboWorkshopMapBySlug.get(game.mapSlug ?? '')?.layoutKey === map.layoutKey)
     .sort((left, right) => right.date.localeCompare(left.date) || right.id - left.id)
   return <main className="portal-shell lobo-maps-page lobo-map-detail" data-page="map-detail" data-preview={map.previewKind}>
-    <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'standard'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>{map.isCurrent === false ? `Historical Workshop save ${map.index}` : `Workshop setup ${String(map.index).padStart(2, '0')} / ${loboWorkshopMaps.length}`}</span></nav>
+    <nav aria-label="Map navigation" className="lobo-map-detail-nav"><a href={`/maps#maps-${sectionForSave(map)?.id ?? 'standard'}`}>← {sectionForSave(map)?.title ?? 'All maps'}</a><span>{map.isCurrent === false ? `Historical Workshop save ${map.index}` : `Workshop setup ${String(position + 1).padStart(2, '0')} / ${loboWorkshopMaps.length}`}</span></nav>
     <header className="lobo-map-detail-heading">
       <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopBagName}</p>{map.isCurrent === false ? <p>This is a historical Workshop save. <Link to="/maps">Browse the revised ITS18 collection.</Link></p> : null}<p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Inspect this mission setup before loading its matching bag in Tabletop Simulator.</p></div>
       <div>{map.download ? <a download href={map.download}>Download map bag</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>

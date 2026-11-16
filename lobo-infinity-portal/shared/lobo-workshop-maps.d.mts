@@ -16,6 +16,7 @@ export type LoboWorkshopMap = {
   overhead: string
   angled: string
   isCurrent?: boolean
+  portalHidden?: boolean
   previewKind?: string
   diagram?: string
   download?: string

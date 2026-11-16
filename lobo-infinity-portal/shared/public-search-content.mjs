@@ -65,11 +65,11 @@ const publicPages = {
   },
   '/maps': {
     title: 'TTS Map Library: ITS18 & Aurora VII | Lobo Portal',
-    description: 'Browse 40 ITS18 setups and 24 Aurora VII locations, with Frontline and Supremacy selectors, territory rules, terrain references and matching Workshop bag names.',
+    description: `Browse ${loboWorkshopMaps.length} ITS18 setups and 24 Aurora VII locations, with Frontline and Supremacy selectors, territory rules, terrain references and matching Workshop bag names.`,
     heading: 'Lobo Workshop TTS map library',
-    intro: 'Browse 40 setups for all 20 ITS Season 18 missions across 16 terrain layouts. Inspect deployment types, setup diagrams, and matching Workshop bags.',
-    image: loboWorkshopMaps[13].angled,
-    imageAlt: `Setup diagram of ${loboWorkshopMaps[13].name}`,
+    intro: `Browse ${loboWorkshopMaps.length} setups for ${new Set(loboWorkshopMaps.flatMap(map => map.missionSetups)).size} ITS Season 18 missions across ${new Set(loboWorkshopMaps.map(map => map.layoutKey)).size} terrain layouts. Inspect deployment types, setup diagrams, and matching Workshop bags.`,
+    image: loboWorkshopMaps.find(map => map.angled)?.angled,
+    imageAlt: `Terrain preview of ${loboWorkshopMaps.find(map => map.angled)?.name}`,
     imageWidth: 1600,
     imageHeight: 900,
     links: [{ label: 'Read battle reports', href: '/games' }],
@@ -249,7 +249,7 @@ export function describePublicSearchPage(pathname, datasets = {}) {
   const mapSlug = /^\/maps\/([a-z0-9-]+)$/.exec(pathname)?.[1]
   if (mapSlug) {
     const map = loboWorkshopMapBySlug.get(mapSlug)
-    if (!map) return null
+    if (!map || map.portalHidden) return null
     return {
       pathname,
       canonicalPath: `/maps/${map.slug}`,
