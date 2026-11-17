@@ -92,8 +92,8 @@ for (const map of loboWorkshopMaps) {
   }
 }
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 0)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 14)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 3)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 15)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 2)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 2)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
 const meridianBlocks = loboWorkshopMapBySlug.get('last-launch-2')

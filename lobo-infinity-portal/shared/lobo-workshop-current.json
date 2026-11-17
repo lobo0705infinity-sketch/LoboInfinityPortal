@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-16",
-  "download": "/assets/maps/community-archive-20261116/Lobo-Active-ITS18-Map-Bags.zip",
+  "updatedAt": "2026-11-17",
+  "download": "/assets/maps/vanta-official-20261117/Lobo-Active-ITS18-Map-Bags.zip",
   "maps": [
     {
       "index": 4,
@@ -114,14 +114,14 @@
         "B-Pong"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 49,
-      "sourceNote": "Current published Workshop setup. Later review revisions have not yet been integrated.",
-      "overhead": "",
-      "angled": "",
-      "diagram": "",
-      "download": "/assets/maps/community-archive-20261116/Vanta-Customs-Yard.json",
+      "objectCount": 50,
+      "sourceNote": "Official Vanta Customs Yard layout approved on 17 November 2026. Furnished interiors, integrated floors, rooftop freight that follows building states, and repaired roof collision surfaces. Exported terrain previews; live TTS testing remains unverified.",
+      "overhead": "/assets/maps/vanta-official-20261117/vanta-overhead.webp",
+      "angled": "/assets/maps/vanta-official-20261117/vanta-angled.webp",
+      "diagram": "/assets/maps/vanta-official-20261117/vanta-overhead.webp",
+      "download": "/assets/maps/vanta-official-20261117/Vanta-Customs-Yard.json",
       "isCurrent": true,
-      "previewKind": "workshop",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/6ddda242-17c9-41ad-b432-5ef1c665fd7e",
@@ -130,7 +130,8 @@
         "SET_ITS18 B-Pong — Vanta Customs Yard",
         "ITS18 B-Pong — Vanta Customs Yard"
       ],
-      "captureDate": "2026-10-20"
+      "captureDate": "2026-11-17",
+      "installer": "/assets/maps/vanta-official-20261117/Lobo-Vanta-Customs-Yard-Workshop-Installer-R9.zip"
     },
     {
       "index": 11,
@@ -655,7 +656,7 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "community-archive-20261116",
+  "downloadRevision": "vanta-official-20261117",
   "installer": "/assets/maps/community-archive-20261116/Lobo-Community-Maps-Archive-Installer.zip",
-  "releaseInventory": "/assets/maps/community-archive-20261116/release-inventory.json"
+  "releaseInventory": "/assets/maps/vanta-official-20261117/release-inventory.json"
 }

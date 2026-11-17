@@ -20,6 +20,7 @@ export type LoboWorkshopMap = {
   previewKind?: string
   diagram?: string
   download?: string
+  installer?: string
   sourceOverhead?: string | null
   sourceAngled?: string | null
   missionUrl?: string
