@@ -1,0 +1,22 @@
+SWITCHBACK QUARTER R8 - SCATTER ASSET CREDITS
+
+AERO COUPE
+Adapted from Car Concept by Eric Chadwick, Darmstadt Graphics Group GmbH, 2024.
+Source: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CarConcept
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+Original model lineage: Unity Fan's public-domain Concept Car 004.
+Changes for this adaptation: closed exterior terrain configuration; hidden interior removed; neutral license panel; teal paint; opaque glazing for the TTS renderer; reduced mesh; consolidated 2048px diffuse and tangent normal atlases; inch-scale OBJ; fitted collision mesh. Khronos branding is not included in the adapted license-panel texture. No endorsement is implied.
+
+CITY HATCHBACK
+Adapted from MINI Cooper S by cenobyte.
+Original source: https://sketchfab.com/3d-models/mini-cooper-s-b262744901a04cda823f17289d1a4847
+Source distribution: https://sceneview.github.io/models/platforms/mini_cooper_s.glb
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+Changes for this adaptation: mesh reduction, closed opaque glazing for TTS, consolidated 2048px diffuse and tangent normal atlases, inch-scale OBJ and fitted collision mesh. Manufacturer names identify the original model; no endorsement is implied.
+
+MARKET CART, PLANTER SEAT AND UTILITY CLUSTER
+Original geometry and procedural materials created for Lobo's Switchback Quarter, November 2026. These three assets are released under CC BY 4.0; credit Lobo Switchback Quarter.
+
+Redistribution: retain these credits and the license links with the models. Copies supplied in the TTS scatter bag include attribution in the object descriptions. All adaptations above are supplied under CC BY 4.0.
