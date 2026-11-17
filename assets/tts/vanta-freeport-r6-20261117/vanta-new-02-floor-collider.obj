@@ -1,0 +1,8 @@
+# Vanta Customs Yard | integrated terrain | November 2026
+o vanta-new-02-floor-collider
+v -3.000000 0.025000 -3.000000
+v -3.000000 0.025000 3.000000
+v 3.000000 0.025000 3.000000
+v 3.000000 0.025000 -3.000000
+f 1 2 3
+f 1 3 4
