@@ -1,0 +1,635 @@
+{
+  "revision": "lobo-standard-20261118-v1",
+  "maps": [
+    {
+      "guid": "810053",
+      "name": "SET_ITS18 B-Pong \u2014 Vanta Customs Yard",
+      "objects": 50,
+      "download": "/assets/maps/standard-controls-20261118/810053.json"
+    },
+    {
+      "guid": "8100c6",
+      "name": "SET_ITS18 Corporate Appropriation \u2014 Asterion Research Campus",
+      "objects": 84,
+      "download": "/assets/maps/standard-controls-20261118/8100c6.json"
+    },
+    {
+      "guid": "810108",
+      "name": "SET_ITS18 Crossing Lines \u2014 Veyra Gate",
+      "objects": 71,
+      "download": "/assets/maps/standard-controls-20261118/810108.json"
+    },
+    {
+      "guid": "1007ad",
+      "name": "SET_ITS18 Cutthroat \u2014 Redline Interchange",
+      "objects": 78,
+      "download": "/assets/maps/standard-controls-20261118/1007ad.json"
+    },
+    {
+      "guid": "1008da",
+      "name": "SET_ITS18 Data Harvest \u2014 Kestrel Lunar Base",
+      "objects": 69,
+      "download": "/assets/maps/standard-controls-20261118/1008da.json"
+    },
+    {
+      "guid": "100993",
+      "name": "SET_ITS18 Double Bind \u2014 Neon Shogunate",
+      "objects": 392,
+      "download": "/assets/maps/standard-controls-20261118/100993.json"
+    },
+    {
+      "guid": "8101d2",
+      "name": "SET_ITS18 Hardlock \u2014 Ironveil Complex",
+      "objects": 62,
+      "download": "/assets/maps/standard-controls-20261118/8101d2.json"
+    },
+    {
+      "guid": "100ca1",
+      "name": "SET_ITS18 Last Launch \u2014 Port Meridian",
+      "objects": 100,
+      "download": "/assets/maps/standard-controls-20261118/100ca1.json"
+    },
+    {
+      "guid": "810241",
+      "name": "SET_ITS18 Neutralization \u2014 Vesper Glassworks",
+      "objects": 63,
+      "download": "/assets/maps/standard-controls-20261118/810241.json"
+    },
+    {
+      "guid": "100f89",
+      "name": "SET_ITS18 Akial Interference - Switchback Quarter",
+      "objects": 49,
+      "download": "/assets/maps/standard-controls-20261118/100f89.json"
+    },
+    {
+      "guid": "810340",
+      "name": "SET_ITS18 The Dig \u2014 Old Quarter Excavation",
+      "objects": 58,
+      "download": "/assets/maps/standard-controls-20261118/810340.json"
+    },
+    {
+      "guid": "1010b1",
+      "name": "SET_ITS18 Uplink Center \u2014 Verdant Exchange \u2014 Detailed Campus R5",
+      "objects": 76,
+      "download": "/assets/maps/standard-controls-20261118/1010b1.json"
+    },
+    {
+      "guid": "1002d9",
+      "name": "SET_ITS18 Area Of Interest \u2014 Saltwick Floodgate",
+      "objects": 54,
+      "download": "/assets/maps/standard-controls-20261118/1002d9.json"
+    },
+    {
+      "guid": "100135",
+      "name": "SET_ITS18 Annihilation \u2014 Canopy Blacksite",
+      "objects": 82,
+      "download": "/assets/maps/standard-controls-20261118/100135.json"
+    },
+    {
+      "guid": "100326",
+      "name": "SET_ITS18 Battleground \u2014 Cairnfall Sanctuary",
+      "objects": 75,
+      "download": "/assets/maps/standard-controls-20261118/100326.json"
+    },
+    {
+      "guid": "1005e4",
+      "name": "SET_ITS18 Critical Intervention \u2014 Meridian Exchange",
+      "objects": 71,
+      "download": "/assets/maps/standard-controls-20261118/1005e4.json"
+    },
+    {
+      "guid": "100e3e",
+      "name": "SET_ITS18 Outbreak \u2014 Halcyon Thermal Baths",
+      "objects": 46,
+      "download": "/assets/maps/standard-controls-20261118/100e3e.json"
+    },
+    {
+      "guid": "8102b2",
+      "name": "SET_ITS18 Provisioning \u2014 Sirocco Wells \u2014 Approved Rooftop Life",
+      "objects": 81,
+      "download": "/assets/maps/standard-controls-20261118/8102b2.json"
+    },
+    {
+      "guid": "100f50",
+      "name": "SET_ITS18 Superiority \u2014 Frostline Relay",
+      "objects": 80,
+      "download": "/assets/maps/standard-controls-20261118/100f50.json"
+    },
+    {
+      "guid": "d18e74",
+      "name": "SET_Verde Wilds \u00b7 Greenwood River Crossing \u00b7 Frontline",
+      "objects": 165,
+      "download": "/assets/maps/standard-controls-20261118/d18e74.json"
+    },
+    {
+      "guid": "a4b621",
+      "name": "SET_Verde Wilds \u00b7 Greenwood Station Jungle Outpost \u00b7 Frontline",
+      "objects": 116,
+      "download": "/assets/maps/standard-controls-20261118/a4b621.json"
+    },
+    {
+      "guid": "9cddc2",
+      "name": "SET_Verde Wilds \u00b7 Greenwood River Crossing \u00b7 Supremacy",
+      "objects": 169,
+      "download": "/assets/maps/standard-controls-20261118/9cddc2.json"
+    },
+    {
+      "guid": "236caf",
+      "name": "SET_Verde Wilds \u00b7 Greenwood Station Jungle Outpost \u00b7 Supremacy",
+      "objects": 120,
+      "download": "/assets/maps/standard-controls-20261118/236caf.json"
+    },
+    {
+      "guid": "d5bae0",
+      "name": "SET_Echo Shores \u00b7 Freeport Echo \u00b7 Frontline",
+      "objects": 58,
+      "download": "/assets/maps/standard-controls-20261118/d5bae0.json"
+    },
+    {
+      "guid": "487169",
+      "name": "SET_Echo Shores \u00b7 Freeport Echo \u00b7 Supremacy",
+      "objects": 62,
+      "download": "/assets/maps/standard-controls-20261118/487169.json"
+    },
+    {
+      "guid": "07a508",
+      "name": "SET_Echo Shores \u00b7 Dockside Operations \u00b7 Supremacy",
+      "objects": 41,
+      "download": "/assets/maps/standard-controls-20261118/07a508.json"
+    },
+    {
+      "guid": "87c15b",
+      "name": "SET_Echo Shores \u00b7 Dockside Operations \u00b7 Frontline",
+      "objects": 37,
+      "download": "/assets/maps/standard-controls-20261118/87c15b.json"
+    },
+    {
+      "guid": "d1d70c",
+      "name": "SET_Harmony Province \u00b7 Courtyard District \u00b7 Supremacy",
+      "objects": 54,
+      "download": "/assets/maps/standard-controls-20261118/d1d70c.json"
+    },
+    {
+      "guid": "41f84f",
+      "name": "SET_Harmony Province \u00b7 Courtyard District \u00b7 Frontline",
+      "objects": 51,
+      "download": "/assets/maps/standard-controls-20261118/41f84f.json"
+    },
+    {
+      "guid": "6c6fea",
+      "name": "SET_Harmony Province \u00b7 Civic Gardens \u00b7 Frontline",
+      "objects": 55,
+      "download": "/assets/maps/standard-controls-20261118/6c6fea.json"
+    },
+    {
+      "guid": "401e32",
+      "name": "SET_Harmony Province \u00b7 Civic Gardens \u00b7 Supremacy",
+      "objects": 59,
+      "download": "/assets/maps/standard-controls-20261118/401e32.json"
+    },
+    {
+      "guid": "d8e059",
+      "name": "SET_Ember Highlands \u00b7 Red Mesa Settlement \u00b7 Frontline",
+      "objects": 60,
+      "download": "/assets/maps/standard-controls-20261118/d8e059.json"
+    },
+    {
+      "guid": "818ba8",
+      "name": "SET_Ember Highlands \u00b7 Red Mesa Settlement \u00b7 Supremacy",
+      "objects": 64,
+      "download": "/assets/maps/standard-controls-20261118/818ba8.json"
+    },
+    {
+      "guid": "fa7d83",
+      "name": "SET_Ember Highlands \u00b7 Geothermal Works \u00b7 Frontline",
+      "objects": 63,
+      "download": "/assets/maps/standard-controls-20261118/fa7d83.json"
+    },
+    {
+      "guid": "2baa68",
+      "name": "SET_Ember Highlands \u00b7 Geothermal Works \u00b7 Supremacy",
+      "objects": 67,
+      "download": "/assets/maps/standard-controls-20261118/2baa68.json"
+    },
+    {
+      "guid": "b821cb",
+      "name": "SET_Crystal Frontier \u00b7 Faultline Works \u00b7 Frontline",
+      "objects": 162,
+      "download": "/assets/maps/standard-controls-20261118/b821cb.json"
+    },
+    {
+      "guid": "688a5f",
+      "name": "SET_Crystal Frontier \u00b7 Faultline Works \u00b7 Supremacy",
+      "objects": 169,
+      "download": "/assets/maps/standard-controls-20261118/688a5f.json"
+    },
+    {
+      "guid": "84d955",
+      "name": "SET_Crystal Frontier \u00b7 Rift Research Station \u00b7 Frontline",
+      "objects": 94,
+      "download": "/assets/maps/standard-controls-20261118/84d955.json"
+    },
+    {
+      "guid": "90a405",
+      "name": "SET_Crystal Frontier \u00b7 Rift Research Station \u00b7 Supremacy",
+      "objects": 98,
+      "download": "/assets/maps/standard-controls-20261118/90a405.json"
+    },
+    {
+      "guid": "a1004e",
+      "name": "SET_Iron Corridor \u00b7 Iron Junction Freight Yard \u00b7 Frontline",
+      "objects": 193,
+      "download": "/assets/maps/standard-controls-20261118/a1004e.json"
+    },
+    {
+      "guid": "a10145",
+      "name": "SET_Iron Corridor \u00b7 Iron Junction Freight Yard \u00b7 Supremacy",
+      "objects": 201,
+      "download": "/assets/maps/standard-controls-20261118/a10145.json"
+    },
+    {
+      "guid": "a10268",
+      "name": "SET_Iron Corridor \u00b7 Transit & Maintenance Hub \u00b7 Frontline",
+      "objects": 191,
+      "download": "/assets/maps/standard-controls-20261118/a10268.json"
+    },
+    {
+      "guid": "a102d6",
+      "name": "SET_Iron Corridor \u00b7 Transit & Maintenance Hub \u00b7 Supremacy",
+      "objects": 199,
+      "download": "/assets/maps/standard-controls-20261118/a102d6.json"
+    },
+    {
+      "guid": "88ba6c",
+      "name": "SET_Korin Range \u00b7 Research Valley \u00b7 Frontline",
+      "objects": 198,
+      "download": "/assets/maps/standard-controls-20261118/88ba6c.json"
+    },
+    {
+      "guid": "9604da",
+      "name": "SET_Korin Range \u00b7 Research Valley \u00b7 Supremacy",
+      "objects": 206,
+      "download": "/assets/maps/standard-controls-20261118/9604da.json"
+    },
+    {
+      "guid": "aaadfb",
+      "name": "SET_Korin Range \u00b7 High Pass \u00b7 Frontline",
+      "objects": 201,
+      "download": "/assets/maps/standard-controls-20261118/aaadfb.json"
+    },
+    {
+      "guid": "6201ec",
+      "name": "SET_Korin Range \u00b7 High Pass \u00b7 Supremacy",
+      "objects": 209,
+      "download": "/assets/maps/standard-controls-20261118/6201ec.json"
+    },
+    {
+      "guid": "e52cec",
+      "name": "SET_Sulfur Basin \u00b7 Helios Refinery \u00b7 Supremacy",
+      "objects": 236,
+      "download": "/assets/maps/standard-controls-20261118/e52cec.json"
+    },
+    {
+      "guid": "e8137b",
+      "name": "SET_Sulfur Basin \u00b7 Helios Extraction Fields \u00b7 Frontline",
+      "objects": 223,
+      "download": "/assets/maps/standard-controls-20261118/e8137b.json"
+    },
+    {
+      "guid": "482c74",
+      "name": "SET_Sulfur Basin \u00b7 Helios Extraction Fields \u00b7 Supremacy",
+      "objects": 235,
+      "download": "/assets/maps/standard-controls-20261118/482c74.json"
+    },
+    {
+      "guid": "60da7b",
+      "name": "SET_Sulfur Basin \u00b7 Helios Refinery \u00b7 Frontline",
+      "objects": 228,
+      "download": "/assets/maps/standard-controls-20261118/60da7b.json"
+    },
+    {
+      "guid": "a4e0f0",
+      "name": "SET_Nova Prospect \u00b7 Orbital Logistics District \u00b7 Frontline",
+      "objects": 34,
+      "download": "/assets/maps/standard-controls-20261118/a4e0f0.json"
+    },
+    {
+      "guid": "df167e",
+      "name": "SET_Nova Prospect \u00b7 Orbital Logistics District \u00b7 Supremacy",
+      "objects": 39,
+      "download": "/assets/maps/standard-controls-20261118/df167e.json"
+    },
+    {
+      "guid": "52658f",
+      "name": "SET_Nova Prospect \u00b7 Administrative District \u00b7 Supremacy",
+      "objects": 55,
+      "download": "/assets/maps/standard-controls-20261118/52658f.json"
+    },
+    {
+      "guid": "fc7f35",
+      "name": "SET_Nova Prospect \u00b7 Administrative District \u00b7 Frontline",
+      "objects": 48,
+      "download": "/assets/maps/standard-controls-20261118/fc7f35.json"
+    },
+    {
+      "guid": "f5f01b",
+      "name": "SET_Northward Expanse \u00b7 New Al-Medina Research Network \u00b7 Frontline",
+      "objects": 81,
+      "download": "/assets/maps/standard-controls-20261118/f5f01b.json"
+    },
+    {
+      "guid": "875542",
+      "name": "SET_Northward Expanse \u00b7 New Al-Medina Research Network \u00b7 Supremacy",
+      "objects": 85,
+      "download": "/assets/maps/standard-controls-20261118/875542.json"
+    },
+    {
+      "guid": "fbe4d5",
+      "name": "SET_Northward Expanse \u00b7 Northern Survey Frontier \u00b7 Frontline",
+      "objects": 71,
+      "download": "/assets/maps/standard-controls-20261118/fbe4d5.json"
+    },
+    {
+      "guid": "c671f2",
+      "name": "SET_Northward Expanse \u00b7 Northern Survey Frontier \u00b7 Supremacy",
+      "objects": 75,
+      "download": "/assets/maps/standard-controls-20261118/c671f2.json"
+    },
+    {
+      "guid": "740fb4",
+      "name": "SET_Frostreach Wastes \u00b7 Polar Expedition Zone R26 \u00b7 Frontline",
+      "objects": 40,
+      "download": "/assets/maps/standard-controls-20261118/740fb4.json"
+    },
+    {
+      "guid": "f65507",
+      "name": "SET_Frostreach Wastes \u00b7 Polar Expedition Zone R26 \u00b7 Supremacy",
+      "objects": 44,
+      "download": "/assets/maps/standard-controls-20261118/f65507.json"
+    },
+    {
+      "guid": "da38f7",
+      "name": "SET_Frostreach Wastes \u00b7 Frosthold Wastes R26 \u00b7 Frontline",
+      "objects": 48,
+      "download": "/assets/maps/standard-controls-20261118/da38f7.json"
+    },
+    {
+      "guid": "efb12f",
+      "name": "SET_Frostreach Wastes \u00b7 Frosthold Wastes R26 \u00b7 Supremacy",
+      "objects": 52,
+      "download": "/assets/maps/standard-controls-20261118/efb12f.json"
+    },
+    {
+      "guid": "ad7001",
+      "name": "SET_Azure Coast \u00b7 Tidal Infrastructure \u00b7 Frontline",
+      "objects": 218,
+      "download": "/assets/maps/standard-controls-20261118/ad7001.json"
+    },
+    {
+      "guid": "acc001",
+      "name": "SET_Azure Coast \u00b7 Coastal Access \u00b7 Frontline",
+      "objects": 70,
+      "download": "/assets/maps/standard-controls-20261118/acc001.json"
+    },
+    {
+      "guid": "ad7002",
+      "name": "SET_Azure Coast \u00b7 Tidal Infrastructure \u00b7 Supremacy",
+      "objects": 222,
+      "download": "/assets/maps/standard-controls-20261118/ad7002.json"
+    },
+    {
+      "guid": "acc002",
+      "name": "SET_Azure Coast \u00b7 Coastal Access \u00b7 Supremacy",
+      "objects": 74,
+      "download": "/assets/maps/standard-controls-20261118/acc002.json"
+    },
+    {
+      "guid": "4e9655",
+      "name": "SET_Verde Wilds \u00b7 Greenwood Survey Reach \u00b7 The Missing Survey Team \u00b7 R8",
+      "objects": 90,
+      "download": "/assets/maps/standard-controls-20261118/4e9655.json"
+    },
+    {
+      "guid": "ca7100",
+      "name": "SET_Lobo's Top 40 Winners Round 1 Map",
+      "objects": 84,
+      "download": "/assets/maps/standard-controls-20261118/ca7100.json"
+    },
+    {
+      "guid": "f5452f",
+      "name": "SET_Azure Coast \u00b7 Nereid Deep R7 \u00b7 Public Terrain",
+      "objects": 49,
+      "download": "/assets/maps/standard-controls-20261118/f5452f.json"
+    },
+    {
+      "guid": "3d6a97",
+      "name": "SET_Lobo's Top 40 Winners Round 2 Map",
+      "objects": 80,
+      "download": "/assets/maps/standard-controls-20261118/3d6a97.json"
+    },
+    {
+      "guid": "03c892",
+      "name": "SET_Lobo's Top 40 Winners Round 3 Map - Roofs and Controls R2",
+      "objects": 76,
+      "download": "/assets/maps/standard-controls-20261118/03c892.json"
+    },
+    {
+      "guid": "8a1c29",
+      "name": "SET_Lobo's Top 40 Winners Round 4 Map",
+      "objects": 58,
+      "download": "/assets/maps/standard-controls-20261118/8a1c29.json"
+    },
+    {
+      "guid": "f50418",
+      "name": "SET_Lobo's Top 40 Winners Round 5 Map",
+      "objects": 54,
+      "download": "/assets/maps/standard-controls-20261118/f50418.json"
+    },
+    {
+      "guid": "a7c0c1",
+      "name": "SET_Lobo's Top 40 Losers Round 1 Map",
+      "objects": 122,
+      "download": "/assets/maps/standard-controls-20261118/a7c0c1.json"
+    },
+    {
+      "guid": "bc0000",
+      "name": "SET_Lobo's Top 40 Losers Round 3 Map",
+      "objects": 78,
+      "download": "/assets/maps/standard-controls-20261118/bc0000.json"
+    },
+    {
+      "guid": "bc005f",
+      "name": "SET_Lobo's Top 40 Losers Round 7 Map",
+      "objects": 62,
+      "download": "/assets/maps/standard-controls-20261118/bc005f.json"
+    },
+    {
+      "guid": "bc00b7",
+      "name": "SET_Lobo's Top 40 Losers Round 4 Map",
+      "objects": 75,
+      "download": "/assets/maps/standard-controls-20261118/bc00b7.json"
+    },
+    {
+      "guid": "bc0117",
+      "name": "SET_Lobo's Top 40 Losers Round 5 Map",
+      "objects": 63,
+      "download": "/assets/maps/standard-controls-20261118/bc0117.json"
+    },
+    {
+      "guid": "bd0003",
+      "name": "SET_Lobo's Top 40 Losers Round 6 Map",
+      "objects": 46,
+      "download": "/assets/maps/standard-controls-20261118/bd0003.json"
+    },
+    {
+      "guid": "ff1100",
+      "name": "SET_Lobo's Top 40 Final Map",
+      "objects": 392,
+      "download": "/assets/maps/standard-controls-20261118/ff1100.json"
+    },
+    {
+      "guid": "1e880b",
+      "name": "SET_Lobo's Top 40 Losers Round 2 Map",
+      "objects": 81,
+      "download": "/assets/maps/standard-controls-20261118/1e880b.json"
+    },
+    {
+      "guid": "df2866",
+      "name": "SET_Lobo's Top 40 Losers Round 8 Map",
+      "objects": 71,
+      "download": "/assets/maps/standard-controls-20261118/df2866.json"
+    },
+    {
+      "guid": "100013",
+      "name": "SET_ITS18 Akial Interference \u2014 Tidal Turbines \u2014 REVISED",
+      "objects": 96,
+      "download": "/assets/maps/standard-controls-20261118/100013.json"
+    },
+    {
+      "guid": "1000cb",
+      "name": "SET_ITS18 Annihilation \u2014 Rustline Market \u2014 REVISED",
+      "objects": 89,
+      "download": "/assets/maps/standard-controls-20261118/1000cb.json"
+    },
+    {
+      "guid": "100211",
+      "name": "SET_ITS18 Area Of Interest \u2014 Cargo Crossroads \u2014 REVISED",
+      "objects": 184,
+      "download": "/assets/maps/standard-controls-20261118/100211.json"
+    },
+    {
+      "guid": "1003bd",
+      "name": "SET_ITS18 Battleground \u2014 Freight Terminal \u2014 REVISED",
+      "objects": 104,
+      "download": "/assets/maps/standard-controls-20261118/1003bd.json"
+    },
+    {
+      "guid": "100544",
+      "name": "SET_ITS18 Critical Intervention \u2014 NeoTerran Command \u2014 REVISED",
+      "objects": 129,
+      "download": "/assets/maps/standard-controls-20261118/100544.json"
+    },
+    {
+      "guid": "810183",
+      "name": "SET_ITS18 Double Bind \u2014 Copperline Exchange \u2014 SATELLITE EDITION",
+      "objects": 50,
+      "download": "/assets/maps/standard-controls-20261118/810183.json"
+    },
+    {
+      "guid": "100ac2",
+      "name": "SET_ITS18 Evacuation \u2014 Freight Terminal \u2014 REVISED",
+      "objects": 110,
+      "download": "/assets/maps/standard-controls-20261118/100ac2.json"
+    },
+    {
+      "guid": "100daf",
+      "name": "SET_ITS18 Outbreak \u2014 Neon Exchange \u2014 REVISED",
+      "objects": 114,
+      "download": "/assets/maps/standard-controls-20261118/100daf.json"
+    },
+    {
+      "guid": "100e9f",
+      "name": "SET_ITS18 Provisioning \u2014 Skyrail Exchange \u2014 REVISED",
+      "objects": 96,
+      "download": "/assets/maps/standard-controls-20261118/100e9f.json"
+    },
+    {
+      "guid": "810394",
+      "name": "SET_ITS18 Uplink Center \u2014 Blackwater Relay \u2014 SATELLITE EDITION",
+      "objects": 76,
+      "download": "/assets/maps/standard-controls-20261118/810394.json"
+    },
+    {
+      "guid": "100081",
+      "name": "SET_ITS18 Akial Interference \u2014 Azure Circuit \u2014 REVISED",
+      "objects": 75,
+      "download": "/assets/maps/standard-controls-20261118/100081.json"
+    },
+    {
+      "guid": "100434",
+      "name": "SET_ITS18 B-Pong \u2014 Concrete Labyrinth \u2014 REVISED",
+      "objects": 60,
+      "download": "/assets/maps/standard-controls-20261118/100434.json"
+    },
+    {
+      "guid": "100508",
+      "name": "SET_ITS18 Corporate Appropriation \u2014 Concrete Labyrinth \u2014 REVISED",
+      "objects": 61,
+      "download": "/assets/maps/standard-controls-20261118/100508.json"
+    },
+    {
+      "guid": "1006b8",
+      "name": "SET_ITS18 Crossing Lines \u2014 Canal Quarter \u2014 REVISED",
+      "objects": 211,
+      "download": "/assets/maps/standard-controls-20261118/1006b8.json"
+    },
+    {
+      "guid": "100843",
+      "name": "SET_ITS18 Cutthroat \u2014 Foundry Blocks \u2014 REVISED",
+      "objects": 129,
+      "download": "/assets/maps/standard-controls-20261118/100843.json"
+    },
+    {
+      "guid": "810417",
+      "name": "SET_ITS18 Data Harvest \u2014 Signalworks \u2014 SATELLITE EDITION",
+      "objects": 100,
+      "download": "/assets/maps/standard-controls-20261118/810417.json"
+    },
+    {
+      "guid": "81046b",
+      "name": "SET_ITS18 Evacuation \u2014 Wayfarer Landing \u2014 SATELLITE EDITION",
+      "objects": 67,
+      "download": "/assets/maps/standard-controls-20261118/81046b.json"
+    },
+    {
+      "guid": "100b8d",
+      "name": "SET_ITS18 Hardlock \u2014 Tidal Turbines \u2014 REVISED",
+      "objects": 100,
+      "download": "/assets/maps/standard-controls-20261118/100b8d.json"
+    },
+    {
+      "guid": "100bff",
+      "name": "SET_ITS18 Last Launch \u2014 NeoTerran Command \u2014 REVISED",
+      "objects": 127,
+      "download": "/assets/maps/standard-controls-20261118/100bff.json"
+    },
+    {
+      "guid": "8104c6",
+      "name": "SET_ITS18 Neutralization \u2014 Frostline Sector \u2014 SATELLITE EDITION",
+      "objects": 68,
+      "download": "/assets/maps/standard-controls-20261118/8104c6.json"
+    },
+    {
+      "guid": "100fb0",
+      "name": "SET_ITS18 The Dig \u2014 Skyrail Exchange \u2014 REVISED",
+      "objects": 96,
+      "download": "/assets/maps/standard-controls-20261118/100fb0.json"
+    },
+    {
+      "guid": "af0667",
+      "name": "SET_ITS18 Evacuation \u2014 Leviathan\u2019s Wake \u2014 Rocinante",
+      "objects": 47,
+      "download": "/assets/maps/standard-controls-20261118/af0667.json"
+    }
+  ]
+}

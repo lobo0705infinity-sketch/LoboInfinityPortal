@@ -1,0 +1,27 @@
+name: Lobo map controls standard
+on:
+  pull_request:
+    paths: ['tts-map-controls-standard/**', 'lobo-infinity-portal/public/assets/maps/**', 'lobo-infinity-portal/shared/lobo-workshop-current.json']
+  push:
+    paths: ['tts-map-controls-standard/**', 'lobo-infinity-portal/public/assets/maps/**', 'lobo-infinity-portal/shared/lobo-workshop-current.json']
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install lupa==2.8
+      - name: Validate current collection and its exported bags
+        run: python tts-map-controls-standard/check_current_release.py
+        env:
+          LOBO_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - name: Exercise rendered controls on all 105 maps
+        run: python tts-map-controls-standard/test_all_parallel.py
+      - name: Verify rotation and color persistence
+        run: python tts-map-controls-standard/test_persistence.py
+      - name: Verify lifted deck and passenger rotation
+        run: python tts-map-controls-standard/test_lifted_rotation.py

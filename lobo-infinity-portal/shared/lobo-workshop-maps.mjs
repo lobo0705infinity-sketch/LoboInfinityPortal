@@ -1,4 +1,5 @@
 import current from './lobo-workshop-current.json' with { type: 'json' }
+import standardControls from './lobo-map-controls-releases.json' with { type: 'json' }
 import retired from './lobo-workshop-archive-20261020.json' with { type: 'json' }
 import communityArchive from './lobo-workshop-community-archive-20261116.json' with { type: 'json' }
 import {
@@ -18,7 +19,7 @@ export const archivedLoboWorkshopMaps = [
   ...legacyMaps.map(map => ({ ...map, isCurrent: false, previewKind: 'source' })),
   ...retired,
   ...communityArchive.maps,
-].map(map => ({ ...map, portalHidden: hiddenNames.has(map.name) || map.portalHidden === true }))
+].map(map => ({ ...map, ...(standardControls[map.guid] ? { download: standardControls[map.guid] } : {}), portalHidden: hiddenNames.has(map.name) || map.portalHidden === true }))
 export const loboWorkshopMapBySlug = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].map(map => [map.slug, map]))
 const normalize = value => String(value || '').trim().toLocaleLowerCase().replace(/\s+/g, ' ')
 const currentByLabel = new Map([...archivedLoboWorkshopMaps, ...loboWorkshopMaps].flatMap(map =>
