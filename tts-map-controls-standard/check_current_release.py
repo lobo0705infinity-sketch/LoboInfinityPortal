@@ -1,5 +1,5 @@
 from pathlib import Path
-import json,zipfile,io
+import json,zipfile,io,hashlib
 from validate_release import validate
 ROOT=Path(__file__).resolve().parent
 REPO=ROOT.parent
@@ -7,7 +7,14 @@ APP=REPO/'lobo-infinity-portal'
 current=json.loads((APP/'shared/lobo-workshop-current.json').read_text())
 installer=APP/'public'/current['installer'].lstrip('/')
 with zipfile.ZipFile(installer)as outer:
- with zipfile.ZipFile(io.BytesIO(outer.read('Files/payload.zip')))as inner:
+ if 'Files/payload.zip' in outer.namelist():
+  payload=outer.read('Files/payload.zip')
+ else:
+  manifest=json.loads(outer.read('Files/download-manifest.json'))
+  assert manifest['parts'] and all(Path(name).name==name for name in manifest['parts'])
+  payload=b''.join((installer.parent/name).read_bytes() for name in manifest['parts'])
+  assert hashlib.sha256(payload).hexdigest()==manifest['sha256'],'Installer download integrity'
+ with zipfile.ZipFile(io.BytesIO(payload))as inner:
   out=ROOT/'output';out.mkdir(exist_ok=True)
   (out/'Workshop-Save.json').write_bytes(inner.read('Workshop-Save.json'))
 assert validate(out/'Workshop-Save.json')['maps']==105
