@@ -1,0 +1,200 @@
+{
+  "slug": "provisioning-2-satellite",
+  "name": "Sirocco Wells",
+  "bagUrl": "/assets/maps/standard-controls-20261118/8102b2.json",
+  "bagSha256": "4f76fe88a79e05dc0ae19424a7dc4e8d6bfdef1e577035a198df2d4b87c9f43a",
+  "views": {
+    "overhead": "provisioning-2-satellite-overhead.webp",
+    "angled": "provisioning-2-satellite-angled.webp"
+  },
+  "renderedObjects": [
+    "460e23",
+    "d8761a",
+    "fa1007",
+    "bf7186",
+    "9a5727",
+    "213da3",
+    "edad69",
+    "f6bd3c",
+    "b27699",
+    "311809",
+    "bb6627",
+    "ecb81e",
+    "9e34d3",
+    "998286",
+    "040cb6",
+    "e0ce96",
+    "fda58b",
+    "c0e27b",
+    "ec13e6",
+    "d18591",
+    "2d9613",
+    "1ca878",
+    "36de83",
+    "c53152",
+    "c6b4e0",
+    "e86284",
+    "d39264",
+    "648cc6",
+    "61affa",
+    "03f64f",
+    "4b45bb",
+    "b542ee",
+    "ef63f1",
+    "06afd5",
+    "2c0103",
+    "ff526a",
+    "4952a8",
+    "c774e8",
+    "275f1c",
+    "32a9d0",
+    "fa7940",
+    "90f39b",
+    "b2f745",
+    "1be4af",
+    "c3f2cb",
+    "ac9de5",
+    "c0c4dd",
+    "634791",
+    "e0b141",
+    "675e70",
+    "bc6e01",
+    "c5b85b",
+    "f4e2e3",
+    "de6007",
+    "f7d310"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "f69314",
+      "name": "Tech-Coffin",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "bcd309",
+      "name": "Tech-Coffin",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "cd10ac",
+      "name": "Tech-Coffin",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a62606",
+      "name": "Sirocco Wells | Map Controls",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "513fb7",
+      "name": "Sirocco R8 | Warm lantern | Operations House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "44f968",
+      "name": "Sirocco R8 | Cool utility light | Water Control House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "16f797",
+      "name": "Sirocco R8 | Warm lantern | Maintenance Workshop",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d5cfd4",
+      "name": "Sirocco R8 | Warm lantern | Habitation Block",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "5b2b44",
+      "name": "Sirocco R8 | Warm lantern | Crew Quarters",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4b89e2",
+      "name": "Sirocco R8 | Warm lantern | Field Clinic",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "6e790f",
+      "name": "Sirocco R8 | Cool utility light | Pump House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "1f0c46",
+      "name": "Sirocco R8 | Warm lantern | Buried Stores Bunker",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "08e0b9",
+      "name": "Sirocco R8 | Warm lantern | Western Supply Hut",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b4587c",
+      "name": "Sirocco R8 | Warm lantern | Eastern Supply Hut",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "1d262f",
+      "name": "Sirocco R8 | Warm lantern | Dispatch Office",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "cfa507",
+      "name": "Sirocco R8 | Warm lantern | Service Annex",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "cfa0d4",
+      "name": "Sirocco R8 | Warm lantern | Fountain 21",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "faaf3f",
+      "name": "Sirocco R8 | Warm lantern | Fountain 22",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "994557",
+      "name": "Sirocco R8 | Warm lantern | Habitation Block",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b51290",
+      "name": "Sirocco R8 | Cool utility light | Water Control House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c4cae4",
+      "name": "Sirocco R8 | Warm lantern | Dispatch Office",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c44704",
+      "name": "Sirocco R8 | Warm lantern | Buried Stores Bunker",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "7ee710",
+      "name": "Sirocco R8 | Warm lantern | Maintenance Workshop",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "6dcc3a",
+      "name": "Sirocco R8 | Cool utility light | Water Control House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "196c0d",
+      "name": "Sirocco R8 | Cool utility light | Water Control House",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "171b34",
+      "name": "Sirocco R8 | Cool utility light | Pump House",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}

@@ -13,10 +13,16 @@ export type LoboWorkshopMap = {
   exactDuplicateOf: number | null
   objectCount: number
   sourceNote: string
+  overheadThumb?: string
+  angledThumb?: string
   overhead: string
   angled: string
   isCurrent?: boolean
   portalHidden?: boolean
+  reviewStatus?: 'pending'
+  previewManifest?: string
+  previewBagSha256?: string
+  previewUpdatedAt?: string
   previewKind?: string
   diagram?: string
   download?: string

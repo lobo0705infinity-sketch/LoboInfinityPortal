@@ -20,9 +20,8 @@
       "exactDuplicateOf": null,
       "objectCount": 49,
       "sourceNote": "Approved Switchback Quarter: Akial Interference setup with the standard map-control panel and the retained building layout.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/switchback-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/superiority-2-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/superiority-2-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100f89.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -36,7 +35,11 @@
         "ITS18 Superiority - Switchback Quarter R3",
         "SET_ITS18 Akial Interference - Switchback Quarter"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "f4421365490c13ecba00f561fb4853f188804064de6161aab313a8b0798caad2",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/superiority-2-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/superiority-2-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/superiority-2-angled-thumb.webp"
     },
     {
       "index": 4,
@@ -55,9 +58,8 @@
       "exactDuplicateOf": null,
       "objectCount": 82,
       "sourceNote": "Approved Canopy Blacksite R4: jungle research buildings with furnished interiors, large ancient trunks to interrupt cross-table fire and an additional central building. Tree controls, independent DZ guides, Booty/Metachemistry and backgrounds retained. Matching Top 40 Losers Round 1 map. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/canopy-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/canopy-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/canopy-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/annihilation-2-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/annihilation-2-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100135.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -69,7 +71,11 @@
         "ITS18 Annihilation — The Iron Yard — REVISED",
         "The Iron Yard"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "55f55f6594fd2acec0d28bf925158eb5c1b03b177a561e3a77cd05320ed4b6f5",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/annihilation-2-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/annihilation-2-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/annihilation-2-angled-thumb.webp"
     },
     {
       "index": 6,
@@ -88,18 +94,22 @@
       "exactDuplicateOf": null,
       "objectCount": 54,
       "sourceNote": "Approved road-and-slipway layout.",
-      "overhead": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
-      "angled": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
-      "diagram": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+      "overhead": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/1002d9.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
       "labelAliases": [
         "Saltwick Floodgate"
-      ]
+      ],
+      "previewBagSha256": "747c974578248ef4624fb25e0af7baa6e9aff00e64f9270fdcca80d1e2288d05",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/saltwick-floodgate-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled-thumb.webp"
     },
     {
       "index": 10,
@@ -118,9 +128,8 @@
       "exactDuplicateOf": null,
       "objectCount": 50,
       "sourceNote": "Official Vanta Customs Yard layout approved on 17 November 2026. Furnished interiors, integrated floors, rooftop freight that follows building states, and repaired roof collision surfaces. Exported terrain previews; live TTS testing remains unverified.",
-      "overhead": "/assets/maps/vanta-official-20261117/vanta-overhead.webp",
-      "angled": "/assets/maps/vanta-official-20261117/vanta-angled.webp",
-      "diagram": "/assets/maps/vanta-official-20261117/vanta-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/810053.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -132,8 +141,12 @@
         "SET_ITS18 B-Pong — Vanta Customs Yard",
         "ITS18 B-Pong — Vanta Customs Yard"
       ],
-      "captureDate": "2026-11-17",
-      "installer": "/assets/maps/vanta-official-20261117/Lobo-Vanta-Customs-Yard-Workshop-Installer-R9.zip"
+      "installer": "/assets/maps/vanta-official-20261117/Lobo-Vanta-Customs-Yard-Workshop-Installer-R9.zip",
+      "previewBagSha256": "7b378cd50a737138d2bed2c6ffd52da812df5f928a6f02567a4280798f174ba8",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/vanta-customs-yard-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled-thumb.webp"
     },
     {
       "index": 7,
@@ -152,9 +165,8 @@
       "exactDuplicateOf": null,
       "objectCount": 75,
       "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/battleground-1-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/battleground-1-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100326.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -166,7 +178,11 @@
         "ITS18 Battleground — Foundry Blocks — REVISED",
         "Foundry Blocks"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "eb803dc3d1b79651375af088bfca7540f6f0e1eb1174a30f961318e4472d3bea",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/battleground-1-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/battleground-1-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/battleground-1-angled-thumb.webp"
     },
     {
       "index": 11,
@@ -185,9 +201,8 @@
       "exactDuplicateOf": null,
       "objectCount": 84,
       "sourceNote": "Approved Asterion Research Campus: paired laboratory wings, gardens, playable interiors, exterior ladders and rooftop cover. Latest floor ordering, quarter-inch heights, collision and map-control repairs retained. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/asterion-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/asterion-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/asterion-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/8100c6.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -201,7 +216,11 @@
         "ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
         "Crownspire District"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "ba126387672e2100ca694ec250c560df0eaa1912f9b0304061320a702d0799bb",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-angled-thumb.webp"
     },
     {
       "index": 14,
@@ -220,17 +239,22 @@
       "exactDuplicateOf": null,
       "objectCount": 71,
       "sourceNote": "Available in the Steam Workshop collection.",
-      "overhead": "",
-      "angled": "",
+      "overhead": "/assets/maps/library-previews-20261118/meridian-exchange-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/meridian-exchange-angled.webp",
       "isCurrent": true,
-      "previewKind": "workshop",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/5b283069-90e5-4477-b7a5-c424ef30daa4",
       "labelAliases": [
         "Meridian Exchange"
       ],
-      "download": "/assets/maps/standard-controls-20261118/1005e4.json"
+      "download": "/assets/maps/standard-controls-20261118/1005e4.json",
+      "previewBagSha256": "67d7d2d50b9494a62ed030a3b7decaa295c85f03985f6a53f2ecb468e2f8775a",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/meridian-exchange-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/meridian-exchange-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/meridian-exchange-angled-thumb.webp"
     },
     {
       "index": 15,
@@ -249,12 +273,11 @@
       "exactDuplicateOf": null,
       "objectCount": 71,
       "sourceNote": "Current published Workshop setup. Later review revisions have not yet been integrated.",
-      "overhead": "",
-      "angled": "",
-      "diagram": "",
+      "overhead": "/assets/maps/library-previews-20261118/veyra-gate-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/veyra-gate-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/810108.json",
       "isCurrent": true,
-      "previewKind": "workshop",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/cb03446d-da08-4367-8eb9-9ddf87c8612f",
@@ -263,7 +286,12 @@
         "SET_ITS18 Crossing Lines — Veyra Gate",
         "ITS18 Crossing Lines — Veyra Gate"
       ],
-      "captureDate": "2026-10-20"
+      "previewBagSha256": "5098b9aadcd800969a3e21bfe9c5eb971d4a1ff9ea9576a2644403dee13cf7fa",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/veyra-gate-preview.json",
+      "reviewStatus": "pending",
+      "overheadThumb": "/assets/maps/library-previews-20261118/veyra-gate-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/veyra-gate-angled-thumb.webp"
     },
     {
       "index": 17,
@@ -282,9 +310,8 @@
       "exactDuplicateOf": null,
       "objectCount": 78,
       "sourceNote": "User-approved TS_Save_35. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 3. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/redline-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/redline-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/redline-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/cutthroat-1-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/cutthroat-1-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/1007ad.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -296,7 +323,11 @@
         "ITS18 Cutthroat — Dustline Outpost — REVISED",
         "Dustline Outpost"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "00c61110007b016c0c699bf00b53b4f9ffe9fd85a1a611a29590c148a1b18d19",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/cutthroat-1-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/cutthroat-1-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/cutthroat-1-angled-thumb.webp"
     },
     {
       "index": 19,
@@ -315,16 +346,14 @@
       "exactDuplicateOf": null,
       "objectCount": 69,
       "sourceNote": "Approved R14 adopts Jake/Lobo’s TS_Save_33 layout: exact placed objects, transforms, scales and active states retained. Lunar terrain, sunken craters, ridgelines, varied glass domes and grouped solar panels. The on-board Map Controls button is removed; right-side controls and context-menu recovery remain. General Data Harvest pool only; not part of the Top 40 tournament. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/kestrel-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/kestrel-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/1008da.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/a49df943-25d1-4038-b23a-6bde7e57c955",
-      "captureDate": "2026-11-02",
       "labelAliases": [
         "Kestrel Orbital",
         "ITS18 Data Harvest — Kestrel Orbital",
@@ -332,7 +361,12 @@
         "SET_ITS18 Data Harvest — Kestrel Lunar Base",
         "ITS18 Data Harvest — Kestrel Lunar Base",
         "Kestrel Lunar Base"
-      ]
+      ],
+      "previewBagSha256": "80877290af969342ab1b4c6e0b25df902b35f3a5f628dda839a8ec06d667389d",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-angled-thumb.webp"
     },
     {
       "index": 21,
@@ -351,9 +385,8 @@
       "exactDuplicateOf": null,
       "objectCount": 392,
       "sourceNote": "Official Double Bind grand-final map: five city districts, illuminated signs and kiosks, cycling billboards and sky traffic. Replaces the Tidal Turbines Double Bind slot; other Tidal Turbines missions remain. Matching Top 40 Final map. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
-      "overhead": "/assets/maps/verdant-neon-final-20261103-r1/neon-overhead.webp",
-      "angled": "/assets/maps/verdant-neon-final-20261103-r1/neon-angled.webp",
-      "diagram": "/assets/maps/verdant-neon-final-20261103-r1/neon-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/double-bind-1-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/double-bind-1-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100993.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -368,7 +401,11 @@
         "ITS18 Double Bind — Neon Shogunate",
         "SET_ITS18 Double Bind — Neon Shogunate"
       ],
-      "captureDate": "2026-11-03"
+      "previewBagSha256": "8318a96625306a1997e02adbc09bca135c93346b0e647dc9a68f1fd8719e90da",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/double-bind-1-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/double-bind-1-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/double-bind-1-angled-thumb.webp"
     },
     {
       "index": 105,
@@ -387,9 +424,8 @@
       "exactDuplicateOf": null,
       "objectCount": 41,
       "sourceNote": "Approved 18 November 2026. Crashed Rocinante sections, ash ridgelines and overhead cover, with the approved cabin closures and positions retained. Holden, Naomi, Amos and Alex occupy the four civilian starts. The pictured loose rock, extra spawner and scatter bag no longer load. Standard map controls and rainbow army-spawner hotkeys retained. Previews render the exported geometry; live TTS physics remain unverified.",
-      "overhead": "/assets/maps/leviathan-approved-20261118-r14/leviathan-overhead.webp",
-      "angled": "/assets/maps/leviathan-approved-20261118-r14/leviathan-angled.webp",
-      "diagram": "/assets/maps/leviathan-approved-20261118-r14/leviathan-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/leviathans-wake-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/leviathans-wake-angled.webp",
       "download": "/assets/maps/leviathan-approved-20261118-r14/af0667.json",
       "installer": "/assets/maps/leviathan-approved-20261118-r14/Lobo-Leviathans-Wake-Workshop-Setup-R14.zip",
       "isCurrent": true,
@@ -402,7 +438,11 @@
         "Leviathan’s Wake",
         "Rocinante"
       ],
-      "captureDate": "2026-11-18"
+      "previewBagSha256": "cce55f8c07ec8fb0cf245119323c9c3e9a8fec89e5945fb16e7d1bacb422a0ae",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/leviathans-wake-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/leviathans-wake-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/leviathans-wake-angled-thumb.webp"
     },
     {
       "index": 25,
@@ -421,9 +461,8 @@
       "exactDuplicateOf": null,
       "objectCount": 62,
       "sourceNote": "User-approved TS_Save_36, approved current controls. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 7. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/ironveil-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/hardlock-1-satellite-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/hardlock-1-satellite-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/8101d2.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -437,7 +476,11 @@
         "ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
         "Ironveil Complex"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "de58b56dd0a73ae5c9fb5144111d3afe57c617e66e9fdc27036de5b3294b11da",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/hardlock-1-satellite-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/hardlock-1-satellite-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/hardlock-1-satellite-angled-thumb.webp"
     },
     {
       "index": 28,
@@ -456,12 +499,11 @@
       "exactDuplicateOf": null,
       "objectCount": 100,
       "sourceNote": "Civilian spaceport for Last Launch. The central Launching Tower and both ID Scanners are included.",
-      "overhead": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
-      "angled": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
-      "diagram": "/assets/maps/port-meridian-approved-20261111/port-meridian-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/port-meridian-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/port-meridian-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100ca1.json",
       "isCurrent": true,
-      "previewKind": "diagram",
+      "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
       "missionUrl": "https://experience.corvusbelli.com/en/game-content/91f63013-7db3-4dc9-b2ee-bc2e93a1de14",
@@ -469,7 +511,12 @@
         "SET_ITS18 Last Launch — Port Meridian",
         "ITS18 Last Launch — Port Meridian",
         "Port Meridian"
-      ]
+      ],
+      "previewBagSha256": "f2aeb5c14067afd915d3ff42b18ff22619a6bd70d083a5e5232fe422e794d75a",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/port-meridian-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/port-meridian-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/port-meridian-angled-thumb.webp"
     },
     {
       "index": 29,
@@ -488,9 +535,8 @@
       "exactDuplicateOf": null,
       "objectCount": 63,
       "sourceNote": "User-approved TS_Save_38. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 5. Offline loading checks passed; native TTS remains unverified. Unwanted self-propagating script suffix removed from release copy.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/vesper-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/vesper-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/vesper-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/neutralization-1-satellite-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/neutralization-1-satellite-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/810241.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -504,7 +550,11 @@
         "ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
         "Emberfall Station"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "d423d6f253a7261ea9c1bf402e3b5463a162ed98558ee7c5d98d722c9ca025db",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/neutralization-1-satellite-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/neutralization-1-satellite-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/neutralization-1-satellite-angled-thumb.webp"
     },
     {
       "index": 32,
@@ -523,9 +573,8 @@
       "exactDuplicateOf": null,
       "objectCount": 46,
       "sourceNote": "User-approved TS_Save_39. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 6. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/halcyon-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/outbreak-2-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/outbreak-2-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100e3e.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -543,7 +592,11 @@
         "SET_ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
         "ITS18 Outbreak - Nereid Deep R3 Enclosed Base"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "587eedc3bb5fce558973ae529eae0a0a8d3b5bd32bf4d274e98d1bdf5b3585de",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/outbreak-2-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/outbreak-2-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/outbreak-2-angled-thumb.webp"
     },
     {
       "index": 34,
@@ -562,9 +615,8 @@
       "exactDuplicateOf": null,
       "objectCount": 81,
       "sourceNote": "Approved TS_Save_46: the user-approved active building states, all 20 building placements, 9 movable ridges, furnishings, materials, objectives and 22 night lights are retained. Inactive state placements and session-only environment baseline normalized for reuse. All 103 custom asset URLs downloaded successfully; both general and independent Top 40 bags pass offline Stage load/alternate-state/cleanup checks. Matching Top 40 Losers Round 2 (Provisioning).",
-      "overhead": "/assets/maps/sirocco-approved-ts46-20261104/overhead.webp",
-      "angled": "/assets/maps/sirocco-approved-ts46-20261104/angled.webp",
-      "diagram": "/assets/maps/sirocco-approved-ts46-20261104/overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/provisioning-2-satellite-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/provisioning-2-satellite-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/8102b2.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -585,7 +637,11 @@
         "Sirocco Wells R8 Settlement",
         "Sirocco Wells R8.1 Import Fix"
       ],
-      "captureDate": "2026-11-04"
+      "previewBagSha256": "4f76fe88a79e05dc0ae19424a7dc4e8d6bfdef1e577035a198df2d4b87c9f43a",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/provisioning-2-satellite-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/provisioning-2-satellite-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/provisioning-2-satellite-angled-thumb.webp"
     },
     {
       "index": 35,
@@ -604,9 +660,8 @@
       "exactDuplicateOf": null,
       "objectCount": 80,
       "sourceNote": "Approved Frostline Relay furnished R3 with the lettering fix: weathered alpine buildings, furnished interiors, snow and rock cover. Matching Top 40 Winners Round 2 terrain and controls. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/frostline-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/frostline-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/frostline-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/superiority-1-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/superiority-1-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/100f50.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -618,7 +673,11 @@
         "ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
         "Meridian Blocks"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "4ed025c9b7ddf1e8b391f266f8fc1f1745fd2fa209299da59c133b68dc58e5b9",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/superiority-1-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/superiority-1-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/superiority-1-angled-thumb.webp"
     },
     {
       "index": 38,
@@ -637,9 +696,8 @@
       "exactDuplicateOf": null,
       "objectCount": 58,
       "sourceNote": "Approved Old Quarter Excavation: the user-approved urban layout, furnished building interiors, open floor states and diagonal deployment. Latest floor order and collision repairs retained. Matching Top 40 Winners Round 4 map. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/old-quarter-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/old-quarter-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/old-quarter-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/the-dig-2-satellite-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/the-dig-2-satellite-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/810340.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -653,7 +711,11 @@
         "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
         "Old Quarter Excavation"
       ],
-      "captureDate": "2026-11-02"
+      "previewBagSha256": "acf1c1ebb100016108093abc10f0b5570b2f113bd0d6db09679523aca7cd419c",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/the-dig-2-satellite-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/the-dig-2-satellite-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/the-dig-2-satellite-angled-thumb.webp"
     },
     {
       "index": 40,
@@ -672,9 +734,8 @@
       "exactDuplicateOf": null,
       "objectCount": 76,
       "sourceNote": "Exact user-edited TS_Save_42 final layout; two removed screen clusters stay removed. Matching Top 40 Winners Round 3. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
-      "overhead": "/assets/maps/verdant-neon-final-20261103-r1/verdant-overhead.webp",
-      "angled": "/assets/maps/verdant-neon-final-20261103-r1/verdant-angled.webp",
-      "diagram": "/assets/maps/verdant-neon-final-20261103-r1/verdant-overhead.webp",
+      "overhead": "/assets/maps/library-previews-20261118/uplink-center-2-overhead.webp",
+      "angled": "/assets/maps/library-previews-20261118/uplink-center-2-angled.webp",
       "download": "/assets/maps/standard-controls-20261118/1010b1.json",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -689,11 +750,15 @@
         "ITS18 Uplink Center — Verdant Exchange",
         "SET_ITS18 Uplink Center — Verdant Exchange"
       ],
-      "captureDate": "2026-11-03"
+      "previewBagSha256": "fa3a019c1bc8600c946b0294c0c16ae88b8235fd8bb56db19ac173a1d31987a8",
+      "previewUpdatedAt": "2026-11-18",
+      "previewManifest": "/assets/maps/library-previews-20261118/uplink-center-2-preview.json",
+      "overheadThumb": "/assets/maps/library-previews-20261118/uplink-center-2-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "captureDate": "2026-10-20",
   "downloadRevision": "leviathan-approved-20261118-r14",
   "installer": "/assets/maps/leviathan-approved-20261118-r14/Lobo-Leviathans-Wake-Workshop-Setup-R14.zip",
-  "releaseInventory": "/assets/maps/leviathan-approved-20261118-r14/release-inventory.json"
+  "releaseInventory": "/assets/maps/leviathan-approved-20261118-r14/release-inventory.json",
+  "previewUpdatedAt": "2026-11-18"
 }

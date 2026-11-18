@@ -1,0 +1,81 @@
+{
+  "slug": "vanta-customs-yard",
+  "name": "Vanta Customs Yard",
+  "bagUrl": "/assets/maps/standard-controls-20261118/810053.json",
+  "bagSha256": "7b378cd50a737138d2bed2c6ffd52da812df5f928a6f02567a4280798f174ba8",
+  "views": {
+    "overhead": "vanta-customs-yard-overhead.webp",
+    "angled": "vanta-customs-yard-angled.webp"
+  },
+  "renderedObjects": [
+    "810007",
+    "810008",
+    "7a2101",
+    "7a2103",
+    "7a2108",
+    "7a210a",
+    "7a210c",
+    "7a2180",
+    "7a2184",
+    "7a2188",
+    "7a218c",
+    "97e616",
+    "465a28",
+    "3a78a5",
+    "aa351b",
+    "02061c",
+    "7cb2f9",
+    "9692a0",
+    "4b05f4",
+    "199816",
+    "eae495",
+    "bedc95",
+    "0a26eb",
+    "ef390d",
+    "1164bf",
+    "240206",
+    "78cd6e",
+    "1936e0",
+    "542f08",
+    "a32026",
+    "c12f5a",
+    "6f117e",
+    "125db6",
+    "bd2aa7",
+    "9b06fd",
+    "63771f",
+    "4852ed",
+    "d57af6",
+    "252614",
+    "3286b9",
+    "82e671",
+    "1f9074",
+    "3a497e",
+    "da0dca",
+    "de2ddc",
+    "7a2106"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "81004d",
+      "name": "Console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "81004f",
+      "name": "Console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "810051",
+      "name": "Tracking Beacon | 40 mm",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "51838e",
+      "name": "Lobo Map Controls | Vanta Customs Yard",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}

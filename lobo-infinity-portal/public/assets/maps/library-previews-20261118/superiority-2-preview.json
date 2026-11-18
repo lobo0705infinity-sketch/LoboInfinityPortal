@@ -1,0 +1,72 @@
+{
+  "slug": "superiority-2",
+  "name": "Switchback Quarter",
+  "bagUrl": "/assets/maps/standard-controls-20261118/100f89.json",
+  "bagSha256": "f4421365490c13ecba00f561fb4853f188804064de6161aab313a8b0798caad2",
+  "views": {
+    "overhead": "superiority-2-overhead.webp",
+    "angled": "superiority-2-angled.webp"
+  },
+  "renderedObjects": [
+    "2344cd",
+    "2d2c46",
+    "32c307",
+    "181cc6",
+    "69ce9a",
+    "3d0cec",
+    "eae313",
+    "29f920",
+    "c055e4",
+    "a6a903",
+    "0c1246",
+    "024c3b",
+    "fa41aa",
+    "83964c",
+    "abf617",
+    "af6748",
+    "e0aecd",
+    "f36de7",
+    "6bae43",
+    "f7eea7",
+    "2590cd",
+    "2cbb89",
+    "ea4d40",
+    "8cd21f",
+    "0fe870",
+    "22951c",
+    "9e4668",
+    "a1b5fb",
+    "c8c9e6",
+    "d8ce1f",
+    "ec1aee",
+    "6028ad",
+    "382582",
+    "74be0b",
+    "da6a20",
+    "5cfcb9",
+    "7f7c01",
+    "aa1511",
+    "87591e",
+    "7ff63e",
+    "7a101e",
+    "9553ed",
+    "af9488",
+    "7a5d56",
+    "92542e",
+    "04e4fe",
+    "27baef"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "5d9475",
+      "name": "Lobo Background Controls | Akial Interference - Switchback Quarter",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "b5a1a1",
+      "name": "Akial Antenna | Standard 40 mm Console",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}

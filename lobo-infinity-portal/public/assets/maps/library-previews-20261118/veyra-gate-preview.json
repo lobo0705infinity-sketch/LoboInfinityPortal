@@ -1,0 +1,222 @@
+{
+  "slug": "veyra-gate",
+  "name": "Veyra Gate",
+  "bagUrl": "/assets/maps/standard-controls-20261118/810108.json",
+  "bagSha256": "5098b9aadcd800969a3e21bfe9c5eb971d4a1ff9ea9576a2644403dee13cf7fa",
+  "views": {
+    "overhead": "veyra-gate-overhead.webp",
+    "angled": "veyra-gate-angled.webp"
+  },
+  "renderedObjects": [
+    "5772c9",
+    "4e0001",
+    "4e0003",
+    "4e000a",
+    "4e000f",
+    "4e0016",
+    "4e001d",
+    "4e0022",
+    "4e0027",
+    "4e002d",
+    "4e0032",
+    "4e0037",
+    "4e003c",
+    "4e003d",
+    "4e003e",
+    "4e003f",
+    "4e0040",
+    "4e0041",
+    "4e0042",
+    "4e0043",
+    "4e0044",
+    "4e0045",
+    "4e0046",
+    "4e0047",
+    "4e0048",
+    "4e0049",
+    "4e004a",
+    "4e004b",
+    "4e004c",
+    "4e004d",
+    "4e004e",
+    "4e004f",
+    "4e0050",
+    "4e0051",
+    "4e0052",
+    "4e0053",
+    "4e0054"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "4e0006",
+      "name": "Customs House | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0007",
+      "name": "Customs House | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0008",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0009",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e000c",
+      "name": "Inspection Garage | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e000d",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e000e",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0012",
+      "name": "Gate Clinic | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0013",
+      "name": "Gate Clinic | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0014",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0015",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0019",
+      "name": "Pass House | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e001a",
+      "name": "Pass House | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e001b",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e001c",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e001f",
+      "name": "Arrivals Annex | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0020",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0021",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0024",
+      "name": "Gate Services | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0025",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0026",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e002a",
+      "name": "North Supply | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e002b",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e002c",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e002f",
+      "name": "Switchback Caf\u00e9 | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0030",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0031",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0034",
+      "name": "Customs Stores | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e0035",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0036",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0039",
+      "name": "Road Service Depot | Private view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4e003a",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e003b",
+      "name": "Veyra Gate | Amber Entry Lamp",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4e0002",
+      "name": "Veyra Gate | Lobo Map Controls",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}

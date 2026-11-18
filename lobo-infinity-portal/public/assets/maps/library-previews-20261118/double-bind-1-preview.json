@@ -1,0 +1,1015 @@
+{
+  "slug": "double-bind-1",
+  "name": "Neon Shogunate",
+  "bagUrl": "/assets/maps/standard-controls-20261118/100993.json",
+  "bagSha256": "8318a96625306a1997e02adbc09bca135c93346b0e647dc9a68f1fd8719e90da",
+  "views": {
+    "overhead": "double-bind-1-overhead.webp",
+    "angled": "double-bind-1-angled.webp"
+  },
+  "renderedObjects": [
+    "c40215",
+    "cba001",
+    "e800bb",
+    "e800bc",
+    "e800be",
+    "e800c1",
+    "e800c3",
+    "e800c6",
+    "e800c8",
+    "e800ca",
+    "e800cd",
+    "e800cf",
+    "e800d2",
+    "e800d5",
+    "e800d7",
+    "e800da",
+    "e800dc",
+    "e800e0",
+    "e800e2",
+    "e800e4",
+    "e800e6",
+    "e800e8",
+    "e800ea",
+    "e800eb",
+    "e800ec",
+    "e800ed",
+    "e800ee",
+    "e800ef",
+    "e800f0",
+    "e800f1",
+    "e800f2",
+    "e800f3",
+    "e800f4",
+    "e800f5",
+    "e800f6",
+    "e800f7",
+    "e800f8",
+    "e800f9",
+    "e800fa",
+    "e800fb",
+    "e800fc",
+    "e800fd",
+    "e800fe",
+    "e800ff",
+    "e80100",
+    "e80101",
+    "e80102",
+    "e80103",
+    "e80105",
+    "e80107",
+    "e80108",
+    "e80109",
+    "e8010a",
+    "e8010b",
+    "e8010c",
+    "e80148",
+    "e8014b",
+    "e8014d",
+    "e8014f",
+    "e80151",
+    "e80157",
+    "e80159",
+    "e8015a",
+    "e80165",
+    "e80167",
+    "e80169",
+    "e8016b",
+    "e8016d",
+    "e80170",
+    "e80181",
+    "e80184",
+    "e80185",
+    "e80186",
+    "e8018b",
+    "e8018d",
+    "e8019a",
+    "e801a7",
+    "e801c1",
+    "e801c2",
+    "e801c3",
+    "e801c4",
+    "e801c5",
+    "e801c7",
+    "e801c8",
+    "e801c9",
+    "e801cb",
+    "e801cc",
+    "ead046",
+    "ead047",
+    "ead048",
+    "ead049",
+    "ead04a",
+    "ead04b",
+    "ead04c",
+    "ead04d",
+    "ead04e",
+    "ead04f",
+    "ead050",
+    "ead051",
+    "ec100d",
+    "ec100e",
+    "ec100f",
+    "ec1010",
+    "ec1011",
+    "ec1012",
+    "ec1013",
+    "ec1014",
+    "ec1015",
+    "ec1016",
+    "ec1017",
+    "ec1018",
+    "ec1019",
+    "ec101a",
+    "ec101b",
+    "ef1001",
+    "ef1002",
+    "ef1003",
+    "ef1004",
+    "ef1005",
+    "ef1006",
+    "ef1007",
+    "ef1008",
+    "ef1009",
+    "ef100a",
+    "ef100b",
+    "ef100c",
+    "ef100d",
+    "ef100e",
+    "ef100f",
+    "ef1010",
+    "ef1011",
+    "ef1012",
+    "ef1013",
+    "ef1014",
+    "ef1015",
+    "ef1016",
+    "ef1017",
+    "ef1018",
+    "ef1019",
+    "ef101a",
+    "ef101b",
+    "ef101c",
+    "ef101d",
+    "ef101e",
+    "ef101f",
+    "ef1020",
+    "ef1021",
+    "ef1022",
+    "ef1023",
+    "ef1024",
+    "ef1025",
+    "ef1026",
+    "ef1027",
+    "ef1028",
+    "ef1029",
+    "ef102a",
+    "ef102b",
+    "ef102c",
+    "ef102d",
+    "ef102e",
+    "ef102f",
+    "ef1030",
+    "ef1031",
+    "ef1032",
+    "ef1033",
+    "ef1034",
+    "ef1035",
+    "ef1036",
+    "ef1037",
+    "ef1038",
+    "ef103a",
+    "ef103b",
+    "ef103c",
+    "ef103d",
+    "ef103e",
+    "ef103f",
+    "ef1040",
+    "ef1041",
+    "ef1042",
+    "ef1043",
+    "ef1044",
+    "ef1045",
+    "ef1046",
+    "ef1047",
+    "ef1048",
+    "ef104a",
+    "ef104b",
+    "ef104d",
+    "ef104e",
+    "ef1050",
+    "ef1057",
+    "ef1059",
+    "ef105a",
+    "ef105b",
+    "ef105c",
+    "ef105d",
+    "ef105e",
+    "ef105f",
+    "ef1060",
+    "ef1061",
+    "ef1062",
+    "ef1063",
+    "ef1064",
+    "ef1065",
+    "ef1066",
+    "ef1067",
+    "ef1068",
+    "ef1069",
+    "ef106a",
+    "ef106b",
+    "ef106c",
+    "ef106d",
+    "ef106e",
+    "ef106f",
+    "e80188",
+    "cba003",
+    "b18f81",
+    "d90000",
+    "d90001",
+    "d90002",
+    "d90003",
+    "d90004",
+    "d90005",
+    "d90006",
+    "d90007",
+    "d90008",
+    "d90009",
+    "d9000a",
+    "d9000b",
+    "d9000c",
+    "d9000d",
+    "d9000e",
+    "d9000f",
+    "d93001",
+    "d93002",
+    "d93003",
+    "d93100",
+    "d93101",
+    "d93102",
+    "fa5001"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "450272",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "0b584d",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c00eae",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b3bd8a",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a5a5de",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4cd4d7",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "02babc",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "7a3ffc",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "420f91",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b82a5f",
+      "name": "Transit sign light / R9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "3d9fb7",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f6328f",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8010d",
+      "name": "Lantern / four-face lighting / e800bc / 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80112",
+      "name": "Lantern / four-face lighting / e800bc / 6",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80113",
+      "name": "Lantern / four-face lighting / e800be / 7",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80115",
+      "name": "Lantern / four-face lighting / e800be / 9",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8011c",
+      "name": "Lantern / four-face lighting / e800be / 16",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8011e",
+      "name": "Lantern / four-face lighting / e800be / 18",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8011f",
+      "name": "Lantern / four-face lighting / e800c1 / 19",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80124",
+      "name": "Neon Shogunate / Map Controls",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "e80125",
+      "name": "Facade display / Aoi Tea House / Aoi Tea neon night sign / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80126",
+      "name": "Facade display / Kuma Robotics / Kuma Robotics precision hand hologram / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80127",
+      "name": "Koi bathhouse / Nami advertising / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80128",
+      "name": "Facade display / Nami Bathhouse / Nami Bathhouse: Warm Water, Quiet Mind / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80129",
+      "name": "Facade display / Yoru Hotel / Yoru Hotel: Emerald Japanese Guest Room / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012a",
+      "name": "Facade display / Lantern tea shop / Neon Night Market Ramen / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012b",
+      "name": "Facade display / Hoshi Books / Neon sushi after dark / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012c",
+      "name": "Facade display / Willow Ryokan / Yoru Hotel: Emerald Japanese Guest Room / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012d",
+      "name": "Facade display / Shogun Data Archive / Kitsune Express Delivery Drone / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012e",
+      "name": "Facade display / North watch house / VOLT beneath the neon shogunate skyline / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8012f",
+      "name": "Garage approach / Lobo Last Call advertising / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80130",
+      "name": "Facade display / Noren Noodle Bar / Neon Night Market Ramen / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80131",
+      "name": "Facade display / Kitsune Express / Kitsune Express Delivery Drone / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80132",
+      "name": "Facade display / Kitsune Inn / Crimson Silk Kimono Craft / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80133",
+      "name": "Facade display / Sakura Repairs / Kuma Robotics precision hand hologram / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80135",
+      "name": "Facade display / Akari Kitchen / Neon sushi after dark / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80136",
+      "name": "Facade display / West pocket market / Crimson Silk Kimono Craft / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80137",
+      "name": "East loop transit / Aoi advertising / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80138",
+      "name": "Facade display / Kobayashi Tailor / Lobo\u2019s Last Call Neon Bar / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80139",
+      "name": "Facade display / Moon Gate Bookshop / Nami Bathhouse: Warm Water, Quiet Mind / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013a",
+      "name": "Street advertising totem / Raijin Arcade: Neon Thunder / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013b",
+      "name": "Street advertising totem / Raijin Arcade: Neon Thunder / display light rear",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013c",
+      "name": "Street advertising totem / Lobo\u2019s Last Call Neon Bar / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013d",
+      "name": "Street advertising totem / Lobo\u2019s Last Call Neon Bar / display light rear",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013e",
+      "name": "Street advertising totem / Crimson Silk Kimono Craft / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8013f",
+      "name": "Street advertising totem / Crimson Silk Kimono Craft / display light rear",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80140",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80141",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80142",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80143",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80144",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80145",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80146",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80147",
+      "name": "Neon vending kiosk / display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8015b",
+      "name": "Lantern / four-face lighting / e800c1 / 24",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8015c",
+      "name": "Lantern / four-face lighting / e800c3 / 25",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8015e",
+      "name": "Lantern / four-face lighting / e800c3 / 27",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80171",
+      "name": "Sky traffic / silver hovercar 1",
+      "reason": "animated sky traffic outside the playable table"
+    },
+    {
+      "guid": "e80172",
+      "name": "Sky traffic / blue hovercar 2",
+      "reason": "animated sky traffic outside the playable table"
+    },
+    {
+      "guid": "e80173",
+      "name": "Sky traffic / red hovercar 3",
+      "reason": "animated sky traffic outside the playable table"
+    },
+    {
+      "guid": "e80174",
+      "name": "Sky traffic / silver hovercar 4",
+      "reason": "animated sky traffic outside the playable table"
+    },
+    {
+      "guid": "e80175",
+      "name": "Sky traffic / blue hovercar 5",
+      "reason": "animated sky traffic outside the playable table"
+    },
+    {
+      "guid": "e80176",
+      "name": "Lobo\u2019s Chop Shop / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80177",
+      "name": "Lobo\u2019s Chop Shop / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80178",
+      "name": "Lantern / four-face lighting / e800c3 / 34",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8017a",
+      "name": "Old Cedar Shrine / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8017b",
+      "name": "East Loop Transit / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8017c",
+      "name": "North Watch Greenhouse / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8017e",
+      "name": "Koi bathhouse billboard / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e8017f",
+      "name": "Garage approach billboard / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e80180",
+      "name": "Robotics quarter billboard / city light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b70000",
+      "name": "Lantern / four-face lighting / e800c3 / 36",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1002",
+      "name": "Lantern / four-face lighting / e800c6 / 37",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1007",
+      "name": "Lantern / four-face lighting / e800c6 / 42",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec100b",
+      "name": "Lantern / four-face lighting / e800c8 / 46",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1007",
+      "name": "Lantern / four-face lighting / e800ca / 54",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1009",
+      "name": "Lantern / four-face lighting / e800ca / 56",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1011",
+      "name": "Lantern / four-face lighting / e800cd / 64",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1019",
+      "name": "Lantern / four-face lighting / e800cf / 72",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee101b",
+      "name": "Lantern / four-face lighting / e800cf / 74",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1025",
+      "name": "Lantern / four-face lighting / e800d2 / 84",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1027",
+      "name": "Lantern / four-face lighting / e800d2 / 86",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee102f",
+      "name": "Lantern / four-face lighting / e800d5 / 94",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1037",
+      "name": "Lantern / four-face lighting / e800d7 / 102",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1039",
+      "name": "Lantern / four-face lighting / e800d7 / 104",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee103e",
+      "name": "Lantern / four-face lighting / e800da / 109",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1040",
+      "name": "Lantern / four-face lighting / e800dc / 111",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1044",
+      "name": "Lantern / four-face lighting / e800e0 / 115",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1046",
+      "name": "Lantern / four-face lighting / e800e2 / 117",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1048",
+      "name": "Lantern / four-face lighting / e800e4 / 119",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee104a",
+      "name": "Lantern / four-face lighting / e800e6 / 121",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee104c",
+      "name": "Lantern / four-face lighting / e800e8 / 123",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1050",
+      "name": "Lantern / four-face lighting / e8014b / 127",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee105d",
+      "name": "Lantern / four-face lighting / e8014b / 140",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1060",
+      "name": "Lantern / four-face lighting / e8014d / 143",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1066",
+      "name": "Lantern / four-face lighting / e8014f / 149",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee106c",
+      "name": "Lantern / four-face lighting / e80151 / 155",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee107e",
+      "name": "Lantern / four-face lighting / e80157 / 173",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1087",
+      "name": "Lantern / four-face lighting / e80167 / 182",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee108c",
+      "name": "Lantern / four-face lighting / e80169 / 187",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1093",
+      "name": "Lantern / four-face lighting / e8016d / 194",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1096",
+      "name": "Lantern / four-face lighting / e80181 / 197",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee1098",
+      "name": "Lantern / four-face lighting / e80181 / 199",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee109f",
+      "name": "Lantern / four-face lighting / e80181 / 206",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee10a1",
+      "name": "Lantern / four-face lighting / e80181 / 208",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ee10b7",
+      "name": "Lantern / four-face lighting / e8018b / 230",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "fb0a01",
+      "name": "Lo-Bo Noodle Hut / lantern all-side light 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "fb0a03",
+      "name": "Lo-Bo Noodle Hut / lantern all-side light 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ef1803",
+      "name": "Lo-Bo Noodle Hut / lantern all-side light 2",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ef1807",
+      "name": "Lo-Bo Noodle Hut / lantern all-side light 2",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "fa0501",
+      "name": "Billboard face floodlight 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "fa0502",
+      "name": "Billboard face floodlight 2",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "fa0503",
+      "name": "Billboard face floodlight 3",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "80aa94",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4d770b",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "22d970",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "2f51bf",
+      "name": "Joi self-contained display light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90010",
+      "name": "Facade display / Aoi Tea House / Aoi Tea neon night sign / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90011",
+      "name": "Facade display / Kuma Robotics / Kuma Robotics precision hand hologram / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90012",
+      "name": "Koi bathhouse / Nami advertising / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90013",
+      "name": "Facade display / Nami Bathhouse / Nami Bathhouse: Warm Water, Quiet Mind / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90014",
+      "name": "Facade display / Yoru Hotel / Yoru Hotel: Emerald Japanese Guest Room / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90015",
+      "name": "Facade display / Lantern tea shop / Neon Night Market Ramen / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90016",
+      "name": "Facade display / Hoshi Books / Neon sushi after dark / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90017",
+      "name": "Facade display / Willow Ryokan / Yoru Hotel: Emerald Japanese Guest Room / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90018",
+      "name": "Facade display / Shogun Data Archive / Kitsune Express Delivery Drone / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90019",
+      "name": "Facade display / North watch house / VOLT beneath the neon shogunate skyline / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9001a",
+      "name": "Garage approach / Lobo Last Call advertising / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9001b",
+      "name": "Facade display / Noren Noodle Bar / Neon Night Market Ramen / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9001c",
+      "name": "Facade display / Kitsune Express / Kitsune Express Delivery Drone / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9001d",
+      "name": "Facade display / Kitsune Inn / Crimson Silk Kimono Craft / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9001e",
+      "name": "Facade display / Sakura Repairs / Kuma Robotics precision hand hologram / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90020",
+      "name": "Facade display / Akari Kitchen / Neon sushi after dark / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90021",
+      "name": "Facade display / West pocket market / Crimson Silk Kimono Craft / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90022",
+      "name": "East loop transit / Aoi advertising / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90023",
+      "name": "Facade display / Kobayashi Tailor / Lobo\u2019s Last Call Neon Bar / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90024",
+      "name": "Facade display / Moon Gate Bookshop / Nami Bathhouse: Warm Water, Quiet Mind / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90025",
+      "name": "Street advertising totem / Raijin Arcade: Neon Thunder / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90026",
+      "name": "Street advertising totem / Raijin Arcade: Neon Thunder / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90027",
+      "name": "Street advertising totem / Lobo\u2019s Last Call Neon Bar / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90028",
+      "name": "Street advertising totem / Lobo\u2019s Last Call Neon Bar / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90029",
+      "name": "Street advertising totem / Crimson Silk Kimono Craft / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002a",
+      "name": "Street advertising totem / Crimson Silk Kimono Craft / soft right face light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002b",
+      "name": "Aoi entrance / warm pool",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002c",
+      "name": "Robotics entrance / warm pool",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002d",
+      "name": "Lo-Bo delivery entrance / warm pool",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002e",
+      "name": "Landing bay / low-output guidance light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d9002f",
+      "name": "Landing bay / low-output guidance light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90030",
+      "name": "Aoi / jade eave spill",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90031",
+      "name": "Kuma / magenta eave spill",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90032",
+      "name": "Bathhouse / jade eave spill",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d90033",
+      "name": "Lo-Bo / magenta eave spill",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}

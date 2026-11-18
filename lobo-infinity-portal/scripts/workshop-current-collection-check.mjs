@@ -27,6 +27,19 @@ for(const map of loboWorkshopMaps){
   assert.ok(url.startsWith('/assets/maps/'));assert.ok(existsSync(fileURLToPath(new URL('../public'+url,import.meta.url))),url)
  }
  const bytes=readFileSync('public'+map.download)
+ const bagSha256=createHash('sha256').update(bytes).digest('hex')
+ assert.equal(map.previewBagSha256,bagSha256,`${map.name}: previews match the current published bag`)
+ const preview=JSON.parse(readFileSync('public'+map.previewManifest,'utf8'))
+ assert.equal(preview.bagSha256,bagSha256)
+ assert.equal(preview.slug,map.slug)
+ for(const view of ['overhead','angled']) {
+  assert.ok(map[view].endsWith('/'+preview.views[view]))
+  const image=readFileSync('public'+map[view])
+  assert.equal(image.toString('ascii',0,4),'RIFF')
+  assert.equal(image.toString('ascii',8,12),'WEBP')
+  assert.ok(image.length>10000,`${map.name}: substantial ${view} preview`)
+ }
+
  const expected=release.maps.find(item=>item.kind==='general'&&item.guid===map.guid)
  assert.ok(expected);assert.equal(createHash('sha256').update(bytes).digest('hex'),expected.sha256,'Published bag matches release inventory')
  const save=JSON.parse(bytes);assert.equal(save.ObjectStates.length,1)
@@ -90,9 +103,9 @@ for (const map of loboWorkshopMaps) {
   }
 }
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 0)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 16)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 2)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 2)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 20)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 0)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 0)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
 const meridianBlocks = loboWorkshopMapBySlug.get('last-launch-2')
 assert.equal(portMeridian.name, 'Port Meridian')

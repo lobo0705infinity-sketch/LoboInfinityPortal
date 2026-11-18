@@ -120,3 +120,36 @@
 .aurora-region-card img { height: 160px; object-fit: cover; }
 @media(max-width:1200px) { .aurora-map-library > .lobo-maps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media(max-width:650px) { .aurora-map-library > .lobo-maps-grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* Compact ITS catalogue; campaign pages retain their collection layouts. */
+.lobo-maps-index .lobo-maps-hero { min-height: 0; grid-template-columns: 1fr .9fr; padding: 1rem; }
+.lobo-maps-index .lobo-maps-hero-copy { padding: 1rem; }
+.lobo-maps-index .lobo-maps-hero-copy h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.08; }
+.lobo-maps-index .lobo-maps-hero-image { max-height: 290px; }
+.lobo-maps-index .lobo-maps-hero-image img { object-fit: contain; }
+.lobo-maps-toolbar { grid-template-columns: minmax(180px, 1fr) minmax(180px, .7fr) minmax(145px, .5fr) auto; gap: .9rem; align-items: end; }
+.lobo-maps-toolbar > div { display: grid; min-width: 0; gap: .45rem; }
+.lobo-maps-toolbar input, .lobo-maps-toolbar select { max-width: none; }
+.lobo-maps-reset { min-height: 44px; padding: .6rem .85rem; border: 1px solid #536e7f; border-radius: 8px; color: #d8edf7; background: #172c3a; font: inherit; cursor: pointer; }
+.lobo-maps-catalogue { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.lobo-maps-catalogue .lobo-map-card { scroll-margin-top: 1.5rem; }
+.lobo-map-card-preview { position: relative; aspect-ratio: 1; background: #09131f; overflow: hidden; }
+.lobo-maps-catalogue .lobo-map-card img { height: 100%; aspect-ratio: 1; object-fit: contain; }
+.lobo-maps-catalogue .lobo-map-card-info { gap: .4rem; padding: 1rem; }
+.lobo-maps-catalogue .lobo-map-card-info strong { font-size: 1.2rem; }
+.lobo-maps-catalogue .lobo-map-card-family { text-transform: none; letter-spacing: 0; font-weight: 500; line-height: 1.4; color: #a9bdc9; }
+.lobo-maps-catalogue .lobo-map-card-open { margin-top: auto; padding-top: .6rem; display: flex; justify-content: space-between; }
+.lobo-map-preview-pending { height: 100%; display: grid; place-items: center; color: #9bb5c5; }
+.lobo-map-review-badge { position: absolute; top: .65rem; left: .65rem; padding: .35rem .6rem; border: 1px solid #e6bb67; border-radius: 6px; background: #342b19; color: #ffe2aa; font-size: .75rem; font-weight: 700; }
+.lobo-map-review-note { padding: .85rem 1rem; margin: 0; border-left: 3px solid #e6bb67; border-radius: 5px; background: #342b19; color: #ffe2aa; }
+.lobo-maps-downloads { padding: 1rem 1.2rem; border: 1px solid #294351; border-radius: 12px; background: #0c1722; }
+.lobo-maps-downloads summary { min-height: 32px; cursor: pointer; font-weight: 700; color: #b7dfed; }
+.lobo-maps-downloads p { max-width: 85ch; line-height: 1.6; color: #adc1cd; }
+.lobo-maps-downloads .lobo-maps-hero-actions { margin-top: .6rem; }
+.lobo-map-download-actions { display: flex; flex-wrap: wrap; gap: .55rem; }
+.lobo-map-download-actions a { display: inline-flex; align-items: center; min-height: 44px; padding: .65rem .9rem; border: 1px solid #4e8496; border-radius: 8px; background: #15303e; text-decoration: none; font-weight: 700; }
+.lobo-maps-downloads summary:focus-visible { outline: 3px solid #f2c35a; outline-offset: 4px; }
+@media(max-width:1100px) { .lobo-maps-catalogue { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lobo-maps-toolbar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media(max-width:650px) { .lobo-maps-index .lobo-maps-hero { grid-template-columns: minmax(0, 1fr); } .lobo-maps-index .lobo-maps-hero-image { min-height: 0; height: 200px; } .lobo-maps-catalogue, .lobo-maps-toolbar { grid-template-columns: minmax(0, 1fr); } .lobo-maps-toolbar input, .lobo-maps-toolbar select { box-sizing: border-box; } }
+.lobo-map-detail[data-preview="geometry"] .lobo-map-detail-hero img { object-fit: contain; }
+.lobo-map-detail[data-preview="geometry"] .lobo-map-detail-view-grid img { aspect-ratio: 4 / 3; object-fit: contain; background: #09131f; }

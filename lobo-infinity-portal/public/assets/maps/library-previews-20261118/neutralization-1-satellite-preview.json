@@ -1,0 +1,130 @@
+{
+  "slug": "neutralization-1-satellite",
+  "name": "Vesper Glassworks",
+  "bagUrl": "/assets/maps/standard-controls-20261118/810241.json",
+  "bagSha256": "d423d6f253a7261ea9c1bf402e3b5463a162ed98558ee7c5d98d722c9ca025db",
+  "views": {
+    "overhead": "neutralization-1-satellite-overhead.webp",
+    "angled": "neutralization-1-satellite-angled.webp"
+  },
+  "renderedObjects": [
+    "e1ef2e",
+    "b86750",
+    "2b950c",
+    "7001b1",
+    "9b6fe0",
+    "5e4acf",
+    "8808a1",
+    "0f1bee",
+    "a5907d",
+    "cd3b40",
+    "a5adee",
+    "45290a",
+    "dccec9",
+    "541838",
+    "09b532",
+    "d7783e",
+    "55ca72",
+    "7e2adf",
+    "22c6a3",
+    "014b54",
+    "93f210",
+    "6ec2fa",
+    "ead6d4",
+    "7a3c05",
+    "5b5eed",
+    "593701",
+    "68109f",
+    "c68fa8",
+    "565eac",
+    "7995e7",
+    "e5b105",
+    "c2a97d",
+    "c364b6",
+    "8a2b04",
+    "b1b9fe",
+    "90b8e1",
+    "d3a656",
+    "b38fef",
+    "3b04f2",
+    "3ffae4",
+    "59b12a",
+    "284ff7",
+    "52fd00",
+    "082b34",
+    "14b06e",
+    "84df88",
+    "0f3d10",
+    "3de51c",
+    "e2528a",
+    "046477"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "6e0cbf",
+      "name": "Hyperthermal Tech Box 1 | 40 mm | Approved console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "8468a0",
+      "name": "Hyperthermal Tech Box 2 | 40 mm | Approved console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "3fb8e8",
+      "name": "Neutralizing Antenna 1 | 40 mm | Communication Antenna",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "521e68",
+      "name": "Neutralizing Antenna 2 | 40 mm | Communication Antenna",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a04ef8",
+      "name": "Neutralizing Antenna 3 | 40 mm | Communication Antenna",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "126cf3",
+      "name": "Neutralizing Antenna 4 | 40 mm | Communication Antenna",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b63273",
+      "name": "Hyperthermal Tech Token 2 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "7a2b5d",
+      "name": "Hyperthermal Tech Token 4 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "33d504",
+      "name": "Hyperthermal Tech Token 6 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "364e3d",
+      "name": "Hyperthermal Tech Token 8 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "255d8d",
+      "name": "Hyperthermal Tech Token 10 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "c98ad8",
+      "name": "Hyperthermal Tech Token 12 | 25 mm",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "eafffe",
+      "name": "Vesper Glassworks | Map Controls",
+      "reason": "BlockSquare"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered."
+}
