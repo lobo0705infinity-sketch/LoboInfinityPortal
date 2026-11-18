@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "meshes": 52,
+  "collider_parts": 6610,
+  "roof_support": [
+    "sunward-wing",
+    "seaward-wing",
+    "azure-spa",
+    "terrace-restaurant",
+    "north-villa",
+    "east-villa",
+    "south-villa",
+    "west-villa",
+    "reception",
+    "cafe",
+    "laundry",
+    "pool-equipment"
+  ],
+  "door_access": [
+    "sunward-wing",
+    "seaward-wing",
+    "azure-spa",
+    "terrace-restaurant",
+    "north-villa",
+    "east-villa",
+    "south-villa",
+    "west-villa",
+    "reception",
+    "cafe",
+    "laundry",
+    "pool-equipment"
+  ],
+  "pool_stairs": [
+    {
+      "exit": "south",
+      "heights": [
+        -1.0,
+        -0.7999999999999998,
+        -0.5999999999999996,
+        -0.40000000000000036,
+        -0.20000000000000018,
+        0.0
+      ]
+    },
+    {
+      "exit": "north",
+      "heights": [
+        -1.0,
+        -0.7999999999999998,
+        -0.5999999999999996,
+        -0.40000000000000036,
+        -0.20000000000000018,
+        0.0
+      ]
+    },
+    {
+      "exit": "west",
+      "heights": [
+        -1.0,
+        -0.7999999999999998,
+        -0.5999999999999996,
+        -0.40000000000000036,
+        -0.20000000000000018,
+        0.0
+      ]
+    },
+    {
+      "exit": "east",
+      "heights": [
+        -1.0,
+        -0.7999999999999998,
+        -0.5999999999999996,
+        -0.40000000000000036,
+        -0.20000000000000018,
+        0.0
+      ]
+    }
+  ],
+  "live_tts_tested": false,
+  "unchanged_collection_objects": 114
+}

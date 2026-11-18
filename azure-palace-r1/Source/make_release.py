@@ -52,7 +52,7 @@ fresh-cache multiplayer and performance timings remain untested.
 No Steam publication or portal replacement has been performed.
 '''
 (bundle/'README.txt').write_text(readme)
-for name in ['Azure-Palace-overview.png','Azure-Palace-scatter.png','Approved-Scatter-Concept.png','geometry-validation.json','hosted-asset-validation.json','control-validation.json']:
+for name in ['Azure-Palace-overview.png','Azure-Palace-scatter.png','Approved-Scatter-Concept.png','geometry-validation.json','hosted-asset-validation.json','control-validation.json','installer-validation.json']:
  if(R/'Review'/name).exists():
   (bundle/'Review').mkdir(exist_ok=True);shutil.copyfile(R/'Review'/name,bundle/'Review'/name)
 shutil.copyfile(R.parent/'tts-map-controls-standard/STANDARD.md',bundle/'STANDARD.md')

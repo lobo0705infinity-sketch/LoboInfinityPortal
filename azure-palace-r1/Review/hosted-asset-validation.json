@@ -1,0 +1,869 @@
+{
+  "passed": true,
+  "asset_base": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets",
+  "unique_urls": 123,
+  "new_assets_byte_verified": 119,
+  "assets": [
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/1670179307749183df300b8c3ba40a78b99f0c31/assets/tts/veyra-gate-r1/antenna-collision.obj",
+      "sha256": "4e75c3fac9b3b88409b440cb8d357038a76689ebe331ebe14cf9045ececdcc93",
+      "bytes": 2195,
+      "local_match": false,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/1670179307749183df300b8c3ba40a78b99f0c31/assets/tts/veyra-gate-r1/antenna.obj",
+      "sha256": "0531c1e80511be26c5bc6310eda729f3b6e53f70147c7dbc97546fc2c6eddb91",
+      "bytes": 5314,
+      "local_match": false,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/1670179307749183df300b8c3ba40a78b99f0c31/assets/tts/veyra-gate-r1/materials.jpg",
+      "sha256": "0dd79e6ced8e211267d92aa07924153838b8cd3ff5880dafdba4093004f8eede",
+      "bytes": 104263,
+      "local_match": false,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/33a3a0285ab8e252b4bb3c2b80d9c58d6014e112/assets/tts/port-meridian-r1/meridian-off.jpg",
+      "sha256": "1bea0220835a1bc8ce488ff1c82b2baba7886c4d4b64bb8502583f233607bfb5",
+      "bytes": 2677,
+      "local_match": false,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-day.png",
+      "sha256": "2629f64d9da8c196fb7ff8dbf8d5ecb61586c94193319052985d454b15387f7b",
+      "bytes": 2398855,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-material-atlas.png",
+      "sha256": "ef7c7b30ca59ea21222f31b3eca43935efd663875bae3a14eb58f39d810d84ca",
+      "bytes": 3538325,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-night.png",
+      "sha256": "08872b039cd27dde02a6d4f7db3444ad5e64041b94e55bd054d4add4ea6c7a58",
+      "bytes": 2138625,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-1-collision.obj",
+      "sha256": "3d19520b29a9d80ee1c14b18e89fb3f6acaf1cebd307737aab18e628a948596d",
+      "bytes": 127379,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-1.obj",
+      "sha256": "35d2f34d278c5cf47facf41ebd7f48e2b8255eba773bdcc44f0c6b556dec689c",
+      "bytes": 652154,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-2-collision.obj",
+      "sha256": "7e39557cfce2079e91a8f0acc3eaf43e15b71456b1e42fd234c0b654c8fb464e",
+      "bytes": 48447,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-2.obj",
+      "sha256": "cc8c9b9d7cc608f3cc75fec3bd9fa62b859492a556ee96a91d507f1a2b90dfa4",
+      "bytes": 258348,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-3-collision.obj",
+      "sha256": "b17fddda22d59067f26a40f740fe5d5e6ef07a49623c5051f0e34ed91f17bb66",
+      "bytes": 118498,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-3.obj",
+      "sha256": "1bf51c8aa0d2262048d91242b1d2f910461df13fae5e0fd78b63e84f53ec60d3",
+      "bytes": 612989,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-sign-collision.obj",
+      "sha256": "3c60f05352126760ee7c5c56799cf48da2cea4d36ae6419ccc4e0ff8943e5b14",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-sign.obj",
+      "sha256": "04075694ca49efb1d3b076c54f9cf92b34adacc71284537309128bf7e57e7b37",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/azure-spa-sign.png",
+      "sha256": "d590e011e07b62fe9559f20f8cefe92900a47c9ef56863bb5853e7ba3395bf6f",
+      "bytes": 8339,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/bronze-sculpture-1-collision.obj",
+      "sha256": "4916d5a847d86c37e856052ff90ebe97ea43c667d25bcf6836a8245ac04977e8",
+      "bytes": 38230,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/bronze-sculpture-1.obj",
+      "sha256": "f43d4bfa403be4555eaa965a39ec19f9271649d9e55e847f249eb782da8f9b63",
+      "bytes": 121091,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-1-collision.obj",
+      "sha256": "94cbbeb6308397c32df8f9b6618e13be7e6c49cb41129e7cb9633438764dba69",
+      "bytes": 64124,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-1.obj",
+      "sha256": "a8fa98705fe5c40b5ae12ec323a8ca03872040a43a134008f33520ca6979ce08",
+      "bytes": 332411,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-2-collision.obj",
+      "sha256": "73eee55f79c2005a47874be8a8bf77be657161ce2de0c0cf2c4250070ecfb27b",
+      "bytes": 55303,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-2.obj",
+      "sha256": "04bd15a02a58b77a5790434769aa4e43b3a33ca789a85bc5082883ed503b0646",
+      "bytes": 293246,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-sign-collision.obj",
+      "sha256": "eed60ab6b79e7779629a902fc57e82baa3f83b486f3206dc8737dfdb54dc18a1",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-sign.obj",
+      "sha256": "54d6668e04c50aa3b7d446df29a60baf2417322508e6f316bca439ebecccfc18",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/cafe-sign.png",
+      "sha256": "9f573d8a2f45e6e66dc25882edffeccd4515bf970dc18577c86f8effab3b61bb",
+      "bytes": 4872,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-1-collision.obj",
+      "sha256": "c5416dde9826b99572f5ac6fb205e0b7c7fe529985306c1ad87649880998ed1d",
+      "bytes": 66248,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-1.obj",
+      "sha256": "f6618467a7f932061d3df2d754f5b987f6ae522d4d20c3588b6ed8dd13e23f75",
+      "bytes": 350516,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-2-collision.obj",
+      "sha256": "1cea8d978143d9a7ce93e503e65a1e4b21ea1f90db7654a9947c2da6626914e8",
+      "bytes": 57287,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-2.obj",
+      "sha256": "35ca5902272f0868acad32ac1a793697e7565fc951280355ae538e740f325f5b",
+      "bytes": 311351,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-sign-collision.obj",
+      "sha256": "548573dbf272bf34316dc1f8e857f81567268d4a3af95f0b520ab4b5a7a0fece",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-sign.obj",
+      "sha256": "72736b77507e4080084b3219ad848b81c9e23f62cd36f81b99424ec1a7041881",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/east-villa-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/garden-wall-1-collision.obj",
+      "sha256": "5ab8f4f13e6f7568722a7f89dda259d493d26babdbf26228c36e120d9417d971",
+      "bytes": 1731,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/garden-wall-1.obj",
+      "sha256": "b7fb5f530b9b55ba84ee44a05bf62b123be74c12ecfed9a1bd677dcba2e38b3a",
+      "bytes": 7988,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/ground-1-collision.obj",
+      "sha256": "fa9863c3cbb67d29c3bb9eefec8121aa315dab87ccacd4455bd5120de0c5f197",
+      "bytes": 42607,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/ground-1.obj",
+      "sha256": "57a30c435c50b25cf766d46731c68f2d8e705a3bf69c0a530398bde1088cd5d6",
+      "bytes": 1747189,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-1-collision.obj",
+      "sha256": "dca4414268d16d48e56a2ad9f69d13461e684308754ef1a1679a8248ad0ec6ac",
+      "bytes": 88210,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-1.obj",
+      "sha256": "a8478fb2ed441a2ac2222b8e708b13f2d1461ec3a3d8a2b247c40b240371c69a",
+      "bytes": 438463,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-2-collision.obj",
+      "sha256": "10cc07dda1d12aa12b19f957ea2d0ba272ababa9dfad49b9a67e9e4644ffd6a4",
+      "bytes": 79334,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-2.obj",
+      "sha256": "a0a8dea6c598836492ef8703fd25fcebd6563c941c3a1bb5210cd998a5431ac8",
+      "bytes": 399300,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-sign-collision.obj",
+      "sha256": "300da851818e8233d15b61f4bbb0fdfb643993ae5dbbc64929a755bf4b008f5f",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-sign.obj",
+      "sha256": "2a2e2da5c7c012a50e56167287911d6a0979b7092df879b08a85690acca768eb",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/laundry-sign.png",
+      "sha256": "7fadd40fd7bfd596105045d8489235f0b8df266cdd1d45f8e0c5735f403524c5",
+      "bytes": 7849,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/limestone-planter-1-collision.obj",
+      "sha256": "8b39e2e6ea69fae8ad719c8eeeef911fc2997e888a9b0a2f6da3b48a5bb51444",
+      "bytes": 10439,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/limestone-planter-1.obj",
+      "sha256": "e1c46b23603ae8b22ec32c92e3c7410ef7290bdb0205f2f10b081510dcf94b41",
+      "bytes": 190648,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/linen-cart-1-collision.obj",
+      "sha256": "f974b081037a9ae21702a4fd60cb298ddcf3c9dc99fa723dae04dcc6a81dddb6",
+      "bytes": 18915,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/linen-cart-1.obj",
+      "sha256": "0ae84fc6b1cd202400d6509b07731a7e481bbcbf299e94f31390fe730417e7e8",
+      "bytes": 89974,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/luggage-trolley-1-collision.obj",
+      "sha256": "f3b35fc07e3c19d7414038666f167737c1c383ea6807cfbf178ae64dfd66e28a",
+      "bytes": 29383,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/luggage-trolley-1.obj",
+      "sha256": "6e4db70c373b6e4a9168521fb6341e38a2e8f729ed35b6e69210e88de80f1ece",
+      "bytes": 139585,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/maintenance-unit-1-collision.obj",
+      "sha256": "75694e1d9569b713ac0d875c905aeb5c40f6914fb56810a31008245b61999829",
+      "bytes": 107094,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/maintenance-unit-1.obj",
+      "sha256": "d906f1391c6ae74b5e2277f55257cf4a8cc55ecaca46344e9a91af79eed5a129",
+      "bytes": 355244,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-1-collision.obj",
+      "sha256": "c5416dde9826b99572f5ac6fb205e0b7c7fe529985306c1ad87649880998ed1d",
+      "bytes": 66248,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-1.obj",
+      "sha256": "f6618467a7f932061d3df2d754f5b987f6ae522d4d20c3588b6ed8dd13e23f75",
+      "bytes": 350516,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-2-collision.obj",
+      "sha256": "1cea8d978143d9a7ce93e503e65a1e4b21ea1f90db7654a9947c2da6626914e8",
+      "bytes": 57287,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-2.obj",
+      "sha256": "35ca5902272f0868acad32ac1a793697e7565fc951280355ae538e740f325f5b",
+      "bytes": 311351,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-sign-collision.obj",
+      "sha256": "548573dbf272bf34316dc1f8e857f81567268d4a3af95f0b520ab4b5a7a0fece",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-sign.obj",
+      "sha256": "72736b77507e4080084b3219ad848b81c9e23f62cd36f81b99424ec1a7041881",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/north-villa-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-bar-cart-1-collision.obj",
+      "sha256": "5688b5e12b6d922ad8d6e8edc4d82252e2c26c60efba970bd67a0c2725011f64",
+      "bytes": 25551,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-bar-cart-1.obj",
+      "sha256": "7a412b60b5103694cfd3eb3b5bccdea74a378576cccf53aad3d5d03319f20ec8",
+      "bytes": 123910,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-1-collision.obj",
+      "sha256": "4f02133726607e4a327639cb0d53e259b9205048d460e3c30f5aa89b5ac6accc",
+      "bytes": 91336,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-1.obj",
+      "sha256": "f85cc2ca062873a326827eacd614a8e9d108f0dd0b6778f44e2a998882b25704",
+      "bytes": 460672,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-2-collision.obj",
+      "sha256": "105ce97a3c7e82c8aeb1289da34ed8c98b40c6923e2207195ae78c5d2ca002c0",
+      "bytes": 82313,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-2.obj",
+      "sha256": "ada2532f1b51056f0d3b20209f7f98c956f929965658f281b53ae009a443086b",
+      "bytes": 421509,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-sign-collision.obj",
+      "sha256": "300da851818e8233d15b61f4bbb0fdfb643993ae5dbbc64929a755bf4b008f5f",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-sign.obj",
+      "sha256": "2a2e2da5c7c012a50e56167287911d6a0979b7092df879b08a85690acca768eb",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/pool-equipment-sign.png",
+      "sha256": "638caedd795300e8288365e178deae8c4fc4d6e2c8fffed5cb995d14b41246b7",
+      "bytes": 9993,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-1-collision.obj",
+      "sha256": "94cbbeb6308397c32df8f9b6618e13be7e6c49cb41129e7cb9633438764dba69",
+      "bytes": 64124,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-1.obj",
+      "sha256": "a8fa98705fe5c40b5ae12ec323a8ca03872040a43a134008f33520ca6979ce08",
+      "bytes": 332411,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-2-collision.obj",
+      "sha256": "73eee55f79c2005a47874be8a8bf77be657161ce2de0c0cf2c4250070ecfb27b",
+      "bytes": 55303,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-2.obj",
+      "sha256": "04bd15a02a58b77a5790434769aa4e43b3a33ca789a85bc5082883ed503b0646",
+      "bytes": 293246,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-sign-collision.obj",
+      "sha256": "eed60ab6b79e7779629a902fc57e82baa3f83b486f3206dc8737dfdb54dc18a1",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-sign.obj",
+      "sha256": "54d6668e04c50aa3b7d446df29a60baf2417322508e6f316bca439ebecccfc18",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/reception-sign.png",
+      "sha256": "d41f7a3fad0103c6270f53b2089e61f0c388263e65a93fe423db20e5cc4bddc6",
+      "bytes": 7224,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-1-collision.obj",
+      "sha256": "c7be13d8385ef0f79663b299f1dc74d3e7a3adff85bfccb2959a742d8c9ccd3e",
+      "bytes": 243218,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-1.obj",
+      "sha256": "8aba0c5c3cabf4c220c99127a37c8e3702e630353bd41a0c33750ab76772b5fb",
+      "bytes": 1530176,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-2-collision.obj",
+      "sha256": "db8112cbc663337b4483e134a3ffdb590680a70d3d8154a1362933f6b616c41e",
+      "bytes": 57273,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-2.obj",
+      "sha256": "1dec2b61542bf191d54935df9b6fe8dab8f83e799739bdcf1e09d6d3dd896543",
+      "bytes": 311333,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-3-collision.obj",
+      "sha256": "909470e0d94fb083ed061fbdb32d456bd706edaa6bcb930bdddc14cbda91a45c",
+      "bytes": 145798,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-3.obj",
+      "sha256": "9c0f6e352ffca33b42238e4b7eb86834c2ac0f971828e1f8e962b85d0acc8768",
+      "bytes": 891386,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-4-collision.obj",
+      "sha256": "a5216e2b5e4e5b5a8834e17afe8b59d4afd807cc7bde858501e36ccb52988aaf",
+      "bytes": 234268,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-4.obj",
+      "sha256": "5e1b951ae381b017625e8106d523ae358d5f36c1b2bf9ed3c772d128ce8e11a0",
+      "bytes": 1489537,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-sign-collision.obj",
+      "sha256": "c586b2c18cc5112cc6189736eaee28e4228bd7e7ffd0a1a1dac84286866b27b1",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-sign.obj",
+      "sha256": "c619c0bd0c8c4d8e947236db9455662a44de2034c34311bb96bb16c9a320fa2c",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/seaward-wing-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/shade-screen-1-collision.obj",
+      "sha256": "b7b22fa7e5bc6dfe5f3d294c539f5b68bbaac7d4d366f9dccbc41fd8a7f5c967",
+      "bytes": 10603,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/shade-screen-1.obj",
+      "sha256": "e99a737f0d5b650b802bf7f2888a9d0fd6fc1fe90017b9d09b6b6831553bc7c0",
+      "bytes": 54686,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-1-collision.obj",
+      "sha256": "c5416dde9826b99572f5ac6fb205e0b7c7fe529985306c1ad87649880998ed1d",
+      "bytes": 66248,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-1.obj",
+      "sha256": "f6618467a7f932061d3df2d754f5b987f6ae522d4d20c3588b6ed8dd13e23f75",
+      "bytes": 350516,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-2-collision.obj",
+      "sha256": "1cea8d978143d9a7ce93e503e65a1e4b21ea1f90db7654a9947c2da6626914e8",
+      "bytes": 57287,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-2.obj",
+      "sha256": "35ca5902272f0868acad32ac1a793697e7565fc951280355ae538e740f325f5b",
+      "bytes": 311351,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-sign-collision.obj",
+      "sha256": "548573dbf272bf34316dc1f8e857f81567268d4a3af95f0b520ab4b5a7a0fece",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-sign.obj",
+      "sha256": "72736b77507e4080084b3219ad848b81c9e23f62cd36f81b99424ec1a7041881",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/south-villa-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/stacked-loungers-1-collision.obj",
+      "sha256": "f18a07990793d1744adf476bac605c39b64d60395e0915a761ce95b4f3743a6a",
+      "bytes": 27643,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/stacked-loungers-1.obj",
+      "sha256": "cc1cb3109442b9fdfd8aec4580b538a2d3d027b6e2f18622a68fd531f9323f8b",
+      "bytes": 129069,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-1-collision.obj",
+      "sha256": "c7be13d8385ef0f79663b299f1dc74d3e7a3adff85bfccb2959a742d8c9ccd3e",
+      "bytes": 243218,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-1.obj",
+      "sha256": "8aba0c5c3cabf4c220c99127a37c8e3702e630353bd41a0c33750ab76772b5fb",
+      "bytes": 1530176,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-2-collision.obj",
+      "sha256": "db8112cbc663337b4483e134a3ffdb590680a70d3d8154a1362933f6b616c41e",
+      "bytes": 57273,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-2.obj",
+      "sha256": "1dec2b61542bf191d54935df9b6fe8dab8f83e799739bdcf1e09d6d3dd896543",
+      "bytes": 311333,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-3-collision.obj",
+      "sha256": "909470e0d94fb083ed061fbdb32d456bd706edaa6bcb930bdddc14cbda91a45c",
+      "bytes": 145798,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-3.obj",
+      "sha256": "9c0f6e352ffca33b42238e4b7eb86834c2ac0f971828e1f8e962b85d0acc8768",
+      "bytes": 891386,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-4-collision.obj",
+      "sha256": "a5216e2b5e4e5b5a8834e17afe8b59d4afd807cc7bde858501e36ccb52988aaf",
+      "bytes": 234268,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-4.obj",
+      "sha256": "5e1b951ae381b017625e8106d523ae358d5f36c1b2bf9ed3c772d128ce8e11a0",
+      "bytes": 1489537,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-sign-collision.obj",
+      "sha256": "c586b2c18cc5112cc6189736eaee28e4228bd7e7ffd0a1a1dac84286866b27b1",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-sign.obj",
+      "sha256": "c619c0bd0c8c4d8e947236db9455662a44de2034c34311bb96bb16c9a320fa2c",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/sunward-wing-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-1-collision.obj",
+      "sha256": "9b66e6b4f548624006f3a9a99ba9cde57f7e27ad4238ad91248bce2716a05a9d",
+      "bytes": 134882,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-1.obj",
+      "sha256": "c471c8757df07575795fa631c6425ee46730aee87dbc52a53f9612abeba43a63",
+      "bytes": 687052,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-2-collision.obj",
+      "sha256": "f74f0e5d53193302ac8259c735cccb4ffdce9ddba900cf6171716b93ae8f7b04",
+      "bytes": 55303,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-2.obj",
+      "sha256": "9c7c14794c931156254bca153243f02a6bff3502388cae0e938246f499f7da61",
+      "bytes": 293246,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-3-collision.obj",
+      "sha256": "d0e60055bc23bf8e97c47d86d0c793d71e5bef4a42d66e74446fca208a151dc9",
+      "bytes": 126001,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-3.obj",
+      "sha256": "1c8b6d53a8ccd4d5f230754529c4faf9839427a03416e7ad5ca62a17afa2d2c9",
+      "bytes": 647887,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-sign-collision.obj",
+      "sha256": "3c60f05352126760ee7c5c56799cf48da2cea4d36ae6419ccc4e0ff8943e5b14",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-sign.obj",
+      "sha256": "04075694ca49efb1d3b076c54f9cf92b34adacc71284537309128bf7e57e7b37",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/terrace-restaurant-sign.png",
+      "sha256": "794c2c38a2f5d28f828c65ce53eabbd78e8f13f86252ee73c98c91e901f45588",
+      "bytes": 8366,
+      "local_match": true,
+      "kind": "image"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-1-collision.obj",
+      "sha256": "c5416dde9826b99572f5ac6fb205e0b7c7fe529985306c1ad87649880998ed1d",
+      "bytes": 66248,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-1.obj",
+      "sha256": "f6618467a7f932061d3df2d754f5b987f6ae522d4d20c3588b6ed8dd13e23f75",
+      "bytes": 350516,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-2-collision.obj",
+      "sha256": "1cea8d978143d9a7ce93e503e65a1e4b21ea1f90db7654a9947c2da6626914e8",
+      "bytes": 57287,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-2.obj",
+      "sha256": "35ca5902272f0868acad32ac1a793697e7565fc951280355ae538e740f325f5b",
+      "bytes": 311351,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-sign-collision.obj",
+      "sha256": "548573dbf272bf34316dc1f8e857f81567268d4a3af95f0b520ab4b5a7a0fece",
+      "bytes": 469,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-sign.obj",
+      "sha256": "72736b77507e4080084b3219ad848b81c9e23f62cd36f81b99424ec1a7041881",
+      "bytes": 2349,
+      "local_match": true,
+      "kind": "mesh"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/58a7381d990d8010beb081b435797d7cd45e34a9/azure-palace-r1/Assets/west-villa-sign.png",
+      "sha256": "1439a72efcd9e00ca04a0a71067682507750af1630874ea5369eba5424efe1e6",
+      "bytes": 4880,
+      "local_match": true,
+      "kind": "image"
+    }
+  ]
+}

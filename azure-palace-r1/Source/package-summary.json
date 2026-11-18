@@ -1,0 +1,11 @@
+{
+  "root_terrain_objects": 52,
+  "building_count": 12,
+  "scatter_designs": 8,
+  "scatter_placements": 30,
+  "surface": 3.9,
+  "mat_guid": "0dfed4",
+  "controller_guid": "8428d8",
+  "bag_guid": "810108",
+  "live_tts_tested": false
+}

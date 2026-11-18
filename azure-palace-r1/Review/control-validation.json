@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "maps": 1,
+  "embedded_canonical_brokers": 1,
+  "unique_scripts_compiled": 3,
+  "canonical_sha256": "10c37cd10e69d72832be514b6e331498967b6e2d2016998bde023986e874fde0",
+  "rendered_buttons_passed": true,
+  "rotation_round_trip_passed": true,
+  "independent_zone_colors_passed": true
+}

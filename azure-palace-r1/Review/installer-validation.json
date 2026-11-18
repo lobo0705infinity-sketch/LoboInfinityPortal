@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "new_numbered_saves": 2,
+  "saved_object_bags": 2,
+  "thumbnails": 4,
+  "existing_saves_unchanged": true,
+  "corrupt_payload_rejected_before_writes": true,
+  "windows_executable_cross_compiled": true,
+  "windows_execution_tested": false
+}
