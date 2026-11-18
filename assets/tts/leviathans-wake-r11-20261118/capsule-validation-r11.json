@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "count": 980,
+  "compound_parts": 98,
+  "collider_triangles": 1608,
+  "entrance_samples": 729,
+  "visual_vertices": 4328,
+  "live_tts_tested": false
+}
