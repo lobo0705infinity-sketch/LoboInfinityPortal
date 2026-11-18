@@ -9,9 +9,9 @@ import communityArchive from '../shared/lobo-workshop-community-archive-20261116
 import { describePublicSearchPage } from '../shared/public-search-content.mjs'
 
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
-assert.equal(loboWorkshopMaps.length,19)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,19)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,19)
+assert.equal(loboWorkshopMaps.length,20)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,20)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,20)
 const missions=new Map()
 for(const map of loboWorkshopMaps){
  assert.equal(map.isCurrent,true)
@@ -33,12 +33,12 @@ for(const map of loboWorkshopMaps){
  const bag=save.ObjectStates[0];assert.equal(bag.Name,'Bag');assert.equal(bag.GUID,map.guid)
  assert.equal(bag.Nickname,map.workshopBagName)
  assert.equal(bag.ContainedObjects.length,map.objectCount)
- assert.ok(bag.LuaScript.endsWith('\r\n'),'Native Stage loader terminates with CRLF')
- assert.ok(!/(?<!\r)\n/.test(bag.LuaScript),'Native Stage loader uses CRLF throughout')
+ assert.ok(bag.LuaScript.endsWith('\n'),'Stage script ends with a complete line')
+ assert.ok(!/\r(?!\n)/.test(bag.LuaScript),'Stage script has no bare CR characters')
  const ids=new Set();const family=new Set()
  function collect(o){family.add(o.GUID);Object.values(o.States||{}).forEach(collect)}
  bag.ContainedObjects.forEach(collect)
- for(const row of bag.LuaScript.split('\r\n').filter(Boolean)){
+ for(const row of bag.LuaScript.split(/\r?\n/).filter(row => /^--[0-9a-f]{6},/.test(row))){
   assert.match(row,/^--[0-9a-f]{6}(,-?\d+(?:\.\d+)?(?:e[+-]?\d+)?){6}$/)
   const [id,...fields]=row.slice(2).split(',');assert.ok(!ids.has(id));ids.add(id)
   assert.ok(family.has(id),`${map.slug}: placement resolves to a root or alternate state`)
@@ -46,33 +46,31 @@ for(const map of loboWorkshopMaps){
   for(const angle of fields.slice(3).map(Number))assert.ok(Math.abs(angle-Math.fround(angle))<.0005,'Native rotation meets the Stage alignment tolerance')
  }
  for(const object of bag.ContainedObjects)assert.ok(ids.has(object.GUID),'Every root has a deployment record')
- const isPortMeridian = ['port-meridian', 'veyra-gate'].includes(map.slug)
- const controls=bag.ContainedObjects.find(o=>o.LuaScript?.includes(
-  isPortMeridian ? 'function meridianMission(' : 'local universalConfig='
- ))
+ const controllers=bag.ContainedObjects.filter(o=>o.LuaScript?.includes('LOBO_STANDARD_VERSION=1'))
+ assert.equal(controllers.length,1,`${map.slug}: one approved controller`)
+ const controls=controllers[0]
  assert.ok(controls,`${map.slug}: current map controls exist`)
- const actions = isPortMeridian
-  ? ['meridianMission','meridianMyView','meridianPhysical','loboChooseBackground']
-  : ['loboUniversalBooty','loboUniversalMetaChemistry']
- for(const fn of [...actions,'loboUniversalDeployment0','loboUniversalDeployment4','loboUniversalDeployment8'])assert.ok(controls.LuaScript.includes('function '+fn+'('),`${map.slug}: ${fn}`)
+ const actions = ['loboRotateMap180','loboStandardClear','loboStandardGrid','loboStandardMissionOpen','loboZonePickColor','loboStandardInvoke']
+ assert.ok(controls.LuaScript.includes('LOBO_STANDARD_VERSION=1'),`${map.slug}: approved standard owner`)
+ for(const fn of actions)assert.ok(controls.LuaScript.includes('function '+fn+'('),`${map.slug}: ${fn}`)
  if(map.guid==='1008da'){
-  assert.equal(map.name,'Kestrel Lunar Base');assert.equal(bag.ContainedObjects.length,68)
+  assert.equal(map.name,'Kestrel Lunar Base');assert.equal(bag.ContainedObjects.length,69)
   assert.equal(bag.ContainedObjects.filter(o=>o.Tags?.includes('building')).length,19)
   assert.ok(!controls.LuaScript.includes("label='MAP CONTROLS'"),'Approved R14 removes the board-side button')
-  assert.ok(controls.LuaScript.includes('LOBO_UI_KESTREL_READY'))
+  // Kestrel now uses the shared standard owner, verified above.
   assert.ok(bag.ContainedObjects.every(o=>o.Name!=='Chip'))
   assert.equal(bag.ContainedObjects.filter(o=>o.Nickname?.startsWith('Data-Harvester ')).length,0)
  }
 }
-assert.equal(missions.size, 18)
-for (const [mission, keys] of missions) assert.equal(new Set(keys).size, mission === 'Superiority' ? 2 : 1, `${mission} has its retained layouts`)
+assert.equal(missions.size, 20)
+for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 1, `${mission} has its retained layouts`)
 const grouped = loboWorkshopMapSections.flatMap(section => section.layouts.flatMap(layout => layout.saves.map(map => map.id)))
-assert.equal(grouped.length, 19)
-assert.equal(new Set(grouped).size, 19)
-assert.equal(loboWorkshopMapSections.length, 18)
+assert.equal(grouped.length, 20)
+assert.equal(new Set(grouped).size, 20)
+assert.equal(loboWorkshopMapSections.length, 20)
 assert.deepEqual(loboWorkshopMapSections.map(section => section.title), [...missions.keys()].sort((a, b) => a.localeCompare(b)))
 for (const section of loboWorkshopMapSections) {
-  assert.equal(section.layouts.length, section.title === 'Superiority' ? 2 : 1)
+  assert.equal(section.layouts.length, 1)
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
@@ -92,7 +90,7 @@ for (const map of loboWorkshopMaps) {
   }
 }
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 0)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 15)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 16)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 2)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 2)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
@@ -117,7 +115,17 @@ const azure = archivedLoboWorkshopMaps.find(map => map.slug === 'akial-interfere
 const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Circuit' && map.layoutKey === azure.layoutKey && map.slug !== azure.slug)
 const ratings = buildMapRatings([{ id: 1, mapSlug: legacyAzure.slug, mapRating: 5 }, { id: 2, mapSlug: azure.slug, mapRating: 3 }])
 assert.deepEqual(ratings.get(azure.layoutKey), { average: 4, count: 2, rank: 1 })
-assert.ok(!missions.has('Akial Interference') && !missions.has('Evacuation'))
+assert.ok(missions.has('Akial Interference') && missions.has('Evacuation'))
+const leviathan = loboWorkshopMapBySlug.get('leviathans-wake')
+assert.equal(leviathan.guid, 'af0667')
+assert.deepEqual(leviathan.missionSetups, ['Evacuation'])
+assert.equal(leviathan.objectCount, 41)
+assert.ok(existsSync('public' + leviathan.installer))
+const leviathanBag = JSON.parse(readFileSync('public' + leviathan.download)).ObjectStates[0]
+assert.ok(!leviathanBag.ContainedObjects.some(o => ['0424ea', 'a6739a', 'e6af7a'].includes(o.GUID)))
+for (const guid of ['43cf48', '3e440a', '0e94af', 'c65672']) assert.ok(leviathanBag.ContainedObjects.some(o => o.GUID === guid))
+assert.match(describePublicSearchPage('/maps/leviathans-wake').title, /Leviathan/)
+assert.ok(describePublicSearchPage('/maps').links.some(link => link.href === '/maps/leviathans-wake'))
 for (const replacement of loboWorkshopMaps.filter(map => map.slug.endsWith('-satellite'))) {
   const prior = loboWorkshopMapBySlug.get(replacement.slug.replace(/-satellite$/, ''))
   assert.equal(prior.isCurrent, false)

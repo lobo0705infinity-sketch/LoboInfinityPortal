@@ -1,8 +1,43 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-18",
-  "download": "/assets/maps/standard-controls-20261118/Lobo-All-105-Standard-Map-Bags.zip",
+  "download": "/assets/maps/leviathan-approved-20261118-r14/Lobo-All-105-Map-Bags-R14.zip",
   "maps": [
+    {
+      "index": 36,
+      "id": "3719263238:100f89",
+      "guid": "100f89",
+      "slug": "superiority-2",
+      "name": "Switchback Quarter",
+      "workshopName": "ITS18 Akial Interference - Switchback Quarter",
+      "workshopBagName": "SET_ITS18 Akial Interference - Switchback Quarter",
+      "collectionTitle": "ITS Season 18",
+      "family": "Standard deployment",
+      "layoutKey": 1003,
+      "missionSetups": [
+        "Akial Interference"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 49,
+      "sourceNote": "Approved Switchback Quarter: Akial Interference setup with the standard map-control panel and the retained building layout.",
+      "overhead": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
+      "angled": "/assets/maps/seven-map-update-20261102-r1/switchback-angled.webp",
+      "diagram": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
+      "download": "/assets/maps/standard-controls-20261118/100f89.json",
+      "isCurrent": true,
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/11a4927a-4056-4515-8dc6-d9500ba61be5",
+      "labelAliases": [
+        "SET_ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
+        "ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
+        "Switchback Quarter",
+        "ITS18 Superiority - Switchback Quarter R3",
+        "SET_ITS18 Akial Interference - Switchback Quarter"
+      ],
+      "captureDate": "2026-11-02"
+    },
     {
       "index": 4,
       "id": "3719263238:100135",
@@ -67,39 +102,6 @@
       ]
     },
     {
-      "index": 7,
-      "id": "3719263238:100326",
-      "guid": "100326",
-      "slug": "battleground-1",
-      "name": "Cairnfall Sanctuary",
-      "workshopName": "ITS18 Battleground — Cairnfall Sanctuary",
-      "workshopBagName": "SET_ITS18 Battleground — Cairnfall Sanctuary",
-      "collectionTitle": "ITS Season 18",
-      "family": "Standard deployment",
-      "layoutKey": 2022,
-      "missionSetups": [
-        "Battleground"
-      ],
-      "exactDuplicateOf": null,
-      "objectCount": 75,
-      "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
-      "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
-      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
-      "download": "/assets/maps/standard-controls-20261118/100326.json",
-      "isCurrent": true,
-      "previewKind": "geometry",
-      "sourceOverhead": null,
-      "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a",
-      "labelAliases": [
-        "SET_ITS18 Battleground — Foundry Blocks — REVISED",
-        "ITS18 Battleground — Foundry Blocks — REVISED",
-        "Foundry Blocks"
-      ],
-      "captureDate": "2026-11-02"
-    },
-    {
       "index": 10,
       "id": "3719263238:810053",
       "guid": "810053",
@@ -132,6 +134,39 @@
       ],
       "captureDate": "2026-11-17",
       "installer": "/assets/maps/vanta-official-20261117/Lobo-Vanta-Customs-Yard-Workshop-Installer-R9.zip"
+    },
+    {
+      "index": 7,
+      "id": "3719263238:100326",
+      "guid": "100326",
+      "slug": "battleground-1",
+      "name": "Cairnfall Sanctuary",
+      "workshopName": "ITS18 Battleground — Cairnfall Sanctuary",
+      "workshopBagName": "SET_ITS18 Battleground — Cairnfall Sanctuary",
+      "collectionTitle": "ITS Season 18",
+      "family": "Standard deployment",
+      "layoutKey": 2022,
+      "missionSetups": [
+        "Battleground"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 75,
+      "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
+      "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+      "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
+      "diagram": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+      "download": "/assets/maps/standard-controls-20261118/100326.json",
+      "isCurrent": true,
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/aabab491-7d4b-405f-bfc0-1257171e4f0a",
+      "labelAliases": [
+        "SET_ITS18 Battleground — Foundry Blocks — REVISED",
+        "ITS18 Battleground — Foundry Blocks — REVISED",
+        "Foundry Blocks"
+      ],
+      "captureDate": "2026-11-02"
     },
     {
       "index": 11,
@@ -334,6 +369,40 @@
         "SET_ITS18 Double Bind — Neon Shogunate"
       ],
       "captureDate": "2026-11-03"
+    },
+    {
+      "index": 105,
+      "id": "3719263238:af0667",
+      "guid": "af0667",
+      "slug": "leviathans-wake",
+      "name": "Leviathan’s Wake",
+      "workshopName": "ITS18 Evacuation — Leviathan’s Wake — Rocinante",
+      "workshopBagName": "SET_ITS18 Evacuation — Leviathan’s Wake — Rocinante",
+      "collectionTitle": "ITS Season 18",
+      "family": "Standard deployment",
+      "layoutKey": 2032,
+      "missionSetups": [
+        "Evacuation"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 41,
+      "sourceNote": "Approved 18 November 2026. Crashed Rocinante sections, ash ridgelines and overhead cover, with the approved cabin closures and positions retained. Holden, Naomi, Amos and Alex occupy the four civilian starts. The pictured loose rock, extra spawner and scatter bag no longer load. Standard map controls and rainbow army-spawner hotkeys retained. Previews render the exported geometry; live TTS physics remain unverified.",
+      "overhead": "/assets/maps/leviathan-approved-20261118-r14/leviathan-overhead.webp",
+      "angled": "/assets/maps/leviathan-approved-20261118-r14/leviathan-angled.webp",
+      "diagram": "/assets/maps/leviathan-approved-20261118-r14/leviathan-overhead.webp",
+      "download": "/assets/maps/leviathan-approved-20261118-r14/af0667.json",
+      "installer": "/assets/maps/leviathan-approved-20261118-r14/Lobo-Leviathans-Wake-Workshop-Setup-R14.zip",
+      "isCurrent": true,
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/f191a25d-e4be-4393-b5bf-10ddbda35aeb",
+      "labelAliases": [
+        "Leviathans Wake",
+        "Leviathan’s Wake",
+        "Rocinante"
+      ],
+      "captureDate": "2026-11-18"
     },
     {
       "index": 25,
@@ -552,39 +621,6 @@
       "captureDate": "2026-11-02"
     },
     {
-      "index": 36,
-      "id": "3719263238:100f89",
-      "guid": "100f89",
-      "slug": "superiority-2",
-      "name": "Switchback Quarter",
-      "workshopName": "ITS18 Superiority - Switchback Quarter R3",
-      "workshopBagName": "SET_ITS18 Akial Interference - Switchback Quarter",
-      "collectionTitle": "ITS Season 18",
-      "family": "Standard deployment",
-      "layoutKey": 1003,
-      "missionSetups": [
-        "Superiority"
-      ],
-      "exactDuplicateOf": null,
-      "objectCount": 49,
-      "sourceNote": "Approved Switchback Quarter R3 with furnished interiors, persistent ladders and current floor/control repairs. This is the second general Superiority map, alongside Frostline Relay. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
-      "overhead": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
-      "angled": "/assets/maps/seven-map-update-20261102-r1/switchback-angled.webp",
-      "diagram": "/assets/maps/seven-map-update-20261102-r1/switchback-overhead.webp",
-      "download": "/assets/maps/standard-controls-20261118/100f89.json",
-      "isCurrent": true,
-      "previewKind": "geometry",
-      "sourceOverhead": null,
-      "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3f901678-e8b9-4e4e-afa0-39555c3bdb2e",
-      "labelAliases": [
-        "SET_ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
-        "ITS18 Superiority — Switchback Quarter — NEW LAYOUT",
-        "Switchback Quarter"
-      ],
-      "captureDate": "2026-11-02"
-    },
-    {
       "index": 38,
       "id": "3719263238:810340",
       "guid": "810340",
@@ -657,7 +693,7 @@
     }
   ],
   "captureDate": "2026-10-20",
-  "downloadRevision": "standard-controls-20261118",
-  "installer": "/assets/maps/standard-controls-20261118/Lobo-All-105-Maps-Standard-Controls-Workshop-Installer-R2.zip",
-  "releaseInventory": "/assets/maps/standard-controls-20261118/release-inventory.json"
+  "downloadRevision": "leviathan-approved-20261118-r14",
+  "installer": "/assets/maps/leviathan-approved-20261118-r14/Lobo-Leviathans-Wake-Workshop-Setup-R14.zip",
+  "releaseInventory": "/assets/maps/leviathan-approved-20261118-r14/release-inventory.json"
 }
