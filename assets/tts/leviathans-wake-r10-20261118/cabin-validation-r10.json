@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "count": 16,
+  "checks": [
+    "detached-cabin-state-1.obj only removes existing triangles",
+    "detached-cabin-state-1.obj retains front entrance, seats and hull",
+    "detached-cabin-state-1.obj removes furniture surface triangles",
+    "detached-cabin-state-1.obj removes rear access frame",
+    "detached-cabin-state-1-collider.obj only removes existing triangles",
+    "detached-cabin-state-1-collider.obj retains front entrance, seats and hull",
+    "detached-cabin-state-1-collider.obj has no former cabinet collision",
+    "detached-cabin-state-1-collider.obj has no removed rear posts",
+    "detached-cabin-state-2.obj only removes existing triangles",
+    "detached-cabin-state-2.obj retains front entrance, seats and hull",
+    "detached-cabin-state-2.obj removes furniture surface triangles",
+    "detached-cabin-state-2.obj removes rear access frame",
+    "detached-cabin-state-2-collider.obj only removes existing triangles",
+    "detached-cabin-state-2-collider.obj retains front entrance, seats and hull",
+    "detached-cabin-state-2-collider.obj has no former cabinet collision",
+    "detached-cabin-state-2-collider.obj has no removed rear posts"
+  ],
+  "removed_triangles": {
+    "detached-cabin-state-1.obj": 1604,
+    "detached-cabin-state-1-collider.obj": 32,
+    "detached-cabin-state-2.obj": 1604,
+    "detached-cabin-state-2-collider.obj": 32
+  },
+  "live_tts_tested": false
+}

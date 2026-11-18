@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "checks": 139,
+  "state_parts": {
+    "1": 8,
+    "2": 55
+  },
+  "max_deck_error_inches": 8.881784197001252e-16,
+  "old_whole_hull_center_y": 5.151754385964912,
+  "new_center_y": 2.9000000000000004,
+  "base_support_checks": [
+    {
+      "diameter_mm": 25,
+      "x": -2.2,
+      "z": -1.4,
+      "bottom_y": 3.0682883232038938
+    },
+    {
+      "diameter_mm": 25,
+      "x": 0,
+      "z": -1.4,
+      "bottom_y": 2.937109052614017
+    },
+    {
+      "diameter_mm": 25,
+      "x": 2.2,
+      "z": -1.4,
+      "bottom_y": 2.7935296120376267
+    },
+    {
+      "diameter_mm": 40,
+      "x": -2.2,
+      "z": -1.4,
+      "bottom_y": 3.087873750682967
+    },
+    {
+      "diameter_mm": 40,
+      "x": 0,
+      "z": -1.4,
+      "bottom_y": 2.9660090947856967
+    },
+    {
+      "diameter_mm": 40,
+      "x": 2.2,
+      "z": -1.4,
+      "bottom_y": 2.8170574224852882
+    },
+    {
+      "diameter_mm": 55,
+      "x": -1.9,
+      "z": -1.4,
+      "bottom_y": 3.0876648633943025
+    },
+    {
+      "diameter_mm": 55,
+      "x": 0,
+      "z": -1.4,
+      "bottom_y": 2.9806184172135746
+    },
+    {
+      "diameter_mm": 55,
+      "x": 1.9,
+      "z": -1.4,
+      "bottom_y": 2.8478281840310147
+    }
+  ],
+  "live_tts_tested": false
+}
