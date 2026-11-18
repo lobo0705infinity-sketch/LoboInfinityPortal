@@ -1,0 +1,345 @@
+[
+  {
+    "slug": "ground",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "sunward-wing",
+    "x": -8,
+    "z": -4,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "seaward-wing",
+    "x": 8,
+    "z": 4,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "azure-spa",
+    "x": -7,
+    "z": 13,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "terrace-restaurant",
+    "x": 7,
+    "z": -13,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "north-villa",
+    "x": -18,
+    "z": 17,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "east-villa",
+    "x": 18,
+    "z": 17,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "south-villa",
+    "x": 18,
+    "z": -17,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "west-villa",
+    "x": -18,
+    "z": -17,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "reception",
+    "x": 0,
+    "z": -21,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "cafe",
+    "x": 0,
+    "z": 21,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "laundry",
+    "x": -19,
+    "z": 0,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "pool-equipment",
+    "x": 19,
+    "z": 0,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "luggage-trolley",
+    "x": -20,
+    "z": -10,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "limestone-planter",
+    "x": 20,
+    "z": 10,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "bronze-sculpture",
+    "x": -14,
+    "z": -6,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "linen-cart",
+    "x": 14,
+    "z": 6,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "maintenance-unit",
+    "x": -4,
+    "z": -15,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "stacked-loungers",
+    "x": 4,
+    "z": 15,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "pool-bar-cart",
+    "x": -5,
+    "z": 7,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "shade-screen",
+    "x": 5,
+    "z": -6.5,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "luggage-trolley",
+    "x": -20,
+    "z": 9,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "limestone-planter",
+    "x": 20,
+    "z": -9,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "bronze-sculpture",
+    "x": -13,
+    "z": 22,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "linen-cart",
+    "x": 13,
+    "z": -22,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "maintenance-unit",
+    "x": -13,
+    "z": -22,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "stacked-loungers",
+    "x": 13,
+    "z": 22,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "pool-bar-cart",
+    "x": -9,
+    "z": -20,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "shade-screen",
+    "x": 9,
+    "z": 20,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "luggage-trolley",
+    "x": -20,
+    "z": -5,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "limestone-planter",
+    "x": 20,
+    "z": 5,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "bronze-sculpture",
+    "x": -14,
+    "z": 3,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "linen-cart",
+    "x": 14,
+    "z": -3,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "maintenance-unit",
+    "x": -1.5,
+    "z": 16,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "stacked-loungers",
+    "x": 1.5,
+    "z": -16,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "pool-bar-cart",
+    "x": -11,
+    "z": 6,
+    "rot": 45,
+    "state": 1
+  },
+  {
+    "slug": "luggage-trolley",
+    "x": -5,
+    "z": -11.5,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "limestone-planter",
+    "x": 5,
+    "z": 11.5,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "bronze-sculpture",
+    "x": -20,
+    "z": 22,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "linen-cart",
+    "x": 20,
+    "z": -22,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "maintenance-unit",
+    "x": -23,
+    "z": -10,
+    "rot": 90,
+    "state": 1
+  },
+  {
+    "slug": "pool-bar-cart",
+    "x": -16,
+    "z": 7,
+    "rot": 45,
+    "state": 1
+  },
+  {
+    "slug": "shade-screen",
+    "x": 16,
+    "z": -7,
+    "rot": 225,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": -15,
+    "z": -10,
+    "rot": 15,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": 15,
+    "z": 10,
+    "rot": 195,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": -14,
+    "z": 11,
+    "rot": 0,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": 14,
+    "z": -11,
+    "rot": 180,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": 5,
+    "z": 18,
+    "rot": 270,
+    "state": 1
+  },
+  {
+    "slug": "garden-wall",
+    "x": -22,
+    "z": 7,
+    "rot": 90,
+    "state": 1
+  }
+]

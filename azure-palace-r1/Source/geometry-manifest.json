@@ -1,0 +1,1112 @@
+[
+  {
+    "name": "Azure Palace - recessed resort ground",
+    "slug": "ground",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "ground",
+    "states": [
+      {
+        "mesh": "ground-1.obj",
+        "collider": "ground-1-collision.obj",
+        "vertices": 19412,
+        "triangles": 8576,
+        "collider_parts": 92,
+        "bounds": [
+          -24.06,
+          -3.0,
+          -24.06,
+          24.06,
+          4.436917341487576,
+          24.06
+        ],
+        "label": "Raised 48-inch board with sunken dry pool"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Sunward Hotel Wing",
+    "slug": "sunward-wing",
+    "x": -8,
+    "z": -4,
+    "rot": 0,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "sunward-wing-1.obj",
+        "collider": "sunward-wing-1-collision.obj",
+        "vertices": 16892,
+        "triangles": 7916,
+        "collider_parts": 471,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          10.320000000000002,
+          4.84
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "sunward-wing-2.obj",
+        "collider": "sunward-wing-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.84,
+          0.0,
+          -4.84,
+          3.84,
+          4.02,
+          4.84
+        ],
+        "label": "Open floor 1"
+      },
+      {
+        "mesh": "sunward-wing-3.obj",
+        "collider": "sunward-wing-3-collision.obj",
+        "vertices": 9990,
+        "triangles": 4692,
+        "collider_parts": 284,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          7.12,
+          4.84
+        ],
+        "label": "Open floor 2"
+      },
+      {
+        "mesh": "sunward-wing-4.obj",
+        "collider": "sunward-wing-4-collision.obj",
+        "vertices": 16460,
+        "triangles": 7708,
+        "collider_parts": 451,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          10.219999999999999,
+          4.84
+        ],
+        "label": "Open floor 3"
+      }
+    ],
+    "footprint": [
+      7.4,
+      10.8
+    ],
+    "sign": {
+      "mesh": "sunward-wing-sign.obj",
+      "collider": "sunward-wing-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -4.82,
+        2.3,
+        3.29,
+        -4.755
+      ],
+      "texture": "sunward-wing-sign.png"
+    }
+  },
+  {
+    "name": "Seaward Hotel Wing",
+    "slug": "seaward-wing",
+    "x": 8,
+    "z": 4,
+    "rot": 180,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "seaward-wing-1.obj",
+        "collider": "seaward-wing-1-collision.obj",
+        "vertices": 16892,
+        "triangles": 7916,
+        "collider_parts": 471,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          10.320000000000002,
+          4.84
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "seaward-wing-2.obj",
+        "collider": "seaward-wing-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.84,
+          0.0,
+          -4.84,
+          3.84,
+          4.02,
+          4.84
+        ],
+        "label": "Open floor 1"
+      },
+      {
+        "mesh": "seaward-wing-3.obj",
+        "collider": "seaward-wing-3-collision.obj",
+        "vertices": 9990,
+        "triangles": 4692,
+        "collider_parts": 284,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          7.12,
+          4.84
+        ],
+        "label": "Open floor 2"
+      },
+      {
+        "mesh": "seaward-wing-4.obj",
+        "collider": "seaward-wing-4-collision.obj",
+        "vertices": 16460,
+        "triangles": 7708,
+        "collider_parts": 451,
+        "bounds": [
+          -3.84,
+          0.0,
+          -6.259973025197681,
+          3.84,
+          10.219999999999999,
+          4.84
+        ],
+        "label": "Open floor 3"
+      }
+    ],
+    "footprint": [
+      7.4,
+      10.8
+    ],
+    "sign": {
+      "mesh": "seaward-wing-sign.obj",
+      "collider": "seaward-wing-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -4.82,
+        2.3,
+        3.29,
+        -4.755
+      ],
+      "texture": "seaward-wing-sign.png"
+    }
+  },
+  {
+    "name": "Azure Spa",
+    "slug": "azure-spa",
+    "x": -7,
+    "z": 13,
+    "rot": 90,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "azure-spa-1.obj",
+        "collider": "azure-spa-1-collision.obj",
+        "vertices": 7328,
+        "triangles": 3448,
+        "collider_parts": 262,
+        "bounds": [
+          -4.34,
+          0.0,
+          -4.4750000000000005,
+          4.34,
+          7.22,
+          3.34
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "azure-spa-2.obj",
+        "collider": "azure-spa-2-collision.obj",
+        "vertices": 2968,
+        "triangles": 1368,
+        "collider_parts": 106,
+        "bounds": [
+          -4.34,
+          0.0,
+          -3.34,
+          4.34,
+          4.02,
+          3.34
+        ],
+        "label": "Open floor 1"
+      },
+      {
+        "mesh": "azure-spa-3.obj",
+        "collider": "azure-spa-3-collision.obj",
+        "vertices": 6896,
+        "triangles": 3240,
+        "collider_parts": 242,
+        "bounds": [
+          -4.34,
+          0.0,
+          -4.4750000000000005,
+          4.34,
+          7.12,
+          3.34
+        ],
+        "label": "Open floor 2"
+      }
+    ],
+    "footprint": [
+      8.4,
+      7.8
+    ],
+    "sign": {
+      "mesh": "azure-spa-sign.obj",
+      "collider": "azure-spa-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.32,
+        2.3,
+        3.29,
+        -3.255
+      ],
+      "texture": "azure-spa-sign.png"
+    }
+  },
+  {
+    "name": "Terrace Restaurant",
+    "slug": "terrace-restaurant",
+    "x": 7,
+    "z": -13,
+    "rot": 270,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "terrace-restaurant-1.obj",
+        "collider": "terrace-restaurant-1-collision.obj",
+        "vertices": 7664,
+        "triangles": 3664,
+        "collider_parts": 264,
+        "bounds": [
+          -4.34,
+          0.0,
+          -4.4750000000000005,
+          4.34,
+          7.22,
+          3.34
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "terrace-restaurant-2.obj",
+        "collider": "terrace-restaurant-2-collision.obj",
+        "vertices": 3304,
+        "triangles": 1584,
+        "collider_parts": 108,
+        "bounds": [
+          -4.34,
+          0.0,
+          -3.34,
+          4.34,
+          4.02,
+          3.34
+        ],
+        "label": "Open floor 1"
+      },
+      {
+        "mesh": "terrace-restaurant-3.obj",
+        "collider": "terrace-restaurant-3-collision.obj",
+        "vertices": 7232,
+        "triangles": 3456,
+        "collider_parts": 244,
+        "bounds": [
+          -4.34,
+          0.0,
+          -4.4750000000000005,
+          4.34,
+          7.12,
+          3.34
+        ],
+        "label": "Open floor 2"
+      }
+    ],
+    "footprint": [
+      8.4,
+      7.8
+    ],
+    "sign": {
+      "mesh": "terrace-restaurant-sign.obj",
+      "collider": "terrace-restaurant-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.32,
+        2.3,
+        3.29,
+        -3.255
+      ],
+      "texture": "terrace-restaurant-sign.png"
+    }
+  },
+  {
+    "name": "North Guest Villa",
+    "slug": "north-villa",
+    "x": -18,
+    "z": 17,
+    "rot": 90,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "north-villa-1.obj",
+        "collider": "north-villa-1-collision.obj",
+        "vertices": 3952,
+        "triangles": 1884,
+        "collider_parts": 137,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.12,
+          3.59
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "north-villa-2.obj",
+        "collider": "north-villa-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.02,
+          3.59
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.9,
+      6.9
+    ],
+    "sign": {
+      "mesh": "north-villa-sign.obj",
+      "collider": "north-villa-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.57,
+        2.3,
+        3.29,
+        -3.505
+      ],
+      "texture": "north-villa-sign.png"
+    }
+  },
+  {
+    "name": "East Guest Villa",
+    "slug": "east-villa",
+    "x": 18,
+    "z": 17,
+    "rot": 270,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "east-villa-1.obj",
+        "collider": "east-villa-1-collision.obj",
+        "vertices": 3952,
+        "triangles": 1884,
+        "collider_parts": 137,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.12,
+          3.59
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "east-villa-2.obj",
+        "collider": "east-villa-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.02,
+          3.59
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.9,
+      6.9
+    ],
+    "sign": {
+      "mesh": "east-villa-sign.obj",
+      "collider": "east-villa-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.57,
+        2.3,
+        3.29,
+        -3.505
+      ],
+      "texture": "east-villa-sign.png"
+    }
+  },
+  {
+    "name": "South Guest Villa",
+    "slug": "south-villa",
+    "x": 18,
+    "z": -17,
+    "rot": 270,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "south-villa-1.obj",
+        "collider": "south-villa-1-collision.obj",
+        "vertices": 3952,
+        "triangles": 1884,
+        "collider_parts": 137,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.12,
+          3.59
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "south-villa-2.obj",
+        "collider": "south-villa-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.02,
+          3.59
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.9,
+      6.9
+    ],
+    "sign": {
+      "mesh": "south-villa-sign.obj",
+      "collider": "south-villa-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.57,
+        2.3,
+        3.29,
+        -3.505
+      ],
+      "texture": "south-villa-sign.png"
+    }
+  },
+  {
+    "name": "West Guest Villa",
+    "slug": "west-villa",
+    "x": -18,
+    "z": -17,
+    "rot": 90,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "west-villa-1.obj",
+        "collider": "west-villa-1-collision.obj",
+        "vertices": 3952,
+        "triangles": 1884,
+        "collider_parts": 137,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.12,
+          3.59
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "west-villa-2.obj",
+        "collider": "west-villa-2-collision.obj",
+        "vertices": 3520,
+        "triangles": 1676,
+        "collider_parts": 117,
+        "bounds": [
+          -3.59,
+          0.0,
+          -3.59,
+          3.59,
+          4.02,
+          3.59
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.9,
+      6.9
+    ],
+    "sign": {
+      "mesh": "west-villa-sign.obj",
+      "collider": "west-villa-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.57,
+        2.3,
+        3.29,
+        -3.505
+      ],
+      "texture": "west-villa-sign.png"
+    }
+  },
+  {
+    "name": "Resort Reception",
+    "slug": "reception",
+    "x": 0,
+    "z": -21,
+    "rot": 0,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "reception-1.obj",
+        "collider": "reception-1-collision.obj",
+        "vertices": 3736,
+        "triangles": 1792,
+        "collider_parts": 128,
+        "bounds": [
+          -4.09,
+          0.0,
+          -3.09,
+          4.09,
+          4.12,
+          3.09
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "reception-2.obj",
+        "collider": "reception-2-collision.obj",
+        "vertices": 3304,
+        "triangles": 1584,
+        "collider_parts": 108,
+        "bounds": [
+          -4.09,
+          0.0,
+          -3.09,
+          4.09,
+          4.02,
+          3.09
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      7.9,
+      5.9
+    ],
+    "sign": {
+      "mesh": "reception-sign.obj",
+      "collider": "reception-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.07,
+        2.3,
+        3.29,
+        -3.005
+      ],
+      "texture": "reception-sign.png"
+    }
+  },
+  {
+    "name": "Poolside Cafe",
+    "slug": "cafe",
+    "x": 0,
+    "z": 21,
+    "rot": 180,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "cafe-1.obj",
+        "collider": "cafe-1-collision.obj",
+        "vertices": 3736,
+        "triangles": 1792,
+        "collider_parts": 128,
+        "bounds": [
+          -4.09,
+          0.0,
+          -3.09,
+          4.09,
+          4.12,
+          3.09
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "cafe-2.obj",
+        "collider": "cafe-2-collision.obj",
+        "vertices": 3304,
+        "triangles": 1584,
+        "collider_parts": 108,
+        "bounds": [
+          -4.09,
+          0.0,
+          -3.09,
+          4.09,
+          4.02,
+          3.09
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      7.9,
+      5.9
+    ],
+    "sign": {
+      "mesh": "cafe-sign.obj",
+      "collider": "cafe-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.07,
+        2.3,
+        3.29,
+        -3.005
+      ],
+      "texture": "cafe-sign.png"
+    }
+  },
+  {
+    "name": "Service Laundry",
+    "slug": "laundry",
+    "x": -19,
+    "z": 0,
+    "rot": 90,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "laundry-1.obj",
+        "collider": "laundry-1-collision.obj",
+        "vertices": 4936,
+        "triangles": 2344,
+        "collider_parts": 190,
+        "bounds": [
+          -3.34,
+          0.0,
+          -3.84,
+          3.34,
+          4.12,
+          3.84
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "laundry-2.obj",
+        "collider": "laundry-2-collision.obj",
+        "vertices": 4504,
+        "triangles": 2136,
+        "collider_parts": 170,
+        "bounds": [
+          -3.34,
+          0.0,
+          -3.84,
+          3.34,
+          4.02,
+          3.84
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.4,
+      7.4
+    ],
+    "sign": {
+      "mesh": "laundry-sign.obj",
+      "collider": "laundry-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.82,
+        2.3,
+        3.29,
+        -3.755
+      ],
+      "texture": "laundry-sign.png"
+    }
+  },
+  {
+    "name": "Pool Equipment Room",
+    "slug": "pool-equipment",
+    "x": 19,
+    "z": 0,
+    "rot": 270,
+    "kind": "building",
+    "states": [
+      {
+        "mesh": "pool-equipment-1.obj",
+        "collider": "pool-equipment-1-collision.obj",
+        "vertices": 5056,
+        "triangles": 2564,
+        "collider_parts": 154,
+        "bounds": [
+          -3.34,
+          0.0,
+          -3.84,
+          3.34,
+          4.12,
+          3.84
+        ],
+        "label": "Full building and accessible rooftop"
+      },
+      {
+        "mesh": "pool-equipment-2.obj",
+        "collider": "pool-equipment-2-collision.obj",
+        "vertices": 4624,
+        "triangles": 2356,
+        "collider_parts": 134,
+        "bounds": [
+          -3.34,
+          0.0,
+          -3.84,
+          3.34,
+          4.02,
+          3.84
+        ],
+        "label": "Open floor 1"
+      }
+    ],
+    "footprint": [
+      6.4,
+      7.4
+    ],
+    "sign": {
+      "mesh": "pool-equipment-sign.obj",
+      "collider": "pool-equipment-sign-collision.obj",
+      "vertices": 28,
+      "triangles": 14,
+      "collider_parts": 1,
+      "bounds": [
+        -2.3,
+        2.79,
+        -3.82,
+        2.3,
+        3.29,
+        -3.755
+      ],
+      "texture": "pool-equipment-sign.png"
+    }
+  },
+  {
+    "name": "Luggage Trolley",
+    "slug": "luggage-trolley",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "luggage-trolley-1.obj",
+        "collider": "luggage-trolley-1-collision.obj",
+        "vertices": 1536,
+        "triangles": 832,
+        "collider_parts": 48,
+        "bounds": [
+          -1.1,
+          0.0,
+          -0.625,
+          1.1,
+          3.337856371500917,
+          0.625
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Limestone Planter",
+    "slug": "limestone-planter",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "limestone-planter-1.obj",
+        "collider": "limestone-planter-1-collision.obj",
+        "vertices": 2132,
+        "triangles": 1076,
+        "collider_parts": 21,
+        "bounds": [
+          -1.5324650565931612,
+          0.0,
+          -1.4848713519463288,
+          1.58,
+          3.6569173414875764,
+          1.4848713519463292
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Bronze Sculpture",
+    "slug": "bronze-sculpture",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "bronze-sculpture-1.obj",
+        "collider": "bronze-sculpture-1-collision.obj",
+        "vertices": 1376,
+        "triangles": 688,
+        "collider_parts": 84,
+        "bounds": [
+          -0.9,
+          0.0,
+          -0.8,
+          0.9,
+          3.8049999999999997,
+          0.8
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Linen Cart",
+    "slug": "linen-cart",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "linen-cart-1.obj",
+        "collider": "linen-cart-1-collision.obj",
+        "vertices": 984,
+        "triangles": 556,
+        "collider_parts": 25,
+        "bounds": [
+          -1.1,
+          0.0,
+          -0.655,
+          1.54,
+          2.4,
+          0.625
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Pool Maintenance Unit",
+    "slug": "maintenance-unit",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "maintenance-unit-1.obj",
+        "collider": "maintenance-unit-1-collision.obj",
+        "vertices": 3876,
+        "triangles": 2016,
+        "collider_parts": 206,
+        "bounds": [
+          -1.0,
+          0.0,
+          -0.65,
+          1.0,
+          2.1574999999999998,
+          0.65
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Stacked Sun Loungers",
+    "slug": "stacked-loungers",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "stacked-loungers-1.obj",
+        "collider": "stacked-loungers-1-collision.obj",
+        "vertices": 1464,
+        "triangles": 732,
+        "collider_parts": 61,
+        "bounds": [
+          -0.54,
+          0.0,
+          -1.2,
+          0.54,
+          1.4331479621655707,
+          1.2255553961419177
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Pool Bar Cart",
+    "slug": "pool-bar-cart",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "pool-bar-cart-1.obj",
+        "collider": "pool-bar-cart-1-collision.obj",
+        "vertices": 1320,
+        "triangles": 780,
+        "collider_parts": 25,
+        "bounds": [
+          -1.45,
+          0.0,
+          -0.75,
+          1.45,
+          2.69,
+          0.825
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Damaged Shade Screen",
+    "slug": "shade-screen",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "scatter",
+    "states": [
+      {
+        "mesh": "shade-screen-1.obj",
+        "collider": "shade-screen-1-collision.obj",
+        "vertices": 632,
+        "triangles": 316,
+        "collider_parts": 24,
+        "bounds": [
+          -2.4699999999999998,
+          0.0,
+          -0.3,
+          0.30000000000000004,
+          2.55,
+          1.87
+        ],
+        "label": "Approved scatter design - solid geometry and matching collider"
+      }
+    ],
+    "footprint": null
+  },
+  {
+    "name": "Resort Garden Wall",
+    "slug": "garden-wall",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "kind": "wall",
+    "states": [
+      {
+        "mesh": "garden-wall-1.obj",
+        "collider": "garden-wall-1-collision.obj",
+        "vertices": 96,
+        "triangles": 48,
+        "collider_parts": 4,
+        "bounds": [
+          -1.94,
+          0.0,
+          -0.275,
+          1.94,
+          1.6,
+          0.275
+        ],
+        "label": "Low solid garden wall"
+      }
+    ],
+    "footprint": null
+  }
+]

@@ -1,0 +1,4 @@
+__pycache__/
+Release/
+Review/*.blend*
+Review/*.xml
