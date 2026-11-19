@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 1,
+  "title": "ARO Declaration Benchmark — Decoys, Mines, and Camouflaged Troopers",
+  "cases": [
+    {
+      "id": "aro-declaration-blanket",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "Example a:  I walk past an enemy decoy.   I walk past an enemy Mine at 10 inches away.  I walk past an enemy camo marker that declines to ARO.  Can my opponent say \"I do not ARO\" with all of those?",
+      "approvedAnswer": "Yes. “I do not ARO” can mean no AROs are being declared. The reactive player need not identify which marker was eligible. A Decoy replica has no ARO, a real Camouflaged trooper can pass without revealing itself, and an out-of-range Mine does nothing. If an enemy declares or executes a Skill or ARO within a Mine’s Trigger Area and the template can legally be placed, the Mine must trigger.",
+      "approvedCertainty": "RULES INTERPRETATION",
+      "approvedConclusion": "INTERPRETATION",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "ARO: Automatic Reaction Order",
+          "url": "https://infinitythewiki.com/ARO"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Decoy State — Effects and Cancellation",
+          "url": "https://infinitythewiki.com/Decoy_State"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Mines — Effects and Trigger Area",
+          "url": "https://infinitythewiki.com/Mines"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Camouflaged State — Cancellation",
+          "url": "https://infinitythewiki.com/Camouflaged_State"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Open and Private Information",
+          "url": "https://infinitythewiki.com/Open_and_Private_Information"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-blanket-q1",
+          "question": "Can I just say no ARO for a decoy, a mine outside trigger range, and a camo guy who passes?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q2",
+          "question": "I Move past a fake Decoy, an out-of-range Mine, and a real camo trooper. Does my opponent have to tell me which could react?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q3",
+          "question": "Is a blanket “no AROs” legal when one marker is a Decoy, one is a Mine that can't reach, and one is a camouflaged trooper declining to react?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q4",
+          "question": "When I ask for reactions, can my opponent give the same answer for a Decoy, a Mine ten inches away, and a CAMO marker that chooses silence?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q5",
+          "question": "Do you have to distinguish “can't ARO” from “won't ARO” when I walk past a Decoy, a distant Mine and a camo marker?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q6",
+          "question": "Can the reactive player just say “nothing reacts” instead of explaining whether each Decoy, Mine or CAMO marker had a reaction?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q7",
+          "question": "no aro for decoy mine at 10 inches and camo that passes, can they say that for all three",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-blanket-q8",
+          "question": "Is there any difference between something like a decoy or a mine that physically HAS no ARO, and a model declining to take an ARO?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "decoy",
+        "mine",
+        "camo"
+      ]
+    },
+    {
+      "id": "aro-declaration-decoy",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "If all three Decoys stay silent after I Move, does my opponent have to point out which one could ARO?",
+      "approvedAnswer": "No. A Decoy replica has no ARO to declare. The real trooper can decline an eligible ARO without revealing itself, so a general “no ARO” does not identify the real trooper. If the real trooper passes when first eligible, it forfeits the ARO for that Order unless a rule specifically allows it to delay.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "ARO: Automatic Reaction Order",
+          "url": "https://infinitythewiki.com/ARO"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Decoy State — Effects and Cancellation",
+          "url": "https://infinitythewiki.com/Decoy_State"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-decoy-q1",
+          "question": "Can I tell which Decoy is real from the fact my opponent said no ARO?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-decoy-q2",
+          "question": "Does saying “I do not ARO” give away which Decoy marker is the trooper?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-decoy-q3",
+          "question": "Must the defender distinguish a fake Decoy with no ARO from the real Decoy user passing?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-decoy-q4",
+          "question": "Can a Decoy replica itself declare an ARO?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-decoy-q5",
+          "question": "Are the fake Decoys entitled to a reaction if I walk in front of them?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "decoy",
+        "aro"
+      ],
+      "fuzzyExcludedTerms": [
+        "holoecho",
+        "mine",
+        "discover"
+      ]
+    },
+    {
+      "id": "aro-declaration-mine-trigger",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "My Move passes through a Mine's Trigger Area and the template is legal. Does it still go off if the defender says no ARO?",
+      "approvedAnswer": "Yes. A deployed Mine must trigger when an enemy Model or Marker declares or executes a Skill or ARO inside its Trigger Area, provided the template can legally be placed. A blanket “no ARO” does not waive that trigger. The Mine cannot trigger if the template would affect an ally, and Total Cover from the Blast Focus is outside its Trigger Area.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Mines — Effects and Trigger Area",
+          "url": "https://infinitythewiki.com/Mines"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-mine-trigger-q1",
+          "question": "If I walk into a deployed Mine's template with no allies of the Mine in the way, does it have to detonate even when my opponent declines every ARO?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-mine-trigger-q2",
+          "question": "Does a Mine still trigger on a qualifying Move if nobody declares an ARO?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-mine-trigger-q3",
+          "question": "If the Move is in a Mine’s Trigger Area and the template is legal, is triggering mandatory after a blanket no ARO?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "mine",
+        "trigger area",
+        "template",
+        "no aro"
+      ],
+      "fuzzyExcludedTerms": [
+        "outside",
+        "total cover",
+        "wildparrot",
+        "dodge movement"
+      ]
+    },
+    {
+      "id": "aro-declaration-mine-outside",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "If I stay at least ten inches from the Mine for my entire Move, does it trigger?",
+      "approvedAnswer": "No. If the entire Move is outside the Mine's Trigger Area, the Mine does not trigger. The trigger is checked against the Mine's Small Teardrop Template, not a trooper's Zone of Control. Check the path as well as the endpoint.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Mines — Effects and Trigger Area",
+          "url": "https://infinitythewiki.com/Mines"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-mine-outside-q1",
+          "question": "Does a Mine go off when I walk past it without ever entering its Trigger Area?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-mine-outside-q2",
+          "question": "I am in sight of the Mine but my whole path stays outside the teardrop. Does it detonate?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-mine-outside-q3",
+          "question": "Do I trigger a Mine if I walk by it ten inches away the entire time?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-mine-outside-q4",
+          "question": "Does a concealed Mine react to a Move that never enters its template?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "mine",
+        "entire",
+        "trigger"
+      ],
+      "fuzzyExcludedTerms": [
+        "inside",
+        "wildparrot"
+      ]
+    },
+    {
+      "id": "aro-declaration-pass-first",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "A real camo trooper has LoF to my first Move and says no ARO. Can it shoot after my second Move in the same Order?",
+      "approvedAnswer": "No. If the CAMO trooper already had a valid ARO after the first Short Skill and passed, it forfeits the ARO against that Order. Merely passing does not reveal it. A trooper that first becomes eligible after the second Short Skill can react then. An explicit rule allowing a delay is separate from passing.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "ARO: Automatic Reaction Order",
+          "url": "https://infinitythewiki.com/ARO"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Camouflaged State — Cancellation",
+          "url": "https://infinitythewiki.com/Camouflaged_State"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-pass-first-q1",
+          "question": "Can a CAMO marker that already had a valid ARO and passed change its mind after the second Short Skill?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-pass-first-q2",
+          "question": "The real trooper under a camo token had an ARO on my first skill. They passed. Do they get another chance this Order?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-pass-first-q3",
+          "question": "My visible active trooper Moves twice. Can an enemy camouflaged trooper pass on a valid first ARO and react to the second Move?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-pass-first-q4",
+          "question": "If a CAMO trooper skips a legal reaction to my first Move, can it still Dodge on my second skill?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "camo",
+        "valid aro",
+        "pass",
+        "first",
+        "second"
+      ],
+      "fuzzyExcludedTerms": [
+        "first valid aro",
+        "no valid aro",
+        "delay"
+      ]
+    },
+    {
+      "id": "aro-declaration-first-eligible-second",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "My first Move gives the CAMO trooper no valid ARO. My second Move gives it LoF for the first time and its first valid ARO. Can it react after saying no ARO earlier?",
+      "approvedAnswer": "Yes. If the trooper had no valid ARO after the first Short Skill and the second Short Skill grants its first valid ARO, it can react then. A blanket “no ARO” at the first window does not give up an ARO that was not yet available.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "ARO: Automatic Reaction Order",
+          "url": "https://infinitythewiki.com/ARO"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "section": "Order Expenditure Sequence",
+          "url": "https://infinitythewiki.com/Order_Expenditure_Sequence"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "aro-declaration-first-eligible-second-q1",
+          "question": "Can a real camo marker declare an ARO on the second Short Skill when it was ineligible on the first?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-first-eligible-second-q2",
+          "question": "The opponent said no reactions after Move one, but a camo trooper gains its first ARO on Move two. Can it take it?",
+          "style": "PLAYER_WORDING"
+        },
+        {
+          "id": "aro-declaration-first-eligible-second-q3",
+          "question": "Can the defender react after the second skill if they said no ARO earlier because no trooper was eligible?",
+          "style": "PLAYER_WORDING"
+        }
+      ],
+      "fuzzyRequiredTerms": [
+        "aro",
+        "first valid aro",
+        "second"
+      ],
+      "fuzzyExcludedTerms": [
+        "forfeit",
+        "delay"
+      ]
+    }
+  ]
+}
