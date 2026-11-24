@@ -154,7 +154,7 @@ local function drawerRender(logical)
    return b
   end
   local function line(y)children[#children+1]=v1Node('Panel',{rectAlignment='UpperLeft',offsetXY='12 '..y,width='326',height='1',color='#304A58FF',raycastTarget='false'})end
-  text('LOBO',12,-7,180,12,20);text('Map Controls',12,-27,220,22,30)
+  text(state.mapName or 'LOBO',12,-7,state.mapName and 258 or 180,state.mapName and 11 or 12,20);text('Map Controls',12,-27,220,22,30)
   localButton('close','Close','loboDrawerClose',273,-14,65)
   local y=-67
   if #groups.rules>0 then action('mission','Mission',(groups.mission[1]or groups.fallbackmission[1]),12,y,159);action('rules','Map Rules',groups.rules[1],179,y,159)

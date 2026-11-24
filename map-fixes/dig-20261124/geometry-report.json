@@ -1,0 +1,314 @@
+[
+  {
+    "file": "annex-state-3-mesh.obj",
+    "removed_faces": 512,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-2-mesh.obj",
+    "removed_faces": 448,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "annex-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "terrain-cbd29d03-ledge-state-3-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-8e8c4abf-ledge-state-3-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-b1b4ea08-ledge-state-2-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-807b50db-ledge-state-2-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "civic-state-3-mesh.obj",
+    "removed_faces": 496,
+    "moved_vertices": 1768,
+    "added_vertices": 352
+  },
+  {
+    "file": "civic-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 48,
+    "added_vertices": 352
+  },
+  {
+    "file": "civic-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 1768,
+    "added_vertices": 168
+  },
+  {
+    "file": "civic-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 48,
+    "added_vertices": 168
+  },
+  {
+    "file": "civic-state-2-mesh.obj",
+    "removed_faces": 440,
+    "moved_vertices": 1768,
+    "added_vertices": 344
+  },
+  {
+    "file": "civic-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 48,
+    "added_vertices": 344
+  },
+  {
+    "file": "terrain-66f50f76-ledge-state-3-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-10590f7d-ledge-state-3-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-5a63328f-ledge-state-2-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-33dad06b-ledge-state-2-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "annex-state-3-mesh.obj",
+    "removed_faces": 512,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-2-mesh.obj",
+    "removed_faces": 448,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "annex-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "annex-state-3-mesh.obj",
+    "removed_faces": 512,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-2-mesh.obj",
+    "removed_faces": 448,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "annex-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "terrain-cbd29d03-ledge-state-3-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-8e8c4abf-ledge-state-3-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-b1b4ea08-ledge-state-2-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-807b50db-ledge-state-2-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "civic-state-3-mesh.obj",
+    "removed_faces": 496,
+    "moved_vertices": 1768,
+    "added_vertices": 352
+  },
+  {
+    "file": "civic-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 48,
+    "added_vertices": 352
+  },
+  {
+    "file": "civic-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 1768,
+    "added_vertices": 168
+  },
+  {
+    "file": "civic-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 48,
+    "added_vertices": 168
+  },
+  {
+    "file": "civic-state-2-mesh.obj",
+    "removed_faces": 440,
+    "moved_vertices": 1768,
+    "added_vertices": 344
+  },
+  {
+    "file": "civic-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 48,
+    "added_vertices": 344
+  },
+  {
+    "file": "terrain-66f50f76-ledge-state-3-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-10590f7d-ledge-state-3-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-5a63328f-ledge-state-2-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "terrain-33dad06b-ledge-state-2-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 200
+  },
+  {
+    "file": "annex-state-3-mesh.obj",
+    "removed_faces": 512,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-3-collider.obj",
+    "removed_faces": 208,
+    "moved_vertices": 0,
+    "added_vertices": 400
+  },
+  {
+    "file": "annex-state-1-mesh.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-1-collider.obj",
+    "removed_faces": 0,
+    "moved_vertices": 0,
+    "added_vertices": 192
+  },
+  {
+    "file": "annex-state-2-mesh.obj",
+    "removed_faces": 448,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  },
+  {
+    "file": "annex-state-2-collider.obj",
+    "removed_faces": 144,
+    "moved_vertices": 0,
+    "added_vertices": 392
+  }
+]

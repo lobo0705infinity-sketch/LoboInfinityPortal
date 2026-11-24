@@ -1,0 +1,30 @@
+[
+  {
+    "map": "810340",
+    "changed_buildings": [
+      "Research Annex East",
+      "Tenement South",
+      "Civic Corner West",
+      "Central Ruined Block",
+      "Central Survey Annex"
+    ],
+    "rendered_buttons_identical": true,
+    "map_name_visible": true,
+    "unrelated_objects_unchanged": true,
+    "runtime_controls_passed": true
+  },
+  {
+    "map": "8a1c29",
+    "changed_buildings": [
+      "Research Annex East",
+      "Tenement South",
+      "Civic Corner West",
+      "Central Ruined Block",
+      "Central Survey Annex"
+    ],
+    "rendered_buttons_identical": true,
+    "map_name_visible": true,
+    "unrelated_objects_unchanged": true,
+    "runtime_controls_passed": true
+  }
+]

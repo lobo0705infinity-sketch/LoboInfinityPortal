@@ -12,6 +12,9 @@ def validate(path):
  else:data=json.loads(path.read_text())
  maps=list(bags(data));assert maps,'No map setups found'
  canonical=(ROOT/'standard-broker.lua').read_text();scripts=set();brokers=0
+ # Header-only compatibility: untouched maps retain the approved literal LOBO heading.
+ # Both complete renderer versions are exact; all other panel drift still fails.
+ previous_header=canonical.replace("text(state.mapName or 'LOBO',12,-7,state.mapName and 258 or 180,state.mapName and 11 or 12,20)","text('LOBO',12,-7,180,12,20)")
  for b in maps:
   owners=[o for o in walk(b)if 'LOBO_STANDARD_VERSION=1'in o.get('LuaScript','')]
   assert len(owners)==1,(b['GUID'],'missing or duplicate standard owner')
@@ -23,7 +26,7 @@ def validate(path):
    match=re.search(r'local loboLifeBrokerData=(".*")',s)
    if match:
     embedded=json.loads(json.loads(match[1]))['LuaScript']
-    assert embedded==canonical,(b['GUID'],o['GUID'],'panel drift')
+    assert embedded in (canonical,previous_header),(b['GUID'],o['GUID'],'panel drift')
     brokers+=1
   owner=owners[0]['LuaScript']
   for fn in ['loboRotateMap180','loboStandardClear','loboStandardGrid','loboStandardMissionOpen','loboZonePickColor','loboStandardInvoke']:
