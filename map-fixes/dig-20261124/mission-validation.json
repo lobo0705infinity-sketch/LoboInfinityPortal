@@ -1,0 +1,16 @@
+[
+  {
+    "map": "810340",
+    "mission_open_close_and_controls_pass": true,
+    "only_text_measurement_changed": true
+  },
+  {
+    "map": "8a1c29",
+    "mission_open_close_and_controls_pass": true,
+    "only_text_measurement_changed": true
+  },
+  {
+    "long_text_without_pattern_matching": true,
+    "line_heights_unchanged": true
+  }
+]

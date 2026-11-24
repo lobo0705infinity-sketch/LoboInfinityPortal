@@ -126,7 +126,14 @@ do
   local colors={};for c,on in pairs(missionReaders)do if on then colors[#colors+1]=c end end
   if #colors>0 then
    local body=LOBO_STANDARD_META.missionText or''
-   local lines=0;for line in (body..'\n'):gmatch('(.-)\n')do lines=lines+math.max(1,math.ceil(#line/75))end
+   local lines,start=0,1
+   while true do
+    local stop=string.find(body,'\n',start,true)
+    local length=(stop or (#body+1))-start
+    lines=lines+math.max(1,math.ceil(length/75))
+    if not stop then break end
+    start=stop+1
+   end
    local height=math.max(440,lines*24+40)
    roots[#roots+1]={tag='Panel',attributes={id=id,rectAlignment='MiddleCenter',width='760',height='620',allowDragging='true',color='#10212AFF',active='true',visibility=table.concat(colors,'|')},children={
     {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='22 -12',width='580',height='38',fontSize='24',color='#FFFFFFFF',alignment='MiddleLeft'},value=LOBO_STANDARD_META.mission..' - Mission'},

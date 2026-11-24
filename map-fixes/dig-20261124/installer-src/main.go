@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const collectionName = "Lobo Maps - The Dig Access R3"
+const collectionName = "Lobo Maps - The Dig Access R4"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
@@ -285,7 +285,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if out.Save == "" {
 		return out, errors.New("no unused save slot")
 	}
-	out.Version = "The Dig Access R3"
+	out.Version = "The Dig Access R4"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n
@@ -298,7 +298,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if e != nil {
 		return out, e
 	}
-	lp := filepath.Join(logDir, "Dig-Access-R3-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
+	lp := filepath.Join(logDir, "Dig-Access-R4-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
 	if e = writeNew(lp, log); e != nil {
 		return out, e
 	}
@@ -320,7 +320,7 @@ func main() {
 		}
 		os.Exit(code)
 	}()
-	fmt.Println("LOBO THE DIG - CLEAN WORKSHOP SETUP R3")
+	fmt.Println("LOBO THE DIG - CLEAN WORKSHOP SETUP R4")
 	if *root == "" && flag.NArg() > 0 {
 		*root = flag.Arg(0)
 	}
