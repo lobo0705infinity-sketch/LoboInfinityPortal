@@ -13,12 +13,11 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 )
 
-const collectionName = "Lobo Maps - The Dig Access R2"
+const collectionName = "Lobo Maps - The Dig Access R3"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
@@ -204,60 +203,15 @@ func apply(d object, ps []patch) (int, error) {
 	return changed, nil
 }
 func selectSave(root, explicit string, files map[string][]byte, ps []patch) (object, string, int, string, error) {
-	updates, e := decode(files["Workshop-Save.json"])
+	if explicit != "" {
+		return nil, "", 0, "", errors.New("This installer creates a clean collection and does not import saved play sessions. Run without --source-save.")
+	}
+	d, e := decode(files["Workshop-Save.json"])
 	if e != nil {
 		return nil, "", 0, "", e
 	}
-	candidates := []string{}
-	if explicit != "" {
-		candidates = append(candidates, explicit)
-	} else {
-		_ = filepath.WalkDir(filepath.Join(root, "Saves"), func(p string, d os.DirEntry, err error) error {
-			if err == nil && !d.IsDir() && strings.HasSuffix(strings.ToLower(p), ".json") {
-				candidates = append(candidates, p)
-			}
-			return nil
-		})
-		sort.Slice(candidates, func(i, j int) bool {
-			a, _ := os.Stat(candidates[i])
-			b, _ := os.Stat(candidates[j])
-			return a.ModTime().After(b.ModTime())
-		})
-	}
-	for _, p := range candidates {
-		raw, err := os.ReadFile(p)
-		if err != nil {
-			continue
-		}
-		d, err := decode(raw)
-		if err != nil {
-			continue
-		}
-		found := map[string]object{}
-		for _, m := range maps(d) {
-			found[str(m, "GUID")] = m
-		}
-		if found["810340"] == nil || found["8a1c29"] == nil {
-			continue
-		}
-		for _, m := range maps(updates) {
-			if str(m, "GUID") != "810340" && str(m, "GUID") != "8a1c29" {
-				continue
-			}
-			dst := found[str(m, "GUID")]
-			transform := dst["Transform"]
-			for k := range dst {
-				delete(dst, k)
-			}
-			for k, v := range m {
-				dst[k] = v
-			}
-			dst["Transform"] = transform
-		}
-		d["SaveName"] = collectionName
-		return d, p, 2, "Only The Dig and its Top 40 copy updated; all other maps and controls preserved.", nil
-	}
-	return updates, "Included current R14 collection", 2, "Full current collection with only The Dig and Winners Round 4 updated.", nil
+	d["SaveName"] = collectionName
+	return d, "Included clean approved collection", 2, "Clean collection table. No local save or active battlefield was imported.", nil
 }
 func writeNew(path string, b []byte) error {
 	f, e := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
@@ -331,7 +285,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if out.Save == "" {
 		return out, errors.New("no unused save slot")
 	}
-	out.Version = "The Dig Access R2"
+	out.Version = "The Dig Access R3"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n
@@ -344,7 +298,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if e != nil {
 		return out, e
 	}
-	lp := filepath.Join(logDir, "Dig-Access-R2-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
+	lp := filepath.Join(logDir, "Dig-Access-R3-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
 	if e = writeNew(lp, log); e != nil {
 		return out, e
 	}
@@ -366,7 +320,7 @@ func main() {
 		}
 		os.Exit(code)
 	}()
-	fmt.Println("LOBO STANDARD MAP CONTROLS - WORKSHOP SETUP R2")
+	fmt.Println("LOBO THE DIG - CLEAN WORKSHOP SETUP R3")
 	if *root == "" && flag.NArg() > 0 {
 		*root = flag.Arg(0)
 	}

@@ -1,0 +1,14 @@
+[
+  {
+    "contaminated_local_save": false,
+    "output_matches_clean_collection": true,
+    "active_map_not_imported": true,
+    "existing_save_preserved": true
+  },
+  {
+    "contaminated_local_save": true,
+    "output_matches_clean_collection": true,
+    "active_map_not_imported": true,
+    "existing_save_preserved": true
+  }
+]

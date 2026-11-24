@@ -9,3 +9,7 @@ The renderer adds optional map-name text in the original LOBO header slot. The r
 Public mesh revision: 4c47230383fc12b04c745af1dbe93135a91fd065. Installer package: Lobo-The-Dig-Workshop-Update-R2.zip.
 
 Tests simulate TTS APIs; no native TTS or Steam publication is claimed. Geometry render is for local inspection only.
+
+## R3 correction
+
+R2 could import an already-deployed battlefield from the newest local save. R3 always uses the clean included approved collection. It never imports local session objects, globals, or UI. Regression tests include a saved unrelated battlefield and stale controller. Existing saves remain untouched. Building assets and all map control buttons are unchanged.
