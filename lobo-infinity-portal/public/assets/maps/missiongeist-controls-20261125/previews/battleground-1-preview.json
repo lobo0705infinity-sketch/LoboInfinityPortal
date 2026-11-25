@@ -2,7 +2,7 @@
   "slug": "battleground-1",
   "name": "Cairnfall Sanctuary",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100326.json",
-  "bagSha256": "e27eed27d7bee834ff93e410651f3b66bb89d0a02a7997a000c6c8c87958c962",
+  "bagSha256": "25fff6a15a96084bf6a05254ee753c968dce9b3a6ea5f2356d3b9247bf35ae5e",
   "views": {
     "overhead": "battleground-1-overhead.webp",
     "angled": "battleground-1-angled.webp"

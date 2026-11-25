@@ -2,7 +2,7 @@
   "slug": "veyra-gate",
   "name": "Veyra Gate",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/810108.json",
-  "bagSha256": "603b1c46de09607244c0c31487a277d5672a52fc64008a70e3a61031cf1a1bdb",
+  "bagSha256": "27aacf2ba18990ae4ea6baa881bd0b59a832165bc9d868f0b697e2a80f4b4dff",
   "views": {
     "overhead": "veyra-gate-overhead.webp",
     "angled": "veyra-gate-angled.webp"

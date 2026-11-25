@@ -2,7 +2,7 @@
   "slug": "leviathans-wake",
   "name": "Leviathan’s Wake",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/af0667.json",
-  "bagSha256": "024e34c356b2013fd1b7708ebc33470f4a3bf2eb9fb376ac1876a107b5ddcd6b",
+  "bagSha256": "9daf484097f3d4e1ff580611e6c8e739136283d9788af934e52a8007718f5dc9",
   "views": {
     "overhead": "leviathans-wake-overhead.webp",
     "angled": "leviathans-wake-angled.webp"

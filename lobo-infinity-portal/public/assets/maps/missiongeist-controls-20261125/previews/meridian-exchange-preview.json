@@ -2,7 +2,7 @@
   "slug": "meridian-exchange",
   "name": "Meridian Exchange",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/1005e4.json",
-  "bagSha256": "1295d31bc02843b92520b0632f15c145cdc01e984175141eddacd648e254b250",
+  "bagSha256": "1558177b3aeff63f7b6678cf82546344edf689bdc6986dd0d6e12d737b7479bd",
   "views": {
     "overhead": "meridian-exchange-overhead.webp",
     "angled": "meridian-exchange-angled.webp"

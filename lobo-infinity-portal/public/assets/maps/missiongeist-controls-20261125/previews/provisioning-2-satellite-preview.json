@@ -2,7 +2,7 @@
   "slug": "provisioning-2-satellite",
   "name": "Sirocco Wells",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/8102b2.json",
-  "bagSha256": "e24a29e6df36cd889ab8972b5aba70dfbac09811fda244625af22a6a67b8a0d5",
+  "bagSha256": "b77cc9613bc6993cfd55e14092a32aa7b61acf3b38d0483839dc62e4d9a5ce9e",
   "views": {
     "overhead": "provisioning-2-satellite-overhead.webp",
     "angled": "provisioning-2-satellite-angled.webp"

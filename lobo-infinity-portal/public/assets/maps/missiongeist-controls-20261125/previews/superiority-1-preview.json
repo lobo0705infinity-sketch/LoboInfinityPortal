@@ -2,7 +2,7 @@
   "slug": "superiority-1",
   "name": "Frostline Relay",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100f50.json",
-  "bagSha256": "9b235aed0e3a84c31ff0a8a1560b86653674deb393a94a9527065b7a7c619879",
+  "bagSha256": "ae2d5e22fb71169d9296640c494c570f904dd7ac2080331d1bd65abf3d4fb970",
   "views": {
     "overhead": "superiority-1-overhead.webp",
     "angled": "superiority-1-angled.webp"

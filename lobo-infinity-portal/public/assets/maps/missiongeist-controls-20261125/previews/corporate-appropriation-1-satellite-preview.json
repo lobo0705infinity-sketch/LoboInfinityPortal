@@ -2,7 +2,7 @@
   "slug": "corporate-appropriation-1-satellite",
   "name": "Asterion Research Campus",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/8100c6.json",
-  "bagSha256": "6ea0e6ea58775b503408db80ff731a95d4e591b72a24abc636831e182542a3d3",
+  "bagSha256": "cfe3882c54c845b106ca25c114c48b56871bccbb929ce01f22dfd08f7f378590",
   "views": {
     "overhead": "corporate-appropriation-1-satellite-overhead.webp",
     "angled": "corporate-appropriation-1-satellite-angled.webp"

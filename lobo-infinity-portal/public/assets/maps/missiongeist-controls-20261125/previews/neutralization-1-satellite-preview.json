@@ -2,7 +2,7 @@
   "slug": "neutralization-1-satellite",
   "name": "Vesper Glassworks",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/810241.json",
-  "bagSha256": "8d3c33a82b020aaa0e3793c65546db1dcf9c5e983e510ad17dfba0bbcebc2e15",
+  "bagSha256": "4cdcd44b12548dc04b9f2a2418d4f0ba998194efba067a8c6b2f5faeb4e10887",
   "views": {
     "overhead": "neutralization-1-satellite-overhead.webp",
     "angled": "neutralization-1-satellite-angled.webp"

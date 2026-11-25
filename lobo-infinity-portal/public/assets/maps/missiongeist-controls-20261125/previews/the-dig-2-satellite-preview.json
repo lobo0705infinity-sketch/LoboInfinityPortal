@@ -2,7 +2,7 @@
   "slug": "the-dig-2-satellite",
   "name": "Old Quarter Excavation",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/810340.json",
-  "bagSha256": "7b0f7036c3b533a5b98f46bca3b9930cbbbb21bbbf69d8135ba8719411a27fac",
+  "bagSha256": "7ab96fe5818931521cf910146df21ce17ee1880eb2835ab71b40bf13380ed3a6",
   "views": {
     "overhead": "the-dig-2-satellite-overhead.webp",
     "angled": "the-dig-2-satellite-angled.webp"

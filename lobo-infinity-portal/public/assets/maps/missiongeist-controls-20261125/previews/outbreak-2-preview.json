@@ -2,7 +2,7 @@
   "slug": "outbreak-2",
   "name": "Halcyon Thermal Baths",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100e3e.json",
-  "bagSha256": "d5917795d2ff327950b6c648addfbafbe5136810043a4c0ec7b06713d9f43e64",
+  "bagSha256": "8bc74c07da6212c882311b09e65b0536c583a931a03e15ffcbabad61ec3b657a",
   "views": {
     "overhead": "outbreak-2-overhead.webp",
     "angled": "outbreak-2-angled.webp"

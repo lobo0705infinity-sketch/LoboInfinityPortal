@@ -2,7 +2,7 @@
   "slug": "port-meridian",
   "name": "Port Meridian",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100ca1.json",
-  "bagSha256": "b73cd084ac7f70d34715394365d022cac7905e21c456694581782e5569b2530f",
+  "bagSha256": "ac16e4ccce2e140d788e2dfc3800b4ffeb1cc6a6aa7fee79af0c18151aba4507",
   "views": {
     "overhead": "port-meridian-overhead.webp",
     "angled": "port-meridian-angled.webp"

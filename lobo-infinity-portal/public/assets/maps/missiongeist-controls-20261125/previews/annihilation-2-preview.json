@@ -2,7 +2,7 @@
   "slug": "annihilation-2",
   "name": "Canopy Blacksite",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100135.json",
-  "bagSha256": "35813d96151782d1b0f95d86aec134f5f75646f9f5207c5bb8ba922a1eab7bdb",
+  "bagSha256": "1ffebf989227bf4d87aaa1a82f97938fece529eb615ba0362544e539312d83bd",
   "views": {
     "overhead": "annihilation-2-overhead.webp",
     "angled": "annihilation-2-angled.webp"

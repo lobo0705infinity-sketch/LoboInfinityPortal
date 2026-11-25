@@ -1,3 +1,4 @@
+import { mapDownloadUrl } from './mapDownloadUrl'
 import { Link, useParams } from 'react-router-dom'
 import EventSectionTabs from '../components/EventSectionTabs'
 import { TOP40_EVENT_ID } from './top40PreparationModel'
@@ -18,7 +19,7 @@ export default function Top40MapPage() {
         <h2>{map.name}</h2>
         <p>Mission: {map.mission} · 300 points</p>
         <p>
-          {map.download && <><a href={map.download} download>Download this TTS map bag (JSON)</a> · </>}
+          {map.download && <><a href={mapDownloadUrl(map.download)} download>Download this TTS map bag (JSON)</a> · </>}
           <a href={TOP40_APPROVED_MAPS_INSTALLER} download target="_blank" rel="noopener noreferrer">Download the Workshop installer (ZIP)</a>
           {!map.download && <> · <a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open the Steam Workshop collection ↗</a></>}
         </p>

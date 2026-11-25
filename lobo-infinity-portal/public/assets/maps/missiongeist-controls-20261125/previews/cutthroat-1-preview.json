@@ -2,7 +2,7 @@
   "slug": "cutthroat-1",
   "name": "Redline Interchange",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/1007ad.json",
-  "bagSha256": "eb674b84fb3ccfa8f9a4cfdecc3dd64f58a2da7c0883e79f4d7436d436f73759",
+  "bagSha256": "ba6a492e951bf3aa19b6fecfad725f6b405f24d02481e84f07f4dddbc7846b86",
   "views": {
     "overhead": "cutthroat-1-overhead.webp",
     "angled": "cutthroat-1-angled.webp"

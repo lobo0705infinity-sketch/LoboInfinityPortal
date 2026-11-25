@@ -2,7 +2,7 @@
   "slug": "uplink-center-2",
   "name": "Verdant Exchange",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/1010b1.json",
-  "bagSha256": "27cc9146697ec07e3ed3a55eee59a8bc33658fdf26a5996d7aee45822f5966c1",
+  "bagSha256": "10cfccf38e0141e24036406db6a53c86dcd7cdfb1c9d5582815f7c22e69b1846",
   "views": {
     "overhead": "uplink-center-2-overhead.webp",
     "angled": "uplink-center-2-angled.webp"

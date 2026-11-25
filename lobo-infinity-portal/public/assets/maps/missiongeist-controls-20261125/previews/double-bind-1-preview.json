@@ -2,7 +2,7 @@
   "slug": "double-bind-1",
   "name": "Neon Shogunate",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/100993.json",
-  "bagSha256": "a96bf3737de68b60724af449c91ae6b75663fd29ff3cbb706c8fdc619e127a22",
+  "bagSha256": "341f7345dcc945b3e794e4813b4e33ed933c8148eda5d684782c9a4bdc06a641",
   "views": {
     "overhead": "double-bind-1-overhead.webp",
     "angled": "double-bind-1-angled.webp"

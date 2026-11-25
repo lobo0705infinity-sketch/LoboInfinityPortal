@@ -2,7 +2,7 @@
   "slug": "saltwick-floodgate",
   "name": "Saltwick Floodgate",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/1002d9.json",
-  "bagSha256": "27ecf92b8e2c17de9000d5f38a863e927881edd408f941f3dd53f016520c8c59",
+  "bagSha256": "b4fe39a4a3d4886803b656374e21ceea0979a9c032e995a051414a81a42ac83c",
   "views": {
     "overhead": "saltwick-floodgate-overhead.webp",
     "angled": "saltwick-floodgate-angled.webp"

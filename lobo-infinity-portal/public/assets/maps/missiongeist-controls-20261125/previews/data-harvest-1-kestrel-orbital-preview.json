@@ -2,7 +2,7 @@
   "slug": "data-harvest-1-kestrel-orbital",
   "name": "Kestrel Lunar Base",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/1008da.json",
-  "bagSha256": "e694e579f102c83d8179e927cc172fb4e3c6ca17130e168f791c2ba12dadc125",
+  "bagSha256": "f45b8b5508afd0656a2adff9a2ede08ed9dfe00f2af8817180543be3fddd95ed",
   "views": {
     "overhead": "data-harvest-1-kestrel-orbital-overhead.webp",
     "angled": "data-harvest-1-kestrel-orbital-angled.webp"

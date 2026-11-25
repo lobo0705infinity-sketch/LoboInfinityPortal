@@ -2,7 +2,7 @@
   "slug": "vanta-customs-yard",
   "name": "Vanta Customs Yard",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/810053.json",
-  "bagSha256": "87be6375f6ea77a3d43b5756bb1c61f17abb52f72d223ca77075159f1263cb33",
+  "bagSha256": "55ec0dee861382dc5e8a3824131b22cc70f247705ea6bb5ae6ebb76b0f39ccbd",
   "views": {
     "overhead": "vanta-customs-yard-overhead.webp",
     "angled": "vanta-customs-yard-angled.webp"

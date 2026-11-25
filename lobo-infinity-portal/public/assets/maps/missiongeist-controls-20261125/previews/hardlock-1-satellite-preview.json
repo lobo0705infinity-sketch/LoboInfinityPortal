@@ -2,7 +2,7 @@
   "slug": "hardlock-1-satellite",
   "name": "Ironveil Complex",
   "bagUrl": "/assets/maps/missiongeist-controls-20261125/8101d2.json",
-  "bagSha256": "5e662caa28c4c020be4daf1a04fa385a0ad1ae88de598d74a4c5f31fdd411e8a",
+  "bagSha256": "6154bbb079ae3509b0ad1b497f4a3b5c29d88cb114be57d9c555ec47dce2427a",
   "views": {
     "overhead": "hardlock-1-satellite-overhead.webp",
     "angled": "hardlock-1-satellite-angled.webp"

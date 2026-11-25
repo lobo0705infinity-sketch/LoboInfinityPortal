@@ -1,3 +1,4 @@
+import { mapDownloadUrl } from './mapDownloadUrl'
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { LOBO_WORKSHOP_URL, LOBO_WORKSHOP_DOWNLOAD_URL, LOBO_WORKSHOP_INSTALLER_URL, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMaps, loboWorkshopMapSections } from '../../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings, mapRatingLabel, type MapRating } from './mapRatings'
@@ -102,7 +103,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
       <summary>Collection downloads & installation</summary>
       <p>Download an individual map bag from its map page, or get the full set below. The full download also includes campaign, event and archived setups.</p>
       <div className="lobo-maps-hero-actions">
-        <a download href={LOBO_WORKSHOP_DOWNLOAD_URL} rel="noopener noreferrer" target="_blank">Download all map bags</a>
+        <a download href={mapDownloadUrl(LOBO_WORKSHOP_DOWNLOAD_URL)} rel="noopener noreferrer" target="_blank">Download all map bags</a>
         <a download href={LOBO_WORKSHOP_INSTALLER_URL} rel="noopener noreferrer" target="_blank">{installerMap ? `${installerMap.name} installer` : 'Latest Workshop installer'}</a>
       </div>
       <p>Put a map bag’s JSON in TTS Saved Objects, then drop the bag onto the Infinity mod’s map deployment spot.</p>
@@ -130,7 +131,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><Link to={returnTo}>← Map library</Link><span>{map.isCurrent === false ? `Historical Workshop save ${map.index}` : `Workshop setup ${String(position + 1).padStart(2, '0')} / ${loboWorkshopMaps.length}`}</span></nav>
     <header className="lobo-map-detail-heading">
       <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopBagName}</p>{map.isCurrent === false ? <p>This is a historical Workshop save. <Link to="/maps">Browse the revised ITS18 collection.</Link></p> : null}<p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Inspect this mission setup before loading its matching bag in Tabletop Simulator.</p></div>
-      <div className="lobo-map-download-actions">{map.download ? <a download href={map.download}>Download map bag</a> : null} {map.installer ? <a download href={map.installer} rel="noopener noreferrer" target="_blank">Download Workshop installer</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
+      <div className="lobo-map-download-actions">{map.download ? <a download href={mapDownloadUrl(map.download)}>Download map bag</a> : null} {map.installer ? <a download href={mapDownloadUrl(map.installer)} rel="noopener noreferrer" target="_blank">Download Workshop installer</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
     </header>
     {map.reviewStatus === 'pending' && <p className="lobo-map-review-note">Awaiting review: this is the current published version. Its replacement has not yet been approved.</p>}
     {map.isCurrent !== false && map.download && <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
