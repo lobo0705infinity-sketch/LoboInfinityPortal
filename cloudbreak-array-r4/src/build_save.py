@@ -134,8 +134,9 @@ def deploy(sha):
         elif 'mission' in o.get('Tags',[]):
             tr['posY']=round(tr['posY']-PITCH,6)
         elif o['GUID']=='cb7101':
-            o['CustomMesh']['DiffuseURL']=url+'city-shafts.jpg'
-            o['Description']='A view down the tower facades to the streets and lower roofs of Harmony City. The printed city and thin mist are scenery.'
+            o['CustomMesh']['DiffuseURL']=url+'cloud-deck.jpg'
+            o['Nickname']='Cloudbreak Array | Cloud deck far below'
+            o['Description']='Open air below the rooftops and skybridges. The printed cloud deck has no standing surface. The 23 movable cloud banks mark the Zero Visibility Zones.'
     before=patch_controls(next(o for o in owned if o['GUID']=='cb7102'),obsolete)
     oldname=bag['Nickname'];newname=oldname.removesuffix('R3')+RELEASE
     def stage(b):
