@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const collectionName = "Lobo Maps - Standard Controls R2"
+const collectionName = "Lobo Maps - MissionGeist Controls"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
@@ -28,6 +28,7 @@ type patch struct {
 	New  string `json:"new"`
 }
 type receipt struct {
+	Title   string `json:"save_name"`
 	Version string `json:"version"`
 	Source  string `json:"source"`
 	Save    string `json:"collection_save"`
@@ -155,9 +156,14 @@ func payload(path string) (map[string][]byte, error) {
 		}
 		checked[f.Name] = true
 	}
-	for _, n := range []string{"Workshop-Save.json", "Workshop-Save.png", "control-patches.json"} {
+	for _, n := range []string{"Workshop-Save.json", "Workshop-Save.png", "control-patches.json", "release-extras.json"} {
 		if !checked[n] {
 			return nil, fmt.Errorf("unverified payload: %s", n)
+		}
+	}
+	for name := range files {
+		if name != "installer-manifest.json" && !checked[name] {
+			return nil, fmt.Errorf("unverified file %s", name)
 		}
 	}
 	return files, nil
@@ -196,8 +202,10 @@ func apply(d object, ps []patch) (int, error) {
 			changed++
 		}
 	}
-	if len(seen) != 105 {
-		return 0, fmt.Errorf("source has %d of the 105 supported setups", len(seen))
+	for id := range byMap {
+		if !seen[id] && id != "cb7100" {
+			return 0, fmt.Errorf("source is missing supported setup %s", id)
+		}
 	}
 	d["SaveName"] = collectionName
 	return changed, nil
@@ -238,7 +246,7 @@ func writeNew(path string, b []byte) error {
 	}
 	return e
 }
-func install(root, explicit, path string) (out receipt, err error) {
+func install(root, explicit, path, variant string) (out receipt, err error) {
 	files, e := payload(path)
 	if e != nil {
 		return out, e
@@ -249,6 +257,17 @@ func install(root, explicit, path string) (out receipt, err error) {
 	}
 	d, source, n, note, e := selectSave(root, explicit, files, ps)
 	if e != nil {
+		return out, e
+	}
+	extras, e := readExtras(files)
+	if e != nil {
+		return out, e
+	}
+	selected := extras.Setups[variant]
+	if variant != "" && selected.Name == "" {
+		return out, fmt.Errorf("unknown start map %q", variant)
+	}
+	if e = startMap(d, variant, selected); e != nil {
 		return out, e
 	}
 	b, e := encode(d)
@@ -292,7 +311,17 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if out.Save == "" {
 		return out, errors.New("no unused save slot")
 	}
-	out.Version = "Standard Controls R2"
+	objectDir := filepath.Join(saveDir, "Saved Objects", "Lobo MissionGeist")
+	if e = os.MkdirAll(objectDir, 0755); e != nil {
+		return out, e
+	}
+	for _, entry := range append(extras.Standalone, selected.Objects...) {
+		if e = installObject(objectDir, entry, files, &created); e != nil {
+			return out, e
+		}
+	}
+	out.Title = str(d, "SaveName")
+	out.Version = "MissionGeist Controls 2026-11-25"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n
@@ -305,7 +334,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 	if e != nil {
 		return out, e
 	}
-	lp := filepath.Join(logDir, "Standard-Controls-R2-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
+	lp := filepath.Join(logDir, "MissionGeist-Controls-"+time.Now().UTC().Format("20060102T150405.000000000")+".json")
 	if e = writeNew(lp, log); e != nil {
 		return out, e
 	}
@@ -314,6 +343,7 @@ func install(root, explicit, path string) (out receipt, err error) {
 }
 func main() {
 	root := flag.String("tts-root", "", "TTS data folder")
+	variant := flag.String("start-map", "", "Initial table for a map-specific installer")
 	source := flag.String("source-save", "", "Explicit complete collection")
 	path := flag.String("payload", "", "Payload ZIP")
 	noBrowser := flag.Bool("no-browser", false, "Do not open Workshop")
@@ -327,7 +357,7 @@ func main() {
 		}
 		os.Exit(code)
 	}()
-	fmt.Println("LOBO STANDARD MAP CONTROLS - WORKSHOP SETUP R2")
+	fmt.Println("LOBO MAPS - MISSIONGEIST CONTROLS")
 	if *root == "" && flag.NArg() > 0 {
 		*root = flag.Arg(0)
 	}
@@ -352,21 +382,30 @@ func main() {
 		}
 		*path = filepath.Join(filepath.Dir(exe), "Files", "payload.zip")
 	}
-	out, e := install(*root, *source, *path)
+	if *variant == "" {
+		if data, readErr := os.ReadFile(filepath.Join(filepath.Dir(*path), "start-map.txt")); readErr == nil {
+			*variant = strings.TrimSpace(string(data))
+		} else if !os.IsNotExist(readErr) {
+			fmt.Println(readErr)
+			code = 1
+			return
+		}
+	}
+	out, e := install(*root, *source, *path, *variant)
 	if e != nil {
 		fmt.Println("INSTALLATION FAILED:", e)
 		fmt.Println("Existing saves were preserved.")
 		code = 1
 		return
 	}
-	fmt.Println("Installed:", collectionName)
+	fmt.Println("Installed:", out.Title)
 	fmt.Println("Map setups:", out.Maps)
 	fmt.Println("Source:", out.Source)
 	if out.Note != "" {
 		fmt.Println(out.Note)
 	}
-	fmt.Println("In TTS: Games > Save & Load >", collectionName)
-	fmt.Println("Map Controls: Turn 180, independent zone colors, guides and background. All 105 setups use the same panel.")
+	fmt.Println("In TTS: Games > Save & Load >", out.Title)
+	fmt.Println("Map Controls > Mission gives each player the MissionGeist link. Additional map bags are under Saved Objects > Lobo MissionGeist.")
 	fmt.Println("Publish: Upload > Workshop Upload > Update Workshop > 3719263238")
 	fmt.Println("Steam publication is completed inside TTS. Existing saves remain intact.")
 	if !*noBrowser {

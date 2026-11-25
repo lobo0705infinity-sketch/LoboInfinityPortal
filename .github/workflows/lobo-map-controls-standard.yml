@@ -19,7 +19,7 @@ jobs:
         run: python tts-map-controls-standard/check_current_release.py
         env:
           LOBO_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-      - name: Exercise rendered controls on all 105 maps
+      - name: Exercise rendered controls on every Workshop setup
         run: python tts-map-controls-standard/test_all_parallel.py
       - name: Verify rotation and color persistence
         run: python tts-map-controls-standard/test_persistence.py

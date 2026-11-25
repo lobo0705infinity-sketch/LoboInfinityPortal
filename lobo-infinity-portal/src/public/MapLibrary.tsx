@@ -45,7 +45,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
     (!normalizedQuery || `${map.name} ${map.workshopBagName} ${map.family} ${map.missionSetups.join(' ')}`.toLocaleLowerCase().includes(normalizedQuery)))
     .sort((a, b) => (sort === 'name' ? a.name.localeCompare(b.name) : a.missionSetups[0].localeCompare(b.missionSetups[0])) || a.name.localeCompare(b.name))
   const featured = loboWorkshopMaps.find(map => map.installer === LOBO_WORKSHOP_INSTALLER_URL && map.angled)
-    ?? loboWorkshopMaps.find(map => map.angled) ?? loboWorkshopMaps[0]
+    ?? loboWorkshopMaps.find(map => map.guid === 'af0667' && map.angled) ?? loboWorkshopMaps.find(map => map.angled) ?? loboWorkshopMaps[0]
   const installerMap = loboWorkshopMaps.find(map => map.installer === LOBO_WORKSHOP_INSTALLER_URL)
   const returnTo = `/maps${params.size ? `?${params}` : ''}#browse-maps`
   function filter(key: string, value: string) {

@@ -32,7 +32,7 @@ func documents() (string, error) {
 		defer ole.NewProc("CoTaskMemFree").Call(uintptr(unsafe.Pointer(p)))
 	}
 	if int32(hr) < 0 || p == nil {
-		return "", errors.New("could not locate Documents; drag your TTS data folder onto INSTALL-STANDARD-CONTROLS.cmd")
+		return "", errors.New("could not locate Documents; drag your TTS data folder onto Install.cmd")
 	}
 	var b []uint16
 	for i := uintptr(0); i < 32768; i++ {

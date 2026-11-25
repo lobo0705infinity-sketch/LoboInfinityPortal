@@ -2,6 +2,7 @@ from pathlib import Path
 import json,copy,sys,xml.etree.ElementTree as ET,math
 from test_zones import World,py,check_render
 from patch_maps import bags,ROOT
+from mission_links import assignment
 
 class RealWorld(World):
  def __init__(self,bag):
@@ -40,14 +41,20 @@ def validate_map(bag):
   assert b.get('interactable')!='false',(bag['Nickname'],suffix,'disabled')
  assert all(x.isascii()for x in labels),labels
  assert not any(any(word in x.lower()for word in ['floor view','my view','shared interiors','full rooftops','building floors'])for x in labels)
- # Mission must open a real readable modal and return to the same panel.
- w.click('mission')
- visible=w.visible();texts=[n.text or n.get('text','')for n in visible if n.tag=='Text']
- close=next((n for n in visible if n.tag=='Button' and n.get('text','').lower()in ['close','close mission','x'] and not n.get('onClick','').startswith('broker/')),None)
- if close is not None:
-  assert sum(len(t)for t in texts)>100,'Mission did not open'
-  w.invoke(close)
- else:assert (len(str(getattr(w,'printed','')))>100 or'https://'in str(getattr(w,'printed',''))),'Mission did not open or provide its briefing'
+ # Both seats can request a mission without writing to the other player's chat or UI.
+ _,url=assignment(bag)
+ events=[]
+ for _,runtime in w.run.values():
+  runtime.printToColor=lambda message,seat,*args:events.append(('chat',seat,message))
+  for seat in ('White','Blue'):
+   runtime.Player[seat].showInputDialog=lambda title,value,done,c=seat:events.append(('dialog',c,value))
+ before_xml=[(n.tag,n.get('id')) for n in w.visible()]
+ for seat in ('Blue','White','Red'):
+  events.clear();w.click('mission',seat)
+  expected=[('chat',seat,url)]
+  if seat!='Red':expected.append(('dialog',seat,url))
+  assert events==expected,(bag['GUID'],seat,events,expected)
+  assert [(n.tag,n.get('id')) for n in w.visible()]==before_xml,'Mission opened an additional panel'
  assert w.panel().get('active')=='true','Main panel did not return'
  for mode in ['day','night','off']:
   w.click('bg_'+mode);button=w.panel().find(".//*[@id='loboMapDrawerV1_compact_bg_"+mode+"']")

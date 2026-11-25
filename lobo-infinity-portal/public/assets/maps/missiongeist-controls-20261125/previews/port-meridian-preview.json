@@ -1,0 +1,324 @@
+{
+  "slug": "port-meridian",
+  "name": "Port Meridian",
+  "bagUrl": "/assets/maps/missiongeist-controls-20261125/100ca1.json",
+  "bagSha256": "b73cd084ac7f70d34715394365d022cac7905e21c456694581782e5569b2530f",
+  "views": {
+    "overhead": "port-meridian-overhead.webp",
+    "angled": "port-meridian-angled.webp"
+  },
+  "renderedObjects": [
+    "d48506",
+    "389f1b",
+    "6de8e2",
+    "292426",
+    "2db545",
+    "13e00e",
+    "5cf17f",
+    "13453d",
+    "1cd81a",
+    "125255",
+    "58830c",
+    "53f55c",
+    "6648fe",
+    "9bc468",
+    "b4fc84",
+    "afe360",
+    "98336e",
+    "7d3c9b",
+    "418c7d",
+    "424229",
+    "97b387",
+    "5b362b",
+    "3a4e82",
+    "52303d",
+    "b2895b",
+    "6c118f",
+    "9af207",
+    "170483",
+    "7aa2d7",
+    "e3b2e3",
+    "4054e7",
+    "cbafe5",
+    "a017f5",
+    "da5893",
+    "8b9eaf",
+    "3429f4",
+    "d73741",
+    "a012f8",
+    "d183a4",
+    "d206a3",
+    "53f6f2",
+    "1a303a",
+    "3ab289",
+    "318a60",
+    "a6ef95",
+    "ee7b79",
+    "e8315c",
+    "f8e1a4"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "f6f711",
+      "name": "Id Scanner North",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "820d78",
+      "name": "Id Scanner South",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "44ecfe",
+      "name": "Id Checker",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b97a7b",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "58df0f",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b34246",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "6e516c",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "5400a3",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "6d497d",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "7e6073",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "64bbe7",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "886dc9",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ba07c3",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "43a4c9",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "210835",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e6b8d8",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "68ee12",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "44e53e",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d79b2b",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "bc8e4b",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "cacdc4",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d2b47b",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "5783d1",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "29b57a",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "722ebe",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "028d62",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ac74b0",
+      "name": "Customs | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "995ee5",
+      "name": "Fuel control | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "d9871d",
+      "name": "Maintenance hangar | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "1d9d11",
+      "name": "Noodle counter | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "965f8e",
+      "name": "North security | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "eddf1f",
+      "name": "Terminal & operations | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "d803c5",
+      "name": "Terminal & operations | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "d6a970",
+      "name": "Clinic | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "face6f",
+      "name": "Transit House hotel | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "fe88e8",
+      "name": "Transit House hotel | Private appearance",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "958ade",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "2d0e39",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "bbd30a",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "2707bd",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "1cbd3c",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "9cd886",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "1463b5",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "5f9c32",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c7b480",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "985a8b",
+      "name": "Port Meridian practical light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "b6e004",
+      "name": "Port Meridian | Lobo Map Controls",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "6a339a",
+      "name": "Meridian Engineering Court | Private floor view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "3ed36e",
+      "name": "Apron Dispatch | Private floor view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "6fd9b8",
+      "name": "Crescent Passenger Lounge | Private floor view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "460001",
+      "name": "Crescent Passenger Lounge | Private floor view",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "460003",
+      "name": "Apron Dispatch | Private floor view",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "f2aeb5c14067afd915d3ff42b18ff22619a6bd70d083a5e5232fe422e794d75a"
+}

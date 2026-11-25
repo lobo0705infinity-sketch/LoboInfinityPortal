@@ -1,6 +1,6 @@
 -- One persistent UI writer for map-owned screen controls. No Global script edits.
 LOBO_UI_BROKER_VERSION=4
-LOBO_UI_STANDARD_REVISION='lobo-standard-20261118-v1'
+LOBO_UI_STANDARD_REVISION='lobo-standard-20261125-missionlinks'
 local owners={}
 local nextToken=0
 local dirty=true
@@ -157,8 +157,8 @@ local function drawerRender(logical)
   text(state.mapName or 'LOBO',12,-7,state.mapName and 258 or 180,state.mapName and 11 or 12,20);text('Map Controls',12,-27,220,22,30)
   localButton('close','Close','loboDrawerClose',273,-14,65)
   local y=-67
-  if #groups.rules>0 then action('mission','Mission',(groups.mission[1]or groups.fallbackmission[1]),12,y,159);action('rules','Map Rules',groups.rules[1],179,y,159)
-  else action('mission','Mission',(groups.mission[1]or groups.fallbackmission[1]),12,y,326)end
+  if #groups.rules>0 then action('mission','Mission',groups.fallbackmission[1],12,y,159);action('rules','Map Rules',groups.rules[1],179,y,159)
+  else action('mission','Mission',groups.fallbackmission[1],12,y,326)end
   y=y-42
   local turn=action('turn','Turn 180     '..(state.flipped and'180 deg'or'0 deg'),groups.rotate[1],12,y,326,true)
   turn.attributes.tooltip='Rotate the battlefield and all pieces on it. Click again to return.'

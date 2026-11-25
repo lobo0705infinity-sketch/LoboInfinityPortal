@@ -1,0 +1,106 @@
+{
+  "slug": "hardlock-1-satellite",
+  "name": "Ironveil Complex",
+  "bagUrl": "/assets/maps/missiongeist-controls-20261125/8101d2.json",
+  "bagSha256": "5e662caa28c4c020be4daf1a04fa385a0ad1ae88de598d74a4c5f31fdd411e8a",
+  "views": {
+    "overhead": "hardlock-1-satellite-overhead.webp",
+    "angled": "hardlock-1-satellite-angled.webp"
+  },
+  "renderedObjects": [
+    "569c17",
+    "ec1001",
+    "ec2001",
+    "ec2004",
+    "ec2007",
+    "ec200a",
+    "ec200d",
+    "ec2010",
+    "ec2013",
+    "ec2015",
+    "ec2017",
+    "ec2019",
+    "ec201b",
+    "ec201d",
+    "ec201f",
+    "ec2021",
+    "ec2023",
+    "ec2025",
+    "ec2027",
+    "ec2029",
+    "ec202b",
+    "ec202d",
+    "ec202f",
+    "ec2030",
+    "ec2031",
+    "ec2032",
+    "ec2033",
+    "ec2034",
+    "ec2035",
+    "ec2036",
+    "ec2037",
+    "ec2038",
+    "ec2039",
+    "ec203a",
+    "ec203b",
+    "ec203c",
+    "ec203d",
+    "ec203e",
+    "ec203f",
+    "ec2040",
+    "ec2041",
+    "ec2042",
+    "ec2043",
+    "ec2044",
+    "ec2045",
+    "ec2046",
+    "ec2047",
+    "ec2048",
+    "ec2049",
+    "ec204a",
+    "ec204b",
+    "944cc6",
+    "7dcd50",
+    "61a511",
+    "7f02af"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "ec1040",
+      "name": "Console 1 — Hardlock",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1041",
+      "name": "Console 2 — Hardlock",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1042",
+      "name": "Console 3 — Hardlock",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1043",
+      "name": "Beacon A — Hardlock (Panoply model)",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec1044",
+      "name": "Beacon B — Hardlock (Panoply model)",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ec10fe",
+      "name": "Ironveil | Mission and Deployment Controller",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "4fa376",
+      "name": "Power Plant Court 01",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "de58b56dd0a73ae5c9fb5144111d3afe57c617e66e9fdc27036de5b3294b11da"
+}

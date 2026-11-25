@@ -1,0 +1,77 @@
+{
+  "slug": "leviathans-wake",
+  "name": "Leviathan’s Wake",
+  "bagUrl": "/assets/maps/missiongeist-controls-20261125/af0667.json",
+  "bagSha256": "024e34c356b2013fd1b7708ebc33470f4a3bf2eb9fb376ac1876a107b5ddcd6b",
+  "views": {
+    "overhead": "leviathans-wake-overhead.webp",
+    "angled": "leviathans-wake-angled.webp"
+  },
+  "renderedObjects": [
+    "4723d9",
+    "0626b1",
+    "1a3d9d",
+    "b1f071",
+    "bfc460",
+    "c64376",
+    "c4ea53",
+    "167a7f",
+    "bbc5e6",
+    "9fe23a",
+    "cbb26b",
+    "14076d",
+    "897e94",
+    "0582c9",
+    "5deab7",
+    "ff6c78",
+    "cb3dca",
+    "a2100f",
+    "512fb1",
+    "566fe3",
+    "2eb334",
+    "86be02",
+    "9f26d7",
+    "8a42e2",
+    "ba017b",
+    "6a0ef3",
+    "0261a7",
+    "912e17",
+    "576ac9",
+    "d8c1a6",
+    "448a7c",
+    "b69f9a",
+    "43cf48",
+    "3e440a",
+    "0e94af",
+    "c65672"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "1e6ba4",
+      "name": "Leviathan’s Wake · Map Controls",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "9d9b7a",
+      "name": "Crash wreckage · torn drive shroud",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "1f998e",
+      "name": "Rocinante overhead cover · Ridgeline overhang [States: 1 Open / 2 Covered]",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "153737",
+      "name": "Extraction Console 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a76e24",
+      "name": "Extraction Console 2",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "cce55f8c07ec8fb0cf245119323c9c3e9a8fec89e5945fb16e7d1bacb422a0ae"
+}

@@ -6,7 +6,6 @@ do
  local nativeWait=loboNativeWait or Wait
  local busy=false
  local pending={}
- local missionReaders={}
  local grid=false
  local scoring=false
  local oldLoad,oldSave,oldDestroy=onLoad,onSave,onDestroy
@@ -119,36 +118,16 @@ do
   if mat then loboZoneWrite(mat,mat.getTable('LoboZoneSourceR1')or{})end
   nativeWait.frames(function()if pending==snapshot then restoreLocks();notify()end end,2)
  end
- local function missionPanel()
-  local id='loboMission_'..self.getGUID()..'_standardBriefing'
-  local roots=UI.getXmlTable()or{}
-  for i=#roots,1,-1 do if (roots[i].attributes or{}).id==id then table.remove(roots,i)end end
-  local colors={};for c,on in pairs(missionReaders)do if on then colors[#colors+1]=c end end
-  if #colors>0 then
-   local body=LOBO_STANDARD_META.missionText or''
-   local lines,start=0,1
-   while true do
-    local stop=string.find(body,'\n',start,true)
-    local length=(stop or (#body+1))-start
-    lines=lines+math.max(1,math.ceil(length/75))
-    if not stop then break end
-    start=stop+1
-   end
-   local height=math.max(440,lines*24+40)
-   roots[#roots+1]={tag='Panel',attributes={id=id,rectAlignment='MiddleCenter',width='760',height='620',allowDragging='true',color='#10212AFF',active='true',visibility=table.concat(colors,'|')},children={
-    {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='22 -12',width='580',height='38',fontSize='24',color='#FFFFFFFF',alignment='MiddleLeft'},value=LOBO_STANDARD_META.mission..' - Mission'},
-    {tag='Button',attributes={id=id..'_close',text='Close',onClick=self.getGUID()..'/loboStandardMissionClose',rectAlignment='UpperRight',offsetXY='-20 -14',width='100',height='34',fontSize='18',color='#35566AFF'}},
-    {tag='VerticalScrollView',attributes={rectAlignment='UpperLeft',offsetXY='20 -65',width='720',height='530',verticalScrollbarVisibility='AutoHide'},children={
-     {tag='Panel',attributes={width='700',height=tostring(height),preferredHeight=tostring(height)},children={
-      {tag='Text',attributes={rectAlignment='UpperLeft',offsetXY='10 -8',width='680',height=tostring(height-16),fontSize='18',color='#EDF3F8FF',alignment='UpperLeft',horizontalOverflow='Wrap'},value=body}
-     }}
-    }}
-   }}
+ function loboStandardMissionOpen(player)
+  local color=type(player)=='string' and player or (player and player.color)
+  if not color then return end
+  local url=LOBO_STANDARD_META.missionUrl
+  printToColor(url,color,{.58,.83,1})
+  local seat=Player[color]
+  if seat and seat.showInputDialog then
+   seat.showInputDialog('MissionGeist | Copy this link into your browser.',url,function() end)
   end
-  UI.setXmlTable(roots)
  end
- function loboStandardMissionOpen(player)if player then missionReaders[player.color]=true;missionPanel()end end
- function loboStandardMissionClose(player)if player then missionReaders[player.color]=nil;missionPanel()end end
  local function mount()
   if not deployed()or not loboLifeToken or not loboLifeAlive()then return end
   local roots=UI.getXmlTable()or{}

@@ -1,0 +1,94 @@
+{
+  "slug": "the-dig-2-satellite",
+  "name": "Old Quarter Excavation",
+  "bagUrl": "/assets/maps/missiongeist-controls-20261125/810340.json",
+  "bagSha256": "7b0f7036c3b533a5b98f46bca3b9930cbbbb21bbbf69d8135ba8719411a27fac",
+  "views": {
+    "overhead": "the-dig-2-satellite-overhead.webp",
+    "angled": "the-dig-2-satellite-angled.webp"
+  },
+  "renderedObjects": [
+    "f3c180",
+    "e90001",
+    "e90003",
+    "e90006",
+    "e90009",
+    "e9000c",
+    "e9000e",
+    "e90011",
+    "e90014",
+    "e90017",
+    "e90019",
+    "e9001c",
+    "e9001f",
+    "e90021",
+    "e90023",
+    "e90025",
+    "e90027",
+    "e90028",
+    "e90029",
+    "e9002a",
+    "e9002b",
+    "e9002c",
+    "e9002d",
+    "e9002e",
+    "e9002f",
+    "e90030",
+    "e90031",
+    "e90032",
+    "e90033",
+    "e90034",
+    "e90035",
+    "e90037",
+    "e90038",
+    "e90039",
+    "e9003a",
+    "e9003b",
+    "e9003c",
+    "e9003d",
+    "e9003e",
+    "e9003f",
+    "e90040",
+    "e90041",
+    "e90042",
+    "e90043",
+    "1e48ed",
+    "f534fa",
+    "1b4ff7",
+    "08552f",
+    "fa4a82",
+    "a81485",
+    "f036cd",
+    "179c5d",
+    "6c25b2"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "e90044",
+      "name": "Console 1 — The Dig",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e90046",
+      "name": "Console 2 — The Dig",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e90048",
+      "name": "Console 3 — The Dig",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e9004a",
+      "name": "Old Quarter | Mission and Deployment Controller",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "e150d5",
+      "name": "Lobo Background Controls | Old Quarter Excavation",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "acf1c1ebb100016108093abc10f0b5570b2f113bd0d6db09679523aca7cd419c"
+}

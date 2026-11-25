@@ -6,7 +6,7 @@ The canonical UI is `standard-broker.lua`. Update its shared source, regenerate 
 
 Fixed order:
 1. Map Controls heading and per-player Close / reopen tab.
-2. Mission; Map Rules alongside it when applicable.
+2. Mission gives the requesting player the assigned MissionGeist URL in a copyable native dialog and in private chat. The Mission button uses the shared handler on both compact and expanded panels. Use the mission directory only for a designated scenario-neutral table. Map Rules stays a separate control.
 3. Turn 180, always visible near the top; battlefield terrain and pieces rotate together, with a second click returning them.
 4. Deployment Zones: Off, Normal, +4 in, +8 in. Preserve each map's authored zone shape and mission depth. Only one deployment mode is active.
 5. Separate DZ Color and Exclusion Color controls. Each offers bright Red, Orange, Yellow, Green, Blue, Indigo and Violet. Changing one does not change the other.
@@ -22,7 +22,7 @@ Use ASCII for rendered labels and messages: `Close`, `Turn 180`, `+4 in`, `+8 in
 
 Release checks must confirm:
 - Every map embeds the exact canonical broker and exposes all core actions.
-- Lua compiles; menus, mission panels and controls render without missing callbacks or corrupted text.
+- Lua compiles; menus, mission links and controls render without missing callbacks or corrupted text.
 - Actual rendered buttons perform deployment selection, independent colors, rotation and background selection.
 - Rotation preserves locks, supports saved orientation and keeps regenerated overlays aligned.
 - Both colors survive save/reload; map-specific options remain; removed building menus stay absent.

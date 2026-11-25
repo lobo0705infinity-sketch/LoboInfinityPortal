@@ -17,12 +17,22 @@ with zipfile.ZipFile(installer)as outer:
  with zipfile.ZipFile(io.BytesIO(payload))as inner:
   out=ROOT/'output';out.mkdir(exist_ok=True)
   (out/'Workshop-Save.json').write_bytes(inner.read('Workshop-Save.json'))
-assert validate(out/'Workshop-Save.json')['maps']==105
-inventory=json.loads((APP/'public'/current['releaseInventory'].lstrip('/')).read_text())
-assert len(inventory['maps'])==105
-for row in inventory['maps']:
- assert validate(APP/'public'/row['download'].lstrip('/'))['maps']==1
-print('All 105 current exports match the canonical panel.')
+from patch_maps import bags
+from upgrade_mission_links import REVISION
+collection = json.loads((out/'Workshop-Save.json').read_bytes())
+by_guid = {bag['GUID']:bag for bag in bags(collection)}
+inventory = json.loads((APP/'public'/current['releaseInventory'].lstrip('/')).read_bytes())
+assert inventory['revision']==REVISION
+assert validate(out/'Workshop-Save.json')['maps']==len(inventory['maps'])==len(by_guid)
+assert set(by_guid)=={row['guid'] for row in inventory['maps']}
+for row in inventory['maps'] + inventory.get('standalone',[]):
+ path=APP/'public'/row['download'].lstrip('/')
+ assert validate(path)['maps']==1
+ raw=path.read_bytes()
+ assert hashlib.sha256(raw).hexdigest()==row['sha256'],row['download']
+ if row in inventory['maps']:
+  assert json.loads(raw)['ObjectStates']==[by_guid[row['guid']]],row['guid']
+print(f"All {len(by_guid)} Workshop setups and {len(inventory.get('standalone',[]))} standalone exports validated.")
 
 # Newly changed standalone map saves must also use this standard, even before
 # someone adds them to the main catalog.

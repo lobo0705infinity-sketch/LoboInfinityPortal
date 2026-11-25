@@ -3,6 +3,8 @@ from pathlib import Path
 import argparse,json,re,hashlib,zipfile
 from patch_maps import bags,walk,ROOT
 from lupa.lua52 import LuaRuntime
+from mission_links import assignment
+from upgrade_mission_links import META, LINK, REVISION
 
 def validate(path):
  if path.suffix=='.zip':
@@ -29,6 +31,9 @@ def validate(path):
     assert embedded in (canonical,previous_header),(b['GUID'],o['GUID'],'panel drift')
     brokers+=1
   owner=owners[0]['LuaScript']
+  info=json.loads(json.loads(META.search(owner)[1]))
+  assert (info.get('missionGeistId'),info.get('missionUrl'))==assignment(b,info.get('mission','')),(b['GUID'],'wrong MissionGeist destination')
+  assert info['revision']==REVISION and LINK in owner and 'local function missionPanel()' not in owner,(b['GUID'],'mission handler drift')
   for fn in ['loboRotateMap180','loboStandardClear','loboStandardGrid','loboStandardMissionOpen','loboZonePickColor','loboStandardInvoke']:
    assert 'function '+fn+'('in owner,(b['GUID'],fn)
  compiler=LuaRuntime().eval('function(s) local fn,err=load(s); return fn~=nil,err end')

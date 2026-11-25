@@ -1,10 +1,11 @@
 from pathlib import Path
 import json, re, copy, hashlib, unicodedata, argparse
 import patch_maps
+from mission_links import assignment
+from upgrade_mission_links import REVISION
 
 ROOT=Path(__file__).resolve().parent
 DEFAULT_SOURCE=ROOT.parent/'current-map-sources/Lobo-Leviathans-Wake-Workshop-Setup-R5/Files/payload/Workshop-Save.json'
-REVISION='lobo-standard-20261118-v1'
 
 def ascii_text(s):
     # Explicit replacements keep units and operators meaningful in TTS fonts.
@@ -93,7 +94,6 @@ def build(source,destination):
     broker=(ROOT/'standard-broker.lua').read_text()
     assert broker.isascii()
     report=[];patches=[]
-    mission_text=json.loads((ROOT/'mission-text.json').read_text())
     allbags=list(patch_maps.bags(data));originals={b['GUID']:b for b in patch_maps.bags(original)}
     permanent={o['GUID']:True for o in data['ObjectStates']if o.get('Name')!='Bag' and o.get('GUID')}
     for bag in allbags:
@@ -157,7 +157,7 @@ end""".replace('__REVISION__',REVISION)
                 match=re.search(r'mission=("[^"]+")',s)
                 mission=json.loads(match[1])if match else''
                 meta['mission']=mission
-                meta['missionText']=mission_text.get(mission,{}).get('text',ascii_text(bag.get('Description','')))
+                meta['missionGeistId'],meta['missionUrl']=assignment(bag,mission)
                 s+='\n'+(ROOT/'standard-owner.lua').read_text().replace('__META__',json.dumps(json.dumps(meta,separators=(',',':')))).replace('__ROTATION_CONFIG__',json.dumps(json.dumps(rotation,separators=(',',':'))))
             s=ascii_lua(s)
             o['LuaScript']=s
