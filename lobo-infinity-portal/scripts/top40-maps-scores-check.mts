@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
-import { TOP40_ROUND_MAPS, TOP40_MAPS, applyTop40MapAssignments, withTop40RoundMaps } from '../shared/top40-round-maps.mjs'
+import { TOP40_ROUND_MAPS, TOP40_MAPS, TOP40_APPROVED_MAPS_INSTALLER, applyTop40MapAssignments, withTop40RoundMaps } from '../shared/top40-round-maps.mjs'
 import { getTop40ResultSides } from '../src/public/top40ResultsModel.ts'
 import { buildPreparationAssignments, TOP40_EVENT_ID } from '../src/public/top40PreparationModel.ts'
 import type { PublicEvent, PublicGame } from '../src/public/snapshotTypes.ts'
 const plan=JSON.parse(readFileSync('shared/top40-launch-plan.json','utf8'))
+const current=JSON.parse(readFileSync('shared/lobo-workshop-current.json','utf8'))
+const inventory=JSON.parse(readFileSync('public'+current.releaseInventory,'utf8'))
+assert.equal(TOP40_APPROVED_MAPS_INSTALLER,current.installer)
+assert.ok(existsSync('public'+TOP40_APPROVED_MAPS_INSTALLER))
 const assignments=withTop40RoundMaps(plan.rounds)
 assert.equal(assignments.filter(record=>record.map!=='TBD').length,14)
 assert.equal(assignments.filter(record=>record.map==='TBD').length,0)
@@ -16,7 +20,9 @@ for(const map of TOP40_ROUND_MAPS) {
  } else {
   assert.ok(map.download && existsSync('public'+map.download),map.download)
   const save=JSON.parse(readFileSync('public'+map.download,'utf8'))
-  assert.equal(save.ObjectStates[0].Nickname,'SET_'+map.workshopLabel)
+  const bag=save.ObjectStates[0]
+  assert.equal(bag.Nickname,'SET_'+(map.workshopBagName || map.workshopLabel))
+  assert.ok(inventory.maps.some((entry:{guid:string,download:string})=>entry.guid===bag.GUID && entry.download===map.download),map.key)
  }
  assert.equal(assignments.find(r=>r.bracket===map.bracket&&r.bracketRound===map.round)?.map,map.workshopLabel)
 }
