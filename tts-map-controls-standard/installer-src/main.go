@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const collectionName = "Lobo Maps - MissionGeist R2 - Workshop Collection"
+const collectionName = "Lobo Maps - MissionGeist R3 - Workshop Collection"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
@@ -213,6 +213,30 @@ func apply(d object, ps []patch) (int, error) {
 	return changed, nil
 }
 
+// Carry the shipped artwork into a compatible older save while keeping the
+// player's placement and other objects. Custom replacement textures stay local.
+func updateCloudbreakMat(source, released object) {
+	const oldTexture = "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/21dca17f7ef5a498a9d10d33e3fe790b1781c84d/cloudbreak-array-r4/assets/city-shafts.jpg"
+	findMat := func(bag object) object {
+		for _, value := range arr(bag, "ContainedObjects") {
+			o, _ := value.(object)
+			if str(o, "GUID") == "cb7101" {
+				return o
+			}
+		}
+		return nil
+	}
+	mat, current := findMat(source), findMat(released)
+	oldMesh, _ := mat["CustomMesh"].(object)
+	newMesh, _ := current["CustomMesh"].(object)
+	if str(oldMesh, "DiffuseURL") != oldTexture || str(newMesh, "DiffuseURL") == "" {
+		return
+	}
+	oldMesh["DiffuseURL"] = newMesh["DiffuseURL"]
+	mat["Nickname"] = current["Nickname"]
+	mat["Description"] = current["Description"]
+}
+
 // Only the release supplies the Workshop room. An explicitly selected save
 // can supply compatible bag contents, never a play session or its shelf positions.
 func selectSave(explicit string, files map[string][]byte, ps []patch) (object, string, int, error) {
@@ -221,7 +245,7 @@ func selectSave(explicit string, files map[string][]byte, ps []patch) (object, s
 		return nil, "", 0, err
 	}
 	if str(collection, "SaveName") != collectionName || !supported(collection) {
-		return nil, "", 0, errors.New("expected the R2 Workshop collection; extract the complete R2 installer")
+		return nil, "", 0, errors.New("expected the R3 Workshop collection; extract the complete R3 installer")
 	}
 	if explicit == "" {
 		n, err := apply(collection, ps)
@@ -245,6 +269,9 @@ func selectSave(explicit string, files map[string][]byte, ps []patch) (object, s
 	}
 	for _, shelf := range maps(collection) {
 		if bag := imported[str(shelf, "GUID")]; bag != nil {
+			if str(shelf, "GUID") == "cb7100" {
+				updateCloudbreakMat(bag, shelf)
+			}
 			shelf["ContainedObjects"] = bag["ContainedObjects"]
 			shelf["LuaScript"] = bag["LuaScript"]
 		}
@@ -355,7 +382,7 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 		}
 	}
 	out.Title = str(d, "SaveName")
-	out.Version = "MissionGeist Workshop Collection R2"
+	out.Version = "MissionGeist Workshop Collection R3"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n

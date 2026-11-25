@@ -1053,12 +1053,12 @@
     },
     {
       "guid": "cb7100",
-      "name": "SET_Aurora VII - Cloudbreak Array - Network Node R4.2",
+      "name": "SET_Aurora VII - Cloudbreak Array - Network Node R4.2 - Cloud Deck",
       "objects": 77,
       "missionGeistId": "cm_aurora7_network_node",
       "missionUrl": "https://infinitygeist.com/mission/cm_aurora7_network_node",
       "download": "/assets/maps/missiongeist-controls-20261125/cb7100.json",
-      "sha256": "d568b4236ee764e8e4c48134907cd39f0302a49479992d9c7f4eebeb5181d0d2",
+      "sha256": "a5d10c2f5ebe26c2c889bdad5f9096b87dfbc5865350795c9375a4db2bbcbfbf",
       "kind": "narrative"
     }
   ],
