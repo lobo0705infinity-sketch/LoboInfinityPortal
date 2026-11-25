@@ -1,0 +1,345 @@
+[
+ {
+  "slug": "ground",
+  "x": 0,
+  "z": 0,
+  "rot": 0,
+  "state": 1
+ },
+ {
+  "slug": "sunward-wing",
+  "x": -8.2854,
+  "z": 7.6711,
+  "rot": 18,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "seaward-wing",
+  "x": 6.5176,
+  "z": 15.9534,
+  "rot": 315,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "azure-spa",
+  "x": -11.3512,
+  "z": -9.4211,
+  "rot": 286,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "terrace-restaurant",
+  "x": 9.6614,
+  "z": -7.1784,
+  "rot": 48,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "north-villa",
+  "x": -18.1,
+  "z": 17.7,
+  "rot": 270,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "east-villa",
+  "x": 18.0687,
+  "z": 9.6289,
+  "rot": 75,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "south-villa",
+  "x": -3.1244,
+  "z": -18.182,
+  "rot": 14,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "west-villa",
+  "x": -18.91,
+  "z": 2.3553,
+  "rot": 90,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "reception",
+  "x": 14.7832,
+  "z": -16.8263,
+  "rot": 114,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "cafe",
+  "x": -7.0318,
+  "z": 19.142,
+  "rot": 4,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "laundry",
+  "x": -18.2656,
+  "z": -18.5211,
+  "rot": 0,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "pool-equipment",
+  "x": 18.66,
+  "z": -2.1157,
+  "rot": 90,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "luggage-trolley",
+  "x": 8.899,
+  "z": -16.666,
+  "rot": 25,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "limestone-planter",
+  "x": 14.1,
+  "z": 20.3,
+  "rot": 14,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "bronze-sculpture",
+  "x": 3.0635,
+  "z": -18.0736,
+  "rot": 35,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "linen-cart",
+  "x": -18.3114,
+  "z": -11.2325,
+  "rot": 0,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "maintenance-unit",
+  "x": 12.9278,
+  "z": 2.4643,
+  "rot": 90,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "stacked-loungers",
+  "x": -4.4711,
+  "z": -10.7065,
+  "rot": 338,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "pool-bar-cart",
+  "x": 5.4086,
+  "z": 1.3602,
+  "rot": 40,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "shade-screen",
+  "x": -6.6374,
+  "z": -2.3382,
+  "rot": 43,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "luggage-trolley",
+  "x": -19.0165,
+  "z": -3.7356,
+  "rot": 107,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "limestone-planter",
+  "x": 5.6237,
+  "z": -13.3287,
+  "rot": 63,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "bronze-sculpture",
+  "x": -0.8,
+  "z": 7.3,
+  "rot": 180,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "linen-cart",
+  "x": -17.0,
+  "z": -4.0502,
+  "rot": 275,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "maintenance-unit",
+  "x": -18.2,
+  "z": -9.3047,
+  "rot": 8,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "stacked-loungers",
+  "x": -11.5914,
+  "z": 0.2726,
+  "rot": 295,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "pool-bar-cart",
+  "x": 1.6222,
+  "z": 21.9789,
+  "rot": 2,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "shade-screen",
+  "x": 11.9391,
+  "z": 6.347,
+  "rot": 65,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "luggage-trolley",
+  "x": -8.8609,
+  "z": -16.5903,
+  "rot": 16,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "limestone-planter",
+  "x": -15.2404,
+  "z": 8.563,
+  "rot": 8,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "bronze-sculpture",
+  "x": -16.619,
+  "z": -6.9622,
+  "rot": 45,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "linen-cart",
+  "x": 10.6106,
+  "z": 1.9954,
+  "rot": 255,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "maintenance-unit",
+  "x": 19.5,
+  "z": 3.5,
+  "rot": 88,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "stacked-loungers",
+  "x": 2.8983,
+  "z": 5.6425,
+  "rot": 85,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "pool-bar-cart",
+  "x": 16.7174,
+  "z": -10.3655,
+  "rot": 53,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "luggage-trolley",
+  "x": 18.0,
+  "z": 17.5,
+  "rot": 72,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "limestone-planter",
+  "x": -20.3,
+  "z": 9.0,
+  "rot": 99,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "bronze-sculpture",
+  "x": 19.6227,
+  "z": -10.8158,
+  "rot": 62,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "linen-cart",
+  "x": -15.6,
+  "z": 11.4,
+  "rot": 355,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "maintenance-unit",
+  "x": 4.1903,
+  "z": -21.8571,
+  "rot": 35,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "pool-bar-cart",
+  "x": 8.4007,
+  "z": 0.8788,
+  "rot": 91,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "shade-screen",
+  "x": -12.2,
+  "z": -19.6,
+  "rot": 168,
+  "scaleY": 1.0
+ },
+ {
+  "slug": "garden-wall",
+  "x": -0.8,
+  "z": 22.06,
+  "rot": 90,
+  "scaleY": 1.6
+ },
+ {
+  "slug": "garden-wall",
+  "x": 6.4,
+  "z": -22.06,
+  "rot": 90,
+  "scaleY": 1.55
+ },
+ {
+  "slug": "garden-wall",
+  "x": -22.06,
+  "z": -6.0,
+  "rot": 0,
+  "scaleY": 1.55
+ },
+ {
+  "slug": "garden-wall",
+  "x": 22.06,
+  "z": -8.2,
+  "rot": 0,
+  "scaleY": 1.6
+ },
+ {
+  "slug": "garden-wall",
+  "x": -10.5153,
+  "z": -22.0863,
+  "rot": 342,
+  "scaleY": 1
+ },
+ {
+  "slug": "garden-wall",
+  "x": 12.4547,
+  "z": -1.1056,
+  "rot": 83,
+  "scaleY": 1
+ }
+]
