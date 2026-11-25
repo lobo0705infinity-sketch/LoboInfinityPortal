@@ -758,7 +758,8 @@
     }
   ],
   "downloadRevision": "missiongeist-controls-20261125",
-  "installer": "/assets/maps/missiongeist-controls-20261125/Lobo-MissionGeist-Workshop-Installer.zip",
+  "installer": "/assets/maps/missiongeist-controls-20261125/Lobo-MissionGeist-Workshop-Installer-R2.zip",
   "releaseInventory": "/assets/maps/missiongeist-controls-20261125/release-inventory.json",
-  "previewUpdatedAt": "2026-11-18"
+  "previewUpdatedAt": "2026-11-18",
+  "workshopSaveName": "Lobo Maps - MissionGeist R2 - Workshop Collection"
 }

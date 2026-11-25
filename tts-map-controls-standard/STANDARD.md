@@ -28,6 +28,7 @@ Release checks must confirm:
 - Both colors survive save/reload; map-specific options remain; removed building menus stay absent.
 - Approved terrain, models, object states, transforms, artwork URLs and placements are unchanged by a controls-only release.
 - The full collection and exported map bags use the same version.
+- On first load and reload, the Workshop collection opens its catalogue and leaves every original bag at home. The pickup button makes a copy on demand. Map-specific installers provide their play tables in separate saves.
 - Installer checksums pass, existing saves remain untouched, and a new numbered TTS save is created.
 
 The automated harness executes the Lua 5.2 scripts with simulated TTS APIs. It does not substitute for visual and physics verification in a running Tabletop Simulator client. Steam Workshop publication is performed in TTS after loading the installed save.

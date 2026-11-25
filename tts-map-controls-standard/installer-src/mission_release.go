@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 type releaseObject struct {
@@ -15,34 +14,14 @@ type releaseObject struct {
 	Thumbnail string
 }
 type releaseSelection struct {
-	Name    string
-	Anchor  string
-	Objects []releaseObject
+	Name          string
+	PlayFile      string
+	PlayThumbnail string
+	Objects       []releaseObject
 }
 type releaseExtras struct {
 	Standalone []releaseObject
 	Setups     map[string]releaseSelection
-}
-
-func startMap(save object, id string, setup releaseSelection) error {
-	if id == "" {
-		return nil
-	}
-	script := str(save, "LuaScript")
-	replacements := []struct{ before, after string }{
-		{"local anchor='cb7101'", "local anchor='" + setup.Anchor + "'"},
-		{"local source=getObjectFromGUID('cb7100')", "local source=getObjectFromGUID('" + id + "')"},
-		{"PICKUP COPY: Cloudbreak Array deployment.", "PICKUP COPY: map deployment."},
-	}
-	for _, r := range replacements {
-		if strings.Count(script, r.before) != 1 {
-			return fmt.Errorf("the selected collection does not contain the expected auto-deploy script")
-		}
-		script = strings.Replace(script, r.before, r.after, 1)
-	}
-	save["LuaScript"] = script
-	save["SaveName"] = collectionName + " - " + setup.Name
-	return nil
 }
 
 // Each optional saved object gets its own collision-safe JSON/thumbnail pair.

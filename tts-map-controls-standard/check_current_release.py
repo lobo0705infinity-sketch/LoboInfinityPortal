@@ -20,6 +20,11 @@ with zipfile.ZipFile(installer)as outer:
 from patch_maps import bags
 from upgrade_mission_links import REVISION
 collection = json.loads((out/'Workshop-Save.json').read_bytes())
+from test_workshop_startup import check_workshop_startup, check_play_saves
+check_workshop_startup(collection)
+with zipfile.ZipFile(io.BytesIO(payload)) as release:
+ check_play_saves(release, collection)
+print('Workshop first load, reload, Cloudbreak pickup and separate play tables validated.')
 by_guid = {bag['GUID']:bag for bag in bags(collection)}
 inventory = json.loads((APP/'public'/current['releaseInventory'].lstrip('/')).read_bytes())
 assert inventory['revision']==REVISION

@@ -17,7 +17,7 @@ import (
 	"time"
 )
 
-const collectionName = "Lobo Maps - MissionGeist Controls"
+const collectionName = "Lobo Maps - MissionGeist R2 - Workshop Collection"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
@@ -34,7 +34,7 @@ type receipt struct {
 	Save    string `json:"collection_save"`
 	Maps    int    `json:"maps"`
 	Changed int    `json:"scripts_updated"`
-	Note    string `json:"note,omitempty"`
+	Play    string `json:"play_save,omitempty"`
 }
 
 func str(o object, k string) string { s, _ := o[k].(string); return s }
@@ -183,6 +183,9 @@ func apply(d object, ps []patch) (int, error) {
 		if !ok {
 			return 0, fmt.Errorf("unrecognized map version: %s", str(b, "Nickname"))
 		}
+		if seen[str(b, "GUID")] {
+			return 0, fmt.Errorf("duplicate catalogue bag: %s", str(b, "GUID"))
+		}
 		seen[str(b, "GUID")] = true
 		nodes := map[string]object{}
 		walk(b, func(o object) { nodes[str(o, "GUID")] = o })
@@ -207,27 +210,48 @@ func apply(d object, ps []patch) (int, error) {
 			return 0, fmt.Errorf("source is missing supported setup %s", id)
 		}
 	}
-	d["SaveName"] = collectionName
 	return changed, nil
 }
-func selectSave(root, explicit string, files map[string][]byte, ps []patch) (object, string, int, string, error) {
-	source := "Included audited collection"
-	b := files["Workshop-Save.json"]
-	if explicit != "" {
-		var e error
-		b, e = os.ReadFile(explicit)
-		if e != nil {
-			return nil, "", 0, "", e
+
+// Only the release supplies the Workshop room. An explicitly selected save
+// can supply compatible bag contents, never a play session or its shelf positions.
+func selectSave(explicit string, files map[string][]byte, ps []patch) (object, string, int, error) {
+	collection, err := decode(files["Workshop-Save.json"])
+	if err != nil {
+		return nil, "", 0, err
+	}
+	if str(collection, "SaveName") != collectionName || !supported(collection) {
+		return nil, "", 0, errors.New("expected the R2 Workshop collection; extract the complete R2 installer")
+	}
+	if explicit == "" {
+		n, err := apply(collection, ps)
+		return collection, "Included Workshop collection", n, err
+	}
+	data, err := os.ReadFile(explicit)
+	if err != nil {
+		return nil, "", 0, err
+	}
+	source, err := decode(data)
+	if err != nil {
+		return nil, "", 0, err
+	}
+	n, err := apply(source, ps)
+	if err != nil {
+		return nil, "", 0, err
+	}
+	imported := map[string]object{}
+	for _, bag := range maps(source) {
+		imported[str(bag, "GUID")] = bag
+	}
+	for _, shelf := range maps(collection) {
+		if bag := imported[str(shelf, "GUID")]; bag != nil {
+			shelf["ContainedObjects"] = bag["ContainedObjects"]
+			shelf["LuaScript"] = bag["LuaScript"]
 		}
-		source = explicit
 	}
-	d, e := decode(b)
-	if e != nil {
-		return nil, "", 0, "", e
-	}
-	n, e := apply(d, ps)
-	return d, source, n, "", e
+	return collection, explicit, n, nil
 }
+
 func writeNew(path string, b []byte) error {
 	f, e := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
 	if e != nil {
@@ -246,6 +270,29 @@ func writeNew(path string, b []byte) error {
 	}
 	return e
 }
+func writeSave(dir string, data, thumbnail []byte, created *[]string) (string, error) {
+	for i := 1; i < 100000; i++ {
+		base := filepath.Join(dir, fmt.Sprintf("TS_Save_%d", i))
+		if _, err := os.Lstat(base + ".png"); err == nil {
+			continue
+		} else if !errors.Is(err, os.ErrNotExist) {
+			return "", err
+		}
+		if err := writeNew(base+".json", data); errors.Is(err, os.ErrExist) {
+			continue
+		} else if err != nil {
+			return "", err
+		}
+		*created = append(*created, base+".json")
+		if err := writeNew(base+".png", thumbnail); err != nil {
+			return "", err
+		}
+		*created = append(*created, base+".png")
+		return base + ".json", nil
+	}
+	return "", errors.New("no unused save slot")
+}
+
 func install(root, explicit, path, variant string) (out receipt, err error) {
 	files, e := payload(path)
 	if e != nil {
@@ -255,7 +302,7 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 	if e = json.Unmarshal(files["control-patches.json"], &ps); e != nil {
 		return out, e
 	}
-	d, source, n, note, e := selectSave(root, explicit, files, ps)
+	d, source, n, e := selectSave(explicit, files, ps)
 	if e != nil {
 		return out, e
 	}
@@ -266,9 +313,6 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 	selected := extras.Setups[variant]
 	if variant != "" && selected.Name == "" {
 		return out, fmt.Errorf("unknown start map %q", variant)
-	}
-	if e = startMap(d, variant, selected); e != nil {
-		return out, e
 	}
 	b, e := encode(d)
 	if e != nil {
@@ -286,30 +330,20 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 			}
 		}
 	}()
-	for i := 1; i < 100000; i++ {
-		base := filepath.Join(saveDir, fmt.Sprintf("TS_Save_%d", i))
-		if _, e = os.Lstat(base + ".png"); e == nil {
-			continue
-		} else if !errors.Is(e, os.ErrNotExist) {
-			return out, e
+	if variant != "" {
+		play := files[selected.PlayFile]
+		thumbnail := files[selected.PlayThumbnail]
+		if len(play) == 0 || len(thumbnail) == 0 {
+			return out, fmt.Errorf("missing play table for %s", selected.Name)
 		}
-		e = writeNew(base+".json", b)
-		if errors.Is(e, os.ErrExist) {
-			continue
-		}
+		out.Play, e = writeSave(saveDir, play, thumbnail, &created)
 		if e != nil {
 			return out, e
 		}
-		created = append(created, base+".json")
-		if e = writeNew(base+".png", files["Workshop-Save.png"]); e != nil {
-			return out, e
-		}
-		created = append(created, base+".png")
-		out.Save = base + ".json"
-		break
 	}
-	if out.Save == "" {
-		return out, errors.New("no unused save slot")
+	out.Save, e = writeSave(saveDir, b, files["Workshop-Save.png"], &created)
+	if e != nil {
+		return out, e
 	}
 	objectDir := filepath.Join(saveDir, "Saved Objects", "Lobo MissionGeist")
 	if e = os.MkdirAll(objectDir, 0755); e != nil {
@@ -321,11 +355,10 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 		}
 	}
 	out.Title = str(d, "SaveName")
-	out.Version = "MissionGeist Controls 2026-11-25"
+	out.Version = "MissionGeist Workshop Collection R2"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n
-	out.Note = note
 	logDir := filepath.Join(root, "Lobo Install Logs")
 	if e = os.MkdirAll(logDir, 0755); e != nil {
 		return out, e
@@ -401,11 +434,11 @@ func main() {
 	fmt.Println("Installed:", out.Title)
 	fmt.Println("Map setups:", out.Maps)
 	fmt.Println("Source:", out.Source)
-	if out.Note != "" {
-		fmt.Println(out.Note)
+	if out.Play != "" {
+		fmt.Println("Separate play table:", out.Play)
 	}
 	fmt.Println("In TTS: Games > Save & Load >", out.Title)
-	fmt.Println("Map Controls > Mission gives each player the MissionGeist link. Additional map bags are under Saved Objects > Lobo MissionGeist.")
+	fmt.Println("Use the catalogue to choose and copy a bag. On the play table, Map Controls > Mission gives the Mission Geist link.")
 	fmt.Println("Publish: Upload > Workshop Upload > Update Workshop > 3719263238")
 	fmt.Println("Steam publication is completed inside TTS. Existing saves remain intact.")
 	if !*noBrowser {

@@ -3,6 +3,7 @@ import EventSectionTabs from '../components/EventSectionTabs'
 import { TOP40_EVENT_ID } from './top40PreparationModel'
 import { TOP40_MAPS, TOP40_APPROVED_MAPS_INSTALLER } from '../../shared/top40-round-maps.mjs'
 import { LOBO_WORKSHOP_URL } from '../../shared/lobo-workshop-maps.mjs'
+import currentCollection from '../../shared/lobo-workshop-current.json'
 import './MapLibrary.css'
 
 export default function Top40MapPage() {
@@ -21,7 +22,7 @@ export default function Top40MapPage() {
           <a href={TOP40_APPROVED_MAPS_INSTALLER} download target="_blank" rel="noopener noreferrer">Download the Workshop installer (ZIP)</a>
           {!map.download && <> · <a href={LOBO_WORKSHOP_URL} target="_blank" rel="noopener noreferrer">Open the Steam Workshop collection ↗</a></>}
         </p>
-        <p>Extract the ZIP, run <code>Install.cmd</code>, then open “Lobo Maps - MissionGeist Controls” in Games → Save &amp; Load.</p>
+        <p>Extract the ZIP, run <code>Install.cmd</code>, then open “{currentCollection.workshopSaveName}” in Games → Save &amp; Load.</p>
         {map.angled && <a className="lobo-map-detail-hero" href={map.angled} target="_blank" rel="noopener noreferrer"><img src={map.angled} alt={`Rendered terrain preview of ${map.name}`} width="1600" height="1400"/><span>Approved terrain preview ↗</span></a>}
         {(map.overhead || map.generalHref) && <p>{map.overhead && <a href={map.overhead} target="_blank" rel="noopener noreferrer">View overhead terrain preview ↗</a>}{map.overhead && map.generalHref && ' · '}{map.generalHref && <Link to={map.generalHref}>Matching general-pool map →</Link>}</p>}
         <p>In the normal Infinity mod, use Clear Table, load “{map.workshopBagName || map.workshopLabel}”, and drop the bag on the map deployment spot.</p>
