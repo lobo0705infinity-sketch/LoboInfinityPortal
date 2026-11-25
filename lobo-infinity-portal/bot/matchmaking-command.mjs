@@ -29,6 +29,10 @@ export const FIND_GAME_MARKER_PREFIX = 'find-game:v1:'
 export const MATCHMAKING_DIGEST_MARKER_PREFIX = 'matchmaking-digest:v1:'
 export const DEFAULT_MATCHMAKING_CHECK_INTERVAL_MS = 5 * 60 * 1000
 
+export function matchmakingDigestEnabled(env = process.env) {
+  return String(env.INFINITY_MATCHMAKING_ENABLED || '').trim().toLowerCase() === 'true'
+}
+
 export const WEEKDAY_CHOICES = Object.freeze([
   { name: 'Monday', value: 'monday' },
   { name: 'Tuesday', value: 'tuesday' },
@@ -85,7 +89,9 @@ const SET_OPTIONS = Object.freeze([
   { name: 'points', description: 'Game size; defaults to 300', required: false, type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 500 },
   { name: 'need', description: 'What kind of game you need', required: false, type: ApplicationCommandOptionType.String, choices: NEED_CHOICES },
   { name: 'note', description: 'Short optional note about what you need', required: false, type: ApplicationCommandOptionType.String, max_length: 300 },
-  { name: 'mention-me', description: 'Mention you in that day’s scheduling feed; defaults to yes', required: false, type: ApplicationCommandOptionType.Boolean },
+  ...(matchmakingDigestEnabled() ? [
+    { name: 'mention-me', description: 'Mention you in that day’s scheduling feed; defaults to yes', required: false, type: ApplicationCommandOptionType.Boolean },
+  ] : []),
 ])
 
 export const AVAILABILITY_COMMAND_DEFINITION = Object.freeze({
@@ -223,16 +229,16 @@ async function handleAvailabilityCommand(interaction, store) {
     const records = buildAvailabilityRecords(interaction)
     for (const record of records) await store.upsert(record)
     const record = records[0]
-    await interaction.editReply({
-      content: [
-        `Saved **${weekdaySelectionLabel(selection)}** availability.`,
-        `${record.start}–${record.end} · ${record.timeZone}`,
-        `${formatLabel(record.format)} · ${record.points} points · ${needLabel(record.need)}`,
-        record.note ? `Note: ${record.note}` : '',
-        record.mention ? 'You will be mentioned when this window appears in the daily feed.' : 'You will appear without a notification ping.',
-      ].filter(Boolean).join('\n'),
-      allowedMentions: { parse: [] },
-    })
+    const confirmation = [
+      `Saved **${weekdaySelectionLabel(selection)}** availability.`,
+      `${record.start}–${record.end} · ${record.timeZone}`,
+      `${formatLabel(record.format)} · ${record.points} points · ${needLabel(record.need)}`,
+    ]
+    if (record.note) confirmation.push(`Note: ${record.note}`)
+    if (matchmakingDigestEnabled()) {
+      confirmation.push(record.mention ? 'You will be mentioned when this window appears in the daily feed.' : 'You will appear without a notification ping.')
+    }
+    await interaction.editReply({ content: confirmation.join('\n'), allowedMentions: { parse: [] } })
     return
   }
   if (subcommand === 'clear') {
@@ -301,7 +307,7 @@ export function buildAvailabilityRecord(interaction, weekday = interaction.optio
     points: interaction.options.getInteger('points') || 300,
     need: interaction.options.getString('need') || 'open',
     note: String(interaction.options.getString('note') || '').trim().slice(0, 300),
-    mention: interaction.options.getBoolean('mention-me') ?? true,
+    mention: matchmakingDigestEnabled() && (interaction.options.getBoolean('mention-me') ?? true),
     updatedAt,
   }
 }
@@ -427,7 +433,7 @@ export function startMatchmakingScheduler(client, {
       : undefined,
   },
 } = {}) {
-  if (String(process.env.INFINITY_MATCHMAKING_ENABLED || 'true').toLowerCase() === 'false') {
+  if (!matchmakingDigestEnabled()) {
     return { stop() {}, runNow: async () => ({ status: 'DISABLED', guilds: [] }) }
   }
   let stopped = false
@@ -537,7 +543,9 @@ export async function resolveMatchmakingChannel(client, interaction = {}) {
     channel = await guild.channels.create({
       name: channelName,
       type: ChannelType.GuildText,
-      topic: 'Recurring availability, one-off game requests, and automatic Infinity match suggestions.',
+      topic: matchmakingDigestEnabled()
+        ? 'Recurring availability, one-off game requests, and automatic Infinity match suggestions.'
+        : 'One-off Infinity game requests.',
       reason: 'Lobo matchmaking scheduling feed',
     })
   }

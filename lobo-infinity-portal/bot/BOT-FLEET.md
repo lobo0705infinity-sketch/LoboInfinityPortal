@@ -34,7 +34,7 @@ Discord application webhook replies and follow-ups are counted under their bot a
 |---|---|---|---|
 | List, combat, reference and scheduling commands | Lobo’s Little Helper | User command or connected button | Each grouped command delegates to its existing handler; aliases do not create a second scheduled job |
 | Map and workshop updates | Lobo’s Little Helper | Startup, then every six hours by default | Resource checkpoint on the Railway volume; channel markers recognize prior successful sends; history-read failure defers delivery |
-| Daily availability board | Lobo’s Little Helper | Check every five minutes; due at 07:00 Europe/Warsaw by default, configurable | Daily marker in Discord history; a failed history check prevents posting |
+| Daily availability board | Lobo’s Little Helper | Off by default. When explicitly enabled, checks every five minutes and posts at 07:00 Europe/Warsaw by default | Daily marker in Discord history; a failed history check prevents posting |
 | One-off game requests | Lobo’s Little Helper | User action | Requests remain player-controlled rather than a second daily announcement schedule |
 | League announcements and generated game stories | Portal Automation Queue / webhook publisher | League events, commissioner actions, queued maintenance | Queue IDs and delivery logs; submitted games wait for generated stories |
 | Army Intelligence and automation queue maintenance | Apps Script clock → existing Vercel workers | Thirty-minute interval declared by installer code | Existing maintenance worker path; installed trigger inventory has not been verified live |

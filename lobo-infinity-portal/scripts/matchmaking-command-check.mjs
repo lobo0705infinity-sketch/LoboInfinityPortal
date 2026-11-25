@@ -7,9 +7,11 @@ import {
   buildDailyMatchmakingDigest,
   buildFindGameMessage,
   createMatchmakingAutocompleteHandler,
+  createMatchmakingInteractionHandler,
   ensureMatchmakingCommands,
   expandWeekdaySelection,
   matchmakingDigestAlreadyPosted,
+  matchmakingDigestEnabled,
   parseAvailabilityRecord,
   parseFindGameMarker,
   serializeAvailabilityRecord,
@@ -161,6 +163,37 @@ const channel = {
     return message
   },
 }
+const originalEnabled = process.env.INFINITY_MATCHMAKING_ENABLED
+process.env.INFINITY_MATCHMAKING_ENABLED = 'false'
+assert.equal(matchmakingDigestEnabled({}), false)
+const disabledScheduler = startMatchmakingScheduler(commandClient, { resolveChannel: assert.fail })
+assert.equal((await disabledScheduler.runNow()).status, 'DISABLED')
+disabledScheduler.stop()
+
+const disabledCommands = await import('../bot/matchmaking-command.mjs?disabled')
+const setOptions = disabledCommands.AVAILABILITY_COMMAND_DEFINITION.options.find(option => option.name === 'set').options
+assert.equal(setOptions.some(option => option.name === 'mention-me'), false)
+const savedWindows = []
+let savedReply
+const handler = createMatchmakingInteractionHandler({
+  resolveChannel: async () => channel,
+  createStore: async () => ({ upsert: async record => savedWindows.push(record) }),
+})
+await handler({
+  ...groupedAvailabilityInteraction,
+  commandName: 'availability',
+  isChatInputCommand: () => true,
+  options: { ...groupedAvailabilityInteraction.options, getSubcommand: () => 'set' },
+  deferReply: async options => assert.equal(options.ephemeral, true),
+  editReply: async payload => { savedReply = payload },
+})
+assert.equal(savedWindows.length, 5)
+assert.ok(savedWindows.every(record => record.mention === false))
+assert.match(savedReply.content, /Saved/)
+assert.doesNotMatch(savedReply.content, /daily feed|mentioned|ping/i)
+assert.equal(sentMessages.size, 0)
+
+process.env.INFINITY_MATCHMAKING_ENABLED = 'true'
 const scheduler = startMatchmakingScheduler({
   user: { id: 'bot-1' },
   guilds: { cache: new Map([['guild-1', { id: 'guild-1' }]]) },
@@ -178,5 +211,7 @@ assert.equal(await matchmakingDigestAlreadyPosted(channel, digest.marker, 'bot-1
 const secondRun = await scheduler.runNow()
 assert.equal(secondRun.guilds[0].status, 'ALREADY_POSTED')
 scheduler.stop()
+if (originalEnabled === undefined) delete process.env.INFINITY_MATCHMAKING_ENABLED
+else process.env.INFINITY_MATCHMAKING_ENABLED = originalEnabled
 
 console.log('Matchmaking command checks passed.')

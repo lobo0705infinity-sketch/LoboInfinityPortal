@@ -28,7 +28,7 @@ Alternatives must change at least a third of their smaller combat core (unit typ
 
 `/help` opens an ephemeral guide with Army Lists, Combat, Game Reference and Find a Game buttons. Server managers also see Server Tools. The report-review command remains restricted to Manage Server, with the permission checked again when invoked.
 
-Grouped commands reuse the current handlers and their options, autocomplete, rate/concurrency limits, deferred replies, downloads and error handling. Reports record the grouped name and nested options selected by the user. Availability and urgent requests still use the existing stores and scheduling feed.
+Grouped commands reuse the current handlers and their options, autocomplete, rate/concurrency limits, deferred replies, downloads and error handling. Reports record the grouped name and nested options selected by the user. Availability commands save your recurring times. Use `/play find now` to publish a one-off request in `#scheduling-feed`.
 
 Registration creates or updates list, combat, play, help and admin before retiring the nine explicitly superseded slash commands in guild and global scope. Only this application’s registrations are touched; unrelated commands remain. Removal is verified by fetching the live registrations again. Repeated starts avoid writes when definitions match and never recreate the retired entries.
 
