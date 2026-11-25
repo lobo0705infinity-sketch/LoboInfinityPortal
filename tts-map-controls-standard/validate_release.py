@@ -1,5 +1,6 @@
 """Reject drift from the canonical Map Controls standard before release."""
 from pathlib import Path
+from table_tools import LOADER, MOUNT, CALL
 import argparse,json,re,hashlib,zipfile
 from patch_maps import bags,walk,ROOT
 from lupa.lua52 import LuaRuntime
@@ -31,6 +32,7 @@ def validate(path):
     assert embedded in (canonical,previous_header),(b['GUID'],o['GUID'],'panel drift')
     brokers+=1
   owner=owners[0]['LuaScript']
+  assert LOADER in owner and MOUNT+CALL in owner,(b['GUID'],'missing order panel or Army Spawner bootstrap')
   info=json.loads(json.loads(META.search(owner)[1]))
   assert (info.get('missionGeistId'),info.get('missionUrl'))==assignment(b,info.get('mission','')),(b['GUID'],'wrong MissionGeist destination')
   assert info['revision']==REVISION and LINK in owner and 'local function missionPanel()' not in owner,(b['GUID'],'mission handler drift')

@@ -17,15 +17,16 @@ import (
 	"time"
 )
 
-const collectionName = "Lobo Maps - MissionGeist R3 - Workshop Collection"
+const collectionName = "Lobo Maps - MissionGeist R4 - Workshop Collection"
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
 
 type object = map[string]any
 type patch struct {
-	Map  string `json:"map"`
-	GUID string `json:"guid"`
-	Old  string `json:"old"`
-	New  string `json:"new"`
+	Map            string `json:"map"`
+	GUID           string `json:"guid"`
+	Old            string `json:"old"`
+	New            string `json:"new"`
+	PreviousSHA256 string `json:"previous_sha256,omitempty"`
 }
 type receipt struct {
 	Title   string `json:"save_name"`
@@ -198,7 +199,7 @@ func apply(d object, ps []patch) (int, error) {
 			if s == p.New {
 				continue
 			}
-			if s != p.Old {
+			if s != p.Old && (p.PreviousSHA256 == "" || fmt.Sprintf("%x", sha256.Sum256([]byte(s))) != p.PreviousSHA256) {
 				return 0, fmt.Errorf("newer or different controls in %s (%s)", str(b, "Nickname"), p.GUID)
 			}
 			o["LuaScript"] = p.New
@@ -245,7 +246,7 @@ func selectSave(explicit string, files map[string][]byte, ps []patch) (object, s
 		return nil, "", 0, err
 	}
 	if str(collection, "SaveName") != collectionName || !supported(collection) {
-		return nil, "", 0, errors.New("expected the R3 Workshop collection; extract the complete R3 installer")
+		return nil, "", 0, errors.New("expected the R4 Workshop collection; extract the complete R4 installer")
 	}
 	if explicit == "" {
 		n, err := apply(collection, ps)
@@ -382,7 +383,7 @@ func install(root, explicit, path, variant string) (out receipt, err error) {
 		}
 	}
 	out.Title = str(d, "SaveName")
-	out.Version = "MissionGeist Workshop Collection R3"
+	out.Version = "MissionGeist Workshop Collection R4"
 	out.Source = source
 	out.Maps = len(maps(d))
 	out.Changed = n

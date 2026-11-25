@@ -2,6 +2,7 @@ from pathlib import Path
 import json, re, copy, hashlib, unicodedata, argparse
 import patch_maps
 from mission_links import assignment
+from table_tools import add_to_owner
 from upgrade_mission_links import REVISION
 
 ROOT=Path(__file__).resolve().parent
@@ -158,7 +159,7 @@ end""".replace('__REVISION__',REVISION)
                 mission=json.loads(match[1])if match else''
                 meta['mission']=mission
                 meta['missionGeistId'],meta['missionUrl']=assignment(bag,mission)
-                s+='\n'+(ROOT/'standard-owner.lua').read_text().replace('__META__',json.dumps(json.dumps(meta,separators=(',',':')))).replace('__ROTATION_CONFIG__',json.dumps(json.dumps(rotation,separators=(',',':'))))
+                s+='\n'+add_to_owner((ROOT/'standard-owner.lua').read_text()).replace('__META__',json.dumps(json.dumps(meta,separators=(',',':')))).replace('__ROTATION_CONFIG__',json.dumps(json.dumps(rotation,separators=(',',':'))))
             s=ascii_lua(s)
             o['LuaScript']=s
             if old!=s:patches.append({'map':bag['GUID'],'guid':o['GUID'],'old':old,'new':s})
