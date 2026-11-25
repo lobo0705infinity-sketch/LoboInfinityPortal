@@ -97,7 +97,10 @@ def ground():
   stairs.append({'side':side,'center':at(edge),'bottom':at(bottom),'direction':[nx,nz],'run':run,'width':width,'opening':2*opening})
  # A narrower island leaves a 1.03-inch clear landing at the foot of each short flight.
  m.box(0,-1.2,-1,1.0,1.86,1.86,'limestone');m.box(0,.66,-1,1.02,.13,1.89,'travertine')
- m.box(0,.79,-1,.86,.065,1.72,'soil');R.palm(m,0,-1,.85,3.4)
+ m.box(0,.79,-1,.86,.065,1.72,'soil')
+ palm=R.M();R.palm(palm,0,-1,.85,3.4)
+ # Keep the trunk solid and the decorative fronds clear of miniature placement.
+ palm.physical_extras=palm.physical_extras[:1];m.add(palm)
  # The material patch in the right margin of the court sheet supplies all other surfaces.
  m.uv=[((3120+960*u)/4096,1-(8+960*(1-v))/4096) for u,v in m.uv]
  for pts in top:
@@ -154,18 +157,25 @@ def details():
 def upper_rooms():
  import inspect
  fn=inspect.getsource(R.floor_shell).replace("if level or role=='hotel':","if role=='hotel':")
+ # Preserve the full rear-right hatch rectangle and the ladder landing on both floors.
+ # Dining sets fit on the east wall, and the spa couches sit forward of the hatch.
+ fn=fn.replace("for z in [-d/2+1.3,d/2-1.6]:","for z in [-d/2+1.3,0.0]:")
+ fn=fn.replace("m.box(x,y+.22,1,1.2,.65,2.5","m.box(x,y+.22,-.58,1.2,.65,2.5")
+ fn=fn.replace("m.box(x,y+.87,1,1.2,.15,2.5","m.box(x,y+.87,-.58,1.2,.15,2.5")
+ fn=fn.replace("for z in [-.1,2.0]:","for z in [-1.61,.43]:")
+ fn=fn.replace("for x in [-w/2+1.0,-w/2+2.5]:H.washer(m,x,d/2-.8)", "for z in [-.85,.95]:\n   washer=M();H.washer(washer,0,0);m.add(washer.moved(x=-w/2+.81,z=z,y=.22,rot=-90))")
  scope=dict(R.__dict__);exec(fn,scope);floor_shell=scope['floor_shell']
- # The spa upper floor is a treatment suite and the restaurant upper floor is the dining terrace.
- # Regenerate both closed buildings and upper-open states, with matching physical furniture.
- for slug,role in [('azure-spa','spa'),('terrace-restaurant','restaurant')]:
-  w,d=8,6;m=R.M();m.add(floor_shell(w,d,0,role));m.add(floor_shell(w,d,1,role))
-  for ix in (3,1):
-   if ix==1:
-    R.slab_hatch(m,w,d,6.2);h=6.42
-    for sg in [-1,1]:m.box(sg*w/2,h,0,.18,.8,d,'limestone');m.box(0,h,sg*d/2,w,.8,.18,'limestone')
-    m.box(-w/2+1.2,h,-d/2+1.2,1.5,.55,1.2,'enamel')
-    for j in range(7):m.box(-w/2+1.2,h+.55,-d/2+.7+j*.15,1.3,.05,.06,'rubber')
-   name=slug+'-room-'+str(ix);export(m,A/(name+'.obj'));collision(m,name)
+ for slug,role,w,d,levels in [('azure-spa','spa',8,6,2),('terrace-restaurant','restaurant',8,6,2),('laundry','laundry',6,7,1)]:
+  m=R.M()
+  for level in range(levels):
+   m.add(floor_shell(w,d,level,role))
+   name=f'{slug}-room-{level+2}';export(m,A/(name+'.obj'));collision(m,name)
+  R.slab_hatch(m,w,d,levels*3.1);h=levels*3.1+.22
+  for sg in (-1,1):
+   m.box(sg*w/2,h,0,.18,.8,d,'limestone');m.box(0,h,sg*d/2,w,.8,.18,'limestone')
+  m.box(-w/2+1.2,h,-d/2+1.2,1.5,.55,1.2,'enamel')
+  for j in range(7):m.box(-w/2+1.2,h+.55,-d/2+.7+j*.15,1.3,.05,.06,'rubber')
+  name=slug+'-room-1';export(m,A/(name+'.obj'));collision(m,name)
 if __name__=='__main__':
  ground();details();upper_rooms()
  print('Built courtyard, four stairs, 12 multiple-state decoration sets and room geometry.')
