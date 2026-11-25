@@ -11,6 +11,8 @@
   "lab_state_attachments": 10,
   "lab_picture_bays": 10,
   "controls": true,
+  "mission_link": "https://infinitygeist.com/mission/cm_aurora7_network_node",
+  "zone_rotation_degrees": 90,
   "stage_positions": 90,
   "editable_clouds": 23,
   "objective_logic": true,

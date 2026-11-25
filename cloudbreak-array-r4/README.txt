@@ -1,4 +1,4 @@
-CLOUDBREAK ARRAY R4
+CLOUDBREAK ARRAY R4.1
 Aurora VII • Turn 5 • Network Node
 Harmony City, Harmony Province
 
@@ -6,7 +6,7 @@ INSTALL ON WINDOWS
 Extract the ZIP and double-click INSTALL-CLOUDBREAK-ARRAY.cmd. For a custom save location, drag your Tabletop Simulator data folder or its Saves folder onto the installer. It adds two numbered save slots, puts the deployable bag in Saved Objects, and opens the Lobo Maps Workshop page.
 
 PLAY
-Under Games > Save & Load, open Cloudbreak Array R4 - Network Node. The rooftop district is already deployed. Take one civilian per player from the HVTs bag and use two Modern Classified Objectives per player. Open Mission for the briefing and scoring. The Notebook and the included MissionGeist file carry the campaign scenario.
+Under Games > Save & Load, open Cloudbreak Array R4.1 - Network Node. The rooftop district is already deployed. Take one civilian per player from the HVTs bag and use two Modern Classified Objectives per player. Map Controls > Mission gives you the Network Node by Lobo link in a private field. Click the field, press Ctrl+A and Ctrl+C, then paste it into your browser. The ZIP also includes a double-clickable Network Node - MissionGeist shortcut. The full briefing is in the TTS Notebook.
 
 EDIT THE CLOUDS
 All 23 cloud banks start locked. Right-click the bank itself, open Toggles and turn Lock off. Drag it, or use the Gizmo to set its position, height or rotation. To remove it, select it and press Delete. Gravity is off for the banks, so you can leave one suspended where you place it. Save the table to keep the changes.
@@ -35,10 +35,10 @@ Primary Node  Switching House roof
 Right-click a console to record control after resolving its roll. Losing your last relay also loses control of the Primary Node. Each console appears with its supporting floor.
 
 MAP CONTROLS
-Use Map Rules for terrain, Mission for scoring, or Turn 180 to reverse the district. The shared panel includes the Normal, +4 and +8 inch deployment zones, independent DZ and exclusion colors, grid, quadrants, reference tables, Clear Table and Day / Night / Off. Normal deployment is 12 inches deep. The central exclusion band is 8 inches wide.
+Map Rules covers open air, bridges and cloud visibility. Mission gives each player the scenario link. With the map in its starting orientation, deployment runs inward from the two opposite X edges. Normal, +4 and +8 mark 12, 16 and 20 inches from each edge. The dotted exclusion lines mark the 8-inch band in the center. The controls also include Turn 180, independent DZ and exclusion colors, grid, quadrants, reference tables, Clear Table and Day / Night / Off.
 
 WORKSHOP COLLECTION
-Lobo Maps - Cloudbreak Array Workshop R4 contains 106 setups. It deploys a copy of Cloudbreak on first load and retains the shelf bag. Use this collection save for Update Workshop on item 3719263238.
+Lobo Maps - Cloudbreak Array Workshop R4.1 contains 106 setups. It deploys a copy of Cloudbreak on first load and retains the shelf bag. Use this collection save for Update Workshop on item 3719263238.
 
 REVIEW
 The Review folder shows the full district, its playmat, the view down from a skybridge, both states of Courier Spire and the weather laboratory windows. The map views use the shipped models, materials and positions. The installer and Lua controls were exercised offline. A Windows launch and live TTS lighting, physics and multiplayer remain for in-game review.

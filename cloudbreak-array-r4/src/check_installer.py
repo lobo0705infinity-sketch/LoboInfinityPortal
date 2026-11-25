@@ -8,6 +8,7 @@ with tempfile.TemporaryDirectory(dir=WORK)as temp:
  with zipfile.ZipFile(OUT/ZIPNAME)as z:z.extractall(package)
  assert (package/'Lobo-Cloudbreak-Array-Setup.exe').read_bytes()[:2]==b'MZ'
  assert 'Lobo-Cloudbreak-Array-Setup.exe' in (package/'INSTALL-CLOUDBREAK-ARRAY.cmd').read_text()
+ assert (package/'Network Node - MissionGeist.url').read_text().splitlines()==['[InternetShortcut]','URL='+MISSION_URL]
  payload=package/'Files/payload.zip'
  with zipfile.ZipFile(payload)as zz:
   expected=json.loads(zz.read('manifest.json'))

@@ -15,6 +15,7 @@ import (
 )
 
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
+const release = "R4.1"
 
 func writeNew(p string, b []byte) error {
 	f, e := os.OpenFile(p, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
@@ -128,7 +129,7 @@ func install(root, path string) (created []string, err error) {
 	if e = os.MkdirAll(objects, 0755); e != nil {
 		return created, e
 	}
-	dir, e := os.MkdirTemp(objects, "Lobo-Cloudbreak-Array-R4-")
+	dir, e := os.MkdirTemp(objects, "Lobo-Cloudbreak-Array-"+release+"-")
 	if e != nil {
 		return created, e
 	}
@@ -183,12 +184,12 @@ func main() {
 		code = 1
 		return
 	}
-	fmt.Println("CLOUDBREAK ARRAY R4 INSTALLED")
+	fmt.Println("CLOUDBREAK ARRAY " + release + " INSTALLED")
 	for _, p := range paths {
 		fmt.Println(p)
 	}
-	fmt.Println("TTS > Games > Save & Load > Cloudbreak Array R4 - Network Node")
-	fmt.Println("The separate Lobo Maps - Cloudbreak Array Workshop R4 save keeps the full collection.")
+	fmt.Println("TTS > Games > Save & Load > Cloudbreak Array " + release + " - Network Node")
+	fmt.Println("The separate Lobo Maps - Cloudbreak Array Workshop " + release + " save keeps the full collection.")
 	fmt.Println("Load the collection save to use Update Workshop.")
 	if !*noBrowser {
 		if e = openWorkshop(); e != nil {

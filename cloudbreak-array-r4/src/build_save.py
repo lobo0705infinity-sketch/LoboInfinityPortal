@@ -7,6 +7,11 @@ from rooftops import *
 BASE_URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'
 CONFIG=re.compile(r'^(\s*local config=JSON\.decode\()(.*)(\)\s*)$',re.M)
 POS=('posX','posY','posZ','rotX','rotY','rotZ')
+MAP_RULES = (
+    'Open air between buildings is impassable. Only Troopers with Terrain (Zero-G) or '
+    'Terrain (Total) may move through it. All Troopers may use the bridges.\n\n'
+    'Each cloud bank is a Zero Visibility Zone.'
+)
 
 
 def compact(obj):return json.dumps(obj,ensure_ascii=True,separators=(',',':'))
@@ -51,23 +56,34 @@ def revise_tower(o,k,url,windows):
 
 
 def patch_controls(owner,obsolete):
-    oldrules=None;newrules=None
+    oldrules=None
     def sub(m):
-        nonlocal oldrules,newrules
+        nonlocal oldrules
         cfg=json.loads(json.loads(m[2]))
         if 'rules' in cfg:
             oldrules=cfg['rules']
-            before="Each tower's States menu opens its floors. State 1 is the lowest and the highest state shows the roof. Use the yellow ladders. Lift figures before hiding their supporting floor."
-            after="Ten towers open to furnished interiors. State 1 is the lowest floor and the highest state shows the roof. Six towers are roof-only. Use the yellow ladders. Lift figures before hiding their supporting floor."
-            assert before in oldrules
-            newrules=oldrules.replace(before,after).replace('inside Transit Arcade on level 2','inside Transit Arcade on level 1').replace('Isobar Observatory level 3 terrace','Isobar Observatory level 2 terrace')
-            cfg['rules']=newrules
+            assert oldrules.startswith(MAP_RULES)
+            cfg['rules']=MAP_RULES
+            cfg['missionUrl']=MISSION_URL
             cfg['supports']={g:{s:b for s,b in states.items() if s not in obsolete} for g,states in cfg['supports'].items()}
         else:
             cfg['guids']={g:value for g,value in cfg['guids'].items() if g not in obsolete}
         return m[1]+compact(compact(cfg))+m[3]
-    owner['LuaScript']=CONFIG.sub(sub,owner['LuaScript'])
-    return oldrules,newrules
+    script=CONFIG.sub(sub,owner['LuaScript'])
+    start=script.index('local function draw()\n')
+    end=script.index('local function refresh()\n',start)
+    script=script[:start]+(ROOT/'src/map_guides.lua').read_text()+'\n'+script[end:]
+    replacements={
+        'function loboStandardMissionOpen(player)if player then missionReaders[player.color]=true;missionPanel()end end':
+            'function loboStandardMissionOpen(player) cloudMissionLink(player) end',
+        "width='660',height='540',color='#10212AFB'":"width='660',height='202',color='#10212AFB'",
+        "width='620',height='448',fontSize='16'":"width='620',height='125',fontSize='16'",
+    }
+    for previous,updated in replacements.items():
+        assert script.count(previous)==1,previous
+        script=script.replace(previous,updated)
+    owner['LuaScript']=script
+    return oldrules
 
 
 def deploy(sha):
@@ -94,8 +110,8 @@ def deploy(sha):
         elif o['GUID']=='cb7101':
             o['CustomMesh']['DiffuseURL']=url+'city-shafts.jpg'
             o['Description']='A view down the tower facades to the streets and lower roofs of Harmony City. The printed city and thin mist are scenery.'
-    before,after=patch_controls(next(o for o in owned if o['GUID']=='cb7102'),obsolete)
-    oldname=bag['Nickname'];newname=oldname.removesuffix('R3')+'R4'
+    before=patch_controls(next(o for o in owned if o['GUID']=='cb7102'),obsolete)
+    oldname=bag['Nickname'];newname=oldname.removesuffix('R3')+RELEASE
     def stage(b):
         b.update(Nickname=newname,Description='Network Node | Harmony City. 16 towers, 13 enterable floors, 26 skybridges, 23 editable cloud banks and five airships.',GMNotes='CloudbreakArrayR4')
         b['ContainedObjects']=deepcopy(owned)
@@ -107,10 +123,11 @@ def deploy(sha):
         b['LuaScript']='\r\n'.join(records)+'\r\n'
     stage(bag);stage(next(o for o in collection['ObjectStates'] if o['GUID']==BAG))
     for doc in (table,collection):
-        doc['SaveName']=doc['SaveName'].replace(' R3',' R4')
+        doc['SaveName']=doc['SaveName'].replace(' R3',' '+RELEASE)
         doc['LuaScript']=doc['LuaScript'].replace(oldname,newname)
         tab=next(t for t in doc['TabStates'].values() if t['title']=='Cloudbreak Array | Network Node')
-        assert before in tab['body'];tab['body']=tab['body'].replace(before,after)
+        assert before in tab['body']
+        tab['body']=tab['body'].replace(before,MAP_RULES)
     for name,doc in [('Play-Table',table),('Workshop-Save',collection),('Cloudbreak-Array',saved)]:
         (OUT/(name+'.json')).write_text(compact(doc))
 

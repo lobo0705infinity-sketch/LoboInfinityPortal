@@ -1,6 +1,8 @@
-# Cloudbreak Array R4
+# Cloudbreak Array R4.1
 
 R4 removes the first playable story from each of the sixteen R3 models. The real upper-floor triangles, furniture and colliders are translated together by 3.2 inches. The foundation facade stays at the mat and the old downward ladder openings are filled. The back of the photographed weather lab sits on the same mullioned window plane as the room it replaces.
+
+R4.1 uses those same assets. Its map-specific Lua draws deployment and exclusion boundaries along the Z axis at fixed X offsets. Mission presents the public MissionGeist URL to the player who pressed it. Map Rules ends with the cloud bank visibility rule.
 
 ## Inputs
 

@@ -111,6 +111,51 @@ def check_geometry():
             'lab_state_attachments':lab_count,'lab_picture_bays':sum(json.loads((WORK/'windows.json').read_text()).values())}
 
 
+def check_release_controls(w):
+    lua,controller=w.run['cb7102']
+    dialogs=[]
+    for color in ('Blue','Red'):
+        def show(description,url,close,seat=color):
+            dialogs.append((seat,url))
+            close(url,seat)
+        controller.Player[color].showInputDialog=show
+        w.click('mission',color)
+        assert dialogs[-1]==(color,MISSION_URL) and w.printed[:2]==(MISSION_URL,color)
+        assert not any('standardBriefing' in e.get('id','') for e in w.visible(color))
+    assert len(dialogs)==2
+
+    def check_lines(kind,offset):
+        path=w.source()
+        painted=w.lines[w.mat]
+        assert len(path)==len(painted)
+        mat=controller.getObjectFromGUID(w.mat)
+        tracks=defaultdict(list)
+        for original,stroke in zip(path,painted):
+            if original.get('loboZoneKind')!=kind or original.get('loboZoneEdge'):
+                continue
+            for pt in stroke['points']:
+                world=mat.positionToWorld(lua.table_from(pt))
+                tracks[round(world.x,4)].append(world.z)
+        assert set(tracks)==({-offset,offset} if offset is not None else set())
+        for coordinates in tracks.values():
+            assert min(coordinates)<-23.75 and max(coordinates)>23.75
+
+    for rotated in (False,True):
+        if rotated:w.click('turn')
+        w.click('dz_off')
+        check_lines('deployment',None)
+        check_lines('exclusion',4)
+        for extra in (0,4,8):
+            w.click('dz_'+str(extra))
+            check_lines('deployment',12-extra)
+            check_lines('exclusion',4)
+        w.click('exclusion')
+        check_lines('exclusion',None)
+        check_lines('deployment',4)
+        w.click('exclusion')
+    w.click('turn')
+
+
 def runtime():
     single=json.loads((OUT/'Play-Table.json').read_text());catalog=json.loads((OUT/'Workshop-Save.json').read_text())
     base=json.loads((R3/'out/Workshop-Save.json').read_text());saved=json.loads((OUT/'Cloudbreak-Array.json').read_text())['ObjectStates'][0]
@@ -127,18 +172,21 @@ def runtime():
         for state in records(o):
             seen.add(state['GUID']);assert places[state['GUID']]==[state['Transform'][k] for k in POS]
     assert set(places)==seen and not (RETIRED & seen)
-    assert saved['Nickname'] in catalog['LuaScript'] and single['SaveName']=='Cloudbreak Array R4 - Network Node'
-    assert all('level 1' in next(t['body'] for t in s['TabStates'].values() if t['title'].startswith('Cloudbreak Array')) for s in (single,catalog))
+    assert saved['Nickname'] in catalog['LuaScript'] and single['SaveName']==f'Cloudbreak Array {RELEASE} - Network Node'
+    assert all(MAP_RULES in next(t['body'] for t in s['TabStates'].values() if t['title'].startswith('Cloudbreak Array')) for s in (single,catalog))
     o=live['cb7102'];cfg=json.loads(json.loads(CONFIG.search(o['LuaScript'])[2]))
     for terminal,options in cfg['supports'].items():
         assert set(options)<=seen and any(options.values())
         assert live[terminal]['ChildObjects'][0]['CustomMesh']==next(q for q in R3_PIECES if q['GUID']==terminal)['ChildObjects'][0]['CustomMesh']
     w=validate_map(deepcopy(saved));lua,g=w.run['cb7102']
+    check_release_controls(w)
     for mode in ('day','night','off'):
         w.click('bg_'+mode);assert w.background_url==cfg['background'][mode]
     def button(key):
         return next(e for e in w.visible() if e.tag=='Button' and e.get('text','').lower().startswith(key))
-    w.invoke(button('map rules'));assert any('level 2 terrace' in (e.text or e.get('text','')) for e in w.visible())
+    w.invoke(button('map rules'))
+    rules_panel=next(e for e in w.visible() if e.get('id','').endswith('_cloudbreak_detail_White'))
+    assert [e.text for e in rules_panel.iter('Text')]==['Cloudbreak Array | Map Rules',MAP_RULES]
     w.invoke(button('close'));w.invoke(button('map-specific options'))
     banks=[q for q in saved['ContainedObjects'] if 'CloudbreakEditableCloud' in q.get('Tags',[])]
     for q in banks:
@@ -159,7 +207,7 @@ def runtime():
     for doc in (single,catalog):
         for t in doc['TabStates'].values():
             assert isinstance(t['id'],int) and isinstance(t['color'],str) and all(isinstance(t['visibleColor'][k],(int,float)) for k in 'rgb')
-    return {'controls':True,'stage_positions':len(places),'editable_clouds':len(banks),'objective_logic':True,'other_map_setups_unchanged':105}
+    return {'controls':True,'mission_link':MISSION_URL,'zone_rotation_degrees':90,'stage_positions':len(places),'editable_clouds':len(banks),'objective_logic':True,'other_map_setups_unchanged':105}
 
 
 if __name__=='__main__':

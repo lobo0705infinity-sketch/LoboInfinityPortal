@@ -5,10 +5,10 @@ import zipfile
 
 from PIL import Image
 
-from rooftops import PREVIOUS, OUT, ROOT, WORK
+from rooftops import PREVIOUS, OUT, ROOT, WORK, RELEASE, MISSION_URL
 BASE = PREVIOUS/"base"
 
-ZIPNAME = 'Lobo-Cloudbreak-Array-Workshop-Installer-R4.zip'
+ZIPNAME = f'Lobo-Cloudbreak-Array-Workshop-Installer-{RELEASE}.zip'
 PREVIEWS = [
     'Cloudbreak-Array-R4-Rooftops.png',
     'Cloudbreak-Array-R4-Skybridge.png',
@@ -35,6 +35,7 @@ def delivery():
         archive.write(WORK/'Lobo-Cloudbreak-Array-Setup.exe','Lobo-Cloudbreak-Array-Setup.exe')
         archive.write(BASE/'INSTALL-CLOUDBREAK-ARRAY.cmd','INSTALL-CLOUDBREAK-ARRAY.cmd')
         archive.write(ROOT/'README.txt','README.txt')
+        archive.writestr('Network Node - MissionGeist.url',f'[InternetShortcut]\r\nURL={MISSION_URL}\r\n')
         archive.write(BASE/'Aurora-VII-Network-Node.json','Files/Aurora-VII-Network-Node.json')
         for name in PREVIEWS:
             archive.write(OUT/name,'Review/'+name,compress_type=zipfile.ZIP_STORED)
