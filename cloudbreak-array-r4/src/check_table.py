@@ -187,6 +187,8 @@ def runtime():
     w.invoke(button('map rules'))
     rules_panel=next(e for e in w.visible() if e.get('id','').endswith('_cloudbreak_detail_White'))
     assert [e.text for e in rules_panel.iter('Text')]==['Cloudbreak Array | Map Rules',MAP_RULES]
+    assert 'All Troopers may use the bridges.' in MAP_RULES and MAP_RULES.count('Each cloud bank is a Zero Visibility Zone.')==1
+    assert all(part in MAP_RULES for part in ('+3 WIP','Camouflaged State','Impersonation','Hidden Deployment','Once per game','failed WIP Roll','Accept the second result','only when it is active'))
     w.invoke(button('close'));w.invoke(button('map-specific options'))
     banks=[q for q in saved['ContainedObjects'] if 'CloudbreakEditableCloud' in q.get('Tags',[])]
     for q in banks:

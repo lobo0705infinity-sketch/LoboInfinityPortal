@@ -1,7 +1,7 @@
 {
-  "checked_OBJ_files": 64,
-  "max_vertices_per_model": 5798,
-  "max_triangles_per_model": 10764,
+  "checked_OBJ_files": 88,
+  "max_vertices_per_model": 7158,
+  "max_triangles_per_model": 12306,
   "verified_LOF_examples": 4,
   "full_silhouette_samples_per_example": 81,
   "registered_mat_footprints": 16

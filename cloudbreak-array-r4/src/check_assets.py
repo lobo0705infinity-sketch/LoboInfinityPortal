@@ -13,6 +13,10 @@ import verify_geometry as existing
 
 
 def check():
+    import district
+    legacy_obj=district.obj_path
+    district.obj_path=lambda name: ASSETS/(name+'.obj') if (ASSETS/(name+'.obj')).exists() else legacy_obj(name)
+    district.geometry.cache_clear()
     existing.AS=ASSETS;existing.mesh_integrity()
     table=json.loads((OUT/'Play-Table.json').read_text())
     pieces=[o for o in table['ObjectStates'] if TAG in o.get('Tags',[])]

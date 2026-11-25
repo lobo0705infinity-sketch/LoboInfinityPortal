@@ -15,6 +15,10 @@ PREVIEWS = [
     'Cloudbreak-Array-R4-Playmat.jpg',
     'Cloudbreak-Array-R4-Courier-Spire.jpg',
     'Cloudbreak-Array-R4-Weather-Lab.jpg',
+    'Cloudbreak-Array-Sealed-Corners-R4.2.jpg',
+    'Cloudbreak-Array-Corporate-Fleet-R4.2.jpg',
+    'Cloudbreak-Array-Rooftop-Clouds-R4.2.jpg',
+    'Cloudbreak-Array-Corner-Orbit-R4.2.mp4',
 ]
 
 

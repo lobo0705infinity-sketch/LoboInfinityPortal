@@ -3,15 +3,29 @@ import re
 from copy import deepcopy
 from hashlib import sha256
 from rooftops import *
+from fleet import FLEET
 
 BASE_URL='https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/'
 CONFIG=re.compile(r'^(\s*local config=JSON\.decode\()(.*)(\)\s*)$',re.M)
 POS=('posX','posY','posZ','rotX','rotY','rotZ')
-MAP_RULES = (
+AIR_RULES = (
     'Open air between buildings is impassable. Only Troopers with Terrain (Zero-G) or '
     'Terrain (Total) may move through it. All Troopers may use the bridges.\n\n'
     'Each cloud bank is a Zero Visibility Zone.'
 )
+
+
+HARMONY_RULES = (
+    "Harmony District | Security Surveillance\n"
+    "Both players get +3 WIP on Discover Rolls. Troopers cannot deploy in or enter "
+    "Camouflaged State. Troopers with Camouflage may be fielded and deploy as models. "
+    "Impersonation and Hidden Deployment work normally.\n\n"
+    "Owner advantage | Surveillance Intelligence\n"
+    "Once per game, reroll one failed WIP Roll to accomplish a mission objective. "
+    "Accept the second result. Only a player registered to the faction that controlled "
+    "Harmony at the start of the turn can use this advantage, and only when it is active."
+)
+MAP_RULES = AIR_RULES + "\n\n" + HARMONY_RULES
 
 
 def compact(obj):return json.dumps(obj,ensure_ascii=True,separators=(',',':'))
@@ -46,8 +60,12 @@ def revise_tower(o,k,url,windows):
         if roof and t.n==1:state['Description']+=' The service hatch is sealed.'
         state['GMNotes']=state['GMNotes'].replace('CloudbreakArrayR3','CloudbreakArrayR4')
         model=tower_name(k,index)
-        state['CustomMesh'].update(MeshURL=url+model+'.obj',ColliderURL=url+model+'-col.obj')
+        state['CustomMesh'].update(MeshURL=url+model+'.obj',ColliderURL=url+model+'-col.obj',DiffuseURL=url+'civic-stable.jpg')
         for child in state.get('ChildObjects',[]):
+            child_key=slug(child)
+            if child_key.startswith('greenhouse-'):
+                child['CustomMesh']['MeshURL']=url+child_key+'.obj'
+                if child_key=='greenhouse-door-hardware':child['CustomMesh']['DiffuseURL']=url+'civic-stable.jpg'
             child['Transform']['posY']=round(child['Transform']['posY']-PITCH,5)
             child['GMNotes']=child['GMNotes'].replace('CloudbreakArrayR3','CloudbreakArrayR4')
         if windows[k]:state.setdefault('ChildObjects',[]).append(photo_child(state,k,index,url))
@@ -62,7 +80,7 @@ def patch_controls(owner,obsolete):
         cfg=json.loads(json.loads(m[2]))
         if 'rules' in cfg:
             oldrules=cfg['rules']
-            assert oldrules.startswith(MAP_RULES)
+            assert oldrules.startswith(AIR_RULES)
             cfg['rules']=MAP_RULES
             cfg['missionUrl']=MISSION_URL
             cfg['supports']={g:{s:b for s,b in states.items() if s not in obsolete} for g,states in cfg['supports'].items()}
@@ -76,8 +94,8 @@ def patch_controls(owner,obsolete):
     replacements={
         'function loboStandardMissionOpen(player)if player then missionReaders[player.color]=true;missionPanel()end end':
             'function loboStandardMissionOpen(player) cloudMissionLink(player) end',
-        "width='660',height='540',color='#10212AFB'":"width='660',height='202',color='#10212AFB'",
-        "width='620',height='448',fontSize='16'":"width='620',height='125',fontSize='16'",
+        "width='660',height='540',color='#10212AFB'":"width='660',height='442',color='#10212AFB'",
+        "width='620',height='448',fontSize='16'":"width='620',height='365',fontSize='16'",
     }
     for previous,updated in replacements.items():
         assert script.count(previous)==1,previous
@@ -89,6 +107,7 @@ def patch_controls(owner,obsolete):
 def deploy(sha):
     url=BASE_URL+sha+'/cloudbreak-array-r4/assets/'
     windows=json.loads((WORK/'windows.json').read_text())
+    banks=json.loads((WORK/'cloud-fit.json').read_text())
     table=deepcopy(R3_TABLE)
     collection=json.loads((R3/'out/Workshop-Save.json').read_text())
     saved=json.loads((R3/'out/Cloudbreak-Array.json').read_text());bag=saved['ObjectStates'][0]
@@ -99,13 +118,20 @@ def deploy(sha):
         m=slug(o);tr=o['Transform'];o['GMNotes']=o.get('GMNotes','').replace('CloudbreakArrayR3','CloudbreakArrayR4')
         if m.startswith('tower-'):revise_tower(o,m.split('-')[1],url,windows)
         elif m.startswith('bridge-'):
+            o['CustomMesh'].update(MeshURL=url+m+'.obj',DiffuseURL=url+'civic-stable.jpg')
             if o['GUID'] not in RELAND:tr['posY']=round(tr['posY']-PITCH,5)
             lev=1+round((tr['posY']-BASE_Y)/PITCH)
             o['Description']=re.sub(r'Level \d+ walking deck',f'Level {lev} walking deck',o['Description'])
         elif 'CloudbreakEditableCloud' in o.get('Tags',[]):
-            original=tr['posY'];base=max(MAT_Y+.11,original-PITCH);top=original-PITCH+tr['scaleY']
-            tr.update(posY=round(base,5),scaleY=round(top-base,5))
-        elif m.startswith(('aerostat-','moored-')) or 'mission' in o.get('Tags',[]):
+            fitted=banks[o['GUID']];tr.update(fitted['transform']);key='cumulus-'+str(fitted['variant'])
+            o['CustomMesh'].update(MeshURL=url+key+'.obj',ColliderURL=url+key+'-col.obj',DiffuseURL=url+'mist-light.jpg')
+        elif m in FLEET:
+            op=FLEET[m];tr['posY']=round(tr['posY']-PITCH,6)
+            o['CustomMesh'].update(MeshURL=url+m+'.obj',DiffuseURL=url+'fleet-'+op.key+'.jpg')
+            if m=='moored-aerostat':o['CustomMesh']['ColliderURL']=url+m+'-col.obj'
+            o['Nickname']=o['Nickname'].split(' |')[0]+' | '+op.owner
+            o['Description']=op.owner+' · '+op.service.title()+'. '+o['Description']
+        elif 'mission' in o.get('Tags',[]):
             tr['posY']=round(tr['posY']-PITCH,6)
         elif o['GUID']=='cb7101':
             o['CustomMesh']['DiffuseURL']=url+'city-shafts.jpg'

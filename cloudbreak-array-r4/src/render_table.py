@@ -51,12 +51,17 @@ def loadmodel(path,tex):
  me=bpy.data.meshes.new(Path(path).stem);me.from_pydata(v,[],f);me.materials.append(material(str(tex)));me.update()
  if ft:
   layer=me.uv_layers.new(name='Native UV');layer.data.foreach_set('uv',[u for i in ft for u in vt[i]])
- if ('vapour-' in path or 'alto-' in path or 'aerostat-' in path) and fn:
+ if ('vapour-' in path or 'alto-' in path or 'cumulus-' in path or 'aerostat' in path) and fn:
   for poly in me.polygons:poly.use_smooth=True
   me.normals_split_custom_set([norm[i] for i in fn])
  return me
 def include(name,path,tex,t):
  ob=bpy.data.objects.new(name,loadmodel(str(path),str(tex)));scene.collection.objects.link(ob);ob.location=(t['posX'],t['posZ'],t['posY']);ob.rotation_euler.z=-math.radians(t.get('rotY',0));ob.scale=(t['scaleX'],t['scaleZ'],t['scaleY']);return ob
+if mode=='fleet-proof':
+ sys.path.insert(0,str(R/'src'))
+ from review_airspace import portraits
+ portraits(globals())
+ sys.exit(0)
 p=json.loads((O/'Play-Table.json').read_text());obs=[o for o in p['ObjectStates'] if 'LoboMap:cb7100' in o.get('Tags',[])];cur={o['GUID'] for o in obs}
 if inside:
  for o in obs:
@@ -64,6 +69,7 @@ if inside:
 for o in obs:
  if o.get('States') and inside and (mode=='interiors' or o['GUID']=='892359'):o=o['States']['1']
  if mode.startswith('courier') and o['GUID'] not in ('892359','2094a3'):continue
+ if mode.startswith('corner-') and not o.get('CustomMesh',{}).get('MeshURL','').endswith('tower-b-2.obj'):continue
  t=o['Transform']
  if 'CustomAssetbundle' in o:
   if inside:continue
@@ -74,7 +80,9 @@ for o in obs:
  if 'CustomMesh' not in o:continue
  m=o['CustomMesh'];name=m['MeshURL'].split('/')[-1];tex=m['DiffuseURL'].split('/')[-1];base=A if (A/name).exists()else BASE
  if inside and 'bridge-'in name and mode=='detail-interior' and t['posY']>5:continue
- parent=include(o['Nickname'],file3(name),file3(tex),t)
+ mesh_path=(W/'fleet/old-mesh'/name) if mode=='corner-before' else file3(name)
+ texture_path=file3('civic-r2.jpg') if mode=='corner-before' else file3(tex)
+ parent=include(o['Nickname'],mesh_path,texture_path,t)
  for child in o.get('ChildObjects',[]):
   cm=child['CustomMesh'];ch=include(child['Nickname'],file3(cm['MeshURL'].split('/')[-1]),file3(cm['DiffuseURL'].split('/')[-1]),child['Transform']);ch.parent=parent
 # A dark studio ground keeps attention on the playable footprint and grounds the shadows.
@@ -90,6 +98,11 @@ elif mode=='interiors':aim=(0,0,5);loc=(8,-29,108);size=58
 elif mode=='plan':aim=(0,0,7);loc=(0,-.0001,155);size=52
 elif mode.startswith('courier'):
  aim=(-18.95,15.125,5.2 if not inside else 4.1);loc=(-33.5,-9.,22.);size=19.3
+elif mode=='cloud-detail':
+ aim=(6.13,5.52,11.2);loc=(14.7,.7,15.0);size=12.5
+elif mode.startswith('corner-'):
+ aim=(1.5,-23.65,5.85);loc=(16.5,-44.8,12.9);size=11.8
+ scene.render.resolution_x=1120;scene.render.resolution_y=650
 elif mode=='lab':
  aim=(13.0,-23.82,2.67);loc=(11.8,-32.,5.2);size=7.9
 elif mode.startswith('ledge'):
@@ -119,4 +132,10 @@ if os.getenv('CLOUDBREAK_PROOF'):
  scene.render.resolution_percentage=52;scene.cycles.samples=5;scene.cycles.use_denoising=False
  scene.render.filepath=str(W/(mode+'-proof.png'))
 else:scene.render.filepath=str(O/name[mode] if mode in name else W/(mode+'.png'))
-bpy.ops.render.render(write_still=True)
+if mode=='corner-orbit':
+ scene.render.resolution_x=800;scene.render.resolution_y=460;scene.cycles.samples=6
+ for frame in range(20):
+  angle=.57+.32*math.sin(math.tau*frame/20);cam.location=Vector(aim)+Vector((21*math.sin(angle),-21*math.cos(angle),6.25))
+  cam.rotation_euler=(Vector(aim)-cam.location).to_track_quat('-Z','Y').to_euler()
+  scene.render.filepath=str(W/'fleet'/('orbit-%02d.png'%frame));bpy.ops.render.render(write_still=True)
+else:bpy.ops.render.render(write_still=True)

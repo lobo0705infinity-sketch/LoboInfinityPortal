@@ -15,7 +15,7 @@ import (
 )
 
 const workshopURL = "https://steamcommunity.com/sharedfiles/filedetails/?id=3719263238"
-const release = "R4.1"
+const release = "R4.2"
 
 func writeNew(p string, b []byte) error {
 	f, e := os.OpenFile(p, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)

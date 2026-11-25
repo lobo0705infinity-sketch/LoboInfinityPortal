@@ -171,6 +171,10 @@ def build():
     proxy.save('lab-window-proxy')
     (ASSETS/'lab-window-proxy.obj').unlink()
     (WORK/'windows.json').write_text(json.dumps(count,indent=2))
+    # Retain the source solids for every state, including the setback terrace.
+    import shutil
+    raw=WORK/'fleet/old-mesh';raw.mkdir(parents=True,exist_ok=True)
+    for path in ASSETS.glob('tower-*.obj'):shutil.copyfile(path,raw/path.name)
     print('Towers',len(count),'meshes',sum(t.n for t in T.values()),'lab bays',sum(count.values()))
 
 

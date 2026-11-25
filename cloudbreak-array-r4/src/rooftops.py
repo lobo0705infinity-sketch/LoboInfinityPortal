@@ -14,7 +14,7 @@ from shapely.ops import nearest_points
 ASSETS = ROOT/'assets'
 OUT = ROOT/'out'
 WORK = ROOT/'work'
-RELEASE = 'R4.1'
+RELEASE = 'R4.2'
 MISSION_URL = 'https://infinitygeist.com/mission/cm_aurora7_network_node'
 R3_TABLE = json.loads((R3/'out/Play-Table.json').read_text())
 R3_PIECES = [o for o in R3_TABLE['ObjectStates'] if TAG in o.get('Tags',[])]

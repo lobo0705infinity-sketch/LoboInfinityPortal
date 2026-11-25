@@ -1,0 +1,29 @@
+{
+  "towers": 16,
+  "states": 29,
+  "distinct_foundation_corners": 64,
+  "tested_corner_sections": 184,
+  "corner_rays_per_mesh_type": 16140,
+  "visual_and_physics_passed": true,
+  "overlaps_after_cleanup": 0,
+  "surface_area_reporting_threshold_sq_in": 8e-05,
+  "banks": 23,
+  "physical_height_over_short_axis": [
+    1.127,
+    1.427
+  ],
+  "minimum_default_zone_to_bridge_in": 0.275,
+  "silhouette_tests": {
+    "Cirrus weather survey blimp": 81,
+    "Rainband crest": 81,
+    "Kestrel express mail blimp": 81,
+    "Switchyard roll": 81
+  },
+  "fleet_operators": [
+    "Compass Transportation",
+    "Gojal Safari Tours",
+    "VissioRama",
+    "Shangmei Products",
+    "AccessTel"
+  ]
+}

@@ -1,0 +1,308 @@
+{
+  "tower-a-1": {
+    "exact_pairs": 606,
+    "near_pairs": 180,
+    "overlap_square_inches": 228.5924,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 8869,
+    "output_faces": 9842
+  },
+  "tower-b-1": {
+    "exact_pairs": 396,
+    "near_pairs": 216,
+    "overlap_square_inches": 260.408,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2013,
+    "output_faces": 2537
+  },
+  "tower-b-2": {
+    "exact_pairs": 1022,
+    "near_pairs": 346,
+    "overlap_square_inches": 406.169,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 10492,
+    "output_faces": 11963
+  },
+  "tower-c-1": {
+    "exact_pairs": 140,
+    "near_pairs": 108,
+    "overlap_square_inches": 103.8695,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1588,
+    "output_faces": 1846
+  },
+  "tower-d-1": {
+    "exact_pairs": 523,
+    "near_pairs": 134,
+    "overlap_square_inches": 141.5386,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1528,
+    "output_faces": 2058
+  },
+  "tower-d-2": {
+    "exact_pairs": 838,
+    "near_pairs": 208,
+    "overlap_square_inches": 200.8316,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 4124,
+    "output_faces": 5283
+  },
+  "tower-e-1": {
+    "exact_pairs": 454,
+    "near_pairs": 197,
+    "overlap_square_inches": 177.1026,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1668,
+    "output_faces": 2171
+  },
+  "tower-e-2": {
+    "exact_pairs": 822,
+    "near_pairs": 346,
+    "overlap_square_inches": 270.0756,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2794,
+    "output_faces": 3686
+  },
+  "tower-e-3": {
+    "exact_pairs": 1139,
+    "near_pairs": 495,
+    "overlap_square_inches": 351.333,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 6036,
+    "output_faces": 7561
+  },
+  "tower-f-1": {
+    "exact_pairs": 377,
+    "near_pairs": 181,
+    "overlap_square_inches": 215.9355,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 7163,
+    "output_faces": 7707
+  },
+  "tower-g-1": {
+    "exact_pairs": 452,
+    "near_pairs": 131,
+    "overlap_square_inches": 162.7366,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1794,
+    "output_faces": 2267
+  },
+  "tower-g-2": {
+    "exact_pairs": 759,
+    "near_pairs": 222,
+    "overlap_square_inches": 239.0718,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 4450,
+    "output_faces": 5557
+  },
+  "tower-h-1": {
+    "exact_pairs": 375,
+    "near_pairs": 142,
+    "overlap_square_inches": 199.7316,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 7419,
+    "output_faces": 7972
+  },
+  "tower-i-1": {
+    "exact_pairs": 581,
+    "near_pairs": 142,
+    "overlap_square_inches": 148.465,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1698,
+    "output_faces": 2207
+  },
+  "tower-i-2": {
+    "exact_pairs": 710,
+    "near_pairs": 241,
+    "overlap_square_inches": 210.7578,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2658,
+    "output_faces": 3410
+  },
+  "tower-j-1": {
+    "exact_pairs": 470,
+    "near_pairs": 102,
+    "overlap_square_inches": 143.4271,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1574,
+    "output_faces": 2032
+  },
+  "tower-j-2": {
+    "exact_pairs": 1094,
+    "near_pairs": 164,
+    "overlap_square_inches": 213.7905,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2766,
+    "output_faces": 3731
+  },
+  "tower-j-3": {
+    "exact_pairs": 1449,
+    "near_pairs": 226,
+    "overlap_square_inches": 273.1487,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 4940,
+    "output_faces": 6540
+  },
+  "tower-k-1": {
+    "exact_pairs": 711,
+    "near_pairs": 208,
+    "overlap_square_inches": 191.6654,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 1817,
+    "output_faces": 2467
+  },
+  "tower-k-2": {
+    "exact_pairs": 1175,
+    "near_pairs": 338,
+    "overlap_square_inches": 278.0888,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 7473,
+    "output_faces": 8699
+  },
+  "tower-l-1": {
+    "exact_pairs": 534,
+    "near_pairs": 202,
+    "overlap_square_inches": 252.6537,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2248,
+    "output_faces": 2837
+  },
+  "tower-l-2": {
+    "exact_pairs": 1156,
+    "near_pairs": 354,
+    "overlap_square_inches": 392.4653,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 10764,
+    "output_faces": 12306
+  },
+  "tower-m-1": {
+    "exact_pairs": 424,
+    "near_pairs": 157,
+    "overlap_square_inches": 166.5235,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2273,
+    "output_faces": 2733
+  },
+  "tower-m-2": {
+    "exact_pairs": 818,
+    "near_pairs": 266,
+    "overlap_square_inches": 245.3394,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 8252,
+    "output_faces": 9222
+  },
+  "tower-n-1": {
+    "exact_pairs": 503,
+    "near_pairs": 204,
+    "overlap_square_inches": 302.6282,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 2607,
+    "output_faces": 3159
+  },
+  "tower-n-2": {
+    "exact_pairs": 809,
+    "near_pairs": 348,
+    "overlap_square_inches": 477.5074,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 4500,
+    "output_faces": 5442
+  },
+  "tower-n-3": {
+    "exact_pairs": 1092,
+    "near_pairs": 431,
+    "overlap_square_inches": 564.6981,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 7961,
+    "output_faces": 9487
+  },
+  "tower-o-1": {
+    "exact_pairs": 599,
+    "near_pairs": 182,
+    "overlap_square_inches": 196.5611,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 8265,
+    "output_faces": 9243
+  },
+  "tower-p-1": {
+    "exact_pairs": 103,
+    "near_pairs": 106,
+    "overlap_square_inches": 102.3956,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 696,
+    "output_faces": 963
+  },
+  "bridge-freight": {
+    "exact_pairs": 44,
+    "near_pairs": 0,
+    "overlap_square_inches": 0.8869,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 264,
+    "output_faces": 315
+  },
+  "bridge-gallery": {
+    "exact_pairs": 28,
+    "near_pairs": 0,
+    "overlap_square_inches": 0.0549,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 288,
+    "output_faces": 323
+  },
+  "bridge-open": {
+    "exact_pairs": 212,
+    "near_pairs": 144,
+    "overlap_square_inches": 2.2132,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 564,
+    "output_faces": 890
+  },
+  "bridge-service": {
+    "exact_pairs": 212,
+    "near_pairs": 144,
+    "overlap_square_inches": 2.2132,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 564,
+    "output_faces": 890
+  },
+  "greenhouse-door-hardware": {
+    "exact_pairs": 24,
+    "near_pairs": 116,
+    "overlap_square_inches": 0.1032,
+    "remaining_above_rounding": 0,
+    "residual_area": 0.0,
+    "input_faces": 624,
+    "output_faces": 800
+  }
+}
