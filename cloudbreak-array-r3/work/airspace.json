@@ -1,0 +1,194 @@
+{
+  "ships": [
+    {
+      "key": "ferry",
+      "transform": {
+        "posX": 3.25,
+        "posY": 11.65,
+        "posZ": 8.7,
+        "rotX": 0,
+        "rotY": 15,
+        "rotZ": 0,
+        "scaleX": 0.93,
+        "scaleY": 0.93,
+        "scaleZ": 0.93
+      }
+    },
+    {
+      "key": "survey",
+      "transform": {
+        "posX": -4.91,
+        "posY": 15.0,
+        "posZ": 8.17,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 0.93,
+        "scaleY": 0.93,
+        "scaleZ": 0.93
+      }
+    },
+    {
+      "key": "post",
+      "transform": {
+        "posX": 6.61,
+        "posY": 11.65,
+        "posZ": -2.96,
+        "rotX": 0,
+        "rotY": 15,
+        "rotZ": 0,
+        "scaleX": 0.82,
+        "scaleY": 0.82,
+        "scaleZ": 0.82
+      }
+    },
+    {
+      "key": "service",
+      "transform": {
+        "posX": -12.59,
+        "posY": 11.65,
+        "posZ": 20.89,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 0.82,
+        "scaleY": 0.82,
+        "scaleZ": 0.82
+      }
+    }
+  ],
+  "high": [
+    {
+      "name": "Crown inversion",
+      "x": 2.77,
+      "z": 18.24,
+      "rx": 2.18,
+      "rz": 1.12,
+      "lo": 12.72,
+      "hi": 17.28,
+      "variant": 0,
+      "angle": 45
+    },
+    {
+      "name": "Switchyard roll",
+      "x": -5.39,
+      "z": 1.81,
+      "rx": 1.44,
+      "rz": 0.72,
+      "lo": 9.77,
+      "hi": 13.53,
+      "variant": 1,
+      "angle": 60
+    },
+    {
+      "name": "Upper cirrus shelf",
+      "x": 8.05,
+      "z": -14.62,
+      "rx": 2.66,
+      "rz": 1.02,
+      "lo": 10.77,
+      "hi": 14.53,
+      "variant": 2,
+      "angle": 120
+    },
+    {
+      "name": "Sunward billow",
+      "x": -10.67,
+      "z": -13.56,
+      "rx": 2.18,
+      "rz": 1.12,
+      "lo": 10.37,
+      "hi": 14.93,
+      "variant": 0,
+      "angle": 120
+    },
+    {
+      "name": "Array stratus",
+      "x": 5.65,
+      "z": -5.08,
+      "rx": 1.6,
+      "rz": 0.87,
+      "lo": 13.12,
+      "hi": 16.88,
+      "variant": 1,
+      "angle": 150
+    },
+    {
+      "name": "Harbour fog crest",
+      "x": -16.43,
+      "z": 5.52,
+      "rx": 1.6,
+      "rz": 0.87,
+      "lo": 11.92,
+      "hi": 15.68,
+      "variant": 2,
+      "angle": 90
+    },
+    {
+      "name": "North cap cloud",
+      "x": -16.43,
+      "z": -9.85,
+      "rx": 1.6,
+      "rz": 0.87,
+      "lo": 11.92,
+      "hi": 15.68,
+      "variant": 0,
+      "angle": 120
+    },
+    {
+      "name": "Rainband crest",
+      "x": 6.13,
+      "z": 5.52,
+      "rx": 1.44,
+      "rz": 0.72,
+      "lo": 13.12,
+      "hi": 16.88,
+      "variant": 1,
+      "angle": 0
+    },
+    {
+      "name": "Thermal shelf",
+      "x": 16.69,
+      "z": -15.15,
+      "rx": 1.44,
+      "rz": 0.72,
+      "lo": 11.92,
+      "hi": 15.68,
+      "variant": 2,
+      "angle": 90
+    },
+    {
+      "name": "Corridor stratocumulus",
+      "x": 8.05,
+      "z": -22.57,
+      "rx": 1.6,
+      "rz": 0.87,
+      "lo": 9.77,
+      "hi": 13.53,
+      "variant": 0,
+      "angle": 0
+    },
+    {
+      "name": "Drifting silverbank",
+      "x": 21.01,
+      "z": -4.55,
+      "rx": 1.44,
+      "rz": 0.72,
+      "lo": 9.77,
+      "hi": 13.53,
+      "variant": 1,
+      "angle": 0
+    },
+    {
+      "name": "East weather front",
+      "x": 6.13,
+      "z": 4.99,
+      "rx": 1.44,
+      "rz": 0.72,
+      "lo": 8.12,
+      "hi": 11.88,
+      "variant": 2,
+      "angle": 0
+    }
+  ]
+}

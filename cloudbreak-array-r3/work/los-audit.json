@@ -1,0 +1,157 @@
+{
+  "legal_roof_positions": 144,
+  "candidate_lines": 9092,
+  "minimum_distance_in": 10,
+  "model_height_in": 1.44,
+  "new_ships": 4,
+  "upper_clouds": 12,
+  "total_clouds": 23,
+  "cloud_marks": 646,
+  "new_hull_hits": 353,
+  "union": 908,
+  "physically_visible_union": 774,
+  "pairs_affected": 61,
+  "profiles": {
+    "all": {
+      "r2_clear": 2630,
+      "r3_newly_blocked": 908,
+      "r3_clear": 1722
+    },
+    "over_24_in": {
+      "r2_clear": 1331,
+      "r3_newly_blocked": 578,
+      "r3_clear": 753
+    },
+    "both_highest_roofs": {
+      "r2_clear": 219,
+      "r3_newly_blocked": 112,
+      "r3_clear": 107
+    },
+    "one_or_more_highest_roofs": {
+      "r2_clear": 1174,
+      "r3_newly_blocked": 437,
+      "r3_clear": 737
+    },
+    "both_at_or_below_second": {
+      "r2_clear": 1456,
+      "r3_newly_blocked": 471,
+      "r3_clear": 985
+    }
+  },
+  "individual": {
+    "Meridian passenger ferry": 128,
+    "Cirrus weather survey blimp": 50,
+    "Kestrel express mail blimp": 152,
+    "Beacon inspection blimp": 43,
+    "Crown inversion": 92,
+    "Switchyard roll": 118,
+    "Upper cirrus shelf": 117,
+    "Sunward billow": 69,
+    "Array stratus": 70,
+    "Harbour fog crest": 37,
+    "North cap cloud": 46,
+    "Rainband crest": 45,
+    "Thermal shelf": 25,
+    "Corridor stratocumulus": 16,
+    "Drifting silverbank": 17,
+    "East weather front": 61
+  },
+  "examples": [
+    {
+      "start": "Lift Exchange",
+      "end": "Isobar Observatory",
+      "towers": "en",
+      "a": [
+        -17.9679,
+        15.08,
+        -0.2579
+      ],
+      "b": [
+        13.8621,
+        15.08,
+        20.2871
+      ],
+      "obstacle": "Cirrus weather survey blimp",
+      "kind": "blimp",
+      "center": [
+        -4.91,
+        15.0,
+        8.17
+      ],
+      "distance": 37.9,
+      "bundle_hits": 81
+    },
+    {
+      "start": "Rainworks Stack",
+      "end": "Isobar Observatory",
+      "towers": "jn",
+      "a": [
+        6.4421,
+        15.08,
+        -11.3379
+      ],
+      "b": [
+        5.8621,
+        15.08,
+        16.4471
+      ],
+      "obstacle": "Rainband crest",
+      "kind": "cloud",
+      "center": [
+        6.13,
+        15.0,
+        5.52
+      ],
+      "distance": 27.8,
+      "bundle_hits": 81
+    },
+    {
+      "start": "Weather Records",
+      "end": "Switching House",
+      "towers": "dg",
+      "a": [
+        22.9721,
+        11.88,
+        -14.1779
+      ],
+      "b": [
+        0.0121,
+        11.88,
+        1.4921
+      ],
+      "obstacle": "Kestrel express mail blimp",
+      "kind": "blimp",
+      "center": [
+        6.61,
+        11.65,
+        -2.96
+      ],
+      "distance": 27.8,
+      "bundle_hits": 81
+    },
+    {
+      "start": "Cable Drum",
+      "end": "North Canopy",
+      "towers": "im",
+      "a": [
+        -8.5279,
+        11.88,
+        -10.2579
+      ],
+      "b": [
+        -1.7979,
+        11.88,
+        17.0221
+      ],
+      "obstacle": "Switchyard roll",
+      "kind": "cloud",
+      "center": [
+        -5.39,
+        11.649999999999999,
+        1.81
+      ],
+      "distance": 28.1,
+      "bundle_hits": 81
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "cloud_bridge_clearance_in": 0.282,
+ "greenhouse_paths": 24,
+ "minimum_greenhouse_passage_mm": 27.94,
+ "selectable_clouds": 23,
+ "stage_transforms": 108,
+ "shared_control_checks": true,
+ "move_rotate_delete_duplicate_save_reload": true,
+ "unchanged_other_setups": 105
+}
