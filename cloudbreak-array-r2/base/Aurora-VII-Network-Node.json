@@ -1,0 +1,149 @@
+{
+  "_README": [
+    "MissionGeist-compatible Aurora VII Narrative Mission.",
+    "Turn 5 Narrative Mission: Network Node.",
+    "Standard 48x48 table with normal 12-inch Deployment Zones and an 8-inch total Exclusion Zone.",
+    "Signal Relays and the Primary Network Node can change control during the game.",
+    "Signal Intercepts are limited to one successful Intercept per player per Game Round.",
+    "Operational Learning is in effect for all mission-specific Scenario Skills requiring WIP Rolls."
+  ],
+  "meta": {
+    "id": "aurora-vii-network-node",
+    "category": "Aurora VII",
+    "name": "Network Node",
+    "subtitle": "Aurora VII Narrative Mission \u2014 Turn 5",
+    "rulesVersion": "1.1",
+    "sourceUrl": "",
+    "classifiedDecks": [
+      {
+        "label": "Draw",
+        "deck": "modern"
+      }
+    ]
+  },
+  "sharedRules": {},
+  "missions": [
+    {
+      "id": "aurora-vii-network-node",
+      "name": "Network Node",
+      "category": "Aurora VII Narrative Missions",
+      "tacticalSupport": 0,
+      "reinforcements": false,
+      "hvts": 1,
+      "classifiedCount": 2,
+      "retreat": false,
+      "objectives": [
+        {
+          "text": "Successfully perform a Signal Intercept.",
+          "pts": "1 OP per Game Round (max 3)"
+        },
+        {
+          "text": "Successfully perform a Signal Intercept in all 3 Game Rounds.",
+          "pts": "+1 OP"
+        },
+        {
+          "text": "Have more Signal Relays active for you than your opponent at the end of Game Round 1.",
+          "pts": "1 OP"
+        },
+        {
+          "text": "Have more Signal Relays active for you than your opponent at the end of Game Round 2.",
+          "pts": "1 OP"
+        },
+        {
+          "text": "Have more Signal Relays active for you than your opponent at the end of Game Round 3.",
+          "pts": "1 OP"
+        },
+        {
+          "text": "Have the Primary Network Node active for you at the end of the game.",
+          "pts": "1 OP"
+        }
+      ],
+      "classified": "Each player has 2 Classified Objectives worth 1 Objective Point each.",
+      "deployNotes": "Use a standard 48x48 table with normal 12\" Deployment Zones. An 8\" total Exclusion Zone runs along the centerline, extending 4\" to either side. Place the Primary Network Node at (24,24). Place Signal Relays at (12,16), (36,16), (12,32), and (36,32).",
+      "sharedRules": [],
+      "specialRules": [
+        {
+          "title": "MISSION BRIEF",
+          "body": "The Precursor network is active. A major relay installation is receiving enormous volumes of Signal traffic from sites across Aurora VII and transmitting it onward toward an unknown destination. Seize the local Relays, maintain access to the Primary Network Node, and intercept the Signal traffic before the network completes its synchronization."
+        },
+        {
+          "title": "OPERATIONAL LEARNING",
+          "body": "Operational Learning is in effect for this mission. When a Specialist Trooper fails a WIP Roll for a mission-specific Skill with the Scenario Label, and the same Trooper attempts the same Scenario Skill against the same target in consecutive Orders with no interruption or Orders spent on another Trooper, apply +3 WIP on the second consecutive Order. On the third consecutive Order and subsequent consecutive Orders, apply +3 WIP and +1SD. These MODs are cumulative with other MODs that apply to Skills with the Scenario Label."
+        },
+        {
+          "title": "SIGNAL RELAYS",
+          "body": "Only Specialist Troopers may activate a Signal Relay. A Specialist Trooper in Silhouette contact with a Relay may declare ACTIVATE SIGNAL RELAY as a Short Skill with the Scenario Label and make a Normal WIP Roll. On success, that Relay becomes active for that player. A Relay may be active for only one player at a time. If the opponent later successfully activates the same Relay, it becomes active for the opponent and ceases to be active for the previous player."
+        },
+        {
+          "title": "PRIMARY NETWORK NODE",
+          "body": "A player may attempt to activate the Primary Network Node only while that player has at least one Signal Relay active. An eligible Specialist Trooper in Silhouette contact with the Primary Network Node may declare ACCESS PRIMARY NETWORK NODE as a Short Skill with the Scenario Label and make a Normal WIP Roll. On success, the Primary Network Node becomes active for that player. The opposing player may subsequently access it and take control. If a player has no active Signal Relays, the Primary Network Node immediately ceases to be active for that player."
+        },
+        {
+          "title": "INTERCEPT SIGNAL TRAFFIC",
+          "body": "A player may attempt to Intercept Signal Traffic only while the Primary Network Node is active for that player and at least 2 Signal Relays are active for that player. An eligible Specialist Trooper in Silhouette contact with the Primary Network Node may declare INTERCEPT SIGNAL TRAFFIC as a Short Skill with the Scenario Label and make a Normal WIP Roll. On success, record one Signal Intercept for that player for the current Game Round. Each player may successfully perform a maximum of one Signal Intercept per Game Round."
+        },
+        {
+          "title": "SIGNAL INTERCEPT SCORING",
+          "body": "Each successful Signal Intercept is worth 1 Objective Point, maximum 1 per Game Round and 3 during the game. A player who successfully performs a Signal Intercept in all 3 Game Rounds scores 1 additional Objective Point."
+        },
+        {
+          "title": "RELAY CONTROL SCORING",
+          "body": "At the end of each Game Round, compare the number of Signal Relays currently active for each player. The player with more active Signal Relays scores 1 Objective Point for that Game Round. If both players have the same number, neither player scores this Objective Point. These points are scored immediately and cannot later be lost."
+        },
+        {
+          "title": "PRIMARY NODE SCORING",
+          "body": "At the end of the game, the player for whom the Primary Network Node is active scores 1 Objective Point."
+        },
+        {
+          "title": "CLASSIFIED OBJECTIVES",
+          "body": "Each player draws 2 Classified Objectives from the Modern Classified Deck. Each completed Classified Objective is worth 1 Objective Point."
+        }
+      ],
+      "skills": [],
+      "mapData": {
+        "type": "standard",
+        "boardSize": "48x48",
+        "dzDepth": 12,
+        "exclusionZone": true,
+        "exclusionZoneWidth": 4,
+        "exclusionZoneLabelPos": "tl",
+        "legendNames": {
+          "console": "Signal Relay",
+          "beacon": "Primary Network Node"
+        },
+        "objectives": [
+          {
+            "type": "console",
+            "x": 0.25,
+            "y": 0.3333333333333333,
+            "label": "Relay A"
+          },
+          {
+            "type": "console",
+            "x": 0.75,
+            "y": 0.3333333333333333,
+            "label": "Relay B"
+          },
+          {
+            "type": "console",
+            "x": 0.25,
+            "y": 0.6666666666666666,
+            "label": "Relay C"
+          },
+          {
+            "type": "console",
+            "x": 0.75,
+            "y": 0.6666666666666666,
+            "label": "Relay D"
+          },
+          {
+            "type": "beacon",
+            "x": 0.5,
+            "y": 0.5,
+            "label": "Primary Network Node"
+          }
+        ]
+      }
+    }
+  ]
+}
