@@ -66,8 +66,8 @@ export const TOP40_ROUND_MAPS = [
     "workshopLabel": "Lobo's Top 40 Winners Round 5 Map",
     "href": "/event/lobos-top-40/maps/winners-5",
     "download": releasedMapBags['f50418'],
-    "angled": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
-    "overhead": "/assets/maps/saltwick-floodgate-20261112/saltwick-preview.webp",
+    "angled": "/assets/maps/saltwick-working-harbour-final-20261126/angled.webp",
+    "overhead": "/assets/maps/saltwick-working-harbour-final-20261126/overhead.webp",
     "generalHref": "/maps/saltwick-floodgate",
     "bracket": "Winners",
     "round": 5
