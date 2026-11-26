@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-26",
-  "download": "/assets/maps/army-sideboards-20261126/Lobo-Infinity-Map-Bags.zip",
+  "download": "/assets/maps/saltwick-working-harbour-final-20261126/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -92,24 +92,27 @@
         "Area of Interest"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 54,
-      "sourceNote": "Approved road-and-slipway layout.",
-      "overhead": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead.webp",
-      "angled": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled.webp",
-      "download": "/assets/maps/army-sideboards-20261126/1002d9.json",
+      "objectCount": 67,
+      "sourceNote": "Working Harbour R4 approved November 26, 2026. A coastal floodgate with a working slipway, ferry landing and maintenance yards. A moored pump pontoon breaks the waterline, and the harbour buildings and equipment interrupt both long board-edge sightlines.",
+      "overhead": "/assets/maps/saltwick-working-harbour-final-20261126/overhead.webp",
+      "angled": "/assets/maps/saltwick-working-harbour-final-20261126/angled.webp",
+      "download": "/assets/maps/saltwick-working-harbour-final-20261126/1002d9.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
       "sourceAngled": null,
-      "missionUrl": "https://experience.corvusbelli.com/en/game-content/41bebca7-aed2-49b5-bc7d-c57e91476539",
+      "missionUrl": "https://infinitygeist.com/mission/s18_area_of_interest",
       "labelAliases": [
-        "Saltwick Floodgate"
+        "Saltwick Floodgate",
+        "Saltwick Floodgate - Working Harbour R4 - Area of Interest - Play Table"
       ],
-      "previewBagSha256": "e969ebbcf09c195cdae626d340c486cab82d1193fda78f4dfabb82d8c338c91e",
-      "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/saltwick-floodgate-preview.json",
-      "overheadThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead-thumb.webp",
-      "angledThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled-thumb.webp"
+      "previewBagSha256": "0bb1abbac39a76ae82d1a6acf9dddcdb8a07253f5f7de8788fd5d458ca10264e",
+      "previewUpdatedAt": "2026-11-26",
+      "previewManifest": "/assets/maps/saltwick-working-harbour-final-20261126/saltwick-floodgate-preview.json",
+      "overheadThumb": "/assets/maps/saltwick-working-harbour-final-20261126/overhead-thumb.webp",
+      "angledThumb": "/assets/maps/saltwick-working-harbour-final-20261126/angled-thumb.webp",
+      "installer": "/assets/maps/saltwick-working-harbour-final-20261126/Lobo-Saltwick-Floodgate-Workshop-Installer-R4.zip",
+      "reviewStatus": "approved"
     },
     {
       "index": 10,
@@ -796,9 +799,9 @@
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "azure-palace-final-r9-army-sideboards",
-  "installer": "/assets/maps/army-sideboards-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
-  "releaseInventory": "/assets/maps/army-sideboards-20261126/release-inventory.json",
+  "downloadRevision": "saltwick-working-harbour-final-r4",
+  "installer": "/assets/maps/saltwick-working-harbour-final-20261126/Lobo-Saltwick-Floodgate-Workshop-Installer-R4.zip",
+  "releaseInventory": "/assets/maps/saltwick-working-harbour-final-20261126/release-inventory.json",
   "previewUpdatedAt": "2026-11-26",
-  "workshopSaveName": "Lobo Maps - Azure Palace R9 - Workshop Collection"
+  "workshopSaveName": "Lobo Maps - Saltwick Floodgate R4 - Workshop Collection"
 }

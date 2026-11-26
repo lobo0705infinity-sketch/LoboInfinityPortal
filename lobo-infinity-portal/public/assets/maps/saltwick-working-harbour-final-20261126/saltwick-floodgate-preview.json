@@ -1,0 +1,18 @@
+{
+  "name": "Saltwick Floodgate",
+  "guid": "1002d9",
+  "slug": "saltwick-floodgate",
+  "previewKind": "geometry",
+  "revision": "Working Harbour R4",
+  "approvedAt": "2026-11-26",
+  "bagSha256": "0bb1abbac39a76ae82d1a6acf9dddcdb8a07253f5f7de8788fd5d458ca10264e",
+  "sourceSaveSha256": "ab41386eeb8afb412110dbb43ad569ff9e10f463b003fd8e904b2cec44ac195c",
+  "overhead": "/assets/maps/saltwick-working-harbour-final-20261126/overhead.webp",
+  "angled": "/assets/maps/saltwick-working-harbour-final-20261126/angled.webp",
+  "views": {
+    "overhead": "overhead.webp",
+    "angled": "angled.webp"
+  },
+  "objectCount": 67,
+  "bagUrl": "/assets/maps/saltwick-working-harbour-final-20261126/1002d9.json"
+}
