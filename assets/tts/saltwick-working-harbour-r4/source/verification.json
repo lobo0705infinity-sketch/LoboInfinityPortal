@@ -1,0 +1,158 @@
+{
+ "r4-geometry": {
+  "old_full_length_lanes": {
+   "left 0.05": null,
+   "left 0.49": null,
+   "bottom 0.05": null,
+   "bottom 0.49": null,
+   "water 22.48": null,
+   "water 23.25": null,
+   "water 23.5": null
+  },
+  "blocked_mesh_rays": {
+   "left": 175,
+   "bottom": 175,
+   "water": 700
+  },
+  "watertight_launch_edges": 834,
+  "clear_timetable_rays": 162
+ },
+ "geometry-results": {
+  "measured_clear_width_mm": {
+   "customs": 28.8,
+   "crew": 25.76
+  },
+  "reachable_from_each_deployment_zone_mm": {
+   "25": {
+    "seats": [
+     [
+      11.2,
+      10.82
+     ],
+     [
+      -19.74,
+      -18.81
+     ]
+    ],
+    "console_contact": [
+     1.2795275590551183,
+     0.0
+    ]
+   },
+   "55": {
+    "seats": [
+     [
+      9.7,
+      11.57
+     ],
+     [
+      -14.95,
+      -16.75
+     ]
+    ],
+    "console_contact": [
+     1.8700787401574803,
+     0.0
+    ]
+   }
+  },
+  "sampled_rooftop_sightlines": {
+   "Dispatch to Ferry": [
+    "f5101f",
+    "f5101f",
+    "f5101f"
+   ],
+   "Dispatch to Rigging": [
+    "f51ad4",
+    "f51ad4",
+    "f51ad4"
+   ],
+   "Dispatch to Central crossing": [
+    null,
+    null,
+    null
+   ],
+   "Dispatch to Receiving bay": [
+    "f5103e",
+    "f51016",
+    "f51016"
+   ],
+   "Lockmaster to Ferry": [
+    "f5101f",
+    "f5101f",
+    "f5101f"
+   ],
+   "Lockmaster to Rigging": [
+    "f5102b",
+    "f5102b",
+    "f5100e"
+   ],
+   "Lockmaster to Central crossing": [
+    null,
+    null,
+    null
+   ],
+   "Lockmaster to Receiving bay": [
+    null,
+    null,
+    null
+   ]
+  },
+  "unobstructed_weigh_office_sign_samples": 54
+ },
+ "installer-results": {
+  "platform_executable": "Windows x86-64",
+  "archive_sha256": "6759886547591d14a6eb78cc5bcdff7877704f36b1d0f2213448292b793f9091",
+  "unpacked_content_hashes": {
+   "Play-Table.json": "ab41386eeb8afb412110dbb43ad569ff9e10f463b003fd8e904b2cec44ac195c",
+   "Preview.png": "7d1e3fdda412b5e470b2af45826101e161e403bc6268616905b7e5db59330a60",
+   "Saltwick-Floodgate.json": "9eeb1d1b0d847571ce01c12a6739e284e8e78bd0c0eee41deab914dd4d648f41"
+  },
+  "cases": [
+   "first install",
+   "occupied slot",
+   "orphan thumbnail",
+   "redirected Saves path",
+   "repeat install",
+   "concurrent install",
+   "corrupt payload",
+   "rollback after write error"
+  ]
+ },
+ "lua-results": {
+  "passed": true,
+  "maps": 1,
+  "embedded_canonical_brokers": 1,
+  "unique_scripts_compiled": 5,
+  "canonical_sha256": "fb879a31cd1d751653a39c345b4d4eeda8ab97ead7aeb90d71b86c048a09e16e",
+  "seats": [
+   "Red",
+   "Blue",
+   "White"
+  ],
+  "mission": "https://infinitygeist.com/mission/s18_area_of_interest",
+  "rotation_and_clear_new_roots": 5,
+  "palette": true,
+  "standard_controls": true
+ },
+ "blender-import": {
+  "ferry-lamp-store-col.obj": 72,
+  "ferry-lamp-store.obj": 958,
+  "ferry-timetable-col.obj": 2308,
+  "ferry-timetable.obj": 4796,
+  "ice-plant-col.obj": 72,
+  "ice-plant.obj": 3234,
+  "marlow-launch.obj": 8156,
+  "net-loft-store-col.obj": 84,
+  "net-loft-store.obj": 2114,
+  "pump-bypass-col.obj": 72,
+  "pump-bypass.obj": 922,
+  "tidal-pump-pontoon-col.obj": 524,
+  "tidal-pump-pontoon.obj": 5380
+ },
+ "verified_map_asset_urls": 117,
+ "collider_sightline_checks": 750,
+ "approach_to_full_timetable_checked": 54,
+ "godot_models_imported": 13,
+ "in_game_playtest": false
+}
