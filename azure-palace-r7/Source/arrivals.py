@@ -41,6 +41,11 @@ def build():
     # A solid return and a shallow canopy shelter the waiting bench.
     secure(m,c,(-1.15,6.49),(-1.15,7.22),2.12,'oyster')
     secure(m,c,(-1.15,7.22),(1.70,7.22),2.12,'oyster')
+    # The curb-side face identifies the pick-up point when viewed from the table edge.
+    m.box(.275,.69,7.398,2.34,.93,.052,'green',False)
+    F.plaque(m,.275,.812,7.452,1,1.62,.65,'bell')
+    for xx in (-.77,1.32):
+        for yy in (.81,1.49):m.box(xx,yy,7.431,.041,.041,.029,'brass',False)
     for xx in np.linspace(-.97,1.47,12):
         m.box(xx,.31,7.021,.102,1.44,.055,'teak',False)
     sub(m,c,lambda q,v:F.seat(q,v,0,0,1.76),.30,6.85,180)
