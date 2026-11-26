@@ -1,0 +1,18 @@
+{
+  "porter-buggy": {
+    "height_inches": 1.863,
+    "convex_parts": 24
+  },
+  "pool-loungers": {
+    "height_inches": 1.246,
+    "convex_parts": 22
+  },
+  "banquet-dolly": {
+    "height_inches": 1.828,
+    "convex_parts": 14
+  },
+  "housekeeping-cart": {
+    "height_inches": 1.428,
+    "convex_parts": 17
+  }
+}

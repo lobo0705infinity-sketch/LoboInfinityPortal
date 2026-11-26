@@ -1,0 +1,6 @@
+[
+  {"slug":"porter-buggy","name":"Arrivals | Electric baggage buggy","description":"A loaded electric baggage buggy parked alongside the porter's lodge. The driving cab is open on both sides.","pose":[19.9996,-12.8546,294],"guid":"1524d3","copy":"e001a2"},
+  {"slug":"pool-loungers","name":"Pool Club | Teak loungers","description":"Four nested teak loungers on a wheeled rack. A guest has unfolded the fifth beside the water and left a striped towel over the edge.","pose":[-4.66,2.73,265],"guid":"f872b9","copy":"3af91c"},
+  {"slug":"banquet-dolly","name":"Terrace Restaurant | Banquet-table dolly","description":"Four circular folding tables on a steel dolly outside the restaurant service entrance. A webbing strap secures the stack.","pose":[11.2524,-2.2203,228],"guid":"3c4d58","copy":"fe3c91"},
+  {"slug":"housekeeping-cart","name":"North Guest Villa | Housekeeping cart","description":"A housekeeping cart beside the guest entrance, stocked with fresh linen and pump bottles. A canvas laundry sack hangs from its side.","pose":[-13.67,19.29,270],"guid":"5ab423","copy":"c4de7b"}
+]

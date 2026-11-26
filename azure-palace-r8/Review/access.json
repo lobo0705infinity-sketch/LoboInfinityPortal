@@ -1,0 +1,40 @@
+{
+  "25": {
+    "console_contact_angles": [
+      32,
+      32
+    ],
+    "pool_stairs": 4,
+    "deployment_sides": 2
+  },
+  "40": {
+    "console_contact_angles": [
+      32,
+      32
+    ],
+    "pool_stairs": 4,
+    "deployment_sides": 2
+  },
+  "clearances_inches": {
+    "porter-buggy": {
+      "nearest_existing_solid": 1.116,
+      "nearest_pool_stair": 16.996,
+      "nearest_console_center": 18.384
+    },
+    "pool-loungers": {
+      "nearest_existing_solid": 0.258,
+      "nearest_pool_stair": 1.476,
+      "nearest_console_center": 8.947
+    },
+    "banquet-dolly": {
+      "nearest_existing_solid": 0.902,
+      "nearest_pool_stair": 5.827,
+      "nearest_console_center": 14.439
+    },
+    "housekeeping-cart": {
+      "nearest_existing_solid": 0.643,
+      "nearest_pool_stair": 17.603,
+      "nearest_console_center": 14.834
+    }
+  }
+}
