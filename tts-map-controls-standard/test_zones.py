@@ -1,5 +1,6 @@
 import json,math,heapq,re,copy
 from pathlib import Path
+from xml.etree import ElementTree as ET
 from lupa.lua52 import LuaRuntime,lua_type
 from patch_maps import ROOT,bags,walk,config
 
@@ -23,6 +24,28 @@ class World:
         self.floor=self.items[self.mat]['Transform']['posY']+.04
         for o in walk(bag):
             if 'BEGIN LOBO BRIGHT ZONES R1' in o.get('LuaScript',''):self.init(o)
+    def mount_ui(self, text, *args):
+        self.ui_root = ET.fromstring('<Root>' + text + '</Root>')
+        self.ui_by_id = {n.get('id'): n for n in self.ui_root.iter() if n.get('id')}
+
+    def ui_attribute(self, ident, name):
+        node = getattr(self, 'ui_by_id', {}).get(ident)
+        return node.get(name) if node is not None else None
+
+    def set_ui_attribute(self, ident, name, value):
+        node = getattr(self, 'ui_by_id', {}).get(ident)
+        if node is not None:
+            node.set(name, str(value))
+
+    def set_ui_value(self, ident, value):
+        node = getattr(self, 'ui_by_id', {}).get(ident)
+        if node is not None:
+            node.text = str(value)
+
+    @property
+    def xml(self):
+        return ''.join(ET.tostring(node, encoding='unicode') for node in self.ui_root)
+
     def schedule(self,fn,delay,rep=None):
         self.serial+=1;i=self.serial
         heapq.heappush(self.events,(self.now+max(delay,1/60),i,fn,delay,rep));return i
@@ -134,8 +157,11 @@ class World:
         g.getObjectsWithTag=lambda tag:lua([obj(k)for k,v in self.items.items()if tag in v.get('Tags',[])]) if tag!='LoboMapUIBrokerV4'else lua([obj('broker')])
         g.getAllObjects=lambda:lua([obj(k)for k in self.items if k not in self.dead])
         g.Global=lua({'getVar':lambda n:'broker'if n=='LoboMapUIBrokerV4'else None,'setVar':lambda *args:None,'call':lambda *args:None})
+        g.getObjects = g.getAllObjects
+        g.Global.getTable = lambda key: lua(self.tables.get('Global', {}).get(key))
+        g.Global.setTable = lambda key, value: self.tables.setdefault('Global', {}).__setitem__(key, py(value))
         g.Wait=lua({'frames':lambda f,n:self.schedule(f,n/60),'time':lambda f,t,r=None:self.schedule(f,t,r),'condition':condition,'stop':lambda i:self.dead.add(i)})
-        g.UI=lua({'getXmlTable':lambda:lua([]),'setXmlTable':lambda *args:None,'setXml':lambda text,*args:setattr(self,'xml',text),'getCustomAssets':lambda:lua([]),'setAttribute':lambda *args:None,'loading':False})
+        g.UI=lua({'getXmlTable':lambda:lua([]),'setXmlTable':lambda *args:None,'setXml':self.mount_ui,'getCustomAssets':lambda:lua([]),'getAttribute':self.ui_attribute,'setAttribute':self.set_ui_attribute,'setValue':self.set_ui_value,'loading':False})
         g.Physics=lua({'cast':cast});g.Lighting=lua({'setAmbientIntensity':lambda *a:None,'setLightIntensity':lambda *a:None,'setCustomSkybox':lambda *a:None})
         for fn in ['setLightColor','setAmbientSkyColor','setAmbientEquatorColor','setAmbientGroundColor','apply']:
             g.Lighting[fn]=lambda *args:None

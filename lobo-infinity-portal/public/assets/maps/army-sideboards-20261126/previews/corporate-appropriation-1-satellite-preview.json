@@ -1,0 +1,184 @@
+{
+  "slug": "corporate-appropriation-1-satellite",
+  "name": "Asterion Research Campus",
+  "bagUrl": "/assets/maps/army-sideboards-20261126/8100c6.json",
+  "bagSha256": "bea0ab05d84d48087ba3ed0fb186fb9f9e87f9d4061e015f727b2f54d9ae93ee",
+  "views": {
+    "overhead": "corporate-appropriation-1-satellite-overhead.webp",
+    "angled": "corporate-appropriation-1-satellite-angled.webp"
+  },
+  "renderedObjects": [
+    "7993de",
+    "f20060",
+    "f20061",
+    "f20063",
+    "f20065",
+    "f20067",
+    "f20069",
+    "f2006b",
+    "f2006d",
+    "f2006f",
+    "f20071",
+    "f20073",
+    "f20075",
+    "f20077",
+    "f20078",
+    "f20079",
+    "f2007a",
+    "f2007b",
+    "f2007c",
+    "f2007d",
+    "f2007e",
+    "f2007f",
+    "f20080",
+    "f20081",
+    "f20082",
+    "f20083",
+    "f20084",
+    "f20085",
+    "f20086",
+    "f20087",
+    "f20088",
+    "f20089",
+    "f2008a",
+    "f2008c",
+    "f2008f",
+    "f20099",
+    "f2009b",
+    "f2009c",
+    "f2009d",
+    "f2009f",
+    "f200a1",
+    "f200a3",
+    "f200a5",
+    "f200aa",
+    "f200ac",
+    "f200ad",
+    "f200ae",
+    "f200af",
+    "f200b1",
+    "f200b2",
+    "f200b4",
+    "f200b5",
+    "f200b6",
+    "f200b7",
+    "f200b8",
+    "f200b9",
+    "f200ba",
+    "f200bb",
+    "f200bf",
+    "a34100",
+    "a34101",
+    "a34102",
+    "a34103"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "f20091",
+      "name": "Prototype 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f20093",
+      "name": "Prototype 2",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f20095",
+      "name": "Panoply A",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f20097",
+      "name": "Panoply B",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "e25860",
+      "name": "Lobo Background Controls | Lobo's Top 40 Map#1",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "a34000",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34001",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34002",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34003",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34004",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34005",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34006",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34007",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34008",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a34009",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400a",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400b",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400c",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400d",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400e",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a3400f",
+      "name": "",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "ba126387672e2100ca694ec250c560df0eaa1912f9b0304061320a702d0799bb"
+}

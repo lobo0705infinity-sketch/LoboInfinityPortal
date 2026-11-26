@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-26",
-  "download": "/assets/maps/azure-palace-final-20261126/Lobo-Infinity-Map-Bags.zip",
+  "download": "/assets/maps/army-sideboards-20261126/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -22,7 +22,7 @@
       "sourceNote": "Approved Switchback Quarter: Akial Interference setup with the standard map-control panel and the retained building layout.",
       "overhead": "/assets/maps/library-previews-20261118/superiority-2-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/superiority-2-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100f89.json",
+      "download": "/assets/maps/army-sideboards-20261126/100f89.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -35,9 +35,9 @@
         "ITS18 Superiority - Switchback Quarter R3",
         "SET_ITS18 Akial Interference - Switchback Quarter"
       ],
-      "previewBagSha256": "2e87814b2338df1720ec051d148ebc220f2f89f9bbc4185c54afd431037dcfc7",
+      "previewBagSha256": "a84e4d4642b9f4e98f11fbd00a4b7b142b7cd35b744463f2cbed92f8929f80c7",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/superiority-2-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/superiority-2-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/superiority-2-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/superiority-2-angled-thumb.webp"
     },
@@ -60,7 +60,7 @@
       "sourceNote": "Approved Canopy Blacksite R4: jungle research buildings with furnished interiors, large ancient trunks to interrupt cross-table fire and an additional central building. Tree controls, independent DZ guides, Booty/Metachemistry and backgrounds retained. Matching Top 40 Losers Round 1 map. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/annihilation-2-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/annihilation-2-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100135.json",
+      "download": "/assets/maps/army-sideboards-20261126/100135.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -71,9 +71,9 @@
         "ITS18 Annihilation — The Iron Yard — REVISED",
         "The Iron Yard"
       ],
-      "previewBagSha256": "1ffebf989227bf4d87aaa1a82f97938fece529eb615ba0362544e539312d83bd",
+      "previewBagSha256": "0ac73edd129e84405aee5e45d7666b0146f97f23b49e034d41ac1da3f85a36bc",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/annihilation-2-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/annihilation-2-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/annihilation-2-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/annihilation-2-angled-thumb.webp"
     },
@@ -96,7 +96,7 @@
       "sourceNote": "Approved road-and-slipway layout.",
       "overhead": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/1002d9.json",
+      "download": "/assets/maps/army-sideboards-20261126/1002d9.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -105,9 +105,9 @@
       "labelAliases": [
         "Saltwick Floodgate"
       ],
-      "previewBagSha256": "b4fe39a4a3d4886803b656374e21ceea0979a9c032e995a051414a81a42ac83c",
+      "previewBagSha256": "e969ebbcf09c195cdae626d340c486cab82d1193fda78f4dfabb82d8c338c91e",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/saltwick-floodgate-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/saltwick-floodgate-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/saltwick-floodgate-angled-thumb.webp"
     },
@@ -130,7 +130,7 @@
       "sourceNote": "Official Vanta Customs Yard layout approved on 17 November 2026. Furnished interiors, integrated floors, rooftop freight that follows building states, and repaired roof collision surfaces. Exported terrain previews; live TTS testing remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/810053.json",
+      "download": "/assets/maps/army-sideboards-20261126/810053.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -142,9 +142,9 @@
         "ITS18 B-Pong — Vanta Customs Yard"
       ],
       "installer": "/assets/maps/missiongeist-controls-20261125/Vanta-MissionGeist-Installer.zip",
-      "previewBagSha256": "55ec0dee861382dc5e8a3824131b22cc70f247705ea6bb5ae6ebb76b0f39ccbd",
+      "previewBagSha256": "222167732cb3c930b9904423f7f7fb7a531f1a72b6e157bfe705b31bba16f19b",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/vanta-customs-yard-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/vanta-customs-yard-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled-thumb.webp"
     },
@@ -167,7 +167,7 @@
       "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/battleground-1-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/battleground-1-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100326.json",
+      "download": "/assets/maps/army-sideboards-20261126/100326.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -178,9 +178,9 @@
         "ITS18 Battleground — Foundry Blocks — REVISED",
         "Foundry Blocks"
       ],
-      "previewBagSha256": "25fff6a15a96084bf6a05254ee753c968dce9b3a6ea5f2356d3b9247bf35ae5e",
+      "previewBagSha256": "9f628979086b55991fb354045206705491cb69a99e49ba722b67a68b1fd3dc9c",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/battleground-1-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/battleground-1-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/battleground-1-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/battleground-1-angled-thumb.webp"
     },
@@ -203,7 +203,7 @@
       "sourceNote": "Approved Asterion Research Campus: paired laboratory wings, gardens, playable interiors, exterior ladders and rooftop cover. Latest floor ordering, quarter-inch heights, collision and map-control repairs retained. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/8100c6.json",
+      "download": "/assets/maps/army-sideboards-20261126/8100c6.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -216,9 +216,9 @@
         "ITS18 Corporate Appropriation — Crownspire District — SATELLITE EDITION",
         "Crownspire District"
       ],
-      "previewBagSha256": "cfe3882c54c845b106ca25c114c48b56871bccbb929ce01f22dfd08f7f378590",
+      "previewBagSha256": "bea0ab05d84d48087ba3ed0fb186fb9f9e87f9d4061e015f727b2f54d9ae93ee",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/corporate-appropriation-1-satellite-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/corporate-appropriation-1-satellite-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-angled-thumb.webp"
     },
@@ -249,10 +249,10 @@
       "labelAliases": [
         "Meridian Exchange"
       ],
-      "download": "/assets/maps/missiongeist-controls-20261125/1005e4.json",
-      "previewBagSha256": "1558177b3aeff63f7b6678cf82546344edf689bdc6986dd0d6e12d737b7479bd",
+      "download": "/assets/maps/army-sideboards-20261126/1005e4.json",
+      "previewBagSha256": "5c46237b9fc735498248f4bd3f181e8de1aa6991d5274a3a8189364b5e9cf24d",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/meridian-exchange-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/meridian-exchange-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/meridian-exchange-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/meridian-exchange-angled-thumb.webp"
     },
@@ -275,7 +275,7 @@
       "sourceNote": "Current published Workshop setup. Later review revisions have not yet been integrated.",
       "overhead": "/assets/maps/library-previews-20261118/veyra-gate-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/veyra-gate-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/810108.json",
+      "download": "/assets/maps/army-sideboards-20261126/810108.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -286,9 +286,9 @@
         "SET_ITS18 Crossing Lines — Veyra Gate",
         "ITS18 Crossing Lines — Veyra Gate"
       ],
-      "previewBagSha256": "27aacf2ba18990ae4ea6baa881bd0b59a832165bc9d868f0b697e2a80f4b4dff",
+      "previewBagSha256": "5eb9ec8c550c152a99b962a3ae3567bf180837f6057e63133a6101d18074cfb2",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/veyra-gate-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/veyra-gate-preview.json",
       "reviewStatus": "pending",
       "overheadThumb": "/assets/maps/library-previews-20261118/veyra-gate-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/veyra-gate-angled-thumb.webp"
@@ -312,8 +312,8 @@
       "sourceNote": "Final layout approved November 26, 2026. A coastal resort with a recessed pool, accessible balconies and two standard 40 mm consoles. Includes Lobo’s saved placements for the baggage buggy, pool loungers, two banquet-table dollies and two housekeeping carts.",
       "overhead": "/assets/maps/azure-palace-final-20261126/overhead.webp",
       "angled": "/assets/maps/azure-palace-final-20261126/angled.webp",
-      "download": "/assets/maps/azure-palace-final-20261126/87b699.json",
-      "installer": "/assets/maps/azure-palace-final-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
+      "download": "/assets/maps/army-sideboards-20261126/87b699.json",
+      "installer": "/assets/maps/army-sideboards-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
       "isCurrent": true,
       "reviewStatus": "approved",
       "previewKind": "geometry",
@@ -326,9 +326,9 @@
         "Azure Palace - Crossing Lines",
         "SET_ITS18 Crossing Lines — Azure Palace R8 — Coastal Resort"
       ],
-      "previewBagSha256": "82d2d8a0441c566e4ae7d15fabfe0758f9406dddc0481394aa3a20be703b6527",
+      "previewBagSha256": "0c2b1afada71116c612ec5ac82918e1b2e9ad0a706f5b3253bf882c2a0e28305",
       "previewUpdatedAt": "2026-11-26",
-      "previewManifest": "/assets/maps/azure-palace-final-20261126/azure-palace-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/azure-palace-preview.json",
       "overheadThumb": "/assets/maps/azure-palace-final-20261126/overhead-thumb.webp",
       "angledThumb": "/assets/maps/azure-palace-final-20261126/angled-thumb.webp"
     },
@@ -351,7 +351,7 @@
       "sourceNote": "User-approved TS_Save_35. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 3. Offline loading checks passed; native TTS remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/cutthroat-1-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/cutthroat-1-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/1007ad.json",
+      "download": "/assets/maps/army-sideboards-20261126/1007ad.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -362,9 +362,9 @@
         "ITS18 Cutthroat — Dustline Outpost — REVISED",
         "Dustline Outpost"
       ],
-      "previewBagSha256": "ba6a492e951bf3aa19b6fecfad725f6b405f24d02481e84f07f4dddbc7846b86",
+      "previewBagSha256": "749d22c3b90b6c00148a2c70e6c8678c506a52283a3678ef4b761669d4f1da1d",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/cutthroat-1-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/cutthroat-1-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/cutthroat-1-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/cutthroat-1-angled-thumb.webp"
     },
@@ -387,7 +387,7 @@
       "sourceNote": "Approved R14 adopts Jake/Lobo’s TS_Save_33 layout: exact placed objects, transforms, scales and active states retained. Lunar terrain, sunken craters, ridgelines, varied glass domes and grouped solar panels. The on-board Map Controls button is removed; right-side controls and context-menu recovery remain. General Data Harvest pool only; not part of the Top 40 tournament. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/1008da.json",
+      "download": "/assets/maps/army-sideboards-20261126/1008da.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -401,9 +401,9 @@
         "ITS18 Data Harvest — Kestrel Lunar Base",
         "Kestrel Lunar Base"
       ],
-      "previewBagSha256": "f45b8b5508afd0656a2adff9a2ede08ed9dfe00f2af8817180543be3fddd95ed",
+      "previewBagSha256": "89bffe90d44b70a9f4f6ebaa366e65d6837109655f256032f77f53b281a22fed",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/data-harvest-1-kestrel-orbital-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/data-harvest-1-kestrel-orbital-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-angled-thumb.webp"
     },
@@ -426,7 +426,7 @@
       "sourceNote": "Official Double Bind grand-final map: five city districts, illuminated signs and kiosks, cycling billboards and sky traffic. Replaces the Tidal Turbines Double Bind slot; other Tidal Turbines missions remain. Matching Top 40 Final map. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/double-bind-1-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/double-bind-1-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100993.json",
+      "download": "/assets/maps/army-sideboards-20261126/100993.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -440,9 +440,9 @@
         "ITS18 Double Bind — Neon Shogunate",
         "SET_ITS18 Double Bind — Neon Shogunate"
       ],
-      "previewBagSha256": "341f7345dcc945b3e794e4813b4e33ed933c8148eda5d684782c9a4bdc06a641",
+      "previewBagSha256": "8f7e4897ad3b1cf0b02cd52b520632195220f26329386e9be28a5611ed10c9c7",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/double-bind-1-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/double-bind-1-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/double-bind-1-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/double-bind-1-angled-thumb.webp"
     },
@@ -465,7 +465,7 @@
       "sourceNote": "Approved 18 November 2026. Crashed Rocinante sections, ash ridgelines and overhead cover, with the approved cabin closures and positions retained. Holden, Naomi, Amos and Alex occupy the four civilian starts. The pictured loose rock, extra spawner and scatter bag no longer load. Standard map controls and rainbow army-spawner hotkeys retained. Previews render the exported geometry; live TTS physics remain unverified.",
       "overhead": "/assets/maps/library-previews-20261118/leviathans-wake-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/leviathans-wake-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/af0667.json",
+      "download": "/assets/maps/army-sideboards-20261126/af0667.json",
       "installer": "/assets/maps/missiongeist-controls-20261125/Leviathans-Wake-MissionGeist-Installer.zip",
       "isCurrent": true,
       "previewKind": "geometry",
@@ -477,9 +477,9 @@
         "Leviathan’s Wake",
         "Rocinante"
       ],
-      "previewBagSha256": "9daf484097f3d4e1ff580611e6c8e739136283d9788af934e52a8007718f5dc9",
+      "previewBagSha256": "334eb5da52a82bba142c9a6caa3164fd4f975e79030769843eaf8a6f98aae867",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/leviathans-wake-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/leviathans-wake-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/leviathans-wake-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/leviathans-wake-angled-thumb.webp"
     },
@@ -502,7 +502,7 @@
       "sourceNote": "User-approved TS_Save_36, approved current controls. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 7. Offline loading checks passed; native TTS remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/hardlock-1-satellite-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/hardlock-1-satellite-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/8101d2.json",
+      "download": "/assets/maps/army-sideboards-20261126/8101d2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -515,9 +515,9 @@
         "ITS18 Hardlock — Ironveil Complex — SATELLITE EDITION",
         "Ironveil Complex"
       ],
-      "previewBagSha256": "6154bbb079ae3509b0ad1b497f4a3b5c29d88cb114be57d9c555ec47dce2427a",
+      "previewBagSha256": "296b28cc94fbd5402b0cf13b34c6c729c47848cd1d9170fe37c5d90132e24fc6",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/hardlock-1-satellite-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/hardlock-1-satellite-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/hardlock-1-satellite-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/hardlock-1-satellite-angled-thumb.webp"
     },
@@ -540,7 +540,7 @@
       "sourceNote": "Civilian spaceport for Last Launch. The central Launching Tower and both ID Scanners are included.",
       "overhead": "/assets/maps/library-previews-20261118/port-meridian-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/port-meridian-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100ca1.json",
+      "download": "/assets/maps/army-sideboards-20261126/100ca1.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -551,9 +551,9 @@
         "ITS18 Last Launch — Port Meridian",
         "Port Meridian"
       ],
-      "previewBagSha256": "ac16e4ccce2e140d788e2dfc3800b4ffeb1cc6a6aa7fee79af0c18151aba4507",
+      "previewBagSha256": "7f165f1fe3177dba5bedce617a10c354e1d5bacc55d70cbc13ac3ce2b9a8c215",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/port-meridian-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/port-meridian-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/port-meridian-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/port-meridian-angled-thumb.webp"
     },
@@ -576,7 +576,7 @@
       "sourceNote": "User-approved TS_Save_38. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 5. Offline loading checks passed; native TTS remains unverified. Unwanted self-propagating script suffix removed from release copy.",
       "overhead": "/assets/maps/library-previews-20261118/neutralization-1-satellite-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/neutralization-1-satellite-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/810241.json",
+      "download": "/assets/maps/army-sideboards-20261126/810241.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -589,9 +589,9 @@
         "ITS18 Neutralization — Emberfall Station — SATELLITE EDITION",
         "Emberfall Station"
       ],
-      "previewBagSha256": "4cdcd44b12548dc04b9f2a2418d4f0ba998194efba067a8c6b2f5faeb4e10887",
+      "previewBagSha256": "67963d97053b3973b062aa5344cc479498513ff22ba0e95d1b1810d4af71c3bd",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/neutralization-1-satellite-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/neutralization-1-satellite-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/neutralization-1-satellite-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/neutralization-1-satellite-angled-thumb.webp"
     },
@@ -614,7 +614,7 @@
       "sourceNote": "User-approved TS_Save_39. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 6. Offline loading checks passed; native TTS remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/outbreak-2-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/outbreak-2-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100e3e.json",
+      "download": "/assets/maps/army-sideboards-20261126/100e3e.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -631,9 +631,9 @@
         "SET_ITS18 Outbreak - Nereid Deep R3 Enclosed Base",
         "ITS18 Outbreak - Nereid Deep R3 Enclosed Base"
       ],
-      "previewBagSha256": "8bc74c07da6212c882311b09e65b0536c583a931a03e15ffcbabad61ec3b657a",
+      "previewBagSha256": "b1ef9eedde39296fc461c2778912bf24aba64f20ffe3ddd8a6d61d8c1cd3d2aa",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/outbreak-2-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/outbreak-2-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/outbreak-2-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/outbreak-2-angled-thumb.webp"
     },
@@ -656,7 +656,7 @@
       "sourceNote": "Approved TS_Save_46: the user-approved active building states, all 20 building placements, 9 movable ridges, furnishings, materials, objectives and 22 night lights are retained. Inactive state placements and session-only environment baseline normalized for reuse. All 103 custom asset URLs downloaded successfully; both general and independent Top 40 bags pass offline Stage load/alternate-state/cleanup checks. Matching Top 40 Losers Round 2 (Provisioning).",
       "overhead": "/assets/maps/library-previews-20261118/provisioning-2-satellite-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/provisioning-2-satellite-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/8102b2.json",
+      "download": "/assets/maps/army-sideboards-20261126/8102b2.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -676,9 +676,9 @@
         "Sirocco Wells R8 Settlement",
         "Sirocco Wells R8.1 Import Fix"
       ],
-      "previewBagSha256": "b77cc9613bc6993cfd55e14092a32aa7b61acf3b38d0483839dc62e4d9a5ce9e",
+      "previewBagSha256": "2b0705df75883c1e2db5ea02b7020f6d6c58d44b5f19134d9361ffab0ca260af",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/provisioning-2-satellite-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/provisioning-2-satellite-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/provisioning-2-satellite-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/provisioning-2-satellite-angled-thumb.webp"
     },
@@ -701,7 +701,7 @@
       "sourceNote": "Approved Frostline Relay furnished R3 with the lettering fix: weathered alpine buildings, furnished interiors, snow and rock cover. Matching Top 40 Winners Round 2 terrain and controls. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/superiority-1-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/superiority-1-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/100f50.json",
+      "download": "/assets/maps/army-sideboards-20261126/100f50.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -712,9 +712,9 @@
         "ITS18 Superiority — Meridian Blocks — NEW LAYOUT",
         "Meridian Blocks"
       ],
-      "previewBagSha256": "ae2d5e22fb71169d9296640c494c570f904dd7ac2080331d1bd65abf3d4fb970",
+      "previewBagSha256": "5861ba219932476d265227b7f2015fc5481624980d9235849c19043b12f4289b",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/superiority-1-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/superiority-1-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/superiority-1-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/superiority-1-angled-thumb.webp"
     },
@@ -737,7 +737,7 @@
       "sourceNote": "Approved Old Quarter Excavation: the user-approved urban layout, furnished building interiors, open floor states and diagonal deployment. Latest floor order and collision repairs retained. Matching Top 40 Winners Round 4 map. Rendered terrain previews omit asset-bundle mission markers. Offline geometry/control checks passed; native TTS playtesting remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/the-dig-2-satellite-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/the-dig-2-satellite-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/810340.json",
+      "download": "/assets/maps/army-sideboards-20261126/810340.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -750,9 +750,9 @@
         "ITS18 The Dig — Old Quarter Excavation — SATELLITE EDITION",
         "Old Quarter Excavation"
       ],
-      "previewBagSha256": "7ab96fe5818931521cf910146df21ce17ee1880eb2835ab71b40bf13380ed3a6",
+      "previewBagSha256": "51cc3b7872b926a1977bfe457710d421ee9f6dbe6f6729276b667c595cb4b8fb",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/the-dig-2-satellite-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/the-dig-2-satellite-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/the-dig-2-satellite-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/the-dig-2-satellite-angled-thumb.webp"
     },
@@ -775,7 +775,7 @@
       "sourceNote": "Exact user-edited TS_Save_42 final layout; two removed screen clusters stay removed. Matching Top 40 Winners Round 3. Stage drop deployment and Clear Table cleanup; no bag buttons. Offline checks passed; live TTS physics remains unverified.",
       "overhead": "/assets/maps/library-previews-20261118/uplink-center-2-overhead.webp",
       "angled": "/assets/maps/library-previews-20261118/uplink-center-2-angled.webp",
-      "download": "/assets/maps/missiongeist-controls-20261125/1010b1.json",
+      "download": "/assets/maps/army-sideboards-20261126/1010b1.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -789,16 +789,16 @@
         "ITS18 Uplink Center — Verdant Exchange",
         "SET_ITS18 Uplink Center — Verdant Exchange"
       ],
-      "previewBagSha256": "10cfccf38e0141e24036406db6a53c86dcd7cdfb1c9d5582815f7c22e69b1846",
+      "previewBagSha256": "2da7b1eea242b2802e181199e76c9926443e53e1583853a6a97c21c6d8762a92",
       "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/missiongeist-controls-20261125/previews/uplink-center-2-preview.json",
+      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/uplink-center-2-preview.json",
       "overheadThumb": "/assets/maps/library-previews-20261118/uplink-center-2-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "azure-palace-final-r9",
-  "installer": "/assets/maps/azure-palace-final-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
-  "releaseInventory": "/assets/maps/azure-palace-final-20261126/release-inventory.json",
+  "downloadRevision": "azure-palace-final-r9-army-sideboards",
+  "installer": "/assets/maps/army-sideboards-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
+  "releaseInventory": "/assets/maps/army-sideboards-20261126/release-inventory.json",
   "previewUpdatedAt": "2026-11-26",
   "workshopSaveName": "Lobo Maps - Azure Palace R9 - Workshop Collection"
 }

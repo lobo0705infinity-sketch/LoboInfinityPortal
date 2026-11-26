@@ -1,0 +1,120 @@
+{
+  "slug": "uplink-center-2",
+  "name": "Verdant Exchange",
+  "bagUrl": "/assets/maps/army-sideboards-20261126/1010b1.json",
+  "bagSha256": "2da7b1eea242b2802e181199e76c9926443e53e1583853a6a97c21c6d8762a92",
+  "views": {
+    "overhead": "uplink-center-2-overhead.webp",
+    "angled": "uplink-center-2-angled.webp"
+  },
+  "renderedObjects": [
+    "751cb8",
+    "28ea90",
+    "7b34b9",
+    "83619d",
+    "851d65",
+    "d8982f",
+    "1f7907",
+    "76d6c3",
+    "2f3753",
+    "8579eb",
+    "c053a9",
+    "24cd91",
+    "8a6e6d",
+    "857172",
+    "0fcb18",
+    "cf9c5c",
+    "dd5684",
+    "ba059c",
+    "c31f49",
+    "e0591d",
+    "f33963",
+    "9b6ef1",
+    "974c9a",
+    "bf759d",
+    "80d608",
+    "73a81e",
+    "35fdbc",
+    "8fb8c3",
+    "11bba8",
+    "bbb53b",
+    "a37e05",
+    "34c335",
+    "485c7d",
+    "b17381",
+    "f06dc5",
+    "6f0c5e",
+    "718e4e",
+    "d9da53",
+    "ae2e77",
+    "b2a944",
+    "df7335",
+    "f8f7f5",
+    "262a53",
+    "801bb2",
+    "d8462d",
+    "e32ddb",
+    "e26ea9",
+    "9312c7",
+    "9adbe5",
+    "190c54",
+    "8b0bae",
+    "6bcaf4",
+    "e1cca9",
+    "0b1ab2",
+    "f954b4",
+    "350485",
+    "52d053",
+    "3260f8",
+    "240bdc",
+    "1cf2cf",
+    "fb7282",
+    "d4e51a",
+    "50991c",
+    "1ec424",
+    "0f5814",
+    "7a122e",
+    "bc3ee7",
+    "d95a1f",
+    "bc3b49"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "0f1d90",
+      "name": "Communication Antenna 1 | 40 mm",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "73d67b",
+      "name": "Central Tech-Coffin | 40 mm",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "bf5373",
+      "name": "Communication Antenna 2 | 40 mm",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "ae555b",
+      "name": "Verdant Exchange | Map Controls",
+      "reason": "BlockSquare"
+    },
+    {
+      "guid": "a05fb7",
+      "name": "Tropical Conservatory | Roof-off wall glazing",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "aec502",
+      "name": "Temperate Conservatory | Roof-off wall glazing",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "35a3df",
+      "name": "Eastern Propagation House | Roof-off wall glazing",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "fa3a019c1bc8600c946b0294c0c16ae88b8235fd8bb56db19ac173a1d31987a8"
+}

@@ -1,80 +1,61 @@
- -- Shared table tools live outside the battlefield and survive map changes.
- local toolBase="https://lobo-infinity-portal.vercel.app/assets/maps/table-tools-20261125-r3/"
- local tableTools={
-  {key="orders",tag="LoboInfinityOrderPanel",files={"order-panel.json"},position={34,1.45,-37}},
-  {key="army",tag="LoboArmySpawner",files={"army-spawner-1.txt","army-spawner-2.txt","army-spawner-3.txt","army-spawner-4.txt"},position={40.55,1.4,-36.69}}
- }
- local function currentTool(spec)
-  local oldPanel
-  local function inspect(o)
-   if not o or o.isDestroyed() then return end
-   local name=o.getName() or ""
-   if spec.key=="army" then
-    if o.hasTag(spec.tag) or (o.type=="Block" and name:lower():find("infinity army spawner",1,true)) then return o end
-   elseif o.hasTag(spec.tag) or name:find("Lobo Infinity Order Panel",1,true)==1 then
-    if (tonumber(o.getVar("LOBO_ORDER_PANEL_REVISION")) or 0)>=3 or name=="Lobo Infinity Order Panel R3" then return o end
-    oldPanel=o
+ local toolsPlaced=false
+ local nextToolCheck=0
+ local panel=[==[{"Name":"BlockSquare","Nickname":"Lobo Infinity Order Panel R4","Description":"Shows the active player's orders by combat group, including Lieutenant orders. Drag the title bar to move the order count on your screen.","Tags":["LoboInfinityOrderPanel","NoSave","LoboTableTool"],"Transform":{"posX":34,"posY":1.45,"posZ":-37,"rotX":0,"rotY":180,"rotZ":0,"scaleX":1.7,"scaleY":0.16,"scaleZ":0.9},"ColorDiffuse":{"r":0.11,"g":0.2,"b":0.26},"Locked":false,"Grid":false,"Snap":false,"Sticky":false,"Tooltip":true,"Hands":false,"GridProjection":false,"LuaScript":"-- Lobo Infinity Order Panel. The table's public tray tiles are the source of truth.\nLOBO_ORDER_PANEL_REVISION = 4\nlocal ROOT = \"loboInfinityOrdersV1\"\nlocal OWNER = \"loboInfinityOrdersOwnerV1\"\nlocal PANEL_TAG = \"LoboInfinityOrderPanel\"\nlocal timer, tickNumber = nil, 0\nlocal indexed = {}\nlocal mounted, lastValues = false, {}\nlocal alive = true\n\nlocal trayImage = \"DB9191D67AD1DC5EBC425FCFE35E90E9053BEE5C\"\nlocal traySeats = {c89ab5=\"Red\", db24bf=\"Blue\"}\nlocal flags = {[\"19419e\"]=true, b1ba66=true}\nlocal flagImages = {\n    [\"01E9B5CF0B94D869273E67AA51238CA757F0832F\"]=true,\n    [\"816EC90F198E7417C1E54E8439BCB5B23990DBBA\"]=true,\n}\nlocal orderImages = {\n    [\"145E60BBEDFA90884F06A7862F4A08D70846A387\"]=\"lieutenant\",\n    [\"868174B56A47C3F72774B8C14B0BA1DBD57A6696\"]=\"impetuous\",\n    [\"9AEE960695E8F72760534504DF98D43AA2FA72B1\"]=\"tactical\",\n    [\"F015AEAC2E7EBB5440082216435B949BC64E588E\"]=\"regular\",\n    [\"801CEE15A2E63A4950F10D476850D3A5CD99038E\"]=\"irregular\",\n}\nlocal orderNames = {\n    [\"lieutenant order\"]=\"lieutenant\", [\"lieutenant orders\"]=\"lieutenant\",\n    [\"lt order\"]=\"lieutenant\", [\"lt orders\"]=\"lieutenant\",\n    [\"special lieutenant order\"]=\"lieutenant\", [\"lieutenant special order\"]=\"lieutenant\",\n    [\"impetuous\"]=\"impetuous\", [\"impetuous order\"]=\"impetuous\",\n    [\"impetuous orders\"]=\"impetuous\", [\"tactical order\"]=\"tactical\",\n    [\"tactical orders\"]=\"tactical\", [\"tactical awareness\"]=\"tactical\",\n    [\"tactical awareness order\"]=\"tactical\", [\"tac aware\"]=\"tactical\",\n    [\"tac aware order\"]=\"tactical\", [\"tactical aware\"]=\"tactical\",\n    [\"regular order\"]=\"regular\", [\"regular orders\"]=\"regular\", [\"regular\"]=\"regular\",\n    [\"irregular order\"]=\"irregular\", [\"irregular orders\"]=\"irregular\", [\"irregular\"]=\"irregular\",\n}\nlocal columns = {\n    {key=\"impetuous\", label=\"Impetuous\", width=88, color=\"#FFAAA3\"},\n    {key=\"tactical\", label=\"Tac Aware\", width=84, color=\"#E3AEFF\"},\n    {key=\"regular\", label=\"Regular\", width=68, color=\"#99EBAB\"},\n    {key=\"irregular\", label=\"Irregular\", width=76, color=\"#FFDC80\"},\n    {key=\"lieutenant\", label=\"LT\", width=38, color=\"#8FD9FF\"},\n}\nlocal turnColors = {Red=\"#FFAAA3\", Blue=\"#93D2FF\"}\nlocal pieceTypes = {Tile=true, TileStack=true, Token=true, Chip=true, ChipStack=true,\n    Custom_Tile=true, Custom_Token=true}\n\nlocal function assetId(url)\n    if type(url) ~= \"string\" or #url < 40 then return nil end\n    local query = url:find(\"?\",1,true) or #url+1\n    local fragment = url:find(\"#\",1,true) or #url+1\n    local last = math.min(query,fragment)-1\n    while last > 0 and url:byte(last) == 47 do last = last-1 end\n    local first = last-39\n    if first < 1 or (first > 1 and url:byte(first-1) ~= 47) then return nil end\n    return url:sub(first,last):upper()\nend\n\nlocal function orderByName(nickname)\n    if type(nickname) ~= \"string\" then return nil end\n    local name = nickname:lower()\n    if orderNames[name] then return orderNames[name] end\n    -- MoonSharp's pattern matcher can exhaust its budget on ordinary Workshop names.\n    -- Walk the name once, skipping TTS color tags and collapsing word separators.\n    local letters, space, i = {}, false, 1\n    while i <= #name do\n        local b = name:byte(i)\n        if b == 91 then\n            i = name:find(\"]\",i+1,true)\n            if not i then return nil end\n        elseif b == 32 or b == 45 or b == 95 or (b >= 9 and b <= 13) then\n            space = #letters > 0\n        elseif b >= 97 and b <= 122 then\n            if space then letters[#letters+1] = \" \"; space = false end\n            letters[#letters+1] = string.char(b)\n        else\n            return nil\n        end\n        i = i+1\n    end\n    return orderNames[table.concat(letters)]\nend\n\nlocal function classify(obj,guid)\n    if flags[guid] then return \"flag\" end\n    if traySeats[guid] then return \"tray\" end\n    if not pieceTypes[obj.type] then return nil end\n    local config = obj.getCustomObject()\n    local image = assetId(config and config.image)\n    if image == trayImage then return \"tray\" end\n    if flagImages[image] then return \"flag\" end\n    if orderImages[image] then return orderImages[image] end\n    return orderByName(obj.getName())\nend\n\nlocal function readEntry(obj)\n    if not obj or obj.isDestroyed() then return end\n    local guid = obj.getGUID()\n    local kind = classify(obj,guid)\n    return guid, kind and {obj=obj,kind=kind} or nil\nend\n\nlocal function indexInto(target,obj)\n    -- An object can disappear or be mid-reload while TTS enumerates the room.\n    local ok,guid,entry = pcall(readEntry,obj)\n    if ok and guid then target[guid] = entry end\nend\n\nlocal function indexObject(obj)\n    indexInto(indexed,obj)\nend\n\nlocal function reindex()\n    local found = {}\n    for _,obj in ipairs(getObjects()) do indexInto(found,obj) end\n    indexed = found\nend\n\nlocal function hand(color)\n    local p = Player[color]\n    if p and p.getHandCount() > 0 then return p.getHandTransform(1).position end\nend\n\nlocal function distanceSquared(a,b)\n    return (a.x-b.x)^2 + (a.z-b.z)^2\nend\n\nlocal function seatForTray(obj, guid, redHand, blueHand)\n    if traySeats[guid] then return traySeats[guid] end\n    -- Identical copies of the trays inherit their side from the seats in the room.\n    if redHand and blueHand then\n        local p = obj.getPosition()\n        local r, b = distanceSquared(p,redHand), distanceSquared(p,blueHand)\n        if r ~= b then return r < b and \"Red\" or \"Blue\" end\n    end\nend\n\nlocal function liveFixture(guid)\n    local obj = getObjectFromGUID(guid)\n    if obj and not obj.isDestroyed() then return obj end\nend\n\nlocal function turnMarker()\n    local stock = liveFixture(\"19419e\") or liveFixture(\"b1ba66\")\n    if stock then return stock end\n    local marker\n    for guid,entry in pairs(indexed) do\n        if entry.kind == \"flag\" and not entry.obj.isDestroyed() then\n            if not marker or guid < marker.getGUID() then marker = entry.obj end\n        end\n    end\n    return marker\nend\n\nlocal function activeSeatAndTray()\n    local marker = turnMarker()\n    local seat\n    if marker then\n        -- In both first-player states, the physical tile's front is red and its back blue.\n        seat = marker.is_face_down and \"Blue\" or \"Red\"\n    elseif Turns.enable and turnColors[Turns.turn_color] then\n        seat = Turns.turn_color\n    end\n    if not seat then return nil, nil end\n\n    local standardGuid = seat == \"Red\" and \"c89ab5\" or \"db24bf\"\n    local standard = liveFixture(standardGuid)\n    if standard then return seat,standard end\n    local redHand, blueHand = hand(\"Red\"), hand(\"Blue\")\n    local ownHand = seat == \"Red\" and redHand or blueHand\n    local nearest, best = nil, math.huge\n    for guid,entry in pairs(indexed) do\n        local obj = entry.obj\n        if entry.kind == \"tray\" and not obj.isDestroyed()\n            and seatForTray(obj,guid,redHand,blueHand) == seat and ownHand then\n            local d = distanceSquared(obj.getPosition(),ownHand)\n            if d < best or (d == best and guid < nearest.getGUID()) then nearest,best = obj,d end\n        end\n    end\n    return seat,nearest\nend\n\nlocal function onPublicTray(obj, tray, kind)\n    if obj.is_face_down then return nil end\n    local p = tray.positionToLocal(obj.getPosition())\n    -- The stock square is two local units wide. Its artwork faces local -Z upward;\n    -- the numbered 1 is on local +X. The same rule holds on the opposite seat.\n    if math.abs(p.x) > 1 or math.abs(p.z) > 1 or p.y < 0 or p.y > 1.75 then return nil end\n    for _,zone in ipairs(obj.getZones()) do\n        if zone.type == \"Hand\" or zone.type == \"Fog\" or zone.type == \"FogOfWar\" then return nil end\n    end\n    -- All three native LT snaps straddle the divider at z=-0.494.\n    if kind == \"lieutenant\" and (math.abs(p.x) < 0.0001 or\n        (math.abs(p.x) <= 0.18 and math.abs(p.z+0.494) <= 0.09)) then return 3 end\n    if math.abs(p.x) < 0.0001 then return nil end\n    return p.x > 0 and 1 or 2\nend\n\nlocal function readTray(tray)\n    local groups = {{},{},{}}\n    for _,entry in pairs(indexed) do\n        local obj = entry.obj\n        if entry.kind ~= \"tray\" and entry.kind ~= \"flag\" and not obj.isDestroyed() then\n            local group = onPublicTray(obj,tray,entry.kind)\n            if group then\n                local n = math.max(1,obj.getQuantity())\n                local counts = groups[group]\n                counts[entry.kind] = (counts[entry.kind] or 0) + n\n            end\n        end\n    end\n    return groups\nend\n\nlocal function cellKey(row, key) return \"r\"..row..\"_\"..key end\n\nlocal function snapshot()\n    local seat,tray = activeSeatAndTray()\n    local groups = tray and readTray(tray) or {{},{},{}}\n    local values = {title=seat and seat:upper()..\" TURN\" or \"ORDERS\"}\n    local centerLT = groups[3].lieutenant or 0\n    values.centerLT = centerLT > 0 and (centerLT..\" LT in center\") or \"\"\n    local total = 0\n    for _,col in ipairs(columns) do\n        local a,b = groups[1][col.key] or 0, groups[2][col.key] or 0\n        local sum = a + b + (groups[3][col.key] or 0)\n        total = total + sum\n        values[cellKey(1,col.key)] = tray and tostring(a) or \"-\"\n        values[cellKey(2,col.key)] = tray and tostring(b) or \"-\"\n        values[cellKey(3,col.key)] = tray and tostring(sum) or \"-\"\n    end\n    if tray then\n        values.count = total == 1 and \"1 order left\" or total..\" orders left\"\n    elseif seat then\n        values.count = \"Waiting for \"..seat..\" order tray\"\n    else\n        values.count = \"Waiting for turn marker\"\n    end\n    return values,turnColors[seat] or \"#F1F4F7\"\nend\n\nlocal function textNode(key,value,x,y,w,h,fontSize,color,align,bold)\n    local a = {rectAlignment=\"UpperLeft\", offsetXY=x..\" \"..-y, width=tostring(w),\n        height=tostring(h), fontSize=tostring(fontSize), color=color, alignment=align,\n        fontStyle=bold and \"Bold\" or \"Normal\", raycastTarget=\"false\"}\n    if key then a.id = ROOT..\"_\"..key end\n    return {tag=\"Text\",attributes=a,value=value}\nend\n\nlocal function makeHUD(values,titleColor)\n    local children = {\n        {tag=\"Panel\",attributes={id=ROOT..\"_drag\",rectAlignment=\"UpperLeft\",width=\"444\",height=\"29\",\n            color=\"#14212AF5\",raycastTarget=\"true\",tooltip=\"Drag to move the order count.\"}},\n        textNode(\"title\",values.title,12,4,106,24,17,titleColor,\"MiddleLeft\",true),\n        textNode(\"centerLT\",values.centerLT,116,4,108,24,13,\"#8FD9FF\",\"MiddleCenter\",false),\n        textNode(\"count\",values.count,224,4,204,24,15,\"#FFFFFF\",\"MiddleRight\",true),\n    }\n    local labels = {\"Group 1\",\"Group 2\",\"Total\"}\n    for row,label in ipairs(labels) do\n        children[#children+1] = textNode(nil,label,12,50+24*(row-1),66,23,15,\n            row == 3 and \"#FFFFFF\" or \"#DCE5EA\",\"MiddleLeft\",row == 3)\n    end\n    local x = 77\n    for _,col in ipairs(columns) do\n        children[#children+1] = textNode(nil,col.label,x,29,col.width,20,13,col.color,\"MiddleCenter\",true)\n        for row=1,3 do\n            local key = cellKey(row,col.key)\n            children[#children+1] = textNode(key,values[key],x,50+24*(row-1),col.width,23,17,\n                row == 3 and \"#FFFFFF\" or \"#E4EBEE\",\"MiddleCenter\",row == 3)\n        end\n        x = x + col.width\n    end\n    for _,y in ipairs({29,99}) do\n        children[#children+1] = {tag=\"Panel\",attributes={rectAlignment=\"UpperLeft\",\n            offsetXY=\"10 \"..-y,width=\"424\",height=\"1\",color=\"#40505D\",raycastTarget=\"false\"}}\n    end\n    return {tag=\"Panel\",attributes={id=ROOT,rectAlignment=\"UpperRight\",offsetXY=\"-16 -96\",\n        width=\"444\",height=\"126\",color=\"#14212AF5\",raycastTarget=\"false\",allowDragging=\"true\",\n        returnToOriginalPositionWhenReleased=\"false\",restrictDraggingToParentBounds=\"true\"},children=children}\nend\n\nlocal orderSeats = {{\"Blue\",\"Blue\"},{\"Red\",\"Red\"},{\"Other\",\"White|Brown|Orange|Yellow|Green|Teal|Purple|Pink|Grey|Black\"}}\nlocal function makeSeatHUDs(values,titleColor)\n    local frames = {}\n    for _,seat in ipairs(orderSeats) do\n        local frame = makeHUD(values,titleColor)\n        local prefix = ROOT..\"_\"..seat[1]\n        local function rename(n)\n            local id = n.attributes and n.attributes.id\n            if id then n.attributes.id = prefix..id:sub(#ROOT+1) end\n            for _,child in ipairs(n.children or {}) do rename(child) end\n        end\n        rename(frame)\n        frame.attributes.visibility=seat[2]\n        frames[#frames+1]=frame\n    end\n    return {tag=\"Panel\",attributes={id=ROOT,width=\"100%\",height=\"100%\",color=\"#00000000\",raycastTarget=\"false\"},children=frames}\nend\n\nlocal function findHUD(roots)\n    for i,node in ipairs(roots) do\n        if node.attributes and node.attributes.id == ROOT then return i end\n    end\nend\n\nlocal function display(values, titleColor, check)\n    if UI.loading then return end\n    if check or not mounted then\n        local roots = UI.getXmlTable() or {}\n        local index = findHUD(roots)\n        local current = false\n        for _,child in ipairs(index and roots[index].children or {}) do\n            if child.attributes and child.attributes.id == ROOT..\"_Blue\" then current = true; break end\n        end\n        if not current then\n            roots[index or #roots+1] = makeSeatHUDs(values,titleColor)\n            UI.setXmlTable(roots,UI.getCustomAssets())\n            mounted = true\n            lastValues = values\n            lastValues.titleColor = titleColor\n            return\n        end\n        mounted = true\n    end\n    for _,seat in ipairs(orderSeats) do\n        local prefix = ROOT..\"_\"..seat[1]\n        for key,value in pairs(values) do\n            local id = prefix..\"_\"..key\n            if lastValues[key] ~= value or (check and UI.getValue(id) ~= value) then\n                UI.setValue(id,value)\n            end\n        end\n        if lastValues.titleColor ~= titleColor or check then\n            UI.setAttribute(prefix..\"_title\",\"color\",titleColor)\n        end\n    end\n    lastValues = values\n    lastValues.titleColor = titleColor\nend\n\nlocal function ownsHUD()\n    local owner = Global.getVar(OWNER)\n    if owner == self.getGUID() then return true end\n    local other = owner and getObjectFromGUID(owner)\n    if other and not other.isDestroyed() and other.hasTag(PANEL_TAG) then\n        local revision = tonumber(other.getVar(\"LOBO_ORDER_PANEL_REVISION\") or 0) or 1\n        if revision >= LOBO_ORDER_PANEL_REVISION then return false end\n    end\n    Global.setVar(OWNER,self.getGUID())\n    mounted, lastValues = false, {}\n    return true\nend\n\nlocal function refresh()\n    if not alive or not ownsHUD() then return end\n    tickNumber = tickNumber + 1\n    -- Discover restored objects, renamed substitutes and custom objects that finished loading.\n    if tickNumber % 40 == 1 then reindex() end\n    local values,titleColor = snapshot()\n    display(values,titleColor,tickNumber % 10 == 1)\nend\n\nfunction onLoad()\n    alive, tickNumber, mounted, lastValues = true, 0, false, {}\n    self.addTag(PANEL_TAG)\n    self.clearButtons()\n    self.createButton({label=\"ORDERS\",click_function=\"orderPanelLabel\",function_owner=self,\n        position={0,0.51,0},rotation={0,0,0},width=0,height=0,font_size=88,\n        scale={0.65,1,1},font_color={0.9,0.96,1}})\n    if timer then Wait.stop(timer) end\n    timer = Wait.time(refresh,0.4,-1)\n    Wait.frames(refresh,2)\nend\n\nfunction orderPanelLabel() end\nfunction onObjectSpawn(obj) indexObject(obj) end\nfunction onObjectDrop(_,obj) indexObject(obj) end\nfunction onObjectStateChange(obj,oldGuid)\n    indexed[oldGuid] = nil\n    indexObject(obj)\nend\nfunction onObjectLeaveContainer(_,obj) indexObject(obj) end\nfunction onObjectEnterContainer(_,obj)\n    indexed[obj.getGUID()] = nil\n    if obj == self then onDestroy() end\nend\nfunction onObjectDestroy(obj) indexed[obj.getGUID()] = nil end\n\nfunction onDestroy()\n    alive = false\n    if timer then Wait.stop(timer); timer = nil end\n    if Global.getVar(OWNER) ~= self.getGUID() then return end\n    Global.setVar(OWNER,nil)\n    local roots = UI.getXmlTable() or {}\n    local index = findHUD(roots)\n    if index then\n        table.remove(roots,index)\n        UI.setXmlTable(roots,UI.getCustomAssets())\n    end\nend\n","LuaScriptState":"","XmlUI":""}]==]
+ local blue=[==[{"Name":"BlockSquare","Nickname":"Blue | Load Army Spawner","Description":"Click to load or bring back Blue's Army Spawner on this sideboard.","Tags":["LoboArmyLauncher","LoboArmySpawner","LoboTableTool","NoSave","LoboArmyLauncherBlue"],"Transform":{"posX":32.5,"posY":1.05,"posZ":1.85,"rotX":0,"rotY":89.99,"rotZ":0,"scaleX":2.65,"scaleY":0.18,"scaleZ":1.15},"ColorDiffuse":{"r":0.1,"g":0.2,"b":0.25},"Locked":true,"Grid":false,"Snap":false,"Sticky":false,"Tooltip":true,"Hands":false,"GridProjection":false,"LuaScript":"__LOBO_CURRENT_ARMY_LAUNCHER__","LuaScriptState":"","XmlUI":""}]==]
+ local red=[==[{"Name":"BlockSquare","Nickname":"Red | Load Army Spawner","Description":"Click to load or bring back Red's Army Spawner on this sideboard.","Tags":["LoboArmyLauncher","LoboArmySpawner","LoboTableTool","NoSave","LoboArmyLauncherRed"],"Transform":{"posX":-32.5,"posY":1.05,"posZ":-1.85,"rotX":0,"rotY":269.99,"rotZ":0,"scaleX":2.65,"scaleY":0.18,"scaleZ":1.15},"ColorDiffuse":{"r":0.31,"g":0.1,"b":0.1},"Locked":true,"Grid":false,"Snap":false,"Sticky":false,"Tooltip":true,"Hands":false,"GridProjection":false,"LuaScript":"__LOBO_CURRENT_ARMY_LAUNCHER__","LuaScriptState":"","XmlUI":""}]==]
+
+ local function place(tag,source,prior,move)
+  local key="LoboToolPlacement6_"..tag
+  local lease=Global.getTable(key) or {}
+  if lease.expires and lease.expires>os.time() and getObjectFromGUID(lease.owner) then return false end
+  Global.setTable(key,{owner=self.getGUID(),expires=os.time()+5})
+  local ok,obj=pcall(function()
+   if not prior then return spawnObjectJSON({json=source}) end
+   local data=JSON.decode(source)
+   prior.setName(data.Nickname)
+   prior.setDescription(data.Description)
+   for _,t in ipairs(data.Tags) do prior.addTag(t) end
+   if move then
+    local t=data.Transform
+    prior.setRotation({t.rotX,t.rotY,t.rotZ})
+    prior.setScale({t.scaleX,t.scaleY,t.scaleZ})
+    prior.setPosition({t.posX,t.posY,t.posZ})
+    prior.setColorTint(data.ColorDiffuse)
+   end
+   prior.setLuaScript(data.LuaScript)
+   return prior.reload()
+  end)
+  if not ok or not obj then Global.setTable(key,{});return false end
+  return true
+ end
+
+ local function ensureButton(side,source)
+  local tag="LoboArmyLauncher"..side
+  local found=(getObjectsWithTag(tag) or {})[1]
+  if found and (tonumber(found.getVar("LOBO_ARMY_LAUNCHER_REVISION") or 0) or 0)>=10 then return true end
+  if not found and side=="Blue" then
+   for _,old in ipairs(getObjectsWithTag("LoboArmyLauncher") or {}) do
+    if not old.hasTag("LoboArmyLauncherRed") then found=old;break end
    end
   end
-  for _,o in ipairs(getObjectsWithTag(spec.tag)) do local match=inspect(o);if match then return match end end
-  if spec.key=="army" then local match=inspect(getObjectFromGUID("056963"));if match then return match end end
-  for _,o in ipairs(getObjects()) do local match=inspect(o);if match then return match end end
-  return nil,oldPanel
+  return place(tag,source,found,true)
  end
- local function ensureTool(spec,now)
-  if spec.done or now<(spec.nextCheck or 0) then return end
-  local leaseKey="LoboMapToolLease_"..spec.key
-  local lease=Global.getTable(leaseKey) or {}
-  if lease.untilTime and lease.untilTime>now and getObjectFromGUID(lease.owner) then
-   spec.nextCheck=now+2;return
-  end
-  if currentTool(spec) then spec.done=true;return end
-  spec.attempt=(spec.attempt or 0)+1
-  local token=self.getGUID().."/"..spec.attempt.."/"..now
-  local untilTime=now+60
-  Global.setTable(leaseKey,{owner=self.getGUID(),token=token,untilTime=untilTime})
-  spec.nextCheck=untilTime
-  local parts,remaining={},#spec.files
-  local function holds()
-   local current=Global.getTable(leaseKey) or {}
-   return current.token==token
-  end
-  local function release()
-   Global.setTable(leaseKey,{})
-   spec.nextCheck=0
-  end
-  local function retry()
-   release();spec.nextCheck=os.time()+math.min(60,spec.attempt*8)
-   if spec.attempt==1 then print("Lobo table tools: retrying the "..spec.key.." download.") end
-  end
-  for i,file in ipairs(spec.files) do
-   local index=i
-   WebRequest.get(toolBase..file,function(response)
-    if not holds() then return end
-    if not deployed() then release();return end
-    if response.is_error or (response.response_code and response.response_code~=200) or not response.text or response.text=="" then retry();return end
-    parts[index]=response.text;remaining=remaining-1
-    if remaining~=0 then return end
-    local ok,data=pcall(JSON.decode,table.concat(parts))
-    local signature=spec.key=="orders" and "LOBO_ORDER_PANEL_REVISION = 3" or "__lobo_zoc_hotkey_provider_r6"
-    if not ok or type(data)~="table" or data.Name~="BlockSquare" or type(data.LuaScript)~="string" or not data.LuaScript:find(signature,1,true) then retry();return end
-    local existing,older=currentTool(spec)
-    if existing then spec.done=true;release();return end
-    local installed=pcall(function()
-     if older then
-      older.setName(data.Nickname);older.setLuaScript(data.LuaScript);older.addTag("LoboTableTool");older.reload()
-     else
-      local o=spawnObjectData({data=data,position=spec.position,rotation={0,180,0}})
-      assert(o,"TTS did not spawn the table tool")
-     end
-    end)
-    if not installed then retry();return end
-    spec.done=true;release()
-   end)
-  end
- end
+
  local function ensureTableTools()
-  if not WebRequest or (tableTools[1].done and tableTools[2].done) then return end
-  local now=os.time()
-  for _,spec in ipairs(tableTools) do ensureTool(spec,now) end
+  if toolsPlaced or os.time()<nextToolCheck then return end
+  nextToolCheck=os.time()+5
+  local panelReady,older=false,nil
+  for _,o in ipairs(getObjects()) do
+   local name=o.getName() or ""
+   if o.hasTag("LoboInfinityOrderPanel") or name:find("Lobo Infinity Order Panel",1,true)==1 then
+    if name=="Lobo Infinity Order Panel R4" or (tonumber(o.getVar("LOBO_ORDER_PANEL_REVISION") or 0) or 0)>=4 then
+     panelReady=true;break
+    end
+    older=o
+   end
+  end
+  if not panelReady then panelReady=place("LoboInfinityOrderPanel",panel,older,false) end
+  local blueReady=ensureButton("Blue",blue)
+  local redReady=ensureButton("Red",red)
+  toolsPlaced=panelReady and blueReady and redReady
  end

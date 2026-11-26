@@ -99,7 +99,16 @@ def check_workshop_startup(collection):
 
 def check_play_saves(payload, collection):
     from patch_maps import bags
-    variants = json.loads(payload.read('release-extras.json'))['Setups']
+    if 'release-extras.json' in payload.namelist():
+        variants = json.loads(payload.read('release-extras.json'))['Setups']
+    else:
+        # Single-map installers from the Workshop use fixed play-table and preview filenames.
+        play = json.loads(payload.read('Play-Table.json'))
+        owner, = [o for o in play['ObjectStates'] if 'LOBO_STANDARD_VERSION=1' in o.get('LuaScript', '')]
+        guid, = [tag.split(':', 1)[1] for tag in owner.get('Tags', []) if tag.startswith('LoboMap:')]
+        assert play['SaveName'].endswith(' - Play Table')
+        variants = {guid: {'PlayFile': 'Play-Table.json', 'Name': play['SaveName'].removesuffix(' - Play Table'),
+                           'PlayThumbnail': 'Preview.png'}}
     contents = {bag['GUID']: bag for bag in bags(collection)}
     for guid, variant in variants.items():
         play = json.loads(payload.read(variant['PlayFile']))

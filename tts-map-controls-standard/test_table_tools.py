@@ -1,4 +1,4 @@
-"""Exercise asynchronous map deployment, tool reuse, and the physical R6 spawner."""
+"""Verify on-demand Army sideboards and legacy preinstalled table tools."""
 import json
 from pathlib import Path
 
@@ -9,6 +9,21 @@ ASSETS = ROOT.parent/'lobo-infinity-portal/public/assets/maps/table-tools-202611
 
 
 def check(collection, payload):
+    if any('LoboArmyLauncher' in o.get('Tags', []) for o in collection['ObjectStates']):
+        from army_sideboards import check as check_sideboards
+        from re import search
+        if 'release-extras.json' in payload.namelist():
+            files = [x['PlayFile'] for x in json.loads(payload.read('release-extras.json'))['Setups'].values()]
+        else:
+            files = ['Play-Table.json']
+        for room in [collection, *(json.loads(payload.read(f)) for f in files)]:
+            assert check_sideboards(room, require_room=True) > 0
+            panel, = [o for o in room['ObjectStates'] if 'LoboInfinityOrderPanel' in o.get('Tags', [])]
+            version = search(r'(?m)^LOBO_ORDER_PANEL_REVISION\s*=\s*(\d+)', panel['LuaScript'])
+            assert version and panel['Nickname'].endswith(' R' + version[1])
+            for item in [panel, *(o for o in room['ObjectStates'] if 'LoboArmyLauncher' in o.get('Tags', []))]:
+                assert max(abs(item['Transform']['posX']), abs(item['Transform']['posZ'])) > 26
+        return
     panel = json.loads((ASSETS/'order-panel.json').read_bytes())
     army = json.loads(b''.join((ASSETS/f'army-spawner-{i}.txt').read_bytes() for i in range(1, 5)))
     assert panel['LuaScript'] == (ROOT/'order-panel.lua').read_text()

@@ -1,0 +1,106 @@
+{
+  "slug": "saltwick-floodgate",
+  "name": "Saltwick Floodgate",
+  "bagUrl": "/assets/maps/army-sideboards-20261126/1002d9.json",
+  "bagSha256": "e969ebbcf09c195cdae626d340c486cab82d1193fda78f4dfabb82d8c338c91e",
+  "views": {
+    "overhead": "saltwick-floodgate-overhead.webp",
+    "angled": "saltwick-floodgate-angled.webp"
+  },
+  "renderedObjects": [
+    "7e9e14",
+    "f51000",
+    "f51001",
+    "f51002",
+    "f51003",
+    "f5100b",
+    "f5100e",
+    "f51010",
+    "f51012",
+    "f51013",
+    "f51014",
+    "f51015",
+    "f51016",
+    "f51017",
+    "f51018",
+    "f51019",
+    "f5101a",
+    "f5101b",
+    "f5101c",
+    "f5101d",
+    "f5101e",
+    "f5101f",
+    "f51020",
+    "f51021",
+    "f51022",
+    "f51023",
+    "f51024",
+    "f51025",
+    "f51027",
+    "f51029",
+    "f5102b",
+    "f5102d",
+    "f5102f",
+    "f51031",
+    "f51033",
+    "f51035",
+    "f51037",
+    "f51039",
+    "f5103a",
+    "f5103b",
+    "f5103c",
+    "f5103d",
+    "f5103e",
+    "f51041",
+    "f51044"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "f51004",
+      "name": "Tide Control entrance | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f51005",
+      "name": "Repair bay north | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f51006",
+      "name": "Repair bay south | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f51007",
+      "name": "Ferry arcade | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f51008",
+      "name": "Ferry office | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f51009",
+      "name": "Tide watch | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f5100a",
+      "name": "Customs inspection | Warm practical",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f5100c",
+      "name": "Communication Antenna | Standard 40 mm Console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f5100d",
+      "name": "Saltwick Floodgate | Lobo Map Controls v1",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "747c974578248ef4624fb25e0af7baa6e9aff00e64f9270fdcca80d1e2288d05"
+}

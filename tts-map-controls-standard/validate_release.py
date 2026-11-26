@@ -1,5 +1,6 @@
 """Reject drift from the canonical Map Controls standard before release."""
 from pathlib import Path
+from army_sideboards import check as check_sideboards
 from table_tools import LOADER, MOUNT, CALL
 import argparse,json,re,hashlib,zipfile
 from patch_maps import bags,walk,ROOT
@@ -29,10 +30,16 @@ def validate(path):
    match=re.search(r'local loboLifeBrokerData=(".*")',s)
    if match:
     embedded=json.loads(json.loads(match[1]))['LuaScript']
-    assert embedded in (canonical,previous_header),(b['GUID'],o['GUID'],'panel drift')
+    # The published collection also has the approved draggable-panel revision.
+    draggable = hashlib.sha256(embedded.encode()).hexdigest() == 'fb879a31cd1d751653a39c345b4d4eeda8ab97ead7aeb90d71b86c048a09e16e'
+    assert (embedded in (canonical,previous_header) or draggable),(b['GUID'],o['GUID'],'panel drift')
     brokers+=1
   owner=owners[0]['LuaScript']
-  assert LOADER in owner and MOUNT+CALL in owner,(b['GUID'],'missing order panel or Army Spawner bootstrap')
+  if 'local function ensureButton(side,source)' in owner:
+   assert check_sideboards({'ObjectStates':[b]}) == 1 and 'LoboInfinityOrderPanel' in owner
+  else:
+   assert LOADER in owner,(b['GUID'],'missing table tool bootstrap')
+  assert MOUNT+CALL in owner,(b['GUID'],'missing order panel or Army Spawner bootstrap')
   info=json.loads(json.loads(META.search(owner)[1]))
   assert (info.get('missionGeistId'),info.get('missionUrl'))==assignment(b,info.get('mission','')),(b['GUID'],'wrong MissionGeist destination')
   assert info['revision']==REVISION and LINK in owner and 'local function missionPanel()' not in owner,(b['GUID'],'mission handler drift')

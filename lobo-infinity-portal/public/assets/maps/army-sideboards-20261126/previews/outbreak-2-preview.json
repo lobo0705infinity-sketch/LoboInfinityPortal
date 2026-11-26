@@ -1,0 +1,86 @@
+{
+  "slug": "outbreak-2",
+  "name": "Halcyon Thermal Baths",
+  "bagUrl": "/assets/maps/army-sideboards-20261126/100e3e.json",
+  "bagSha256": "b1ef9eedde39296fc461c2778912bf24aba64f20ffe3ddd8a6d61d8c1cd3d2aa",
+  "views": {
+    "overhead": "outbreak-2-overhead.webp",
+    "angled": "outbreak-2-angled.webp"
+  },
+  "renderedObjects": [
+    "570e28",
+    "cb0602",
+    "bde668",
+    "a59c6f",
+    "edc952",
+    "129aab",
+    "a268d2",
+    "c72b1a",
+    "a32e19",
+    "89b80c",
+    "9b925a",
+    "9a950b",
+    "090dcb",
+    "cc101c",
+    "88e159",
+    "926c0d",
+    "0c67ed",
+    "2e8486",
+    "fd0a95",
+    "675a99",
+    "eddd89",
+    "877df6",
+    "a5b613",
+    "6b401d",
+    "9afbb5",
+    "c51c66",
+    "4f3b93",
+    "7ed150",
+    "3f0565",
+    "a37aa2",
+    "a059f5",
+    "a0afae",
+    "f8b154",
+    "2658b8",
+    "2719f4",
+    "a589f8",
+    "a5d599",
+    "b95b40",
+    "fe9ef8",
+    "3303d4"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "ef4c95",
+      "name": "Alpha Infected · HVT model",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "4d3a2d",
+      "name": "Infected 1 · HVT model",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "0b82e1",
+      "name": "Infected 2 · HVT model",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "d2bd79",
+      "name": "Infected 3 · HVT model",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "635d5e",
+      "name": "Infected 4 · HVT model",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "cb0603",
+      "name": "Halcyon · Map, mission and background controls",
+      "reason": "off-board control or object"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "587eedc3bb5fce558973ae529eae0a0a8d3b5bd32bf4d274e98d1bdf5b3585de"
+}

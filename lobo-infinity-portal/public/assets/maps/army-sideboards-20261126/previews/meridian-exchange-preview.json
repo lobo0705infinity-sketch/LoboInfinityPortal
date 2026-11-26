@@ -1,0 +1,159 @@
+{
+  "slug": "meridian-exchange",
+  "name": "Meridian Exchange",
+  "bagUrl": "/assets/maps/army-sideboards-20261126/1005e4.json",
+  "bagSha256": "5c46237b9fc735498248f4bd3f181e8de1aa6991d5274a3a8189364b5e9cf24d",
+  "views": {
+    "overhead": "meridian-exchange-overhead.webp",
+    "angled": "meridian-exchange-angled.webp"
+  },
+  "renderedObjects": [
+    "ead758",
+    "df2802",
+    "3166ef",
+    "1c058f",
+    "1410e1",
+    "af8715",
+    "5d6b21",
+    "a17bce",
+    "bd1b18",
+    "01e7ba",
+    "41ccb9",
+    "37a8b1",
+    "5d98a1",
+    "1ed924",
+    "66a6b1",
+    "e83108",
+    "c7ed74",
+    "7a8ffc",
+    "3c66ce",
+    "4d6dcf",
+    "253f59",
+    "336772",
+    "ffa8a3",
+    "698624",
+    "8a453b",
+    "72e8b7",
+    "e870c9",
+    "c01d15",
+    "b90790",
+    "404d8f",
+    "b9970f",
+    "56338d",
+    "457041",
+    "9f1381",
+    "7f58bb",
+    "43bfcb",
+    "e6758e",
+    "6b119a",
+    "03399f",
+    "a396c7",
+    "bc266d",
+    "c18001",
+    "c18102",
+    "c18103",
+    "c19401",
+    "c19402",
+    "c19403",
+    "c19405",
+    "c19406",
+    "466074",
+    "c4a1e0",
+    "53bc8f",
+    "9875bd"
+  ],
+  "omittedObjects": [
+    {
+      "guid": "df2803",
+      "name": "Meridian Exchange / Lobo Map Controls v1",
+      "reason": "off-board control or object"
+    },
+    {
+      "guid": "c18100",
+      "name": "Data Console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c18101",
+      "name": "Inhibitor Antenna / preferred console",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c19500",
+      "name": "Meridian warm entrance light 1",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c19501",
+      "name": "Meridian warm entrance light 2",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c19502",
+      "name": "Meridian warm entrance light 3",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c19503",
+      "name": "Meridian warm entrance light 4",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "3c0ea5",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "67cf36",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "f267b4",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "24cf06",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "8503b1",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "9310d9",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "c96fc1",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "a9ba5e",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "911223",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "79d94c",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    },
+    {
+      "guid": "602b76",
+      "name": "Meridian sign light",
+      "reason": "Custom_Assetbundle"
+    }
+  ],
+  "note": "Published terrain and saved states; interactive overlays, Unity bundle markers and particle effects are not rendered.",
+  "renderSourceBagSha256": "67d7d2d50b9494a62ed030a3b7decaa295c85f03985f6a53f2ecb468e2f8775a"
+}

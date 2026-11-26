@@ -28,7 +28,7 @@ Release checks must confirm:
 - Both colors survive save/reload; map-specific options remain; removed building menus stay absent.
 - Approved terrain, models, object states, transforms, artwork URLs and placements are unchanged by a controls-only release.
 - The full collection and exported map bags use the same version.
-- Each deployed map provides one shared order panel and one physical Infinity Army Spawner. Use the current R3 LT-aware panel and R6 Team Ops spawner. Ready tables carry both tools locally. Independent map bags reuse tools already on the table and load missing ones beside the play area.
+- Each map provides its shared order panel and a red and blue Load Army Spawner button. Each button checks the current Army release when clicked. Publish the profile parts at an immutable Git commit, then update the revision, commit, directory and byte lengths in `army-spawner-current/release.json`. Keep the matching known-good fallback in `army-launcher.lua`. When working from a previous save, run `python tts-map-controls-standard/army_sideboards.py input.json output.json` before packaging. Check both physical buttons and both replacement buttons inside every map owner.
 - On first load and reload, the Workshop collection opens its catalogue and leaves every original bag at home. The pickup button makes a copy on demand. Map-specific installers provide their play tables in separate saves.
 - Installer checksums pass, existing saves remain untouched, and a new numbered TTS save is created.
 

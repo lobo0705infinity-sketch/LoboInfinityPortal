@@ -1,0 +1,18 @@
+{
+  "name": "Azure Palace",
+  "guid": "87b699",
+  "previewKind": "geometry",
+  "revision": "R9",
+  "approvedAt": "2026-11-26",
+  "bagSha256": "0c2b1afada71116c612ec5ac82918e1b2e9ad0a706f5b3253bf882c2a0e28305",
+  "sourceSaveSha256": "4428014fc9e37953beda010600f82e53e22054e4774080ddcbdf81fbdebb986b",
+  "overhead": "/assets/maps/azure-palace-final-20261126/overhead.webp",
+  "angled": "/assets/maps/azure-palace-final-20261126/angled.webp",
+  "objectCount": 22,
+  "slug": "azure-palace",
+  "views": {
+    "overhead": "overhead.webp",
+    "angled": "angled.webp"
+  },
+  "bagUrl": "/assets/maps/army-sideboards-20261126/87b699.json"
+}
