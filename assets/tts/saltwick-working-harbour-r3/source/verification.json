@@ -1,0 +1,158 @@
+{
+ "geometry-results": {
+  "measured_clear_width_mm": {
+   "customs": 28.8,
+   "crew": 25.76
+  },
+  "reachable_from_each_deployment_zone_mm": {
+   "25": {
+    "seats": [
+     [
+      11.2,
+      10.82
+     ],
+     [
+      -19.74,
+      -18.81
+     ]
+    ],
+    "console_contact": [
+     1.2795275590551183,
+     0.0
+    ]
+   },
+   "55": {
+    "seats": [
+     [
+      9.7,
+      11.57
+     ],
+     [
+      -14.95,
+      -16.75
+     ]
+    ],
+    "console_contact": [
+     1.8700787401574803,
+     0.0
+    ]
+   }
+  },
+  "sampled_rooftop_sightlines": {
+   "Dispatch to Ferry": [
+    "f5101f",
+    "f5101f",
+    "f5101f"
+   ],
+   "Dispatch to Rigging": [
+    "f51ad4",
+    "f51ad4",
+    "f51ad4"
+   ],
+   "Dispatch to Central crossing": [
+    null,
+    null,
+    null
+   ],
+   "Dispatch to Receiving bay": [
+    "f5103e",
+    "f51016",
+    "f51016"
+   ],
+   "Lockmaster to Ferry": [
+    "f5101f",
+    "f5101f",
+    "f5101f"
+   ],
+   "Lockmaster to Rigging": [
+    "f5102b",
+    "f5102b",
+    "f5100e"
+   ],
+   "Lockmaster to Central crossing": [
+    null,
+    null,
+    null
+   ],
+   "Lockmaster to Receiving bay": [
+    null,
+    null,
+    null
+   ]
+  },
+  "unobstructed_weigh_office_sign_samples": 54
+ },
+ "installer-results": {
+  "platform_executable": "Windows x86-64",
+  "archive_sha256": "42ef5c75b1472268869c666382ae9af7b7fae55576216c130d74fc2777bb4a32",
+  "unpacked_content_hashes": {
+   "Play-Table.json": "18121b00456fbdc50ea0ff9c80b808dda4f9a561bbb4df828a079f86de0accfc",
+   "Preview.png": "17ffc200812e517f8fa126cbd79a73bb10d71bd3192bd174d6207b9b2e1c4779",
+   "Saltwick-Floodgate.json": "3844341a5e7dcd76f4d06c8d29b7ebc68c304a9026d2220cb457ab38103b69d7"
+  },
+  "cases": [
+   "first install",
+   "occupied slot",
+   "orphan thumbnail",
+   "redirected Saves path",
+   "repeat install",
+   "concurrent install",
+   "corrupt payload",
+   "rollback after write error"
+  ]
+ },
+ "lua-results": {
+  "passed": true,
+  "maps": 1,
+  "embedded_canonical_brokers": 1,
+  "unique_scripts_compiled": 5,
+  "canonical_sha256": "fb879a31cd1d751653a39c345b4d4eeda8ab97ead7aeb90d71b86c048a09e16e",
+  "seats": [
+   "Red",
+   "Blue",
+   "White"
+  ],
+  "mission": "https://infinitygeist.com/mission/s18_area_of_interest",
+  "rotation_and_clear_new_roots": 5,
+  "palette": true,
+  "standard_controls": true
+ },
+ "blender-import": {
+  "creel-landing-col.obj": 300,
+  "creel-landing.obj": 5812,
+  "customs-wicket-col.obj": 336,
+  "customs-wicket.obj": 832,
+  "dispatch-1.obj": 2500,
+  "dispatch-2.obj": 4162,
+  "dispatch-3.obj": 4746,
+  "distribution-cabinet-col.obj": 240,
+  "distribution-cabinet.obj": 942,
+  "ferry-gangway-col.obj": 192,
+  "ferry-gangway.obj": 2880,
+  "ferry-windbreak-col.obj": 2308,
+  "ferry-windbreak.obj": 4484,
+  "lockmaster-1.obj": 2494,
+  "lockmaster-2.obj": 4310,
+  "lockmaster-3.obj": 4894,
+  "marine-diesel-col.obj": 1020,
+  "marine-diesel.obj": 3242,
+  "open-kerb-drain-col.obj": 204,
+  "open-kerb-drain.obj": 2216,
+  "pump-stores-rack-col.obj": 716,
+  "pump-stores-rack.obj": 3320,
+  "rigging-sling-locker-col.obj": 300,
+  "rigging-sling-locker.obj": 1614,
+  "slipway-2.obj": 4804,
+  "slipway-delivery-col.obj": 480,
+  "slipway-delivery.obj": 1636,
+  "slipway-doors-col.obj": 540,
+  "slipway-doors.obj": 2968,
+  "sluice-and-inspection-steps-col.obj": 1380,
+  "sluice-and-inspection-steps.obj": 8268,
+  "water-services-tanker.obj": 7554,
+  "weighbridge-office.obj": 4532
+ },
+ "verified_public_map_and_sky_urls": 105,
+ "godot_models_imported": 33,
+ "in_game_playtest": false
+}
