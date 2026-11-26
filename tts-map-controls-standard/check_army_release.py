@@ -51,6 +51,8 @@ def verify_release():
                 if isinstance(save, dict) and "ObjectStates" in save:
                     check(save, require_room="play" in name.lower())
     rows = inventory["maps"] + inventory.get("standalone", [])
+    published = json.loads((APP / "shared/lobo-map-controls-releases.json").read_bytes())
+    assert published == {row["guid"]: row["download"] for row in rows}, "Map pages use an older download index"
     with zipfile.ZipFile(public_file(current["download"])) as archive:
         packed = sorted(digest(archive.read(name)) for name in archive.namelist() if name.endswith(".json"))
     assert packed == sorted(row["sha256"] for row in rows), "Map bag download and individual exports differ"
