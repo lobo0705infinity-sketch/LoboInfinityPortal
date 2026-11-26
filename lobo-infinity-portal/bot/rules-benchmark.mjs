@@ -99,6 +99,8 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
   if (queryTokens.size < 2) return null
   const families = new Map()
   for (const entry of index.entries) {
+    // Some approved cases differ by a single qualifier that reverses the verdict.
+    if (entry.exactOnly) continue
     if (entry.fuzzyRequiredTerms?.some((term) => !corrected.includes(term)) || entry.fuzzyExcludedTerms?.some((term) => corrected.includes(term))) continue
     const score = similarity(queryTokens, entry.tokens)
     const existing = families.get(entry.familyId)
@@ -110,7 +112,7 @@ export async function findApprovedRulesAnswer(question, { minimumScore = 0.86, m
 }
 
 function answerRecord(item, values) {
-  return Object.freeze({ id: item.id, category: item.category, fuzzyRequiredTerms: item.fuzzyRequiredTerms, fuzzyExcludedTerms: item.fuzzyExcludedTerms, ...values })
+  return Object.freeze({ id: item.id, category: item.category, exactOnly: item.exactOnly, fuzzyRequiredTerms: item.fuzzyRequiredTerms, fuzzyExcludedTerms: item.fuzzyExcludedTerms, ...values })
 }
 
 function tacballTeamOpsIntent(question) {
@@ -219,6 +221,8 @@ export function normalizeQuestion(value) {
     .replace(/\bautomatic reaction orders?\b/g, 'aro')
     .replace(/\baros\b/g, 'aro')
     .replace(/\bballistic skill attacks?\b/g, 'bs attack')
+    .replace(/\be\s*[/-]\s*m\b|\belectromagnetic\b/g, 'em')
+    .replace(/\bno[ -]wound incapacitation\b/g, 'nwi')
     .replace(/\bstay(?:s|ing)? hidden\b/g, 'without reveal')
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\b(?:syncronize|synchronize|syncronized|synchronized)\b/g, 'synchronized')

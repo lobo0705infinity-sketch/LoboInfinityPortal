@@ -3240,6 +3240,340 @@
       "fuzzyExcludedTerms": [
         "countermeasures"
       ]
+    },
+    {
+      "id": "new-topic-2-535",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "if a model with an E/M weapon and BS attack shock shoots a model in NWI state does the model die if it fails the e/m save?",
+      "approvedAnswer": "Yes, if the target is already in NWI, has VITA 1 on its profile and has no Immunity that cancels Shock. BS Attack (Shock) adds Shock to the E/M shot. An E/M Carbine hit causes two saves at half BTS. Failing either save triggers Shock. Non-Lethal prevents the Wound, but Shock also cancels the target’s existing Unconscious State and sends it directly to Dead. NWI counts as that state. A trooper with VITA 2+, STR or Immunity (Shock) survives this Non-Lethal hit in NWI and takes the applicable E/M effects.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "YES",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 65,
+          "section": "Shock Ammunition",
+          "url": "https://infinitythewiki.com/Shock_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 75,
+          "section": "BS Attack (Shock)",
+          "url": "https://infinitythewiki.com/BS_Attack"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 175,
+          "section": "Non-Lethal",
+          "url": "https://infinitythewiki.com/Traits#Non-Lethal"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "No Wound Incapacitation",
+          "url": "https://infinitythewiki.com/No_Wound_Incapacitation"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 64,
+          "section": "E/M Ammunition",
+          "url": "https://infinitythewiki.com/Electromagnetic_%28E/M%29_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 67,
+          "section": "Combined Ammunition",
+          "url": "https://infinitythewiki.com/Combined_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 95,
+          "section": "Immunity",
+          "url": "https://infinitythewiki.com/Immunity"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 176,
+          "section": "E/M Carbine",
+          "url": "https://infinitythewiki.com/Weapon_Chart"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-535-q1",
+          "question": "Does a VITA 1 trooper already in NWI die if it fails a save against an E/M Carbine fired with BS Attack (Shock)?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-535-q2",
+          "question": "Can BS Attack (Shock) with an E/Mitter kill a model already in NWI?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-535-q3",
+          "question": "If I shoot someone in NWI with an E/M weapon and BS Attack (Shock), can a failed BTS save kill them?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-535-q4",
+          "question": "Does E/M + Shock kill a model already in NWI on a failed save?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-535-q5",
+          "question": "My VITA 1 model is in NWI and failed one of two saves against an E/M Carbine with BS Attack (Shock). Is it dead?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "exactOnly": true
+    },
+    {
+      "id": "new-topic-2-536",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "Does a healthy VITA 1 trooper die if it fails a save against a Non-Lethal E/M Carbine fired with BS Attack (Shock)?",
+      "approvedAnswer": "No. A healthy VITA 1 trooper survives this hit, even if it has the NWI skill on its profile. The Non-Lethal E/M Carbine inflicts zero Wounds, so the shot alone leaves the target conscious. Shock has no existing Unconscious State to cancel. Resolve the applicable E/M effects of the failed save, normally Isolated and also Immobilized-B for HI, TAGs, REMs and Vehicles.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 175,
+          "section": "Non-Lethal",
+          "url": "https://infinitythewiki.com/Traits#Non-Lethal"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 65,
+          "section": "Shock Ammunition",
+          "url": "https://infinitythewiki.com/Shock_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "No Wound Incapacitation",
+          "url": "https://infinitythewiki.com/No_Wound_Incapacitation"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 64,
+          "section": "E/M Ammunition",
+          "url": "https://infinitythewiki.com/Electromagnetic_%28E/M%29_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 75,
+          "section": "BS Attack (Shock)",
+          "url": "https://infinitythewiki.com/BS_Attack"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 176,
+          "section": "E/M Carbine",
+          "url": "https://infinitythewiki.com/Weapon_Chart"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-536-q1",
+          "question": "Does BS Attack (Shock) make an E/M Carbine wound a fresh target?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-536-q2",
+          "question": "Can E/M + Shock kill a healthy VITA 1 model with NWI on its profile?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-536-q3",
+          "question": "If the target has NWI but hasn't entered it yet, does a failed E/M + Shock carbine save kill it?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "exactOnly": true
+    },
+    {
+      "id": "new-topic-2-537",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "Does a trooper with Immunity (Shock) already in NWI die to a failed save against a Non-Lethal E/M Carbine with BS Attack (Shock)?",
+      "approvedAnswer": "No. Immunity (Shock) removes Shock’s state-cancelling effect and Non-Lethal prevents a Wound. The trooper remains in NWI. A target with VITA 2+ or STR also remains in NWI after this hit because Shock’s cancellation requires VITA 1. Resolve any E/M effects the target is susceptible to. Immunity (Shock) by itself still allows E/M to cause Isolated and, for HI, TAGs, REMs and Vehicles, Immobilized-B.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 95,
+          "section": "Immunity",
+          "url": "https://infinitythewiki.com/Immunity"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 65,
+          "section": "Shock Ammunition",
+          "url": "https://infinitythewiki.com/Shock_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 175,
+          "section": "Non-Lethal",
+          "url": "https://infinitythewiki.com/Traits#Non-Lethal"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "No Wound Incapacitation",
+          "url": "https://infinitythewiki.com/No_Wound_Incapacitation"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 64,
+          "section": "E/M Ammunition",
+          "url": "https://infinitythewiki.com/Electromagnetic_%28E/M%29_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 176,
+          "section": "E/M Carbine",
+          "url": "https://infinitythewiki.com/Weapon_Chart"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-537-q1",
+          "question": "Can a Non-Lethal E/M + Shock shot kill a Shock-immune trooper already in NWI?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-537-q2",
+          "question": "My VITA 2 model is already in NWI. Does a failed E/M Carbine save against BS Attack (Shock) kill it?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-537-q3",
+          "question": "Does a trooper with STR already in NWI die to a failed Non-Lethal E/M + Shock save?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "exactOnly": true
+    },
+    {
+      "id": "new-topic-2-538",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "Does an E/M Carbine firing E/M alone kill a trooper already in NWI on a failed save?",
+      "approvedAnswer": "No. A Non-Lethal E/M Carbine firing E/M alone inflicts zero Wounds. A failed save causes Isolated and, for HI, TAGs, REMs and Vehicles, also Immobilized-B, subject to Immunity. The trooper remains in NWI.",
+      "approvedCertainty": "EXPLICIT RULES ANSWER",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 64,
+          "section": "E/M Ammunition",
+          "url": "https://infinitythewiki.com/Electromagnetic_%28E/M%29_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 175,
+          "section": "Non-Lethal",
+          "url": "https://infinitythewiki.com/Traits#Non-Lethal"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "No Wound Incapacitation",
+          "url": "https://infinitythewiki.com/No_Wound_Incapacitation"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 176,
+          "section": "E/M Carbine",
+          "url": "https://infinitythewiki.com/Weapon_Chart"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-538-q1",
+          "question": "If the shooter lacks BS Attack (Shock), does a failed E/M Carbine save kill a model in NWI?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-538-q2",
+          "question": "Can plain Non-Lethal E/M kill a VITA 1 model in NWI?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-538-q3",
+          "question": "Does a Non-Lethal E/M hit without Shock take an NWI trooper straight to Dead?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "exactOnly": true
+    },
+    {
+      "id": "new-topic-2-539",
+      "category": "REPORTED_RULES_INTERACTIONS",
+      "canonicalQuestion": "Does Shock require a Wound before it can cancel an existing NWI state?",
+      "approvedAnswer": "No additional Wound is required to cancel existing NWI. Shock normally inflicts a Wound on a failed save. For a VITA 1 trooper it also cancels an existing Unconscious State on that failed save. NWI is one of those states. On a Non-Lethal E/M shot with BS Attack (Shock), the Wound is prevented. A VITA 1 trooper already in NWI still goes directly to Dead if it fails the save and no applicable Immunity cancels Shock.",
+      "approvedCertainty": "EVIDENCE-BOUNDED INTERPRETATION",
+      "approvedConclusion": "NO",
+      "approvedCitations": [
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 65,
+          "section": "Shock Ammunition",
+          "url": "https://infinitythewiki.com/Shock_Ammunition"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 104,
+          "section": "No Wound Incapacitation",
+          "url": "https://infinitythewiki.com/No_Wound_Incapacitation"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 175,
+          "section": "Non-Lethal",
+          "url": "https://infinitythewiki.com/Traits#Non-Lethal"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 75,
+          "section": "BS Attack (Shock)",
+          "url": "https://infinitythewiki.com/BS_Attack"
+        },
+        {
+          "sourceId": "infinity-rules-n5.3",
+          "page": 95,
+          "section": "Immunity",
+          "url": "https://infinitythewiki.com/Immunity"
+        }
+      ],
+      "reviewStatus": "APPROVED",
+      "queryVariants": [
+        {
+          "id": "new-topic-2-539-q1",
+          "question": "Doesn't shock state the model has to take a wound?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-539-q2",
+          "question": "Must a VITA 1 model in NWI actually suffer a Wound for Shock to send it to Dead?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-539-q3",
+          "question": "Do you have to cause a wound with E/M + Shock before it can cancel NWI?",
+          "style": "PLAYER_SHORTHAND"
+        },
+        {
+          "id": "new-topic-2-539-q4",
+          "question": "Does Shock need to wound first to cancel No Wound Incapacitation?",
+          "style": "PLAYER_SHORTHAND"
+        }
+      ],
+      "exactOnly": true
     }
   ]
 }

@@ -129,7 +129,7 @@ const rulesSupplements = Object.freeze([
 {"sourceId":"infinity-rules-n5.3","title":"Infinity Rules","version":"5.3","authority":1,"scope":"core","pdfPage":164,"printedPage":"164","section":"IMMOBILIZED-A STATE","headings":["IMMOBILIZED-A STATE","EFFECTS"],"structuredBlockTypes":["EFFECTS"],"canonicalTerm":"immobilized-a state","text":"IMMOBILIZED-A STATE\nTroopers in Immobilized-A State cannot declare any Skill or ARO, except Dodge, applying a -6 PH MOD. Automatic Special Skills and Equipment continue to work, but the Trooper must still respect all declaration restrictions. A successful Normal or Face to Face Dodge Roll with this MOD cancels the state. An Engineer or equivalent Skill can cancel the state in Silhouette contact with a successful Normal WIP Roll."},
 {"sourceId":"infinity-rules-n5.3","title":"Infinity Rules","version":"5.3","authority":1,"scope":"core","pdfPage":165,"printedPage":"165","section":"IMMOBILIZED-B STATE","headings":["IMMOBILIZED-B STATE","EFFECTS"],"structuredBlockTypes":["EFFECTS"],"canonicalTerm":"immobilized-b state","text":"IMMOBILIZED-B STATE\nTroopers in Immobilized-B State cannot declare any Skill, Attack or ARO, except Reset applying a -3 WIP MOD. Automatic Special Skills and Equipment continue to work, but the Trooper must still respect all declaration restrictions. A successful Normal or Face to Face Reset Roll with this MOD cancels the state. An Engineer or equivalent Skill can cancel the state in Silhouette contact with a successful Normal WIP Roll."},
 {"sourceId":"infinity-rules-n5.3","title":"Infinity Rules","version":"5.3","authority":1,"scope":"core","pdfPage":144,"printedPage":"144","section":"VISIBILITY CONDITIONS — WHITE NOISE ZONE","headings":["VISIBILITY CONDITIONS — WHITE NOISE ZONE","EFFECTS"],"structuredBlockTypes":["EFFECTS"],"canonicalTerm":"visibility conditions","text":"VISIBILITY CONDITIONS — WHITE NOISE ZONE\nLoF cannot be drawn into, through, or out of a Zero Visibility Zone. Any Trooper who is the target of a BS Attack into, through, or out of a Zero Visibility Zone treats it as a Poor Visibility Zone when drawing LoF to the attacker. A White Noise Zone acts as a Zero Visibility Zone, but only for Troopers with Marksmanship or a Multispectral Visor of any Level, or other Equipment specifying the same. When an MSV Trooper is the target of a BS Attack through White Noise, their visor cannot reduce the resulting Poor Visibility MOD."},
-{"sourceId":"infinity-rules-n5.3","title":"Infinity Rules","version":"5.3","authority":1,"scope":"core","pdfPage":75,"printedPage":"75","section":"MODIFIERS EXPLAINED","headings":["MODIFIERS EXPLAINED","EFFECTS"],"structuredBlockTypes":["EFFECTS"],"canonicalTerm":"modifiers explained","text":"MODIFIERS EXPLAINED\nA MOD in round brackets next to a Skill, Weapon or Equipment only applies when using it. Negative MODs only apply to enemies. Dodge (-3) means that when its user declares Dodge, opponents in Face to Face Rolls suffer a -3 MOD."},
+{"sourceId":"infinity-rules-n5.3","title":"Infinity Rules","version":"5.3","authority":1,"scope":"core","pdfPage":75,"printedPage":"75","section":"MODIFIERS EXPLAINED","headings":["MODIFIERS EXPLAINED","EFFECTS"],"structuredBlockTypes":["EFFECTS"],"canonicalTerm":"modifiers explained","text":"MODIFIERS EXPLAINED\nA MOD in round brackets next to a Skill, Weapon or Equipment only applies when using it. Negative MODs only apply to enemies. BS Attack (Shock) adds Shock ammunition when the user makes a BS Attack. Dodge (-3) means that when its user declares Dodge, opponents in Face to Face Rolls suffer a -3 MOD."},
 
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
@@ -144,7 +144,7 @@ const rulesSupplements = Object.freeze([
   authority: 1, scope: 'core', pdfPage: 67, printedPage: '67',
   section: 'COMBINED AMMUNITION', headings: ['COMBINED AMMUNITION'],
   structuredBlockTypes: ['EXAMPLE'], canonicalTerm: 'combined ammunition',
-  text: 'COMBINED AMMUNITION\nFor N+E/M Ammunition, the E/M component requires two Saving Rolls with BTS halved. The Normal component inflicts one Wound for each failed Saving Roll. Any failed Saving Roll also causes Isolated State, and Immobilized-B for HI, TAGs, REMs, and Vehicles.',
+  text: 'COMBINED AMMUNITION\nResolve combined ammunition as one ammunition with the effects of each component. For N+E/M Ammunition, the E/M component requires two Saving Rolls with BTS halved. The Normal component inflicts one Wound for each failed Saving Roll. Any failed Saving Roll also causes Isolated State, and Immobilized-B for HI, TAGs, REMs, and Vehicles.',
 },
 {
   sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
@@ -343,6 +343,41 @@ const rulesSupplements = Object.freeze([
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 120, "printedPage": "120", "section": "BAGGAGE", "headings": ["BAGGAGE", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "baggage", "text": "BAGGAGE\nAUTOMATIC EQUIPMENT\nObligatory, No Roll.\nAn allied non-Null Trooper within the Baggage provider’s Zone of Control can declare Reload, benefiting one Trooper per Order. Separately, during the States Phase all allied Troopers within that Zone of Control automatically recover spent Disposable uses or cancel Unloaded. Already deployed items remain on the table. Non-Reloadable items cannot regain their uses."},
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 172, "printedPage": "172", "section": "UNLOADED STATE", "headings": ["UNLOADED STATE", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "unloaded state", "text": "UNLOADED STATE\nA Trooper that exhausts a Disposable item cannot use it again until replenished. Cancellation can occur through Reload in an allied non-Null Baggage provider’s Zone of Control, or automatically during the States Phase while meeting those Baggage conditions. Cancelling Unloaded restores all of the Trooper’s Disposable uses, except Non-Reloadable items."},
 {"sourceId": "infinity-rules-n5.3", "title": "Infinity Rules", "version": "5.3", "authority": 1, "scope": "core", "pdfPage": 157, "printedPage": "157", "section": "CAMOUFLAGED STATE", "headings": ["CAMOUFLAGED STATE", "EFFECTS"], "structuredBlockTypes": ["EFFECTS"], "canonicalTerm": "camouflaged state", "text": "CAMOUFLAGED STATE\nAutomatic Skills and Equipment remain functional while Camouflaged. Declaring an Attack, Look Out!, a Skill requiring a Roll, or a Long Skill other than Cautious Movement cancels Camouflaged."},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 65, printedPage: '65',
+  section: 'SHOCK AMMUNITION', headings: ['SHOCK AMMUNITION', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS', 'REMEMBER'], canonicalTerm: 'shock ammunition',
+  text: 'SHOCK AMMUNITION\nA failed Shock Saving Roll normally inflicts one Wound. Against a VITA 1 target, a failed Shock Saving Roll also cancels an Unconscious State that the target was already in or entered during this Order, sending the target directly to Dead. This includes Dogged and No Wound Incapacitation.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 104, printedPage: '104',
+  section: 'NO WOUND INCAPACITATION', headings: ['NO WOUND INCAPACITATION', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS', 'REMEMBER'], canonicalTerm: 'no wound incapacitation',
+  text: 'NO WOUND INCAPACITATION\nThe player may activate NWI when the trooper enters Unconscious State. The trooper ignores the usual effects and Null label while in NWI. A further Wound sends the user to Dead. Automatic Skills and Equipment still function. The reminder also identifies Shock cancellation of the user’s Unconscious State as a route to Dead.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 175, printedPage: '175',
+  section: 'NON-LETHAL', headings: ['TRAITS', 'NON-LETHAL'],
+  structuredBlockTypes: ['BODY'], canonicalTerm: 'non-lethal',
+  text: 'NON-LETHAL\nA weapon with this Trait cannot inflict a Wound, even when a Skill or MOD adds another ammunition type. A weapon that lists a Saving Roll still resolves that roll.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 95, printedPage: '95',
+  section: 'IMMUNITY', headings: ['IMMUNITY', 'EFFECTS'],
+  structuredBlockTypes: ['EFFECTS', 'IMPORTANT'], canonicalTerm: 'immunity',
+  text: 'IMMUNITY\nImmunity to a named ammunition treats that ammunition as Normal and ignores its special effects and its modifiers to saves. Immunity (BTS) does this for ammunition saved using BTS. Immunity (Enhanced) includes Immunity (BTS). The Non-Lethal trait still applies.',
+},
+{
+  sourceId: 'infinity-rules-n5.3', title: 'Infinity Rules', version: '5.3',
+  authority: 1, scope: 'core', pdfPage: 176, printedPage: '176',
+  section: 'WEAPON CHART — E/M CARBINE', headings: ['WEAPON CHART', 'CARBINES'],
+  structuredBlockTypes: ['CHART'], canonicalTerm: 'e/m carbine',
+  text: 'E/M CARBINE\nAmmunition: E/M. Burst: 2. Saving Rolls per hit: 2, using half BTS. Trait: Non-Lethal.',
+},
 ])
 
 export function normalizeRuleText(value) { return String(value ?? '').normalize('NFKD').replace(/[^a-zA-Z0-9+.-]+/g, ' ').trim().toLowerCase() }
