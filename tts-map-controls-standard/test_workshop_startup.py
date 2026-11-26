@@ -99,17 +99,23 @@ def check_workshop_startup(collection):
 
 def check_play_saves(payload, collection):
     from patch_maps import bags
+    contents = {bag['GUID']: bag for bag in bags(collection)}
     if 'release-extras.json' in payload.namelist():
         variants = json.loads(payload.read('release-extras.json'))['Setups']
     else:
         # Single-map installers from the Workshop use fixed play-table and preview filenames.
         play = json.loads(payload.read('Play-Table.json'))
         owner, = [o for o in play['ObjectStates'] if 'LOBO_STANDARD_VERSION=1' in o.get('LuaScript', '')]
-        guid, = [tag.split(':', 1)[1] for tag in owner.get('Tags', []) if tag.startswith('LoboMap:')]
+        matches = [tag.split(':', 1)[1] for tag in owner.get('Tags', [])
+                   if tag.startswith('LoboMap:') and tag.split(':', 1)[1] in contents]
+        if not matches:
+            # Legacy tables can tag their scenery with a map name. The unique controller still identifies its Stage bag.
+            matches = [guid for guid, bag in contents.items()
+                       if any(o['GUID'] == owner['GUID'] for o in bag['ContainedObjects'])]
+        guid, = matches
         assert play['SaveName'].endswith(' - Play Table')
         variants = {guid: {'PlayFile': 'Play-Table.json', 'Name': play['SaveName'].removesuffix(' - Play Table'),
                            'PlayThumbnail': 'Preview.png'}}
-    contents = {bag['GUID']: bag for bag in bags(collection)}
     for guid, variant in variants.items():
         play = json.loads(payload.read(variant['PlayFile']))
         roots = play['ObjectStates']
@@ -118,6 +124,7 @@ def check_play_saves(payload, collection):
         assert not any(o.get('Nickname','').startswith('SET_') for o in roots), guid
         owners = [o for o in roots if 'LOBO_STANDARD_VERSION=1' in o.get('LuaScript','')]
         assert len(owners) == 1, guid
-        map_objects = {o['GUID'] for o in roots if 'LoboMap:'+guid in o.get('Tags', [])}
+        map_tags = {'LoboMap:' + guid, *(tag for tag in owners[0].get('Tags', []) if tag.startswith('LoboMap:'))}
+        map_objects = {o['GUID'] for o in roots if map_tags.intersection(o.get('Tags', []))}
         assert map_objects == {o['GUID'] for o in contents[guid]['ContainedObjects']}, guid
         assert payload.read(variant['PlayThumbnail']).startswith(b'\x89PNG'), guid

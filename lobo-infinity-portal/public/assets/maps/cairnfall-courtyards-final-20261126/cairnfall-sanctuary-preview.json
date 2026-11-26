@@ -1,0 +1,18 @@
+{
+  "name": "Cairnfall Sanctuary",
+  "guid": "100326",
+  "slug": "battleground-1",
+  "previewKind": "geometry",
+  "revision": "Courtyards Final",
+  "approvedAt": "2026-11-26",
+  "bagSha256": "dbec192463545c540bf1be579b6cde5e652aae0709f0fceeadea9aeb357d811c",
+  "sourceSaveSha256": "78533a48a9d2473d54943da6ebfd20fa5cd2bf2e0fb2534dae0e6a7553b55734",
+  "overhead": "/assets/maps/cairnfall-courtyards-final-20261126/overhead.webp",
+  "angled": "/assets/maps/cairnfall-courtyards-final-20261126/angled.webp",
+  "views": {
+    "overhead": "overhead.webp",
+    "angled": "angled.webp"
+  },
+  "objectCount": 87,
+  "bagUrl": "/assets/maps/cairnfall-courtyards-final-20261126/100326.json"
+}

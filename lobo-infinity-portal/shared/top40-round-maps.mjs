@@ -118,8 +118,8 @@ export const TOP40_ROUND_MAPS = [
     "workshopLabel": "Lobo's Top 40 Losers Round 4 Map",
     "href": "/event/lobos-top-40/maps/losers-4",
     "download": releasedMapBags['bc00b7'],
-    "angled": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-angled.webp",
-    "overhead": "/assets/maps/approved-five-map-update-20261102-r1/cairnfall-overhead.webp",
+    "angled": "/assets/maps/cairnfall-courtyards-final-20261126/angled.webp",
+    "overhead": "/assets/maps/cairnfall-courtyards-final-20261126/overhead.webp",
     "generalHref": "/maps/battleground-1",
     "bracket": "Losers",
     "round": 4

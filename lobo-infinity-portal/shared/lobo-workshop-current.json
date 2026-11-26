@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
   "updatedAt": "2026-11-26",
-  "download": "/assets/maps/saltwick-working-harbour-final-20261126/Lobo-Infinity-Map-Bags.zip",
+  "download": "/assets/maps/cairnfall-courtyards-final-20261126/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -166,11 +166,11 @@
         "Battleground"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 75,
-      "sourceNote": "User-approved Approved TS_Save_37 layout with archive staircase fix. Approved terrain transforms, scales, meshes and active states preserved. Matching Top 40 Losers Round 4. Offline loading checks passed; native TTS remains unverified.",
-      "overhead": "/assets/maps/library-previews-20261118/battleground-1-overhead.webp",
-      "angled": "/assets/maps/library-previews-20261118/battleground-1-angled.webp",
-      "download": "/assets/maps/army-sideboards-20261126/100326.json",
+      "objectCount": 87,
+      "sourceNote": "Lobo approved this Courtyards layout for Battleground and Top 40 Losers Round 4 on November 26, 2026. The archive receiving bay, herb gardens and laundry court flank the cloister. The rear garden wall, boiler wood store and autumn tree use their final table positions.",
+      "overhead": "/assets/maps/cairnfall-courtyards-final-20261126/overhead.webp",
+      "angled": "/assets/maps/cairnfall-courtyards-final-20261126/angled.webp",
+      "download": "/assets/maps/cairnfall-courtyards-final-20261126/100326.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -179,13 +179,16 @@
       "labelAliases": [
         "SET_ITS18 Battleground — Foundry Blocks — REVISED",
         "ITS18 Battleground — Foundry Blocks — REVISED",
-        "Foundry Blocks"
+        "Foundry Blocks",
+        "Cairnfall Sanctuary - Courtyards Final - Battleground - Play Table"
       ],
-      "previewBagSha256": "9f628979086b55991fb354045206705491cb69a99e49ba722b67a68b1fd3dc9c",
-      "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/battleground-1-preview.json",
-      "overheadThumb": "/assets/maps/library-previews-20261118/battleground-1-overhead-thumb.webp",
-      "angledThumb": "/assets/maps/library-previews-20261118/battleground-1-angled-thumb.webp"
+      "previewBagSha256": "dbec192463545c540bf1be579b6cde5e652aae0709f0fceeadea9aeb357d811c",
+      "previewUpdatedAt": "2026-11-26",
+      "previewManifest": "/assets/maps/cairnfall-courtyards-final-20261126/cairnfall-sanctuary-preview.json",
+      "overheadThumb": "/assets/maps/cairnfall-courtyards-final-20261126/overhead-thumb.webp",
+      "angledThumb": "/assets/maps/cairnfall-courtyards-final-20261126/angled-thumb.webp",
+      "reviewStatus": "approved",
+      "installer": "/assets/maps/cairnfall-courtyards-final-20261126/Lobo-Cairnfall-Sanctuary-Final-Workshop-Installer.zip"
     },
     {
       "index": 11,
@@ -799,9 +802,9 @@
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "saltwick-working-harbour-final-r4",
-  "installer": "/assets/maps/saltwick-working-harbour-final-20261126/Lobo-Saltwick-Floodgate-Workshop-Installer-R4.zip",
-  "releaseInventory": "/assets/maps/saltwick-working-harbour-final-20261126/release-inventory.json",
+  "downloadRevision": "cairnfall-sanctuary-final-445",
+  "installer": "/assets/maps/cairnfall-courtyards-final-20261126/Lobo-Cairnfall-Sanctuary-Final-Workshop-Installer.zip",
+  "releaseInventory": "/assets/maps/cairnfall-courtyards-final-20261126/release-inventory.json",
   "previewUpdatedAt": "2026-11-26",
-  "workshopSaveName": "Lobo Maps - Saltwick Floodgate R4 - Workshop Collection"
+  "workshopSaveName": "Lobo Maps - Cairnfall Sanctuary Final - Workshop Collection"
 }
