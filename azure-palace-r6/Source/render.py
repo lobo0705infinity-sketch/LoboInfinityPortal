@@ -87,9 +87,9 @@ def render(mode):
         mat=bpy.data.materials.new('Reference rim');mat.diffuse_color=(.87,.65,.20,1);bpy.context.object.data.materials.append(mat)
         pos=framepoint(data,.41,11.0,2.72);target=framepoint(data,.41,2.88,1.49);scale=5.1;size=(930,720)
     elif mode=='hotel-access':
-        pos=framepoint(data,7.5,-16,9.1);target=framepoint(data,.45,-4.7,4.7);scale=12.3;size=(900,720)
+        pos=framepoint(data,7.5,-16,9.1);target=framepoint(data,.45,-4.7,4.7);scale=18.0;size=(1110,725)
     elif mode=='sealed-rear':
-        pos=framepoint(data,-5.7,15.4,8.1);target=framepoint(data,0,4.43,4.61);scale=12.4;size=(900,720)
+        pos=framepoint(data,-5.7,15.4,8.1);target=framepoint(data,0,4.43,4.61);scale=17.4;size=(1110,725)
     elif mode=='linen-yard':
         pos=framepoint(data,9.2,16.3,11.1);target=framepoint(data,-.37,7.52,1.05);scale=15.8;size=(1000,740)
     elif mode=='villa-garden':

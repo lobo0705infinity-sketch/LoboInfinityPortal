@@ -141,7 +141,7 @@ def passages(slug,m,c):
         secure(m,c,(-2.36,-3.36),(-2.36,-7.24),2.30)
         secure(m,c,(-2.36,-7.24),(-.48,-7.24),2.30,'green')
         sub(m,c,lambda a,b:F.seat(a,b,0,0,2.1),-1.99,-5.66,90)
-        sub(m,c,lambda a,b:canopy(a,b,0,0,2.00,2.78,2.75),-1.38,-7.00)
+        sub(m,c,lambda a,b:canopy(a,b,0,0,2.00,2.14,2.75),-1.38,-7.00)
         F.planter(m,c,-1.29,-6.68,1.07,.53,.86,62)
     if slug=='west-villa':
         secure(m,c,(2.24,3.36),(2.24,7.55),2.20,'oyster')
