@@ -1,0 +1,1089 @@
+{
+  "revision": "azure-palace-final-r9",
+  "maps": [
+    {
+      "guid": "810053",
+      "name": "SET_ITS18 B-Pong — Vanta Customs Yard",
+      "objects": 50,
+      "missionGeistId": "s18_b_pong",
+      "missionUrl": "https://infinitygeist.com/mission/s18_b_pong",
+      "download": "/assets/maps/missiongeist-controls-20261125/810053.json",
+      "sha256": "55ec0dee861382dc5e8a3824131b22cc70f247705ea6bb5ae6ebb76b0f39ccbd",
+      "kind": "general"
+    },
+    {
+      "guid": "8100c6",
+      "name": "SET_ITS18 Corporate Appropriation — Asterion Research Campus",
+      "objects": 84,
+      "missionGeistId": "s18_corporate_appropriation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_corporate_appropriation",
+      "download": "/assets/maps/missiongeist-controls-20261125/8100c6.json",
+      "sha256": "cfe3882c54c845b106ca25c114c48b56871bccbb929ce01f22dfd08f7f378590",
+      "kind": "general"
+    },
+    {
+      "guid": "810108",
+      "name": "SET_ITS18 Crossing Lines — Veyra Gate",
+      "objects": 71,
+      "missionGeistId": "s18_crossing_lines",
+      "missionUrl": "https://infinitygeist.com/mission/s18_crossing_lines",
+      "download": "/assets/maps/missiongeist-controls-20261125/810108.json",
+      "sha256": "27aacf2ba18990ae4ea6baa881bd0b59a832165bc9d868f0b697e2a80f4b4dff",
+      "kind": "general"
+    },
+    {
+      "guid": "87b699",
+      "name": "SET_ITS18 Crossing Lines — Azure Palace",
+      "objects": 22,
+      "missionGeistId": "s18_crossing_lines",
+      "missionUrl": "https://infinitygeist.com/mission/s18_crossing_lines",
+      "download": "/assets/maps/azure-palace-final-20261126/87b699.json",
+      "sha256": "82d2d8a0441c566e4ae7d15fabfe0758f9406dddc0481394aa3a20be703b6527",
+      "kind": "general"
+    },
+    {
+      "guid": "1007ad",
+      "name": "SET_ITS18 Cutthroat — Redline Interchange",
+      "objects": 78,
+      "missionGeistId": "s18_cutthroat",
+      "missionUrl": "https://infinitygeist.com/mission/s18_cutthroat",
+      "download": "/assets/maps/missiongeist-controls-20261125/1007ad.json",
+      "sha256": "ba6a492e951bf3aa19b6fecfad725f6b405f24d02481e84f07f4dddbc7846b86",
+      "kind": "general"
+    },
+    {
+      "guid": "1008da",
+      "name": "SET_ITS18 Data Harvest — Kestrel Lunar Base",
+      "objects": 69,
+      "missionGeistId": "s18_data_harvest",
+      "missionUrl": "https://infinitygeist.com/mission/s18_data_harvest",
+      "download": "/assets/maps/missiongeist-controls-20261125/1008da.json",
+      "sha256": "f45b8b5508afd0656a2adff9a2ede08ed9dfe00f2af8817180543be3fddd95ed",
+      "kind": "general"
+    },
+    {
+      "guid": "100993",
+      "name": "SET_ITS18 Double Bind — Neon Shogunate",
+      "objects": 392,
+      "missionGeistId": "s18_double_bind",
+      "missionUrl": "https://infinitygeist.com/mission/s18_double_bind",
+      "download": "/assets/maps/missiongeist-controls-20261125/100993.json",
+      "sha256": "341f7345dcc945b3e794e4813b4e33ed933c8148eda5d684782c9a4bdc06a641",
+      "kind": "general"
+    },
+    {
+      "guid": "8101d2",
+      "name": "SET_ITS18 Hardlock — Ironveil Complex",
+      "objects": 62,
+      "missionGeistId": "s18_hard_lock",
+      "missionUrl": "https://infinitygeist.com/mission/s18_hard_lock",
+      "download": "/assets/maps/missiongeist-controls-20261125/8101d2.json",
+      "sha256": "6154bbb079ae3509b0ad1b497f4a3b5c29d88cb114be57d9c555ec47dce2427a",
+      "kind": "general"
+    },
+    {
+      "guid": "100ca1",
+      "name": "SET_ITS18 Last Launch — Port Meridian",
+      "objects": 100,
+      "missionGeistId": "s18_last_launch",
+      "missionUrl": "https://infinitygeist.com/mission/s18_last_launch",
+      "download": "/assets/maps/missiongeist-controls-20261125/100ca1.json",
+      "sha256": "ac16e4ccce2e140d788e2dfc3800b4ffeb1cc6a6aa7fee79af0c18151aba4507",
+      "kind": "general"
+    },
+    {
+      "guid": "810241",
+      "name": "SET_ITS18 Neutralization — Vesper Glassworks",
+      "objects": 63,
+      "missionGeistId": "s18_neutralization",
+      "missionUrl": "https://infinitygeist.com/mission/s18_neutralization",
+      "download": "/assets/maps/missiongeist-controls-20261125/810241.json",
+      "sha256": "4cdcd44b12548dc04b9f2a2418d4f0ba998194efba067a8c6b2f5faeb4e10887",
+      "kind": "general"
+    },
+    {
+      "guid": "100f89",
+      "name": "SET_ITS18 Akial Interference - Switchback Quarter",
+      "objects": 49,
+      "missionGeistId": "s18_akial_interference",
+      "missionUrl": "https://infinitygeist.com/mission/s18_akial_interference",
+      "download": "/assets/maps/missiongeist-controls-20261125/100f89.json",
+      "sha256": "2e87814b2338df1720ec051d148ebc220f2f89f9bbc4185c54afd431037dcfc7",
+      "kind": "general"
+    },
+    {
+      "guid": "810340",
+      "name": "SET_ITS18 The Dig — Old Quarter Excavation",
+      "objects": 58,
+      "missionGeistId": "s18_the_dig",
+      "missionUrl": "https://infinitygeist.com/mission/s18_the_dig",
+      "download": "/assets/maps/missiongeist-controls-20261125/810340.json",
+      "sha256": "7ab96fe5818931521cf910146df21ce17ee1880eb2835ab71b40bf13380ed3a6",
+      "kind": "general"
+    },
+    {
+      "guid": "1010b1",
+      "name": "SET_ITS18 Uplink Center — Verdant Exchange — Detailed Campus R5",
+      "objects": 76,
+      "missionGeistId": "s18_uplink_center",
+      "missionUrl": "https://infinitygeist.com/mission/s18_uplink_center",
+      "download": "/assets/maps/missiongeist-controls-20261125/1010b1.json",
+      "sha256": "10cfccf38e0141e24036406db6a53c86dcd7cdfb1c9d5582815f7c22e69b1846",
+      "kind": "general"
+    },
+    {
+      "guid": "1002d9",
+      "name": "SET_ITS18 Area Of Interest — Saltwick Floodgate",
+      "objects": 54,
+      "missionGeistId": "s18_area_of_interest",
+      "missionUrl": "https://infinitygeist.com/mission/s18_area_of_interest",
+      "download": "/assets/maps/missiongeist-controls-20261125/1002d9.json",
+      "sha256": "b4fe39a4a3d4886803b656374e21ceea0979a9c032e995a051414a81a42ac83c",
+      "kind": "general"
+    },
+    {
+      "guid": "100135",
+      "name": "SET_ITS18 Annihilation — Canopy Blacksite",
+      "objects": 82,
+      "missionGeistId": "s18_annihilation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_annihilation",
+      "download": "/assets/maps/missiongeist-controls-20261125/100135.json",
+      "sha256": "1ffebf989227bf4d87aaa1a82f97938fece529eb615ba0362544e539312d83bd",
+      "kind": "general"
+    },
+    {
+      "guid": "100326",
+      "name": "SET_ITS18 Battleground — Cairnfall Sanctuary",
+      "objects": 75,
+      "missionGeistId": "s18_battleground",
+      "missionUrl": "https://infinitygeist.com/mission/s18_battleground",
+      "download": "/assets/maps/missiongeist-controls-20261125/100326.json",
+      "sha256": "25fff6a15a96084bf6a05254ee753c968dce9b3a6ea5f2356d3b9247bf35ae5e",
+      "kind": "general"
+    },
+    {
+      "guid": "1005e4",
+      "name": "SET_ITS18 Critical Intervention — Meridian Exchange",
+      "objects": 71,
+      "missionGeistId": "s18_critical_intervention",
+      "missionUrl": "https://infinitygeist.com/mission/s18_critical_intervention",
+      "download": "/assets/maps/missiongeist-controls-20261125/1005e4.json",
+      "sha256": "1558177b3aeff63f7b6678cf82546344edf689bdc6986dd0d6e12d737b7479bd",
+      "kind": "general"
+    },
+    {
+      "guid": "100e3e",
+      "name": "SET_ITS18 Outbreak — Halcyon Thermal Baths",
+      "objects": 46,
+      "missionGeistId": "s18_outbreak",
+      "missionUrl": "https://infinitygeist.com/mission/s18_outbreak",
+      "download": "/assets/maps/missiongeist-controls-20261125/100e3e.json",
+      "sha256": "8bc74c07da6212c882311b09e65b0536c583a931a03e15ffcbabad61ec3b657a",
+      "kind": "general"
+    },
+    {
+      "guid": "8102b2",
+      "name": "SET_ITS18 Provisioning — Sirocco Wells — Approved Rooftop Life",
+      "objects": 81,
+      "missionGeistId": "s18_provisioning",
+      "missionUrl": "https://infinitygeist.com/mission/s18_provisioning",
+      "download": "/assets/maps/missiongeist-controls-20261125/8102b2.json",
+      "sha256": "b77cc9613bc6993cfd55e14092a32aa7b61acf3b38d0483839dc62e4d9a5ce9e",
+      "kind": "general"
+    },
+    {
+      "guid": "100f50",
+      "name": "SET_ITS18 Superiority — Frostline Relay",
+      "objects": 80,
+      "missionGeistId": "s18_superiority",
+      "missionUrl": "https://infinitygeist.com/mission/s18_superiority",
+      "download": "/assets/maps/missiongeist-controls-20261125/100f50.json",
+      "sha256": "ae2d5e22fb71169d9296640c494c570f904dd7ac2080331d1bd65abf3d4fb970",
+      "kind": "general"
+    },
+    {
+      "guid": "d18e74",
+      "name": "SET_Verde Wilds · Greenwood River Crossing · Frontline",
+      "objects": 165,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/d18e74.json",
+      "sha256": "ea9b18743a96724cec4154cb53bb4a8672451b30bbb0396dc9afa3cbd9aa40c5",
+      "kind": "other"
+    },
+    {
+      "guid": "a4b621",
+      "name": "SET_Verde Wilds · Greenwood Station Jungle Outpost · Frontline",
+      "objects": 116,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/a4b621.json",
+      "sha256": "adebb6d758ddb8699781d3dc0399410a2955638b09c096dc8ecb85eb4fac84ed",
+      "kind": "other"
+    },
+    {
+      "guid": "9cddc2",
+      "name": "SET_Verde Wilds · Greenwood River Crossing · Supremacy",
+      "objects": 169,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/9cddc2.json",
+      "sha256": "2a93b1963fc27b20a2ede621b2890daa69153439b3d2a6c00de6f9a9660871f4",
+      "kind": "other"
+    },
+    {
+      "guid": "236caf",
+      "name": "SET_Verde Wilds · Greenwood Station Jungle Outpost · Supremacy",
+      "objects": 120,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/236caf.json",
+      "sha256": "1d6b901300b38295369faf3e1d6916eeab5addebe01a910af08d6feac43106ac",
+      "kind": "other"
+    },
+    {
+      "guid": "d5bae0",
+      "name": "SET_Echo Shores · Freeport Echo · Frontline",
+      "objects": 58,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/d5bae0.json",
+      "sha256": "d37c73cfabae04616a324910712f396418e7662ada0387f4e89664fa5b31576b",
+      "kind": "other"
+    },
+    {
+      "guid": "487169",
+      "name": "SET_Echo Shores · Freeport Echo · Supremacy",
+      "objects": 62,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/487169.json",
+      "sha256": "a7fa43a56406c0ec38e6c0fa5d96d32f86504351ddbe632cbbdb51825e3fc3bd",
+      "kind": "other"
+    },
+    {
+      "guid": "07a508",
+      "name": "SET_Echo Shores · Dockside Operations · Supremacy",
+      "objects": 41,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/07a508.json",
+      "sha256": "9bc5fb4c9fd0b838427a57377f7b8a185cc5fcfd789766cf7c3364b7da476278",
+      "kind": "other"
+    },
+    {
+      "guid": "87c15b",
+      "name": "SET_Echo Shores · Dockside Operations · Frontline",
+      "objects": 37,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/87c15b.json",
+      "sha256": "991f67c3190f6c6f8fa93a0d4de52883ddfe39ee57b43718d61137752d150cf6",
+      "kind": "other"
+    },
+    {
+      "guid": "d1d70c",
+      "name": "SET_Harmony Province · Courtyard District · Supremacy",
+      "objects": 54,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/d1d70c.json",
+      "sha256": "4f78675c73799110d4495f74b3e712997cb8437dfe16c74c0d9c0d0c52106693",
+      "kind": "other"
+    },
+    {
+      "guid": "41f84f",
+      "name": "SET_Harmony Province · Courtyard District · Frontline",
+      "objects": 51,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/41f84f.json",
+      "sha256": "3adb38a2446ec611ef5c5d55934b74c8115109c6dc930bea1ae0c2dd34038ae5",
+      "kind": "other"
+    },
+    {
+      "guid": "6c6fea",
+      "name": "SET_Harmony Province · Civic Gardens · Frontline",
+      "objects": 55,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/6c6fea.json",
+      "sha256": "0c67df3e49e4920d567f969f812a140857639729552a93da303f167f36c6f71e",
+      "kind": "other"
+    },
+    {
+      "guid": "401e32",
+      "name": "SET_Harmony Province · Civic Gardens · Supremacy",
+      "objects": 59,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/401e32.json",
+      "sha256": "f3b9a8c2392c26c5a019d10b45c42cb86a3baa332bc7e87ea4a05cef7ee022a8",
+      "kind": "other"
+    },
+    {
+      "guid": "d8e059",
+      "name": "SET_Ember Highlands · Red Mesa Settlement · Frontline",
+      "objects": 60,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/d8e059.json",
+      "sha256": "c74e173497bc65c15fbf479c437f509c4b96b07182f0d03f1c02a3c8fbcdc1bc",
+      "kind": "other"
+    },
+    {
+      "guid": "818ba8",
+      "name": "SET_Ember Highlands · Red Mesa Settlement · Supremacy",
+      "objects": 64,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/818ba8.json",
+      "sha256": "d5bae68badc509fcc4f9431e46613d93ca18024376b4cd2166892a341db387ad",
+      "kind": "other"
+    },
+    {
+      "guid": "fa7d83",
+      "name": "SET_Ember Highlands · Geothermal Works · Frontline",
+      "objects": 63,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/fa7d83.json",
+      "sha256": "d2627456c87cc523c9a689c18ee340e46146f7c8fb0f8d249c3709fbd4490c41",
+      "kind": "other"
+    },
+    {
+      "guid": "2baa68",
+      "name": "SET_Ember Highlands · Geothermal Works · Supremacy",
+      "objects": 67,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/2baa68.json",
+      "sha256": "8ad78fcf8062dbacdb9475c65fc9c6947a8150cd0a32a184c9f17cfe4fca67e9",
+      "kind": "other"
+    },
+    {
+      "guid": "b821cb",
+      "name": "SET_Crystal Frontier · Faultline Works · Frontline",
+      "objects": 162,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/b821cb.json",
+      "sha256": "e6ab1b2f9776655558a4c27ac10f7dc00813f02a69a85ce37658d025f6a883bd",
+      "kind": "other"
+    },
+    {
+      "guid": "688a5f",
+      "name": "SET_Crystal Frontier · Faultline Works · Supremacy",
+      "objects": 169,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/688a5f.json",
+      "sha256": "0d7c39f57c39aaeb7a669adc2b5000f7ad36ec5f45935af8554e990ba2cc5dff",
+      "kind": "other"
+    },
+    {
+      "guid": "84d955",
+      "name": "SET_Crystal Frontier · Rift Research Station · Frontline",
+      "objects": 94,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/84d955.json",
+      "sha256": "19df56386f84cbe5bdcfdef88d86caedcb815c162ac12916fe1dd8464b63dbec",
+      "kind": "other"
+    },
+    {
+      "guid": "90a405",
+      "name": "SET_Crystal Frontier · Rift Research Station · Supremacy",
+      "objects": 98,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/90a405.json",
+      "sha256": "4956ebad084f71f2132c2f52ab9b1c58619966c1098b512b2a2b93dae714e4ba",
+      "kind": "other"
+    },
+    {
+      "guid": "a1004e",
+      "name": "SET_Iron Corridor · Iron Junction Freight Yard · Frontline",
+      "objects": 193,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/a1004e.json",
+      "sha256": "8f10d8088436601a6763477e9c3e5487b559714db57377d568eb33b82bcc82a7",
+      "kind": "other"
+    },
+    {
+      "guid": "a10145",
+      "name": "SET_Iron Corridor · Iron Junction Freight Yard · Supremacy",
+      "objects": 201,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/a10145.json",
+      "sha256": "018abf966229bbe9e39234cea4b727b8da9df1d32b533810f21f2ecd780cb5db",
+      "kind": "other"
+    },
+    {
+      "guid": "a10268",
+      "name": "SET_Iron Corridor · Transit & Maintenance Hub · Frontline",
+      "objects": 191,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/a10268.json",
+      "sha256": "e4a2ce8aafd3944c0810f806e9c10b7a2d0c2a825bdb5485ed700f8d6c4a819f",
+      "kind": "other"
+    },
+    {
+      "guid": "a102d6",
+      "name": "SET_Iron Corridor · Transit & Maintenance Hub · Supremacy",
+      "objects": 199,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/a102d6.json",
+      "sha256": "8633d25d36c91ab7763e169241b066e5d4e1c5673e9593efacb2c50b60254d9b",
+      "kind": "other"
+    },
+    {
+      "guid": "88ba6c",
+      "name": "SET_Korin Range · Research Valley · Frontline",
+      "objects": 198,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/88ba6c.json",
+      "sha256": "50e4d47d0dd8882531eb0162e5dfd710698049d2eeaa475d89e523fbd20f2490",
+      "kind": "other"
+    },
+    {
+      "guid": "9604da",
+      "name": "SET_Korin Range · Research Valley · Supremacy",
+      "objects": 206,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/9604da.json",
+      "sha256": "c10af162249034b358a7caeddc8c360f2b4df334714d3af4d838e69af588faca",
+      "kind": "other"
+    },
+    {
+      "guid": "aaadfb",
+      "name": "SET_Korin Range · High Pass · Frontline",
+      "objects": 201,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/aaadfb.json",
+      "sha256": "01598d1896aa508063741daf6d46e302f8dae257ea030e895603e8b575569735",
+      "kind": "other"
+    },
+    {
+      "guid": "6201ec",
+      "name": "SET_Korin Range · High Pass · Supremacy",
+      "objects": 209,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/6201ec.json",
+      "sha256": "dfac8d10fa723767678f32495e2eb86c6f2c2644428504350a7c9e19c889d3e6",
+      "kind": "other"
+    },
+    {
+      "guid": "e52cec",
+      "name": "SET_Sulfur Basin · Helios Refinery · Supremacy",
+      "objects": 236,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/e52cec.json",
+      "sha256": "dfaafa25a6ce57a2ea2319133ef71bab52afb493dbc4d66429b0345da26a5a16",
+      "kind": "other"
+    },
+    {
+      "guid": "e8137b",
+      "name": "SET_Sulfur Basin · Helios Extraction Fields · Frontline",
+      "objects": 223,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/e8137b.json",
+      "sha256": "356a5b0d464974495250fab9621d9dd132ebb119297f3a1cc16d5a860dbbd605",
+      "kind": "other"
+    },
+    {
+      "guid": "482c74",
+      "name": "SET_Sulfur Basin · Helios Extraction Fields · Supremacy",
+      "objects": 235,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/482c74.json",
+      "sha256": "c2ac395d0c124add88663630d3f0f1fac4653ed6b9cd9cd1507e96855d893310",
+      "kind": "other"
+    },
+    {
+      "guid": "60da7b",
+      "name": "SET_Sulfur Basin · Helios Refinery · Frontline",
+      "objects": 228,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/60da7b.json",
+      "sha256": "94eb9bcdaec29564a8c7d6daa4ff3c2568a5a1b9b80ab040dae748aea88a7e38",
+      "kind": "other"
+    },
+    {
+      "guid": "a4e0f0",
+      "name": "SET_Nova Prospect · Orbital Logistics District · Frontline",
+      "objects": 34,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/a4e0f0.json",
+      "sha256": "6c74d585a236a11433da96873b31f6c205d46a1ad512be07f53638d4b03c33d2",
+      "kind": "other"
+    },
+    {
+      "guid": "df167e",
+      "name": "SET_Nova Prospect · Orbital Logistics District · Supremacy",
+      "objects": 39,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/df167e.json",
+      "sha256": "d0e54ff0d51c7be031b71db94e0de52f7eeee7f0865d6e096f6d5466dceb16f9",
+      "kind": "other"
+    },
+    {
+      "guid": "52658f",
+      "name": "SET_Nova Prospect · Administrative District · Supremacy",
+      "objects": 55,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/52658f.json",
+      "sha256": "a808c28d5291b03c840bb2cb56126d2da9e9a8d2608befea4b714430903dbcbd",
+      "kind": "other"
+    },
+    {
+      "guid": "fc7f35",
+      "name": "SET_Nova Prospect · Administrative District · Frontline",
+      "objects": 48,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/fc7f35.json",
+      "sha256": "30f7e4829e52f2ec6e079a0301b032641158bce7ed437aeeba7a96f9db01aa5e",
+      "kind": "other"
+    },
+    {
+      "guid": "f5f01b",
+      "name": "SET_Northward Expanse · New Al-Medina Research Network · Frontline",
+      "objects": 81,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/f5f01b.json",
+      "sha256": "0e47629431b2f03ae29bf6d1c38110dc59e5d154093444254fe78eb1de0b675d",
+      "kind": "other"
+    },
+    {
+      "guid": "875542",
+      "name": "SET_Northward Expanse · New Al-Medina Research Network · Supremacy",
+      "objects": 85,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/875542.json",
+      "sha256": "dd062e2e43df3e38cc0aa0854a2323586f0d9af32fda53b137a8c0abd52deae7",
+      "kind": "other"
+    },
+    {
+      "guid": "fbe4d5",
+      "name": "SET_Northward Expanse · Northern Survey Frontier · Frontline",
+      "objects": 71,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/fbe4d5.json",
+      "sha256": "a922b42fbf9665274960202dd51ed1a1aa0c99e2cf9b58d4090f3cbc38b6b149",
+      "kind": "other"
+    },
+    {
+      "guid": "c671f2",
+      "name": "SET_Northward Expanse · Northern Survey Frontier · Supremacy",
+      "objects": 75,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/c671f2.json",
+      "sha256": "a338d71ce3adf60659e0f9cf98c1816de39872ce780e0eb473d752bc725ab7a0",
+      "kind": "other"
+    },
+    {
+      "guid": "740fb4",
+      "name": "SET_Frostreach Wastes · Polar Expedition Zone R26 · Frontline",
+      "objects": 40,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/740fb4.json",
+      "sha256": "e5179ed1d6510f919f5b14d1b2490f8888cfcccccf21ee6430dccf8849930229",
+      "kind": "other"
+    },
+    {
+      "guid": "f65507",
+      "name": "SET_Frostreach Wastes · Polar Expedition Zone R26 · Supremacy",
+      "objects": 44,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/f65507.json",
+      "sha256": "86609763e2409a3cfc6a988a4495b6177543885fc6e06c5f88021e27f3db94ad",
+      "kind": "other"
+    },
+    {
+      "guid": "da38f7",
+      "name": "SET_Frostreach Wastes · Frosthold Wastes R26 · Frontline",
+      "objects": 48,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/da38f7.json",
+      "sha256": "8b2f16218370a678a63f51b7e2690c9f3c319f76b5635e577d3d2ca12188bb5f",
+      "kind": "other"
+    },
+    {
+      "guid": "efb12f",
+      "name": "SET_Frostreach Wastes · Frosthold Wastes R26 · Supremacy",
+      "objects": 52,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/efb12f.json",
+      "sha256": "878319c9d94c9a757aef1ace57ceea9aa6b29cf4a9c7d9f83dd1c59f18cb14ad",
+      "kind": "other"
+    },
+    {
+      "guid": "ad7001",
+      "name": "SET_Azure Coast · Tidal Infrastructure · Frontline",
+      "objects": 218,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/ad7001.json",
+      "sha256": "5d8e36afec3ac6ee76915c148e39fcabc9fec7a5aac0977597455470fc06f661",
+      "kind": "other"
+    },
+    {
+      "guid": "acc001",
+      "name": "SET_Azure Coast · Coastal Access · Frontline",
+      "objects": 70,
+      "missionGeistId": "s16_frontline",
+      "missionUrl": "https://infinitygeist.com/mission/s16_frontline",
+      "download": "/assets/maps/missiongeist-controls-20261125/acc001.json",
+      "sha256": "988392613505970395804b0aa1a54c3381d569464fd16da9e8dc6024380ec5a8",
+      "kind": "other"
+    },
+    {
+      "guid": "ad7002",
+      "name": "SET_Azure Coast · Tidal Infrastructure · Supremacy",
+      "objects": 222,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/ad7002.json",
+      "sha256": "bb9f76779f7cddb01649c2decfe72fcd5671cdf3d28206aa41e8ac3a71b0795e",
+      "kind": "other"
+    },
+    {
+      "guid": "acc002",
+      "name": "SET_Azure Coast · Coastal Access · Supremacy",
+      "objects": 74,
+      "missionGeistId": "s16_supremacy",
+      "missionUrl": "https://infinitygeist.com/mission/s16_supremacy",
+      "download": "/assets/maps/missiongeist-controls-20261125/acc002.json",
+      "sha256": "55dd571bfa4776acd3669aaaad16542816d675c449587d19e4c9a1a70267be37",
+      "kind": "other"
+    },
+    {
+      "guid": "4e9655",
+      "name": "SET_Verde Wilds · Greenwood Survey Reach · The Missing Survey Team · R8",
+      "objects": 90,
+      "missionGeistId": "cm_aurora7_missing_survey_team",
+      "missionUrl": "https://infinitygeist.com/mission/cm_aurora7_missing_survey_team",
+      "download": "/assets/maps/missiongeist-controls-20261125/4e9655.json",
+      "sha256": "5e99c7e218ade4ea023f38e679d79b53d5f880e54946e0487a463aba0b7b8a79",
+      "kind": "other"
+    },
+    {
+      "guid": "ca7100",
+      "name": "SET_Lobo's Top 40 Winners Round 1 Map",
+      "objects": 84,
+      "missionGeistId": "s18_corporate_appropriation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_corporate_appropriation",
+      "download": "/assets/maps/missiongeist-controls-20261125/ca7100.json",
+      "sha256": "adabca9f5268e83b9ca062afa4827467be7595ed182b6d1f5f8379ae15b00cbc",
+      "kind": "other"
+    },
+    {
+      "guid": "f5452f",
+      "name": "SET_Azure Coast · Nereid Deep R7 · Public Terrain",
+      "objects": 49,
+      "missionGeistId": "",
+      "missionUrl": "https://infinitygeist.com/",
+      "download": "/assets/maps/missiongeist-controls-20261125/f5452f.json",
+      "sha256": "2fdc0572b3e717691920c12f67cba7fb04afbdb332e0634f594532bdc01023aa",
+      "kind": "other"
+    },
+    {
+      "guid": "3d6a97",
+      "name": "SET_Lobo's Top 40 Winners Round 2 Map",
+      "objects": 80,
+      "missionGeistId": "s18_superiority",
+      "missionUrl": "https://infinitygeist.com/mission/s18_superiority",
+      "download": "/assets/maps/missiongeist-controls-20261125/3d6a97.json",
+      "sha256": "4b05f85b963dfc47f570735b6fbe9b3e55db98015fa644fc11503316c8f01759",
+      "kind": "other"
+    },
+    {
+      "guid": "03c892",
+      "name": "SET_Lobo's Top 40 Winners Round 3 Map - Roofs and Controls R2",
+      "objects": 76,
+      "missionGeistId": "s18_uplink_center",
+      "missionUrl": "https://infinitygeist.com/mission/s18_uplink_center",
+      "download": "/assets/maps/missiongeist-controls-20261125/03c892.json",
+      "sha256": "72444ce26e551a005a54221c3ef0e729f0ea20ee2500c2011a70c31698969fe2",
+      "kind": "other"
+    },
+    {
+      "guid": "8a1c29",
+      "name": "SET_Lobo's Top 40 Winners Round 4 Map",
+      "objects": 58,
+      "missionGeistId": "s18_the_dig",
+      "missionUrl": "https://infinitygeist.com/mission/s18_the_dig",
+      "download": "/assets/maps/missiongeist-controls-20261125/8a1c29.json",
+      "sha256": "5058e98d45788bfce57377040d27be2afc364c758d6fea89912a29a56c1c6631",
+      "kind": "other"
+    },
+    {
+      "guid": "f50418",
+      "name": "SET_Lobo's Top 40 Winners Round 5 Map",
+      "objects": 54,
+      "missionGeistId": "s18_area_of_interest",
+      "missionUrl": "https://infinitygeist.com/mission/s18_area_of_interest",
+      "download": "/assets/maps/missiongeist-controls-20261125/f50418.json",
+      "sha256": "f5ed65c73ab3bc9dfce53d5d5e076d83265ce3ab0df69906b6388f3defd2d6f2",
+      "kind": "other"
+    },
+    {
+      "guid": "a7c0c1",
+      "name": "SET_Lobo's Top 40 Losers Round 1 Map",
+      "objects": 122,
+      "missionGeistId": "s18_annihilation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_annihilation",
+      "download": "/assets/maps/missiongeist-controls-20261125/a7c0c1.json",
+      "sha256": "6d5ed49a4218d3e18204411ed2ca3288713836ebb8e81fdbfadfe18d61f80fe6",
+      "kind": "other"
+    },
+    {
+      "guid": "bc0000",
+      "name": "SET_Lobo's Top 40 Losers Round 3 Map",
+      "objects": 78,
+      "missionGeistId": "s18_cutthroat",
+      "missionUrl": "https://infinitygeist.com/mission/s18_cutthroat",
+      "download": "/assets/maps/missiongeist-controls-20261125/bc0000.json",
+      "sha256": "04e53e41e957bf6ad2d33838ec686a67c023925839c956e5762c510b22686c6e",
+      "kind": "other"
+    },
+    {
+      "guid": "bc005f",
+      "name": "SET_Lobo's Top 40 Losers Round 7 Map",
+      "objects": 62,
+      "missionGeistId": "s18_hard_lock",
+      "missionUrl": "https://infinitygeist.com/mission/s18_hard_lock",
+      "download": "/assets/maps/missiongeist-controls-20261125/bc005f.json",
+      "sha256": "021db34b025763d9ca9c104db39720a3c0dcc7625ad75ddc316e4b3a81ce4a14",
+      "kind": "other"
+    },
+    {
+      "guid": "bc00b7",
+      "name": "SET_Lobo's Top 40 Losers Round 4 Map",
+      "objects": 75,
+      "missionGeistId": "s18_battleground",
+      "missionUrl": "https://infinitygeist.com/mission/s18_battleground",
+      "download": "/assets/maps/missiongeist-controls-20261125/bc00b7.json",
+      "sha256": "ee7339bf6e0e618f5b0732ec2e5bc892639f4e2cfcc1a2b7b16ca6c72bd575f4",
+      "kind": "other"
+    },
+    {
+      "guid": "bc0117",
+      "name": "SET_Lobo's Top 40 Losers Round 5 Map",
+      "objects": 63,
+      "missionGeistId": "s18_neutralization",
+      "missionUrl": "https://infinitygeist.com/mission/s18_neutralization",
+      "download": "/assets/maps/missiongeist-controls-20261125/bc0117.json",
+      "sha256": "40af3755df701653ae4be82bb944524717f966d245fdde2b7781617cbb0e1d21",
+      "kind": "other"
+    },
+    {
+      "guid": "bd0003",
+      "name": "SET_Lobo's Top 40 Losers Round 6 Map",
+      "objects": 46,
+      "missionGeistId": "s18_outbreak",
+      "missionUrl": "https://infinitygeist.com/mission/s18_outbreak",
+      "download": "/assets/maps/missiongeist-controls-20261125/bd0003.json",
+      "sha256": "702198445c079272b8572b31ed5ab9f369340e5549a4c8614f47c7d439bcf996",
+      "kind": "other"
+    },
+    {
+      "guid": "ff1100",
+      "name": "SET_Lobo's Top 40 Final Map",
+      "objects": 392,
+      "missionGeistId": "s18_double_bind",
+      "missionUrl": "https://infinitygeist.com/mission/s18_double_bind",
+      "download": "/assets/maps/missiongeist-controls-20261125/ff1100.json",
+      "sha256": "c602d5b39f5c76866f4b346f1392fcee11eb7ec7a8d692c712645cd509495222",
+      "kind": "other"
+    },
+    {
+      "guid": "1e880b",
+      "name": "SET_Lobo's Top 40 Losers Round 2 Map",
+      "objects": 81,
+      "missionGeistId": "s18_provisioning",
+      "missionUrl": "https://infinitygeist.com/mission/s18_provisioning",
+      "download": "/assets/maps/missiongeist-controls-20261125/1e880b.json",
+      "sha256": "7bee62d696d26e1a1066e506e7ea9cad578189570dc00ba9540ef1511adfe2dc",
+      "kind": "other"
+    },
+    {
+      "guid": "df2866",
+      "name": "SET_Lobo's Top 40 Losers Round 8 Map",
+      "objects": 71,
+      "missionGeistId": "s18_critical_intervention",
+      "missionUrl": "https://infinitygeist.com/mission/s18_critical_intervention",
+      "download": "/assets/maps/missiongeist-controls-20261125/df2866.json",
+      "sha256": "5d67d025c2665c3d4f15d1fd2bc6790370b6972b73391f2b6a03228dadea8361",
+      "kind": "other"
+    },
+    {
+      "guid": "100013",
+      "name": "SET_ITS18 Akial Interference — Tidal Turbines — REVISED",
+      "objects": 96,
+      "missionGeistId": "s18_akial_interference",
+      "missionUrl": "https://infinitygeist.com/mission/s18_akial_interference",
+      "download": "/assets/maps/missiongeist-controls-20261125/100013.json",
+      "sha256": "57910f8cb8e98f3c8d58700dd8e52f23f5d52ce7cfe71b46dfd54d9d1a5ec49f",
+      "kind": "other"
+    },
+    {
+      "guid": "1000cb",
+      "name": "SET_ITS18 Annihilation — Rustline Market — REVISED",
+      "objects": 89,
+      "missionGeistId": "s18_annihilation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_annihilation",
+      "download": "/assets/maps/missiongeist-controls-20261125/1000cb.json",
+      "sha256": "74f7aebf112cccd609ceb4f8d18456cf8df00f58790a18286f7223d74151a741",
+      "kind": "other"
+    },
+    {
+      "guid": "100211",
+      "name": "SET_ITS18 Area Of Interest — Cargo Crossroads — REVISED",
+      "objects": 184,
+      "missionGeistId": "s18_area_of_interest",
+      "missionUrl": "https://infinitygeist.com/mission/s18_area_of_interest",
+      "download": "/assets/maps/missiongeist-controls-20261125/100211.json",
+      "sha256": "becb823995857453993eb1ca89cb4c0b1a00b077386f4626cb3b2e0bd95871f6",
+      "kind": "other"
+    },
+    {
+      "guid": "1003bd",
+      "name": "SET_ITS18 Battleground — Freight Terminal — REVISED",
+      "objects": 104,
+      "missionGeistId": "s18_battleground",
+      "missionUrl": "https://infinitygeist.com/mission/s18_battleground",
+      "download": "/assets/maps/missiongeist-controls-20261125/1003bd.json",
+      "sha256": "fb877d038fdefb555b2169c6fe55de97afb7f45d084571eea5bb5b79f6d66702",
+      "kind": "other"
+    },
+    {
+      "guid": "100544",
+      "name": "SET_ITS18 Critical Intervention — NeoTerran Command — REVISED",
+      "objects": 129,
+      "missionGeistId": "s18_critical_intervention",
+      "missionUrl": "https://infinitygeist.com/mission/s18_critical_intervention",
+      "download": "/assets/maps/missiongeist-controls-20261125/100544.json",
+      "sha256": "9e128d51146a9b5597db0130fe820f33ca7fdcbe859c3df135af707a918626fa",
+      "kind": "other"
+    },
+    {
+      "guid": "810183",
+      "name": "SET_ITS18 Double Bind — Copperline Exchange — SATELLITE EDITION",
+      "objects": 50,
+      "missionGeistId": "s18_double_bind",
+      "missionUrl": "https://infinitygeist.com/mission/s18_double_bind",
+      "download": "/assets/maps/missiongeist-controls-20261125/810183.json",
+      "sha256": "e83a0636685df6d73591ce358412a3eb138746c8faae19f010a88244f7c0a34f",
+      "kind": "other"
+    },
+    {
+      "guid": "100ac2",
+      "name": "SET_ITS18 Evacuation — Freight Terminal — REVISED",
+      "objects": 110,
+      "missionGeistId": "s18_evacuation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_evacuation",
+      "download": "/assets/maps/missiongeist-controls-20261125/100ac2.json",
+      "sha256": "41daaf680c5dc5ecce36056aa09e33cab2c034cc202a136621002d4c91e3988c",
+      "kind": "other"
+    },
+    {
+      "guid": "100daf",
+      "name": "SET_ITS18 Outbreak — Neon Exchange — REVISED",
+      "objects": 114,
+      "missionGeistId": "s18_outbreak",
+      "missionUrl": "https://infinitygeist.com/mission/s18_outbreak",
+      "download": "/assets/maps/missiongeist-controls-20261125/100daf.json",
+      "sha256": "c673093c88b05680ae2294004f11d97364710a450d08d0c86c53e84c9798619c",
+      "kind": "other"
+    },
+    {
+      "guid": "100e9f",
+      "name": "SET_ITS18 Provisioning — Skyrail Exchange — REVISED",
+      "objects": 96,
+      "missionGeistId": "s18_provisioning",
+      "missionUrl": "https://infinitygeist.com/mission/s18_provisioning",
+      "download": "/assets/maps/missiongeist-controls-20261125/100e9f.json",
+      "sha256": "04efbb02d3b1d5050d8dad9f25288a434afa9aeb7aaf9347f0e3ab80cef2ee92",
+      "kind": "other"
+    },
+    {
+      "guid": "810394",
+      "name": "SET_ITS18 Uplink Center — Blackwater Relay — SATELLITE EDITION",
+      "objects": 76,
+      "missionGeistId": "s18_uplink_center",
+      "missionUrl": "https://infinitygeist.com/mission/s18_uplink_center",
+      "download": "/assets/maps/missiongeist-controls-20261125/810394.json",
+      "sha256": "51c3f43e6c056ecb676a9a0222b6a7f87faa3c8858ec179054b50b88b341d979",
+      "kind": "other"
+    },
+    {
+      "guid": "100081",
+      "name": "SET_ITS18 Akial Interference — Azure Circuit — REVISED",
+      "objects": 75,
+      "missionGeistId": "s18_akial_interference",
+      "missionUrl": "https://infinitygeist.com/mission/s18_akial_interference",
+      "download": "/assets/maps/missiongeist-controls-20261125/100081.json",
+      "sha256": "bbc28bcd71e59197581db88a3dcff1a43d467d4c302874c427a8276f23532c71",
+      "kind": "other"
+    },
+    {
+      "guid": "100434",
+      "name": "SET_ITS18 B-Pong — Concrete Labyrinth — REVISED",
+      "objects": 60,
+      "missionGeistId": "s18_b_pong",
+      "missionUrl": "https://infinitygeist.com/mission/s18_b_pong",
+      "download": "/assets/maps/missiongeist-controls-20261125/100434.json",
+      "sha256": "c273d64241eac6fd5045463cc9f3c2e698129bbb3e99e186c02b6f8365a85269",
+      "kind": "other"
+    },
+    {
+      "guid": "100508",
+      "name": "SET_ITS18 Corporate Appropriation — Concrete Labyrinth — REVISED",
+      "objects": 61,
+      "missionGeistId": "s18_corporate_appropriation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_corporate_appropriation",
+      "download": "/assets/maps/missiongeist-controls-20261125/100508.json",
+      "sha256": "e7fe2b12cd95a07c03effa675a33dcf13993258f23b385d299188c9e7b3801ef",
+      "kind": "other"
+    },
+    {
+      "guid": "1006b8",
+      "name": "SET_ITS18 Crossing Lines — Canal Quarter — REVISED",
+      "objects": 211,
+      "missionGeistId": "s18_crossing_lines",
+      "missionUrl": "https://infinitygeist.com/mission/s18_crossing_lines",
+      "download": "/assets/maps/missiongeist-controls-20261125/1006b8.json",
+      "sha256": "22fb769a324fe88f309d84470d2e9e98a458b90db885570a2aff30d4c38666b4",
+      "kind": "other"
+    },
+    {
+      "guid": "100843",
+      "name": "SET_ITS18 Cutthroat — Foundry Blocks — REVISED",
+      "objects": 129,
+      "missionGeistId": "s18_cutthroat",
+      "missionUrl": "https://infinitygeist.com/mission/s18_cutthroat",
+      "download": "/assets/maps/missiongeist-controls-20261125/100843.json",
+      "sha256": "ff7d1fc8b10effa8c4d631f4bc9d908a26e0ce875ff9aa9a492b8abafa446432",
+      "kind": "other"
+    },
+    {
+      "guid": "810417",
+      "name": "SET_ITS18 Data Harvest — Signalworks — SATELLITE EDITION",
+      "objects": 100,
+      "missionGeistId": "s18_data_harvest",
+      "missionUrl": "https://infinitygeist.com/mission/s18_data_harvest",
+      "download": "/assets/maps/missiongeist-controls-20261125/810417.json",
+      "sha256": "f46dd023868912e6f1b3584b6da9621cc172745de600e7221ef3e2e9a23f52a2",
+      "kind": "other"
+    },
+    {
+      "guid": "81046b",
+      "name": "SET_ITS18 Evacuation — Wayfarer Landing — SATELLITE EDITION",
+      "objects": 67,
+      "missionGeistId": "s18_evacuation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_evacuation",
+      "download": "/assets/maps/missiongeist-controls-20261125/81046b.json",
+      "sha256": "22c383d95e72bc5e2d64491983bba339954cac1cea46afde1c2c2e1998a06d72",
+      "kind": "other"
+    },
+    {
+      "guid": "100b8d",
+      "name": "SET_ITS18 Hardlock — Tidal Turbines — REVISED",
+      "objects": 100,
+      "missionGeistId": "s18_hard_lock",
+      "missionUrl": "https://infinitygeist.com/mission/s18_hard_lock",
+      "download": "/assets/maps/missiongeist-controls-20261125/100b8d.json",
+      "sha256": "76729ce2fdc39f7636040f99374067bf27897b7dec3bd305f23d606b7089c7eb",
+      "kind": "other"
+    },
+    {
+      "guid": "100bff",
+      "name": "SET_ITS18 Last Launch — NeoTerran Command — REVISED",
+      "objects": 127,
+      "missionGeistId": "s18_last_launch",
+      "missionUrl": "https://infinitygeist.com/mission/s18_last_launch",
+      "download": "/assets/maps/missiongeist-controls-20261125/100bff.json",
+      "sha256": "565e1012ba2c41f5067ef0d8241c91eb41d9cc929a2af5270fa22246b86fa3b9",
+      "kind": "other"
+    },
+    {
+      "guid": "8104c6",
+      "name": "SET_ITS18 Neutralization — Frostline Sector — SATELLITE EDITION",
+      "objects": 68,
+      "missionGeistId": "s18_neutralization",
+      "missionUrl": "https://infinitygeist.com/mission/s18_neutralization",
+      "download": "/assets/maps/missiongeist-controls-20261125/8104c6.json",
+      "sha256": "fd1f2564dd2d796007a411dac66da7c5ef7e9878c2676b1e20d305aa4309b65c",
+      "kind": "other"
+    },
+    {
+      "guid": "100fb0",
+      "name": "SET_ITS18 The Dig — Skyrail Exchange — REVISED",
+      "objects": 96,
+      "missionGeistId": "s18_the_dig",
+      "missionUrl": "https://infinitygeist.com/mission/s18_the_dig",
+      "download": "/assets/maps/missiongeist-controls-20261125/100fb0.json",
+      "sha256": "b31269ffcab0437825d8cd2788d57410cc0d69d72ae3f73c0356f25aae82f25a",
+      "kind": "other"
+    },
+    {
+      "guid": "af0667",
+      "name": "SET_ITS18 Evacuation — Leviathan’s Wake — Rocinante",
+      "objects": 41,
+      "missionGeistId": "s18_evacuation",
+      "missionUrl": "https://infinitygeist.com/mission/s18_evacuation",
+      "download": "/assets/maps/missiongeist-controls-20261125/af0667.json",
+      "sha256": "9daf484097f3d4e1ff580611e6c8e739136283d9788af934e52a8007718f5dc9",
+      "kind": "general"
+    },
+    {
+      "guid": "cb7100",
+      "name": "SET_Aurora VII - Cloudbreak Array - Network Node R4.2 - Cloud Deck",
+      "objects": 77,
+      "missionGeistId": "cm_aurora7_network_node",
+      "missionUrl": "https://infinitygeist.com/mission/cm_aurora7_network_node",
+      "download": "/assets/maps/missiongeist-controls-20261125/cb7100.json",
+      "sha256": "b5a414eeb84a2844a906d9ffdb9b2f6a38ded466ea65efded3049983d3315b91",
+      "kind": "narrative"
+    }
+  ],
+  "standalone": [
+    {
+      "guid": "e1da22",
+      "name": "Top 40 Kestrel Lunar Base - Data Harvest",
+      "download": "/assets/maps/missiongeist-controls-20261125/Kestrel-Top40.json",
+      "missionUrl": "https://infinitygeist.com/mission/s18_data_harvest",
+      "sha256": "ba3fbfafeba00d6b1b7b0d0520dddf734451a1f72d3a8a57c5446b69d25defd9",
+      "kind": "standalone"
+    }
+  ],
+  "tableTools": {
+    "orderPanel": "R3",
+    "armySpawner": "R6"
+  }
+}

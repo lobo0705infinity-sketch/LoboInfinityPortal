@@ -1,0 +1,17 @@
+{
+  "name": "Azure Palace",
+  "guid": "87b699",
+  "previewKind": "geometry",
+  "revision": "R9",
+  "approvedAt": "2026-11-26",
+  "bagSha256": "82d2d8a0441c566e4ae7d15fabfe0758f9406dddc0481394aa3a20be703b6527",
+  "sourceSaveSha256": "4428014fc9e37953beda010600f82e53e22054e4774080ddcbdf81fbdebb986b",
+  "overhead": "/assets/maps/azure-palace-final-20261126/overhead.webp",
+  "angled": "/assets/maps/azure-palace-final-20261126/angled.webp",
+  "objectCount": 22,
+  "slug": "azure-palace",
+  "views": {
+    "overhead": "overhead.webp",
+    "angled": "angled.webp"
+  }
+}

@@ -9,9 +9,10 @@ import communityArchive from '../shared/lobo-workshop-community-archive-20261116
 import { describePublicSearchPage } from '../shared/public-search-content.mjs'
 
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
-assert.equal(loboWorkshopMaps.length,20)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size,20)
-assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size,20)
+const tableCount = 21
+assert.equal(loboWorkshopMaps.length, tableCount)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size, tableCount)
+assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size, tableCount)
 const missions=new Map()
 for(const map of loboWorkshopMaps){
  assert.equal(map.isCurrent,true)
@@ -76,14 +77,14 @@ for(const map of loboWorkshopMaps){
  }
 }
 assert.equal(missions.size, 20)
-for (const [mission, keys] of missions) assert.equal(new Set(keys).size, 1, `${mission} has its retained layouts`)
+for (const [mission, keys] of missions) assert.equal(new Set(keys).size, mission === 'Crossing Lines' ? 2 : 1, `${mission} has its retained layouts`)
 const grouped = loboWorkshopMapSections.flatMap(section => section.layouts.flatMap(layout => layout.saves.map(map => map.id)))
-assert.equal(grouped.length, 20)
-assert.equal(new Set(grouped).size, 20)
+assert.equal(grouped.length, tableCount)
+assert.equal(new Set(grouped).size, tableCount)
 assert.equal(loboWorkshopMapSections.length, 20)
 assert.deepEqual(loboWorkshopMapSections.map(section => section.title), [...missions.keys()].sort((a, b) => a.localeCompare(b)))
 for (const section of loboWorkshopMapSections) {
-  assert.equal(section.layouts.length, 1)
+  assert.equal(section.layouts.length, section.title === 'Crossing Lines' ? 2 : 1)
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
@@ -103,7 +104,7 @@ for (const map of loboWorkshopMaps) {
   }
 }
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'tts').length, 0)
-assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, 20)
+assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'geometry').length, tableCount)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'workshop').length, 0)
 assert.equal(loboWorkshopMaps.filter(map => map.previewKind === 'diagram').length, 0)
 const portMeridian = loboWorkshopMapBySlug.get('port-meridian')
@@ -129,6 +130,14 @@ const legacyAzure = archivedLoboWorkshopMaps.find(map => map.name === 'Azure Cir
 const ratings = buildMapRatings([{ id: 1, mapSlug: legacyAzure.slug, mapRating: 5 }, { id: 2, mapSlug: azure.slug, mapRating: 3 }])
 assert.deepEqual(ratings.get(azure.layoutKey), { average: 4, count: 2, rank: 1 })
 assert.ok(missions.has('Akial Interference') && missions.has('Evacuation'))
+const palace = loboWorkshopMapBySlug.get('azure-palace')
+assert.equal(palace.guid, '87b699')
+assert.deepEqual(palace.missionSetups, ['Crossing Lines'])
+assert.equal(palace.reviewStatus, 'approved')
+assert.equal(palace.installer, current.installer)
+assert.ok(existsSync('public' + palace.installer))
+assert.notEqual(palace.layoutKey, loboWorkshopMapBySlug.get('veyra-gate').layoutKey)
+assert.ok(describePublicSearchPage('/maps').links.some(link => link.href === '/maps/azure-palace'))
 const leviathan = loboWorkshopMapBySlug.get('leviathans-wake')
 assert.equal(leviathan.guid, 'af0667')
 assert.deepEqual(leviathan.missionSetups, ['Evacuation'])

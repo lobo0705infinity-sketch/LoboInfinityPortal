@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-25",
-  "download": "/assets/maps/missiongeist-controls-20261125/Lobo-MissionGeist-Map-Bags.zip",
+  "updatedAt": "2026-11-26",
+  "download": "/assets/maps/azure-palace-final-20261126/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -292,6 +292,45 @@
       "reviewStatus": "pending",
       "overheadThumb": "/assets/maps/library-previews-20261118/veyra-gate-overhead-thumb.webp",
       "angledThumb": "/assets/maps/library-previews-20261118/veyra-gate-angled-thumb.webp"
+    },
+    {
+      "index": 107,
+      "id": "3719263238:87b699",
+      "guid": "87b699",
+      "slug": "azure-palace",
+      "name": "Azure Palace",
+      "workshopName": "ITS18 Crossing Lines — Azure Palace",
+      "workshopBagName": "SET_ITS18 Crossing Lines — Azure Palace",
+      "collectionTitle": "ITS Season 18",
+      "family": "Split deployment",
+      "layoutKey": 2033,
+      "missionSetups": [
+        "Crossing Lines"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 22,
+      "sourceNote": "Final layout approved November 26, 2026. A coastal resort with a recessed pool, accessible balconies and two standard 40 mm consoles. Includes Lobo’s saved placements for the baggage buggy, pool loungers, two banquet-table dollies and two housekeeping carts.",
+      "overhead": "/assets/maps/azure-palace-final-20261126/overhead.webp",
+      "angled": "/assets/maps/azure-palace-final-20261126/angled.webp",
+      "download": "/assets/maps/azure-palace-final-20261126/87b699.json",
+      "installer": "/assets/maps/azure-palace-final-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
+      "isCurrent": true,
+      "reviewStatus": "approved",
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://infinitygeist.com/mission/s18_crossing_lines",
+      "labelAliases": [
+        "Azure Palace",
+        "ITS18 Crossing Lines — Azure Palace",
+        "Azure Palace - Crossing Lines",
+        "SET_ITS18 Crossing Lines — Azure Palace R8 — Coastal Resort"
+      ],
+      "previewBagSha256": "82d2d8a0441c566e4ae7d15fabfe0758f9406dddc0481394aa3a20be703b6527",
+      "previewUpdatedAt": "2026-11-26",
+      "previewManifest": "/assets/maps/azure-palace-final-20261126/azure-palace-preview.json",
+      "overheadThumb": "/assets/maps/azure-palace-final-20261126/overhead-thumb.webp",
+      "angledThumb": "/assets/maps/azure-palace-final-20261126/angled-thumb.webp"
     },
     {
       "index": 17,
@@ -757,9 +796,9 @@
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "table-tools-r4",
-  "installer": "/assets/maps/missiongeist-controls-20261125/Lobo-MissionGeist-Workshop-Installer-R4.zip",
-  "releaseInventory": "/assets/maps/table-tools-20261125-r3/release-inventory.json",
-  "previewUpdatedAt": "2026-11-18",
-  "workshopSaveName": "Lobo Maps - MissionGeist R4 - Workshop Collection"
+  "downloadRevision": "azure-palace-final-r9",
+  "installer": "/assets/maps/azure-palace-final-20261126/Lobo-Azure-Palace-Workshop-Installer-R9.zip",
+  "releaseInventory": "/assets/maps/azure-palace-final-20261126/release-inventory.json",
+  "previewUpdatedAt": "2026-11-26",
+  "workshopSaveName": "Lobo Maps - Azure Palace R9 - Workshop Collection"
 }
