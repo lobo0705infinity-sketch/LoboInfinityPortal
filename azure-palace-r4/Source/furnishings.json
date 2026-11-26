@@ -1,0 +1,82 @@
+[
+  {
+    "key": "arrivals",
+    "name": "Reception · Bell desk and luggage bay",
+    "venue": "reception",
+    "width": 5.05,
+    "depth": 2.04,
+    "vertices": 2845,
+    "triangles": 5374,
+    "collision_parts": 18
+  },
+  {
+    "key": "filtration",
+    "name": "Pool Equipment Room · Filter yard",
+    "venue": "pool-equipment",
+    "width": 4.55,
+    "depth": 2.14,
+    "vertices": 2308,
+    "triangles": 4352,
+    "collision_parts": 8
+  },
+  {
+    "key": "terrace",
+    "name": "Poolside Café · Sheltered terrace",
+    "venue": "cafe",
+    "width": 4.75,
+    "depth": 2.3,
+    "vertices": 2450,
+    "triangles": 4784,
+    "collision_parts": 16
+  },
+  {
+    "key": "garden",
+    "name": "Azure Spa · Walled garden seat",
+    "venue": "azure-spa",
+    "width": 4.6,
+    "depth": 1.68,
+    "vertices": 2931,
+    "triangles": 6174,
+    "collision_parts": 6
+  },
+  {
+    "key": "pool-club",
+    "name": "Pool Club · Towel cabana and loungers",
+    "venue": "ground",
+    "width": 4.34,
+    "depth": 2.18,
+    "vertices": 4221,
+    "triangles": 8008,
+    "collision_parts": 9
+  },
+  {
+    "key": "linen",
+    "name": "Service Laundry · Linen return",
+    "venue": "laundry",
+    "width": 3.76,
+    "depth": 1.8,
+    "vertices": 1382,
+    "triangles": 2496,
+    "collision_parts": 5
+  },
+  {
+    "key": "tideline",
+    "name": "Hotel promenade · Tideline bronze",
+    "venue": "sunward-wing",
+    "width": 3.58,
+    "depth": 1.4,
+    "vertices": 1679,
+    "triangles": 3490,
+    "collision_parts": 35
+  },
+  {
+    "key": "dining-bar",
+    "name": "Terrace Restaurant · Drinks counter",
+    "venue": "terrace-restaurant",
+    "width": 4.04,
+    "depth": 2.0,
+    "vertices": 1796,
+    "triangles": 3120,
+    "collision_parts": 6
+  }
+]
