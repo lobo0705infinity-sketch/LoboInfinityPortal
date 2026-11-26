@@ -44,11 +44,21 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
   }
   // PDF text extraction dropped the main E/M effects clause. Keep its restored
   // excerpt and the relevant state/deployable clauses together for these questions.
-  if (/\be\s*\/\s*m\b|\belectromagnetic\b|\bem\b/i.test(question)) {
+  const emWeapon = /\b(?:e\s*[/-]?\s*m(?:itter|arat)?|electromagnetic|blitzen|zapper)\b/i.test(question)
+  const nwi = /\bnwi\b|\bno[ -]wound incapacitation\b/i.test(question)
+  const shockInteraction = (emWeapon && nwi) || (/\bshock\b/i.test(question)
+    && (emWeapon || nwi || /\bwounds?\b|\bnon[- ]?lethal\b/i.test(question)))
+  if (emWeapon) {
     const terms = new Set(['electromagnetic (e/m) ammunition', 'isolated state'])
     if (/deployable|mine|repeater|fastpanda/i.test(question)) terms.add('deployable')
     if (/destroy|damage|wound|normal|combined|n\s*\+\s*e\s*\/\s*m/i.test(question)) terms.add('combined ammunition')
     corpus.chunks.filter((chunk) => chunk.sourceId === 'infinity-rules-n5.3' && terms.has(chunk.canonicalTerm)).forEach(add)
+  }
+  if (shockInteraction) {
+    // The PDF columns split the Wound and state clauses. Keep both, even in the smaller retry prompt.
+    const sections = new Set(['SHOCK AMMUNITION', 'NO WOUND INCAPACITATION', 'NON-LETHAL', 'IMMUNITY', 'MODIFIERS EXPLAINED', 'COMBINED AMMUNITION'])
+    if (emWeapon) sections.add('WEAPON CHART — E/M CARBINE')
+    corpus.chunks.filter(chunk => chunk.sourceId === 'infinity-rules-n5.3' && sections.has(chunk.section)).forEach(add)
   }
   // The complete Cover definition must survive the evidence limit even when
   // terminology retrieval returns numerous unrelated mentions of cover.
@@ -137,6 +147,7 @@ export function buildRulesEvidencePrompt(corpus, question, { limit = 18, maxEvid
     'Derive every rules conclusion from the official rules evidence only. You may use the separately labeled official Army model context only as factual profile data about a named model. Apply FAQ precedence and ITS rules only in ITS contexts.',
     formatTerminologyContext(terminology),
     formatRulesModelContext(modelResolution),
+    shockInteraction ? 'Check the firing mode, who has BS Attack (Shock), the target’s profile VITA or STR and Immunity, and whether it was already in NWI. Resolve added ammunition on the same saves. Distinguish the Wound prevented by Non-Lethal from the separate Shock effect triggered by a failed save against an existing Unconscious State. Label the combined E/M, Shock and NWI ruling as an interpretation of the cited rules.' : '',
     modelResolution?.models?.length ? 'A model name does not identify a single loadout unless the Army context lists exactly one loadout or the question explicitly identifies one. Alternate physical/state forms grouped beneath one loadout are not separate loadout choices. Use the initial/deployment form for Deployment Phase eligibility; when relevant facts differ between possible loadouts or current states, report DEPENDS and describe the differing outcomes.' : '',
     'Treat synonymous player wording, singular/plural forms, abbreviations, and unambiguous spelling corrections that resolve to the same official concepts consistently. Do not reinterpret a recognized official term as an ordinary adjective or generic noun.',
     'Targeted State is a persistent game state, not proof of current enemy LoF. Targeted does not itself prevent entering Impersonation State or using Cybermask. Check their normal activation requirements and any other stated restrictions; do not invent enemy LoF because the Trooper is Targeted. Entering Impersonation or using Cybermask does not cancel Targeted: its +3 Discover MOD and prohibitions on Stealth and Cautious Movement persist. Do not generalize this permission to Camouflaged State or other marker states without checking their own requirements.',

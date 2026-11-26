@@ -5,10 +5,11 @@ import { findApprovedRulesAnswer, loadRulesBenchmark, normalizeQuestion } from '
 import { retrieveRulesReference, formatRulesDiscordResponse } from '../bot/rules-command.mjs'
 import { buildRulesEvidencePrompt } from '../bot/deepseek-rules.mjs'
 import { loadProductionRulesCorpus } from '../bot/infinity-rules-service.mjs'
+import './rules-em-shock-check.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const index = await loadRulesBenchmark({ force: true })
-assert.equal(index.canonicalCases, 1414)
+assert.equal(index.canonicalCases, 1419)
 
 const tacballDocument = JSON.parse(await readFile(resolve(root, 'data/infinity-rules/rules-benchmark-approved-updates-2026-09-15.json'), 'utf8'))
 // These are deliberately absent from the benchmark's exact variants. They
