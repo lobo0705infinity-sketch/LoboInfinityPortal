@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
+import { loboWorkshopMaps } from '../shared/lobo-workshop-maps.mjs'
 import { describePublicSearchPage, publicDatasetForPath } from '../shared/public-search-content.mjs'
 import { publicSearchRequestPath, renderPublicSearchHtml } from '../api/public-search-page.mjs'
 import { selectFeaturedReport } from '../shared/featured-report.mjs'
@@ -22,8 +23,12 @@ assert.equal(publicDatasetForPath('/commissioner'), null)
 assert.equal(describePublicSearchPage('/hall-of-fame'), null)
 assert.equal(describePublicSearchPage('/rivalries'), null)
 const maps = describePublicSearchPage('/maps')
-assert.equal(maps.links.filter(link => link.href.startsWith('/maps/')).length, 21)
-assert.match(maps.intro, /20 setups for 20 ITS Season 18 missions across 20 terrain layouts/)
+const mapPaths = maps.links.filter(link => link.href.startsWith('/maps/')).map(link => link.href)
+assert.deepEqual(mapPaths.sort(), ['/maps/aurora-vii', ...loboWorkshopMaps.map(map => '/maps/' + map.slug)].sort())
+const missionCount = new Set(loboWorkshopMaps.flatMap(map => map.missionSetups)).size
+const layoutCount = new Set(loboWorkshopMaps.map(map => map.layoutKey)).size
+assert.ok(maps.intro.includes(`${loboWorkshopMaps.length} setups for ${missionCount} ITS Season 18 missions across ${layoutCount} terrain layouts`))
+assert.match(describePublicSearchPage('/maps/azure-palace').intro, /Crossing Lines/)
 assert.match(describePublicSearchPage('/maps/leviathans-wake').intro, /Evacuation/)
 for (const slug of ['akial-interference-1', 'akial-interference-2', 'evacuation-1', 'evacuation-2-satellite']) {
   assert.equal(describePublicSearchPage('/maps/' + slug), null)
