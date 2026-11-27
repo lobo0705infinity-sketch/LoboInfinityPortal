@@ -3,7 +3,7 @@ from math import sqrt, sin, cos, ceil, floor, pi
 import numpy as np
 from shapely import Polygon, box, constrained_delaunay_triangles, get_parts
 from shapely.geometry.polygon import orient
-from mesh import Pair
+from mesh import Pair,Mesh
 
 SLOPE=13.5/48
 TRACK_Z=5.55
@@ -144,8 +144,22 @@ def exposed_wall(rock,stone,x0,z0,x1,z1,high,boundary):
 def outside(x,z):
  return abs(abs(x)-24)<.001 or abs(abs(z)-24)<.001
 
+def closed_profile(mesh,section,front,back):
+ # A CCW section in x/y, with both z caps and outward-facing edge quads.
+ triangles=get_parts(constrained_delaunay_triangles(Polygon(section)))
+ for z,side in [(front,-1),(back,1)]:
+  for face in triangles:
+   xy=list(face.exterior.coords)[:3]
+   (x0,y0),(x1,y1),(x2,y2)=xy
+   if ((x1-x0)*(y2-y0)-(y1-y0)*(x2-x0))*side<0:xy.reverse()
+   mesh.tri([(x,y,z) for x,y in xy],'darkiron')
+ for (x0,y0),(x1,y1) in zip(section,section[1:]+section[:1]):
+  mesh.quad([(x0,y0,front),(x1,y1,front),(x1,y1,back),(x0,y0,back)],'darkiron')
+
 def landforms():
- ground=Pair('survey-mat');rock=Pair('mountain-core');stone=Pair('station-stairways')
+ ground=Pair('survey-mat');rock=Pair('railway-foundation');stone=Pair('terrace-coping')
+ banks={side:Pair('granite-bank-'+side) for side in LINES}
+ collision_skin={side:Mesh('granite-bank-'+side+'-collider') for side in LINES}
  for side,(lo,hi) in {'south':(-24,SOUTH_EDGE),'north':(NORTH_EDGE,24)}.items():
   boundaries=[[(lo,-24),(hi,-24)]]+LINES[side]+[[(lo,24),(hi,24)]]
   for k,(left,right) in enumerate(zip(boundaries,boundaries[1:])):
@@ -158,7 +172,14 @@ def landforms():
     for ring in [p.exterior,*p.interiors]:
      pts=list(ring.coords)
      for (x,z),(xx,zz) in zip(pts,pts[1:]):
-      exposed_wall(rock,stone,x,z,xx,zz,LEVELS[k],outside((x+xx)/2,(z+zz)/2))
+      exposed_wall(banks[side],stone,x,z,xx,zz,LEVELS[k],outside((x+xx)/2,(z+zz)/2))
+      # The separate survey mat carries the flat floors. A single plane per
+      # retaining edge provides lateral collision below it without faceting the rock.
+      cap=LEVELS[k]
+      collision_skin[side].quad([(x,BASE,z),(x,cap,z),(xx,cap,zz),(xx,BASE,zz)],'darkiron')
+ for side,bank in banks.items():bank.c=collision_skin[side]
+ foundation_collider=Mesh('railway-foundation-collider')
+ closed_profile(foundation_collider,[(-24,BASE),(24,BASE),(24,grade(24)-.39),(-24,grade(-24)-.39)],SOUTH_EDGE,NORTH_EDGE)
  # The physical core continues underneath each rail, all the way to both board edges.
  l,r=-24,24;s,n=SOUTH_EDGE,NORTH_EDGE
  for x in range(-24,24):
@@ -176,19 +197,25 @@ def landforms():
   cliff_panel(rock,[(x,BASE,s),(x,BASE,n),(x,hh,n),(x,hh,s)],[(0,0),(1.25,0),(1.25,hh/5),(0,hh/5)],norm)
  # Bottom closes the complete solid against the permanent 3-inch platform.
  cliff_panel(rock,[(l,BASE,-24),(r,BASE,-24),(r,BASE,24),(l,BASE,24)],[(0,0),(1,0),(1,1),(0,1)],(0,-1,0))
- for i,g in enumerate(GATES):
-  a,z,level=g;low=LEVELS[level];high=LEVELS[level+1]
-  # Plinth quality and physical collision match the visible tread and riser.
-  intervals=[]
-  for j in range(8):intervals.append((a+j*TREAD,a+(j+1)*TREAD,low+(high-low)*(j+1)/16))
-  intervals.append((a+8*TREAD,a+8*TREAD+1.25,(high+low)/2))
-  for j in range(8):intervals.append((a+8*TREAD+1.25+j*TREAD,a+8*TREAD+1.25+(j+1)*TREAD,low+(high-low)*(j+9)/16))
-  for t0,t1,topy in intervals:
-   stone.box((t0+t1)/2,BASE,z,t1-t0,topy-BASE,STAIR_WIDTH,'ashlar',True,'concrete')
-  # Handrails bend level at the half landing. Both approaches remain wide and unobstructed.
-  for sign in (-1,1):
-   zrail=z+sign*(STAIR_WIDTH/2-.06);base=a+.11
-   points=[(base,stair_height(base,g)+.74,zrail),(a+8*TREAD-.03,(low+high)/2+.74,zrail),(a+8*TREAD+1.28,(low+high)/2+.74,zrail),(a+STAIR_LENGTH-.10,high+.74,zrail)]
-   for x,y,zz in points:stone.cyl((x,y-.76,zz),(x,y,zz),.039,'darkiron',8)
-   for p,q in zip(points,points[1:]):stone.beam(p,q,.071,.070,'darkiron')
- return ground,rock,stone
+ # Each opening has permanent granite underneath the separately loaded treads.
+ for a,z,k in GATES:
+  low,high=LEVELS[k:k+2];mid=(low+high)/2
+  profile=[(a,low-.16),(a+8*TREAD,mid-.16),(a+8*TREAD+1.25,mid-.16),(a+STAIR_LENGTH,high-.16)]
+  front=z-STAIR_WIDTH/2;back=z+STAIR_WIDTH/2
+  closed_profile(foundation_collider,[(a,BASE+.009),(a+STAIR_LENGTH,BASE+.009)]+profile[::-1],front,back)
+  for (x,v),(xx,w) in zip(profile,profile[1:]):
+   uv=[(0,0),(0,1),((xx-x)/4,1),((xx-x)/4,0)]
+   cliff_panel(rock,[(x,v,front),(x,v,back),(xx,w,back),(xx,w,front)],uv,(-(w-v),xx-x,0))
+  # The top fills the opening. Vertical faces sit just inside the flight's sides.
+  # They remain opaque when viewed across or underneath an unoccupied stairwell.
+  front+=.014;back-=.014
+  for (x,v),(xx,w) in zip(profile,profile[1:]):
+   for zz,norm in [(front,(0,0,-1)),(back,(0,0,1))]:
+    cliff_panel(rock,[(x,BASE+.009,zz),(xx,BASE+.009,zz),(xx,w,zz),(x,v,zz)],[(x/5,0),(xx/5,0),(xx/5,w/5),(x/5,v/5)],norm)
+  for (x,v),side in [(profile[0],-1),(profile[-1],1)]:
+   xx=x-side*.014
+   cliff_panel(rock,[(xx,BASE+.009,front),(xx,BASE+.009,back),(xx,v,back),(xx,v,front)],[(0,0),(.45,0),(.45,v/5),(0,v/5)],(side,0,0))
+ # Capstones are set into the granite. Their physics is supplied by the retaining face.
+ rock.c=foundation_collider
+ stone.c.box(0,-.075,0,.04,.02,.04,'darkiron')
+ return ground,rock,banks,stone

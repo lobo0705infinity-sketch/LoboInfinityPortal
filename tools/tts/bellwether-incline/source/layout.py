@@ -4,7 +4,8 @@ from mesh import Mesh,Pair,ROOT,OUT
 from buildings import house
 from rail import crossing,grade,railbed,arcade,snow_shed,car
 import props
-from hillside import landforms,apron,quarter_turn,GATES,LEVELS
+from hillside import landforms,apron,quarter_turn,GATES,LEVELS,STAIR_LENGTH,STAIR_WIDTH
+from station_steps import stair_flight
 from platforms import fix_furnishings
 
 OUT.mkdir(exist_ok=True)
@@ -22,10 +23,16 @@ def building(key,label,x,z,w,d,h,style,doors,graphic,desc,rot=0,elevation=0):
     low=model(house(key,w,d,h,style,doors,graphic,False))
     high=model(house(key,w,d,h,style,doors,graphic,True))
     place(key,label,x,z,high,w,d,desc,rot,elevation,'building',floor=low,height=h,doors=doors)
-mat,rock,granite_stairs=landforms()
+mat,rock,banks,coping=landforms()
 place('mat','Bellwether Incline | Terraced winter station',0,0,model(mat),48,48,'Four station terraces climb the granite hillside.',kind='mat',elevation=-.006)
-place('mountainside','Exposed granite and railway foundation',0,0,model(rock),48,48,'The trackbed rests on a continuous stone embankment from valley to summit.',kind='rock',elevation=-.006)
-place('public-stairs','Hillside stairs and retaining caps',0,0,model(granite_stairs),48,48,'Twelve stone stairways connect the four levels. Each has a level half-landing.',kind='earthworks',elevation=-.006)
+place('mountainside','Granite railway foundation',0,0,model(rock),48,48,'Solid foundations carry the railway and the twelve hillside stairs.',kind='rock',elevation=-.006)
+for bank,formation in banks.items():
+    place('bank-'+bank,'Exposed station granite',0,0,model(formation),48,48,'Cut granite supports the level station yards.',kind='rock',elevation=-.006)
+place('public-stairs','Retaining wall capstones',0,0,model(coping),48,48,'Stone coping protects the edge of each level yard.',kind='earthworks',elevation=-.006)
+flights=[model(stair_flight(level)) for level in range(3)]
+for i,(a,z,k) in enumerate(GATES):
+    label=('Lower','Middle','Summit')[k]+' terrace steps'
+    place('terrace-flight-'+str(i+1),label,a+STAIR_LENGTH/2,z,flights[k],STAIR_LENGTH,STAIR_WIDTH,'Sixteen stone risers with a level landing halfway up.',kind='stair',elevation=-.006)
 # Two different station elevations offer distinct routes from the northern side.
 for key,label,x,z,w,d,h,step in [
     ('staff-terrace','Crew terrace',-16.4,18.1,12.1,8.4,.68,1.85),
