@@ -189,7 +189,7 @@ def house(key,w,d,h,kind,doors,graphic,roof=True):
   x0=w*.23;aw=min(2.7,w*.45);yd=2.15
   for i in range(8):
    lo=x0-aw/2+i*aw/8;hi=lo+aw/8;z0=-d/2-.09;z1=z0-.68
-   g.panel([(lo,yd,z0),(hi,yd,z0),(hi,yd-.13,z1),(lo,yd-.13,z1)],'canvas' if i%2 else 'enamelblue')
+   g.deck([(lo,yd,z0),(hi,yd,z0),(hi,yd-.13,z1),(lo,yd-.13,z1)],'canvas' if i%2 else 'enamelblue',.055,'canvas',False)
    g.box((lo+hi)/2,yd-.31,z1,hi-lo,.17,.036,'canvas' if i%2 else 'enamelblue',False)
   for x in (x0-aw*.43,x0+aw*.43):g.beam((x,yd-.45,-d/2-.06),(x,yd-.15,-d/2-.75),.045,.046,'darkiron')
  if kind in ('office','cafe','crew','ticket','relay'):

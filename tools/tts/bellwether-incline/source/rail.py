@@ -1,21 +1,16 @@
-from math import pi,cos,sin,ceil
+from math import pi,cos,sin,ceil,sqrt
 from random import Random
+import numpy as np
 from mesh import Pair
 from buildings import stairs,crate,bench
 
-def grade(x):return .14+(x+24)*.039
+from hillside import SLOPE, grade, apron, TRACK_Z, HALFWAY
 
 def railbed(key,center):
  g=Pair(key);h=lambda x:grade(x+center);lo=-8;hi=8;edge=3.22
- # Segments meet exactly; no overlapping upper faces at each joint.
+ # Each span sits on a full-width mountain core. Its end sections close the formation.
  for a,b in zip(range(-8,8,2),range(-6,10,2)):
-  g.panel([(a,h(a),-edge),(a,h(a),edge),(b,h(b),edge),(b,h(b),-edge)],'rubble',True)
-  for side in [-1,1]:
-   z=edge*side
-   pts=[(a,0,z),(b,0,z),(b,h(b),z),(a,h(a),z)]
-   g.panel(pts if side==1 else pts[::-1],'ashlar',True)
- if center in (-16,16):
-  x=lo if center<0 else hi;g.panel([(x,0,-edge),(x,0,edge),(x,h(x),edge),(x,h(x),-edge)],'ashlar',True)
+  g.deck([(a,h(a),-edge),(a,h(a),edge),(b,h(b),edge),(b,h(b),-edge)],'rubble',.40,'ashlar')
  for i in range(32):
   x=-7.75+i*.5
   g.box(x,h(x),0,.19,.086,2.85,'weatherwood',False)
@@ -36,35 +31,63 @@ def railbed(key,center):
   x=-6.60+4*i;g.cyl((x,h(x)+.125,-.16),(x,h(x)+.125,.16),.082,'darkiron',8)
  for side in [-1,1]:
   for i in range(6):
-   a=-7.9+i*2.61;b=a+1.46+rnd.random()*.76;lo=[];hi=[]
+   a=-7.9+i*2.61;b=a+1.46+rnd.random()*.76;snow_inner=[];snow_outer=[]
    for j in range(10):
     x=a+(b-a)*j/9;z=side*(3.09-.065*rnd.random());edge=z-side*(.15+.42*rnd.random())*sin(pi*j/9)**.72
-    lo.append((x,h(x)+.018,min(z,edge)));hi.append((x,h(x)+.018,max(z,edge)))
+    snow_inner.append((x,h(x)+.018,min(z,edge)));snow_outer.append((x,h(x)+.018,max(z,edge)))
    for j in range(9):
-    if j==0:g.m.tri([lo[j],hi[j+1],lo[j+1]],'snow')
-    elif j==8:g.m.tri([lo[j],hi[j],lo[j+1]],'snow')
-    else:g.panel([lo[j],hi[j],hi[j+1],lo[j+1]],'snow')
+    if j==0:g.m.tri([snow_inner[j],snow_outer[j+1],snow_inner[j+1]],'snow')
+    elif j==8:g.m.tri([snow_inner[j],snow_outer[j],snow_inner[j+1]],'snow')
+    else:g.panel([snow_inner[j],snow_outer[j],snow_outer[j+1],snow_inner[j+1]],'snow')
+ # Continuous real maintenance stairs flank the cable line. Each crossing replaces
+ # the matching length of stairs with a full-width plank deck.
+ cuts=[lo,hi]+[i*.5 for i in range(-15,16)]
+ crossings=(-22.6,-8.65,8.05,22.6)
+ cuts+= [v-center for c in crossings for v in (c-1.10,c+1.10) if lo<v-center<hi]
+ cuts=sorted(set(cuts))
+ for left,right in zip(cuts,cuts[1:]):
+  xc=(left+right)/2;worldx=xc+center
+  if any(abs(worldx-c)<1.10 for c in crossings):continue
+  y=h(xc)+.225;bottom=min(h(left),h(right))-.398
+  for side in (-1,1):
+   g.box(xc,bottom,side*3.035,right-left,y-bottom,1.246,'ashlar',True,'concrete')
+   if right-left>.22:g.box(left+.045,y+.001,side*2.70,.035,.009,.36,'ochre',False)
+ # Railings follow the inner side of each walk, with openings at the crossings
+ # and clearance for the existing avalanche-gallery portal posts.
+ for left in np.arange(-7.95,7.0,1.5):
+  right=left+1.40
+  if any(left+center<c+1.16 and right+center>c-1.16 for c in crossings):continue
+  if left+center<5.48 and right+center>-3.28:continue
+  for side in (-1,1):
+   zz=side*2.405
+   for x in (left,right):g.cyl((x,h(x)+.18,zz),(x,h(x)+1.01,zz),.035,'darkiron',7)
+   g.beam((left,h(left)+1.01,zz),(right,h(right)+1.01,zz),.055,.058,'darkiron')
  return g
 
 def crossing(key,x):
- g=Pair(key);h=grade(x)+.24;w=2.20
- # The three timber fields leave the steel railheads visible.
- for a,b in ((-3.22,-.99),(-.82,.82),(.99,3.22)):
-  g.box(0,h-.105,(a+b)/2,w,.105,b-a,'weatherwood',True)
-  for j in (-.77,.77):g.box(j,h+.002,(a+b)/2,.053,.014,b-a,'ochre',False)
- depth=1.9
- for i in range(7):
-  for s in (-1,1):
-   z=s*(3.22+depth-(i+.5)*depth/7)
-   g.box(0,.005,z,w,(i+1)*h/7,depth/7,'concrete',True)
- for s in (-1,1):
-  for xx in (-w*.49,w*.49):
-   for zz,yy in [(3.40,h*.92),(4.90,h*.20)]:g.cyl((xx,yy,zz*s),(xx,yy+.79,zz*s),.045,'darkiron',7)
-   g.beam((xx,h+.76,3.26*s),(xx,h*.16+.76,5.06*s),.076,.065,'darkiron')
+ g=Pair(key);w=2.20
+ def top(u):return grade(x+u)+.225
+ for a,b in ((-HALFWAY,-.99),(-.82,.82),(.99,HALFWAY)):
+  for j in range(5):
+   u=-w/2+w*j/5;v=u+w/5-.007
+   g.deck([(u,top(u),a),(u,top(u),b),(v,top(v),b),(v,top(v),a)],'weatherwood',.16,'darkiron')
+  for xx in [-.80,.80]:
+   g.deck([(xx-.027,top(xx-.027)+.012,a),(xx-.027,top(xx-.027)+.012,b),(xx+.027,top(xx+.027)+.012,b),(xx+.027,top(xx+.027)+.012,a)],'ochre',.017,'ochre',False)
+ depth=5.12-HALFWAY
+ for sign in (-1,1):
+  base=apron(x,TRACK_Z+sign*5.15)
+  for j in range(7):
+   far=sign*(HALFWAY+depth-j*depth/7);near=sign*(HALFWAY+depth-(j+1)*depth/7)
+   def level(u):return base+(top(u)-base)*(j+1)/7
+   g.deck([(-w/2,level(-w/2),far),(-w/2,level(-w/2),near),(w/2,level(w/2),near),(w/2,level(w/2),far)],'concrete',.28,'ashlar')
+  for u in [-w*.485,w*.485]:
+   for dist,t in [(HALFWAY+.06,1),(4.99,.13)]:
+    y=base+(top(u)-base)*t;g.cyl((u,y,sign*dist),(u,y+.78,sign*dist),.040,'darkiron',8)
+   g.beam((u,top(u)+.78,sign*(HALFWAY+.06)),(u,base+(top(u)-base)*.13+.78,sign*4.99),.065,.064,'darkiron')
  return g
 
 def snow_shed(full):
- g=Pair('snow-shed-'+('roof' if full else 'floor'));length=8.1;depth=4.50;eave=3.40;off=lambda x:x*.039
+ g=Pair('snow-shed-'+('roof' if full else 'floor'));length=8.1;depth=4.50;eave=3.40;off=lambda x:x*SLOPE
  for side in (-1,1):
   z=side*depth/2
   for i,x in enumerate([-3.80,-1.30,1.24,3.82]):
@@ -82,10 +105,10 @@ def snow_shed(full):
     g.box(x,off(x)+1.11,z,b-a,1.16,.085,'weatherwood',True)
     g.beam((a,off(a)+1.10,z+.085),(b,off(b)+2.25,z+.085),.12,.13,'larch')
  if full:
-  a=-4.25;b=4.25
+  portal_x=-4.25;summit_x=4.25
   for z0,y0,z1,y1 in ((-2.53,eave-.01,0,eave+1.05),(0,eave+1.05,2.53,eave-.01)):
-   p=[(a,y0+off(a),z0),(a,y1+off(a),z1),(b,y1+off(b),z1),(b,y0+off(b),z0)]
-   g.panel(p,'weatherwood',True)
+   p=[(portal_x,y0+off(portal_x),z0),(portal_x,y1+off(portal_x),z1),(summit_x,y1+off(summit_x),z1),(summit_x,y0+off(summit_x),z0)]
+   g.deck(p,'weatherwood',.18,'larch')
    for x in [-4,-2,0,2,4]:g.beam((x,off(x)+y0-.04,z0),(x,off(x)+y1-.04,z1),.105,.10,'larch',True)
    rnd=Random(27 if z0<0 else 15)
    # A ragged drift catches against the downwind eave, with exposed larch between tongues.
@@ -93,7 +116,7 @@ def snow_shed(full):
     n=15;outer=[];inner=[]
     for j in range(n+1):
      x=start+(end-start)*j/n
-     a=.035+.014*rnd.random();b=a+depth*(sin(j*pi/n)**.64)*(.62+.4*rnd.random())
+     a=.035+.016*sin(j*.71);b=a+depth*(sin(j*pi/n)**.84)*(.76+.11*sin(j*.63)+.05*sin(j*.98))
      if z0==0:a,b=1-b,1-a
      def top(q):return (x,off(x)+y0+(y1-y0)*q+.027,z0+(z1-z0)*q)
      outer.append(top(a));inner.append(top(b))
@@ -107,17 +130,17 @@ def snow_shed(full):
  return g
 
 def car():
- g=Pair('funicular-car-02');w=6.85;d=2.72
+ g=Pair('funicular-car-02');w=6.85;d=2.72;axle=.30*sqrt(1+SLOPE*SLOPE)
  def wheels(x,z):
-  g.cyl((x,.30+x*.039,z-.11),(x,.30+x*.039,z+.11),.30,'darkiron',14,False,'steel')
-  g.cyl((x,.30+x*.039,z-.135),(x,.30+x*.039,z+.135),.105,'copper',10)
+  g.cyl((x,axle+x*SLOPE,z-.11),(x,axle+x*SLOPE,z+.11),.30,'darkiron',14,False,'steel')
+  g.cyl((x,axle+x*SLOPE,z-.135),(x,axle+x*SLOPE,z+.135),.105,'copper',10)
  for x in (-2.28,2.22):
   for z in (-.9,.9):wheels(x,z)
-  g.cyl((x,.3+x*.039,-.95),(x,.3+x*.039,.95),.095,'steel',10)
- g.beam((-3.18,.51-3.18*.039,0),(3.18,.51+3.18*.039,0),2.20,.23,'darkiron',True)
+  g.cyl((x,axle+x*SLOPE,-.95),(x,axle+x*SLOPE,.95),.095,'steel',10)
+ g.beam((-3.18,.51-3.18*SLOPE,0),(3.18,.51+3.18*SLOPE,0),2.20,.23,'darkiron',True)
  # Five stepped compartments, open side glazing and upholstered seats visible through the frames.
  for i in range(5):
-  x=-2.46+i*1.23;base=.66+i*.105
+  x=-2.46+i*1.23;base=.92+x*SLOPE
   g.box(x,base,0,1.225,.11,d-.12,'floorwood',True)
   for side in (-1,1):
    z=side*d/2
@@ -133,11 +156,11 @@ def car():
   # Stepped rounded roof across the body; a full top surface and curving edge strips.
   cross=[(-1.52,1.85),(-1.36,2.00),(-.88,2.10),(.88,2.10),(1.36,2.00),(1.52,1.85)]
   for (z0,y0),(z1,y1) in zip(cross,cross[1:]):
-   g.panel([(x-.625,base+y0,z0),(x-.625,base+y1,z1),(x+.625,base+y1,z1),(x+.625,base+y0,z0)],'ivory',True)
+   g.deck([(x-.625,base+y0,z0),(x-.625,base+y1,z1),(x+.625,base+y1,z1),(x+.625,base+y0,z0)],'ivory',.09,'ivory')
   if i in (1,3):
    g.box(x,base+2.11,0,.57,.12,.62,'steel',False)
    for a in range(4):g.box(x-.20+.13*a,base+2.232,0,.058,.024,.54,'darkiron',False)
- for side,x,bb in [(-1,-3.075,.66),(1,3.075,1.08)]:
+ for side,x,bb in [(-1,-3.075,.92-2.46*SLOPE),(1,3.075,.92+2.46*SLOPE)]:
   nose=x+side*.34
   g.box((nose+x)/2,bb+.065,0,.37,.63,d-.09,'red',True)
   g.box(nose,bb+.70,0,.13,.11,d-.16,'enamelblue',False)
@@ -149,8 +172,6 @@ def car():
   g.box(nose+side*.12,bb-.06,0,.29,.14,.42,'darkiron',True)
  for side,face in [(-1,'S'),(1,'N')]:
   g.sign((.15,1.19,side*(d/2+.078)),1.64,.28,face,'carname')
- g.box(-2.53,1.67,-d/2+.12,.81,.37,.04,'paper',False)
- g.sign((-2.53,1.85,-d/2+.092),.79,.31,'S','note')
  return g
 
 def arcade(full):
@@ -160,6 +181,13 @@ def arcade(full):
   g.box(xx,.07,0,.54,1.67,d,'ashlar',True)
  for xc in (-1.965,1.965):
   rad=1.70;spring=.90
+  if full:
+   # The two real barrel-vault soffits run the full depth through the arcade.
+   for j in range(16):
+    aa=pi*j/16;bb=pi*(j+1)/16
+    x0=xc+rad*cos(aa);x1=xc+rad*cos(bb)
+    y0=spring+rad*sin(aa);y1=spring+rad*sin(bb)
+    g.deck([(x0,y0+.10,-d/2+.12),(x0,y0+.10,d/2-.12),(x1,y1+.10,d/2-.12),(x1,y1+.10,-d/2+.12)],'ashlar',.10,'ashlar')
   for zz in (-d/2+.085,d/2-.085):
    for i in range(12):
     t0=i*pi/12;t1=(i+1)*pi/12

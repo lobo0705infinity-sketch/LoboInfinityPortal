@@ -1,5 +1,6 @@
 from math import sin,cos,pi
 from random import Random
+import numpy as np
 
 def roof_details(g,w,d,h,kind,variant):
  south=-d/2-.24;edge=d/2-1.55;left=-w/2-.21;right=w/2+.21;north=d/2+.14
@@ -13,7 +14,7 @@ def roof_details(g,w,d,h,kind,variant):
  rng=Random(sum(map(ord,variant)))
  # Snow forms wind-scoured tongues with alternating shoulders, never square plates.
  def sheet(a,b,c,e,fn,mt):
-  g.panel([(a,fn(a,c),c),(a,fn(a,e),e),(b,fn(b,e),e),(b,fn(b,c),c)],mt,True)
+  g.deck([(a,fn(a,c),c),(a,fn(a,e),e),(b,fn(b,e),e),(b,fn(b,c),c)],mt)
  def snow(a,b,z,depth,fn):
   n=max(5,int((b-a)*4.5));edge0=[];edge1=[]
   for j in range(n+1):
@@ -45,8 +46,8 @@ def roof_details(g,w,d,h,kind,variant):
    snow(a+.01,b-.06,south+.04,.65 if kind=='crew' else .37,Y)
    if kind=='crew':snow(a+.13,b-.19,min(-.20,edge-.45),.42,Y)
   for z in [south+.08,edge-.05]:
-   for m,mat in [(g.m,'larch'),(g.c,'darkiron')]:
-    p=[(left,h,z),(ridge,Y(ridge,z)-.02,z),(right,h,z)];m.tri(p if z<0 else p[::-1],mat)
+   p=[(left,h,z),(ridge,Y(ridge,z)-.02,z),(right,h,z)]
+   g.closed_plate(p,np.array([0,0,.12 if z<0 else -.12]),'larch','larch')
    for a,b in [(left,ridge),(ridge,right)]:g.beam((a,Y(a,z)-.055,z-.06),(b,Y(b,z)-.055,z-.06),.15,.16,'weatherwood',True)
   # King post and timber struts embedded in the triangular façade.
   for x in [ridge-w*.20,ridge,ridge+w*.20]:
@@ -68,7 +69,7 @@ def roof_details(g,w,d,h,kind,variant):
     def Y(x,z):return h+.12+.80*(z-z0)/(z1-z0)
     sheet(left,right,z0,z1,Y,'corrugated');snow(left+.09,right-.15,z0+.035,.42,Y)
     for x in (left,right):
-     g.m.tri([(x,h+.08,z0),(x,h+.92,z1),(x,h+.08,z1)],'larch')
+     g.closed_plate([(x,h+.08,z0),(x,h+.92,z1),(x,h+.08,z1)],np.array([.1 if x<0 else -.1,0,0]),'larch','larch')
     g.box(0,h+.09,z1+.07,w+.38,.76,.14,'glass',True)
     for j in range(8):g.box(left+.09+j*(right-left-.18)/7,h+.07,z1+.154,.065,.83,.06,'darkiron',False)
     g.beam((left,h+.93,z1),(right,h+.93,z1),.14,.14,'steel')
@@ -89,11 +90,11 @@ def roof_details(g,w,d,h,kind,variant):
   inset=.82 if kind=='ticket' else .70;ridgeZ=(south+edge)/2;rise=1.20 if kind=='ticket' else .90
   a=left+inset;b=right-inset;yl=h+.09;yr=h+rise
   roofmat='copper' if kind=='ticket' else 'slate'
-  g.panel([(left,yl,south),(a,yr,ridgeZ),(b,yr,ridgeZ),(right,yl,south)],roofmat,True)
-  g.panel([(a,yr,ridgeZ),(left,yl,edge),(right,yl,edge),(b,yr,ridgeZ)],roofmat,True)
+  g.deck([(left,yl,south),(a,yr,ridgeZ),(b,yr,ridgeZ),(right,yl,south)],roofmat)
+  g.deck([(a,yr,ridgeZ),(left,yl,edge),(right,yl,edge),(b,yr,ridgeZ)],roofmat)
   for xx,inn in [(left,a),(right,b)]:
    tri=[(xx,yl,south),(xx,yl,edge),(inn,yr,ridgeZ)]
-   for m,ma in [(g.m,roofmat),(g.c,'darkiron')]:m.tri(tri if xx==left else tri[::-1],ma)
+   g.deck(tri,roofmat)
   def Y(x,z):return yl+(yr-yl)*(z-south)/(ridgeZ-south)
   snow(left+.50,right-.54,south+.025,.48,Y)
   g.beam((a,yr+.025,ridgeZ),(b,yr+.025,ridgeZ),.13,.10,'copper')
@@ -108,7 +109,7 @@ def roof_details(g,w,d,h,kind,variant):
     g.cyl((0,yr+.49,z+face*(s/2+.035)),(0,yr+.49,z+face*(s/2+.041)),.219,'ivory',20)
     g.beam((-.11,yr+.58,z+face*.397),(0,yr+.49,z+face*.397),.035,.028,'darkiron')
     g.beam((0,yr+.49,z+face*.397),(.14,yr+.53,z+face*.397),.027,.027,'darkiron')
-   for x0,z0,x1,z1 in [(-.49,-.49,-.49,.49),(-.49,.49,.49,.49),(.49,.49,.49,-.49),(.49,-.49,-.49,-.49)]:g.m.tri([(x0,yr+.87,z+z0),(0,yr+1.39,z),(x1,yr+.87,z+z1)],'copper')
+   for x0,z0,x1,z1 in [(-.49,-.49,-.49,.49),(-.49,.49,.49,.49),(.49,.49,.49,-.49),(.49,-.49,-.49,-.49)]:g.deck([(x0,yr+.87,z+z0),(0,yr+1.39,z),(x1,yr+.87,z+z1)],'copper',.06,'copper',False)
    g.cyl((0,yr+1.38,z),(0,yr+1.65,z),.038,'brass',8)
   else:chimney(-w*.24,ridgeZ,yr-.14,.64)
  else:
@@ -117,7 +118,7 @@ def roof_details(g,w,d,h,kind,variant):
   sheet(left,right,south,edge,Y,'corrugated' if kind=='relay' else 'slate')
   for xx in [left,right]:
    tri=[(xx,h+.045,south),(xx,h+pitch+.11,edge),(xx,h+.045,edge)]
-   for m,ma in [(g.m,'larch'),(g.c,'darkiron')]:m.tri(tri if xx==left else tri[::-1],ma)
+   g.closed_plate(tri,np.array([.10 if xx==left else -.10,0,0]),'larch','larch')
   g.box(0,h+.04,edge,w+.34,pitch,.09,'larch',True)
   g.beam((left,h+.18,south),(right,h+.18,south),.14,.13,'copper')
   snow(left+.06,right-.09,south+.06,.50,Y);chimney(-w*.24,edge-.40,Y(0,edge-.4)-.08,.63,kind=='relay')

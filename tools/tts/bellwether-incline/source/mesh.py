@@ -16,7 +16,7 @@ NAMES=[
 UV={}
 for i,n in enumerate(NAMES):
  x=i%8*512;y=i//8*512;UV[n]=(x+3,y+3,x+509,y+509)
-SIGNS=["station","parcel","platform","test","cafe","note","brakeshop","staff","tickets","carname","bellmark","numbers","winding","timetable","stores","parcelmark","locker","recorders","poster1","poster2","poster3","mapprint"]
+SIGNS=["station","parcel","platform","test","cafe","spare-enamel","brakeshop","staff","tickets","carname","bellmark","numbers","winding","timetable","stores","parcelmark","locker","recorders","poster1","poster2","poster3","mapprint"]
 for i,n in enumerate(SIGNS):
  if i<18:
   x=(i%4)*1024;y=2048+(i//4)*256;UV[n]=(x+4,y+4,x+1020,y+252)
@@ -93,7 +93,7 @@ class Mesh:
   # Right as read by an observer facing the wall.
   rx,rz={'S':(1,0),'N':(-1,0),'W':(0,-1),'E':(0,1)}[face]
   pts=[(x-rx*w/2,y-h/2,z-rz*w/2),(x+rx*w/2,y-h/2,z+rz*w/2),(x+rx*w/2,y+h/2,z+rz*w/2),(x-rx*w/2,y+h/2,z-rz*w/2)]
-  # Write the outward face with its UVs ordered left to right.
+  # The face is double-sided; UVs on the outward side read left to right.
   l,t,r,b=UV[graphic];uv=[(l/TOTAL,1-b/TOTAL),(r/TOTAL,1-b/TOTAL),(r/TOTAL,1-t/TOTAL),(l/TOTAL,1-t/TOTAL)]
   self.add(pts[::-1],uv[::-1])
  def write(self,filename,collider=False):
@@ -119,6 +119,18 @@ class Pair:
   self.m.cyl(a,b,r,mat,sides,cap)
   if physical:self.c.cyl(a,b,r,'darkiron',min(8,sides))
  def sign(self,p,w,h,face,graphic):self.m.sign(p,w,h,face,graphic)
+ def closed_plate(self,points,direction,material,back,physical=True):
+  outer=np.asarray(points,dtype=float)
+  normal=np.cross(outer[1]-outer[0],outer[2]-outer[0])
+  if np.dot(normal,direction)>0:outer=outer[::-1]
+  inner=outer+direction
+  for mesh,front,rear in [(self.m,material,back)]+([(self.c,'darkiron','darkiron')] if physical else []):
+   draw=mesh.quad if len(outer)==4 else mesh.tri
+   draw(outer,front);draw(inner[::-1],rear)
+   for i in range(len(outer)):
+    j=(i+1)%len(outer);mesh.quad([outer[i],inner[i],inner[j],outer[j]],rear)
+ def deck(self,points,material,thickness=.14,under='weatherwood',physical=True):
+  self.closed_plate(points,np.array([0,-thickness,0]),material,under,physical)
  def panel(self,pts,mat,physical=False):
   self.m.quad(pts,mat)
   if physical:self.c.quad(pts,'darkiron')
