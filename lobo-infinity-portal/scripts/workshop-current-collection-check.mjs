@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path/posix'
 import { loboWorkshopMaps, archivedLoboWorkshopMaps, loboWorkshopMapBySlug, loboWorkshopMapSections, resolveLoboWorkshopMapLabel } from '../shared/lobo-workshop-maps.mjs'
 import { buildMapRatings } from '../src/public/mapRatings.ts'
 import current from '../shared/lobo-workshop-current.json' with { type: 'json' }
@@ -146,7 +147,15 @@ assert.equal(cairnfall.guid, '100326')
 assert.deepEqual(cairnfall.missionSetups, ['Battleground'])
 assert.equal(cairnfall.reviewStatus, 'approved')
 assert.equal(cairnfall.objectCount, 87)
-assert.equal(cairnfall.installer, current.installer)
+assert.match(cairnfall.installer, /Cairnfall-Sanctuary-Final-Workshop-Installer\.zip$/)
+const vanta = loboWorkshopMapBySlug.get('vanta-customs-yard')
+assert.equal(vanta.guid, '810053')
+assert.deepEqual(vanta.missionSetups, ['B-Pong'])
+assert.equal(vanta.objectCount, 53)
+assert.match(vanta.installer, /Vanta-Customs-Yard-Workshop-Installer-R4\.zip$/)
+assert.ok(existsSync('public' + vanta.installer))
+assert.equal(dirname(current.installer), dirname(current.releaseInventory))
+assert.ok(loboWorkshopMaps.some(map => map.installer === current.installer), 'The collection installer belongs to a current map')
 assert.ok(existsSync('public' + cairnfall.installer))
 assert.ok(existsSync('public' + saltwick.installer))
 assert.ok(existsSync('public' + palace.installer))
