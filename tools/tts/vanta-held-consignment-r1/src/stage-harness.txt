@@ -1,0 +1,54 @@
+lua.globals().decode=lambda t:lua.table_from(json.loads(t),recursive=True)
+lua.execute("""
+JSON={decode=decode}
+Global={getVar=function() return 0 end,setVar=function() end}
+Wait={frames=function(f,n)f()end}
+loboLifeCall=function()end; loboZoneWrite=function()end
+broadcastToAll=function()end;broadcastToColor=function()end
+objects={};byGuid={}
+function vec(x,y,z)return {x=x,y=y,z=z,x,y,z}end
+function getObjectFromGUID(g)return byGuid[g]end
+function getAllObjects()return objects end
+function add_object(g,n,t,pos,rot,tags,lock)
+ local o={type=t,tag=t,p=vec(pos[1],pos[2],pos[3]),r=vec(rot[1],rot[2],rot[3]),locked=lock,gone=false}
+ o.getGUID=function()return g end; o.getName=function()return n end
+ o.getTags=function()return tags end; o.hasTag=function(s)for _,v in ipairs(tags)do if s==v then return true end end return false end
+ o.isDestroyed=function()return o.gone end;o.destruct=function()o.gone=true end
+ o.getPosition=function()return o.p end;o.getRotation=function()return o.r end
+ o.setPosition=function(v)o.p=vec(v[1],v[2],v[3])end;o.setRotation=function(v)o.r=vec(v[1],v[2],v[3])end
+ o.getLock=function()return o.locked end;o.setLock=function(v)o.locked=v end
+ o.getVar=function()return nil end;o.getTable=function()return nil end
+ o.setVelocity=function()end;o.setAngularVelocity=function()end
+ objects[#objects+1]=o;byGuid[g]=o
+end
+""")
+for o in table['ObjectStates']:
+    vals=[o['Transform'][k] for k in axes]
+    lua.globals().add_object(o['GUID'],o.get('Nickname',''),o['Name'],lua.table_from(vals[:3]),lua.table_from(vals[3:]),lua.table_from(o.get('Tags',[])),o.get('Locked',False))
+lua.execute(owner[owner.index('do\n local config=JSON.decode('):owner.index(' function loboStandardMissionOpen(player)')]+'\nend')
+for iteration in [1,2]:
+    lua.globals().loboRotateMap180('Blue')
+    assert lua.globals().LOBO_MAP_ROTATION_FLIPPED==(iteration==1)
+    for o in roots:
+        f=lua.globals().getObjectFromGUID(o['GUID']);t=o['Transform'];direction=(-1)**iteration
+        assert abs(f.p.x-direction*t['posX'])<1e-7 and abs(f.p.z-direction*t['posZ'])<1e-7 and abs(f.p.y-t['posY'])<1e-7
+        assert abs((f.r.y-t['rotY']-180*iteration+180)%360-180)<1e-7
+        assert f.locked==o.get('Locked',False)
+for o in keep:
+    if 'LoboTableTool' in o.get('Tags',[]):
+        f=lua.globals().getObjectFromGUID(o['GUID']);assert f.p.x==o['Transform']['posX'] and f.p.z==o['Transform']['posZ']
+lua.execute(stage)
+lua.globals().prs=','.join(bag['LuaScript'].splitlines())+','
+for o in roots:
+    f=lua.globals().getObjectFromGUID(o['GUID'])
+    if f.hasTag('LoboManagedPlacement'):continue
+    lua.execute('ss=...;zz=0;z2=0;uls=""',o['GUID'])
+    f.setPosition(lua.table_from([0,-8,0]))
+    lua.globals().popSet()
+    got=[f.p.x,f.p.y,f.p.z,f.r.x,f.r.y,f.r.z]
+    assert all(abs(v-o['Transform'][k])<1e-7 for k,v in zip(axes,got)), (o['GUID'],o['Nickname'],got,[o['Transform'][k] for k in axes],lua.globals().ss,lua.globals().zz)
+    lua.globals().popSet()
+    assert lua.globals().ss==''
+assert lua.globals().loboClearOwnedMaps()==len(roots)
+assert all(lua.globals().byGuid[o['GUID']].gone for o in roots)
+assert not any(lua.globals().byGuid[o['GUID']].gone for o in keep)
