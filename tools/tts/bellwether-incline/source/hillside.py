@@ -4,6 +4,7 @@ import numpy as np
 from shapely import Polygon, box, constrained_delaunay_triangles, get_parts
 from shapely.geometry.polygon import orient
 from mesh import Pair,Mesh
+from granite import build_bank
 
 SLOPE=13.5/48
 TRACK_Z=5.55
@@ -105,41 +106,15 @@ def cliff_panel(g,points,uv,normal):
     triangle=[section[0],section[j],section[j+1]]
     g.m.add([a[:3] for a in triangle],[np.clip(a[3:]-(u,v),0,1) for a in triangle])
 
-def exposed_wall(rock,stone,x0,z0,x1,z1,high,boundary):
+def retaining_cap(stone,x0,z0,x1,z1,high,boundary):
+ if boundary:return
  dx=x1-x0;dz=z1-z0;length=sqrt(dx*dx+dz*dz)
  if length<.0001:return
- # Polygons are oriented CCW in the x/z plan; the exterior lies to the right.
- nx,nz=dz/length,-dx/length
- count=max(1,int(ceil(length/.58)))
- def sample(t):
-  x=x0+dx*t;z=z0+dz*t
-  return x,z,surface(x+nx*.003,z+nz*.003)
+ nx,nz=dz/length,-dx/length;count=max(1,int(ceil(length/.58)))
  for i in range(count):
-  a=i/count;b=(i+1)/count;cx,cz,low=sample((a+b)/2)
-  if high-low<.022:continue
-  x,z,_=sample(a);xx,zz,_=sample(b)
-  # Ramps on the other side of a boundary are continuous.
-  if abs(cz-SOUTH_EDGE)<.002 or abs(cz-NORTH_EDGE)<.002:
-   h0,h1=grade(x)-.39,grade(xx)-.39
-  else:h0=h1=low
-  if h0>=high and h1>=high:continue
-  h0=min(high-.002,h0);h1=min(high-.002,h1)
-  normal=(nx,0,nz)
-  # A natural face is rough below its dressed cap. Stay inside the board perimeter.
-  def profile(x,z,t):
-   face=.14+.16*sin(x*1.8+z*.77)+.055*sin(x*2.2-z*2.6)
-   return (1 if not boundary else -1)*max(.03,face)*sin(pi*t)
-  for ta,tb in ((0,.27),(.27,.58),(.58,.84),(.84,1)):
-   va=[];ua=[]
-   for px,pz,bot,t in [(x,z,h0,ta),(xx,zz,h1,ta),(xx,zz,h1,tb),(x,z,h0,tb)]:
-    y=bot+(high-bot)*t;shift=profile(px,pz,t)
-    va.append((px+nx*shift,y,pz+nz*shift))
-    # The photographic stone repeats every 5.2 inches along the face.
-    ua.append(((px*.79+pz*.72)/5.2,y/5.2))
-   cliff_panel(rock,va,ua,normal)
-  if not boundary:
-   # The coping is fitted to the terrace lip. Keep it below the walking surface.
-   stone.beam((x-nx*.02,high-.12,z-nz*.02),(xx-nx*.02,high-.12,zz-nz*.02),.16,.19,'concrete')
+  a=i/count;b=(i+1)/count;m=(a+b)/2
+  if high-surface(x0+dx*m+nx*.003,z0+dz*m+nz*.003)<.022:continue
+  stone.beam((x0+dx*a-nx*.02,high-.12,z0+dz*a-nz*.02),(x0+dx*b-nx*.02,high-.12,z0+dz*b-nz*.02),.16,.19,'concrete')
 
 def outside(x,z):
  return abs(abs(x)-24)<.001 or abs(abs(z)-24)<.001
@@ -158,9 +133,9 @@ def closed_profile(mesh,section,front,back):
 
 def landforms():
  ground=Pair('survey-mat');rock=Pair('railway-foundation');stone=Pair('terrace-coping')
- banks={side:Pair('granite-bank-'+side) for side in LINES}
- collision_skin={side:Mesh('granite-bank-'+side+'-collider') for side in LINES}
+ banks={}
  for side,(lo,hi) in {'south':(-24,SOUTH_EDGE),'north':(NORTH_EDGE,24)}.items():
+  areas=[]
   boundaries=[[(lo,-24),(hi,-24)]]+LINES[side]+[[(lo,24),(hi,24)]]
   for k,(left,right) in enumerate(zip(boundaries,boundaries[1:])):
    poly=Polygon([(x,z) for z,x in left]+[(x,z) for z,x in reversed(right)])
@@ -168,35 +143,31 @@ def landforms():
     poly=poly.difference(box(a,zc-STAIR_WIDTH/2,a+STAIR_LENGTH,zc+STAIR_WIDTH/2))
    for p in polygons(poly):
     p=orient(p,sign=1)
-    for tri in get_parts(constrained_delaunay_triangles(p)):top_triangle(ground,list(tri.exterior.coords)[:3],LEVELS[k])
+    areas.append((LEVELS[k],p))
+    for tri in get_parts(constrained_delaunay_triangles(p)):
+     xy=list(tri.exterior.coords)[:3]
+     pts=[(x,LEVELS[k],z) for x,z in xy]
+     if np.cross(np.subtract(pts[1],pts[0]),np.subtract(pts[2],pts[0]))[1]<0:pts.reverse()
+     ground.c.add(pts,[ground_uv(x,z) for x,_,z in pts])
     for ring in [p.exterior,*p.interiors]:
      pts=list(ring.coords)
      for (x,z),(xx,zz) in zip(pts,pts[1:]):
-      exposed_wall(banks[side],stone,x,z,xx,zz,LEVELS[k],outside((x+xx)/2,(z+zz)/2))
-      # The separate survey mat carries the flat floors. A single plane per
-      # retaining edge provides lateral collision below it without faceting the rock.
-      cap=LEVELS[k]
-      collision_skin[side].quad([(x,BASE,z),(x,cap,z),(xx,cap,zz),(xx,BASE,zz)],'darkiron')
- for side,bank in banks.items():bank.c=collision_skin[side]
+      retaining_cap(stone,x,z,xx,zz,LEVELS[k],outside((x+xx)/2,(z+zz)/2))
+  banks[side]=build_bank(side,areas,ground,BASE,LEVELS)
  foundation_collider=Mesh('railway-foundation-collider')
  closed_profile(foundation_collider,[(-24,BASE),(24,BASE),(24,grade(24)-.39),(-24,grade(-24)-.39)],SOUTH_EDGE,NORTH_EDGE)
  # The physical core continues underneath each rail, all the way to both board edges.
  l,r=-24,24;s,n=SOUTH_EDGE,NORTH_EDGE
  for x in range(-24,24):
-  a=float(x);b=a+1
-  hs=grade(a)-.39;he=grade(b)-.39
+  a=float(x);b=a+1;hs=grade(a)-.39;he=grade(b)-.39
   cliff_panel(rock,[(a,hs,s),(a,hs,n),(b,he,n),(b,he,s)],[(0,0),(0,1),(1,1),(1,0)],(-SLOPE,1,0))
   for z,norm in [(s,(0,0,-1)),(n,(0,0,1))]:
-   for t in np.linspace(0,1,5)[:-1]:
-    aa=a+t;bb=aa+.25;plate=apron((aa+bb)/2,z)
-    h0=grade(aa)-.39;h1=grade(bb)-.39
-    if (h0+h1)/2>plate+.0005:
-     cliff_panel(rock,[(aa,plate,z),(bb,plate,z),(bb,h1,z),(aa,h0,z)],[(aa/5,plate/5),(bb/5,plate/5),(bb/5,h1/5),(aa/5,h0/5)],norm)
+   cliff_panel(rock,[(a,BASE,z),(b,BASE,z),(b,he,z),(a,hs,z)],[(a/5,BASE/5),(b/5,BASE/5),(b/5,he/5),(a/5,hs/5)],norm)
  for x,norm in [(l,(-1,0,0)),(r,(1,0,0))]:
   hh=grade(x)-.39
   cliff_panel(rock,[(x,BASE,s),(x,BASE,n),(x,hh,n),(x,hh,s)],[(0,0),(1.25,0),(1.25,hh/5),(0,hh/5)],norm)
  # Bottom closes the complete solid against the permanent 3-inch platform.
- cliff_panel(rock,[(l,BASE,-24),(r,BASE,-24),(r,BASE,24),(l,BASE,24)],[(0,0),(1,0),(1,1),(0,1)],(0,-1,0))
+ cliff_panel(rock,[(l,BASE,s),(r,BASE,s),(r,BASE,n),(l,BASE,n)],[(0,0),(1,0),(1,1),(0,1)],(0,-1,0))
  # Each opening has permanent granite underneath the separately loaded treads.
  for a,z,k in GATES:
   low,high=LEVELS[k:k+2];mid=(low+high)/2
