@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-26",
-  "download": "/assets/maps/cairnfall-courtyards-final-20261126/Lobo-Infinity-Map-Bags.zip",
+  "updatedAt": "2026-11-27",
+  "download": "/assets/maps/vanta-customs-yard-r4-20261127/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -129,11 +129,11 @@
         "B-Pong"
       ],
       "exactDuplicateOf": null,
-      "objectCount": 50,
-      "sourceNote": "Official Vanta Customs Yard layout approved on 17 November 2026. Furnished interiors, integrated floors, rooftop freight that follows building states, and repaired roof collision surfaces. Exported terrain previews; live TTS testing remains unverified.",
-      "overhead": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead.webp",
-      "angled": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled.webp",
-      "download": "/assets/maps/army-sideboards-20261126/810053.json",
+      "objectCount": 53,
+      "sourceNote": "Vanta Customs Yard R4 uses Lobo’s TS_Save_448 layout for B-Pong. The mat follows the turned weighbridge and scanner, the inspection lorry and the Quarantine shore-power run. The Workshop installer includes the 107-map catalogue and a playable Vanta table.",
+      "overhead": "/assets/maps/vanta-customs-yard-r4-20261127/vanta-customs-yard-overhead.webp",
+      "angled": "/assets/maps/vanta-customs-yard-r4-20261127/vanta-customs-yard-angled.webp",
+      "download": "/assets/maps/vanta-customs-yard-r4-20261127/810053.json",
       "isCurrent": true,
       "previewKind": "geometry",
       "sourceOverhead": null,
@@ -144,12 +144,12 @@
         "SET_ITS18 B-Pong — Vanta Customs Yard",
         "ITS18 B-Pong — Vanta Customs Yard"
       ],
-      "installer": "/assets/maps/missiongeist-controls-20261125/Vanta-MissionGeist-Installer.zip",
-      "previewBagSha256": "222167732cb3c930b9904423f7f7fb7a531f1a72b6e157bfe705b31bba16f19b",
-      "previewUpdatedAt": "2026-11-18",
-      "previewManifest": "/assets/maps/army-sideboards-20261126/previews/vanta-customs-yard-preview.json",
-      "overheadThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-overhead-thumb.webp",
-      "angledThumb": "/assets/maps/library-previews-20261118/vanta-customs-yard-angled-thumb.webp"
+      "installer": "/assets/maps/vanta-customs-yard-r4-20261127/Lobo-Vanta-Customs-Yard-Workshop-Installer-R4.zip",
+      "previewBagSha256": "600a98296dc1ae9611e05c4843a368afeced9dbe5c13ec411cdf3178cdfe2f9c",
+      "previewUpdatedAt": "2026-11-27",
+      "previewManifest": "/assets/maps/vanta-customs-yard-r4-20261127/vanta-customs-yard-preview.json",
+      "overheadThumb": "/assets/maps/vanta-customs-yard-r4-20261127/vanta-customs-yard-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/vanta-customs-yard-r4-20261127/vanta-customs-yard-angled-thumb.webp"
     },
     {
       "index": 7,
@@ -802,9 +802,9 @@
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "cairnfall-sanctuary-final-445",
-  "installer": "/assets/maps/cairnfall-courtyards-final-20261126/Lobo-Cairnfall-Sanctuary-Final-Workshop-Installer.zip",
-  "releaseInventory": "/assets/maps/cairnfall-courtyards-final-20261126/release-inventory.json",
-  "previewUpdatedAt": "2026-11-26",
-  "workshopSaveName": "Lobo Maps - Cairnfall Sanctuary Final - Workshop Collection"
+  "downloadRevision": "vanta-customs-yard-r4-448",
+  "installer": "/assets/maps/vanta-customs-yard-r4-20261127/Lobo-Vanta-Customs-Yard-Workshop-Installer-R4.zip",
+  "releaseInventory": "/assets/maps/vanta-customs-yard-r4-20261127/release-inventory.json",
+  "previewUpdatedAt": "2026-11-27",
+  "workshopSaveName": "Lobo Maps - Vanta Customs Yard R4 - Workshop Collection"
 }
