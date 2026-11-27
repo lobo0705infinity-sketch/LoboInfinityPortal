@@ -1,0 +1,26 @@
+{
+ "c70007": {
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70007-command-observatory-roof-on.obj": "port-c70007.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70007-command-observatory-roof-on-collider.obj": "port-c70007-c.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70009-command-observatory-ground-floor-exposed.obj": "port-c70009.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70009-command-observatory-ground-floor-exposed-collider.obj": "port-c70009-c.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70008-command-observatory-upper-floor-exposed.obj": "port-c70008.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c70008-command-observatory-upper-floor-exposed-collider.obj": "port-c70008-c.obj"
+ },
+ "c70025": {
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7c100-pressure-frame.obj": "port-c70025.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7c100-pressure-frame-collider.obj": "port-c70025-c.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7c101-ground-floor.obj": "port-c70026.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7c101-ground-floor-collider.obj": "port-c70026-c.obj"
+ },
+ "c7a300": {
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c7000b-hydroponic-biosphere-roof-on.obj": "port-c7a300.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r13/c7000b-hydroponic-biosphere-roof-on-collider.obj": "port-c7a300-c.obj"
+ },
+ "c7002b": {
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7002b-four-way-pressure-transit-node-roof-on.obj": "port-c7002b.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7002b-four-way-pressure-transit-node-roof-on-collider.obj": "port-c7002b-c.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7002c-four-way-pressure-transit-node-ground-floor-expose.obj": "port-c7002c.obj",
+  "https://raw.githubusercontent.com/lobo0705infinity-sketch/LoboInfinityPortal/732fc9377335d0c626b7a00e2f586014162cd229/lobo-infinity-portal/public/assets/maps/kestrel-lunar-20261102-r15-doorways/c7002c-four-way-pressure-transit-node-ground-floor-expose-collider.obj": "port-c7002c-c.obj"
+ }
+}
