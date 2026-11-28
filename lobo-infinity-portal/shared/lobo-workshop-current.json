@@ -448,7 +448,8 @@
       "previewBagSha256": "6c2f5b1caccd998ee8e6722003ad3220d703772f1e7191351e9b0c2fc32beafd",
       "previewUpdatedAt": "2026-11-28",
       "previewManifest": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-preview.json",
-      "installer": "/assets/maps/fort-frolic-r5-20261128/Fort-Frolic-R5-Workshop-Installer.zip"
+      "installer": "/assets/maps/fort-frolic-r5-20261128/Fort-Frolic-R5-Workshop-Installer.zip",
+      "reviewStatus": "approved"
     },
     {
       "index": 21,
