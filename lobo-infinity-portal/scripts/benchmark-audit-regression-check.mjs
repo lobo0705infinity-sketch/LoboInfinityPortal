@@ -64,6 +64,12 @@ for (const spelling of ['Immunity(Shock)', 'Immunity (Shock)']) near(effect({ ..
 
 assert.equal(pool({ ...p, skills: ['BS Attack(+1B)'] }, p, mode, 0, true).burst, 1)
 assert.equal(pool({ ...p, skills: ['Neurocinetics'] }).burst, 1)
+for (const skill of ['Neurocinetics +1B', 'Neurocinetics (+1B)', 'Neurocinetics [+1B]']) {
+  const defender = { ...p, skills: [skill] }
+  assert.equal(pool(defender).burst, 1, skill + ' in the active turn')
+  assert.equal(pool(defender, p, mode, 0, true).burst, 4, skill + ' with a Viral Rifle in ARO')
+  assert.equal(pool(defender, p, { ...mode, attackType: 'direct-template', burst: 1 }, 0, true).burst, 2, skill + ' with a Chain Rifle in ARO')
+}
 assert.equal(pool({ ...p, skills: ['Neurocinetics', 'BS Attack(+1B)'] }, p, mode, 0, true).burst, 4)
 assert.equal(pool({ ...p, skills: ['Total Reaction', 'BS Attack(+1B)'] }, p, mode, 0, true).burst, 4)
 assert.equal(pool(p, p, { ...mode, burst: 6, burstBonus: 2 }).burst, 6)

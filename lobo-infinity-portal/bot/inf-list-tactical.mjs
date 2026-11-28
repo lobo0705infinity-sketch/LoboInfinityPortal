@@ -2,6 +2,7 @@ import { applyTeamOpsToUnit, teamOpsUpgradeLabels } from './team-ops-upgrades.mj
 import { canonicalMemberships, eligibleLevel2Teams } from './fireteam-list-eligibility.mjs'
 import { lookupMobileGunfighter } from './mobile-gunfighter.mjs'
 import { lookupMobility } from './mobility-lookup.mjs'
+import { neurocineticsBurstBonus } from './combat-rules.mjs'
 import { decodeArmyCode } from '../scripts/infinity-army-decode.mjs'
 import { buildCanonicalDataset, resolveCanonicalWeaponRecords } from '../scripts/infinity-army-canonical-dataset.mjs'
 import { resolveExactProfileGroup } from '../scripts/infinity-army-profile-resolution.mjs'
@@ -164,7 +165,12 @@ export function classifyTacticalBrief(profiles, army = {}, gunfighterRatings = [
     const nativeSdBonus = bsAttackSdBonus(profile.skills)
     const qualifyingFireteams = (profile.fireteamTeams || []).filter((team) => eligibleFireteams.get(profile.combinedId)?.has(team))
     const fireteamSdBonus = qualifyingFireteams.length ? 1 : 0
-    const activeWeapons = profile.weapons.map((weapon) => ({ ...weapon, baseBurst: weapon.burst, burst: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon) }))
+    const hasNeurocinetics = neurocineticsBurstBonus(profile.skills) !== null
+    const activeWeapons = profile.weapons.map((weapon) => {
+      let burst = weapon.burst
+      if (burst !== null) burst = hasNeurocinetics && isRangedWeapon(weapon) ? 1 : burst + burstBonus + weaponBurstBonus(weapon)
+      return { ...weapon, baseBurst: weapon.burst, burst }
+    })
     const effectiveWeapons = activeWeapons.map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + nativeSdBonus + fireteamSdBonus + weaponSdBonus(weapon) }))
     const apexWeapons = effectiveWeapons.filter((weapon) => apexGunfighterWeaponToken(weaponDisplay(weapon)) && isRangedWeapon(weapon) && (weapon.burst >= 5 || (profile.bs >= 14 && weapon.burst >= 4) || (profile.bs === 13 && weapon.burst >= 4 && enhancements.length)))
     if (apexWeapons.length) result.apex.push({ ...profile, badges: enhancements, qualifyingWeapons: apexWeapons })
@@ -517,7 +523,6 @@ function verifiedRulesCardWeapon(cardName) {
   return { burst: 3, burstStatus: 'verified-rules', mode: 'AP Mode', modifiers: [], name: 'MULTI Rifle', type: 'WEAPON' }
 }
 function totalReactionToken(v) { return /^total reaction$/.test(normalized(v)) }
-function neurocineticsToken(v) { return /^neurocinetics$/.test(normalized(v)) }
 function bsAttackSdToken(v) { return /^bs attack\s+\+(?:\d+\s*)?sd$/.test(normalized(v)) }
 function bsAttackSdBonus(skills) { for (const skill of skills || []) { const match = normalized(skill).match(/^bs attack\s+\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }
 function weaponSdBonus(weapon) { for (const modifier of weapon?.modifiers || []) { const match = normalized(modifier).match(/^\+(?:(\d+)\s*)?sd$/); if (match) return Number(match[1] || 1) } return 0 }

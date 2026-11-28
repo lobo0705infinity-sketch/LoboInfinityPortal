@@ -211,6 +211,18 @@ assert.equal(benchmarkGamma?.aro?.normal?.grade, 'A')
 assert.equal(benchmarkGamma?.aro?.normal?.weaponsUsed[0]?.weapon, 'Feuerbach')
 assert.equal(benchmarkGamma?.aro?.fireteam, undefined, 'a catalog Fireteam state is hidden unless the submitted list earns +1SD')
 
+const sunduqbut = entry('402-1590-1-5-1', 'SUNDUQBUT', 'Neurocinetics (+1B)', {
+  bs: 13, points: 38, skills: ['Neurocinetics (+1B)'], weapons: ['Viral Rifle', 'Chain Rifle'],
+  weaponProfiles: [canonicalBurst('Viral Rifle', 3), canonicalBurst('Chain Rifle', 1)],
+})
+const sunduqbutAnalysis = buildTacticalAnalysis([decodedList('Double Sunduqbut', [sunduqbut, sunduqbut])] as never)
+const sunduqbutCard = sunduqbutAnalysis.categories.find(category => category.id === 'valuableAro')?.profiles[0]
+assert.equal(sunduqbutCard?.aro?.normal?.rating, 8.99)
+assert.equal(sunduqbutCard?.aro?.normal?.grade, 'S')
+assert.equal(sunduqbutCard.aro?.fireteam, undefined)
+assert.ok(sunduqbutCard.badges.includes('Neurocinetics (+1B)'))
+assert.deepEqual(sunduqbutCard.weapons.map(weapon => weapon.effectiveBurst), [1, 1])
+
 const gammaFireteam = { state: 'verified', verified: true, teams: ['Gamma'] }
 const linkedBenchmarkAro = buildTacticalAnalysis([decodedList('Linked ARO benchmark', [
   { ...gammaFeuerbach, fireteamEligibility: gammaFireteam },

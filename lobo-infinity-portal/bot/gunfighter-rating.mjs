@@ -1,4 +1,4 @@
-import { traitTokens, criticalRank, successValue, coverBenefits, resolveSavingEffects } from './combat-rules.mjs'
+import { traitTokens, criticalRank, successValue, coverBenefits, neurocineticsBurstBonus, resolveSavingEffects } from './combat-rules.mjs'
 
 export const STANDARD_RANGE_BANDS = Object.freeze([
   { id: '0-8', min: 0, max: 8, weight: 0.05 },
@@ -407,11 +407,13 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   const nativeBs = numericModifier(skills, /^bs attack\s*\+(\d+)(?:\s*bs)?$/)
   modifiers += nativeBs
   if (nativeBs) modifierSources.push(formatModifier('BS Attack', nativeBs))
-  const fullBurstAro = has(skills, 'total reaction') || has(skills, 'neurocinetics')
-  const neuroActive = !aro && has(skills, 'neurocinetics')
-  const nativeBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(mode.burst)
-  const burstBonus = (!aro || fullBurstAro) && !neuroActive ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) : 0
-  const burst = Math.max(1, Math.min(6, nativeBurst + burstBonus))
+  const neuroBonus = neurocineticsBurstBonus(skills)
+  const useWeaponBurst = aro ? neuroBonus !== null || has(skills, 'total reaction') : neuroBonus === null
+  const baseBurst = useWeaponBurst ? Number(mode.burst) : 1
+  const burstBonus = useWeaponBurst
+    ? numericModifier(skills, /bs attack\s*\+?(\d+)\s*b$/) + Number(mode.burstBonus || 0) + (neuroBonus ?? 0)
+    : 0
+  const burst = Math.max(1, Math.min(6, baseBurst + burstBonus))
   if (burstBonus) modifierSources.push('Native Burst +' + burstBonus + 'B')
   const nativeSpecialDice = numericModifier(skills, /bs attack\s*\(?\s*\+?(\d+)\s*sd\s*\)?$/)
   const specialDice = mode.attackType === 'direct-template' || mode.longSkill ? 0 : Number(mode.specialDice || 0) + nativeSpecialDice + fireteamSpecialDice
@@ -420,7 +422,7 @@ export function buildAttackPool(attacker, defender, weapon, mode, rangeModifier,
   if (fireteamSpecialDice) modifierSources.push('Fireteam +1SD')
   const savingRollPenalty = Number(mode.savingRollPenalty || 0) + numericModifier(skills, /bs attack\s*sr-(\d+)/)
   const target = successValue(baseTarget, modifiers)
-  return { burst, specialDice, savingRollPenalty, shock: has(skills, 'bs attack shock'), continuousDamage: has(skills, 'bs attack continuous damage'), baseTarget, modifiers, modifierSources: modifierSources.filter(Boolean), disposableUses: mode.disposableUses, target, criticalTarget: target, source: [weapon.name, mode.name && '(' + mode.name + ')'].filter(Boolean).join(' ') }
+  return { burst, baseBurst, specialDice, savingRollPenalty, shock: has(skills, 'bs attack shock'), continuousDamage: has(skills, 'bs attack continuous damage'), baseTarget, modifiers, modifierSources: modifierSources.filter(Boolean), disposableUses: mode.disposableUses, target, criticalTarget: target, source: [weapon.name, mode.name && '(' + mode.name + ')'].filter(Boolean).join(' ') }
 }
 
 function formatModifier(label, value) { return Number(value) ? label + ' ' + (Number(value) > 0 ? '+' : '') + Number(value) : '' }

@@ -3,7 +3,7 @@ import { withResponseDetails } from './response-details.mjs'
 import { ApplicationCommandOptionType } from 'discord.js'
 import { resolve } from 'node:path'
 import { readArtifact } from '../scripts/benchmark-artifacts.mjs'
-import { normalizeTrait } from './combat-rules.mjs'
+import { neurocineticsBurstBonus, normalizeTrait } from './combat-rules.mjs'
 import { buildOfficialCombatSource } from './official-combat-source.mjs'
 import { evaluateGunfighterProfile } from './gunfighter-rating.mjs'
 import { renderMatchupImages } from './matchup-renderer.mjs'
@@ -151,11 +151,14 @@ export function annotateMatchupPool(pool, profile, { aro = false } = {}) {
   }
 
   const skills = (profile?.skills || []).map(normalizeTrait)
-  const fullBurstAro = skills.includes('total reaction') || skills.includes('neurocinetics')
-  const neuroActive = !aro && skills.includes('neurocinetics')
-  const baseBurst = (aro && !fullBurstAro) || neuroActive ? 1 : Number(entry.mode.burst || 1)
+  const neuroBonus = neurocineticsBurstBonus(skills)
+  const useWeaponBurst = aro ? neuroBonus !== null || skills.includes('total reaction') : neuroBonus === null
+  const baseBurst = pool.baseBurst ?? (useWeaponBurst ? Number(entry.mode.burst || 1) : 1)
   let remainingBurstBonus = Math.max(0, Number(pool.burst || 0) - baseBurst)
   const diceSources = []
+  const appliedNeuroBonus = aro ? Math.min(remainingBurstBonus, neuroBonus ?? 0) : 0
+  if (appliedNeuroBonus) diceSources.push('Neurocinetics +' + appliedNeuroBonus + 'B')
+  remainingBurstBonus -= appliedNeuroBonus
   const nativeBurstBonus = numericSkillModifier(skills, /bs attack\s*\+?(\d+)\s*b$/)
   const appliedNativeBurst = Math.min(remainingBurstBonus, nativeBurstBonus)
   if (appliedNativeBurst) diceSources.push(`Native BS Attack +${appliedNativeBurst}B`)

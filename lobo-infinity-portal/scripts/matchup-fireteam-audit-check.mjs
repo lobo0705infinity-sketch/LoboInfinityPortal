@@ -30,9 +30,13 @@ let nativeSpecialDiceModes = 0
 let nativeBurstProfiles = 0
 let nativeSpecialDiceProfiles = 0
 for (const profile of profiles) for (const weapon of profile.weapons || []) for (const mode of weapon.modes || []) {
-  const neurocinetics = (profile.skills || []).some((skill) => /^neurocinetics$/i.test(skill))
+  const neurocinetics = (profile.skills || []).some((skill) => /^neurocinetics\b/i.test(skill))
   const rawPool = buildAttackPool(profile, profile, weapon, mode, 0, profile.fireteamCapable ? 1 : 0, { cover: false }, { aro: neurocinetics })
   const pool = annotateMatchupPool(rawPool, profile, { aro: neurocinetics })
+  if (profile.id === '402:1590:1:5:1') {
+    assert.equal(pool.burst, Number(mode.burst) + 1, 'Sunduqbut uses full reactive Burst plus its skill bonus')
+    assert.deepEqual(pool.diceSources, ['Neurocinetics +1B'])
+  }
   const normalizedSkills = (profile.skills || []).map((skill) => String(skill).toLowerCase().replace(/[()[\]]/g, ' ').replace(/\s+/g, ' ').trim())
   const skillBurstBonus = normalizedSkills.reduce((sum, skill) => sum + Number(skill.match(/^bs attack\s*\+?(\d+)\s*b$/)?.[1] || 0), 0)
   const skillSpecialDice = normalizedSkills.reduce((sum, skill) => sum + Number(skill.match(/^bs attack\s*\+?(\d+)\s*sd$/)?.[1] || 0), 0)

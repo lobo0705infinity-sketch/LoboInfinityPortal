@@ -4,6 +4,16 @@ export const COMBAT_RULES_VERSION = 'n5.3-combat-audit-v2-continuous'
 export const clamp = (x, low, high) => Math.max(low, Math.min(high, Number(x)))
 export const normalizeTrait = value => String(value).toLowerCase().replace(/[−–]/g, '-').replace(/[()[\]]/g, ' ').replace(/\s+/g, ' ').trim()
 export const traitTokens = (values = []) => values.map(normalizeTrait)
+// Null means absent. Plain Neurocinetics grants full reactive Burst with a zero bonus.
+export function neurocineticsBurstBonus(skills = []) {
+  let bonus = null
+  for (const skill of skills) {
+    if (!/^\s*neurocinetics\b/i.test(skill)) continue
+    const match = normalizeTrait(skill).match(/^neurocinetics(?:\s*\+\s*(\d+)\s*b)?$/)
+    if (match) bonus = Math.max(bonus ?? 0, Number(match[1] ?? 0))
+  }
+  return bonus
+}
 export const profileTraits = profile => traitTokens([...(profile.skills || []), ...(profile.equipment || [])])
 export const successValue = (base, modifiers = 0) => Number(base) + clamp(modifiers, -12, 12)
 export function criticalRank(face, target) {
