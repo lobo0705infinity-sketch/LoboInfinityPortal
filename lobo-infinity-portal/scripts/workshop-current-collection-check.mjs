@@ -10,7 +10,8 @@ import communityArchive from '../shared/lobo-workshop-community-archive-20261116
 import { describePublicSearchPage } from '../shared/public-search-content.mjs'
 
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
-const tableCount = 21
+const tableCount = 22
+const twoLayoutMissions = new Set(['Crossing Lines', 'Double Bind'])
 assert.equal(loboWorkshopMaps.length, tableCount)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size, tableCount)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size, tableCount)
@@ -78,14 +79,14 @@ for(const map of loboWorkshopMaps){
  }
 }
 assert.equal(missions.size, 20)
-for (const [mission, keys] of missions) assert.equal(new Set(keys).size, mission === 'Crossing Lines' ? 2 : 1, `${mission} has its retained layouts`)
+for (const [mission, keys] of missions) assert.equal(new Set(keys).size, twoLayoutMissions.has(mission) ? 2 : 1, `${mission} has its retained layouts`)
 const grouped = loboWorkshopMapSections.flatMap(section => section.layouts.flatMap(layout => layout.saves.map(map => map.id)))
 assert.equal(grouped.length, tableCount)
 assert.equal(new Set(grouped).size, tableCount)
 assert.equal(loboWorkshopMapSections.length, 20)
 assert.deepEqual(loboWorkshopMapSections.map(section => section.title), [...missions.keys()].sort((a, b) => a.localeCompare(b)))
 for (const section of loboWorkshopMapSections) {
-  assert.equal(section.layouts.length, section.title === 'Crossing Lines' ? 2 : 1)
+  assert.equal(section.layouts.length, twoLayoutMissions.has(section.title) ? 2 : 1)
   for (const layout of section.layouts) assert.deepEqual(layout.saves[0].missionSetups, [section.title])
 }
 for (const map of loboWorkshopMaps) {
@@ -148,6 +149,14 @@ assert.deepEqual(cairnfall.missionSetups, ['Battleground'])
 assert.equal(cairnfall.reviewStatus, 'approved')
 assert.equal(cairnfall.objectCount, 87)
 assert.match(cairnfall.installer, /Cairnfall-Sanctuary-Final-Workshop-Installer\.zip$/)
+const fortFrolic = loboWorkshopMapBySlug.get('fort-frolic')
+assert.equal(fortFrolic.guid, 'f08001')
+assert.equal(fortFrolic.reviewStatus, 'approved')
+assert.equal(fortFrolic.objectCount, 88)
+assert.deepEqual(fortFrolic.missionSetups, ['Double Bind'])
+assert.match(fortFrolic.installer, /Fort-Frolic-R5-Workshop-Installer\.zip$/)
+assert.ok(existsSync('public' + fortFrolic.installer))
+assert.ok(describePublicSearchPage('/maps').links.some(link => link.href === '/maps/fort-frolic'))
 const vanta = loboWorkshopMapBySlug.get('vanta-customs-yard')
 assert.equal(vanta.guid, '810053')
 assert.deepEqual(vanta.missionSetups, ['B-Pong'])
