@@ -1,4 +1,5 @@
 import { eligibleLevel2Teams } from '../../bot/fireteam-list-eligibility.mjs'
+import { neurocineticsBurstBonus } from '../../bot/combat-rules.mjs'
 import { lookupMobility, type MobilityCatalog } from '../../bot/mobility-lookup.mjs'
 import portalAroRatings from '../data/portal-aro-ratings.json' with { type: 'json' }
 import portalGunfighterRatings from '../data/portal-gunfighter-ratings.json' with { type: 'json' }
@@ -62,7 +63,9 @@ const martialArts = /^martial arts(?:\s+(?:l|level)?\s*\d+)?$/i
 const naturalBornWarrior = /^natural born warrior$/i
 const berserkPlusThree = /^berserk\s*\+?3$/i
 const ccAttackBurst = /^cc attack\s*\+(?:(?:\d+\s*)?b|burst)$/i
-const valuableAroSkill = /^(?:total reaction|neurocinetics)$|^bs attack\s*[\[(]\s*\+\s*(?:\d+\s*)?sd\s*[\])]$/i
+function valuableAroSkill(skill: string) {
+  return neurocineticsBurstBonus([skill]) !== null || /^total reaction$|^bs attack\s*[\[(]\s*\+\s*(?:\d+\s*)?sd\s*[\])]$/i.test(normalize(skill))
+}
 const deliveryEquipment = /^(?:pitcher|fast\s*-?\s*panda|deployable\s*-?\s*repeater|repeater)$/i
 const hackingDevice = /^(?:hacking device(?: plus)?|killer hacking device|evo hacking device)$/i
 const visionControl = /^(?:smoke grenades?|smoke grenade launchers?|discoballer|(?:pheroware(?:\s+tactics)?|pt)\s*:?\s*(?:mirroball|mirrorball)|eclipse(?:\s+.*)?)$/i
@@ -143,7 +146,7 @@ export function buildTacticalAnalysis(lists: ArmyIntelligenceList[]): TacticalAn
     : [
         category('valuableAro', 'Valuable ARO Pieces', 'Profiles costing at least 15 points with an approved ARO weapon or Pheroware capability, plus Total Reaction, Neurocinetics, native BS Attack (+SD), weapon-specific +SD, or a verified legal Fireteam +1SD. Proxy Mk IV is an explicit exception.', (entry) => {
           const hasAroCapability = canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name))) || [...entry.skills, ...entry.equipment, ...entry.weapons].some((item) => pheroware.test(normalize(item)))
-          const hasValuableModifier = entry.skills.some((skill) => valuableAroSkill.test(normalize(skill))) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
+          const hasValuableModifier = entry.skills.some(valuableAroSkill) || canonicalWeapons(entry).some((weapon) => weaponSdBonus(weapon) > 0) || Number(entry.fireteamSdBonus || 0) > 0
           return isProxyMkIv(entry) || (entry.points >= 15 && hasAroAction(entry) && hasAroCapability && hasValuableModifier)
         }),
         category('disposableAro', 'Disposable ARO Pieces', 'Profiles costing 14 points or less with an approved ARO weapon, Flash Pulse, weapon-specific +SD, or native BS Attack (+SD).', (entry) => entry.points <= 14 && hasAroAction(entry) && (canonicalWeapons(entry).some((weapon) => aroWeapon.test(normalize(weapon.name)) || /^flash pulse$/i.test(normalize(weapon.name)) || weaponSdBonus(weapon) > 0) || bsAttackSdBonus(entry.skills) > 0)),
@@ -260,9 +263,7 @@ function excludedAlternativeAttackVector(unitName: string) {
 }
 
 function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denominator: number, gunfighter: TacticalProfile['gunfighter'], closeCombat: TacticalProfile['closeCombat'], aro: TacticalProfile['aro']): TacticalProfile {
-  const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill.test(skill) || bsAttackBurstBonus([skill]) > 0)
-  const burstBonus = bsAttackBurstBonus(entry.skills)
-  const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
+  const skills = entry.skills.map(normalize).filter((skill) => alternativeSkill.test(skill) || defensiveSkill.test(skill) || enhancement.test(skill) || valuableAroSkill(skill) || bsAttackBurstBonus([skill]) > 0)
   const mobility = lookupMobility(mobilityCatalog as MobilityCatalog, entry.combinedId)
   return {
     aro,
@@ -282,7 +283,7 @@ function toProfile(entry: ArmyIntelligenceDecodedEntry, listCount: number, denom
     profileId: profileKey(entry),
     roles: [],
     unit: entry.unit || entry.profile,
-    weapons: normalizedWeapons(entry).map((weapon) => ({ ...weapon, effectiveBurst: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon), effectiveDice: weapon.burst === null ? null : weapon.burst + burstBonus + weaponBurstBonus(weapon) + sdBonus + weaponSdBonus(weapon) })),
+    weapons: activeWeapons(entry),
   }
 }
 
@@ -291,8 +292,19 @@ function canonicalWeapons(entry: ArmyIntelligenceDecodedEntry) {
 }
 
 function effectiveSdWeapons(entry: ArmyIntelligenceDecodedEntry) {
-  const bonus = bsAttackBurstBonus(entry.skills) + bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
-  return canonicalWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.burst === null ? null : weapon.burst + bonus + weaponBurstBonus(weapon) + weaponSdBonus(weapon) }))
+  return activeWeapons(entry).filter((weapon) => weapon.burstStatus === 'canonical').map((weapon) => ({ ...weapon, burst: weapon.effectiveDice }))
+}
+
+function activeWeapons(entry: ArmyIntelligenceDecodedEntry) {
+  const hasNeurocinetics = neurocineticsBurstBonus(entry.skills) !== null
+  const burstBonus = bsAttackBurstBonus(entry.skills)
+  const sdBonus = bsAttackSdBonus(entry.skills) + Number(entry.fireteamSdBonus || 0)
+  return canonicalWeapons(entry).map((weapon) => {
+    let effectiveBurst = weapon.burst
+    if (effectiveBurst !== null) effectiveBurst = hasNeurocinetics && isRangedWeapon(weapon) ? 1 : effectiveBurst + burstBonus + weaponBurstBonus(weapon)
+    const effectiveDice = effectiveBurst === null ? null : effectiveBurst + sdBonus + weaponSdBonus(weapon)
+    return { ...weapon, effectiveBurst, effectiveDice }
+  })
 }
 
 function weaponSdBonus(weapon: { modifiers?: string[] }) {
