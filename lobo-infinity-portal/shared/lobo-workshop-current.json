@@ -1,7 +1,7 @@
 {
   "workshopId": "3719263238",
-  "updatedAt": "2026-11-27",
-  "download": "/assets/maps/vanta-customs-yard-r4-20261127/Lobo-Infinity-Map-Bags.zip",
+  "updatedAt": "2026-11-28",
+  "download": "/assets/maps/fort-frolic-r5-20261128/Lobo-Infinity-Map-Bags.zip",
   "maps": [
     {
       "index": 36,
@@ -414,6 +414,43 @@
       "angledThumb": "/assets/maps/library-previews-20261118/data-harvest-1-kestrel-orbital-angled-thumb.webp"
     },
     {
+      "index": 110,
+      "id": "3719263238:f08001",
+      "guid": "f08001",
+      "slug": "fort-frolic",
+      "name": "Fort Frolic",
+      "workshopName": "ITS18 Double Bind — Fort Frolic",
+      "workshopBagName": "SET_ITS18 Double Bind — Fort Frolic",
+      "collectionTitle": "ITS Season 18",
+      "family": "Standard deployment",
+      "layoutKey": 2034,
+      "missionSetups": [
+        "Double Bind"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 88,
+      "sourceNote": "Follow the brass inlay from the bathysphere berth to the Lower Atrium. The center antenna sits on the sunburst. Fleet Hall and Cohen’s Collection overlook the concourse, with a walkable outer gallery and service routes through the theater district.",
+      "overhead": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-overhead.webp",
+      "angled": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-angled.webp",
+      "overheadThumb": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-angled-thumb.webp",
+      "download": "/assets/maps/fort-frolic-r5-20261128/f08001.json",
+      "isCurrent": true,
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/618d6b75-5763-4a60-9cc5-08673586fae0",
+      "labelAliases": [
+        "Fort Frolic",
+        "Fort Frolic R5",
+        "Double Bind - Fort Frolic"
+      ],
+      "previewBagSha256": "6c2f5b1caccd998ee8e6722003ad3220d703772f1e7191351e9b0c2fc32beafd",
+      "previewUpdatedAt": "2026-11-28",
+      "previewManifest": "/assets/maps/fort-frolic-r5-20261128/fort-frolic-preview.json",
+      "installer": "/assets/maps/fort-frolic-r5-20261128/Fort-Frolic-R5-Workshop-Installer.zip"
+    },
+    {
       "index": 21,
       "id": "3719263238:100993",
       "guid": "100993",
@@ -802,9 +839,9 @@
       "angledThumb": "/assets/maps/library-previews-20261118/uplink-center-2-angled-thumb.webp"
     }
   ],
-  "downloadRevision": "vanta-customs-yard-r4-448",
-  "installer": "/assets/maps/vanta-customs-yard-r4-20261127/Lobo-Vanta-Customs-Yard-Workshop-Installer-R4.zip",
-  "releaseInventory": "/assets/maps/vanta-customs-yard-r4-20261127/release-inventory.json",
-  "previewUpdatedAt": "2026-11-27",
-  "workshopSaveName": "Lobo Maps - Vanta Customs Yard R4 - Workshop Collection"
+  "downloadRevision": "fort-frolic-r5-469",
+  "installer": "/assets/maps/fort-frolic-r5-20261128/Fort-Frolic-R5-Workshop-Installer.zip",
+  "releaseInventory": "/assets/maps/fort-frolic-r5-20261128/release-inventory.json",
+  "previewUpdatedAt": "2026-11-28",
+  "workshopSaveName": "Lobo Maps - Fort Frolic R5 - Workshop Collection"
 }
