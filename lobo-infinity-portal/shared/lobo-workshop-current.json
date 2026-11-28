@@ -229,6 +229,46 @@
       "angledThumb": "/assets/maps/library-previews-20261118/corporate-appropriation-1-satellite-angled-thumb.webp"
     },
     {
+      "index": 109,
+      "id": "3719263238:be7400",
+      "guid": "be7400",
+      "slug": "bellwether-incline",
+      "name": "Bellwether Incline",
+      "workshopName": "ITS18 Corporate Appropriation — Bellwether Incline",
+      "workshopBagName": "SET_ITS18 Corporate Appropriation — Bellwether Incline",
+      "collectionTitle": "ITS Season 18",
+      "family": "Standard deployment",
+      "layoutKey": 2035,
+      "missionSetups": [
+        "Corporate Appropriation"
+      ],
+      "exactDuplicateOf": null,
+      "objectCount": 100,
+      "sourceNote": "Car 02 stopped during a brake-recorder trial. The funicular climbs from the valley parcel yards to the summit booking hall. The brake workshop and inspection bay hold the two prototypes.",
+      "overhead": "/assets/maps/bellwether-incline-r22-20261128/bellwether-incline-overhead.webp",
+      "angled": "/assets/maps/bellwether-incline-r22-20261128/bellwether-incline-angled.webp",
+      "overheadThumb": "/assets/maps/bellwether-incline-r22-20261128/bellwether-incline-overhead-thumb.webp",
+      "angledThumb": "/assets/maps/bellwether-incline-r22-20261128/bellwether-incline-angled-thumb.webp",
+      "download": "/assets/maps/fort-frolic-r5-20261128/be7400.json",
+      "usesCollectionInstaller": true,
+      "isCurrent": true,
+      "reviewStatus": "approved",
+      "previewKind": "geometry",
+      "sourceOverhead": null,
+      "sourceAngled": null,
+      "missionUrl": "https://experience.corvusbelli.com/en/game-content/3af94308-817e-457c-85fc-9734f800d252",
+      "labelAliases": [
+        "Bellwether Incline",
+        "Bellewether Incline"
+      ],
+      "searchAliases": [
+        "Bellewether Incline"
+      ],
+      "previewBagSha256": "2e5bc752860e7c2e6da1241ad47ce64354d0ed7e1c7fb309ba681e41d5478a46",
+      "previewUpdatedAt": "2026-11-28",
+      "previewManifest": "/assets/maps/bellwether-incline-r22-20261128/bellwether-incline-preview.json"
+    },
+    {
       "index": 14,
       "id": "3719263238:1005e4",
       "guid": "1005e4",

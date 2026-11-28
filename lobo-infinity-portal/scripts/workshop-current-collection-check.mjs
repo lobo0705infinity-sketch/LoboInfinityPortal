@@ -10,8 +10,8 @@ import communityArchive from '../shared/lobo-workshop-community-archive-20261116
 import { describePublicSearchPage } from '../shared/public-search-content.mjs'
 
 const release = JSON.parse(readFileSync('public'+current.releaseInventory, 'utf8'))
-const tableCount = 22
-const twoLayoutMissions = new Set(['Crossing Lines', 'Double Bind'])
+const tableCount = 23
+const twoLayoutMissions = new Set(['Corporate Appropriation', 'Crossing Lines', 'Double Bind'])
 assert.equal(loboWorkshopMaps.length, tableCount)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.id)).size, tableCount)
 assert.equal(new Set(loboWorkshopMaps.map(map=>map.layoutKey)).size, tableCount)
@@ -149,6 +149,14 @@ assert.deepEqual(cairnfall.missionSetups, ['Battleground'])
 assert.equal(cairnfall.reviewStatus, 'approved')
 assert.equal(cairnfall.objectCount, 87)
 assert.match(cairnfall.installer, /Cairnfall-Sanctuary-Final-Workshop-Installer\.zip$/)
+const bellwether = loboWorkshopMapBySlug.get('bellwether-incline')
+assert.equal(bellwether.guid, 'be7400')
+assert.equal(bellwether.reviewStatus, 'approved')
+assert.deepEqual(bellwether.missionSetups, ['Corporate Appropriation'])
+assert.equal(bellwether.usesCollectionInstaller, true)
+assert.ok(existsSync('public' + current.installer))
+assert.equal(resolveLoboWorkshopMapLabel('Bellewether Incline')?.id, bellwether.id)
+assert.ok(describePublicSearchPage('/maps').links.some(link => link.href === '/maps/bellwether-incline'))
 const fortFrolic = loboWorkshopMapBySlug.get('fort-frolic')
 assert.equal(fortFrolic.guid, 'f08001')
 assert.equal(fortFrolic.reviewStatus, 'approved')

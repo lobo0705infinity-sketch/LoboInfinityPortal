@@ -43,7 +43,7 @@ function MapIndex({ ratings, ratingsStatus }: { ratings: Map<number, MapRating>;
   const normalizedQuery = query.trim().toLocaleLowerCase()
   const visibleMaps = loboWorkshopMaps.filter(map =>
     (!mission || map.missionSetups.includes(mission)) &&
-    (!normalizedQuery || `${map.name} ${map.workshopBagName} ${map.family} ${map.missionSetups.join(' ')}`.toLocaleLowerCase().includes(normalizedQuery)))
+    (!normalizedQuery || `${map.name} ${map.workshopBagName} ${map.family} ${map.missionSetups.join(' ')} ${map.searchAliases?.join(' ') ?? ''}`.toLocaleLowerCase().includes(normalizedQuery)))
     .sort((a, b) => (sort === 'name' ? a.name.localeCompare(b.name) : a.missionSetups[0].localeCompare(b.missionSetups[0])) || a.name.localeCompare(b.name))
   const featured = loboWorkshopMaps.find(map => map.installer === LOBO_WORKSHOP_INSTALLER_URL && map.angled)
     ?? loboWorkshopMaps.find(map => map.guid === 'af0667' && map.angled) ?? loboWorkshopMaps.find(map => map.angled) ?? loboWorkshopMaps[0]
@@ -117,6 +117,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
   const returnTo = typeof location.state?.libraryReturnTo === 'string' && location.state.libraryReturnTo.startsWith('/maps?') ? location.state.libraryReturnTo : '/maps#browse-maps'
   if (!map || map.portalHidden) return <main className="portal-shell lobo-maps-page"><section className="lobo-maps-empty"><h1>Map not found</h1><p>This table is not in the active portal catalogue.</p><Link to="/maps">Browse all maps</Link></section></main>
 
+  const installer = map.usesCollectionInstaller ? LOBO_WORKSHOP_INSTALLER_URL : map.installer
   const position = loboWorkshopMaps.findIndex(item => item.id === map.id)
   const next = loboWorkshopMaps[(position + 1) % loboWorkshopMaps.length]
   const previous = loboWorkshopMaps[(position - 1 + loboWorkshopMaps.length) % loboWorkshopMaps.length]
@@ -131,7 +132,7 @@ function MapDetail({ map, games, ratings, ratingsStatus }: { map: WorkshopMap | 
     <nav aria-label="Map navigation" className="lobo-map-detail-nav"><Link to={returnTo}>← Map library</Link><span>{map.isCurrent === false ? `Historical Workshop save ${map.index}` : `Workshop setup ${String(position + 1).padStart(2, '0')} / ${loboWorkshopMaps.length}`}</span></nav>
     <header className="lobo-map-detail-heading">
       <div><p className="eyebrow">{map.family} · Lobo Workshop</p><h1>{map.name}</h1><p>Workshop bag: {map.workshopBagName}</p>{map.isCurrent === false ? <p>This is a historical Workshop save. <Link to="/maps">Browse the revised ITS18 collection.</Link></p> : null}<p className="lobo-map-detail-rating">{ratingText(ratingsStatus, ratings.get(map.layoutKey))}</p><p>Inspect this mission setup before loading its matching bag in Tabletop Simulator.</p></div>
-      <div className="lobo-map-download-actions">{map.download ? <a download href={mapDownloadUrl(map.download)}>Download map bag</a> : null} {map.installer ? <a download href={mapDownloadUrl(map.installer)} rel="noopener noreferrer" target="_blank">Download Workshop installer</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
+      <div className="lobo-map-download-actions">{map.download ? <a download href={mapDownloadUrl(map.download)}>Download map bag</a> : null} {installer ? <a download href={mapDownloadUrl(installer)} rel="noopener noreferrer" target="_blank">{map.usesCollectionInstaller ? 'Download collection installer' : 'Download Workshop installer'}</a> : null} <a href={LOBO_WORKSHOP_URL} rel="noopener noreferrer" target="_blank">Get the Workshop collection <span aria-hidden="true">↗</span></a></div>
     </header>
     {map.reviewStatus === 'pending' && <p className="lobo-map-review-note">Awaiting review: this is the current published version. Its replacement has not yet been approved.</p>}
     {map.isCurrent !== false && map.download && <p className="lobo-maps-source-note">This download is a map bag. Put its JSON in Documents/My Games/Tabletop Simulator/Saves/Saved Objects, spawn it through Objects → Saved Objects in the normal Infinity mod, then drop it onto the map deployment spot.</p>}
